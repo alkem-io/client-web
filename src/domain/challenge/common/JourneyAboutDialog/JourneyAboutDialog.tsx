@@ -110,7 +110,7 @@ const JourneyAboutDialog = ({
     () =>
       (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
         id: user.id,
-        title: user.profile.displayName,
+        displayName: user.profile.displayName,
         country: user.profile.location?.country,
         city: user.profile.location?.city,
         avatarUri: user.profile.visual?.uri,

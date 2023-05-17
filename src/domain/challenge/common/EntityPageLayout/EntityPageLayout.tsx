@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { cloneElement, PropsWithChildren } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 import { useMediaQuery, useTheme } from '@mui/material';
 import TopBar, { TopBarSpacer } from '../../../../common/components/composite/layout/TopBar/TopBar';
@@ -10,19 +10,27 @@ const EntityPageLayout = ({
   currentSection,
   children,
   pageBannerComponent: PageBanner,
+  pageBanner,
   tabsComponent: Tabs,
+  tabs: tabsElement,
 }: PropsWithChildren<EntityPageLayoutProps>) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+
+  const tabs = Tabs ? (
+    <Tabs currentTab={currentSection} mobile={isMobile} />
+  ) : (
+    tabsElement && cloneElement(tabsElement, { currentTab: currentSection, mobile: isMobile })
+  );
 
   return (
     <>
       <TopBar />
       <TopBarSpacer />
-      <PageBanner />
-      {!isMobile && <Tabs currentTab={currentSection} />}
+      {PageBanner ? <PageBanner /> : pageBanner}
+      {!isMobile && tabs}
       {children}
-      {isMobile && <Tabs currentTab={currentSection} mobile />}
+      {isMobile && tabs}
       {!isMobile && (
         <>
           <Footer />

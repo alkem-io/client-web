@@ -759,8 +759,8 @@ export const HubDashboardNavigationItemFragmentDoc = gql`
     }
   }
 `;
-export const ProfileInfoFragmentDoc = gql`
-  fragment ProfileInfo on Profile {
+export const TemplateCardProfileInfoFragmentDoc = gql`
+  fragment TemplateCardProfileInfo on Profile {
     id
     displayName
     description
@@ -774,25 +774,25 @@ export const ProfileInfoFragmentDoc = gql`
     }
   }
 `;
-export const PostTemplateFragmentDoc = gql`
-  fragment PostTemplate on PostTemplate {
+export const PostTemplateCardFragmentDoc = gql`
+  fragment PostTemplateCard on PostTemplate {
     id
     defaultDescription
     type
     profile {
-      ...ProfileInfo
+      ...TemplateCardProfileInfo
     }
   }
-  ${ProfileInfoFragmentDoc}
+  ${TemplateCardProfileInfoFragmentDoc}
 `;
-export const WhiteboardTemplateFragmentDoc = gql`
-  fragment WhiteboardTemplate on WhiteboardTemplate {
+export const WhiteboardTemplateCardFragmentDoc = gql`
+  fragment WhiteboardTemplateCard on WhiteboardTemplate {
     id
     profile {
-      ...ProfileInfo
+      ...TemplateCardProfileInfo
     }
   }
-  ${ProfileInfoFragmentDoc}
+  ${TemplateCardProfileInfoFragmentDoc}
 `;
 export const InnovationFlowTemplateFragmentDoc = gql`
   fragment InnovationFlowTemplate on InnovationFlowTemplate {
@@ -811,26 +811,26 @@ export const HubTemplatesFragmentDoc = gql`
     templates {
       id
       postTemplates {
-        ...PostTemplate
+        ...PostTemplateCard
       }
       whiteboardTemplates {
-        ...WhiteboardTemplate
+        ...WhiteboardTemplateCard
       }
       innovationFlowTemplates {
         ...InnovationFlowTemplate
       }
     }
   }
-  ${PostTemplateFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
   ${InnovationFlowTemplateFragmentDoc}
 `;
 export const WhiteboardTemplateWithValueFragmentDoc = gql`
   fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
-    ...WhiteboardTemplate
+    ...WhiteboardTemplateCard
     value
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 export const AdminHubFragmentDoc = gql`
   fragment AdminHub on Hub {
@@ -1585,29 +1585,6 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
   }
   ${CalloutFragmentDoc}
 `;
-export const TemplateProviderProfileFragmentDoc = gql`
-  fragment TemplateProviderProfile on Profile {
-    id
-    displayName
-    visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const InnovationPackWithProviderFragmentDoc = gql`
-  fragment InnovationPackWithProvider on InnovationPack {
-    id
-    nameID
-    provider {
-      id
-      profile {
-        ...TemplateProviderProfile
-      }
-    }
-  }
-  ${TemplateProviderProfileFragmentDoc}
-`;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
@@ -1705,6 +1682,44 @@ export const AspectsOnCalloutFragmentDoc = gql`
     }
   }
   ${ContributeTabAspectFragmentDoc}
+`;
+export const TemplateProviderProfileFragmentDoc = gql`
+  fragment TemplateProviderProfile on Profile {
+    id
+    displayName
+    visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const InnovationPackWithProviderFragmentDoc = gql`
+  fragment InnovationPackWithProvider on InnovationPack {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+    provider {
+      id
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+`;
+export const InnovationFlowTemplateCardFragmentDoc = gql`
+  fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
+    id
+    definition
+    type
+    profile {
+      ...TemplateCardProfileInfo
+    }
+  }
+  ${TemplateCardProfileInfoFragmentDoc}
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -2340,6 +2355,20 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
+  fragment InnovationPackProviderProfileWithAvatar on Organization {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+`;
 export const InnovationPackCardFragmentDoc = gql`
   fragment InnovationPackCard on InnovationPack {
     id
@@ -2366,17 +2395,10 @@ export const InnovationPackCardFragmentDoc = gql`
       }
     }
     provider {
-      id
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
+      ...InnovationPackProviderProfileWithAvatar
     }
   }
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -2515,8 +2537,8 @@ export const AdminWhiteboardTemplateFragmentDoc = gql`
   }
   ${ProfileInfoWithVisualFragmentDoc}
 `;
-export const InnovationPackTemplatesFragmentDoc = gql`
-  fragment InnovationPackTemplates on TemplatesSet {
+export const AdminInnovationPackTemplatesFragmentDoc = gql`
+  fragment AdminInnovationPackTemplates on TemplatesSet {
     id
     postTemplates {
       ...AdminPostTemplate
@@ -5723,16 +5745,16 @@ export const CalloutFormTemplatesFromHubDocument = gql`
       templates {
         id
         postTemplates {
-          ...PostTemplate
+          ...PostTemplateCard
         }
         whiteboardTemplates {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
         }
       }
     }
   }
-  ${PostTemplateFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -5796,12 +5818,12 @@ export const PostTemplatesFromHubDocument = gql`
       templates {
         id
         postTemplates {
-          ...PostTemplate
+          ...PostTemplateCard
         }
       }
     }
   }
-  ${PostTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
 `;
 
 /**
@@ -5863,12 +5885,12 @@ export const WhiteboardTemplatesFromHubDocument = gql`
       templates {
         id
         whiteboardTemplates {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
         }
       }
     }
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -8533,6 +8555,101 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
   return { query: CalloutPageCalloutDocument, variables: variables };
 }
 
+export const InnovationPackProfilePageDocument = gql`
+  query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
+    platform {
+      id
+      library {
+        id
+        innovationPack(ID: $innovationPackId) {
+          id
+          nameID
+          authorization {
+            id
+            myPrivileges
+          }
+          provider {
+            ...InnovationPackProviderProfileWithAvatar
+          }
+          profile {
+            ...InnovationPackProfile
+            tagline
+          }
+          templates {
+            id
+            whiteboardTemplates {
+              ...WhiteboardTemplateCard
+            }
+            postTemplates {
+              ...PostTemplateCard
+            }
+            innovationFlowTemplates {
+              ...InnovationFlowTemplateCard
+            }
+          }
+        }
+      }
+    }
+  }
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
+  ${InnovationPackProfileFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
+  ${InnovationFlowTemplateCardFragmentDoc}
+`;
+
+/**
+ * __useInnovationPackProfilePageQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackProfilePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackProfilePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackProfilePageQuery({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *   },
+ * });
+ */
+export function useInnovationPackProfilePageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >(InnovationPackProfilePageDocument, options);
+}
+
+export function useInnovationPackProfilePageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >(InnovationPackProfilePageDocument, options);
+}
+
+export type InnovationPackProfilePageQueryHookResult = ReturnType<typeof useInnovationPackProfilePageQuery>;
+export type InnovationPackProfilePageLazyQueryHookResult = ReturnType<typeof useInnovationPackProfilePageLazyQuery>;
+export type InnovationPackProfilePageQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackProfilePageQuery,
+  SchemaTypes.InnovationPackProfilePageQueryVariables
+>;
+export function refetchInnovationPackProfilePageQuery(variables: SchemaTypes.InnovationPackProfilePageQueryVariables) {
+  return { query: InnovationPackProfilePageDocument, variables: variables };
+}
+
 export const ActivityCreatedDocument = gql`
   subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
     activityCreated(input: $input) {
@@ -8711,7 +8828,7 @@ export const HubPostTemplatesLibraryDocument = gql`
       templates {
         id
         postTemplates {
-          ...PostTemplate
+          ...PostTemplateCard
         }
       }
       host {
@@ -8723,7 +8840,7 @@ export const HubPostTemplatesLibraryDocument = gql`
       }
     }
   }
-  ${PostTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
   ${TemplateProviderProfileFragmentDoc}
 `;
 
@@ -8788,6 +8905,10 @@ export const PlatformPostTemplatesLibraryDocument = gql`
         innovationPacks {
           id
           nameID
+          profile {
+            id
+            displayName
+          }
           provider {
             id
             profile {
@@ -8797,7 +8918,7 @@ export const PlatformPostTemplatesLibraryDocument = gql`
           templates {
             id
             postTemplates {
-              ...PostTemplate
+              ...PostTemplateCard
             }
           }
         }
@@ -8805,7 +8926,7 @@ export const PlatformPostTemplatesLibraryDocument = gql`
     }
   }
   ${TemplateProviderProfileFragmentDoc}
-  ${PostTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
 `;
 
 /**
@@ -11354,7 +11475,7 @@ export const HubWhiteboardTemplatesLibraryDocument = gql`
       templates {
         id
         whiteboardTemplates {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
         }
       }
       host {
@@ -11366,7 +11487,7 @@ export const HubWhiteboardTemplatesLibraryDocument = gql`
       }
     }
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
   ${TemplateProviderProfileFragmentDoc}
 `;
 
@@ -11433,13 +11554,13 @@ export const HubWhiteboardTemplateValueDocument = gql`
       templates {
         id
         whiteboardTemplate(ID: $whiteboardTemplateId) {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
           value
         }
       }
     }
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -11506,6 +11627,10 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
         innovationPacks {
           id
           nameID
+          profile {
+            id
+            displayName
+          }
           provider {
             id
             profile {
@@ -11515,7 +11640,7 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
           templates {
             id
             whiteboardTemplates {
-              ...WhiteboardTemplate
+              ...WhiteboardTemplateCard
             }
           }
         }
@@ -11523,7 +11648,7 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
     }
   }
   ${TemplateProviderProfileFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -11594,7 +11719,7 @@ export const PlatformWhiteboardTemplateValueDocument = gql`
           templates {
             id
             whiteboardTemplate(ID: $whiteboardTemplateId) {
-              ...WhiteboardTemplate
+              ...WhiteboardTemplateCard
               value
             }
           }
@@ -11603,7 +11728,7 @@ export const PlatformWhiteboardTemplateValueDocument = gql`
     }
   }
   ${InnovationPackWithProviderFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -21026,16 +21151,7 @@ export const InnovationPacksDocument = gql`
           id
           nameID
           provider {
-            id
-            nameID
-            profile {
-              id
-              displayName
-              visual(type: AVATAR) {
-                id
-                uri
-              }
-            }
+            ...InnovationPackProviderProfileWithAvatar
           }
           profile {
             id
@@ -21057,6 +21173,7 @@ export const InnovationPacksDocument = gql`
       }
     }
   }
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
@@ -21404,7 +21521,7 @@ export const AdminInnovationPackDocument = gql`
             ...InnovationPackProfile
           }
           templates {
-            ...InnovationPackTemplates
+            ...AdminInnovationPackTemplates
           }
         }
       }
@@ -21419,7 +21536,7 @@ export const AdminInnovationPackDocument = gql`
     }
   }
   ${InnovationPackProfileFragmentDoc}
-  ${InnovationPackTemplatesFragmentDoc}
+  ${AdminInnovationPackTemplatesFragmentDoc}
 `;
 
 /**

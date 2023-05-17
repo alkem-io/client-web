@@ -30,8 +30,6 @@ const InnovationPacksView = ({
   hasMore = false,
   ...props
 }: InnovationPacksViewProps & PageContentBlockProps) => {
-  const handleOpenInnovationPack = () => {};
-
   const { t } = useTranslation();
 
   return (
@@ -55,7 +53,7 @@ const InnovationPacksView = ({
       />
       {innovationPacks && (
         <ScrollableCardsLayout items={innovationPacks} minHeight={0} noVerticalMarginTop>
-          {({ id, ...cardProps }) => <InnovationPackCard key={id} {...cardProps} onClick={handleOpenInnovationPack} />}
+          {({ id, ...cardProps }) => <InnovationPackCard key={id} {...cardProps} />}
         </ScrollableCardsLayout>
       )}
       {hasMore && <SeeMore subject={t('common.innovation-packs')} onClick={onDialogOpen} />}

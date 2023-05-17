@@ -81,7 +81,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
         messageReceivers={[
           {
             id: author?.id,
-            title: author?.displayName,
+            displayName: author?.displayName,
             avatarUri: author?.avatarUrl,
             city: author?.city,
             country: author?.country,

@@ -25,7 +25,13 @@ const UserTabs = (props: EntityTabsProps) => {
   );
 
   return (
-    <ProfileTabs showSettings={isCurrentUser} profileIconComponent={AssignmentIndOutlined} routes={routes} {...props} />
+    <ProfileTabs
+      showSettings={isCurrentUser}
+      profileIconComponent={AssignmentIndOutlined}
+      routes={routes}
+      entityTypeName="user"
+      {...props}
+    />
   );
 };
 

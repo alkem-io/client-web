@@ -88,7 +88,6 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
                 deps={[hubNameId, challengeNameId, opportunityNameId]}
                 createButton={!isMobile && createButton}
                 maxHeight={gutters(22)}
-                cards={false}
               >
                 {canvas =>
                   canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />

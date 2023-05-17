@@ -15,9 +15,9 @@ const getFontSize = (theme: Theme) => (iconSize: SvgIconProps['fontSize'] | 'xsm
   }
 };
 
-const RoundedIcon = ({ size, iconSize = size, component: Icon, ...containerProps }: RoundedIconProps) => {
+const RoundedIcon = ({ size, iconSize = size, component: Icon, sx, ...containerProps }: RoundedIconProps) => {
   return (
-    <RoundedBadge size={size} {...containerProps} sx={{ fontSize: theme => getFontSize(theme)(iconSize) }}>
+    <RoundedBadge size={size} {...containerProps} sx={{ fontSize: theme => getFontSize(theme)(iconSize), ...sx }}>
       <Icon fontSize={iconSize === 'xsmall' ? 'inherit' : iconSize} />
     </RoundedBadge>
   );

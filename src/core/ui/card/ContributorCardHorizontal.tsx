@@ -1,12 +1,12 @@
 import { Avatar, Tooltip } from '@mui/material';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import getLocationString, { Location } from '../../../../core/ui/location/getLocationString';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
+import { BlockSectionTitle } from '../typography';
+import getLocationString, { Location } from '../location/getLocationString';
+import BadgeCardView from '../list/BadgeCardView';
 import React from 'react';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import UserCard from '../../../../common/components/composite/common/cards/user-card/UserCard';
-import SwapColors from '../../../../core/ui/palette/SwapColors';
-import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
+import GridItem from '../grid/GridItem';
+import UserCard from '../../../common/components/composite/common/cards/user-card/UserCard';
+import SwapColors from '../palette/SwapColors';
+import LinkNoUnderline from '../../../domain/shared/components/LinkNoUnderline';
 import { useTranslation } from 'react-i18next';
 
 interface HubWelcomeSectionContributorProps {
@@ -19,9 +19,10 @@ interface HubWelcomeSectionContributorProps {
     tagsets?: { tags: string[] }[];
   };
   url: string;
+  onContact?: () => void;
 }
 
-const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContributorProps) => {
+const ContributorCardHorizontal = ({ url, profile, onContact }: HubWelcomeSectionContributorProps) => {
   const { t } = useTranslation();
 
   const tags = profile.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : [];
@@ -38,6 +39,8 @@ const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContrib
               tags={tags}
               city={profile.location?.city}
               country={profile.location?.country}
+              isContactable={!!onContact}
+              onContact={onContact}
             />
           }
           componentsProps={{ popper: { sx: { '.MuiTooltip-tooltip': { backgroundColor: 'transparent' } } } }}
@@ -48,7 +51,6 @@ const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContrib
                 src={profile.visual?.uri}
                 aria-label="User avatar"
                 alt={t('common.avatar-of', { user: profile.displayName })}
-                variant="square"
               >
                 {profile.displayName[0]}
               </Avatar>
@@ -65,4 +67,4 @@ const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContrib
   );
 };
 
-export default HubWelcomeSectionContributor;
+export default ContributorCardHorizontal;

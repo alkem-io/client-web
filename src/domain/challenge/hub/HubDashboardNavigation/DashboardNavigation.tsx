@@ -1,5 +1,15 @@
 import React, { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
-import { Avatar, Box, ButtonBase, Collapse, IconButton, Tooltip, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  ButtonBase,
+  Collapse,
+  IconButton,
+  Tooltip,
+  TooltipProps,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import {
@@ -19,6 +29,7 @@ import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
 import { useTranslation } from 'react-i18next';
+import { Theme } from '@mui/material/styles';
 
 interface DashboardNavigationProps {
   hubNameId: string | undefined;
@@ -29,6 +40,7 @@ interface DashboardNavigationProps {
 
 interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'children'> {
   url?: string;
+  tooltipPlacement?: TooltipProps['placement'];
 }
 
 const DashboardNavigationItemView = ({
@@ -38,6 +50,7 @@ const DashboardNavigationItemView = ({
   journeyTypeName,
   children,
   private: isPrivate = false,
+  tooltipPlacement,
 }: PropsWithChildren<DashboardNavigationItemViewProps>) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -91,7 +104,7 @@ const DashboardNavigationItemView = ({
           isPrivate ? (
             <Tooltip
               title={<Caption>{t('components.dashboardNavigation.privateChallenge')}</Caption>}
-              placement="right"
+              placement={tooltipPlacement}
               arrow
             >
               <IconButton disableRipple onClick={preventDefault}>
@@ -143,13 +156,21 @@ const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation, load
 
   const showAll = isExpanded || allItemsFit;
 
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+
+  const tooltipPlacement = isMobile ? 'left' : 'right';
+
   return (
     <PageContentBlock>
       <PageContentBlockHeader
         icon={<HubOutlined />}
         title={displayName}
         actions={
-          <Tooltip title={<Caption>{t('components.dashboardNavigation.help')}</Caption>} placement="right" arrow>
+          <Tooltip
+            title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
+            placement={tooltipPlacement}
+            arrow
+          >
             <HelpOutlineOutlined fontSize="small" />
           </Tooltip>
         }
@@ -160,6 +181,7 @@ const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation, load
             <DashboardNavigationItemView
               key={id}
               url={hubNameId && buildChallengeUrl(hubNameId, challengeNameId)}
+              tooltipPlacement={tooltipPlacement}
               {...challenge}
             >
               {Boolean(challenge.children?.length) &&
