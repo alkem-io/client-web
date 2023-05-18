@@ -1,0 +1,33 @@
+query HomePageSpaces {
+  hubs(filter: { visibilities: [ACTIVE] }) {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+      tagset {
+        tags
+      }
+      banner: visual(type: BANNER) {
+        id
+        uri
+        alternativeText
+      }
+    }
+    context {
+      id
+      vision
+    }
+    metrics {
+      id
+      name
+      value
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+    visibility
+  }
+}

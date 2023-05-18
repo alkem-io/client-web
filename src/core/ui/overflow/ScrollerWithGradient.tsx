@@ -3,7 +3,7 @@ import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { overflowBorderGradient } from './utils';
 
-type Orientation = 'vertical' | 'horizontal';
+export type Orientation = 'vertical' | 'horizontal';
 
 interface ScrollerWithGradientProps<ScrollerEl extends HTMLElement> {
   orientation?: Orientation;

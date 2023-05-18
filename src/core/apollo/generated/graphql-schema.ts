@@ -1974,7 +1974,7 @@ export type InnovationHub = {
   __typename?: 'InnovationHub';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  hubListFilter: Array<Hub>;
+  hubListFilter?: Maybe<Array<Hub>>;
   /** If defined, what type of visibility to filter the Hubs on. You can have only one type of filter active at any given time. */
   hubVisibilityFilter?: Maybe<HubVisibility>;
   /** The ID of the entity */
@@ -21485,6 +21485,70 @@ export type FullLocationFragment = {
   addressLine2: string;
   stateOrProvince: string;
   postalCode: string;
+};
+
+export type InnovationHubQueryVariables = Exact<{
+  subdomain?: InputMaybe<Scalars['String']>;
+}>;
+
+export type InnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub: {
+      __typename?: 'InnovationHub';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline: string;
+        description?: string | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+      };
+    };
+  };
+};
+
+export type InnovationHubHomeInnovationHubFragment = {
+  __typename?: 'InnovationHub';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline: string;
+    description?: string | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  };
+};
+
+export type HomePageSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type HomePageSpacesQuery = {
+  __typename?: 'Query';
+  hubs: Array<{
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    visibility: HubVisibility;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      tagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+      banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+    };
+    context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    community?:
+      | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
+      | undefined;
+  }>;
 };
 
 export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;
