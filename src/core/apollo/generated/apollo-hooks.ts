@@ -2499,6 +2499,7 @@ export const DocumentDataFragmentDoc = gql`
         displayName
       }
     }
+    uploadedDate
     authorization {
       id
       myPrivileges
@@ -20973,11 +20974,30 @@ export const HubStorageAdminDocument = gql`
   query HubStorageAdmin($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
+      nameID
+      profile {
+        id
+        displayName
+      }
       storageBucket {
         id
         size
         documents {
           ...DocumentData
+        }
+      }
+      challenges {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        storageBucket {
+          id
+          documents {
+            ...DocumentData
+          }
         }
       }
     }

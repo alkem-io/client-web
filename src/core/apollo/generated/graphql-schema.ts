@@ -1731,6 +1731,8 @@ export type Document = {
   size: Scalars['Float'];
   /** The tagset in use on this Document. */
   tagset: Tagset;
+  /** The uploaded date of this Document */
+  uploadedDate: Scalars['DateTime'];
 };
 
 export type EcosystemModel = {
@@ -22208,6 +22210,8 @@ export type HubStorageAdminQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     storageBucket?:
       | {
           __typename?: 'StorageBucket';
@@ -22219,6 +22223,7 @@ export type HubStorageAdminQuery = {
             displayName: string;
             size: number;
             mimeType: MimeType;
+            uploadedDate: Date;
             createdBy?:
               | {
                   __typename?: 'User';
@@ -22233,6 +22238,43 @@ export type HubStorageAdminQuery = {
           }>;
         }
       | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          storageBucket?:
+            | {
+                __typename?: 'StorageBucket';
+                id: string;
+                documents: Array<{
+                  __typename?: 'Document';
+                  id: string;
+                  displayName: string;
+                  size: number;
+                  mimeType: MimeType;
+                  uploadedDate: Date;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        nameID: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }>;
+              }
+            | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -22242,6 +22284,7 @@ export type DocumentDataFragment = {
   displayName: string;
   size: number;
   mimeType: MimeType;
+  uploadedDate: Date;
   createdBy?:
     | {
         __typename?: 'User';

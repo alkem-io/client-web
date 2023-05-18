@@ -1,13 +1,30 @@
 query HubStorageAdmin($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
+    nameID
+    profile {
+      id
+      displayName
+    }
     storageBucket {
       id
       size
-      #maxFileSize
-      #allowedMimeTypes
       documents {
         ...DocumentData
+      }
+    }
+    challenges {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+      storageBucket {
+        id
+        documents {
+          ...DocumentData
+        }
       }
     }
   }
@@ -18,10 +35,6 @@ fragment DocumentData on Document {
   displayName
   size
   mimeType
-  # tagset {
-  #   id
-  #   tags
-  # }
   createdBy {
     id
     nameID
@@ -30,14 +43,11 @@ fragment DocumentData on Document {
       displayName
     }
   }
+  uploadedDate
   authorization {
     id
     myPrivileges
   }
-
-  # MISSING:
-  # Location
-  # Uploaded date
 }
 
 mutation DeleteDocument($documentId: UUID!) {
