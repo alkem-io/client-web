@@ -18,7 +18,6 @@ const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) =>
   if (!i18n.exists(key)) {
     // if the error text is missing for that code
     // send a generic error text with code
-    console.error('apollo eror', error, code);
     return t('apollo.errors.generic-with-code', { code });
   }
   // send the error text
@@ -33,14 +32,12 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     const networkError = error.networkError;
     if (networkError && 'result' in networkError && networkError.result && networkError.result.errors) {
       const error = networkError.result.errors[0] as GraphQLError;
-      console.error('networkError', error, networkError);
       notify(error.message, severity);
     }
   };
 
   const handleGraphQLErrors = (error: ApolloError) => {
     const graphqlErrors = error.graphQLErrors;
-    console.error('handleGraphQLErrors', error);
 
     graphqlErrors.forEach((error: GraphQLError) => {
       const translation = getTranslationForCode(error, t, i18n);
@@ -50,8 +47,6 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
   };
 
   const handleClientErrors = (error: ApolloError) => {
-    console.error('handleClientErrors', error);
-
     if (error.clientErrors && error.clientErrors.length > 0) {
       notify(error.message, severity);
     }
