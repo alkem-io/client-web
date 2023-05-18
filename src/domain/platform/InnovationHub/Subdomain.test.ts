@@ -1,4 +1,4 @@
-import getSubdomain from './Subdomain';
+import { getSubdomain } from './Subdomain';
 
 describe('getSubdomain', () => {
   it('returns undefined for 2-level domains', () => {
