@@ -1289,6 +1289,7 @@
     },
     "innovationHub": {
       "selectedSpaces": "{{hub}} Spaces",
+      "foreignJourney": "This {{journey}} is not in the selection of {{hub}}. You are anyway very welcome to contribute. Enjoy exploring!",
       "goToMainPage": "Interested in collaborating in other Hubs? Click here to see them all on the universal Alkemio homepage."
     },
     "admin": {

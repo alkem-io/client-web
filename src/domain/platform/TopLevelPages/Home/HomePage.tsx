@@ -14,17 +14,10 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
 import { useInnovationHubQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import getSubdomain from '../../InnovationHub/getSubdomain';
 import InnovationHubHomePage from '../../InnovationHub/InnovationHubHomePage/InnovationHubHomePage';
 import useInnovationHubAttrs from '../../InnovationHub/InnovationHubHomePage/InnovationHubAttrs';
 import { Loading } from '../../../../common/components/core';
-
-const detectSubdomain = () => {
-  if (process.env.NODE_ENV === 'development' && process.env.REACT_APP__DEV_SUBDOMAIN) {
-    return process.env.REACT_APP__DEV_SUBDOMAIN;
-  }
-  return getSubdomain(window.location.hostname);
-};
+import { detectSubdomain } from '../../InnovationHub/Subdomain';
 
 export const HomePage = () => {
   const user = useUserContext();

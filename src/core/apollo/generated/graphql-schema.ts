@@ -8969,6 +8969,24 @@ export type ChallengeCreatedSubscription = {
   };
 };
 
+export type BannerInnovationHubQueryVariables = Exact<{
+  subdomain?: InputMaybe<Scalars['String']>;
+}>;
+
+export type BannerInnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub: {
+      __typename?: 'InnovationHub';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      hubListFilter?: Array<{ __typename?: 'Hub'; id: string }> | undefined;
+    };
+  };
+};
+
 export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
   input: AssignOpportunityAdminInput;
 }>;

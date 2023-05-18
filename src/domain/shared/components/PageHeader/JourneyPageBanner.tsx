@@ -15,6 +15,7 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
+import PageContentRibbon from '../../../../core/ui/content/PageContentRibbon';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
@@ -137,6 +138,7 @@ export interface JourneyPageBannerProps {
   bannerUrl?: string;
   bannerAltText?: string;
   showBreadcrumbs?: boolean;
+  ribbon?: ReactNode;
   loading?: boolean;
   journeyTypeName: JourneyTypeName | 'admin';
 }
@@ -151,6 +153,7 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   bannerUrl,
   bannerAltText,
   showBreadcrumbs,
+  ribbon,
   journeyTypeName,
   loading: dataLoading = false,
 }) => {
@@ -170,6 +173,7 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
 
   return (
     <Root ref={containerReference}>
+      {ribbon && <PageContentRibbon>{ribbon}</PageContentRibbon>}
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
       {!dataLoading && (
         <>
