@@ -132,7 +132,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
                 name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
                 onChange={({ target }) => {
                   if (target.value) {
-                    setFilter({ email: target.value, firstName: target.value, lastName: target.value });
+                    setFilter({ email: target.value, displayName: target.value });
                   } else {
                     setFilter(undefined);
                   }
