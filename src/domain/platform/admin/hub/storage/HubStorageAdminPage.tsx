@@ -12,29 +12,21 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../layout/EntitySettingsLayout/types';
 import HubSettingsLayout from '../HubSettingsLayout';
-import { Box, IconButton, LinearProgress, Link, Skeleton, TextField, styled } from '@mui/material';
+import { Box, IconButton, Link, Skeleton, TextField, Theme, styled, useMediaQuery } from '@mui/material';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useDeleteDocumentMutation, useHubStorageAdminQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, DocumentDataFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { computeStorageUsage, formatFileSize } from '../../../../../core/utils/Storage';
+import { formatFileSize } from '../../../../../core/utils/Storage';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { buildDocumentUrl, buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import { Caption } from '../../../../../core/ui/typography';
-import GridItem from '../../../../../core/ui/grid/GridItem';
-import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import { BlockSectionTitle } from '../../../../../core/ui/typography';
 
 //TODOs:
-// - this thing under this comment, MAX_STORAGE_CAPACITY maybe should come from the server
 // - uploaded date doesn't come from the server
 // - uploaded location (parent journey) challenge, opp, is not comming from the server
-// - Link to contact Alkemio for increased storage capacity
-// - Grid is not fully working
-
-// TODO: Read this from somewhere else
-const MAX_STORAGE_CAPACITY = 104857600; // 100MB;
 
 interface HubStorageAdminPageProps extends SettingsPageProps {
   hubId: string | undefined;
@@ -64,6 +56,7 @@ const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
 
 const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix = '../' }) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const [filterString, setFilterString] = useState('');
   const [filterModel, setFilterModel] = useState<GridFilterModel>(EmptyFilter);
@@ -187,35 +180,21 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
     },
   ];
 
-  const percentUsed = computeStorageUsage(data?.hub.storageBucket?.size, MAX_STORAGE_CAPACITY);
   return (
     <HubSettingsLayout currentTab={SettingsSection.Storage} tabRoutePrefix={routePrefix}>
       <PageContentBlock>
-        <GridProvider columns={12}>
-          <GridItem columns={5}>
-            <TextField
-              value={filterString}
-              onChange={event => handleTopFilterChange(event.target.value)}
-              label={t('common.search')}
-              placeholder={t('common.search')}
-            />
-          </GridItem>
-          <GridItem columns={5}>
-            <Box>
-              <LinearProgress variant="determinate" value={percentUsed} />
-              <Caption>
-                {t('pages.admin.generic.sections.storage.capacity', {
-                  entity: t('common.hub'),
-                  used: `${percentUsed}%`,
-                  capacity: formatFileSize(MAX_STORAGE_CAPACITY),
-                })}
-              </Caption>
-              <Caption component={RouterLink} to="// TODO">
-                {t('pages.admin.generic.sections.storage.contact')}
-              </Caption>
-            </Box>
-          </GridItem>
-        </GridProvider>
+        <BlockSectionTitle>{t('pages.admin.generic.sections.storage.title')}</BlockSectionTitle>
+        <Box width={isMobile ? '100%' : '50%'}>
+          <TextField
+            value={filterString}
+            onChange={event => handleTopFilterChange(event.target.value)}
+            label={t('common.search')}
+            placeholder={t('common.search')}
+            size="small"
+            fullWidth
+          />
+        </Box>
+
         <Box height={gutters(20)}>
           {loading ? (
             <Skeleton />

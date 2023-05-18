@@ -1344,8 +1344,7 @@
           },
           "storage": {
             "description": "Here you can see the document storage for this {{entity}}.",
-            "capacity": "This {{entity}} currently uses {{used}} of its {{capacity}} storage space. More space needed?",
-            "contact": "Click here to contact the Alkemio team",
+            "title": "Documents",
             "grid": {
               "title": "Title",
               "mimeType": "Type",

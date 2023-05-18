@@ -24,5 +24,3 @@ export const formatFileSize = (fileSize: number | undefined, decimalPlaces: numb
   return fileSize.toFixed(decimalPlaces) + ' ' + units[u];
 };
 
-export const computeStorageUsage = (bytesUsed: number | undefined = 0, bytesAvailable: number) =>
-  Math.round((bytesUsed / bytesAvailable) * 100);
