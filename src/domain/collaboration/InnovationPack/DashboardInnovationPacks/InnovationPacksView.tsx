@@ -7,6 +7,7 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 
 interface InnovationPacksViewProps {
   filter: string[];
@@ -31,6 +32,7 @@ const InnovationPacksView = ({
   ...props
 }: InnovationPacksViewProps & PageContentBlockProps) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   return (
     <PageContentBlock {...props}>
@@ -48,11 +50,25 @@ const InnovationPacksView = ({
               marginLeft: theme => theme.spacing(2),
             }}
             size="xsmall"
+            autoShrink
           />
         }
       />
       {innovationPacks && (
-        <ScrollableCardsLayout items={innovationPacks} minHeight={0} noVerticalMarginTop>
+        <ScrollableCardsLayout
+          items={innovationPacks}
+          minHeight={0}
+          noVerticalMarginTop
+          lastButton={
+            isMobile && (
+              <Box display="flex" flexDirection="column" justifyContent="center">
+                <Button variant="contained" onClick={onDialogOpen} sx={{ margin: theme => theme.spacing(14, 5) }}>
+                  {t('common.show-all')}
+                </Button>
+              </Box>
+            )
+          }
+        >
           {({ id, ...cardProps }) => <InnovationPackCard key={id} {...cardProps} />}
         </ScrollableCardsLayout>
       )}

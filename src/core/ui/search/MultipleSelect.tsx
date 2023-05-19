@@ -2,14 +2,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box, { BoxProps } from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import React, { ChangeEventHandler, FC, KeyboardEventHandler, Ref, useState } from 'react';
-import { Chip, TextField } from '@mui/material';
-import { uniq } from 'lodash';
+import React, { ChangeEventHandler, FC, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
+import { Chip, TextField, Theme, useMediaQuery } from '@mui/material';
+import { delay, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../grid/utils';
-import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
 import { MAX_TERMS_SEARCH } from '../../../domain/platform/search/SearchView';
-import { InputBaseProps } from '@mui/material/InputBase';
 
 export interface MultipleSelectProps {
   value: string[];
@@ -18,11 +16,8 @@ export interface MultipleSelectProps {
   minLength?: number;
   autoFocus?: boolean;
   size?: 'medium' | 'small' | 'xsmall';
-  inputProps?: {
-    inputRef?: Ref<HTMLInputElement | null>;
-    onBlur?: InputBaseProps['onBlur'];
-  };
   containerProps?: BoxProps;
+  autoShrink?: boolean;
 }
 
 const filterTerms = (values: string[] | undefined) => {
@@ -33,23 +28,25 @@ interface SelectedTermsProps {
   selectedTerms: string[];
   disabled?: boolean;
   handleRemove: (term: string) => void;
+  maxTermsVisible?: number;
 }
 
-const SelectedTerms: FC<SelectedTermsProps> = ({ selectedTerms, disabled, handleRemove }) => {
-  const breakpoint = useCurrentBreakpoint();
-
+const SelectedTerms: FC<SelectedTermsProps> = ({
+  selectedTerms,
+  maxTermsVisible = selectedTerms.length,
+  disabled,
+  handleRemove,
+}) => {
   return (
-    <Box
-      flex={5}
-      display="flex"
-      flexWrap={['xl', 'lg', 'md'].includes(breakpoint) ? 'nowrap' : 'wrap'}
-      justifyContent="flex-end"
-      gap={gutters(0.5)}
-      margin={gutters(0.5)}
-    >
-      {selectedTerms.map((term, index) => (
+    <Box flex={5} display="flex" flexWrap="nowrap" justifyContent="flex-end" gap={gutters(0.5)} margin={gutters(0.5)}>
+      {selectedTerms.slice(0, maxTermsVisible - 1).map((term, index) => (
         <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
       ))}
+      {selectedTerms.length > maxTermsVisible - 1 && (
+        <Tooltip title={selectedTerms.join(', ')} arrow>
+          <Chip key="ellipsis" label="..." />
+        </Tooltip>
+      )}
     </Box>
   );
 };
@@ -61,11 +58,26 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   minLength = 2,
   autoFocus,
   size = 'medium',
-  inputProps,
+  autoShrink,
   containerProps,
   children,
 }) => {
   const { t } = useTranslation();
+
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const [isShrunk, setShrink] = useState<boolean>();
+  useEffect(() => {
+    if (isShrunk === undefined && isMobile && autoShrink) {
+      setShrink(true);
+    }
+  }, [autoShrink, isMobile, isShrunk]);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (!isShrunk) {
+      inputRef.current?.focus();
+    }
+  }, [isShrunk, inputRef.current]);
 
   const [isTooltipShown, setTooltipShown] = useState<boolean>(false);
 
@@ -103,6 +115,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
     setTooltipShown(false);
     onChange(newSelected);
+    setShrink(false);
   };
 
   const handleSearch = (value?: string) => {
@@ -124,43 +137,66 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
   return (
     <Box {...containerProps}>
-      <Tooltip
-        id="overlay-example"
-        title={t('pages.search.max-tags-reached', { max: MAX_TERMS_SEARCH })}
-        open={isTooltipShown}
-        arrow
-      >
-        <TextField
-          value={textInput}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder={t('pages.search.placeholder')}
-          InputProps={{
-            disabled: disabled,
-            endAdornment: (
-              <>
-                <SelectedTerms selectedTerms={value} disabled={disabled} handleRemove={handleRemove} />
-                <IconButton onClick={() => handleSearch(textInput)} disabled={disabled}>
-                  <SearchIcon color="primary" />
-                </IconButton>
-              </>
-            ),
-            sx: {
-              backgroundColor: theme => theme.palette.common.white,
-              '& input': { flex: 2, minWidth: theme => theme.spacing(10) },
-            },
-          }}
-          autoFocus={autoFocus}
-          // Size xsmall is a special case, input will have `small` size and we set the height with CSS
-          sx={theme => ({
-            width: '100%',
-            '.MuiInputBase-root': { height: size === 'xsmall' ? theme.spacing(3) : undefined },
-          })}
-          size={size === 'xsmall' ? 'small' : size}
-          {...inputProps}
-        />
-      </Tooltip>
-      {children}
+      {isShrunk ? (
+        <IconButton onClick={() => setShrink(false)}>
+          <SearchIcon color="primary" />
+        </IconButton>
+      ) : (
+        <>
+          <Tooltip
+            id="overlay-example"
+            title={t('pages.search.max-tags-reached', { max: MAX_TERMS_SEARCH })}
+            open={isTooltipShown}
+            arrow
+          >
+            <Box>
+              <TextField
+                value={textInput}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                placeholder={t('pages.search.placeholder')}
+                InputProps={{
+                  disabled: disabled,
+                  endAdornment: (
+                    <>
+                      <SelectedTerms
+                        selectedTerms={value}
+                        disabled={disabled}
+                        handleRemove={handleRemove}
+                        maxTermsVisible={isMobile ? 2 : MAX_TERMS_SEARCH}
+                      />
+                      <IconButton onClick={() => handleSearch(textInput)} disabled={disabled}>
+                        <SearchIcon color="primary" />
+                      </IconButton>
+                    </>
+                  ),
+                  sx: {
+                    backgroundColor: theme => theme.palette.common.white,
+                    '& input': { flex: 2, minWidth: theme => theme.spacing(10) },
+                  },
+                }}
+                onBlur={() => {
+                  if (isMobile && autoShrink) {
+                    // Delay this to allow the click on the SelectedTerms event remove searchTerms
+                    delay(() => {
+                      setShrink(true);
+                    }, 100);
+                  }
+                }}
+                autoFocus={autoFocus}
+                // Size xsmall is a special case, input will have `small` size and we set the height with CSS
+                sx={theme => ({
+                  width: '100%',
+                  '.MuiInputBase-root': { height: size === 'xsmall' ? theme.spacing(3) : undefined },
+                })}
+                size={size === 'xsmall' ? 'small' : size}
+                inputRef={inputRef}
+              />
+            </Box>
+          </Tooltip>
+          {children}
+        </>
+      )}
     </Box>
   );
 };

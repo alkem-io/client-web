@@ -86,7 +86,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
               <ScrollableCardsLayout
                 items={loading ? [undefined, undefined] : callout.canvases}
                 deps={[hubNameId, challengeNameId, opportunityNameId]}
-                createButton={!isMobile && createButton}
+                firstButton={!isMobile && createButton}
                 maxHeight={gutters(22)}
               >
                 {canvas =>

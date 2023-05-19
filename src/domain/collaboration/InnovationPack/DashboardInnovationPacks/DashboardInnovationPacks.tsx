@@ -5,7 +5,6 @@ import filterFn, { ValueType } from '../../../../common/components/core/card-fil
 import InnovationPacksView from './InnovationPacksView';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
 
 interface DashboardInnovationPacksProps {
   headerTitle: ReactNode;
@@ -17,7 +16,7 @@ const innovationPackValueGetter = (innovationPack: Identifiable & InnovationPack
   values: [innovationPack.displayName, ...(innovationPack.tags ?? [])],
 });
 
-const MAX_PACKS_WHEN_NOT_EXPANDED = 10;
+const MAX_PACKS_WHEN_NOT_EXPANDED = 2;
 
 const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInnovationPacksProps) => {
   const [filter, onFilterChange] = useState<string[]>([]);
@@ -31,9 +30,7 @@ const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInn
 
   const { t } = useTranslation();
 
-  const columns = useColumns();
-
-  const isExpandable = columns > 4;
+  const isExpandable = true;
 
   useLayoutEffect(() => {
     // This can be made computable but then the Dialog would reopen when going back to desktop resolution

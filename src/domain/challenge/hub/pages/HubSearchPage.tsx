@@ -1,4 +1,4 @@
-import React, { FC, useLayoutEffect, useRef } from 'react';
+import React, { FC } from 'react';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import HubPageLayout from '../layout/HubPageLayout';
 import SearchView from '../../../platform/search/SearchView';
@@ -7,7 +7,6 @@ import { useResolvedPath } from 'react-router-dom';
 import { useHub } from '../HubContext/useHub';
 import { FilterConfig } from '../../../platform/search/Filter';
 import { useTranslation } from 'react-i18next';
-import { useSearchContext } from '../../../platform/search/SearchContext';
 
 const journeyFilterConfig: FilterConfig = {
   all: {
@@ -34,16 +33,6 @@ const HubSearchPage: FC = () => {
 
   const { pathname } = useResolvedPath('.');
 
-  const { isSearchOpen, closeSearch } = useSearchContext();
-
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-
-  useLayoutEffect(() => {
-    if (isSearchOpen) {
-      searchInputRef.current?.focus();
-    }
-  }, [isSearchOpen, closeSearch]);
-
   return (
     <HubPageLayout currentSection={EntityPageSection.Search} searchDisabled>
       <PageContent>
@@ -52,10 +41,6 @@ const HubSearchPage: FC = () => {
           hubId={hubNameId}
           journeyFilterConfig={journeyFilterConfig}
           journeyFilterTitle={t('hubSearch.journeyFilterTitle')}
-          searchInputProps={{
-            inputRef: searchInputRef,
-            onBlur: closeSearch,
-          }}
         />
       </PageContent>
     </HubPageLayout>
