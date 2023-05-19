@@ -8,7 +8,7 @@ import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
 import AuthActionButton from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { _AUTH_REGISTER_PATH, AUTH_LOGIN_PATH } from '../constants/authentication.constants';
+import { _AUTH_REGISTER_PATH, _AUTH_LOGIN_PATH } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
@@ -64,7 +64,7 @@ const SignUp = () => {
   };
 
   const signIn = () => {
-    navigate(AUTH_LOGIN_PATH);
+    navigate(_AUTH_LOGIN_PATH);
   };
 
   useStoreSignUpReturnUrl();

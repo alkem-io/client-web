@@ -5,7 +5,7 @@ import { ROUTE_HOME } from './constants';
 import { useConfig } from '../config/useConfig';
 import { FEATURE_LANDING_PAGE } from '../config/features.constants';
 
-const RootRedirect = () => {
+const RedirectToLanding = () => {
   const { isFeatureEnabled } = useConfig();
   const { isAuthenticated, loading: loadingAuthentication } = useAuthenticationContext();
   const navigate = useNavigate();
@@ -30,4 +30,4 @@ const RootRedirect = () => {
   return null;
 };
 
-export default RootRedirect;
+export default RedirectToLanding;

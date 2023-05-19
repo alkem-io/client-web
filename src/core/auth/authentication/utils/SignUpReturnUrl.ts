@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ROUTE_HOME } from '../../../../domain/platform/routes/constants';
 import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
 
+// TODO review if default is needed when returnUrl is mandatory (can we ensure returnUrl is always present?)
 const DEFAULT_RETURN_URL = ROUTE_HOME;
 
 const STORAGE_KEY_SIGN_UP_RETURN_URL = 'signUpReturnUrl';
