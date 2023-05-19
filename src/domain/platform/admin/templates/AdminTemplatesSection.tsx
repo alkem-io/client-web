@@ -211,11 +211,11 @@ const AdminTemplatesSection = <
       throw new TypeError('TemplatesSet ID not loaded.');
     }
 
-    const { previewImages, ...cleanValues } = values;
+    const { previewImages, ...valuesWithoutPreview } = values;
     const result = await createTemplate({
       variables: {
         templatesSetId,
-        ...(cleanValues as unknown as SubmittedValues),
+        ...(valuesWithoutPreview as unknown as SubmittedValues),
       },
       refetchQueries,
     });
