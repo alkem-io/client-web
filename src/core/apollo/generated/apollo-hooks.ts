@@ -22073,6 +22073,12 @@ export const UpdateWhiteboardTemplateDocument = gql`
   mutation updateWhiteboardTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput!) {
     updateWhiteboardTemplate(whiteboardTemplateInput: { ID: $templateId, value: $value, profile: $profile }) {
       id
+      profile {
+        id
+        visual(type: CARD) {
+          id
+        }
+      }
     }
   }
 `;
@@ -22131,6 +22137,12 @@ export const CreateWhiteboardTemplateDocument = gql`
       whiteboardTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile, tags: $tags }
     ) {
       id
+      profile {
+        id
+        visual(type: CARD) {
+          id
+        }
+      }
     }
   }
 `;

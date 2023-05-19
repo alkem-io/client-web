@@ -18,6 +18,7 @@ import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import { WhiteboardPreviewImage } from '../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface Template extends Identifiable {
   profile: ProfileInfoWithVisualFragment;
@@ -99,6 +100,8 @@ type AdminTemplatesSectionProps<
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
   useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues & ProfileUpdate> & { templateId: string }, UpdateM>;
   useDeleteTemplateMutation: MutationHook<{ templateId: string; templatesSetId?: string }, DeleteM>;
+  onTemplateCreated?: (mutationResult: CreateM | null | undefined, previewImages?: WhiteboardPreviewImage[]) => void;
+  onTemplateUpdated?: (mutationResult: UpdateM | null | undefined, previewImages?: WhiteboardPreviewImage[]) => void;
 };
 
 const AdminTemplatesSection = <
@@ -126,6 +129,8 @@ const AdminTemplatesSection = <
   useCreateTemplateMutation,
   useUpdateTemplateMutation,
   useDeleteTemplateMutation,
+  onTemplateCreated,
+  onTemplateUpdated,
   templateCardComponent: TemplateCard,
   templateImportCardComponent: TemplateImportCard,
   templatePreviewComponent: TemplatePreview,
@@ -159,23 +164,27 @@ const AdminTemplatesSection = <
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
-  const [updatePostTemplate] = useUpdateTemplateMutation();
-  const [createPostTemplate] = useCreateTemplateMutation();
-  const [deletePostTemplate, { loading: isDeletingPostTemplate }] = useDeleteTemplateMutation();
+  const [updateTemplate] = useUpdateTemplateMutation();
+  const [createTemplate] = useCreateTemplateMutation();
+  const [deleteTemplate, { loading: isDeletingTemplate }] = useDeleteTemplateMutation();
 
   const handleTemplateUpdate = async ({
     tagsetId,
     tags,
     ...values
-  }: SubmittedValues & { tags?: string[]; tagsetId: string | undefined }) => {
+  }: SubmittedValues & { tags?: string[]; tagsetId: string | undefined } & {
+    previewImages?: WhiteboardPreviewImage[];
+  }) => {
     if (!templateId) {
       throw new TypeError('Missing Template ID.');
     }
 
-    await updatePostTemplate({
+    const { previewImages, ...valuesWithoutPreview } = values;
+
+    const result = await updateTemplate({
       variables: {
         templateId,
-        ...(values as unknown as SubmittedValues),
+        ...(valuesWithoutPreview as unknown as SubmittedValues),
         profile: {
           tagsets: [
             {
@@ -183,27 +192,35 @@ const AdminTemplatesSection = <
               tags,
             },
           ],
-          ...values['profile'],
+          ...valuesWithoutPreview['profile'],
         },
       },
       refetchQueries,
     });
 
+    onTemplateUpdated?.(result.data, previewImages);
     onCloseTemplateDialog();
   };
 
-  const handlePostTemplateCreation = async (values: SubmittedValues) => {
+  const handleTemplateCreation = async (
+    values: SubmittedValues & {
+      previewImages?: WhiteboardPreviewImage[];
+    }
+  ) => {
     if (!templatesSetId) {
       throw new TypeError('TemplatesSet ID not loaded.');
     }
 
-    await createPostTemplate({
+    const { previewImages, ...cleanValues } = values;
+    const result = await createTemplate({
       variables: {
         templatesSetId,
-        ...values,
+        ...(cleanValues as unknown as SubmittedValues),
       },
       refetchQueries,
     });
+
+    onTemplateCreated?.(result.data, previewImages);
     closeCreateTemplateDialog();
   };
 
@@ -225,7 +242,7 @@ const AdminTemplatesSection = <
       tags: infoData.tagset?.tags,
     };
 
-    const result = await createPostTemplate({
+    const result = await createTemplate({
       variables: {
         templatesSetId,
         ...values,
@@ -251,12 +268,12 @@ const AdminTemplatesSection = <
     };
   };
 
-  const handlePostTemplateDeletion = async () => {
+  const handleTemplateDeletion = async () => {
     if (!deletingTemplateId) {
       throw new TypeError('Missing Template ID.');
     }
 
-    await deletePostTemplate({
+    await deleteTemplate({
       variables: {
         templateId: deletingTemplateId,
         templatesSetId: templatesSetId!,
@@ -304,7 +321,7 @@ const AdminTemplatesSection = <
         {...dialogProps}
         open={isCreateTemplateDialogOpen}
         onClose={closeCreateTemplateDialog}
-        onSubmit={handlePostTemplateCreation}
+        onSubmit={handleTemplateCreation}
       />
       <ImportTemplatesDialog
         {...dialogProps}
@@ -356,7 +373,7 @@ const AdminTemplatesSection = <
       {deletingTemplateId && (
         <ConfirmationDialog
           actions={{
-            onConfirm: handlePostTemplateDeletion,
+            onConfirm: handleTemplateDeletion,
             onCancel: () => setDeletingTemplateId(undefined),
           }}
           options={{
@@ -370,7 +387,7 @@ const AdminTemplatesSection = <
             confirmButtonTextId: 'buttons.delete',
           }}
           state={{
-            isLoading: isDeletingPostTemplate,
+            isLoading: isDeletingTemplate,
           }}
         />
       )}
