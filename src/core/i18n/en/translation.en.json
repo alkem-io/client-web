@@ -235,6 +235,7 @@
     "people": "People",
     "settings": "Settings",
     "search": "Search...",
+    "storage": "Storage",
     "reference": "Reference",
     "references": "References",
     "notifications": "Notifications",
@@ -1340,6 +1341,22 @@
           },
           "credentials": {
             "description": "Here you can see credentials."
+          },
+          "storage": {
+            "description": "Here you can see the document storage for this {{entity}}.",
+            "title": "Documents",
+            "grid": {
+              "title": "Title",
+              "mimeType": "Type",
+              "size": "Size",
+              "uploadedBy": "Uploaded by",
+              "uploadedAt": "Uploaded at",
+              "location": "Location"
+            },
+            "delete": {
+              "title": "Delete this document?",
+              "content": "Are you sure that you want to delete {{fileName}}?"
+            }
           }
         }
       },
