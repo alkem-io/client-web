@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import WhiteboardTemplateForm, {
-  WhiteboardTemplateFormSubmittedValues,
+  WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
@@ -12,7 +12,7 @@ import EmptyWhiteboard from '../../../../../common/components/composite/entities
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (values: WhiteboardTemplateFormSubmittedValues) => void;
+  onSubmit: (values: WhiteboardTemplateFormSubmittedValuesWithPreviewImages) => void;
 }
 
 const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhiteboardTemplateDialogProps) => {

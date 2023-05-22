@@ -9,6 +9,7 @@ import { WhiteboardPreviewImage } from '../../../../collaboration/canvas/Whitebo
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Canvas value
+  previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
   canEdit: boolean;
   onChangeValue?: (value: string, previewImages?: WhiteboardPreviewImage[]) => void;
   loading?: boolean;
@@ -25,7 +26,8 @@ const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
 }));
 
 const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
-  name,
+  name = 'value',
+  previewImagesName,
   canEdit,
   onChangeValue,
   loading,
@@ -33,7 +35,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   ...containerProps
 }) => {
   const { t } = useTranslation();
-  const [field, , helpers] = useField<string>(name); // value JSON string
+  const [field, , helpers] = useField<string>(name); // Canvas value JSON string
+  const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
+
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const handleClickEditButton = () => {
@@ -94,6 +98,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   onCheckout: undefined,
                   onUpdate: (canvas, previewImages) => {
                     helpers.setValue(canvas.value);
+                    if (previewImagesName) {
+                      previewImagesField.setValue(previewImages);
+                    }
                     onChangeValue?.(canvas.value, previewImages);
                     setEditDialogOpen(false);
                   },
