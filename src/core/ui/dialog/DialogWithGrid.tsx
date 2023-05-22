@@ -1,8 +1,7 @@
 import React, { MouseEventHandler } from 'react';
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
-import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
 import GridContainer from '../grid/GridContainer';
-import { GRID_COLUMNS_DESKTOP, GRID_COLUMNS_MOBILE, MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '../grid/constants';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import GridItem, { GridItemProps } from '../grid/GridItem';
 
@@ -21,15 +20,13 @@ const DialogContainer = ({
   fullScreen,
   ...paperProps
 }: DialogContainerProps) => {
-  const breakpoint = useCurrentBreakpoint();
-
   const handleContainerClick: MouseEventHandler = event => {
     if (event.target === event.currentTarget) {
       onClose?.(event);
     }
   };
 
-  const containerColumns = breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP;
+  const containerColumns = useGlobalGridColumns();
 
   return (
     <GridContainer

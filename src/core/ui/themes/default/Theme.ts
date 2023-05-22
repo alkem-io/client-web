@@ -10,7 +10,9 @@ const AVATAR_SIZE_XS = 4;
 const AVATAR_SIZE = 7;
 const AVATAR_SIZE_LG = 9;
 
-export const theme: ThemeOptions = {
+const defaultTheme = createTheme();
+
+export const themeOptions: ThemeOptions = {
   palette: paletteOptions,
   typography: themeTypographyOptions,
   shape: { borderRadius: 12 },
@@ -36,9 +38,15 @@ export const theme: ThemeOptions = {
   avatarSize: SPACING * AVATAR_SIZE,
   avatarSizeLg: SPACING * AVATAR_SIZE_LG,
   components: componentsOverride as ThemeOptions['components'],
+  breakpoints: {
+    values: {
+      ...defaultTheme.breakpoints.values,
+      md: 1100,
+    },
+  },
 };
 
-export const defaultTheme = createTheme(theme);
+export const theme = createTheme(themeOptions);
 
 declare module '@mui/material/styles' {
   interface Theme {
