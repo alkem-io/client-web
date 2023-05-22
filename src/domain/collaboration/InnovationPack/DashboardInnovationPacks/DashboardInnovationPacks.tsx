@@ -16,7 +16,7 @@ const innovationPackValueGetter = (innovationPack: Identifiable & InnovationPack
   values: [innovationPack.displayName, ...(innovationPack.tags ?? [])],
 });
 
-const MAX_PACKS_WHEN_NOT_EXPANDED = 2;
+const MAX_PACKS_WHEN_NOT_EXPANDED = 10;
 
 const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInnovationPacksProps) => {
   const [filter, onFilterChange] = useState<string[]>([]);

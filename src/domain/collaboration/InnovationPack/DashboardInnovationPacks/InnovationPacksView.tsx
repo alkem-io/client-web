@@ -6,8 +6,10 @@ import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/con
 import { Identifiable } from '../../../shared/types/Identifiable';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
-import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';
+import { CONTRIBUTE_CARD_COLUMNS } from '../../../../core/ui/card/ContributeCard';
+import GridItem from '../../../../core/ui/grid/GridItem';
 
 interface InnovationPacksViewProps {
   filter: string[];
@@ -41,38 +43,32 @@ const InnovationPacksView = ({
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}
-        actions={
-          <MultipleSelect
-            onChange={onFilterChange}
-            value={filter}
-            minLength={2}
-            containerProps={{
-              marginLeft: theme => theme.spacing(2),
-            }}
-            size="xsmall"
-            autoShrink
-          />
-        }
+        actions={<MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" autoShrink />}
       />
       {innovationPacks && (
-        <ScrollableCardsLayout
-          items={innovationPacks}
-          minHeight={0}
-          noVerticalMarginTop
-          lastButton={
-            isMobile && (
-              <Box display="flex" flexDirection="column" justifyContent="center">
-                <Button variant="contained" onClick={onDialogOpen} sx={{ margin: theme => theme.spacing(14, 5) }}>
+        <ScrollableCardsLayoutContainer minHeight={0} sameHeight>
+          {innovationPacks.map(({ id, ...cardProps }) => (
+            <InnovationPackCard key={id} {...cardProps} />
+          ))}
+          {isMobile && hasMore && (
+            <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirections: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Button variant="contained" onClick={onDialogOpen}>
                   {t('common.show-all')}
                 </Button>
               </Box>
-            )
-          }
-        >
-          {({ id, ...cardProps }) => <InnovationPackCard key={id} {...cardProps} />}
-        </ScrollableCardsLayout>
+            </GridItem>
+          )}
+        </ScrollableCardsLayoutContainer>
       )}
-      {hasMore && <SeeMore subject={t('common.innovation-packs')} onClick={onDialogOpen} />}
+      {!isMobile && hasMore && <SeeMore subject={t('common.innovation-packs')} onClick={onDialogOpen} />}
     </PageContentBlock>
   );
 };

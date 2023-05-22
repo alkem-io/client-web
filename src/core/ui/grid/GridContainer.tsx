@@ -3,16 +3,22 @@ import { gutters } from './utils';
 
 export interface GridContainerProps extends BoxProps {
   disablePadding?: boolean;
+  sameHeight?: boolean;
   noWrap?: boolean;
 }
 
-const GridContainer = ({ disablePadding = false, noWrap = false, ...props }: GridContainerProps) => {
+const GridContainer = ({
+  disablePadding = false,
+  noWrap = false,
+  sameHeight = false,
+  ...props
+}: GridContainerProps) => {
   return (
     <Box
       display="flex"
       flexDirection="row"
       flexWrap={noWrap ? 'nowrap' : 'wrap'}
-      alignItems="start"
+      alignItems={sameHeight ? 'stretch' : 'start'}
       gap={gutters()}
       padding={disablePadding ? undefined : gutters()}
       {...props}

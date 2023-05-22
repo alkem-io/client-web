@@ -15,7 +15,7 @@ export interface ContributeCardContainerProps {
   to?: string;
 }
 
-const CONTRIBUTE_CARD_COLUMNS = 3;
+export const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardContainerProps>>(
   ({ columns = CONTRIBUTE_CARD_COLUMNS, to, onClick, sx, highlighted, children }, ref) => {
