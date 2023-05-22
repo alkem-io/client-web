@@ -20,7 +20,7 @@ import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { useUserContext } from '../../community/contributor/user';
 import { SEARCH_TERMS_PARAM } from '../routes/constants';
 import { contributionFilterConfig, contributorFilterConfig, FilterConfig, FilterDefinition } from './Filter';
-import MultipleSelect, { MultipleSelectProps } from '../../../core/ui/search/MultipleSelect';
+import MultipleSelect from '../../../core/ui/search/MultipleSelect';
 import SearchResultSection from './SearchResultSection';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import GridItem from '../../../core/ui/grid/GridItem';
@@ -46,16 +46,9 @@ interface SearchViewProps {
   hubId?: string;
   journeyFilterConfig: FilterConfig;
   journeyFilterTitle: ReactNode;
-  searchInputProps?: MultipleSelectProps['inputProps'];
 }
 
-const SearchView = ({
-  searchRoute,
-  journeyFilterConfig,
-  journeyFilterTitle,
-  hubId,
-  searchInputProps,
-}: SearchViewProps) => {
+const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, hubId }: SearchViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
@@ -143,13 +136,7 @@ const SearchView = ({
     <>
       <GridItem columns={6}>
         <Box marginX="auto">
-          <MultipleSelect
-            inputProps={searchInputProps}
-            onChange={handleTermsChange}
-            value={searchTerms}
-            minLength={2}
-            autoFocus
-          >
+          <MultipleSelect onChange={handleTermsChange} value={searchTerms} minLength={2} autoFocus>
             <SearchSuggestions value={searchTerms} options={suggestions} onSelect={handleSelectSuggestion} />
           </MultipleSelect>
         </Box>

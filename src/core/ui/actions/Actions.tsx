@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, Theme, useMediaQuery } from '@mui/material';
 
 export interface ActionsProps extends BoxProps {}
 
 export const Actions: FC<ActionsProps> = props => {
-  return <Box display="flex" gap={1} alignItems="center" {...props} />;
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.only('xs'));
+  return <Box display="flex" gap={isSmallScreen ? 0 : 1} alignItems="center" {...props} />;
 };
