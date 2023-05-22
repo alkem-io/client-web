@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, Tooltip, useTheme } from '@mui/material';
+import { Box, BoxProps, ClickAwayListener, Tooltip, useTheme } from '@mui/material';
 import { times } from 'lodash';
 import { Theme } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
@@ -52,13 +52,27 @@ const TagsComponent = ({
     [color, size, variant]
   );
 
-  const renderMore = useCallback(
-    (remainingTags: string[]) => (
-      <Tooltip title={getMoreTagsTooltipTitle(remainingTags)} arrow placement="bottom">
-        <Chip label={`+${remainingTags.length}`} size={size} />
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const renderMore = (remainingTags: string[]) => (
+    <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
+      <Tooltip
+        title={getMoreTagsTooltipTitle(remainingTags)}
+        arrow
+        placement="bottom"
+        open={tooltipOpen}
+        onOpen={() => setTooltipOpen(true)}
+        onClose={() => setTooltipOpen(false)}
+      >
+        <Chip
+          label={`+${remainingTags.length}`}
+          size={size}
+          onClick={event => {
+            event.preventDefault();
+            setTooltipOpen(true);
+          }}
+        />
       </Tooltip>
-    ),
-    []
+    </ClickAwayListener>
   );
 
   if (loading) {
