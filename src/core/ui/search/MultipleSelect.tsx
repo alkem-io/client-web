@@ -2,7 +2,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box, { BoxProps } from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import React, { ChangeEventHandler, FC, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
+import React, {
+  ChangeEventHandler,
+  FC,
+  KeyboardEventHandler,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Chip, TextField, Theme, useMediaQuery } from '@mui/material';
 import { delay, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -66,7 +74,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const [isShrunk, setShrink] = useState<boolean>();
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isShrunk === undefined && isMobile && autoShrink) {
       setShrink(true);
     }
