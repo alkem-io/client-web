@@ -16,6 +16,7 @@ export enum SettingsSection {
   Challenges = 'challenges',
   Opportunities = 'opportunities',
   Templates = 'templates',
+  Storage = 'storage',
   MyProfile = 'my-profile',
   Membership = 'membership',
   Organizations = 'organizations',

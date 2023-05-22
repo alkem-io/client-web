@@ -95,3 +95,7 @@ export const startOfDay = (date: Date = new Date()) => {
   result.setMilliseconds(0);
   return result;
 };
+
+export const formatDateTime = (date: Date) => {
+  return dayjs(date).format('DD/MM/YYYY[ at ]HH:mm');
+}

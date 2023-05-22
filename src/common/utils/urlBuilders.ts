@@ -125,3 +125,5 @@ export const buildEventUrl = (eventNameId: string, journeyLocation: JourneyLocat
   const eventUrl = `/${EntityPageSection.Dashboard}/calendar/${eventNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${eventUrl}`;
 };
+
+export const buildDocumentUrl = (documentId: string) => `/api/private/rest/storage/document/${documentId}`;
