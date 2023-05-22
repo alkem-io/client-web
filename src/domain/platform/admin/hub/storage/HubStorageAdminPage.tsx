@@ -28,7 +28,7 @@ import {
 } from '../../../../../common/utils/urlBuilders';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
-import { compact } from 'lodash';
+import { compact, sortBy } from 'lodash';
 import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
 import { formatDateTime } from '../../../../../core/utils/time/utils';
 
@@ -119,30 +119,33 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
   });
 
   const rows = useMemo(() => {
-    return [
-      ...compact(
-        data?.hub.storageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
-          ...doc,
-          location: {
-            type: 'hub',
-            displayName: data?.hub.profile.displayName,
-            url: buildHubUrl(data?.hub.nameID),
-          },
-        }))
-      ),
-      ...compact(
-        data?.hub.challenges?.flatMap(challenge =>
-          challenge.storageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
+    return sortBy(
+      [
+        ...compact(
+          data?.hub.storageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
             ...doc,
             location: {
-              type: 'challenge',
-              displayName: challenge.profile.displayName,
-              url: buildChallengeUrl(data?.hub.nameID, challenge.nameID),
+              type: 'hub',
+              displayName: data?.hub.profile.displayName,
+              url: buildHubUrl(data?.hub.nameID),
             },
           }))
-        )
-      ),
-    ];
+        ),
+        ...compact(
+          data?.hub.challenges?.flatMap(challenge =>
+            challenge.storageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
+              ...doc,
+              location: {
+                type: 'challenge',
+                displayName: challenge.profile.displayName,
+                url: buildChallengeUrl(data?.hub.nameID, challenge.nameID),
+              },
+            }))
+          )
+        ),
+      ],
+      row => row.displayName
+    );
   }, [data]);
 
   const columns: GridColDef[] = [
@@ -200,7 +203,7 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
       renderCell: ({ row }: RenderParams) => {
         const JourneyIcon = journeyIcon[row.location.type];
         return (
-          <RouterLink to={buildHubUrl(row.location.url)}>
+          <RouterLink to={row.location.url}>
             <JourneyIcon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />
             {row.location.displayName}
           </RouterLink>
