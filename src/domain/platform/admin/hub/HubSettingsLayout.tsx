@@ -4,6 +4,7 @@ import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import HubPageBanner from '../../../challenge/hub/layout/HubPageBanner';
 import HubTabs from '../../../challenge/hub/layout/HubTabs';
@@ -26,6 +27,11 @@ const tabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Templates,
     route: 'templates',
     icon: WbIncandescentOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Storage,
+    route: 'storage',
+    icon: Inventory2OutlinedIcon,
   },
 ];
 

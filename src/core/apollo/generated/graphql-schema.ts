@@ -22201,6 +22201,112 @@ export type HubApplicationsQuery = {
   };
 };
 
+export type HubStorageAdminQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubStorageAdminQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    storageBucket?:
+      | {
+          __typename?: 'StorageBucket';
+          id: string;
+          size: number;
+          documents: Array<{
+            __typename?: 'Document';
+            id: string;
+            displayName: string;
+            size: number;
+            mimeType: MimeType;
+            uploadedDate: Date;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }>;
+        }
+      | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          storageBucket?:
+            | {
+                __typename?: 'StorageBucket';
+                id: string;
+                documents: Array<{
+                  __typename?: 'Document';
+                  id: string;
+                  displayName: string;
+                  size: number;
+                  mimeType: MimeType;
+                  uploadedDate: Date;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        nameID: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }>;
+              }
+            | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type DocumentDataFragment = {
+  __typename?: 'Document';
+  id: string;
+  displayName: string;
+  size: number;
+  mimeType: MimeType;
+  uploadedDate: Date;
+  createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type DeleteDocumentMutationVariables = Exact<{
+  documentId: Scalars['UUID'];
+}>;
+
+export type DeleteDocumentMutation = {
+  __typename?: 'Mutation';
+  deleteDocument: { __typename?: 'Document'; id: string };
+};
+
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;

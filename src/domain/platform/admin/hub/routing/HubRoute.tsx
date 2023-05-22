@@ -12,6 +12,7 @@ import HubTemplatesAdminRoutes from '../HubTemplatesAdminRoutes';
 import HubAuthorizationRoute from './HubAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import HubContextPage from '../../../../challenge/hub/pages/HubContext/HubContextPage';
+import HubStorageAdminPage from '../storage/HubStorageAdminPage';
 
 export const HubRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -25,6 +26,7 @@ export const HubRoute: FC = () => {
       <Route path="communications" element={<HubCommunicationsPage communityId={communityId} />} />
       <Route path="community" element={<HubCommunityAdminPage />} />
       <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} />} />
+      <Route path="storage" element={<HubStorageAdminPage hubId={hubId} />} />
       <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />
       <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
       <Route path="challenges/*" element={<ChallengesRoute />} />
