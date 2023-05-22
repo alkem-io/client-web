@@ -9,8 +9,7 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined> 
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
   showCreateButton?: boolean;
-  firstButton?: ReactNode;
-  lastButton?: ReactNode;
+  createButton?: ReactNode;
 }
 
 /**
@@ -24,8 +23,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,
   children,
   deps = [],
-  firstButton,
-  lastButton,
+  createButton,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const depsValueFromObjectDeps = getDepsValueFromObject(deps);
@@ -42,9 +40,8 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
   return (
     <CardLayoutContainer {...layoutProps}>
-      {firstButton}
+      {createButton}
       {cards}
-      {lastButton}
     </CardLayoutContainer>
   );
 };
