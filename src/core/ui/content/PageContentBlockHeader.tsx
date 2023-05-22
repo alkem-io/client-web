@@ -36,7 +36,7 @@ const PageContentBlockHeader = ({
         {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
         {children}
       </Box>
-      {actions && <Actions height={gutters()}>{actions}</Actions>}
+      {actions && <Actions>{actions}</Actions>}
     </Box>
   );
 };
