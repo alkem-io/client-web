@@ -1,5 +1,5 @@
 import { compact } from 'lodash';
-import { FC, useMemo, useState } from 'react';
+import { ComponentType, FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useHubPostTemplatesLibraryLazyQuery,
@@ -10,6 +10,7 @@ import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplate
 import { PostTemplate, postTemplateMapper, PostTemplateWithValue } from '../PostTemplateCard/PostTemplate';
 import PostTemplateCard from '../PostTemplateCard/PostTemplateCard';
 import PostTemplatePreview from './PostTemplatePreview';
+import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
 export interface PostTemplatesLibraryProps {
   onSelectTemplate: (template: PostTemplateWithValue) => void;
@@ -78,7 +79,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
     <CollaborationTemplatesLibrary
       dialogTitle={t('aspect-templates.template-library')}
       onSelectTemplate={onSelectTemplate}
-      templateCardComponent={PostTemplateCard}
+      templateCardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
       templatePreviewComponent={PostTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}
