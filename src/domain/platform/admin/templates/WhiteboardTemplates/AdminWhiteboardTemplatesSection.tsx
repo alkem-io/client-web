@@ -22,6 +22,11 @@ import { useTranslation } from 'react-i18next';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './WhitebaordImportTemplateCard';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import {
+  WhiteboardPreviewImage,
+  useUploadWhiteboardVisuals,
+} from '../../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { CreateWhiteboardTemplateMutation } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface AdminWhiteboardTemplatesSectionProps {
   whiteboardTemplatesLocation: 'hub' | 'platform';
@@ -44,6 +49,7 @@ const AdminWhiteboardTemplatesSection = ({
 }: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
   const { hubNameId, innovationPackNameId } = useUrlParams();
+  const { uploadVisuals } = useUploadWhiteboardVisuals();
 
   const [fetchWhiteboardTemplateFromHubValue, { data: dataFromHub }] =
     useHubTemplatesAdminWhiteboardTemplateWithValueLazyQuery({
@@ -90,6 +96,15 @@ const AdminWhiteboardTemplatesSection = ({
     [fetchInnovationPackCanvasValue]
   );
 
+  const onMutationCalled = (
+    mutationResult: { id: string; profile: { id: string; visual?: { id: string } } } | null | undefined,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => {
+    if (mutationResult?.profile.visual?.id && previewImages) {
+      uploadVisuals(previewImages, { cardVisualId: mutationResult.profile.visual.id });
+    }
+  };
+
   return (
     <AdminTemplatesSection
       {...props}
@@ -99,7 +114,6 @@ const AdminWhiteboardTemplatesSection = ({
       })}
       templateCardComponent={WhiteboardTemplateCard}
       templateImportCardComponent={CanvasImportTemplateCard}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       templatePreviewComponent={WhiteboardTemplatePreview}
       getTemplateValue={getTemplateValue}
       getImportedTemplateValue={getImportedTemplateValue}
@@ -119,6 +133,12 @@ const AdminWhiteboardTemplatesSection = ({
         >
       }
       useDeleteTemplateMutation={useDeleteWhiteboardTemplateMutation}
+      onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
+        onMutationCalled(mutationResult?.['createWhiteboardTemplate'], previewImages)
+      }
+      onTemplateUpdated={(mutationResult, previewImages) =>
+        onMutationCalled(mutationResult?.updateWhiteboardTemplate, previewImages)
+      }
     />
   );
 };

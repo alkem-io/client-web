@@ -23131,7 +23131,11 @@ export type UpdateWhiteboardTemplateMutationVariables = Exact<{
 
 export type UpdateWhiteboardTemplateMutation = {
   __typename?: 'Mutation';
-  updateWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
+  updateWhiteboardTemplate: {
+    __typename?: 'WhiteboardTemplate';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string } | undefined };
+  };
 };
 
 export type CreateWhiteboardTemplateMutationVariables = Exact<{
@@ -23143,7 +23147,11 @@ export type CreateWhiteboardTemplateMutationVariables = Exact<{
 
 export type CreateWhiteboardTemplateMutation = {
   __typename?: 'Mutation';
-  createWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
+  createWhiteboardTemplate: {
+    __typename?: 'WhiteboardTemplate';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string } | undefined };
+  };
 };
 
 export type DeleteWhiteboardTemplateMutationVariables = Exact<{
