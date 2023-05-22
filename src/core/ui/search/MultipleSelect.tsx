@@ -39,10 +39,10 @@ const SelectedTerms: FC<SelectedTermsProps> = ({
 }) => {
   return (
     <Box flex={5} display="flex" flexWrap="nowrap" justifyContent="flex-end" gap={gutters(0.5)} margin={gutters(0.5)}>
-      {selectedTerms.slice(0, maxTermsVisible - 1).map((term, index) => (
+      {selectedTerms.slice(0, maxTermsVisible).map((term, index) => (
         <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
       ))}
-      {selectedTerms.length > maxTermsVisible - 1 && (
+      {selectedTerms.length > maxTermsVisible && (
         <Tooltip title={selectedTerms.join(', ')} arrow>
           <Chip key="ellipsis" label="..." />
         </Tooltip>
@@ -163,7 +163,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                         selectedTerms={value}
                         disabled={disabled}
                         handleRemove={handleRemove}
-                        maxTermsVisible={isMobile ? 2 : MAX_TERMS_SEARCH}
+                        maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}
                       />
                       <IconButton onClick={() => handleSearch(textInput)} disabled={disabled}>
                         <SearchIcon color="primary" />
