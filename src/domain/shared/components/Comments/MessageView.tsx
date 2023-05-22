@@ -41,7 +41,7 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
   return (
     <Box display="flex" gap={gutters(0.5)}>
       <AuthorAvatar author={author} />
-      <CommentWrapper bgcolor={isRootComment ? 'background.paper' : 'neutralMedium.light'}>
+      <CommentWrapper bgcolor={isRootComment ? 'background.paper' : 'background.default'}>
         <Grid container direction="column">
           <Grid item>
             <Grid container spacing={1}>
