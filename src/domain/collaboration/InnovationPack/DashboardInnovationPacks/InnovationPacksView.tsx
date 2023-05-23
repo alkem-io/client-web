@@ -43,7 +43,7 @@ const InnovationPacksView = ({
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}
-        actions={<MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" autoShrink />}
+        actions={<MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" />}
       />
       {innovationPacks && (
         <ScrollableCardsLayoutContainer minHeight={0} sameHeight>
