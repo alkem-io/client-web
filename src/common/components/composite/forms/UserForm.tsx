@@ -196,8 +196,8 @@ export const UserForm: FC<UserProps> = ({
         return (
           <GridContainer>
             <GridProvider columns={12}>
-              <GridItem columns={isMobile ? 6 : 4}>
-                <Box display="flex" justifyContent={isMobile ? 'center' : 'end'}>
+              <GridItem columns={isMobile ? 6 : 2}>
+                <Box display="flex" justifyContent="center">
                   <VisualUpload
                     visual={avatar}
                     altText={t('visuals-alt-text.avatar.contributor.text', {
@@ -208,7 +208,7 @@ export const UserForm: FC<UserProps> = ({
                 </Box>
               </GridItem>
 
-              <GridItem columns={6}>
+              <GridItem columns={isMobile ? 6 : 8}>
                 <Gutters>
                   <FormikInputField
                     name={'firstName'}
