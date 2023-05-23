@@ -26,17 +26,7 @@ const PageContentBlockHeaderWithDialogAction = ({
     </IconButton>
   );
 
-  return (
-    <PageContentBlockHeader
-      {...headerProps}
-      actions={
-        <>
-          {actions}
-          {dialogAction}
-        </>
-      }
-    />
-  );
+  return <PageContentBlockHeader {...headerProps} actions={actions} dialogAction={dialogAction} />;
 };
 
 export default PageContentBlockHeaderWithDialogAction;
