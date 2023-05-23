@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { FC } from 'react';
 import ScrollerWithGradient from '../../overflow/ScrollerWithGradient';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../content/PageContentBlockGrid';
 import useCurrentBreakpoint from '../../utils/useCurrentBreakpoint';
 
-const ScrollableCardsLayoutContainer = ({ maxHeight, ...props }: PageContentBlockGridProps) => {
+interface ScrollableCardsLayoutContainerProps extends PageContentBlockGridProps {
+  maxHeight?: PageContentBlockGridProps['maxHeight'];
+  orientation?: 'horizontal' | 'vertical';
+}
+const ScrollableCardsLayoutContainer: FC<ScrollableCardsLayoutContainerProps> = ({
+  maxHeight,
+  orientation,
+  ...props
+}) => {
   const breakpoint = useCurrentBreakpoint();
 
-  const orientation = breakpoint === 'xs' ? 'horizontal' : 'vertical';
+  const scrollOrientation = orientation ? orientation : breakpoint === 'xs' ? 'horizontal' : 'vertical';
 
   return (
-    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
+    <ScrollerWithGradient orientation={scrollOrientation} maxHeight={maxHeight}>
       <PageContentBlockGrid
-        cards={orientation === 'vertical'}
-        noWrap={orientation === 'horizontal'}
+        cards={scrollOrientation === 'vertical'}
+        noWrap={scrollOrientation === 'horizontal'}
         sx={
-          orientation === 'vertical'
+          scrollOrientation === 'vertical'
             ? undefined
             : {
                 // This allows to scroll past the last item / preserves padding-right
