@@ -34,7 +34,7 @@ const InnovationPacksView = ({
   ...props
 }: InnovationPacksViewProps & PageContentBlockProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   return (
     <PageContentBlock {...props}>
@@ -46,7 +46,11 @@ const InnovationPacksView = ({
         actions={<MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" />}
       />
       {innovationPacks && (
-        <ScrollableCardsLayoutContainer minHeight={0} sameHeight>
+        <ScrollableCardsLayoutContainer
+          minHeight={0}
+          orientationOverride={expanded ? 'vertical' : undefined}
+          sameHeight
+        >
           {innovationPacks.map(({ id, ...cardProps }) => (
             <InnovationPackCard key={id} {...cardProps} />
           ))}

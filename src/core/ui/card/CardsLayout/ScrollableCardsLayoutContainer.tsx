@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { FC } from 'react';
 import ScrollerWithGradient from '../../overflow/ScrollerWithGradient';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../content/PageContentBlockGrid';
 import useCurrentBreakpoint from '../../utils/useCurrentBreakpoint';
 
-const ScrollableCardsLayoutContainer = ({ maxHeight, ...props }: PageContentBlockGridProps) => {
+interface ScrollableCardsLayoutContainerProps extends PageContentBlockGridProps {
+  maxHeight?: PageContentBlockGridProps['maxHeight'];
+  orientationOverride?: 'horizontal' | 'vertical';
+}
+const ScrollableCardsLayoutContainer: FC<ScrollableCardsLayoutContainerProps> = ({
+  maxHeight,
+  orientationOverride,
+  ...props
+}) => {
   const breakpoint = useCurrentBreakpoint();
 
-  const orientation = breakpoint === 'xs' ? 'horizontal' : 'vertical';
+  const orientation = orientationOverride ?? breakpoint === 'xs' ? 'horizontal' : 'vertical';
 
   return (
     <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
