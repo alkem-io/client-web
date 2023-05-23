@@ -5,24 +5,24 @@ import useCurrentBreakpoint from '../../utils/useCurrentBreakpoint';
 
 interface ScrollableCardsLayoutContainerProps extends PageContentBlockGridProps {
   maxHeight?: PageContentBlockGridProps['maxHeight'];
-  orientation?: 'horizontal' | 'vertical';
+  orientationOverride?: 'horizontal' | 'vertical';
 }
 const ScrollableCardsLayoutContainer: FC<ScrollableCardsLayoutContainerProps> = ({
   maxHeight,
-  orientation,
+  orientationOverride,
   ...props
 }) => {
   const breakpoint = useCurrentBreakpoint();
 
-  const scrollOrientation = orientation ? orientation : breakpoint === 'xs' ? 'horizontal' : 'vertical';
+  const orientation = orientationOverride ?? breakpoint === 'xs' ? 'horizontal' : 'vertical';
 
   return (
-    <ScrollerWithGradient orientation={scrollOrientation} maxHeight={maxHeight}>
+    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
       <PageContentBlockGrid
-        cards={scrollOrientation === 'vertical'}
-        noWrap={scrollOrientation === 'horizontal'}
+        cards={orientation === 'vertical'}
+        noWrap={orientation === 'horizontal'}
         sx={
-          scrollOrientation === 'vertical'
+          orientation === 'vertical'
             ? undefined
             : {
                 // This allows to scroll past the last item / preserves padding-right
