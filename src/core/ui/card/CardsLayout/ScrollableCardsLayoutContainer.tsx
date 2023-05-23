@@ -14,7 +14,7 @@ const ScrollableCardsLayoutContainer: FC<ScrollableCardsLayoutContainerProps> = 
 }) => {
   const breakpoint = useCurrentBreakpoint();
 
-  const orientation = orientationOverride ?? breakpoint === 'xs' ? 'horizontal' : 'vertical';
+  const orientation = orientationOverride ?? (breakpoint === 'xs' ? 'horizontal' : 'vertical');
 
   return (
     <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
