@@ -21,6 +21,7 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
+import InnovationLibraryIcon from '../../../../../domain/platform/TopLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import { SEARCH_ROUTE } from '../../../../../domain/platform/routes/constants';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -156,6 +157,12 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             <Divider />
           </>
         )}
+        <MenuItem component={RouterLink} to="/innovation-library">
+          <ListItemIcon>
+            <InnovationLibraryIcon />
+          </ListItemIcon>
+          {t('pages.innovationLibrary.shortName')}
+        </MenuItem>
         <MenuItem component={RouterLink} to="/challenges">
           <ListItemIcon>
             <ChallengeIcon />

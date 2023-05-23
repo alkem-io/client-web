@@ -1,3 +1,6 @@
+import { Theme } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
+
 export const GUTTER_PX = 20;
 
 export const GUTTER_MUI = 2;
@@ -7,6 +10,19 @@ export const MAX_CONTENT_WIDTH_GUTTERS = 70;
 
 export const GRID_COLUMNS_MOBILE = 4;
 export const GRID_COLUMNS_DESKTOP = 12;
+
+export const useGlobalGridColumns = () => {
+  const isLarge = useMediaQuery<Theme>(theme => theme.breakpoints.up('md'));
+  const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+
+  if (isLarge) {
+    return GRID_COLUMNS_DESKTOP;
+  }
+  if (isSmall) {
+    return GRID_COLUMNS_MOBILE;
+  }
+  return 8;
+};
 
 export const cardsGridColumns = (parentColumns: number) => {
   if (parentColumns >= 12) {

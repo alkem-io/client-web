@@ -45,6 +45,7 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
       </Box>
       <FormikWhiteboardPreview
         name={`${name}.value`}
+        previewImagesName={`${name}.previewImages`}
         canEdit
         onChangeValue={handleChange}
         maxHeight={gutters(12)}

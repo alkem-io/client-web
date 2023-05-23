@@ -53,6 +53,7 @@ const buildStylesForOverlay = (position: Position, orientation: Orientation) => 
 const VERTICAL_SCROLL_CONTAINER_SX = {
   display: 'flex',
   flexDirection: 'column',
+  overflow: 'hidden',
 } as const;
 
 const VERTICAL_SCROLL_CONTENT_SX = {
