@@ -2139,6 +2139,8 @@ export type Mutation = {
   assignUserToGroup: UserGroup;
   /** Assigns a User as an associate of the specified Organization. */
   assignUserToOrganization: Organization;
+  /** Reset the Authorization Policy on all entities */
+  authorizationPolicyResetAll: Scalars['Boolean'];
   /** Reset the Authorization Policy on the specified Hub. */
   authorizationPolicyResetOnHub: Hub;
   /** Reset the Authorization Policy on the specified Organization. */
@@ -3168,6 +3170,8 @@ export type PlatformLocations = {
   aup: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
+  /** Main domain of the environment */
+  domain: Scalars['String'];
   /** Name of the environment */
   environment: Scalars['String'];
   /** The feature flags for the platform */
@@ -21549,9 +21553,44 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
-              postTemplates: Array<{ __typename?: 'PostTemplate'; id: string }>;
-              whiteboardTemplates: Array<{ __typename?: 'WhiteboardTemplate'; id: string }>;
-              innovationFlowTemplates: Array<{ __typename?: 'InnovationFlowTemplate'; id: string }>;
+              postTemplates: Array<{
+                __typename?: 'PostTemplate';
+                id: string;
+                defaultDescription: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }>;
+              whiteboardTemplates: Array<{
+                __typename?: 'WhiteboardTemplate';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }>;
+              innovationFlowTemplates: Array<{
+                __typename?: 'InnovationFlowTemplate';
+                id: string;
+                definition: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }>;
             }
           | undefined;
         provider?:
@@ -21587,9 +21626,44 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'TemplatesSet';
         id: string;
-        postTemplates: Array<{ __typename?: 'PostTemplate'; id: string }>;
-        whiteboardTemplates: Array<{ __typename?: 'WhiteboardTemplate'; id: string }>;
-        innovationFlowTemplates: Array<{ __typename?: 'InnovationFlowTemplate'; id: string }>;
+        postTemplates: Array<{
+          __typename?: 'PostTemplate';
+          id: string;
+          defaultDescription: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+        }>;
+        whiteboardTemplates: Array<{
+          __typename?: 'WhiteboardTemplate';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+        }>;
+        innovationFlowTemplates: Array<{
+          __typename?: 'InnovationFlowTemplate';
+          id: string;
+          definition: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+        }>;
       }
     | undefined;
   provider?:
@@ -21605,6 +21679,49 @@ export type InnovationPackCardFragment = {
         };
       }
     | undefined;
+};
+
+export type LibraryTemplatesFragment = {
+  __typename?: 'TemplatesSet';
+  id: string;
+  postTemplates: Array<{
+    __typename?: 'PostTemplate';
+    id: string;
+    defaultDescription: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+  }>;
+  whiteboardTemplates: Array<{
+    __typename?: 'WhiteboardTemplate';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+  }>;
+  innovationFlowTemplates: Array<{
+    __typename?: 'InnovationFlowTemplate';
+    id: string;
+    definition: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+  }>;
 };
 
 export type ChallengeExplorerPageQueryVariables = Exact<{

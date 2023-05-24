@@ -251,6 +251,7 @@
     "authorization": "Authorization",
     "question": "Question",
     "questions": "Questions",
+    "show": "Show: ",
     "show-all": "Show all",
     "title": "Title",
     "warning": "Warning",
@@ -1288,6 +1289,14 @@
       "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use.",
       "innovationPacks": {
         "headerTitle": "Innovation Packs"
+      },
+      "libraryTemplates": {
+        "headerTitle": "Browse through all available materials"
+      },
+      "templateTypes": {
+        "WhiteboardTemplate": "Whiteboard Templates",
+        "PostTemplate": "Post Templates",
+        "InnovationFlowTemplate": "Innovation Flows"
       }
     },
     "innovationPack": {

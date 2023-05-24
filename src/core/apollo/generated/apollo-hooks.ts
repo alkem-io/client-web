@@ -2373,6 +2373,59 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const LibraryTemplatesFragmentDoc = gql`
+  fragment LibraryTemplates on TemplatesSet {
+    id
+    postTemplates {
+      id
+      profile {
+        id
+        displayName
+        description
+        visual(type: CARD) {
+          ...VisualUri
+        }
+        tagset {
+          id
+          tags
+        }
+      }
+      defaultDescription
+    }
+    whiteboardTemplates {
+      id
+      profile {
+        id
+        displayName
+        description
+        visual(type: CARD) {
+          ...VisualUri
+        }
+        tagset {
+          id
+          tags
+        }
+      }
+    }
+    innovationFlowTemplates {
+      id
+      profile {
+        id
+        displayName
+        description
+        visual(type: CARD) {
+          ...VisualUri
+        }
+        tagset {
+          id
+          tags
+        }
+      }
+      definition
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
   fragment InnovationPackProviderProfileWithAvatar on Organization {
     id
@@ -2401,21 +2454,13 @@ export const InnovationPackCardFragmentDoc = gql`
       }
     }
     templates {
-      id
-      postTemplates {
-        id
-      }
-      whiteboardTemplates {
-        id
-      }
-      innovationFlowTemplates {
-        id
-      }
+      ...LibraryTemplates
     }
     provider {
       ...InnovationPackProviderProfileWithAvatar
     }
   }
+  ${LibraryTemplatesFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
 export const UserAgentSsiFragmentDoc = gql`

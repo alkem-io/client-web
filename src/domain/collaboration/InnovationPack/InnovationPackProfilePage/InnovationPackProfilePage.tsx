@@ -41,7 +41,7 @@ import {
 import TemplatesBlock from './TemplatesBlock';
 import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
-enum TemplateType {
+export enum TemplateType {
   WhiteboardTemplate,
   PostTemplate,
   InnovationFlowTemplate,
@@ -67,7 +67,7 @@ const InnovationFlowPreview = ({ template }: { template?: InnovationFlowTemplate
   if (!template) {
     return null;
   }
-  return <SafeInnovationFlowVisualizer definition={template.definition} />;
+  return <>{template.definition ? <SafeInnovationFlowVisualizer definition={template.definition} /> : undefined}</>;
 };
 
 interface TemplatePreviewProps

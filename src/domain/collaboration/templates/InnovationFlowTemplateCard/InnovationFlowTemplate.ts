@@ -4,7 +4,7 @@ import { TemplateCardInnovationPack, TemplateCardProviderProfile } from '../Temp
 
 export interface InnovationFlowTemplate extends TemplateBase {
   displayName: string;
-  definition: string;
+  definition?: string;
   provider: {
     displayName: string | undefined;
     avatarUri: string | undefined;
