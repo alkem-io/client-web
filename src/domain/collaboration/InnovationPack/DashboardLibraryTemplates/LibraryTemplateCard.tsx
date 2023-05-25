@@ -22,16 +22,20 @@ export interface LibraryTemplateCardProps {
   definition?: string;
 }
 
-const LibraryTemplateCard = ({ templateType, ...template }: LibraryTemplateCardProps) => {
+const LibraryTemplateCard = ({
+  templateType,
+  onClick,
+  ...template
+}: LibraryTemplateCardProps & { onClick: () => void }) => {
   switch (templateType) {
     case TemplateType.PostTemplate: {
-      return <PostTemplateCard template={template} />;
+      return <PostTemplateCard onClick={onClick} template={template} />;
     }
     case TemplateType.WhiteboardTemplate: {
-      return <WhiteboardTemplateCard template={template} />;
+      return <WhiteboardTemplateCard onClick={onClick} template={template} />;
     }
     case TemplateType.InnovationFlowTemplate: {
-      return <InnovationFlowTemplateCard template={template} />;
+      return <InnovationFlowTemplateCard onClick={onClick} template={template} />;
     }
   }
 };

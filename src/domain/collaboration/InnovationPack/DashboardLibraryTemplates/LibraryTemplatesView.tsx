@@ -22,6 +22,7 @@ interface LibraryTemplatesViewProps {
   filter: LibraryTemplatesFilter;
   headerTitle: ReactNode;
   templates: (Identifiable & LibraryTemplateCardProps)[] | undefined;
+  onClick: (card: LibraryTemplateCardProps) => void;
   expanded?: boolean;
   onFilterChange: Dispatch<LibraryTemplatesFilter>;
   onDialogOpen?: () => void;
@@ -37,6 +38,7 @@ const LibraryTemplatesView = ({
   expanded = false,
   onDialogOpen,
   onDialogClose,
+  onClick,
   hasMore = false,
   ...props
 }: LibraryTemplatesViewProps & PageContentBlockProps) => {
@@ -73,8 +75,8 @@ const LibraryTemplatesView = ({
           orientationOverride={expanded ? 'vertical' : undefined}
           sameHeight
         >
-          {templates.map(({ id, ...cardProps }) => (
-            <LibraryTemplateCard key={id} id={id} {...cardProps} />
+          {templates.map(template => (
+            <LibraryTemplateCard key={template.id} {...template} onClick={() => onClick(template)} />
           ))}
           {isMobile && hasMore && (
             <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>

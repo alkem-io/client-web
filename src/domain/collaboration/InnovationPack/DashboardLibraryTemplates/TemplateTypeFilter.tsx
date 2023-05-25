@@ -20,11 +20,10 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
       onChange([...value, templateType]);
     }
   };
-
   return (
-    <Box>
+    <Box sx={{ display: 'flex', gap: 2 }}>
       <Caption>{t('common.show')}</Caption>
-      {(Object.values(TemplateType) as Array<keyof typeof TemplateType>).map(key => {
+      {(Object.values(TemplateType).filter(k => isNaN(Number(k))) as Array<keyof typeof TemplateType>).map(key => {
         const selected = value.includes(TemplateType[key]);
         return (
           <Chip
@@ -38,6 +37,14 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
             color="primary"
             size="medium"
             onClick={() => onClick(TemplateType[key])}
+            sx={{
+              paddingX: theme => theme.spacing(1.5),
+              svg: {
+                width: theme => theme.spacing(1.5),
+                verticalAlign: 'middle',
+                marginLeft: theme => theme.spacing(-1.5),
+              },
+            }}
           />
         );
       })}

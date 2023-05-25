@@ -7,6 +7,9 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
+import TemplatePreviewDialog, { TemplatePreview } from '../TemplatePreviewDialog/TemplatePreviewDialog';
+import { usePlatformWhiteboardTemplateValueQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface DashboardLibraryTemplatesProps {
   headerTitle: ReactNode;
@@ -32,6 +35,16 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplatePreview | undefined>();
+
+  const { data: whiteboardTemplateValueData, loading: loadingWhiteboardTemplateValue } =
+    usePlatformWhiteboardTemplateValueQuery({
+      variables: {
+        innovationPackId: selectedTemplate?.template.innovationPack.id!,
+        whiteboardTemplateId: selectedTemplate?.template.id!,
+      },
+      skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
+    });
 
   const filteredLibraryTemplates = useMemo(() => {
     return filterFn(
@@ -56,6 +69,9 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
         onFilterChange={onFilterChange}
         expanded={isDialogOpen}
         onDialogOpen={() => setIsDialogOpen(true)}
+        onClick={card => {
+          setSelectedTemplate({ template: card, templateType: card.templateType });
+        }}
         hasMore={filteredLibraryTemplates.length > MAX_TEMPLATES_WHEN_NOT_EXPANDED}
       />
       <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
@@ -66,9 +82,17 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
           onFilterChange={onFilterChange}
           expanded={isDialogOpen}
           onDialogClose={() => setIsDialogOpen(false)}
+          onClick={template => setSelectedTemplate(template)}
           sx={{ flexShrink: 1 }}
         />
       </DialogWithGrid>
+      <TemplatePreviewDialog
+        open={!!selectedTemplate}
+        onClose={() => setSelectedTemplate(undefined)}
+        template={selectedTemplate}
+        templateWithValue={whiteboardTemplateValueData?.platform.library.innovationPack?.templates?.whiteboardTemplate}
+        loadingTemplateValue={loadingWhiteboardTemplateValue}
+      />
     </>
   );
 };
