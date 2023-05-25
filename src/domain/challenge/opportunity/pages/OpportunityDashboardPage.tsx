@@ -29,12 +29,19 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const { hubNameId, opportunityNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
-    useCallouts({
-      hubNameId,
-      opportunityNameId,
-      calloutGroups: [CalloutsGroup.HomeTop],
-    });
+  const {
+    groupedCallouts,
+    canCreateCallout,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+  } = useCallouts({
+    hubNameId,
+    opportunityNameId,
+    calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+  });
 
   const { t } = useTranslation();
 
@@ -98,6 +105,34 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />
                 )
+              }
+              childrenLeft={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutsGroup.HomeLeft]}
+                  hubId={hubNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="hub"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  group={CalloutsGroup.HomeLeft}
+                />
+              }
+              childrenRight={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutsGroup.HomeRight]}
+                  hubId={hubNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="hub"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  group={CalloutsGroup.HomeRight}
+                />
               }
             />
             <CommunityUpdatesDialog
