@@ -19,6 +19,7 @@ import { logger } from '../../../../../services/logging/winston/logger';
 import { Loading } from '../../../../../common/components/core';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 interface Props {
   title?: string;
@@ -146,7 +147,14 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
   if (loading) return <Loading text={t('components.loading.message', { blockName: t('common.organization') })} />;
 
   return (
-    <OrganizationForm organization={organization as Organization} onSave={handleSubmit} editMode={mode} title={title} />
+    <StorageConfigContextProvider locationType="organization" organizationId={organizationNameId}>
+      <OrganizationForm
+        organization={organization as Organization}
+        onSave={handleSubmit}
+        editMode={mode}
+        title={title}
+      />
+    </StorageConfigContextProvider>
   );
 };
 

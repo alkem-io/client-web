@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
 import { Grid } from '@mui/material';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import FormikEffectFactory from '../../../../common/utils/formik/formik-effect/FormikEffect';

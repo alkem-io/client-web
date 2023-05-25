@@ -12,7 +12,7 @@ import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { BlockSectionTitle } from '../../../../core/ui/typography';

@@ -21,6 +21,7 @@ import { PageProps } from '../../../../shared/types/PageProps';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { StorageConfigContextProvider } from '../../../../platform/storage/StorageBucket/StorageConfigContext';
 
 interface EditUserProfilePageProps extends PageProps {}
 
@@ -91,15 +92,17 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
   };
 
   return (
-    <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
-      <UserForm
-        title={'Profile'}
-        user={{ ...user } as UserModel}
-        avatar={user?.profile.visual}
-        editMode={editMode}
-        onSave={handleSave}
-      />
-    </UserSettingsLayout>
+    <StorageConfigContextProvider locationType="user" userId={user.nameID}>
+      <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
+        <UserForm
+          title={'Profile'}
+          user={{ ...user } as UserModel}
+          avatar={user?.profile.visual}
+          editMode={editMode}
+          onSave={handleSave}
+        />
+      </UserSettingsLayout>
+    </StorageConfigContextProvider>
   );
 };
 

@@ -9,7 +9,7 @@ import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePic
 import { CalendarEventFormData } from '../CalendarEventsContainer';
 import { CalendarEventType } from '../../../../core/apollo/generated/graphql-schema';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import FormikTimePicker from '../../../../core/ui/forms/DatePicker/FormikTimePicker';
 import FormikAutocomplete, {

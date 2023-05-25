@@ -2139,6 +2139,8 @@ export type Mutation = {
   assignUserToGroup: UserGroup;
   /** Assigns a User as an associate of the specified Organization. */
   assignUserToOrganization: Organization;
+  /** Reset the Authorization Policy on all entities */
+  authorizationPolicyResetAll: Scalars['Boolean'];
   /** Reset the Authorization Policy on the specified Hub. */
   authorizationPolicyResetOnHub: Hub;
   /** Reset the Authorization Policy on the specified Organization. */
@@ -3168,6 +3170,8 @@ export type PlatformLocations = {
   aup: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
+  /** Main domain of the environment */
+  domain: Scalars['String'];
   /** Name of the environment */
   environment: Scalars['String'];
   /** The feature flags for the platform */
@@ -3304,6 +3308,8 @@ export type Profile = {
   location?: Maybe<Location>;
   /** A list of URLs to relevant information. */
   references?: Maybe<Array<Reference>>;
+  /** The storage bucket for this Profile. */
+  storageBucket?: Maybe<StorageBucket>;
   /** The taglie for this entity. */
   tagline: Scalars['String'];
   /** The default tagset. */
@@ -4673,16 +4679,6 @@ export type WhiteboardTemplate = {
   value: Scalars['JSON'];
 };
 
-export type UploadFileMutationVariables = Exact<{
-  file: Scalars['Upload'];
-  uploadData: StorageBucketUploadFileInput;
-}>;
-
-export type UploadFileMutation = {
-  __typename?: 'Mutation';
-  uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
-};
-
 export type MyPrivilegesFragment = {
   __typename?: 'Authorization';
   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
@@ -4842,6 +4838,16 @@ export type RemoveUserAsOrganizationOwnerMutation = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
+};
+
+export type UploadFileMutationVariables = Exact<{
+  file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileInput;
+}>;
+
+export type UploadFileMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
 };
 
 export type ChallengeCardFragment = {
@@ -23782,6 +23788,209 @@ export type UserRolesSearchCardsQuery = {
     }>;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; roles: Array<string> }>;
   };
+};
+
+export type JourneyStorageConfigQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  includeHub?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type JourneyStorageConfigQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    profile?: {
+      __typename?: 'Profile';
+      id: string;
+      storageBucket?:
+        | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+        | undefined;
+    };
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        storageBucket?:
+          | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+          | undefined;
+      };
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        storageBucket?:
+          | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+          | undefined;
+      };
+    };
+  };
+};
+
+export type CalloutStorageConfigQueryVariables = Exact<{
+  calloutId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  includeHub?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CalloutStorageConfigQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  storageBucket?:
+                    | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+                    | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    storageBucket?:
+                      | {
+                          __typename?: 'StorageBucket';
+                          id: string;
+                          allowedMimeTypes: Array<string>;
+                          maxFileSize: number;
+                        }
+                      | undefined;
+                  };
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    storageBucket?:
+                      | {
+                          __typename?: 'StorageBucket';
+                          id: string;
+                          allowedMimeTypes: Array<string>;
+                          maxFileSize: number;
+                        }
+                      | undefined;
+                  };
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type UserStorageConfigQueryVariables = Exact<{
+  userId: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserStorageConfigQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      storageBucket?:
+        | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+        | undefined;
+    };
+  };
+};
+
+export type OrganizationStorageConfigQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationStorageConfigQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      storageBucket?:
+        | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+        | undefined;
+    };
+  };
+};
+
+export type ProfileStorageConfigFragment = {
+  __typename?: 'Profile';
+  id: string;
+  storageBucket?:
+    | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+    | undefined;
+};
+
+export type CalloutOnCollaborationWithStorageConfigFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          storageBucket?:
+            | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+            | undefined;
+        };
+      }>
+    | undefined;
 };
 
 export type CreateReferenceOnProfileMutationVariables = Exact<{

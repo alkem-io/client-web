@@ -5,7 +5,7 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
@@ -17,6 +17,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 import { newReferenceName } from '../../../../common/utils/newReferenceName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
 
 export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
 interface FormValueType {
@@ -138,11 +139,10 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                         />
                         <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
                           <Box display="flex">
-                            <FormikInputField
+                            <FormikFileInput
                               name={`${fieldName}.${index}.uri`}
                               title={t('common.url')}
                               fullWidth
-                              attachFile
                               referenceID={reference.id}
                             />
                             <Box>

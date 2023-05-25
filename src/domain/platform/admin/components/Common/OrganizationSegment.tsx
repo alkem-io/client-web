@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormRow from '../../../../../common/components/FormLayout';
 
 export const organizationSegmentSchema = yup.object().shape({

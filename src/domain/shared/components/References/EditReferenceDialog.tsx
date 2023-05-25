@@ -5,7 +5,7 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
@@ -13,6 +13,7 @@ import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
 
 export interface EditReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
 
@@ -75,10 +76,9 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
                   <Gutters row={!isMobile} disablePadding alignItems="start">
                     <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMobile} />
                     <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
-                      <FormikInputField
+                      <FormikFileInput
                         name={'uri'}
                         title={t('common.url')}
-                        attachFile
                         sx={{ flexGrow: 1 }}
                         referenceID={values.id}
                       />

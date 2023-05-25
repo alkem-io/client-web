@@ -40,6 +40,8 @@ import { ExpandContentIcon } from '../../../core/ui/content/ExpandContent';
 import { Reference, Tagset } from '../../common/profile/Profile';
 import References from '../../shared/components/References/References';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
+import { StorageConfigContextProvider } from '../../platform/storage/StorageBucket/StorageConfigContext';
+import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -72,6 +74,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   onClose?: () => void;
   skipReferences?: boolean;
   disableMarginal?: boolean;
+  journeyTypeName: JourneyTypeName;
 }
 
 const CalloutLayout = ({
@@ -94,10 +97,16 @@ const CalloutLayout = ({
   onClose,
   skipReferences,
   disableMarginal = false,
+  journeyTypeName,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
   const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+
+  if (!hubNameId) {
+    throw new Error('Must be within a Hub');
+  }
+
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { hubId: hubNameId! } });
 
@@ -285,17 +294,24 @@ const CalloutLayout = ({
       >
         <CalloutSummary callout={callout} />
       </CalloutVisibilityChangeDialog>
-      <CalloutEditDialog
-        open={editDialogOpened}
-        onClose={handleEditDialogClosed}
-        calloutType={callout.type}
-        callout={callout}
-        onCalloutEdit={handleCalloutEdit}
-        onDelete={onCalloutDelete}
-        canChangeCalloutGroup={canChangeCalloutGroup}
-        calloutNames={calloutNames}
-        templates={templates}
-      />
+      <StorageConfigContextProvider
+        locationType="callout"
+        journeyTypeName={journeyTypeName}
+        {...{ hubNameId, challengeNameId, opportunityNameId }}
+        calloutId={callout.nameID}
+      >
+        <CalloutEditDialog
+          open={editDialogOpened}
+          onClose={handleEditDialogClosed}
+          calloutType={callout.type}
+          callout={callout}
+          onCalloutEdit={handleCalloutEdit}
+          onDelete={onCalloutDelete}
+          canChangeCalloutGroup={canChangeCalloutGroup}
+          calloutNames={calloutNames}
+          templates={templates}
+        />
+      </StorageConfigContextProvider>
     </>
   );
 };

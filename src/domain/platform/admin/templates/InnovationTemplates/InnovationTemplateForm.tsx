@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { CreateProfileInput, InnovationFlowType, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import FormRows from '../../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';

@@ -12,7 +12,7 @@ import { LocationSegment } from '../../../../domain/common/location/LocationSegm
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
-import FormikInputField from './FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';

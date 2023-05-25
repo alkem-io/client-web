@@ -12,33 +12,41 @@ import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import ChallengeContextPage from '../../../../challenge/challenge/pages/ChallengeContext/ChallengeContextPage';
 import ChallengeInnovationFlowPage from '../../../../challenge/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 export const ChallengeRoute: FC = () => {
-  const { communityId: hubCommunityId } = useHub();
-  const { challenge, challengeId } = useChallenge();
+  const { hubId, communityId: hubCommunityId } = useHub();
+  const { challenge, challengeId, challengeNameId } = useChallenge();
   const communityId = challenge?.community?.id;
 
   return (
-    <Routes>
-      <Route path={'/'}>
-        <Route index element={<Navigate to="profile" replace />} />
-        <Route path="profile" element={<ChallengeProfilePage />} />
-        <Route path="context" element={<ChallengeContextPage />} />
-        <Route
-          path="communications"
-          element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={hubCommunityId} />}
-        />
-        <Route path="community" element={<ChallengeCommunityAdminPage />} />
-        <Route
-          path="community/groups/*"
-          element={<CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={hubCommunityId} />}
-        />
-        <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
-        <Route path="opportunities/*" element={<OpportunitiesRoute />} />
-        <Route path="authorization/*" element={<ChallengeAuthorizationRoute resourceId={challengeId} />} />
-        <Route path="innovation-flow/*" element={<ChallengeInnovationFlowPage />} />
-        <Route path="*" element={<Error404 />} />
-      </Route>
-    </Routes>
+    <StorageConfigContextProvider
+      locationType="journey"
+      journeyTypeName="challenge"
+      hubNameId={hubId}
+      challengeNameId={challengeNameId}
+    >
+      <Routes>
+        <Route path={'/'}>
+          <Route index element={<Navigate to="profile" replace />} />
+          <Route path="profile" element={<ChallengeProfilePage />} />
+          <Route path="context" element={<ChallengeContextPage />} />
+          <Route
+            path="communications"
+            element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={hubCommunityId} />}
+          />
+          <Route path="community" element={<ChallengeCommunityAdminPage />} />
+          <Route
+            path="community/groups/*"
+            element={<CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={hubCommunityId} />}
+          />
+          <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
+          <Route path="opportunities/*" element={<OpportunitiesRoute />} />
+          <Route path="authorization/*" element={<ChallengeAuthorizationRoute resourceId={challengeId} />} />
+          <Route path="innovation-flow/*" element={<ChallengeInnovationFlowPage />} />
+          <Route path="*" element={<Error404 />} />
+        </Route>
+      </Routes>
+    </StorageConfigContextProvider>
   );
 };
