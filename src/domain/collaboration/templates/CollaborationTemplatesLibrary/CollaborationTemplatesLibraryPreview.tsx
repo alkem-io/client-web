@@ -54,7 +54,7 @@ const CollaborationTemplatesLibraryPreview = <
           {loading && <Skeleton />}
         </Box>
         <Box>
-          <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
+          <BlockSectionTitle sx={{ marginBottom: 1.5 }}>{t('common.tags')}</BlockSectionTitle>
           <TagsComponent tags={template?.tags ?? []} />
           {loading && <Skeleton />}
         </Box>

@@ -23,7 +23,7 @@ const PageContentBlockHeader = ({
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   return (
     <>
-      <Box display="flex" flexDirection="row" alignItems="start" gap={gutters(0.5)}>
+      <Box display="flex" flexDirection="row" alignItems="center" gap={gutters(0.5)}>
         <Box
           flexGrow={1}
           minWidth={0}

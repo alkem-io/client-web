@@ -1,6 +1,5 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
-import { Identifiable } from '../../../shared/types/Identifiable';
 import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
@@ -13,10 +12,10 @@ import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfile
 
 interface DashboardLibraryTemplatesProps {
   headerTitle: ReactNode;
-  templates: (Identifiable & LibraryTemplateCardProps)[] | undefined;
+  templates: LibraryTemplateCardProps[] | undefined;
 }
 
-const templatesValueGetter = (template: Identifiable & LibraryTemplateCardProps): ValueType => ({
+const templatesValueGetter = (template: LibraryTemplateCardProps): ValueType => ({
   id: template.id,
   values: compact([
     template.displayName,
@@ -35,13 +34,13 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplatePreview | undefined>();
+  const [selectedTemplate, setSelectedTemplate] = useState<LibraryTemplateCardProps>();
 
   const { data: whiteboardTemplateValueData, loading: loadingWhiteboardTemplateValue } =
     usePlatformWhiteboardTemplateValueQuery({
       variables: {
-        innovationPackId: selectedTemplate?.template.innovationPack.id!,
-        whiteboardTemplateId: selectedTemplate?.template.id!,
+        innovationPackId: selectedTemplate?.innovationPack.id!,
+        whiteboardTemplateId: selectedTemplate?.id!,
       },
       skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
     });
@@ -69,8 +68,8 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
         onFilterChange={onFilterChange}
         expanded={isDialogOpen}
         onDialogOpen={() => setIsDialogOpen(true)}
-        onClick={card => {
-          setSelectedTemplate({ template: card, templateType: card.templateType });
+        onClick={template => {
+          setSelectedTemplate(template);
         }}
         hasMore={filteredLibraryTemplates.length > MAX_TEMPLATES_WHEN_NOT_EXPANDED}
       />
@@ -89,7 +88,11 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
       <TemplatePreviewDialog
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
-        template={selectedTemplate}
+        template={
+          selectedTemplate
+            ? ({ template: selectedTemplate, templateType: selectedTemplate?.templateType } as TemplatePreview)
+            : undefined
+        }
         templateWithValue={whiteboardTemplateValueData?.platform.library.innovationPack?.templates?.whiteboardTemplate}
         loadingTemplateValue={loadingWhiteboardTemplateValue}
       />

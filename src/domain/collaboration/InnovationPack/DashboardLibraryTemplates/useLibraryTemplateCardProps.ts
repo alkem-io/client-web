@@ -17,7 +17,7 @@ const useLibraryTemplateCardProps = (
               template => ({
                 templateType: TemplateType.PostTemplate,
                 id: template.id,
-                description: template.defaultDescription,
+                description: template.profile.description,
                 displayName: template.profile.displayName,
                 visualUri: template.profile.visual?.uri,
                 tags: template.profile.tagset?.tags,

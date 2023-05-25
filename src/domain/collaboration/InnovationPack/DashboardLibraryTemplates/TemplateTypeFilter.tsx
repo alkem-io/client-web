@@ -21,7 +21,7 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
     }
   };
   return (
-    <Box sx={{ display: 'flex', gap: 2 }}>
+    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
       <Caption>{t('common.show')}</Caption>
       {(Object.values(TemplateType).filter(k => isNaN(Number(k))) as Array<keyof typeof TemplateType>).map(key => {
         const selected = value.includes(TemplateType[key]);

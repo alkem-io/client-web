@@ -44,6 +44,7 @@ const LibraryTemplatesView = ({
 }: LibraryTemplatesViewProps & PageContentBlockProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
   return (
     <PageContentBlock {...props}>
@@ -53,7 +54,14 @@ const LibraryTemplatesView = ({
         onDialogClose={onDialogClose}
         expanded={expanded}
         actions={
-          <>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: isSmallScreen ? 'wrap' : undefined,
+            }}
+          >
             <TemplateTypeFilter
               onChange={templateTypes =>
                 onFilterChange({ templateTypes: templateTypes, searchTerms: filter.searchTerms })
@@ -65,8 +73,9 @@ const LibraryTemplatesView = ({
               value={filter.searchTerms}
               minLength={2}
               size="xsmall"
+              containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined } }}
             />
-          </>
+          </Box>
         }
       />
       {templates && (
