@@ -5,10 +5,14 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    // Add handling for groups here
+    case CalloutsGroup.HomeLeft:
+    case CalloutsGroup.HomeRight:
+      return <ChallengeDashboardPage />;
     default:
       return <ContributePage journeyTypeName="challenge" />;
   }
