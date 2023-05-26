@@ -265,9 +265,6 @@
     "innovationPack": "Innovation Pack",
     "more": "More",
     "url": "URL",
-    "postTemplates": "Card Templates",
-    "whiteboardTemplates": "Whiteboard Templates",
-    "innovationTemplates": "Innovation Flow Templates",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -395,6 +392,11 @@
         "CHALLENGE_CENTRIC": "Working Challenge Centric",
         "HELP": "Need Help?",
         "OTHER": "Other"
+      },
+      "templateTypes": {
+        "WhiteboardTemplate": "Whiteboard Templates",
+        "PostTemplate": "Post Templates",
+        "InnovationFlowTemplate": "Innovation Flows"
       }
     },
     "blocks": {
@@ -1293,11 +1295,6 @@
       },
       "libraryTemplates": {
         "headerTitle": "Browse through all available materials"
-      },
-      "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard Templates",
-        "PostTemplate": "Post Templates",
-        "InnovationFlowTemplate": "Innovation Flows"
       }
     },
     "innovationPack": {

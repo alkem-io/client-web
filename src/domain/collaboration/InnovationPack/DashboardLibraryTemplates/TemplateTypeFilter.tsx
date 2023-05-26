@@ -31,7 +31,7 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
             key={key}
             label={
               <>
-                {isSelected ? <CheckIcon /> : undefined} {t(`pages.innovationLibrary.templateTypes.${key}` as const)}
+                {isSelected ? <CheckIcon /> : undefined} {t(`common.enums.templateTypes.${key}` as const)}
               </>
             }
             variant={isSelected ? 'filled' : 'outlined'}

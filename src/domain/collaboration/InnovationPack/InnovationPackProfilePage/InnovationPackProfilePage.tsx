@@ -121,7 +121,7 @@ const InnovationPackProfilePage = () => {
               </GridItem>
             </PageContentBlock>
             <TemplatesBlock
-              title={t('common.whiteboardTemplates')}
+              title={t('common.enums.templateTypes.WhiteboardTemplate')}
               templates={whiteboardTemplates}
               mapper={whiteboardTemplateMapper}
               cardComponent={WhiteboardTemplateCard}
@@ -132,7 +132,7 @@ const InnovationPackProfilePage = () => {
               innovationPack={innovationPack}
             />
             <TemplatesBlock
-              title={t('common.postTemplates')}
+              title={t('common.enums.templateTypes.PostTemplate')}
               templates={postTemplates}
               mapper={postTemplateMapper}
               cardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
@@ -143,7 +143,7 @@ const InnovationPackProfilePage = () => {
               innovationPack={innovationPack}
             />
             <TemplatesBlock
-              title={t('common.innovationTemplates')}
+              title={t('common.enums.templateTypes.InnovationFlowTemplate')}
               templates={innovationFlowTemplates}
               mapper={innovationFlowTemplateMapper}
               cardComponent={InnovationFlowTemplateCard}
