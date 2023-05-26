@@ -15,7 +15,7 @@ const InnovationHubBanner = ({ banner, displayName, tagline }: InnovationHubBann
     <Box>
       <ImageBlurredSides src={banner?.uri} alt={banner?.alternativeText} blurRadius={2} height={gutters(9)} />
       <Paper square sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingY: gutters(0.5) }}>
-        <PlatformTitle>{displayName}</PlatformTitle>
+        <PlatformTitle component="h2">{displayName}</PlatformTitle>
         <Tagline lineHeight={gutters(2)}>{tagline}</Tagline>
       </Paper>
     </Box>

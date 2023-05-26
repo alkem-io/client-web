@@ -1976,7 +1976,7 @@ export type InnovationHub = {
   __typename?: 'InnovationHub';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  hubListFilter?: Maybe<Array<Hub>>;
+  hubListFilter: Array<Hub>;
   /** If defined, what type of visibility to filter the Hubs on. You can have only one type of filter active at any given time. */
   hubVisibilityFilter?: Maybe<HubVisibility>;
   /** The ID of the entity */
@@ -2139,6 +2139,8 @@ export type Mutation = {
   assignUserToGroup: UserGroup;
   /** Assigns a User as an associate of the specified Organization. */
   assignUserToOrganization: Organization;
+  /** Reset the Authorization Policy on all entities */
+  authorizationPolicyResetAll: Scalars['Boolean'];
   /** Reset the Authorization Policy on the specified Hub. */
   authorizationPolicyResetOnHub: Hub;
   /** Reset the Authorization Policy on the specified Organization. */
@@ -3168,6 +3170,8 @@ export type PlatformLocations = {
   aup: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
+  /** Main domain of the environment */
+  domain: Scalars['String'];
   /** Name of the environment */
   environment: Scalars['String'];
   /** The feature flags for the platform */
@@ -9007,7 +9011,7 @@ export type BannerInnovationHubQuery = {
       __typename?: 'InnovationHub';
       id: string;
       profile: { __typename?: 'Profile'; id: string; displayName: string };
-      hubListFilter?: Array<{ __typename?: 'Hub'; id: string }> | undefined;
+      hubListFilter: Array<{ __typename?: 'Hub'; id: string }>;
     };
   };
 };
@@ -23265,6 +23269,7 @@ export type ConfigurationQuery = {
     platform: {
       __typename?: 'PlatformLocations';
       environment: string;
+      domain: string;
       about: string;
       feedback: string;
       privacy: string;
@@ -23308,6 +23313,7 @@ export type ConfigurationFragment = {
   platform: {
     __typename?: 'PlatformLocations';
     environment: string;
+    domain: string;
     about: string;
     feedback: string;
     privacy: string;

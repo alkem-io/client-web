@@ -2629,6 +2629,7 @@ export const ConfigurationFragmentDoc = gql`
     }
     platform {
       environment
+      domain
       about
       feedback
       privacy

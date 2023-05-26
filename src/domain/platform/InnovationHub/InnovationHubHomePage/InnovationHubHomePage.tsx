@@ -16,6 +16,10 @@ import HubCard from '../../../challenge/hub/HubCard/HubCard';
 import getMetricCount from '../../metrics/utils/getMetricCount';
 import { MetricType } from '../../metrics/MetricType';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { ROUTE_HOME } from '../../routes/constants';
+import { useConfig } from '../../config/useConfig';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
@@ -32,6 +36,10 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
   const allSpaces = spacesData?.hubs;
 
   const userSpaces = spacesData?.hubs.filter(isMember);
+
+  const { platform } = useConfig();
+
+  const mainHomeUrl = `//${platform?.domain}${ROUTE_HOME}`;
 
   return (
     <BasePageLayout
@@ -83,18 +91,21 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
             ))}
           </ScrollableCardsLayoutContainer>
         </PageContentBlock>
-        <PageContentBlock
-          disablePadding
-          sx={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: gutters(4),
-            paddingX: gutters(),
-          }}
-        >
-          <Logo />
-          <BlockTitle paddingY={gutters()}>{t('pages.innovationHub.goToMainPage')}</BlockTitle>
+        <PageContentBlock disablePadding>
+          <Gutters
+            row
+            flexGrow={1}
+            minHeight={gutters(4)}
+            component={RouterLink}
+            to={mainHomeUrl}
+            justifyContent="center"
+            alignItems="center"
+            flexWrap="wrap"
+            rowGap={0}
+          >
+            <Logo />
+            <BlockTitle paddingY={gutters()}>{t('pages.innovationHub.goToMainPage')}</BlockTitle>
+          </Gutters>
         </PageContentBlock>
       </PageContent>
     </BasePageLayout>
