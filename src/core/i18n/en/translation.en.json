@@ -235,6 +235,7 @@
     "people": "People",
     "settings": "Settings",
     "search": "Search...",
+    "storage": "Storage",
     "reference": "Reference",
     "references": "References",
     "notifications": "Notifications",
@@ -981,6 +982,10 @@
         "name": "Avatar",
         "placeholder": "Enter an avatar URL..."
       },
+      "tagline": {
+        "name": "Tagline",
+        "placeholder": "Enter a tagline"
+      },
       "description": {
         "name": "Description",
         "placeholder": "Enter a description"
@@ -1082,6 +1087,9 @@
         },
         "description": {
           "title": "Description"
+        },
+        "tagline": {
+          "title": "Tagline"
         },
         "phone": {
           "title": "Phone"
@@ -1277,9 +1285,9 @@
     "innovationLibrary": {
       "shortName": "Library",
       "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Alkemio’s Innovation Library is here to guide your way to impact",
+      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use.",
       "innovationPacks": {
-        "headerTitle": "Explore the Innovation Packs below"
+        "headerTitle": "Innovation Packs"
       }
     },
     "innovationPack": {
@@ -1338,6 +1346,22 @@
           },
           "credentials": {
             "description": "Here you can see credentials."
+          },
+          "storage": {
+            "description": "Here you can see the document storage for this {{entity}}.",
+            "title": "Documents",
+            "grid": {
+              "title": "Title",
+              "mimeType": "Type",
+              "size": "Size",
+              "uploadedBy": "Uploaded by",
+              "uploadedAt": "Uploaded at",
+              "location": "Location"
+            },
+            "delete": {
+              "title": "Delete this document?",
+              "content": "Are you sure that you want to delete {{fileName}}?"
+            }
           }
         }
       },
@@ -1922,7 +1946,8 @@
       "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
-      "verification-flow-continue": "Continue"
+      "verification-flow-continue": "Continue",
+      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, click here to contact the Alkemio team."
     }
   },
   "apollo": {

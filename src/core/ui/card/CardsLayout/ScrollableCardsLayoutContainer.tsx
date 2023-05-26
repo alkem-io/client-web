@@ -9,12 +9,12 @@ interface ScrollableCardsLayoutContainerProps extends PageContentBlockGridProps 
 
 const ScrollableCardsLayoutContainer = ({
   maxHeight,
-  orientation: requestedOrientation,
+  orientation: orientationOverride,
   ...props
 }: ScrollableCardsLayoutContainerProps) => {
   const breakpoint = useCurrentBreakpoint();
 
-  const orientation = requestedOrientation ?? (breakpoint === 'xs' ? 'horizontal' : 'vertical');
+  const orientation = orientationOverride ?? (breakpoint === 'xs' ? 'horizontal' : 'vertical');
 
   return (
     <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>

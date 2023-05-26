@@ -5,10 +5,14 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    // Add handling for groups here
+    case CalloutsGroup.HomeLeft:
+    case CalloutsGroup.HomeRight:
+      return <OpportunityDashboardPage />;
     default:
       return <ContributePage journeyTypeName="opportunity" />;
   }

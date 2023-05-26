@@ -749,14 +749,32 @@ export const HubPageFragmentDoc = gql`
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
-export const HubDashboardNavigationItemFragmentDoc = gql`
-  fragment HubDashboardNavigationItem on Profile {
+export const HubDashboardNavigationProfileFragmentDoc = gql`
+  fragment HubDashboardNavigationProfile on Profile {
     id
     displayName
+    tagline
+    tagset {
+      id
+      tags
+    }
     visual(type: CARD) {
       id
       uri
+      alternativeText
     }
+  }
+`;
+export const HubDashboardNavigationContextFragmentDoc = gql`
+  fragment HubDashboardNavigationContext on Context {
+    id
+    vision
+  }
+`;
+export const HubDashboardNavigationLifecycleFragmentDoc = gql`
+  fragment HubDashboardNavigationLifecycle on Lifecycle {
+    id
+    state
   }
 `;
 export const TemplateCardProfileInfoFragmentDoc = gql`
@@ -2061,6 +2079,7 @@ export const OrganizationInfoFragmentDoc = gql`
       id
       displayName
       description
+      tagline
       visual(type: AVATAR) {
         ...VisualUri
         alternativeText
@@ -2157,6 +2176,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         ...VisualFull
       }
       description
+      tagline
       location {
         country
         city
@@ -2271,6 +2291,7 @@ export const UserDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      tagline
       location {
         country
         city
@@ -2480,6 +2501,27 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   }
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
+`;
+export const DocumentDataFragmentDoc = gql`
+  fragment DocumentData on Document {
+    id
+    displayName
+    size
+    mimeType
+    createdBy {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    uploadedDate
+    authorization {
+      id
+      myPrivileges
+    }
+  }
 `;
 export const AdminWhiteboardTemplateValueFragmentDoc = gql`
   fragment AdminWhiteboardTemplateValue on WhiteboardTemplate {
@@ -5544,7 +5586,13 @@ export const HubDashboardNavigationChallengesDocument = gql`
         id
         nameID
         profile {
-          ...HubDashboardNavigationItem
+          ...HubDashboardNavigationProfile
+        }
+        context {
+          ...HubDashboardNavigationContext
+        }
+        lifecycle {
+          ...HubDashboardNavigationLifecycle
         }
         authorization {
           id
@@ -5555,9 +5603,12 @@ export const HubDashboardNavigationChallengesDocument = gql`
           myMembershipStatus
         }
       }
+      visibility
     }
   }
-  ${HubDashboardNavigationItemFragmentDoc}
+  ${HubDashboardNavigationProfileFragmentDoc}
+  ${HubDashboardNavigationContextFragmentDoc}
+  ${HubDashboardNavigationLifecycleFragmentDoc}
 `;
 
 /**
@@ -5628,13 +5679,21 @@ export const HubDashboardNavigationOpportunitiesDocument = gql`
           id
           nameID
           profile {
-            ...HubDashboardNavigationItem
+            ...HubDashboardNavigationProfile
+          }
+          context {
+            ...HubDashboardNavigationContext
+          }
+          lifecycle {
+            ...HubDashboardNavigationLifecycle
           }
         }
       }
     }
   }
-  ${HubDashboardNavigationItemFragmentDoc}
+  ${HubDashboardNavigationProfileFragmentDoc}
+  ${HubDashboardNavigationContextFragmentDoc}
+  ${HubDashboardNavigationLifecycleFragmentDoc}
 `;
 
 /**
@@ -21137,6 +21196,135 @@ export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicatio
   return { query: HubApplicationsDocument, variables: variables };
 }
 
+export const HubStorageAdminDocument = gql`
+  query HubStorageAdmin($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+      storageBucket {
+        id
+        size
+        documents {
+          ...DocumentData
+        }
+      }
+      challenges {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        storageBucket {
+          id
+          documents {
+            ...DocumentData
+          }
+        }
+      }
+    }
+  }
+  ${DocumentDataFragmentDoc}
+`;
+
+/**
+ * __useHubStorageAdminQuery__
+ *
+ * To run a query within a React component, call `useHubStorageAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubStorageAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubStorageAdminQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubStorageAdminQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubStorageAdminQuery, SchemaTypes.HubStorageAdminQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubStorageAdminQuery, SchemaTypes.HubStorageAdminQueryVariables>(
+    HubStorageAdminDocument,
+    options
+  );
+}
+
+export function useHubStorageAdminLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubStorageAdminQuery, SchemaTypes.HubStorageAdminQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubStorageAdminQuery, SchemaTypes.HubStorageAdminQueryVariables>(
+    HubStorageAdminDocument,
+    options
+  );
+}
+
+export type HubStorageAdminQueryHookResult = ReturnType<typeof useHubStorageAdminQuery>;
+export type HubStorageAdminLazyQueryHookResult = ReturnType<typeof useHubStorageAdminLazyQuery>;
+export type HubStorageAdminQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubStorageAdminQuery,
+  SchemaTypes.HubStorageAdminQueryVariables
+>;
+export function refetchHubStorageAdminQuery(variables: SchemaTypes.HubStorageAdminQueryVariables) {
+  return { query: HubStorageAdminDocument, variables: variables };
+}
+
+export const DeleteDocumentDocument = gql`
+  mutation DeleteDocument($documentId: UUID!) {
+    deleteDocument(deleteData: { ID: $documentId }) {
+      id
+    }
+  }
+`;
+export type DeleteDocumentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteDocumentMutation,
+  SchemaTypes.DeleteDocumentMutationVariables
+>;
+
+/**
+ * __useDeleteDocumentMutation__
+ *
+ * To run a mutation, you first call `useDeleteDocumentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDocumentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDocumentMutation, { data, loading, error }] = useDeleteDocumentMutation({
+ *   variables: {
+ *      documentId: // value for 'documentId'
+ *   },
+ * });
+ */
+export function useDeleteDocumentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteDocumentMutation,
+    SchemaTypes.DeleteDocumentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteDocumentMutation, SchemaTypes.DeleteDocumentMutationVariables>(
+    DeleteDocumentDocument,
+    options
+  );
+}
+
+export type DeleteDocumentMutationHookResult = ReturnType<typeof useDeleteDocumentMutation>;
+export type DeleteDocumentMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDocumentMutation>;
+export type DeleteDocumentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteDocumentMutation,
+  SchemaTypes.DeleteDocumentMutationVariables
+>;
 export const AdminGlobalOrganizationsListDocument = gql`
   query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -22261,6 +22449,12 @@ export const UpdateWhiteboardTemplateDocument = gql`
   mutation updateWhiteboardTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput!) {
     updateWhiteboardTemplate(whiteboardTemplateInput: { ID: $templateId, value: $value, profile: $profile }) {
       id
+      profile {
+        id
+        visual(type: CARD) {
+          id
+        }
+      }
     }
   }
 `;
@@ -22319,6 +22513,12 @@ export const CreateWhiteboardTemplateDocument = gql`
       whiteboardTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile, tags: $tags }
     ) {
       id
+      profile {
+        id
+        visual(type: CARD) {
+          id
+        }
+      }
     }
   }
 `;

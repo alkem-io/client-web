@@ -1,4 +1,4 @@
-import { Box, SvgIconProps } from '@mui/material';
+import { Box, SvgIconProps, Theme, useMediaQuery } from '@mui/material';
 import { BlockTitle, CaptionSmall } from '../typography';
 import { cloneElement, PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
@@ -8,6 +8,7 @@ export interface PageContentBlockHeaderProps {
   title: ReactNode;
   icon?: ReactElement<SvgIconProps>;
   actions?: ReactNode;
+  dialogAction?: ReactNode;
   disclaimer?: ReactNode;
 }
 
@@ -15,29 +16,45 @@ const PageContentBlockHeader = ({
   title,
   icon,
   actions,
+  dialogAction,
   disclaimer,
   children,
 }: PropsWithChildren<PageContentBlockHeaderProps>) => {
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   return (
-    <Box display="flex" flexDirection="row" alignItems="start" gap={gutters(0.5)}>
-      <Box
-        flexGrow={1}
-        minWidth={0}
-        display="flex"
-        flexDirection="row"
-        rowGap={gutters(0.5)}
-        justifyContent="space-between"
-        flexWrap="wrap"
-      >
-        <Box display="flex" flexDirection="row" alignItems="start" gap={gutters(0.5)} minWidth={0}>
-          {icon && cloneElement(icon, { fontSize: 'small' })}
-          <BlockTitle noWrap>{title}</BlockTitle>
+    <>
+      <Box display="flex" flexDirection="row" alignItems="start" gap={gutters(0.5)}>
+        <Box
+          flexGrow={1}
+          minWidth={0}
+          display="flex"
+          flexDirection="row"
+          rowGap={gutters(0.5)}
+          justifyContent="space-between"
+          flexWrap="wrap"
+        >
+          <Box display="flex" flexDirection="row" alignItems="start" gap={gutters(0.5)} minWidth={0}>
+            {icon && cloneElement(icon, { fontSize: 'small' })}
+            <BlockTitle noWrap>{title}</BlockTitle>
+          </Box>
+          {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
+          {children}
         </Box>
-        {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
-        {children}
+        {!isMobile && (
+          // In desktop the expand button and the actions go in the same row
+          <Actions>
+            {actions}
+            {dialogAction}
+          </Actions>
+        )}
+        {isMobile && <Actions>{dialogAction}</Actions>}
       </Box>
-      {actions && <Actions height={gutters()}>{actions}</Actions>}
-    </Box>
+      {isMobile && (
+        <Actions marginTop={gutters(-0.5)} flexDirection="row">
+          {actions}
+        </Actions>
+      )}
+    </>
   );
 };
 

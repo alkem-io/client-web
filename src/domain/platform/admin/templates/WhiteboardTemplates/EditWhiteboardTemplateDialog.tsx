@@ -5,7 +5,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import WhiteboardTemplateForm, {
-  WhiteboardTemplateFormSubmittedValues,
+  WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
@@ -16,7 +16,9 @@ import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmit
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (values: WhiteboardTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
+  onSubmit: (
+    values: WhiteboardTemplateFormSubmittedValuesWithPreviewImages & { tagsetId: string | undefined; tags?: string[] }
+  ) => void;
   onDelete: () => void;
   template: AdminWhiteboardTemplateFragment | undefined;
   getTemplateValue: (template: AdminWhiteboardTemplateFragment) => void;
@@ -51,7 +53,7 @@ const EditWhiteboardTemplateDialog = ({
     tags: template.profile.tagset?.tags,
   };
 
-  const handleSubmit = (values: WhiteboardTemplateFormSubmittedValues) => {
+  const handleSubmit = (values: WhiteboardTemplateFormSubmittedValuesWithPreviewImages) => {
     return onSubmit({
       ...values,
       tagsetId: template.profile.tagset?.id,

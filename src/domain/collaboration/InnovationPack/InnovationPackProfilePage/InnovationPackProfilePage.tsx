@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ComponentType, useState } from 'react';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -39,6 +39,7 @@ import {
   innovationFlowTemplateMapper,
 } from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplate';
 import TemplatesBlock from './TemplatesBlock';
+import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
 enum TemplateType {
   WhiteboardTemplate,
@@ -119,7 +120,7 @@ const TemplatePreview = ({ selectedTemplate, templateWithValue, ...props }: Temp
         <CollaborationTemplatesLibraryPreview
           {...{
             template: selectedTemplate.template,
-            templateCardComponent: PostTemplateCard,
+            templateCardComponent: PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>,
             templatePreviewComponent: PostTemplatePreview,
           }}
           {...props}
@@ -239,7 +240,7 @@ const InnovationPackProfilePage = () => {
               title={t('common.postTemplates')}
               templates={postTemplates}
               mapper={postTemplateMapper}
-              cardComponent={PostTemplateCard}
+              cardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
               templateType={TemplateType.PostTemplate}
               onClickCard={setSelectedTemplate}
               emptyLabel={t('pages.innovationPack.postTemplatesEmpty')}

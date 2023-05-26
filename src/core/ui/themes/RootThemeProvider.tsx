@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { defaultTheme } from './default/defaultTheme';
+import { theme } from './default/Theme';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -14,7 +14,7 @@ declare module '@mui/styles/defaultTheme' {
 }
 
 const RootThemeProvider = ({ children }: PropsWithChildren<{}>) => {
-  return <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>;
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
 
 export default RootThemeProvider;

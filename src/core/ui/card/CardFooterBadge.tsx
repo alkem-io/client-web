@@ -12,7 +12,7 @@ const CardFooterBadge = ({ avatarUri, children }: PropsWithChildren<CardFooterBa
   return (
     <Box display="flex" gap={gutters()} alignItems="center" height={gutters(2)}>
       {avatarUri && <CardFooterAvatar src={avatarUri} />}
-      <Caption>{children}</Caption>
+      <Caption noWrap>{children}</Caption>
     </Box>
   );
 };

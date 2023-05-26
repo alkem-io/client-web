@@ -1,4 +1,4 @@
-import { Box, Button, Grid, IconButton } from '@mui/material';
+import { Box, Button, IconButton, Theme, useMediaQuery } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,11 +17,15 @@ import VisualUpload from '../common/VisualUpload/VisualUpload';
 import { FormikInputField } from './FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../../domain/common/location/countries.constants';
-import FormRow from '../../FormLayout';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { ALT_TEXT_LENGTH, LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import GridItem from '../../../../core/ui/grid/GridItem';
+import { LoadingButton } from '@mui/lab';
+import GridProvider from '../../../../core/ui/grid/GridProvider';
+import GridContainer from '../../../../core/ui/grid/GridContainer';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -58,6 +62,7 @@ export const UserForm: FC<UserProps> = ({
   const { t } = useTranslation();
   const isEditMode = editMode === EditMode.edit || editMode === EditMode.new;
   const isReadOnlyMode = editMode === EditMode.readOnly;
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const {
     firstName,
@@ -69,6 +74,7 @@ export const UserForm: FC<UserProps> = ({
       id: profileId,
       displayName,
       description: bio,
+      tagline,
       references,
       location: { city, country },
       tagsets,
@@ -90,6 +96,7 @@ export const UserForm: FC<UserProps> = ({
 
   const initialValues: UserFormGenerated = {
     displayName: displayName || '',
+    tagline: tagline || '',
     firstName: firstName || '',
     lastName: lastName || '',
     email: email || '',
@@ -123,6 +130,7 @@ export const UserForm: FC<UserProps> = ({
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(LONG_TEXT_LENGTH),
+    tagline: yup.string().max(ALT_TEXT_LENGTH),
   });
 
   /**
@@ -144,6 +152,7 @@ export const UserForm: FC<UserProps> = ({
         twitter,
         github,
         displayName,
+        tagline,
         ...otherData
       } = userData;
       const finalReferences = [
@@ -158,6 +167,7 @@ export const UserForm: FC<UserProps> = ({
         profile: {
           id: profileId,
           displayName: displayName,
+          tagline: tagline,
           description: bio,
           references: finalReferences,
           location: {
@@ -184,142 +194,119 @@ export const UserForm: FC<UserProps> = ({
       {({ values: { references, tagsets }, handleSubmit, isSubmitting, errors }) => {
         logger.info(errors);
         return (
-          <form noValidate onSubmit={handleSubmit}>
-            <Box marginTop={4} />
-            <Grid container rowSpacing={4} direction="column">
-              <Grid item xs={12}>
-                <Grid container spacing={4}>
-                  <Grid item xs={12} md="auto">
-                    <Grid item container justifyContent="center">
-                      <VisualUpload
-                        visual={avatar}
-                        altText={t('visuals-alt-text.avatar.contributor.text', {
-                          displayName,
-                          altText: avatar?.alternativeText,
-                        })}
-                      />
-                    </Grid>
-                  </Grid>
-                  <Grid item xs>
-                    <Grid container spacing={4}>
-                      <FormRow cols={2}>
-                        <FormikInputField
-                          name={'firstName'}
-                          title={'First Name'}
-                          required={!isReadOnlyMode}
-                          readOnly={isReadOnlyMode}
-                          placeholder={'First Name'}
-                          disabled={isSubmitting}
-                        />
-                      </FormRow>
-                      <FormRow cols={2}>
-                        <FormikInputField
-                          name={'lastName'}
-                          title={'Last name'}
-                          required={!isReadOnlyMode}
-                          readOnly={isReadOnlyMode}
-                          placeholder={'Last name'}
-                          disabled={isSubmitting}
-                        />
-                      </FormRow>
-                      <FormRow cols={2}>
-                        <FormikInputField
-                          name={'displayName'}
-                          title={'Full Name'}
-                          required={!isReadOnlyMode}
-                          readOnly={isReadOnlyMode}
-                          placeholder={'Full Name'}
-                          disabled={isSubmitting}
-                        />
-                      </FormRow>
+          <GridContainer>
+            <GridProvider columns={12}>
+              <GridItem columns={isMobile ? 6 : 2}>
+                <Box display="flex" justifyContent="center">
+                  <VisualUpload
+                    visual={avatar}
+                    altText={t('visuals-alt-text.avatar.contributor.text', {
+                      displayName,
+                      altText: avatar?.alternativeText,
+                    })}
+                  />
+                </Box>
+              </GridItem>
 
-                      <FormRow cols={2}>
-                        <FormikInputField
-                          name={'phone'}
-                          title={'Phone'}
-                          readOnly={isReadOnlyMode}
-                          placeholder={'Phone'}
+              <GridItem columns={isMobile ? 6 : 8}>
+                <Gutters>
+                  <FormikInputField
+                    name={'firstName'}
+                    title={'First Name'}
+                    required={!isReadOnlyMode}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'First Name'}
+                    disabled={isSubmitting}
+                  />
+                  <FormikInputField
+                    name={'lastName'}
+                    title={'Last name'}
+                    required={!isReadOnlyMode}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Last name'}
+                    disabled={isSubmitting}
+                  />
+                  <FormikInputField
+                    name={'displayName'}
+                    title={'Full Name'}
+                    required={!isReadOnlyMode}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Full Name'}
+                    disabled={isSubmitting}
+                  />
+
+                  <FormikInputField
+                    name={'phone'}
+                    title={'Phone'}
+                    readOnly={isReadOnlyMode}
+                    placeholder={'Phone'}
+                    disabled={isSubmitting}
+                  />
+
+                  <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} cols={2}>
+                    {onVerify && (
+                      <>
+                        <Box marginLeft={1} />
+                        <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('ProofOfNameCredential')}>
+                          <HealthAndSafetyIcon />
+                        </IconButton>
+                      </>
+                    )}
+                  </LocationSegment>
+                  <FormikInputField
+                    name={'tagline'}
+                    title={t('components.profile.fields.tagline.title')}
+                    readOnly={isReadOnlyMode}
+                    placeholder={t('components.profile.fields.tagline.title')}
+                    disabled={isSubmitting}
+                    withCounter
+                    maxLength={ALT_TEXT_LENGTH}
+                  />
+                  <FormikMarkdownField
+                    name="bio"
+                    title={t('components.profile.fields.bio.title')}
+                    readOnly={isReadOnlyMode}
+                    placeholder={t('components.profile.fields.bio.title')}
+                    multiline
+                    rows={5}
+                    disabled={isSubmitting}
+                    withCounter
+                    maxLength={LONG_TEXT_LENGTH}
+                  />
+                  <TagsetSegment tagsets={tagsets} template={[]} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+
+                  <SocialSegment isNew={editMode === EditMode.new} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+
+                  {isEditMode && (
+                    <ProfileReferenceSegment
+                      references={references}
+                      readOnly={isReadOnlyMode}
+                      disabled={isSubmitting}
+                      profileId={profileId}
+                    />
+                  )}
+
+                  {isEditMode && (
+                    <>
+                      {onDelete && (
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => onDelete(currentUser.id)}
                           disabled={isSubmitting}
-                        />
-                      </FormRow>
-
-                      <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} cols={2}>
-                        {onVerify && (
-                          <>
-                            <Box marginLeft={1} />
-                            <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('ProofOfNameCredential')}>
-                              <HealthAndSafetyIcon />
-                            </IconButton>
-                          </>
-                        )}
-                      </LocationSegment>
-                    </Grid>
-                    <Grid container spacing={4} marginTop={2}>
-                      <FormRow>
-                        <FormikMarkdownField
-                          name="bio"
-                          title={t('components.profile.fields.bio.title')}
-                          readOnly={isReadOnlyMode}
-                          placeholder={t('components.profile.fields.bio.title')}
-                          multiline
-                          rows={5}
-                          disabled={isSubmitting}
-                          withCounter
-                          maxLength={LONG_TEXT_LENGTH}
-                        />
-                      </FormRow>
-
-                      <TagsetSegment
-                        tagsets={tagsets}
-                        template={[]}
-                        readOnly={isReadOnlyMode}
-                        disabled={isSubmitting}
-                      />
-
-                      <SocialSegment
-                        isNew={editMode === EditMode.new}
-                        readOnly={isReadOnlyMode}
-                        disabled={isSubmitting}
-                      />
-
-                      {isEditMode && (
-                        <Grid item>
-                          <ProfileReferenceSegment
-                            references={references}
-                            readOnly={isReadOnlyMode}
-                            disabled={isSubmitting}
-                            profileId={profileId}
-                          />
-                        </Grid>
+                        >
+                          {t('buttons.delete')}
+                        </Button>
                       )}
-
-                      {isEditMode && (
-                        <Grid container item justifyContent={'flex-end'} spacing={2}>
-                          {onDelete && (
-                            <Grid item>
-                              <Button
-                                variant="outlined"
-                                color="error"
-                                onClick={() => onDelete(currentUser.id)}
-                                disabled={isSubmitting}
-                              >
-                                {t('buttons.delete')}
-                              </Button>
-                            </Grid>
-                          )}
-                          <Grid item>
-                            <Button variant="contained" type="submit" disabled={isSubmitting}>
-                              {t('buttons.save')}
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      )}
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </form>
+                      <LoadingButton variant="contained" onClick={() => handleSubmit()} loading={isSubmitting}>
+                        {t('buttons.save')}
+                      </LoadingButton>
+                    </>
+                  )}
+                </Gutters>
+              </GridItem>
+            </GridProvider>
+          </GridContainer>
         );
       }}
     </Formik>

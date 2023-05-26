@@ -1731,6 +1731,8 @@ export type Document = {
   size: Scalars['Float'];
   /** The tagset in use on this Document. */
   tagset: Tagset;
+  /** The uploaded date of this Document */
+  uploadedDate: Scalars['DateTime'];
 };
 
 export type EcosystemModel = {
@@ -7993,6 +7995,7 @@ export type HubDashboardNavigationChallengesQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    visibility: HubVisibility;
     challenges?:
       | Array<{
           __typename?: 'Challenge';
@@ -8002,8 +8005,14 @@ export type HubDashboardNavigationChallengesQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagline: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
           };
+          context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+          lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -8038,8 +8047,14 @@ export type HubDashboardNavigationOpportunitiesQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagline: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?:
+                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+                    | undefined;
                 };
+                context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
               }>
             | undefined;
         }>
@@ -8047,11 +8062,21 @@ export type HubDashboardNavigationOpportunitiesQuery = {
   };
 };
 
-export type HubDashboardNavigationItemFragment = {
+export type HubDashboardNavigationProfileFragment = {
   __typename?: 'Profile';
   id: string;
   displayName: string;
-  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  tagline: string;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  visual?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+};
+
+export type HubDashboardNavigationContextFragment = { __typename?: 'Context'; id: string; vision?: string | undefined };
+
+export type HubDashboardNavigationLifecycleFragment = {
+  __typename?: 'Lifecycle';
+  id: string;
+  state?: string | undefined;
 };
 
 export type HubTemplatesQueryVariables = Exact<{
@@ -20013,6 +20038,7 @@ export type OrganizationInfoFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    tagline: string;
     visual?:
       | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
       | undefined;
@@ -20077,6 +20103,7 @@ export type OrganizationInfoQuery = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      tagline: string;
       visual?:
         | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
         | undefined;
@@ -20163,6 +20190,7 @@ export type OrganizationProfileInfoFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    tagline: string;
     visual?:
       | {
           __typename?: 'Visual';
@@ -20238,6 +20266,7 @@ export type UpdateOrganizationMutation = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      tagline: string;
       visual?:
         | {
             __typename?: 'Visual';
@@ -20408,6 +20437,7 @@ export type OrganizationProfileInfoQuery = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      tagline: string;
       visual?:
         | {
             __typename?: 'Visual';
@@ -20631,6 +20661,7 @@ export type UserDetailsFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    tagline: string;
     description?: string | undefined;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     visual?:
@@ -20759,6 +20790,7 @@ export type CreateUserMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?:
@@ -20810,6 +20842,7 @@ export type CreateUserNewRegistrationMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?:
@@ -20926,6 +20959,7 @@ export type UpdateUserMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?:
@@ -21046,6 +21080,7 @@ export type UserQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?:
@@ -21174,6 +21209,7 @@ export type UserProfileQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?:
@@ -21335,6 +21371,7 @@ export type MeQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?:
@@ -22246,6 +22283,112 @@ export type HubApplicationsQuery = {
   };
 };
 
+export type HubStorageAdminQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubStorageAdminQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    storageBucket?:
+      | {
+          __typename?: 'StorageBucket';
+          id: string;
+          size: number;
+          documents: Array<{
+            __typename?: 'Document';
+            id: string;
+            displayName: string;
+            size: number;
+            mimeType: MimeType;
+            uploadedDate: Date;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }>;
+        }
+      | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          storageBucket?:
+            | {
+                __typename?: 'StorageBucket';
+                id: string;
+                documents: Array<{
+                  __typename?: 'Document';
+                  id: string;
+                  displayName: string;
+                  size: number;
+                  mimeType: MimeType;
+                  uploadedDate: Date;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        nameID: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }>;
+              }
+            | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type DocumentDataFragment = {
+  __typename?: 'Document';
+  id: string;
+  displayName: string;
+  size: number;
+  mimeType: MimeType;
+  uploadedDate: Date;
+  createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type DeleteDocumentMutationVariables = Exact<{
+  documentId: Scalars['UUID'];
+}>;
+
+export type DeleteDocumentMutation = {
+  __typename?: 'Mutation';
+  deleteDocument: { __typename?: 'Document'; id: string };
+};
+
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -23070,7 +23213,11 @@ export type UpdateWhiteboardTemplateMutationVariables = Exact<{
 
 export type UpdateWhiteboardTemplateMutation = {
   __typename?: 'Mutation';
-  updateWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
+  updateWhiteboardTemplate: {
+    __typename?: 'WhiteboardTemplate';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string } | undefined };
+  };
 };
 
 export type CreateWhiteboardTemplateMutationVariables = Exact<{
@@ -23082,7 +23229,11 @@ export type CreateWhiteboardTemplateMutationVariables = Exact<{
 
 export type CreateWhiteboardTemplateMutation = {
   __typename?: 'Mutation';
-  createWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
+  createWhiteboardTemplate: {
+    __typename?: 'WhiteboardTemplate';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string } | undefined };
+  };
 };
 
 export type DeleteWhiteboardTemplateMutationVariables = Exact<{
