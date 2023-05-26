@@ -32,9 +32,9 @@ import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
 
 export enum TemplateType {
-  WhiteboardTemplate,
-  PostTemplate,
-  InnovationFlowTemplate,
+  WhiteboardTemplate = 'WhiteboardTemplate',
+  PostTemplate = 'PostTemplate',
+  InnovationFlowTemplate = 'InnovationFlowTemplate',
 }
 
 const InnovationPackProfilePage = () => {

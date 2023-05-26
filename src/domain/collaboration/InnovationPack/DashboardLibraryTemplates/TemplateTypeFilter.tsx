@@ -20,11 +20,13 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
       onChange([...value, templateType]);
     }
   };
+
+  const templateTypeNames = Object.keys(TemplateType) as (keyof typeof TemplateType)[];
+
   return (
     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
       <Caption>{t('common.show-subject')}</Caption>
-      {(Object.values(TemplateType).filter(k => isNaN(Number(k))) as Array<keyof typeof TemplateType>).map(key => {
-        // Map each (non numeric) value of the enum TemplateType to a <Chip>
+      {templateTypeNames.map(key => {
         const isSelected = value.includes(TemplateType[key]);
         return (
           <Chip
