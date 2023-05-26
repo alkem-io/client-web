@@ -40,7 +40,7 @@ const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionP
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('common.innovationTemplates')}
+      headerText={t('common.enums.templateTypes.InnovationFlowTemplate')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.innovation-flows'),
       })}
