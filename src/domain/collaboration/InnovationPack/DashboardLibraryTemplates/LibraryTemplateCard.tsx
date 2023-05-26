@@ -14,16 +14,19 @@ export type LibraryTemplateCardProps = Identifiable &
     | (InnovationFlowTemplate & { templateType: TemplateType.InnovationFlowTemplate })
   ) & { onClick?: ContributeCardProps['onClick'] };
 
-const LibraryTemplateCard = ({ templateType, onClick, ...template }: LibraryTemplateCardProps) => {
-  switch (templateType) {
+const LibraryTemplateCard = (props: LibraryTemplateCardProps) => {
+  switch (props.templateType) {
     case TemplateType.PostTemplate: {
-      return <PostTemplateCard onClick={onClick} template={template as PostTemplate} />;
+      const { onClick, templateType, ...template } = props;
+      return <PostTemplateCard onClick={onClick} template={template} />;
     }
     case TemplateType.WhiteboardTemplate: {
-      return <WhiteboardTemplateCard onClick={onClick} template={template as WhiteboardTemplate} />;
+      const { onClick, templateType, ...template } = props;
+      return <WhiteboardTemplateCard onClick={onClick} template={template} />;
     }
     case TemplateType.InnovationFlowTemplate: {
-      return <InnovationFlowTemplateCard onClick={onClick} template={template as InnovationFlowTemplate} />;
+      const { onClick, templateType, ...template } = props;
+      return <InnovationFlowTemplateCard onClick={onClick} template={template} />;
     }
   }
 };
