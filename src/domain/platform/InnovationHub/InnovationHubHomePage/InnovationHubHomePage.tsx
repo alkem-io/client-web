@@ -56,7 +56,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           <WrapperMarkdown>{innovationHub.description ?? ''}</WrapperMarkdown>
         </PageContentBlock>
         <PageContentBlock>
-          <PageContentBlockHeader title={t('pages.innovationHub.selectedSpaces', { hub: innovationHub.displayName })} />
+          <PageContentBlockHeader title={t('innovationHub.selectedSpaces', { hub: innovationHub.displayName })} />
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
               <HubCard
@@ -104,7 +104,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
             rowGap={0}
           >
             <Logo />
-            <BlockTitle paddingY={gutters()}>{t('pages.innovationHub.goToMainPage')}</BlockTitle>
+            <BlockTitle paddingY={gutters()}>{t('innovationHub.goToMainPage')}</BlockTitle>
           </Gutters>
         </PageContentBlock>
       </PageContent>

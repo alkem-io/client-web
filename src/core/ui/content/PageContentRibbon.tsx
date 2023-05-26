@@ -3,7 +3,7 @@ import { Box, BoxProps } from '@mui/material';
 import { Caption } from '../typography';
 import { gutters } from '../grid/utils';
 
-const PageContentRibbon = ({ sx, ...props }: BoxProps) => (
+const PageContentRibbon = ({ sx, children, ...props }: BoxProps) => (
   <Box
     component={Caption}
     sx={{ color: 'background.paper', backgroundColor: 'primary.main', ...sx }}
@@ -13,7 +13,9 @@ const PageContentRibbon = ({ sx, ...props }: BoxProps) => (
     justifyContent="center"
     padding={0.5}
     {...props}
-  />
+  >
+    <Caption>{children}</Caption>
+  </Box>
 );
 
 export default PageContentRibbon;
