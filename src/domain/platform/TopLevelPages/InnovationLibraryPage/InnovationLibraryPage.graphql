@@ -46,6 +46,7 @@ fragment LibraryTemplates on TemplatesSet {
         tags
       }
     }
+    type
     defaultDescription
   }
   whiteboardTemplates {
@@ -78,5 +79,6 @@ fragment LibraryTemplates on TemplatesSet {
       }
     }
     definition
+    type
   }
 }

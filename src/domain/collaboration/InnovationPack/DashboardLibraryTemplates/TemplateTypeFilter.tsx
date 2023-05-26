@@ -22,18 +22,19 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
   };
   return (
     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-      <Caption>{t('common.show')}</Caption>
+      <Caption>{t('common.show-subject')}</Caption>
       {(Object.values(TemplateType).filter(k => isNaN(Number(k))) as Array<keyof typeof TemplateType>).map(key => {
-        const selected = value.includes(TemplateType[key]);
+        // Map each (non numeric) value of the enum TemplateType to a <Chip>
+        const isSelected = value.includes(TemplateType[key]);
         return (
           <Chip
             key={key}
             label={
               <>
-                {selected ? <CheckIcon /> : undefined} {t(`pages.innovationLibrary.templateTypes.${key}` as const)}
+                {isSelected ? <CheckIcon /> : undefined} {t(`pages.innovationLibrary.templateTypes.${key}` as const)}
               </>
             }
-            variant={selected ? 'filled' : 'outlined'}
+            variant={isSelected ? 'filled' : 'outlined'}
             color="primary"
             size="medium"
             onClick={() => onClick(TemplateType[key])}

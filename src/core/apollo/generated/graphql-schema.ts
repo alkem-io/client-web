@@ -8127,7 +8127,14 @@ export type HubTemplatesQuery = {
             id: string;
             definition: string;
             type: InnovationFlowType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -8258,7 +8265,14 @@ export type InnovationFlowTemplatesFromHubQuery = {
             id: string;
             definition: string;
             type: InnovationFlowType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -8336,7 +8350,14 @@ export type HubTemplatesFragment = {
           id: string;
           definition: string;
           type: InnovationFlowType;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }>;
       }
     | undefined;
@@ -8361,7 +8382,14 @@ export type InnovationFlowTemplateFragment = {
   id: string;
   definition: string;
   type: InnovationFlowType;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
 };
 
 export type AdminHubFragment = {
@@ -21556,6 +21584,7 @@ export type InnovationLibraryQuery = {
               postTemplates: Array<{
                 __typename?: 'PostTemplate';
                 id: string;
+                type: string;
                 defaultDescription: string;
                 profile: {
                   __typename?: 'Profile';
@@ -21582,6 +21611,7 @@ export type InnovationLibraryQuery = {
                 __typename?: 'InnovationFlowTemplate';
                 id: string;
                 definition: string;
+                type: InnovationFlowType;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -21629,6 +21659,7 @@ export type InnovationPackCardFragment = {
         postTemplates: Array<{
           __typename?: 'PostTemplate';
           id: string;
+          type: string;
           defaultDescription: string;
           profile: {
             __typename?: 'Profile';
@@ -21655,6 +21686,7 @@ export type InnovationPackCardFragment = {
           __typename?: 'InnovationFlowTemplate';
           id: string;
           definition: string;
+          type: InnovationFlowType;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -21687,6 +21719,7 @@ export type LibraryTemplatesFragment = {
   postTemplates: Array<{
     __typename?: 'PostTemplate';
     id: string;
+    type: string;
     defaultDescription: string;
     profile: {
       __typename?: 'Profile';
@@ -21713,6 +21746,7 @@ export type LibraryTemplatesFragment = {
     __typename?: 'InnovationFlowTemplate';
     id: string;
     definition: string;
+    type: InnovationFlowType;
     profile: {
       __typename?: 'Profile';
       id: string;

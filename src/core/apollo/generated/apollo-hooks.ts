@@ -818,11 +818,10 @@ export const InnovationFlowTemplateFragmentDoc = gql`
     definition
     type
     profile {
-      id
-      displayName
-      description
+      ...TemplateCardProfileInfo
     }
   }
+  ${TemplateCardProfileInfoFragmentDoc}
 `;
 export const HubTemplatesFragmentDoc = gql`
   fragment HubTemplates on Hub {
@@ -2390,6 +2389,7 @@ export const LibraryTemplatesFragmentDoc = gql`
           tags
         }
       }
+      type
       defaultDescription
     }
     whiteboardTemplates {
@@ -2422,6 +2422,7 @@ export const LibraryTemplatesFragmentDoc = gql`
         }
       }
       definition
+      type
     }
   }
   ${VisualUriFragmentDoc}

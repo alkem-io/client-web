@@ -251,7 +251,7 @@
     "authorization": "Authorization",
     "question": "Question",
     "questions": "Questions",
-    "show": "Show: ",
+    "show-subject": "Show: ",
     "show-all": "Show all",
     "title": "Title",
     "warning": "Warning",

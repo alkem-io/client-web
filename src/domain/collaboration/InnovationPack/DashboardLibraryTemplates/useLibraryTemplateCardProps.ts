@@ -4,6 +4,9 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
 import { compact, sortBy } from 'lodash';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
+import { postTemplateMapper } from '../../aspect/PostTemplateCard/PostTemplate';
+import { whiteboardTemplateMapper } from '../../canvas/WhiteboardTemplateCard/WhiteboardTemplate';
+import { innovationFlowTemplateMapper } from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplate';
 
 const useLibraryTemplateCardProps = (
   innovationPacks: InnovationPackCardFragment[] | undefined
@@ -16,57 +19,19 @@ const useLibraryTemplateCardProps = (
             ...(innovationPack.templates?.postTemplates ?? []).map<Identifiable & LibraryTemplateCardProps>(
               template => ({
                 templateType: TemplateType.PostTemplate,
-                id: template.id,
-                description: template.profile.description,
-                displayName: template.profile.displayName,
-                visualUri: template.profile.visual?.uri,
-                tags: template.profile.tagset?.tags,
-                provider: {
-                  displayName: innovationPack.provider?.profile.displayName,
-                  avatarUri: innovationPack.provider?.profile.visual?.uri,
-                },
-                innovationPack: {
-                  id: innovationPack.id,
-                  displayName: innovationPack.profile.displayName,
-                },
-                defaultDescription: template.defaultDescription,
+                ...postTemplateMapper(template, innovationPack.provider?.profile, innovationPack),
               })
             ),
             ...(innovationPack.templates?.whiteboardTemplates ?? []).map<Identifiable & LibraryTemplateCardProps>(
               template => ({
                 templateType: TemplateType.WhiteboardTemplate,
-                id: template.id,
-                description: template.profile.description,
-                displayName: template.profile.displayName,
-                visualUri: template.profile.visual?.uri,
-                tags: template.profile.tagset?.tags,
-                provider: {
-                  displayName: innovationPack.provider?.profile.displayName,
-                  avatarUri: innovationPack.provider?.profile.visual?.uri,
-                },
-                innovationPack: {
-                  id: innovationPack.id,
-                  displayName: innovationPack.profile.displayName,
-                },
+                ...whiteboardTemplateMapper(template, innovationPack.provider?.profile, innovationPack),
               })
             ),
             ...(innovationPack.templates?.innovationFlowTemplates ?? []).map<Identifiable & LibraryTemplateCardProps>(
               template => ({
                 templateType: TemplateType.InnovationFlowTemplate,
-                id: template.id,
-                description: template.profile.description,
-                displayName: template.profile.displayName,
-                visualUri: template.profile.visual?.uri,
-                tags: template.profile.tagset?.tags,
-                provider: {
-                  displayName: innovationPack.provider?.profile.displayName,
-                  avatarUri: innovationPack.provider?.profile.visual?.uri,
-                },
-                innovationPack: {
-                  id: innovationPack.id,
-                  displayName: innovationPack.profile.displayName,
-                },
-                definition: template.definition,
+                ...innovationFlowTemplateMapper(template, innovationPack.provider?.profile, innovationPack),
               })
             ),
           ]);
