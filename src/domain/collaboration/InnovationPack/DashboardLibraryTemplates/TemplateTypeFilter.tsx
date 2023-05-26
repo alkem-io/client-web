@@ -24,7 +24,7 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
   const templateTypeNames = Object.keys(TemplateType) as (keyof typeof TemplateType)[];
 
   return (
-    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
       <Caption>{t('common.show-subject')}</Caption>
       {templateTypeNames.map(key => {
         const isSelected = value.includes(TemplateType[key]);
@@ -44,7 +44,7 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
               paddingX: theme => theme.spacing(1.5),
               svg: {
                 width: theme => theme.spacing(1.5),
-                verticalAlign: 'middle',
+                verticalAlign: 'bottom',
                 marginLeft: theme => theme.spacing(-1.5),
               },
             }}

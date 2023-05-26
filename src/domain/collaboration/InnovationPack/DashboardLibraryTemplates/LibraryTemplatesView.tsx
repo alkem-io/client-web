@@ -105,7 +105,7 @@ const LibraryTemplatesView = ({
           )}
         </ScrollableCardsLayoutContainer>
       )}
-      {!isMobile && hasMore && <SeeMore subject={t('common.innovation-packs')} onClick={onDialogOpen} />}
+      {!isMobile && hasMore && <SeeMore subject={t('common.templates')} onClick={onDialogOpen} />}
     </PageContentBlock>
   );
 };

@@ -20,10 +20,11 @@ const PageContentBlockHeader = ({
   disclaimer,
   children,
 }: PropsWithChildren<PageContentBlockHeaderProps>) => {
+  const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   return (
     <>
-      <Box display="flex" flexDirection="row" alignItems="center" gap={gutters(0.5)}>
+      <Box display="flex" flexDirection="row" alignItems={isSmallScreen ? 'start' : 'center'} gap={gutters(0.5)}>
         <Box
           flexGrow={1}
           minWidth={0}
