@@ -4,7 +4,7 @@ import { CalloutState, CalloutType, Tagset } from '../../../core/apollo/generate
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { MID_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
-import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';

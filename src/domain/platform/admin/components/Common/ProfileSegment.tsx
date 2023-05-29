@@ -9,7 +9,7 @@ import {
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormRow from '../../../../../common/components/FormLayout';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 
 export const profileSegmentSchema = yup.object().shape({
   avatar: yup.string().max(MID_TEXT_LENGTH),

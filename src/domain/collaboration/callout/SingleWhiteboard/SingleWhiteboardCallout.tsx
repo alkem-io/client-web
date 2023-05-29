@@ -57,6 +57,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           expanded={expanded}
           onExpand={onExpand}
           onClose={onClose}
+          journeyTypeName={journeyTypeName}
         >
           <ImageWithCaption
             caption={t('callout.singleWhiteboard.clickToSee')}

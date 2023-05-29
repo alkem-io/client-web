@@ -1,35 +1,39 @@
 import 'react-image-crop/dist/ReactCrop.css';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import UploadButton from '../../../core/UploadButton';
-import { useConfig } from '../../../../../domain/platform/config/useConfig';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useUploadFileMutation } from '../../../../../core/apollo/generated/apollo-hooks';
-import { TranslateWithElements } from '../../../../../domain/shared/i18n/TranslateWithElements';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import { BlockTitle } from '../../../../../core/ui/typography';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import UploadButton from '../../../../common/components/core/UploadButton';
+import { useConfig } from '../../../../domain/platform/config/useConfig';
+import { useNotification } from '../../notifications/useNotification';
+import { useUploadFileMutation } from '../../../apollo/generated/apollo-hooks';
+import { TranslateWithElements } from '../../../../domain/shared/i18n/TranslateWithElements';
+import { Actions } from '../../actions/Actions';
+import DialogHeader from '../../dialog/DialogHeader';
+import { BlockTitle } from '../../typography';
+import { gutters } from '../../grid/utils';
+import { StorageConfig } from '../../../../domain/platform/storage/StorageBucket/useStorageConfig';
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
   referenceID: string;
+  storageConfig: StorageConfig;
 }
 
-const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID }) => {
+const bytesInMegabyte = Math.pow(1024, 2);
+
+const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageConfig }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
-  const { storage, platform } = useConfig();
+  const { platform } = useConfig();
   const notify = useNotification();
 
   const [dialogOpened, setDialogOpened] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
 
-  const acceptedFileTypes = useMemo(() => storage?.file.mimeTypes.join(','), [storage]);
-  const MB_LIMIT = storage?.file.maxFileSize ? storage.file.maxFileSize / (1024 * 1024) : 0;
+  const acceptedFileTypes = storageConfig.allowedMimeTypes.join(',');
+  const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
 
   const [uploadFile, { loading }] = useUploadFileMutation({
     onCompleted: data => {
@@ -41,10 +45,11 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID }) => {
   const handleSubmit = async () => {
     if (!selectedFile) return;
 
-    if (storage?.file.maxFileSize && selectedFile.size > storage?.file.maxFileSize) {
-      notify(t('components.file-upload.file-size-error', { limit: MB_LIMIT }), 'error');
+    if (storageConfig.maxFileSize && selectedFile.size > storageConfig.maxFileSize) {
+      notify(t('components.file-upload.file-size-error', { limit: maxFileSizeMb }), 'error');
       return;
     }
+
     await uploadFile({
       variables: {
         file: selectedFile,

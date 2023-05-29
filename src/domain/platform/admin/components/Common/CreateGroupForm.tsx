@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 

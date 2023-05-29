@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import * as yup from 'yup';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikCheckboxField from '../../../../../common/components/composite/forms/FormikCheckboxField';
 import RoundedBadge from '../../../../../core/ui/icon/RoundedBadge';
 import DeleteIcon from '@mui/icons-material/Delete';

@@ -3,7 +3,7 @@ import { Editor } from '@tiptap/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../FormikInputField/FormikInputField';
 import { AddPhotoAlternateOutlined } from '@mui/icons-material';
 import DialogHeader from '../../dialog/DialogHeader';
 import Gutters from '../../grid/Gutters';

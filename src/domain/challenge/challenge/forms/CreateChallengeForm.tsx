@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Form, Formik } from 'formik';
 import { MessageWithPayload } from '../../../shared/i18n/ValidationMessageTranslation';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';

@@ -10,35 +10,49 @@ import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfi
 import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 
 export const OpportunityRoute: FC = () => {
+  const { hubNameId } = useHub();
   const { challenge } = useChallenge();
   const { opportunity } = useOpportunity();
 
   return (
-    <Routes>
-      <Route index element={<Navigate to="profile" replace />} />
-      <Route path="profile" element={<OpportunityProfilePage />} />
-      <Route path="context" element={<OpportunityContextPage />} />
-      <Route
-        path="communications"
-        element={
-          <OpportunityCommunicationsPage
-            communityId={opportunity?.community?.id}
-            parentCommunityId={challenge?.community?.id}
-          />
-        }
-      />
-      <Route path="community" element={<OpportunityCommunityAdminPage />} />
-      <Route
-        path="community/groups/*"
-        element={
-          <CommunityGroupsRoute communityId={opportunity?.community?.id} parentCommunityId={challenge?.community?.id} />
-        }
-      />
-      <Route path="authorization/*" element={<OpportunityAuthorizationRoute />} />
-      <Route path="innovation-flow/*" element={<OpportunityInnovationFlowPage />} />
-      <Route path="*" element={<Error404 />} />
-    </Routes>
+    <StorageConfigContextProvider
+      locationType="journey"
+      journeyTypeName="opportunity"
+      hubNameId={hubNameId}
+      challengeNameId={challenge?.nameID}
+      opportunityNameId={opportunity?.nameID}
+    >
+      <Routes>
+        <Route index element={<Navigate to="profile" replace />} />
+        <Route path="profile" element={<OpportunityProfilePage />} />
+        <Route path="context" element={<OpportunityContextPage />} />
+        <Route
+          path="communications"
+          element={
+            <OpportunityCommunicationsPage
+              communityId={opportunity?.community?.id}
+              parentCommunityId={challenge?.community?.id}
+            />
+          }
+        />
+        <Route path="community" element={<OpportunityCommunityAdminPage />} />
+        <Route
+          path="community/groups/*"
+          element={
+            <CommunityGroupsRoute
+              communityId={opportunity?.community?.id}
+              parentCommunityId={challenge?.community?.id}
+            />
+          }
+        />
+        <Route path="authorization/*" element={<OpportunityAuthorizationRoute />} />
+        <Route path="innovation-flow/*" element={<OpportunityInnovationFlowPage />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </StorageConfigContextProvider>
   );
 };

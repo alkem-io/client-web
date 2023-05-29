@@ -13,25 +13,28 @@ import HubAuthorizationRoute from './HubAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import HubContextPage from '../../../../challenge/hub/pages/HubContext/HubContextPage';
 import HubStorageAdminPage from '../storage/HubStorageAdminPage';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 export const HubRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { hubId, communityId } = useHub();
 
   return (
-    <Routes>
-      <Route index element={<Navigate to="profile" replace />} />
-      <Route path="profile" element={<HubProfilePage />} />
-      <Route path="context" element={<HubContextPage />} />
-      <Route path="communications" element={<HubCommunicationsPage communityId={communityId} />} />
-      <Route path="community" element={<HubCommunityAdminPage />} />
-      <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} />} />
-      <Route path="storage" element={<HubStorageAdminPage hubId={hubId} />} />
-      <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />
-      <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
-      <Route path="challenges/*" element={<ChallengesRoute />} />
-      <Route path="authorization/*" element={<HubAuthorizationRoute resourceId={hubId} />} />
-      <Route path="*" element={<Error404 />} />
-    </Routes>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="hub" hubNameId={hubId}>
+      <Routes>
+        <Route index element={<Navigate to="profile" replace />} />
+        <Route path="profile" element={<HubProfilePage />} />
+        <Route path="context" element={<HubContextPage />} />
+        <Route path="communications" element={<HubCommunicationsPage communityId={communityId} />} />
+        <Route path="community" element={<HubCommunityAdminPage />} />
+        <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} />} />
+        <Route path="storage" element={<HubStorageAdminPage hubId={hubId} />} />
+        <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />
+        <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
+        <Route path="challenges/*" element={<ChallengesRoute />} />
+        <Route path="authorization/*" element={<HubAuthorizationRoute resourceId={hubId} />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </StorageConfigContextProvider>
   );
 };

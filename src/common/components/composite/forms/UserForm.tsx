@@ -13,8 +13,8 @@ import ProfileReferenceSegment from '../../../../domain/platform/admin/component
 import { referenceSegmentValidationObject } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
 import SocialSegment from '../../../../domain/platform/admin/components/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
-import VisualUpload from '../common/VisualUpload/VisualUpload';
-import { FormikInputField } from './FormikInputField';
+import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
+import { FormikInputField } from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../../domain/common/location/countries.constants';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';

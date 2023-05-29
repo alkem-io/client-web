@@ -2959,6 +2959,28 @@ export const SearchResultOpportunityFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const ProfileStorageConfigFragmentDoc = gql`
+  fragment ProfileStorageConfig on Profile {
+    id
+    storageBucket {
+      id
+      allowedMimeTypes
+      maxFileSize
+    }
+  }
+`;
+export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
+  fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
+    id
+    callouts(IDs: [$calloutId]) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
     id
@@ -3019,53 +3041,6 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${CalendarEventInfoFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
-export const UploadFileDocument = gql`
-  mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
-    uploadFileOnReference(uploadData: $uploadData, file: $file) {
-      id
-      uri
-    }
-  }
-`;
-export type UploadFileMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UploadFileMutation,
-  SchemaTypes.UploadFileMutationVariables
->;
-
-/**
- * __useUploadFileMutation__
- *
- * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadFileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
- *   variables: {
- *      file: // value for 'file'
- *      uploadData: // value for 'uploadData'
- *   },
- * });
- */
-export function useUploadFileMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>(
-    UploadFileDocument,
-    options
-  );
-}
-
-export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
-export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
-export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UploadFileMutation,
-  SchemaTypes.UploadFileMutationVariables
->;
 export const AssignUserAsChallengeAdminDocument = gql`
   mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
     assignUserAsChallengeAdmin(membershipData: $input) {
@@ -3705,6 +3680,53 @@ export type RemoveUserAsOrganizationOwnerMutationResult =
 export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
+>;
+export const UploadFileDocument = gql`
+  mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
+    uploadFileOnReference(uploadData: $uploadData, file: $file) {
+      id
+      uri
+    }
+  }
+`;
+export type UploadFileMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadFileMutation,
+  SchemaTypes.UploadFileMutationVariables
+>;
+
+/**
+ * __useUploadFileMutation__
+ *
+ * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      uploadData: // value for 'uploadData'
+ *   },
+ * });
+ */
+export function useUploadFileMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>(
+    UploadFileDocument,
+    options
+  );
+}
+
+export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
+export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
+export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadFileMutation,
+  SchemaTypes.UploadFileMutationVariables
 >;
 export const ChallengePageDocument = gql`
   query challengePage($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
@@ -22714,6 +22736,313 @@ export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
   return { query: UserRolesSearchCardsDocument, variables: variables };
+}
+
+export const JourneyStorageConfigDocument = gql`
+  query JourneyStorageConfig(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      ... on Hub @include(if: $includeHub) {
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useJourneyStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useJourneyStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyStorageConfigQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useJourneyStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyStorageConfigQuery,
+    SchemaTypes.JourneyStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.JourneyStorageConfigQuery, SchemaTypes.JourneyStorageConfigQueryVariables>(
+    JourneyStorageConfigDocument,
+    options
+  );
+}
+
+export function useJourneyStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyStorageConfigQuery,
+    SchemaTypes.JourneyStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.JourneyStorageConfigQuery, SchemaTypes.JourneyStorageConfigQueryVariables>(
+    JourneyStorageConfigDocument,
+    options
+  );
+}
+
+export type JourneyStorageConfigQueryHookResult = ReturnType<typeof useJourneyStorageConfigQuery>;
+export type JourneyStorageConfigLazyQueryHookResult = ReturnType<typeof useJourneyStorageConfigLazyQuery>;
+export type JourneyStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyStorageConfigQuery,
+  SchemaTypes.JourneyStorageConfigQueryVariables
+>;
+export function refetchJourneyStorageConfigQuery(variables: SchemaTypes.JourneyStorageConfigQueryVariables) {
+  return { query: JourneyStorageConfigDocument, variables: variables };
+}
+
+export const CalloutStorageConfigDocument = gql`
+  query CalloutStorageConfig(
+    $calloutId: UUID_NAMEID!
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      ... on Hub @include(if: $includeHub) {
+        collaboration {
+          ...CalloutOnCollaborationWithStorageConfig
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        collaboration {
+          ...CalloutOnCollaborationWithStorageConfig
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        collaboration {
+          ...CalloutOnCollaborationWithStorageConfig
+        }
+      }
+    }
+  }
+  ${CalloutOnCollaborationWithStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useCalloutStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useCalloutStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutStorageConfigQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCalloutStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutStorageConfigQuery,
+    SchemaTypes.CalloutStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutStorageConfigQuery, SchemaTypes.CalloutStorageConfigQueryVariables>(
+    CalloutStorageConfigDocument,
+    options
+  );
+}
+
+export function useCalloutStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutStorageConfigQuery,
+    SchemaTypes.CalloutStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutStorageConfigQuery, SchemaTypes.CalloutStorageConfigQueryVariables>(
+    CalloutStorageConfigDocument,
+    options
+  );
+}
+
+export type CalloutStorageConfigQueryHookResult = ReturnType<typeof useCalloutStorageConfigQuery>;
+export type CalloutStorageConfigLazyQueryHookResult = ReturnType<typeof useCalloutStorageConfigLazyQuery>;
+export type CalloutStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutStorageConfigQuery,
+  SchemaTypes.CalloutStorageConfigQueryVariables
+>;
+export function refetchCalloutStorageConfigQuery(variables: SchemaTypes.CalloutStorageConfigQueryVariables) {
+  return { query: CalloutStorageConfigDocument, variables: variables };
+}
+
+export const UserStorageConfigDocument = gql`
+  query UserStorageConfig($userId: UUID_NAMEID_EMAIL!) {
+    user(ID: $userId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useUserStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useUserStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserStorageConfigQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserStorageConfigQuery, SchemaTypes.UserStorageConfigQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserStorageConfigQuery, SchemaTypes.UserStorageConfigQueryVariables>(
+    UserStorageConfigDocument,
+    options
+  );
+}
+
+export function useUserStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserStorageConfigQuery,
+    SchemaTypes.UserStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserStorageConfigQuery, SchemaTypes.UserStorageConfigQueryVariables>(
+    UserStorageConfigDocument,
+    options
+  );
+}
+
+export type UserStorageConfigQueryHookResult = ReturnType<typeof useUserStorageConfigQuery>;
+export type UserStorageConfigLazyQueryHookResult = ReturnType<typeof useUserStorageConfigLazyQuery>;
+export type UserStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserStorageConfigQuery,
+  SchemaTypes.UserStorageConfigQueryVariables
+>;
+export function refetchUserStorageConfigQuery(variables: SchemaTypes.UserStorageConfigQueryVariables) {
+  return { query: UserStorageConfigDocument, variables: variables };
+}
+
+export const OrganizationStorageConfigDocument = gql`
+  query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
+    organization(ID: $organizationId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useOrganizationStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useOrganizationStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationStorageConfigQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useOrganizationStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationStorageConfigQuery,
+    SchemaTypes.OrganizationStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OrganizationStorageConfigQuery,
+    SchemaTypes.OrganizationStorageConfigQueryVariables
+  >(OrganizationStorageConfigDocument, options);
+}
+
+export function useOrganizationStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationStorageConfigQuery,
+    SchemaTypes.OrganizationStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationStorageConfigQuery,
+    SchemaTypes.OrganizationStorageConfigQueryVariables
+  >(OrganizationStorageConfigDocument, options);
+}
+
+export type OrganizationStorageConfigQueryHookResult = ReturnType<typeof useOrganizationStorageConfigQuery>;
+export type OrganizationStorageConfigLazyQueryHookResult = ReturnType<typeof useOrganizationStorageConfigLazyQuery>;
+export type OrganizationStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationStorageConfigQuery,
+  SchemaTypes.OrganizationStorageConfigQueryVariables
+>;
+export function refetchOrganizationStorageConfigQuery(variables: SchemaTypes.OrganizationStorageConfigQueryVariables) {
+  return { query: OrganizationStorageConfigDocument, variables: variables };
 }
 
 export const CreateReferenceOnProfileDocument = gql`
