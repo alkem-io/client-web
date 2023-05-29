@@ -2,6 +2,7 @@ import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import {
   useCalloutStorageConfigQuery,
+  useInnovationPackStorageConfigQuery,
   useJourneyStorageConfigQuery,
   useOrganizationStorageConfigQuery,
   useUserStorageConfigQuery,
@@ -13,7 +14,7 @@ export interface StorageConfig {
   maxFileSize: number;
 }
 
-type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout';
+type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'innovationPack';
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
@@ -40,11 +41,17 @@ interface UseStorageConfigOptionsOrganization extends UseStorageConfigOptionsBas
   locationType: 'organization';
 }
 
+interface UseStorageConfigOptionsInnovationPack extends UseStorageConfigOptionsBase {
+  innovationPackId: string;
+  locationType: 'innovationPack';
+}
+
 export type StorageConfigOptions =
   | UseStorageConfigOptionsJourney
   | UseStorageConfigOptionsUser
   | UseStorageConfigOptionsOrganization
-  | UseStorageConfigOptionsCallout;
+  | UseStorageConfigOptionsCallout
+  | UseStorageConfigOptionsInnovationPack;
 
 export interface StorageConfigProvided {
   storageConfig: StorageConfig | undefined;
@@ -90,6 +97,12 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     skip: locationType !== 'organization',
   });
 
+  const innovationPackOptions = options as UseStorageConfigOptionsInnovationPack;
+  const { data: innovationPackStorageConfigData } = useInnovationPackStorageConfigQuery({
+    variables: innovationPackOptions,
+    skip: locationType !== 'innovationPack',
+  });
+
   const journey =
     journeyStorageConfigData?.hub.opportunity ??
     journeyStorageConfigData?.hub.challenge ??
@@ -103,7 +116,12 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     )?.callouts ?? [];
 
   const { profile } =
-    journey ?? callout ?? userStorageConfigData?.user ?? organizationStorageConfigData?.organization ?? {};
+    journey ??
+    callout ??
+    userStorageConfigData?.user ??
+    organizationStorageConfigData?.organization ??
+    innovationPackStorageConfigData?.platform.library.innovationPack ??
+    {};
 
   const storageConfig = profile?.storageBucket;
 
