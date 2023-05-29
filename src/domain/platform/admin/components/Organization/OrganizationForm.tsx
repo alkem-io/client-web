@@ -14,7 +14,7 @@ import {
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import Section, { Header } from '../../../../../common/components/core/Section';
-import VisualUpload from '../../../../../common/components/composite/common/VisualUpload/VisualUpload';
+import VisualUpload from '../../../../../core/ui/upload/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';

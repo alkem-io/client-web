@@ -5,7 +5,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
 import { Loading } from '../../../../common/components/core/Loading/Loading';

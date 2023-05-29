@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
-import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
+import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { AspectIcon } from '../icon/AspectIcon';
@@ -11,7 +11,7 @@ import CardDescription from '../../../../core/ui/card/CardDescription';
 import CardTags from '../../../../core/ui/card/CardTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 
-interface PostTemplate {
+export interface PostTemplate {
   displayName: string;
   description: string | undefined;
   // visualUri: string | undefined;
@@ -21,11 +21,12 @@ interface PostTemplate {
     avatarUri: string | undefined;
   };
   innovationPack: {
+    id: string | undefined;
     displayName: string | undefined;
   };
 }
 
-interface PostTemplateCardProps extends ContributeCardContainerProps {
+interface PostTemplateCardProps extends ContributeCardProps {
   template: PostTemplate | undefined;
   loading?: boolean;
 }

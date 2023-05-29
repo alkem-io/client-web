@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useConfig } from '../../../../platform/config/useConfig';
 import { FEATURE_SSI } from '../../../../platform/config/features.constants';
 import { PageProps } from '../../../../shared/types/PageProps';
@@ -17,8 +16,6 @@ interface UserSettingsProps extends PageProps {}
 export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'settings', real: false }], [paths, url]);
-  useUpdateNavigation({ currentPaths });
-
   const { isFeatureEnabled } = useConfig();
 
   return (

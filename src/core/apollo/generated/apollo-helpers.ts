@@ -1768,6 +1768,7 @@ export type ProfileKeySpecifier = (
   | 'id'
   | 'location'
   | 'references'
+  | 'storageBucket'
   | 'tagline'
   | 'tagset'
   | 'tagsets'
@@ -1782,6 +1783,7 @@ export type ProfileFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -1,15 +1,14 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { useField } from 'formik';
 import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
 import TranslationKey from '../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
-import HelpButton from '../../core/HelpButton';
-import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
-import FileUploadButton from '../common/FileUpload/FileUpload';
+import HelpButton from '../../../../common/components/core/HelpButton';
+import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
 
-type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
+export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
   required?: boolean;
@@ -22,11 +21,10 @@ type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   loading?: boolean;
   withCounter?: boolean;
   maxLength?: number;
-  attachFile?: boolean;
-  referenceID?: string;
+  endAdornment?: ReactNode;
 };
 
-export const FormikInputField: FC<InputFieldProps> = ({
+export const FormikInputField: FC<FormikInputFieldProps> = ({
   title,
   name,
   required = false,
@@ -43,8 +41,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   withCounter,
   maxLength,
   fullWidth,
-  attachFile = false,
-  referenceID = '',
+  endAdornment,
   ...rest
 }) => {
   const tErr = useValidationMessageTranslation();
@@ -93,7 +90,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
             <>
               {loading && <CircularProgress size={20} />}
               {helpIconText && <HelpButton helpText={helpIconText} />}
-              {attachFile && referenceID && <FileUploadButton onUpload={helpers.setValue} referenceID={referenceID} />}
+              {endAdornment}
             </>
           ),
           readOnly: readOnly,
