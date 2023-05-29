@@ -20,6 +20,8 @@ interface FileUploadProps {
   storageConfig: StorageConfig;
 }
 
+const bytesInMegabyte = Math.pow(1024, 2);
+
 const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageConfig }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
@@ -31,7 +33,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
   const [selectedFile, setSelectedFile] = useState<File>();
 
   const acceptedFileTypes = storageConfig.allowedMimeTypes.join(',');
-  const MB_LIMIT = storageConfig.maxFileSize ? storageConfig.maxFileSize / (1024 * 1024) : 0;
+  const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
 
   const [uploadFile, { loading }] = useUploadFileMutation({
     onCompleted: data => {
@@ -44,7 +46,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
     if (!selectedFile) return;
 
     if (storageConfig.maxFileSize && selectedFile.size > storageConfig.maxFileSize) {
-      notify(t('components.file-upload.file-size-error', { limit: MB_LIMIT }), 'error');
+      notify(t('components.file-upload.file-size-error', { limit: maxFileSizeMb }), 'error');
       return;
     }
 
