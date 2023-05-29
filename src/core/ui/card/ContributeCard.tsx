@@ -7,7 +7,7 @@ import RouterLink from '../link/RouterLink';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
-export interface ContributeCardContainerProps {
+export interface ContributeCardProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   highlighted?: boolean;
   sx?: SxProps<Theme>;
@@ -17,7 +17,7 @@ export interface ContributeCardContainerProps {
 
 export const CONTRIBUTE_CARD_COLUMNS = 3;
 
-const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardContainerProps>>(
+const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardProps>>(
   ({ columns = CONTRIBUTE_CARD_COLUMNS, to, onClick, sx, highlighted, children }, ref) => {
     const content = to ? <RouterLink to={to}>{children}</RouterLink> : children;
 

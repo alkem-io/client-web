@@ -1,4 +1,4 @@
-import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
+import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import { Box } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockTitle } from '../../../../core/ui/typography';
@@ -11,7 +11,7 @@ import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter'
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import JourneyCardDescription from '../../../challenge/common/JourneyCard/JourneyCardDescription';
 
-export interface ContributorCardProps extends ContributeCardContainerProps {
+export interface ContributorCardProps extends ContributeCardProps {
   displayName: string;
   description?: string;
   avatarUri?: string;

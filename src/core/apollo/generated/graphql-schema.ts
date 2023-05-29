@@ -8129,7 +8129,14 @@ export type HubTemplatesQuery = {
             id: string;
             definition: string;
             type: InnovationFlowType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -8260,7 +8267,14 @@ export type InnovationFlowTemplatesFromHubQuery = {
             id: string;
             definition: string;
             type: InnovationFlowType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -8338,7 +8352,14 @@ export type HubTemplatesFragment = {
           id: string;
           definition: string;
           type: InnovationFlowType;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }>;
       }
     | undefined;
@@ -8363,7 +8384,14 @@ export type InnovationFlowTemplateFragment = {
   id: string;
   definition: string;
   type: InnovationFlowType;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
 };
 
 export type AdminHubFragment = {
@@ -21555,9 +21583,46 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
-              postTemplates: Array<{ __typename?: 'PostTemplate'; id: string }>;
-              whiteboardTemplates: Array<{ __typename?: 'WhiteboardTemplate'; id: string }>;
-              innovationFlowTemplates: Array<{ __typename?: 'InnovationFlowTemplate'; id: string }>;
+              postTemplates: Array<{
+                __typename?: 'PostTemplate';
+                id: string;
+                type: string;
+                defaultDescription: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }>;
+              whiteboardTemplates: Array<{
+                __typename?: 'WhiteboardTemplate';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }>;
+              innovationFlowTemplates: Array<{
+                __typename?: 'InnovationFlowTemplate';
+                id: string;
+                definition: string;
+                type: InnovationFlowType;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }>;
             }
           | undefined;
         provider?:
@@ -21593,9 +21658,46 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'TemplatesSet';
         id: string;
-        postTemplates: Array<{ __typename?: 'PostTemplate'; id: string }>;
-        whiteboardTemplates: Array<{ __typename?: 'WhiteboardTemplate'; id: string }>;
-        innovationFlowTemplates: Array<{ __typename?: 'InnovationFlowTemplate'; id: string }>;
+        postTemplates: Array<{
+          __typename?: 'PostTemplate';
+          id: string;
+          type: string;
+          defaultDescription: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+        }>;
+        whiteboardTemplates: Array<{
+          __typename?: 'WhiteboardTemplate';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+        }>;
+        innovationFlowTemplates: Array<{
+          __typename?: 'InnovationFlowTemplate';
+          id: string;
+          definition: string;
+          type: InnovationFlowType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+        }>;
       }
     | undefined;
   provider?:
@@ -21611,6 +21713,51 @@ export type InnovationPackCardFragment = {
         };
       }
     | undefined;
+};
+
+export type LibraryTemplatesFragment = {
+  __typename?: 'TemplatesSet';
+  id: string;
+  postTemplates: Array<{
+    __typename?: 'PostTemplate';
+    id: string;
+    type: string;
+    defaultDescription: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+  }>;
+  whiteboardTemplates: Array<{
+    __typename?: 'WhiteboardTemplate';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+  }>;
+  innovationFlowTemplates: Array<{
+    __typename?: 'InnovationFlowTemplate';
+    id: string;
+    definition: string;
+    type: InnovationFlowType;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+  }>;
 };
 
 export type ChallengeExplorerPageQueryVariables = Exact<{

@@ -6,8 +6,7 @@ export interface WhiteboardTemplate extends TemplateBase {
   displayName: string;
   description: string | undefined;
   visualUri: string | undefined;
-  // TODO display tags
-  // tags: string[] | undefined;
+  tags: string[] | undefined;
   provider: {
     displayName: string | undefined;
     avatarUri: string | undefined;
