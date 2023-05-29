@@ -24198,6 +24198,35 @@ export type OrganizationStorageConfigQuery = {
   };
 };
 
+export type InnovationPackStorageConfigQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID_NAMEID'];
+}>;
+
+export type InnovationPackStorageConfigQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              storageBucket?:
+                | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+                | undefined;
+            };
+          }
+        | undefined;
+    };
+  };
+};
+
 export type ProfileStorageConfigFragment = {
   __typename?: 'Profile';
   id: string;

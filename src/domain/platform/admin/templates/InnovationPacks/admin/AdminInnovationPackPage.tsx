@@ -24,6 +24,7 @@ import AdminPostTemplatesSection from '../../PostTemplates/AdminPostTemplatesSec
 import AdminWhiteboardTemplatesSection from '../../WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 import { RoutePaths } from './AdminInnovationPackRoutes';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 const routePrefix = '/admin/innovation-packs'; // TODO: Maybe pass this from the parent
 interface AdminInnovationPackPageProps {
@@ -36,6 +37,10 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
   const navigate = useNavigate();
   const notify = useNotification();
   const { innovationPackNameId, aspectNameId, whiteboardNameId, innovationTemplateId } = useUrlParams();
+
+  if (!innovationPackNameId) {
+    throw new Error('Must be within InnovationPack');
+  }
 
   const innovationPackRoute = `${routePrefix}/${innovationPackNameId}`;
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(innovationPackRoute);
@@ -118,70 +123,72 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
 
   const isLoading = loading || loadingOrganizations || creating || updating;
   return (
-    <AdminLayout currentTab={AdminSection.InnovationPacks}>
-      <Button component={RouterLink} to="../" startIcon={<ArrowBackIcon />}>
-        {t('pages.admin.innovation-packs.back-button')}
-      </Button>
-      <InnovationPackForm
-        isNew={isNew}
-        nameID={innovationPack?.nameID}
-        profile={innovationPack?.profile}
-        providerId={innovationPack?.provider?.id}
-        organizations={organizations}
-        onSubmit={handleSubmit}
-        loading={isLoading}
-      />
-      {!isNew && (
-        <Gutters width="100%">
-          <AdminPostTemplatesSection
-            templateId={aspectNameId}
-            templatesSetId={templatesSetID}
-            templates={postTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
-            buildTemplateLink={({ id }) =>
-              buildLink(`${innovationPackRoute}/${RoutePaths.aspectTemplatesRoutePath}/${id}`)
-            }
-            edit={edit}
-            loadInnovationPacks={() => {}}
-            loadingInnovationPacks={isLoading}
-            innovationPacks={[]}
-            canImportTemplates={false}
-          />
-          <AdminWhiteboardTemplatesSection
-            whiteboardTemplatesLocation="platform"
-            templateId={whiteboardNameId}
-            templatesSetId={templatesSetID}
-            templates={whiteboardTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
-            buildTemplateLink={({ id }) =>
-              buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
-            }
-            edit={edit}
-            loadInnovationPacks={() => {}}
-            loadingInnovationPacks={isLoading}
-            innovationPacks={[]}
-            canImportTemplates={false}
-          />
-          <AdminInnovationTemplatesSection
-            templateId={innovationTemplateId}
-            templatesSetId={templatesSetID}
-            templates={innovationFlowTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
-            buildTemplateLink={({ id }) =>
-              buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
-            }
-            edit={edit}
-            loadInnovationPacks={() => {}}
-            loadingInnovationPacks={isLoading}
-            innovationPacks={[]}
-            canImportTemplates={false}
-          />
-        </Gutters>
-      )}
-    </AdminLayout>
+    <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackNameId}>
+      <AdminLayout currentTab={AdminSection.InnovationPacks}>
+        <Button component={RouterLink} to="../" startIcon={<ArrowBackIcon />}>
+          {t('pages.admin.innovation-packs.back-button')}
+        </Button>
+        <InnovationPackForm
+          isNew={isNew}
+          nameID={innovationPack?.nameID}
+          profile={innovationPack?.profile}
+          providerId={innovationPack?.provider?.id}
+          organizations={organizations}
+          onSubmit={handleSubmit}
+          loading={isLoading}
+        />
+        {!isNew && (
+          <Gutters width="100%">
+            <AdminPostTemplatesSection
+              templateId={aspectNameId}
+              templatesSetId={templatesSetID}
+              templates={postTemplates}
+              onCloseTemplateDialog={backFromTemplateDialog}
+              refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
+              buildTemplateLink={({ id }) =>
+                buildLink(`${innovationPackRoute}/${RoutePaths.aspectTemplatesRoutePath}/${id}`)
+              }
+              edit={edit}
+              loadInnovationPacks={() => {}}
+              loadingInnovationPacks={isLoading}
+              innovationPacks={[]}
+              canImportTemplates={false}
+            />
+            <AdminWhiteboardTemplatesSection
+              whiteboardTemplatesLocation="platform"
+              templateId={whiteboardNameId}
+              templatesSetId={templatesSetID}
+              templates={whiteboardTemplates}
+              onCloseTemplateDialog={backFromTemplateDialog}
+              refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+              buildTemplateLink={({ id }) =>
+                buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
+              }
+              edit={edit}
+              loadInnovationPacks={() => {}}
+              loadingInnovationPacks={isLoading}
+              innovationPacks={[]}
+              canImportTemplates={false}
+            />
+            <AdminInnovationTemplatesSection
+              templateId={innovationTemplateId}
+              templatesSetId={templatesSetID}
+              templates={innovationFlowTemplates}
+              onCloseTemplateDialog={backFromTemplateDialog}
+              refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+              buildTemplateLink={({ id }) =>
+                buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
+              }
+              edit={edit}
+              loadInnovationPacks={() => {}}
+              loadingInnovationPacks={isLoading}
+              innovationPacks={[]}
+              canImportTemplates={false}
+            />
+          </Gutters>
+        )}
+      </AdminLayout>
+    </StorageConfigContextProvider>
   );
 };
 
