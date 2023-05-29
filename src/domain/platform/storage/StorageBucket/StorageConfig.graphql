@@ -77,6 +77,21 @@ query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
   }
 }
 
+query InnovationPackStorageConfig($innovationPackId: UUID_NAMEID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+}
+
 fragment ProfileStorageConfig on Profile {
   id
   storageBucket {
