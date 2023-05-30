@@ -22,6 +22,7 @@ fragment Configuration on Config {
   }
   platform {
     environment
+    domain
     about
     feedback
     privacy

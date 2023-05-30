@@ -11,6 +11,7 @@ import TopLevelDesktopLayout from '../../platform/ui/PageLayout/TopLevelDesktopL
 import { PageTitle, Text } from '../../../core/ui/typography';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
+import useInnovationHubOutsideRibbon from '../../platform/InnovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 
 export interface ContributorsPageProps {}
 
@@ -31,8 +32,10 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
     onSearchHandlerDebounced(e.target.value);
   };
 
+  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfHub.contributors' });
+
   return (
-    <TopLevelDesktopLayout>
+    <TopLevelDesktopLayout heading={ribbon}>
       <PageContentColumn columns={12}>
         <PageContentBlockSeamless disablePadding>
           <PageTitle>{t('pages.contributors.search.title')}</PageTitle>

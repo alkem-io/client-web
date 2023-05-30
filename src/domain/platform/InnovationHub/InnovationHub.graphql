@@ -1,0 +1,24 @@
+query InnovationHub($subdomain: String) {
+  platform {
+    id
+    innovationHub(subdomain: $subdomain) {
+      ...InnovationHubHomeInnovationHub
+    }
+  }
+}
+
+fragment InnovationHubHomeInnovationHub on InnovationHub {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    tagline
+    description
+    banner: visual(type: BANNER) {
+      id
+      uri
+      alternativeText
+    }
+  }
+}
