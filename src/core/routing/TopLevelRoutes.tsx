@@ -5,8 +5,8 @@ import App from '../../common/components/composite/layout/App/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
 import { HubContextProvider } from '../../domain/challenge/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../../domain/community/contributor/organization/context/OrganizationProvider';
-import HomePage from '../../domain/platform/pages/Home/HomePage';
-import AboutPage from '../../domain/platform/pages/About';
+import HomePage from '../../domain/platform/TopLevelPages/Home/HomePage';
+import AboutPage from '../../domain/platform/TopLevelPages/About';
 import { Error404 } from '../pages/Errors/Error404';
 import ContributorsPage from '../../domain/community/contributor/ContributorsPage';
 import { AdminRoute } from '../../domain/platform/admin/routing/AdminRoute';
@@ -20,17 +20,17 @@ import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
 import { ChallengeExplorerPage } from '../../domain/platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerPage';
-import { IdentityRoute } from '../auth/authentication/routing';
-import { INSPIRATION_ROUTE } from '../../domain/platform/routes/constants';
+import { IdentityRoute } from '../auth/authentication/routing/IdentityRoute';
+import { INSPIRATION_ROUTE, ROUTE_HOME } from '../../domain/platform/routes/constants';
 import InspirationPage from '../help/pages/InspirationPage';
 import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
-import RootRedirect from '../../domain/platform/routes/RootRedirect';
-import { ROUTE_HOME } from '../../domain/platform/routes/constants';
+import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
 import InnovationLibraryPage from '../../domain/platform/TopLevelPages/InnovationLibraryPage/InnovationLibraryPage';
 import InnovationPackRoute from '../../domain/collaboration/InnovationPack/InnovationPackRoute';
 import { innovationPacksPath } from '../../domain/collaboration/InnovationPack/urlBuilders';
+import NonIdentity from '../../domain/platform/routes/NonIdentity';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -47,41 +47,49 @@ export const TopLevelRoutes: FC = () => {
           </WithApmTransaction>
         }
       >
-        <Route index element={<RootRedirect />} />
+        <Route index element={<RedirectToLanding />} />
         <Route
           path={ROUTE_HOME}
           element={
-            <WithApmTransaction path="/home">
-              <HomePage />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/home">
+                <HomePage />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path={`:${nameOfUrl.hubNameId}/*`}
           element={
-            <WithApmTransaction path={`:${nameOfUrl.hubNameId}/*`}>
-              <HubContextProvider>
-                <CommunityContextProvider>
-                  <HubRoute paths={paths} />
-                </CommunityContextProvider>
-              </HubContextProvider>
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path={`:${nameOfUrl.hubNameId}/*`}>
+                <HubContextProvider>
+                  <CommunityContextProvider>
+                    <HubRoute paths={paths} />
+                  </CommunityContextProvider>
+                </HubContextProvider>
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/admin/*"
           element={
-            <WithApmTransaction path="/admin/*">
-              <AdminRoute />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/admin/*">
+                <AdminRoute />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/search"
           element={
-            <WithApmTransaction path="/search">
-              <SearchRoute />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/search">
+                <SearchRoute />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
@@ -95,89 +103,107 @@ export const TopLevelRoutes: FC = () => {
         <Route
           path={`/user/:${nameOfUrl.userNameId}/*`}
           element={
-            <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
-              <NoIdentityRedirect>
-                <UserRoute />
-              </NoIdentityRedirect>
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
+                <NoIdentityRedirect>
+                  <UserRoute />
+                </NoIdentityRedirect>
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/innovation-library"
           element={
-            <WithApmTransaction path="/innovation-library">
-              <InnovationLibraryPage />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/innovation-library">
+                <InnovationLibraryPage />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path={`${innovationPacksPath}/*`}
           element={
-            <WithApmTransaction path={innovationPacksPath}>
-              <InnovationPackRoute />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path={innovationPacksPath}>
+                <InnovationPackRoute />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/challenges"
           element={
-            <WithApmTransaction path="/challenges">
-              <ChallengeExplorerPage />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/challenges">
+                <ChallengeExplorerPage />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/contributors"
           element={
-            <WithApmTransaction path="/contributors">
-              <ContributorsPage />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/contributors">
+                <ContributorsPage />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/forum/*"
           element={
-            <WithApmTransaction path="/forum">
-              <ForumRoute />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/forum">
+                <ForumRoute />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
-
         <Route
           path={`/organization/:${nameOfUrl.organizationNameId}/*`}
           element={
-            <WithApmTransaction path={`/organization/:${nameOfUrl.organizationNameId}/*`}>
-              <OrganizationProvider>
-                <OrganizationRoute />
-              </OrganizationProvider>
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path={`/organization/:${nameOfUrl.organizationNameId}/*`}>
+                <OrganizationProvider>
+                  <OrganizationRoute />
+                </OrganizationProvider>
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/messages"
           element={
-            <WithApmTransaction path="/messages">
-              <NoIdentityRedirect>
-                <MessagesRoute />
-              </NoIdentityRedirect>
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/messages">
+                <NoIdentityRedirect>
+                  <MessagesRoute />
+                </NoIdentityRedirect>
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
-
         <Route
           path="/about"
           element={
-            <WithApmTransaction path="/about">
-              <AboutPage />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/about">
+                <AboutPage />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
           path="/profile"
           element={
-            <WithApmTransaction path="/profile">
-              <ProfileRoute />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path="/profile">
+                <ProfileRoute />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route
@@ -191,9 +217,11 @@ export const TopLevelRoutes: FC = () => {
         <Route
           path={INSPIRATION_ROUTE}
           element={
-            <WithApmTransaction path={INSPIRATION_ROUTE}>
-              <InspirationPage />
-            </WithApmTransaction>
+            <NonIdentity>
+              <WithApmTransaction path={INSPIRATION_ROUTE}>
+                <InspirationPage />
+              </WithApmTransaction>
+            </NonIdentity>
           }
         />
         <Route

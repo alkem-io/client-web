@@ -108,7 +108,7 @@ const AdminWhiteboardTemplatesSection = ({
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('common.whiteboardTemplates')}
+      headerText={t('common.enums.templateTypes.WhiteboardTemplate')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.canvases'),
       })}

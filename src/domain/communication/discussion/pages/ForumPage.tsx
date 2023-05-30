@@ -25,6 +25,7 @@ import NewDiscussionDialog from '../views/NewDiscussionDialog';
 import { useUserContext } from '../../../community/contributor/user';
 import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import useInnovationHubOutsideRibbon from '../../../platform/InnovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -109,8 +110,11 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
 
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const loading = loadingDiscussions || loadingUser;
+
+  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfHub.forum' });
+
   return (
-    <TopLevelDesktopLayout>
+    <TopLevelDesktopLayout heading={ribbon}>
       {!loading && !isAuthenticated ? (
         <ImageBackdrop
           src={FORUM_GRAYED_OUT_IMAGE}

@@ -1249,6 +1249,7 @@ export type MutationKeySpecifier = (
   | 'assignUserAsOrganizationOwner'
   | 'assignUserToGroup'
   | 'assignUserToOrganization'
+  | 'authorizationPolicyResetAll'
   | 'authorizationPolicyResetOnHub'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnPlatform'
@@ -1397,6 +1398,7 @@ export type MutationFieldPolicy = {
   assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetAll?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1683,6 +1685,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'about'
   | 'aup'
   | 'community'
+  | 'domain'
   | 'environment'
   | 'featureFlags'
   | 'feedback'
@@ -1703,6 +1706,7 @@ export type PlatformLocationsFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   aup?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
+  domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1764,6 +1768,7 @@ export type ProfileKeySpecifier = (
   | 'id'
   | 'location'
   | 'references'
+  | 'storageBucket'
   | 'tagline'
   | 'tagset'
   | 'tagsets'
@@ -1778,6 +1783,7 @@ export type ProfileFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;

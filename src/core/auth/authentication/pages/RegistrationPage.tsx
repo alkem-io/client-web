@@ -5,7 +5,7 @@ import produce from 'immer';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
-import { AUTH_LOGIN_PATH } from '../constants/authentication.constants';
+import { _AUTH_LOGIN_PATH } from '../constants/authentication.constants';
 import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
@@ -64,7 +64,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   if (registrationFlow?.ui.messages?.some(message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID)) {
     const state: LocationStateWithKratosErrors = { kratosErrors: registrationFlow?.ui.messages };
-    return <Navigate to={AUTH_LOGIN_PATH} state={state} replace />;
+    return <Navigate to={_AUTH_LOGIN_PATH} state={state} replace />;
   }
 
   if (loading) {
@@ -93,7 +93,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
           </>
         )}
         <Paragraph textAlign="center" marginTop={5}>
-          {t('pages.registration.login')} <Link to={AUTH_LOGIN_PATH}>{t('authentication.sign-in')}</Link>
+          {t('pages.registration.login')} <Link to={_AUTH_LOGIN_PATH}>{t('authentication.sign-in')}</Link>
         </Paragraph>
       </AuthPageContentContainer>
     </KratosForm>

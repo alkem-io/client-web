@@ -2,12 +2,12 @@ import 'react-image-crop/dist/ReactCrop.css';
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Box, Skeleton } from '@mui/material';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useUploadVisualMutation } from '../../../../../core/apollo/generated/apollo-hooks';
-import UploadButton from '../../../core/UploadButton';
-import { Visual } from '../../../../../core/apollo/generated/graphql-schema';
+import { useNotification } from '../../notifications/useNotification';
+import { useUploadVisualMutation } from '../../../apollo/generated/apollo-hooks';
+import UploadButton from '../../../../common/components/core/UploadButton';
+import { Visual } from '../../../apollo/generated/graphql-schema';
 import { CropDialog } from './CropDialog';
-import ImageComponent from '../../../../../domain/shared/components/ImageComponent';
+import ImageComponent from '../../../../domain/shared/components/ImageComponent';
 
 const DEFAULT_SIZE = 128;
 

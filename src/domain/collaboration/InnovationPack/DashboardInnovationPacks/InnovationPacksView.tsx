@@ -46,11 +46,7 @@ const InnovationPacksView = ({
         actions={<MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" />}
       />
       {innovationPacks && (
-        <ScrollableCardsLayoutContainer
-          minHeight={0}
-          orientationOverride={expanded ? 'vertical' : undefined}
-          sameHeight
-        >
+        <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
           {innovationPacks.map(({ id, ...cardProps }) => (
             <InnovationPackCard key={id} {...cardProps} />
           ))}

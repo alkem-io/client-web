@@ -3,10 +3,16 @@ import JourneyPageBanner from '../../../shared/components/PageHeader/JourneyPage
 import { useHub } from '../HubContext/useHub';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import useInnovationHubJourneyBannerRibbon from '../../../platform/InnovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 
 const HubPageBanner: FC = () => {
-  const { profile, loading } = useHub();
+  const { hubId, profile, loading } = useHub();
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
+
+  const ribbon = useInnovationHubJourneyBannerRibbon({
+    hubId,
+    journeyTypeName: 'hub',
+  });
 
   return (
     <JourneyPageBanner
@@ -15,6 +21,7 @@ const HubPageBanner: FC = () => {
       loading={loading}
       bannerUrl={visual?.uri}
       bannerAltText={visual?.alternativeText}
+      ribbon={ribbon}
       journeyTypeName="hub"
     />
   );

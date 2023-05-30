@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import { Grid, Button } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
 import { FeedbackDataEntry } from '../../common/AboutPageContainer/feedback/CommunityFeedbackContainer';
 import { QuestionTemplate } from '../../../../core/apollo/generated/graphql-schema';

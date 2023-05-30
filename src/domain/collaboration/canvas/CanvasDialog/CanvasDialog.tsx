@@ -23,7 +23,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import canvasSchema from '../validation/canvasSchema';
 import isCanvasValueEqual from '../utils/isCanvasValueEqual';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { PageTitle } from '../../../../core/ui/typography';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithValue } from '../WhiteboardTemplateCard/WhiteboardTemplate';

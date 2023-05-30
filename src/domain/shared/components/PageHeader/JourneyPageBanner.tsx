@@ -137,6 +137,7 @@ export interface JourneyPageBannerProps {
   bannerUrl?: string;
   bannerAltText?: string;
   showBreadcrumbs?: boolean;
+  ribbon?: ReactNode;
   loading?: boolean;
   journeyTypeName: JourneyTypeName | 'admin';
 }
@@ -151,6 +152,7 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   bannerUrl,
   bannerAltText,
   showBreadcrumbs,
+  ribbon,
   journeyTypeName,
   loading: dataLoading = false,
 }) => {
@@ -170,6 +172,7 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
 
   return (
     <Root ref={containerReference}>
+      {ribbon}
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
       {!dataLoading && (
         <>

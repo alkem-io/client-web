@@ -4,6 +4,7 @@ export interface Configuration {
   };
   platform: {
     environment: string;
+    domain: string;
     about: string;
     feedback: string;
     privacy: string;

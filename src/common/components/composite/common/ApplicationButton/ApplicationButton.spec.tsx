@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '../../../../utils/test/test-utils';
 import { ApplicationButton } from './ApplicationButton';
-import { AUTH_LOGIN_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
+import { _AUTH_LOGIN_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
 import {
   APPLICATION_STATE_NEW,
   APPLICATION_STATE_REJECTED,
@@ -46,7 +46,7 @@ describe('ApplicationButton component', () => {
     const button = screen.getByText('Sign in to apply') as HTMLAnchorElement;
 
     expect(button).toBeInTheDocument();
-    expect(button.href).toContain(AUTH_LOGIN_PATH);
+    expect(button.href).toContain(_AUTH_LOGIN_PATH);
     expect(button).toBeEnabled();
   });
 

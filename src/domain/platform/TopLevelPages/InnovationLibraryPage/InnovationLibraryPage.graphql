@@ -23,18 +23,62 @@ fragment InnovationPackCard on InnovationPack {
     }
   }
   templates {
-    id
-    postTemplates {
-      id
-    }
-    whiteboardTemplates {
-      id
-    }
-    innovationFlowTemplates {
-      id
-    }
+    ...LibraryTemplates
   }
   provider {
     ...InnovationPackProviderProfileWithAvatar
+  }
+}
+
+fragment LibraryTemplates on TemplatesSet {
+  id
+  postTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    type
+    defaultDescription
+  }
+  whiteboardTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+  }
+  innovationFlowTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    definition
+    type
   }
 }

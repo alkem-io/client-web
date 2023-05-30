@@ -40,7 +40,7 @@ const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('common.postTemplates')}
+      headerText={t('common.enums.templateTypes.PostTemplate')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.cards'),
       })}

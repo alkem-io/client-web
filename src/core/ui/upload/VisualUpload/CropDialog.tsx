@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next';
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Resizer from 'react-image-file-resizer';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import FormikInputField from '../../forms/FormikInputField';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import { ALT_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import { MessageWithPayload } from '../../../../../domain/shared/i18n/ValidationMessageTranslation';
+import Gutters from '../../grid/Gutters';
+import FormikInputField from '../../forms/FormikInputField/FormikInputField';
+import { Actions } from '../../actions/Actions';
+import { ALT_TEXT_LENGTH } from '../../forms/field-length.constants';
+import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 
 interface CropDialogConfig {
   aspectRatio?: number;
@@ -153,7 +153,6 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
                   minHeight
                 );
               } catch (err) {
-                console.error(err);
                 reject(err);
               }
             }

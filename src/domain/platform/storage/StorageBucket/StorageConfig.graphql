@@ -1,0 +1,112 @@
+query JourneyStorageConfig(
+  $hubNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  hub(ID: $hubNameId) {
+    id
+    ... on Hub @include(if: $includeHub) {
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+}
+
+query CalloutStorageConfig(
+  $calloutId: UUID_NAMEID!
+  $hubNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  hub(ID: $hubNameId) {
+    id
+    ... on Hub @include(if: $includeHub) {
+      collaboration {
+        ...CalloutOnCollaborationWithStorageConfig
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      collaboration {
+        ...CalloutOnCollaborationWithStorageConfig
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      collaboration {
+        ...CalloutOnCollaborationWithStorageConfig
+      }
+    }
+  }
+}
+
+query UserStorageConfig($userId: UUID_NAMEID_EMAIL!) {
+  user(ID: $userId) {
+    id
+    profile {
+      ...ProfileStorageConfig
+    }
+  }
+}
+
+query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
+  organization(ID: $organizationId) {
+    id
+    profile {
+      ...ProfileStorageConfig
+    }
+  }
+}
+
+query InnovationPackStorageConfig($innovationPackId: UUID_NAMEID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+}
+
+fragment ProfileStorageConfig on Profile {
+  id
+  storageBucket {
+    id
+    allowedMimeTypes
+    maxFileSize
+  }
+}
+
+fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
+  id
+  callouts(IDs: [$calloutId]) {
+    id
+    profile {
+      ...ProfileStorageConfig
+    }
+  }
+}

@@ -17,6 +17,7 @@ const AspectImportTemplateCard = ({ template, onClick }: AspectImportTemplateCar
           avatarUri: template.provider?.profile.visual?.uri,
         },
         innovationPack: {
+          id: template.innovationPackId,
           displayName: template.innovationPackProfile.displayName,
         },
       }}

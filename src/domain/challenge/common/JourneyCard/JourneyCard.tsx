@@ -1,7 +1,7 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, SvgIconProps } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
+import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CardTags from '../../../../core/ui/card/CardTags';
@@ -14,7 +14,7 @@ import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMem
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 
-export interface JourneyCardProps extends ContributeCardContainerProps {
+export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
   tagline: string;

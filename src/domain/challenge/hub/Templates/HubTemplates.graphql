@@ -93,8 +93,6 @@ fragment InnovationFlowTemplate on InnovationFlowTemplate {
   definition
   type
   profile {
-    id
-    displayName
-    description
+    ...TemplateCardProfileInfo
   }
 }
