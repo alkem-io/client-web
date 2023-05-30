@@ -8394,16 +8394,6 @@ export type InnovationFlowTemplateFragment = {
   };
 };
 
-export type AdminHubFragment = {
-  __typename?: 'Hub';
-  id: string;
-  nameID: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-};
-
 export type ChallengesOnHubFragment = {
   __typename?: 'Hub';
   id: string;
@@ -8688,22 +8678,6 @@ export type UpdateHubMutation = {
         }
       | undefined;
   };
-};
-
-export type AdminHubsListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AdminHubsListQuery = {
-  __typename?: 'Query';
-  hubs: Array<{
-    __typename?: 'Hub';
-    visibility: HubVisibility;
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  }>;
 };
 
 export type HubActivityQueryVariables = Exact<{
@@ -22390,6 +22364,43 @@ export type AvailableUserFragment = {
   id: string;
   email: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
+};
+
+export type UpdateHubVisibilityMutationVariables = Exact<{
+  hubId: Scalars['String'];
+  visibility: HubVisibility;
+}>;
+
+export type UpdateHubVisibilityMutation = {
+  __typename?: 'Mutation';
+  updateHubVisibility: { __typename?: 'Hub'; id: string; visibility: HubVisibility };
+};
+
+export type AdminHubsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminHubsListQuery = {
+  __typename?: 'Query';
+  hubs: Array<{
+    __typename?: 'Hub';
+    visibility: HubVisibility;
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  }>;
+};
+
+export type AdminHubFragment = {
+  __typename?: 'Hub';
+  id: string;
+  nameID: string;
+  visibility: HubVisibility;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type HubApplicationsQueryVariables = Exact<{

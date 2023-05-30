@@ -13,6 +13,7 @@ import { AuthorizationPrivilege, HubVisibility } from '../../../../../core/apoll
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { buildAdminHubUrl } from '../../../../../common/utils/urlBuilders';
+import HubListItem from './HubListItem';
 
 export const HubList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -40,7 +41,11 @@ export const HubList: FC = () => {
           displayName: hub.profile.displayName,
           url: buildAdminHubUrl(hub.nameID),
         }))
-        .map(searchableListItemMapper()) ?? []
+        .map(hub => ({
+          ...searchableListItemMapper()(hub),
+          hubId: hub.id,
+          visibility: hub.visibility,
+        })) ?? []
     );
   }, [hubsData]);
 
@@ -63,7 +68,14 @@ export const HubList: FC = () => {
 
   if (loadingHubs) return <Loading text={'Loading hubs'} />;
 
-  return <ListPage data={hubList} newLink={`${url}/new`} onDelete={hubList.length > 1 ? handleDelete : undefined} />;
+  return (
+    <ListPage
+      data={hubList}
+      newLink={`${url}/new`}
+      onDelete={hubList.length > 1 ? handleDelete : undefined}
+      itemViewComponent={HubListItem}
+    />
+  );
 };
 
 export default HubList;
