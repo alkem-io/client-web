@@ -18,16 +18,16 @@ import { displayNameValidator } from '../../../../common/utils/validator';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
-type FormValueType = {
+interface FormValue {
   name: string;
   description: string;
   tagsets: Tagset[];
   aspectNames: string[];
   type: string;
   references: Reference[];
-};
+}
 
-const FormikEffect = FormikEffectFactory<FormValueType>();
+const FormikEffect = FormikEffectFactory<FormValue>();
 
 type AspectEditFields = Partial<Pick<Aspect, 'profile'>> & { references?: Reference[] } & {
   id?: string;
@@ -50,7 +50,7 @@ export interface AspectFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   onAddReference?: (push: PushFunc, referencesLength: number) => void;
   onRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
-  children?: FormikConfig<FormValueType>['children'];
+  children?: FormikConfig<FormValue>['children'];
 }
 
 const AspectForm: FC<AspectFormProps> = ({
@@ -83,7 +83,7 @@ const AspectForm: FC<AspectFormProps> = ({
     return aspect.profileData?.description ?? descriptionTemplate ?? '';
   };
 
-  const initialValues: FormValueType = useMemo(
+  const initialValues: FormValue = useMemo(
     () => ({
       name: aspect?.profileData?.displayName ?? '',
       description: getDescriptionValue(),
@@ -113,7 +113,7 @@ const AspectForm: FC<AspectFormProps> = ({
     references: referenceSegmentSchema,
   });
 
-  const handleChange = (values: FormValueType) => {
+  const handleChange = (values: FormValue) => {
     const aspect: AspectFormOutput = {
       displayName: values.name,
       description: values.description,
