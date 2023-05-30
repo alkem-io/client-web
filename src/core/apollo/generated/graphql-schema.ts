@@ -21629,7 +21629,7 @@ export type HomePageSpacesQuery = {
       id: string;
       displayName: string;
       tagline: string;
-      tagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
       banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
     };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;

@@ -20060,6 +20060,7 @@ export const HomePageSpacesDocument = gql`
         displayName
         tagline
         tagset {
+          id
           tags
         }
         banner: visual(type: BANNER) {
