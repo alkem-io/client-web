@@ -7,6 +7,7 @@ query HomePageSpaces {
       displayName
       tagline
       tagset {
+        id
         tags
       }
       banner: visual(type: BANNER) {
