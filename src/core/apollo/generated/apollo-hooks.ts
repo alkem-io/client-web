@@ -7097,7 +7097,7 @@ export function refetchHubVisualQuery(variables: SchemaTypes.HubVisualQueryVaria
 
 export const HubsDocument = gql`
   query hubs {
-    hubs(filter: { visibilities: [ACTIVE] }) {
+    hubs(filter: { visibilities: [ACTIVE, DEMO] }) {
       ...HubDetailsProvider
     }
   }
