@@ -1235,6 +1235,16 @@
     "about": "About",
     "copyright": "© 2023 Alkemio Foundation"
   },
+  "innovationHub": {
+    "selectedSpaces": "{{hub}} Spaces",
+    "foreignJourney": "This {{journey}} is not in the selection of {{hub}}. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
+    "outsideOfHub": {
+      "forum": "This is the general Alkemio Forum, outside of the <strong>{{hub}}</strong> space. You are very much invited to explore and contribute!",
+      "challenges": "Here you can find all Challenges that are hosted on Alkemio, also the ones that are not selected by <strong>{{hub}}. Enjoy exploring!</strong>",
+      "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Hubs that are not selected by <strong>{{hub}}. Enjoy connecting!</strong>"
+    },
+    "goToMainPage": "Interested in collaborating in other Hubs? Click here to see them all on the universal Alkemio homepage."
+  },
   "pages": {
     "generic": {
       "sections": {

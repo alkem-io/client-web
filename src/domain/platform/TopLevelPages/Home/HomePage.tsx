@@ -13,12 +13,38 @@ import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
+import { useInnovationHubQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import InnovationHubHomePage from '../../InnovationHub/InnovationHubHomePage/InnovationHubHomePage';
+import useInnovationHubAttrs from '../../InnovationHub/InnovationHubHomePage/InnovationHubAttrs';
+import { Loading } from '../../../../common/components/core';
+import { detectSubdomain } from '../../InnovationHub/Subdomain';
 
 export const HomePage = () => {
   const user = useUserContext();
 
   const params = useQueryParams();
   const isFromLanding = params.get('from') === 'landing';
+
+  const subdomain = detectSubdomain();
+
+  const { data: innovationHubData, loading: innovationHubLoading } = useInnovationHubQuery({
+    variables: { subdomain },
+    skip: !subdomain,
+  });
+
+  const innovationHub = useInnovationHubAttrs(innovationHubData?.platform.innovationHub);
+
+  if (innovationHubLoading) {
+    return (
+      <HomePageLayout>
+        <Loading />
+      </HomePageLayout>
+    );
+  }
+
+  if (innovationHub) {
+    return <InnovationHubHomePage innovationHub={innovationHub} />;
+  }
 
   return (
     <HomePageLayout>

@@ -79,11 +79,7 @@ const LibraryTemplatesView = ({
         }
       />
       {templates && (
-        <ScrollableCardsLayoutContainer
-          minHeight={0}
-          orientationOverride={expanded ? 'vertical' : undefined}
-          sameHeight
-        >
+        <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
           {templates.map(template => (
             <LibraryTemplateCard key={template.id} {...template} onClick={() => onClick(template)} />
           ))}

@@ -2372,6 +2372,23 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const InnovationHubHomeInnovationHubFragmentDoc = gql`
+  fragment InnovationHubHomeInnovationHub on InnovationHub {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+      description
+      banner: visual(type: BANNER) {
+        id
+        uri
+        alternativeText
+      }
+    }
+  }
+`;
 export const LibraryTemplatesFragmentDoc = gql`
   fragment LibraryTemplates on TemplatesSet {
     id
@@ -2658,6 +2675,7 @@ export const ConfigurationFragmentDoc = gql`
     }
     platform {
       environment
+      domain
       about
       feedback
       privacy
@@ -7149,6 +7167,76 @@ export function useChallengeCreatedSubscription(
 
 export type ChallengeCreatedSubscriptionHookResult = ReturnType<typeof useChallengeCreatedSubscription>;
 export type ChallengeCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ChallengeCreatedSubscription>;
+export const BannerInnovationHubDocument = gql`
+  query BannerInnovationHub($subdomain: String) {
+    platform {
+      id
+      innovationHub(subdomain: $subdomain) {
+        id
+        profile {
+          id
+          displayName
+        }
+        hubListFilter {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useBannerInnovationHubQuery__
+ *
+ * To run a query within a React component, call `useBannerInnovationHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBannerInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBannerInnovationHubQuery({
+ *   variables: {
+ *      subdomain: // value for 'subdomain'
+ *   },
+ * });
+ */
+export function useBannerInnovationHubQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.BannerInnovationHubQuery,
+    SchemaTypes.BannerInnovationHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.BannerInnovationHubQuery, SchemaTypes.BannerInnovationHubQueryVariables>(
+    BannerInnovationHubDocument,
+    options
+  );
+}
+
+export function useBannerInnovationHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.BannerInnovationHubQuery,
+    SchemaTypes.BannerInnovationHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.BannerInnovationHubQuery, SchemaTypes.BannerInnovationHubQueryVariables>(
+    BannerInnovationHubDocument,
+    options
+  );
+}
+
+export type BannerInnovationHubQueryHookResult = ReturnType<typeof useBannerInnovationHubQuery>;
+export type BannerInnovationHubLazyQueryHookResult = ReturnType<typeof useBannerInnovationHubLazyQuery>;
+export type BannerInnovationHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.BannerInnovationHubQuery,
+  SchemaTypes.BannerInnovationHubQueryVariables
+>;
+export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerInnovationHubQueryVariables) {
+  return { query: BannerInnovationHubDocument, variables: variables };
+}
+
 export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
     assignUserAsOpportunityAdmin(membershipData: $input) {
@@ -19902,6 +19990,146 @@ export function refetchOpportunityContributionDetailsQuery(
   variables: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
+}
+
+export const InnovationHubDocument = gql`
+  query InnovationHub($subdomain: String) {
+    platform {
+      id
+      innovationHub(subdomain: $subdomain) {
+        ...InnovationHubHomeInnovationHub
+      }
+    }
+  }
+  ${InnovationHubHomeInnovationHubFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubQuery({
+ *   variables: {
+ *      subdomain: // value for 'subdomain'
+ *   },
+ * });
+ */
+export function useInnovationHubQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
+    InnovationHubDocument,
+    options
+  );
+}
+
+export function useInnovationHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
+    InnovationHubDocument,
+    options
+  );
+}
+
+export type InnovationHubQueryHookResult = ReturnType<typeof useInnovationHubQuery>;
+export type InnovationHubLazyQueryHookResult = ReturnType<typeof useInnovationHubLazyQuery>;
+export type InnovationHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubQuery,
+  SchemaTypes.InnovationHubQueryVariables
+>;
+export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQueryVariables) {
+  return { query: InnovationHubDocument, variables: variables };
+}
+
+export const HomePageSpacesDocument = gql`
+  query HomePageSpaces {
+    hubs(filter: { visibilities: [ACTIVE] }) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+        tagset {
+          id
+          tags
+        }
+        banner: visual(type: BANNER) {
+          id
+          uri
+          alternativeText
+        }
+      }
+      context {
+        id
+        vision
+      }
+      metrics {
+        id
+        name
+        value
+      }
+      community {
+        id
+        myMembershipStatus
+      }
+      visibility
+    }
+  }
+`;
+
+/**
+ * __useHomePageSpacesQuery__
+ *
+ * To run a query within a React component, call `useHomePageSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomePageSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomePageSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useHomePageSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>(
+    HomePageSpacesDocument,
+    options
+  );
+}
+
+export function useHomePageSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>(
+    HomePageSpacesDocument,
+    options
+  );
+}
+
+export type HomePageSpacesQueryHookResult = ReturnType<typeof useHomePageSpacesQuery>;
+export type HomePageSpacesLazyQueryHookResult = ReturnType<typeof useHomePageSpacesLazyQuery>;
+export type HomePageSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HomePageSpacesQuery,
+  SchemaTypes.HomePageSpacesQueryVariables
+>;
+export function refetchHomePageSpacesQuery(variables?: SchemaTypes.HomePageSpacesQueryVariables) {
+  return { query: HomePageSpacesDocument, variables: variables };
 }
 
 export const InnovationLibraryDocument = gql`

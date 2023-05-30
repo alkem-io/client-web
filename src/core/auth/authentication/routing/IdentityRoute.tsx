@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useLayoutEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useGlobalState } from '../../../state/useGlobalState';
 import { Error404 } from '../../../pages/Errors/Error404';
@@ -14,11 +14,27 @@ import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
 import SignUp from '../pages/SignUp';
 import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
+import { useConfig } from '../../../../domain/platform/config/useConfig';
+import Loading from '../../../../common/components/core/Loading/Loading';
 
 export const IdentityRoute: FC = () => {
   const {
     ui: { loginNavigationService },
   } = useGlobalState();
+
+  const config = useConfig();
+
+  const identityOrigin = config.authentication?.providers[0].config.issuer;
+
+  const isIdentityOrigin = window.location.origin === identityOrigin;
+
+  useLayoutEffect(() => {
+    if (identityOrigin && !isIdentityOrigin) {
+      const { pathname, search } = window.location;
+
+      window.location.replace(`${identityOrigin}${pathname}${search}`);
+    }
+  }, [isIdentityOrigin]);
 
   useEffect(() => {
     loginNavigationService.send(HIDE_LOGIN_NAVIGATION);
@@ -26,6 +42,10 @@ export const IdentityRoute: FC = () => {
       loginNavigationService.send(SHOW_LOGIN_NAVIGATION);
     };
   }, [loginNavigationService]);
+
+  if (config.loading || (identityOrigin && !isIdentityOrigin)) {
+    return <Loading />;
+  }
 
   return (
     <Routes>

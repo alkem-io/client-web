@@ -9028,6 +9028,24 @@ export type ChallengeCreatedSubscription = {
   };
 };
 
+export type BannerInnovationHubQueryVariables = Exact<{
+  subdomain?: InputMaybe<Scalars['String']>;
+}>;
+
+export type BannerInnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub: {
+      __typename?: 'InnovationHub';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      hubListFilter: Array<{ __typename?: 'Hub'; id: string }>;
+    };
+  };
+};
+
 export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
   input: AssignOpportunityAdminInput;
 }>;
@@ -21558,6 +21576,70 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
+export type InnovationHubQueryVariables = Exact<{
+  subdomain?: InputMaybe<Scalars['String']>;
+}>;
+
+export type InnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub: {
+      __typename?: 'InnovationHub';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline: string;
+        description?: string | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+      };
+    };
+  };
+};
+
+export type InnovationHubHomeInnovationHubFragment = {
+  __typename?: 'InnovationHub';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline: string;
+    description?: string | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  };
+};
+
+export type HomePageSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type HomePageSpacesQuery = {
+  __typename?: 'Query';
+  hubs: Array<{
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    visibility: HubVisibility;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+      banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+    };
+    context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    community?:
+      | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
+      | undefined;
+  }>;
+};
+
 export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationLibraryQuery = {
@@ -23336,6 +23418,7 @@ export type ConfigurationQuery = {
     platform: {
       __typename?: 'PlatformLocations';
       environment: string;
+      domain: string;
       about: string;
       feedback: string;
       privacy: string;
@@ -23379,6 +23462,7 @@ export type ConfigurationFragment = {
   platform: {
     __typename?: 'PlatformLocations';
     environment: string;
+    domain: string;
     about: string;
     feedback: string;
     privacy: string;
