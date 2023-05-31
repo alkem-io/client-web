@@ -17,7 +17,6 @@ import { useInnovationHubQuery } from '../../../../core/apollo/generated/apollo-
 import InnovationHubHomePage from '../../InnovationHub/InnovationHubHomePage/InnovationHubHomePage';
 import useInnovationHubAttrs from '../../InnovationHub/InnovationHubHomePage/InnovationHubAttrs';
 import { Loading } from '../../../../common/components/core';
-import { detectSubdomain } from '../../InnovationHub/Subdomain';
 
 export const HomePage = () => {
   const user = useUserContext();
@@ -25,12 +24,7 @@ export const HomePage = () => {
   const params = useQueryParams();
   const isFromLanding = params.get('from') === 'landing';
 
-  const subdomain = detectSubdomain();
-
-  const { data: innovationHubData, loading: innovationHubLoading } = useInnovationHubQuery({
-    variables: { subdomain },
-    skip: !subdomain,
-  });
+  const { data: innovationHubData, loading: innovationHubLoading } = useInnovationHubQuery();
 
   const innovationHub = useInnovationHubAttrs(innovationHubData?.platform.innovationHub);
 

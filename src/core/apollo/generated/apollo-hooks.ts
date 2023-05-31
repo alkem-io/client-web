@@ -7042,8 +7042,8 @@ export function refetchHubVisualQuery(variables: SchemaTypes.HubVisualQueryVaria
 }
 
 export const HubsDocument = gql`
-  query hubs {
-    hubs(filter: { visibilities: [ACTIVE, DEMO] }) {
+  query hubs($visibilities: [HubVisibility!] = [ACTIVE]) {
+    hubs(filter: { visibilities: $visibilities }) {
       ...HubDetailsProvider
     }
   }
@@ -7062,6 +7062,7 @@ export const HubsDocument = gql`
  * @example
  * const { data, loading, error } = useHubsQuery({
  *   variables: {
+ *      visibilities: // value for 'visibilities'
  *   },
  * });
  */
@@ -19954,10 +19955,10 @@ export function refetchOpportunityContributionDetailsQuery(
 }
 
 export const InnovationHubDocument = gql`
-  query InnovationHub($subdomain: String) {
+  query InnovationHub {
     platform {
       id
-      innovationHub(subdomain: $subdomain) {
+      innovationHub {
         ...InnovationHubHomeInnovationHub
       }
     }
@@ -19977,7 +19978,6 @@ export const InnovationHubDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationHubQuery({
  *   variables: {
- *      subdomain: // value for 'subdomain'
  *   },
  * });
  */

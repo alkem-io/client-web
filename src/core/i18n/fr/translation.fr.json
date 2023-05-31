@@ -1736,7 +1736,7 @@
       "loading": "Déconnexion en cours..."
     },
     "registration": {
-      "header": "Créez un compte et commencez à faire\\ \\ du bien",
+      "header": "Créez un compte et commencez à faire du bien",
       "introduction": "<p>Bienvenue à Alkemio ! Alkemio facilite la gestion des défis et a des contributeurs, de n'importe où, travaillant ensemble sur des solutions. Les défis sont au centre de la scène.</p><p>Pour garder la plate-forme en sécurité, ouverte et constructive, chaque utilisateur doit accepter les <terms>Conditions d'utilisation</terms> et <privacy>Politique de confidentialité</privacy>. Veuillez lire ces documents et les accepter ci-dessous avant de continuer.</p>",
       "terms": "J'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>.",
       "login": "Avez-vous un compte ?",
