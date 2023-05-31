@@ -24171,6 +24171,123 @@ export type CalloutStorageConfigQuery = {
   };
 };
 
+export type CalloutAspectStorageConfigQueryVariables = Exact<{
+  aspectId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  includeHub?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CalloutAspectStorageConfigQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                aspects?:
+                  | Array<{
+                      __typename?: 'Aspect';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        storageBucket?:
+                          | {
+                              __typename?: 'StorageBucket';
+                              id: string;
+                              allowedMimeTypes: Array<string>;
+                              maxFileSize: number;
+                            }
+                          | undefined;
+                      };
+                    }>
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  aspects?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          storageBucket?:
+                            | {
+                                __typename?: 'StorageBucket';
+                                id: string;
+                                allowedMimeTypes: Array<string>;
+                                maxFileSize: number;
+                              }
+                            | undefined;
+                        };
+                      }>
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  aspects?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          storageBucket?:
+                            | {
+                                __typename?: 'StorageBucket';
+                                id: string;
+                                allowedMimeTypes: Array<string>;
+                                maxFileSize: number;
+                              }
+                            | undefined;
+                        };
+                      }>
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type UserStorageConfigQueryVariables = Exact<{
   userId: Scalars['UUID_NAMEID_EMAIL'];
 }>;
@@ -24260,6 +24377,30 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
             | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
             | undefined;
         };
+      }>
+    | undefined;
+};
+
+export type AspectInCalloutOnCollaborationWithStorageConfigFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        aspects?:
+          | Array<{
+              __typename?: 'Aspect';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                storageBucket?:
+                  | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+                  | undefined;
+              };
+            }>
+          | undefined;
       }>
     | undefined;
 };
