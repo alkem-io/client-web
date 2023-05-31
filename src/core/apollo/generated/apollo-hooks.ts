@@ -20008,10 +20008,10 @@ export function refetchOpportunityContributionDetailsQuery(
 }
 
 export const InnovationHubDocument = gql`
-  query InnovationHub($subdomain: String) {
+  query InnovationHub {
     platform {
       id
-      innovationHub(subdomain: $subdomain) {
+      innovationHub {
         ...InnovationHubHomeInnovationHub
       }
     }
@@ -20031,7 +20031,6 @@ export const InnovationHubDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationHubQuery({
  *   variables: {
- *      subdomain: // value for 'subdomain'
  *   },
  * });
  */

@@ -1,7 +1,7 @@
-query InnovationHub($subdomain: String) {
+query InnovationHub {
   platform {
     id
-    innovationHub(subdomain: $subdomain) {
+    innovationHub {
       ...InnovationHubHomeInnovationHub
     }
   }
