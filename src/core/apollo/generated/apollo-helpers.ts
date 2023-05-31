@@ -1273,6 +1273,7 @@ export type MutationKeySpecifier = (
   | 'createGroupOnOrganization'
   | 'createHub'
   | 'createInnovationFlowTemplate'
+  | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
   | 'createOpportunity'
   | 'createOrganization'
@@ -1296,6 +1297,7 @@ export type MutationKeySpecifier = (
   | 'deleteDocument'
   | 'deleteHub'
   | 'deleteInnovationFlowTemplate'
+  | 'deleteInnovationHub'
   | 'deleteInnovationPack'
   | 'deleteOpportunity'
   | 'deleteOrganization'
@@ -1359,6 +1361,7 @@ export type MutationKeySpecifier = (
   | 'updateHub'
   | 'updateHubVisibility'
   | 'updateInnovationFlowTemplate'
+  | 'updateInnovationHub'
   | 'updateInnovationPack'
   | 'updateOpportunity'
   | 'updateOpportunityInnovationFlow'
@@ -1422,6 +1425,7 @@ export type MutationFieldPolicy = {
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1445,6 +1449,7 @@ export type MutationFieldPolicy = {
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1508,6 +1513,7 @@ export type MutationFieldPolicy = {
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunityInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
