@@ -59,6 +59,38 @@ query CalloutStorageConfig(
   }
 }
 
+query CalloutAspectStorageConfig(
+  $aspectId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+  $hubNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  hub(ID: $hubNameId) {
+    id
+    ... on Hub @include(if: $includeHub) {
+      collaboration {
+        ...AspectInCalloutOnCollaborationWithStorageConfig
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      collaboration {
+        ...AspectInCalloutOnCollaborationWithStorageConfig
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      collaboration {
+        ...AspectInCalloutOnCollaborationWithStorageConfig
+      }
+    }
+  }
+}
+
 query UserStorageConfig($userId: UUID_NAMEID_EMAIL!) {
   user(ID: $userId) {
     id
@@ -107,6 +139,19 @@ fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
     id
     profile {
       ...ProfileStorageConfig
+    }
+  }
+}
+
+fragment AspectInCalloutOnCollaborationWithStorageConfig on Collaboration {
+  id
+  callouts(IDs: [$calloutId]) {
+    id
+    aspects(IDs: [$aspectId]) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
     }
   }
 }

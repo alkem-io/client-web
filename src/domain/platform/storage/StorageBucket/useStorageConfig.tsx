@@ -1,6 +1,7 @@
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import {
+  useCalloutAspectStorageConfigQuery,
   useCalloutStorageConfigQuery,
   useInnovationPackStorageConfigQuery,
   useJourneyStorageConfigQuery,
@@ -14,7 +15,7 @@ export interface StorageConfig {
   maxFileSize: number;
 }
 
-type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'innovationPack';
+type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'aspect' | 'innovationPack';
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
@@ -29,6 +30,13 @@ interface UseStorageConfigOptionsCallout extends UseStorageConfigOptionsBase, Jo
   calloutId: string;
   journeyTypeName: JourneyTypeName;
   locationType: 'callout';
+}
+
+interface UseStorageConfigOptionsAspect extends UseStorageConfigOptionsBase, JourneyLocation {
+  aspectId: string | undefined;
+  calloutId: string;
+  journeyTypeName: JourneyTypeName;
+  locationType: 'aspect';
 }
 
 interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
@@ -51,6 +59,7 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsUser
   | UseStorageConfigOptionsOrganization
   | UseStorageConfigOptionsCallout
+  | UseStorageConfigOptionsAspect
   | UseStorageConfigOptionsInnovationPack;
 
 export interface StorageConfigProvided {
@@ -58,15 +67,17 @@ export interface StorageConfigProvided {
 }
 
 const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): StorageConfigProvided => {
+  const journeyTypeName = 'journeyTypeName' in options ? options.journeyTypeName : undefined;
+
   const journeyOptions = options as UseStorageConfigOptionsJourney;
   const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
     variables: {
       hubNameId: journeyOptions.hubNameId,
       challengeNameId: journeyOptions.challengeNameId,
       opportunityNameId: journeyOptions.opportunityNameId,
-      includeHub: journeyOptions.journeyTypeName === 'hub',
-      includeChallenge: journeyOptions.journeyTypeName === 'challenge',
-      includeOpportunity: journeyOptions.journeyTypeName === 'opportunity',
+      includeHub: journeyTypeName === 'hub',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
     },
     skip: locationType !== 'journey',
   });
@@ -78,11 +89,26 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       hubNameId: calloutOptions.hubNameId,
       challengeNameId: calloutOptions.challengeNameId,
       opportunityNameId: calloutOptions.opportunityNameId,
-      includeHub: journeyOptions.journeyTypeName === 'hub',
-      includeChallenge: journeyOptions.journeyTypeName === 'challenge',
-      includeOpportunity: journeyOptions.journeyTypeName === 'opportunity',
+      includeHub: journeyTypeName === 'hub',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
     },
     skip: locationType !== 'callout',
+  });
+
+  const aspectOptions = options as UseStorageConfigOptionsAspect;
+  const { data: aspectStorageConfigData } = useCalloutAspectStorageConfigQuery({
+    variables: {
+      aspectId: aspectOptions.aspectId!, // ensured by skip
+      calloutId: aspectOptions.calloutId,
+      hubNameId: aspectOptions.hubNameId,
+      challengeNameId: aspectOptions.challengeNameId,
+      opportunityNameId: aspectOptions.opportunityNameId,
+      includeHub: journeyTypeName === 'hub',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
+    },
+    skip: locationType !== 'aspect' || !aspectOptions.aspectId,
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
@@ -115,9 +141,17 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       calloutStorageConfigData?.hub.collaboration
     )?.callouts ?? [];
 
+  const [aspect] =
+    (
+      aspectStorageConfigData?.hub.opportunity?.collaboration ??
+      aspectStorageConfigData?.hub.challenge?.collaboration ??
+      aspectStorageConfigData?.hub.collaboration
+    )?.callouts?.[0]?.aspects ?? [];
+
   const { profile } =
     journey ??
     callout ??
+    aspect ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??

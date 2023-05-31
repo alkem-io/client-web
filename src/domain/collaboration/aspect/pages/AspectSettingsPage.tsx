@@ -21,12 +21,15 @@ import { AspectLayout } from '../views/AspectLayoutWithOutlet';
 import useCallouts from '../../callout/useCallouts/useCallouts';
 import { useMoveAspectToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
+import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export interface AspectSettingsPageProps {
   onClose: () => void;
+  journeyTypeName: JourneyTypeName;
 }
 
-const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
+const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ journeyTypeName, onClose }) => {
   const { t } = useTranslation();
   const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '', calloutNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
@@ -135,74 +138,84 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
 
   return (
     <AspectLayout currentSection={AspectDialogSection.Settings} onClose={onClose}>
-      <AspectForm
-        edit
-        loading={state.loading || state.updating || isMovingAspect}
-        aspect={toAspectFormInput(entities.aspect)}
-        aspectNames={entities.aspectsNames}
-        onChange={setAspect}
-        onAddReference={actions.handleAddReference}
-        onRemoveReference={actions.handleRemoveReference}
-        tags={entities.aspect?.profile.tagset?.tags}
+      <StorageConfigContextProvider
+        locationType="aspect"
+        aspectId={aspectNameId}
+        calloutId={calloutNameId}
+        journeyTypeName={journeyTypeName}
+        hubNameId={hubNameId}
+        challengeNameId={challengeNameId}
+        opportunityNameId={opportunityNameId}
       >
-        {({ isValid, dirty }) => {
-          const canSave = isAspectLoaded && dirty && isValid;
+        <AspectForm
+          edit
+          loading={state.loading || state.updating || isMovingAspect}
+          aspect={toAspectFormInput(entities.aspect)}
+          aspectNames={entities.aspectsNames}
+          onChange={setAspect}
+          onAddReference={actions.handleAddReference}
+          onRemoveReference={actions.handleRemoveReference}
+          tags={entities.aspect?.profile.tagset?.tags}
+        >
+          {({ isValid, dirty }) => {
+            const canSave = isAspectLoaded && dirty && isValid;
 
-          return (
-            <>
-              <SectionSpacer double />
-              <Box>
-                <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                <SectionSpacer />
-                <EditVisualsView visuals={visuals} />
-              </Box>
-              <SectionSpacer double />
-              {canMoveCard && (
+            return (
+              <>
+                <SectionSpacer double />
                 <Box>
-                  <Typography variant={'h4'}>{t('aspect-edit.cardLocation.title')}</Typography>
+                  <Typography variant={'h4'}>{t('common.visuals')}</Typography>
                   <SectionSpacer />
-                  <Autocomplete
-                    disablePortal
-                    options={calloutsOfTypeCard ?? []}
-                    value={callouts?.find(({ id }) => id === targetCalloutId) ?? null!}
-                    getOptionLabel={callout => callout.profile.displayName}
-                    onChange={(event, callout) => {
-                      setTargetCalloutId(callout?.id);
-                    }}
-                    disableClearable
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        label={t('aspect-edit.cardLocation.label')}
-                        helperText={t('aspect-edit.cardLocation.reminder')}
-                      />
-                    )}
-                  />
+                  <EditVisualsView visuals={visuals} />
                 </Box>
-              )}
-              <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
-                <Button
-                  aria-label="delete-aspect"
-                  variant="outlined"
-                  color="error"
-                  disabled={!isAspectLoaded}
-                  onClick={handleDelete}
-                >
-                  {t('buttons.delete')}
-                </Button>
-                <Button
-                  aria-label="save-aspect"
-                  variant="contained"
-                  disabled={!canSave && !isMoveEnabled}
-                  onClick={() => handleUpdate(canSave)}
-                >
-                  {t('buttons.save')}
-                </Button>
-              </Box>
-            </>
-          );
-        }}
-      </AspectForm>
+                <SectionSpacer double />
+                {canMoveCard && (
+                  <Box>
+                    <Typography variant={'h4'}>{t('aspect-edit.cardLocation.title')}</Typography>
+                    <SectionSpacer />
+                    <Autocomplete
+                      disablePortal
+                      options={calloutsOfTypeCard ?? []}
+                      value={callouts?.find(({ id }) => id === targetCalloutId) ?? null!}
+                      getOptionLabel={callout => callout.profile.displayName}
+                      onChange={(event, callout) => {
+                        setTargetCalloutId(callout?.id);
+                      }}
+                      disableClearable
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label={t('aspect-edit.cardLocation.label')}
+                          helperText={t('aspect-edit.cardLocation.reminder')}
+                        />
+                      )}
+                    />
+                  </Box>
+                )}
+                <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
+                  <Button
+                    aria-label="delete-aspect"
+                    variant="outlined"
+                    color="error"
+                    disabled={!isAspectLoaded}
+                    onClick={handleDelete}
+                  >
+                    {t('buttons.delete')}
+                  </Button>
+                  <Button
+                    aria-label="save-aspect"
+                    variant="contained"
+                    disabled={!canSave && !isMoveEnabled}
+                    onClick={() => handleUpdate(canSave)}
+                  >
+                    {t('buttons.save')}
+                  </Button>
+                </Box>
+              </>
+            );
+          }}
+        </AspectForm>
+      </StorageConfigContextProvider>
     </AspectLayout>
   );
 };

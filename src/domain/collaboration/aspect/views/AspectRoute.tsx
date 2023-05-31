@@ -13,7 +13,7 @@ export interface AspectRouteProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath }) => {
+const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath, journeyTypeName }) => {
   const [backToExplore] = useBackToParentPage(parentPagePath, { keepScroll: true });
   const onClose = () => backToExplore();
 
@@ -23,7 +23,10 @@ const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath }) => {
         <Route index element={<Navigate replace to={AspectDialogSection.Dashboard} state={{ keepScroll: true }} />} />
         <Route path={AspectDialogSection.Dashboard} element={<AspectDashboardPage onClose={onClose} />} />
         <Route path={AspectDialogSection.Share} element={<AspectSharePage onClose={onClose} />} />
-        <Route path={AspectDialogSection.Settings} element={<AspectSettingsPage onClose={onClose} />} />
+        <Route
+          path={AspectDialogSection.Settings}
+          element={<AspectSettingsPage onClose={onClose} journeyTypeName={journeyTypeName} />}
+        />
       </Route>
     </Routes>
   );
