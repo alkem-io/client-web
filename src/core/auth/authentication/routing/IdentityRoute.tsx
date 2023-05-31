@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useLayoutEffect } from 'react';
+import React, { FC, useLayoutEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useGlobalState } from '../../../state/useGlobalState';
 import { Error404 } from '../../../pages/Errors/Error404';
@@ -24,7 +24,9 @@ export const IdentityRoute: FC = () => {
 
   const config = useConfig();
 
-  const identityOrigin = config.authentication?.providers[0].config.issuer;
+  // Kratos config for development setup is quite specific, we can't rely on it locally.
+  const identityOrigin =
+    process.env.NODE_ENV === 'development' ? undefined : config.authentication?.providers[0].config.issuer;
 
   const isIdentityOrigin = window.location.origin === identityOrigin;
 
@@ -36,7 +38,7 @@ export const IdentityRoute: FC = () => {
     }
   }, [isIdentityOrigin]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     loginNavigationService.send(HIDE_LOGIN_NAVIGATION);
     return () => {
       loginNavigationService.send(SHOW_LOGIN_NAVIGATION);
