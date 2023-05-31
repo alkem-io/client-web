@@ -17,7 +17,9 @@ interface MyHubsSectionProps {
 const MyHubsSection = ({ userHubRoles, loading }: MyHubsSectionProps) => {
   const { t } = useTranslation();
 
-  const { data: hubsData, loading: areHubsLoading } = useHubsQuery();
+  const { data: hubsData, loading: areHubsLoading } = useHubsQuery({
+    variables: { visibilities: [HubVisibility.Active, HubVisibility.Demo] },
+  });
 
   const isLoading = loading || areHubsLoading;
 

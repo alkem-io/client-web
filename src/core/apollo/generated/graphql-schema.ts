@@ -1378,6 +1378,20 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateInnovationHubInput = {
+  /** A list of Hubs to include in this Innovation Hub. Only valid when type 'list' is used. */
+  hubListFilter?: InputMaybe<Array<Scalars['UUID']>>;
+  /** Hubs with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
+  hubVisibilityFilter?: InputMaybe<HubVisibility>;
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  profileData: CreateProfileInput;
+  /** The subdomain to associate the Innovation Hub with. */
+  subdomain: Scalars['String'];
+  /** The type of Innovation Hub. */
+  type: InnovationHubType;
+};
+
 export type CreateInnovationPackOnLibraryInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -1610,6 +1624,10 @@ export type DeleteHubInput = {
 };
 
 export type DeleteInnovationFlowTemplateInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteInnovationHubInput = {
   ID: Scalars['UUID'];
 };
 
@@ -1976,7 +1994,7 @@ export type InnovationHub = {
   __typename?: 'InnovationHub';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  hubListFilter: Array<Hub>;
+  hubListFilter?: Maybe<Array<Hub>>;
   /** If defined, what type of visibility to filter the Hubs on. You can have only one type of filter active at any given time. */
   hubVisibilityFilter?: Maybe<HubVisibility>;
   /** The ID of the entity */
@@ -2187,6 +2205,8 @@ export type Mutation = {
   createHub: Hub;
   /** Creates a new InnovationFlowTemplate on the specified TemplatesSet. */
   createInnovationFlowTemplate: InnovationFlowTemplate;
+  /** Create Innovation Hub. */
+  createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
   /** Creates a new Opportunity within the parent Challenge. */
@@ -2233,6 +2253,8 @@ export type Mutation = {
   deleteHub: Hub;
   /** Deletes the specified InnovationFlowTemplate. */
   deleteInnovationFlowTemplate: InnovationFlowTemplate;
+  /** Delete Innovation Hub. */
+  deleteInnovationHub: InnovationHub;
   /** Deletes the specified InnovationPack. */
   deleteInnovationPack: InnovationPack;
   /** Deletes the specified Opportunity. */
@@ -2359,6 +2381,8 @@ export type Mutation = {
   updateHubVisibility: Hub;
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
+  /** Update Innovation Hub. */
+  updateInnovationHub: InnovationHub;
   /** Updates the InnovationPack. */
   updateInnovationPack: InnovationPack;
   /** Updates the specified Opportunity. */
@@ -2551,6 +2575,10 @@ export type MutationCreateInnovationFlowTemplateArgs = {
   innovationFlowTemplateInput: CreateInnovationFlowTemplateOnTemplatesSetInput;
 };
 
+export type MutationCreateInnovationHubArgs = {
+  createData: CreateInnovationHubInput;
+};
+
 export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
 };
@@ -2637,6 +2665,10 @@ export type MutationDeleteHubArgs = {
 
 export type MutationDeleteInnovationFlowTemplateArgs = {
   deleteData: DeleteInnovationFlowTemplateInput;
+};
+
+export type MutationDeleteInnovationHubArgs = {
+  deleteData: DeleteInnovationHubInput;
 };
 
 export type MutationDeleteInnovationPackArgs = {
@@ -2889,6 +2921,10 @@ export type MutationUpdateHubVisibilityArgs = {
 
 export type MutationUpdateInnovationFlowTemplateArgs = {
   innovationFlowTemplateInput: UpdateInnovationFlowTemplateInput;
+};
+
+export type MutationUpdateInnovationHubArgs = {
+  updateData: UpdateInnovationHubInput;
 };
 
 export type MutationUpdateInnovationPackArgs = {
@@ -3147,8 +3183,8 @@ export type Platform = {
   communication: Communication;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Details about an Innovation Hubs on the platform */
-  innovationHub: InnovationHub;
+  /** Details about an Innovation Hubs on the platform. If the arguments are omitted, the current Innovation Hub you are in will be returned. */
+  innovationHub?: Maybe<InnovationHub>;
   /** List of Innovation Hubs on the platform */
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Library for the platform */
@@ -4312,6 +4348,18 @@ export type UpdateInnovationFlowTemplateInput = {
   definition?: InputMaybe<Scalars['LifecycleDefinition']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateInnovationHubInput = {
+  ID: Scalars['UUID'];
+  /** A list of Hubs to include in this Innovation Hub. Only valid when type 'list' is used. */
+  hubListFilter?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  /** Hubs with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
+  hubVisibilityFilter?: InputMaybe<HubVisibility>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateInnovationPackInput = {
@@ -8967,7 +9015,9 @@ export type HubVisualQuery = {
   };
 };
 
-export type HubsQueryVariables = Exact<{ [key: string]: never }>;
+export type HubsQueryVariables = Exact<{
+  visibilities?: InputMaybe<Array<HubVisibility> | HubVisibility>;
+}>;
 
 export type HubsQuery = {
   __typename?: 'Query';
@@ -9037,12 +9087,14 @@ export type BannerInnovationHubQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    innovationHub: {
-      __typename?: 'InnovationHub';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-      hubListFilter: Array<{ __typename?: 'Hub'; id: string }>;
-    };
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          hubListFilter?: Array<{ __typename?: 'Hub'; id: string }> | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -21585,19 +21637,23 @@ export type InnovationHubQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    innovationHub: {
-      __typename?: 'InnovationHub';
-      id: string;
-      nameID: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        description?: string | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
-      };
-    };
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            description?: string | undefined;
+            banner?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
