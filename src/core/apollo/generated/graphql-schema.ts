@@ -21576,9 +21576,7 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
-export type InnovationHubQueryVariables = Exact<{
-  subdomain?: InputMaybe<Scalars['String']>;
-}>;
+export type InnovationHubQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationHubQuery = {
   __typename?: 'Query';
