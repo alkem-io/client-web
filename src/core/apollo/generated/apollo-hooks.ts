@@ -2999,6 +2999,21 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
   }
   ${ProfileStorageConfigFragmentDoc}
 `;
+export const AspectInCalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
+  fragment AspectInCalloutOnCollaborationWithStorageConfig on Collaboration {
+    id
+    callouts(IDs: [$calloutId]) {
+      id
+      aspects(IDs: [$aspectId]) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
     id
@@ -7081,8 +7096,8 @@ export function refetchHubVisualQuery(variables: SchemaTypes.HubVisualQueryVaria
 }
 
 export const HubsDocument = gql`
-  query hubs {
-    hubs(filter: { visibilities: [ACTIVE, DEMO] }) {
+  query hubs($visibilities: [HubVisibility!] = [ACTIVE]) {
+    hubs(filter: { visibilities: $visibilities }) {
       ...HubDetailsProvider
     }
   }
@@ -7101,6 +7116,7 @@ export const HubsDocument = gql`
  * @example
  * const { data, loading, error } = useHubsQuery({
  *   variables: {
+ *      visibilities: // value for 'visibilities'
  *   },
  * });
  */
@@ -19993,10 +20009,10 @@ export function refetchOpportunityContributionDetailsQuery(
 }
 
 export const InnovationHubDocument = gql`
-  query InnovationHub($subdomain: String) {
+  query InnovationHub {
     platform {
       id
-      innovationHub(subdomain: $subdomain) {
+      innovationHub {
         ...InnovationHubHomeInnovationHub
       }
     }
@@ -20016,7 +20032,6 @@ export const InnovationHubDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationHubQuery({
  *   variables: {
- *      subdomain: // value for 'subdomain'
  *   },
  * });
  */
@@ -23146,6 +23161,102 @@ export type CalloutStorageConfigQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutStorageConfigQuery(variables: SchemaTypes.CalloutStorageConfigQueryVariables) {
   return { query: CalloutStorageConfigDocument, variables: variables };
+}
+
+export const CalloutAspectStorageConfigDocument = gql`
+  query CalloutAspectStorageConfig(
+    $aspectId: UUID_NAMEID!
+    $calloutId: UUID_NAMEID!
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      ... on Hub @include(if: $includeHub) {
+        collaboration {
+          ...AspectInCalloutOnCollaborationWithStorageConfig
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        collaboration {
+          ...AspectInCalloutOnCollaborationWithStorageConfig
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        collaboration {
+          ...AspectInCalloutOnCollaborationWithStorageConfig
+        }
+      }
+    }
+  }
+  ${AspectInCalloutOnCollaborationWithStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useCalloutAspectStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useCalloutAspectStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutAspectStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutAspectStorageConfigQuery({
+ *   variables: {
+ *      aspectId: // value for 'aspectId'
+ *      calloutId: // value for 'calloutId'
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCalloutAspectStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutAspectStorageConfigQuery,
+    SchemaTypes.CalloutAspectStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutAspectStorageConfigQuery,
+    SchemaTypes.CalloutAspectStorageConfigQueryVariables
+  >(CalloutAspectStorageConfigDocument, options);
+}
+
+export function useCalloutAspectStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutAspectStorageConfigQuery,
+    SchemaTypes.CalloutAspectStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutAspectStorageConfigQuery,
+    SchemaTypes.CalloutAspectStorageConfigQueryVariables
+  >(CalloutAspectStorageConfigDocument, options);
+}
+
+export type CalloutAspectStorageConfigQueryHookResult = ReturnType<typeof useCalloutAspectStorageConfigQuery>;
+export type CalloutAspectStorageConfigLazyQueryHookResult = ReturnType<typeof useCalloutAspectStorageConfigLazyQuery>;
+export type CalloutAspectStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutAspectStorageConfigQuery,
+  SchemaTypes.CalloutAspectStorageConfigQueryVariables
+>;
+export function refetchCalloutAspectStorageConfigQuery(
+  variables: SchemaTypes.CalloutAspectStorageConfigQueryVariables
+) {
+  return { query: CalloutAspectStorageConfigDocument, variables: variables };
 }
 
 export const UserStorageConfigDocument = gql`
