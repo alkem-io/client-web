@@ -2705,12 +2705,6 @@ export const ConfigurationFragmentDoc = gql`
       rumEnabled
       endpoint
     }
-    storage {
-      file {
-        mimeTypes
-        maxFileSize
-      }
-    }
     geo {
       endpoint
     }

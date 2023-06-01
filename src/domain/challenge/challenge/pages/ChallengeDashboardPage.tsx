@@ -129,7 +129,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
-                  journeyTypeName="hub"
+                  journeyTypeName="challenge"
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -143,7 +143,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
-                  journeyTypeName="hub"
+                  journeyTypeName="challenge"
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
