@@ -52,12 +52,6 @@ fragment Configuration on Config {
     rumEnabled
     endpoint
   }
-  storage {
-    file {
-      mimeTypes
-      maxFileSize
-    }
-  }
   geo {
     endpoint
   }
