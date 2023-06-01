@@ -1,18 +1,23 @@
 import { Button, FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
-import React, { FC, useMemo, useState } from 'react';
+import React, { ComponentType, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import IconButton from '../../../../common/components/core/IconButton';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
 import LoadingListItem from '../../../shared/components/SearchableList/LoadingListItem';
-import ListItemLink from '../../../shared/components/SearchableList/ListItemLink';
+import ListItemLink, { ListItemLinkProps } from '../../../shared/components/SearchableList/ListItemLink';
+import { omit } from 'lodash';
 
-interface SearchableListProps {
-  data: SearchableListItem[];
+export interface SearchableListProps<
+  ItemViewProps extends {},
+  Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+> {
+  data: Item[];
   edit?: boolean;
   active?: number | string;
-  onDelete?: (item: SearchableListItem) => void;
+  onDelete?: (item: Item) => void;
   loading?: boolean;
+  itemViewComponent?: ComponentType<ItemViewProps & ListItemLinkProps>;
 }
 
 export const searchableListItemMapper =
@@ -29,11 +34,20 @@ export interface SearchableListItem {
   url: string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, onDelete, loading }) => {
+export const SearchableList = <
+  ItemViewProps extends {},
+  Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+>({
+  data = [],
+  edit = false,
+  onDelete,
+  loading,
+  itemViewComponent = ListItemLink,
+}: SearchableListProps<ItemViewProps, Item>) => {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
-  const [itemToRemove, setItemToRemove] = useState<SearchableListItem | null>(null);
+  const [itemToRemove, setItemToRemove] = useState<Item | null>(null);
   const [limit, setLimit] = useState(10);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +70,7 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
     }
   };
 
-  const openModal = (e: Event, item: SearchableListItem): void => {
+  const openModal = (e: Event, item: Item): void => {
     e.preventDefault();
     setModalOpened(true);
     setItemToRemove(item);
@@ -66,6 +80,8 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
     setModalOpened(false);
     setItemToRemove(null);
   };
+
+  const ItemView = itemViewComponent as ComponentType<ListItemLinkProps>;
 
   return (
     <>
@@ -90,7 +106,7 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
           </>
         ) : (
           slicedData.map(item => (
-            <ListItemLink
+            <ItemView
               key={item.id}
               to={`${item.url}${editSuffix}`}
               primary={item.value}
@@ -101,6 +117,7 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
                   </IconButton>
                 )
               }
+              {...omit(item, 'id', 'url', 'value')}
             />
           ))
         )}

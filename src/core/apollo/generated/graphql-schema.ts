@@ -409,14 +409,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1916,16 +1908,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -8442,16 +8424,6 @@ export type InnovationFlowTemplateFragment = {
   };
 };
 
-export type AdminHubFragment = {
-  __typename?: 'Hub';
-  id: string;
-  nameID: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-};
-
 export type ChallengesOnHubFragment = {
   __typename?: 'Hub';
   id: string;
@@ -8736,22 +8708,6 @@ export type UpdateHubMutation = {
         }
       | undefined;
   };
-};
-
-export type AdminHubsListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AdminHubsListQuery = {
-  __typename?: 'Query';
-  hubs: Array<{
-    __typename?: 'Hub';
-    visibility: HubVisibility;
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  }>;
 };
 
 export type HubActivityQueryVariables = Exact<{
@@ -22446,6 +22402,43 @@ export type AvailableUserFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
+export type UpdateHubVisibilityMutationVariables = Exact<{
+  hubId: Scalars['String'];
+  visibility: HubVisibility;
+}>;
+
+export type UpdateHubVisibilityMutation = {
+  __typename?: 'Mutation';
+  updateHubVisibility: { __typename?: 'Hub'; id: string; visibility: HubVisibility };
+};
+
+export type AdminHubsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminHubsListQuery = {
+  __typename?: 'Query';
+  hubs: Array<{
+    __typename?: 'Hub';
+    visibility: HubVisibility;
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  }>;
+};
+
+export type AdminHubFragment = {
+  __typename?: 'Hub';
+  id: string;
+  nameID: string;
+  visibility: HubVisibility;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
 export type HubApplicationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -23492,10 +23485,6 @@ export type ConfigurationQuery = {
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
     apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-    storage: {
-      __typename?: 'StorageConfig';
-      file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
-    };
     geo: { __typename?: 'Geo'; endpoint: string };
   };
 };
@@ -23536,10 +23525,6 @@ export type ConfigurationFragment = {
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-  storage: {
-    __typename?: 'StorageConfig';
-    file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
-  };
   geo: { __typename?: 'Geo'; endpoint: string };
 };
 

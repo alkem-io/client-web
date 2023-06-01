@@ -1462,6 +1462,9 @@
         "back-button": "All innovation packs",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
+      },
+      "hubs": {
+        "updateVisibility": "Update Visibility"
       }
     },
     "feedback": {
@@ -1970,8 +1973,7 @@
       "FORMAT_NOT_SUPPORTED": "Format not supported",
       "BAD_USER_INPUT": "Bad user input",
       "NOT_SUPPORTED": "Not supported",
-      "bad-user-input": "Invalid value in the submitted form.",
-      "bad-user-input-withfield": "The value of '{{field}}' is not valid."
+      "OPERATION_NOT_ALLOWED": "{{message}}"
     }
   },
   "dashboard-updates-section": {
