@@ -7,10 +7,13 @@ import { error as logError } from '../../../services/logging/sentry/log';
 import { useNotification } from '../../ui/notifications/useNotification';
 
 const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) => {
+  const { message } = error;
   const code = error.extensions?.code as string;
+  const meta = { code, message };
+
   if (!code) {
     // if code missing send a generic error text
-    return t('apollo.errors.generic');
+    return t('apollo.errors.generic', meta);
   }
 
   const key = `apollo.errors.${code}`;
@@ -18,10 +21,10 @@ const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) =>
   if (!i18n.exists(key)) {
     // if the error text is missing for that code
     // send a generic error text with code
-    return t('apollo.errors.generic-with-code', { code });
+    return t('apollo.errors.generic-with-code', meta);
   }
   // send the error text
-  return t(key);
+  return t(key, meta);
 };
 
 export const useApolloErrorHandler = (severity: Severity = 'error') => {
