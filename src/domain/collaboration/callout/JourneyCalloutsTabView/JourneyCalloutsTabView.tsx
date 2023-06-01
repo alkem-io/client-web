@@ -37,7 +37,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   }
 
   const {
-    groupedCallouts,
+    callouts: allCallouts,
     canCreateCallout,
     calloutNames,
     loading,
@@ -50,7 +50,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     opportunityNameId,
   });
 
-  const callouts = groupedCallouts[CalloutsGroup.KnowledgeBase];
+  const callouts = allCallouts?.filter(callout => callout.group !== CalloutsGroup.HomeTop);
 
   const { t } = useTranslation();
 
