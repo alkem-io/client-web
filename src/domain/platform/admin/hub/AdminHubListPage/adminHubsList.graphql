@@ -1,0 +1,20 @@
+query adminHubsList {
+  hubs(filter: {visibilities: [ARCHIVED, ACTIVE, DEMO]}) {
+    ...AdminHub
+    visibility
+  }
+}
+
+fragment AdminHub on Hub {
+  id
+  nameID
+  visibility
+  profile {
+    id
+    displayName
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}

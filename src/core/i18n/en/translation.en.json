@@ -1462,6 +1462,9 @@
         "back-button": "All innovation packs",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
+      },
+      "hubs": {
+        "updateVisibility": "Update Visibility"
       }
     },
     "feedback": {

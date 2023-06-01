@@ -6,8 +6,8 @@ import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../../core/routing/urlParams';
 import { HubContextProvider } from '../../../../challenge/hub/HubContext/HubContext';
-import AdminHubsPage from '../pages/AdminHubsPage';
-import NewHub from '../pages/NewHub';
+import AdminHubsPage from '../AdminHubListPage/AdminHubsPage';
+import NewHub from '../AdminHubListPage/NewHub';
 import { HubRoute } from './HubRoute';
 
 export const HubsRoute: FC<PageProps> = ({ paths }) => {

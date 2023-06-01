@@ -849,20 +849,6 @@ export const WhiteboardTemplateWithValueFragmentDoc = gql`
   }
   ${WhiteboardTemplateCardFragmentDoc}
 `;
-export const AdminHubFragmentDoc = gql`
-  fragment AdminHub on Hub {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-`;
 export const ChallengesOnHubFragmentDoc = gql`
   fragment ChallengesOnHub on Hub {
     id
@@ -2547,6 +2533,21 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   }
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
+`;
+export const AdminHubFragmentDoc = gql`
+  fragment AdminHub on Hub {
+    id
+    nameID
+    visibility
+    profile {
+      id
+      displayName
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
 `;
 export const DocumentDataFragmentDoc = gql`
   fragment DocumentData on Document {
@@ -6381,61 +6382,6 @@ export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateHubMutation,
   SchemaTypes.UpdateHubMutationVariables
 >;
-export const AdminHubsListDocument = gql`
-  query adminHubsList {
-    hubs(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
-      ...AdminHub
-      visibility
-    }
-  }
-  ${AdminHubFragmentDoc}
-`;
-
-/**
- * __useAdminHubsListQuery__
- *
- * To run a query within a React component, call `useAdminHubsListQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminHubsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAdminHubsListQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAdminHubsListQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>(
-    AdminHubsListDocument,
-    options
-  );
-}
-
-export function useAdminHubsListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>(
-    AdminHubsListDocument,
-    options
-  );
-}
-
-export type AdminHubsListQueryHookResult = ReturnType<typeof useAdminHubsListQuery>;
-export type AdminHubsListLazyQueryHookResult = ReturnType<typeof useAdminHubsListLazyQuery>;
-export type AdminHubsListQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminHubsListQuery,
-  SchemaTypes.AdminHubsListQueryVariables
->;
-export function refetchAdminHubsListQuery(variables?: SchemaTypes.AdminHubsListQueryVariables) {
-  return { query: AdminHubsListDocument, variables: variables };
-}
-
 export const HubActivityDocument = gql`
   query hubActivity($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -21212,6 +21158,111 @@ export function refetchOpportunityAvailableMemberUsersQuery(
   variables: SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
 ) {
   return { query: OpportunityAvailableMemberUsersDocument, variables: variables };
+}
+
+export const UpdateHubVisibilityDocument = gql`
+  mutation UpdateHubVisibility($hubId: String!, $visibility: HubVisibility!) {
+    updateHubVisibility(visibilityData: { hubID: $hubId, visibility: $visibility }) {
+      id
+      visibility
+    }
+  }
+`;
+export type UpdateHubVisibilityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateHubVisibilityMutation,
+  SchemaTypes.UpdateHubVisibilityMutationVariables
+>;
+
+/**
+ * __useUpdateHubVisibilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateHubVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHubVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateHubVisibilityMutation, { data, loading, error }] = useUpdateHubVisibilityMutation({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      visibility: // value for 'visibility'
+ *   },
+ * });
+ */
+export function useUpdateHubVisibilityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateHubVisibilityMutation,
+    SchemaTypes.UpdateHubVisibilityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateHubVisibilityMutation, SchemaTypes.UpdateHubVisibilityMutationVariables>(
+    UpdateHubVisibilityDocument,
+    options
+  );
+}
+
+export type UpdateHubVisibilityMutationHookResult = ReturnType<typeof useUpdateHubVisibilityMutation>;
+export type UpdateHubVisibilityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateHubVisibilityMutation>;
+export type UpdateHubVisibilityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateHubVisibilityMutation,
+  SchemaTypes.UpdateHubVisibilityMutationVariables
+>;
+export const AdminHubsListDocument = gql`
+  query adminHubsList {
+    hubs(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
+      ...AdminHub
+      visibility
+    }
+  }
+  ${AdminHubFragmentDoc}
+`;
+
+/**
+ * __useAdminHubsListQuery__
+ *
+ * To run a query within a React component, call `useAdminHubsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminHubsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminHubsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAdminHubsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>(
+    AdminHubsListDocument,
+    options
+  );
+}
+
+export function useAdminHubsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>(
+    AdminHubsListDocument,
+    options
+  );
+}
+
+export type AdminHubsListQueryHookResult = ReturnType<typeof useAdminHubsListQuery>;
+export type AdminHubsListLazyQueryHookResult = ReturnType<typeof useAdminHubsListLazyQuery>;
+export type AdminHubsListQueryResult = Apollo.QueryResult<
+  SchemaTypes.AdminHubsListQuery,
+  SchemaTypes.AdminHubsListQueryVariables
+>;
+export function refetchAdminHubsListQuery(variables?: SchemaTypes.AdminHubsListQueryVariables) {
+  return { query: AdminHubsListDocument, variables: variables };
 }
 
 export const HubApplicationsDocument = gql`
