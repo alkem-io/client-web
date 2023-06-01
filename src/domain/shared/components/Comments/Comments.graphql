@@ -1,6 +1,6 @@
-fragment CommentsWithMessages on Comments {
+fragment CommentsWithMessages on Room2 {
   id
-  commentsCount
+  messagesCount
   authorization {
     id
     myPrivileges
@@ -11,8 +11,8 @@ fragment CommentsWithMessages on Comments {
   }
 }
 
-mutation PostComment($messageData: CommentsSendMessageInput!) {
-  sendComment(messageData: $messageData) {
+mutation PostComment($messageData: RoomSendMessageInput!) {
+  sendMessageToRoom(messageData: $messageData) {
     id
     message
     sender {
@@ -22,8 +22,8 @@ mutation PostComment($messageData: CommentsSendMessageInput!) {
   }
 }
 
-mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
-  removeComment(messageData: $messageData)
+mutation RemoveComment($messageData: RoomRemoveMessageInput!) {
+  removeMessageOnRoom(messageData: $messageData)
 }
 
 query MentionableUsers($filter: UserFilterInput, $first: Int) {

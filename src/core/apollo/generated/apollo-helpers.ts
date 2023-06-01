@@ -684,13 +684,6 @@ export type CollaborationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommentsKeySpecifier = ('authorization' | 'commentsCount' | 'id' | 'messages' | CommentsKeySpecifier)[];
-export type CommentsFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  commentsCount?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  messages?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type CommunicationKeySpecifier = (
   | 'authorization'
   | 'discussion'
@@ -1201,10 +1194,11 @@ export type LocationFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageKeySpecifier = ('id' | 'message' | 'sender' | 'timestamp' | MessageKeySpecifier)[];
+export type MessageKeySpecifier = ('id' | 'message' | 'reactions' | 'sender' | 'timestamp' | MessageKeySpecifier)[];
 export type MessageFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
+  reactions?: FieldPolicy<any> | FieldReadFunction<any>;
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1214,6 +1208,7 @@ export type MetadataFieldPolicy = {
   services?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
+  | 'addReactionToMessageInDiscussion'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
@@ -1257,7 +1252,6 @@ export type MutationKeySpecifier = (
   | 'createGroupOnOrganization'
   | 'createHub'
   | 'createInnovationFlowTemplate'
-  | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
   | 'createOpportunity'
   | 'createOrganization'
@@ -1281,7 +1275,6 @@ export type MutationKeySpecifier = (
   | 'deleteDocument'
   | 'deleteHub'
   | 'deleteInnovationFlowTemplate'
-  | 'deleteInnovationHub'
   | 'deleteInnovationPack'
   | 'deleteOpportunity'
   | 'deleteOrganization'
@@ -1303,10 +1296,11 @@ export type MutationKeySpecifier = (
   | 'joinCommunity'
   | 'messageUser'
   | 'moveAspectToCallout'
-  | 'removeComment'
   | 'removeMessageFromDiscussion'
+  | 'removeMessageOnRoom'
   | 'removeOrganizationAsCommunityLead'
   | 'removeOrganizationAsCommunityMember'
+  | 'removeReactionToMessageInDiscussion'
   | 'removeUpdate'
   | 'removeUserAsChallengeAdmin'
   | 'removeUserAsCommunityLead'
@@ -1321,11 +1315,12 @@ export type MutationKeySpecifier = (
   | 'removeUserFromGroup'
   | 'removeUserFromOrganization'
   | 'revokeCredentialFromUser'
-  | 'sendComment'
   | 'sendMessageOnCallout'
+  | 'sendMessageReplyToDiscussion'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToDiscussion'
   | 'sendMessageToOrganization'
+  | 'sendMessageToRoom'
   | 'sendMessageToUser'
   | 'sendUpdate'
   | 'updateActor'
@@ -1345,7 +1340,6 @@ export type MutationKeySpecifier = (
   | 'updateHub'
   | 'updateHubVisibility'
   | 'updateInnovationFlowTemplate'
-  | 'updateInnovationHub'
   | 'updateInnovationPack'
   | 'updateOpportunity'
   | 'updateOpportunityInnovationFlow'
@@ -1366,6 +1360,7 @@ export type MutationKeySpecifier = (
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
+  addReactionToMessageInDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1409,7 +1404,6 @@ export type MutationFieldPolicy = {
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1433,7 +1427,6 @@ export type MutationFieldPolicy = {
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1455,10 +1448,11 @@ export type MutationFieldPolicy = {
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveAspectToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeReactionToMessageInDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1473,11 +1467,12 @@ export type MutationFieldPolicy = {
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  sendComment?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageReplyToDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   sendUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1497,7 +1492,6 @@ export type MutationFieldPolicy = {
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunityInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1864,6 +1858,13 @@ export type QuestionTemplateFieldPolicy = {
   required?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ReactionKeySpecifier = ('id' | 'sender' | 'text' | 'timestamp' | ReactionKeySpecifier)[];
+export type ReactionFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  sender?: FieldPolicy<any> | FieldReadFunction<any>;
+  text?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ReferenceKeySpecifier = ('authorization' | 'description' | 'id' | 'name' | 'uri' | ReferenceKeySpecifier)[];
 export type ReferenceFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2004,6 +2005,13 @@ export type RolesResultOrganizationFieldPolicy = {
   organizationID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type Room2KeySpecifier = ('authorization' | 'id' | 'messages' | 'messagesCount' | Room2KeySpecifier)[];
+export type Room2FieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  messages?: FieldPolicy<any> | FieldReadFunction<any>;
+  messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultKeySpecifier = ('id' | 'score' | 'terms' | 'type' | SearchResultKeySpecifier)[];
 export type SearchResultFieldPolicy = {
@@ -2591,10 +2599,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CollaborationKeySpecifier | (() => undefined | CollaborationKeySpecifier);
     fields?: CollaborationFieldPolicy;
   };
-  Comments?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommentsKeySpecifier | (() => undefined | CommentsKeySpecifier);
-    fields?: CommentsFieldPolicy;
-  };
   Communication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationKeySpecifier | (() => undefined | CommunicationKeySpecifier);
     fields?: CommunicationFieldPolicy;
@@ -2860,6 +2864,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | QuestionTemplateKeySpecifier | (() => undefined | QuestionTemplateKeySpecifier);
     fields?: QuestionTemplateFieldPolicy;
   };
+  Reaction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ReactionKeySpecifier | (() => undefined | ReactionKeySpecifier);
+    fields?: ReactionFieldPolicy;
+  };
   Reference?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ReferenceKeySpecifier | (() => undefined | ReferenceKeySpecifier);
     fields?: ReferenceFieldPolicy;
@@ -2898,6 +2906,10 @@ export type StrictTypedTypePolicies = {
   RolesResultOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RolesResultOrganizationKeySpecifier | (() => undefined | RolesResultOrganizationKeySpecifier);
     fields?: RolesResultOrganizationFieldPolicy;
+  };
+  Room2?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | Room2KeySpecifier | (() => undefined | Room2KeySpecifier);
+    fields?: Room2FieldPolicy;
   };
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);

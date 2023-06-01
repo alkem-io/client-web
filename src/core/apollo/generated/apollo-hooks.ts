@@ -37,7 +37,7 @@ export const AspectCardFragmentDoc = gql`
     createdDate
     comments {
       id
-      commentsCount
+      messagesCount
     }
     profile {
       id
@@ -1480,9 +1480,9 @@ export const ReferenceDetailsFragmentDoc = gql`
   }
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
-  fragment CommentsWithMessages on Comments {
+  fragment CommentsWithMessages on Room2 {
     id
-    commentsCount
+    messagesCount
     authorization {
       id
       myPrivileges
@@ -2791,7 +2791,7 @@ export const SearchResultCardFragmentDoc = gql`
       createdDate
       comments {
         id
-        commentsCount
+        messagesCount
       }
     }
     ...CardParent
@@ -11001,8 +11001,8 @@ export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
 >;
 export const RemoveCommentFromCalloutDocument = gql`
-  mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
-    removeComment(messageData: $messageData)
+  mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
+    removeMessageOnRoom(messageData: $messageData)
   }
 `;
 export type RemoveCommentFromCalloutMutationFn = Apollo.MutationFunction<
@@ -23648,8 +23648,8 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutationVariables
 >;
 export const PostCommentDocument = gql`
-  mutation PostComment($messageData: CommentsSendMessageInput!) {
-    sendComment(messageData: $messageData) {
+  mutation PostComment($messageData: RoomSendMessageInput!) {
+    sendMessageToRoom(messageData: $messageData) {
       id
       message
       sender {
@@ -23698,8 +23698,8 @@ export type PostCommentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostCommentMutationVariables
 >;
 export const RemoveCommentDocument = gql`
-  mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
-    removeComment(messageData: $messageData)
+  mutation RemoveComment($messageData: RoomRemoveMessageInput!) {
+    removeMessageOnRoom(messageData: $messageData)
   }
 `;
 export type RemoveCommentMutationFn = Apollo.MutationFunction<

@@ -179,14 +179,15 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
-    update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
+    update: (cache, { data }) =>
+      data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
   });
 
   const handleDeleteComment = (commentsId: string, messageId: string) =>
     deleteComment({
       variables: {
         messageData: {
-          commentsID: commentsId,
+          roomID: commentsId,
           messageID: messageId,
         },
       },
@@ -229,7 +230,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
             }
 
             const newMessage = cache.writeFragment({
-              data: data?.sendComment,
+              data: data?.sendMessageToRoom,
               fragment: MessageDetailsFragmentDoc,
               fragmentName: 'MessageDetails',
             });
@@ -244,7 +245,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     postComment({
       variables: {
         messageData: {
-          commentsID: commentsId,
+          roomID: commentsId,
           message,
         },
       },

@@ -76,14 +76,15 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
       commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) && callout.state !== CalloutState.Closed;
 
     const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
-      update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
+      update: (cache, { data }) =>
+        data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
     });
 
     const handleDeleteMessage = (commentsId: string, messageId: string) =>
       deleteMessage({
         variables: {
           messageData: {
-            commentsID: commentsId,
+            roomID: commentsId,
             messageID: messageId,
           },
         },

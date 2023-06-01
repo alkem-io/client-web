@@ -104,14 +104,15 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
-    update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
+    update: (cache, { data }) =>
+      data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
   });
 
   const handleDeleteComment = (commentsId: string, messageId: string) =>
     deleteComment({
       variables: {
         messageData: {
-          commentsID: commentsId,
+          roomID: commentsId,
           messageID: messageId,
         },
       },
@@ -154,7 +155,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
             }
 
             const newMessage = cache.writeFragment({
-              data: data?.sendComment,
+              data: data?.sendMessageToRoom,
               fragment: MessageDetailsFragmentDoc,
               fragmentName: 'MessageDetails',
             });
@@ -169,7 +170,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
     postComment({
       variables: {
         messageData: {
-          commentsID: commentsId,
+          roomID: commentsId,
           message,
         },
       },

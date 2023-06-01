@@ -12,7 +12,7 @@ fragment AspectCard on Aspect {
   createdDate
   comments {
     id
-    commentsCount
+    messagesCount
   }
 
   profile {

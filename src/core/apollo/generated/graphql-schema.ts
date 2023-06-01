@@ -416,7 +416,7 @@ export type Aspect = {
   /** The parent Callout of the Aspect */
   callout?: Maybe<Callout>;
   /** The comments for this Aspect. */
-  comments?: Maybe<Comments>;
+  comments?: Maybe<Room2>;
   /** The user that created this Aspect */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -645,7 +645,7 @@ export type CalendarEvent = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The comments for this CalendarEvent. */
-  comments?: Maybe<Comments>;
+  comments?: Maybe<Room2>;
   /** The user that created this CalendarEvent */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -694,8 +694,8 @@ export type Callout = {
   authorization?: Maybe<Authorization>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
-  /** The Comments object for this Callout. */
-  comments?: Maybe<Comments>;
+  /** The comments object for this Callout. */
+  comments?: Maybe<Room2>;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
   /** Callout group. */
@@ -914,32 +914,6 @@ export type CollaborationCalloutsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type Comments = {
-  __typename?: 'Comments';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The number of comments. */
-  commentsCount: Scalars['Float'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Messages in this Comments. */
-  messages?: Maybe<Array<Message>>;
-};
-
-export type CommentsRemoveMessageInput = {
-  /** The Comments the message is being removed from. */
-  commentsID: Scalars['UUID'];
-  /** The message id that should be removed */
-  messageID: Scalars['MessageID'];
-};
-
-export type CommentsSendMessageInput = {
-  /** The Comments the message is being sent to */
-  commentsID: Scalars['UUID'];
-  /** The message being sent */
-  message: Scalars['String'];
 };
 
 export type Communication = {
@@ -1370,20 +1344,6 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateInnovationHubInput = {
-  /** A list of Hubs to include in this Innovation Hub. Only valid when type 'list' is used. */
-  hubListFilter?: InputMaybe<Array<Scalars['UUID']>>;
-  /** Hubs with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
-  hubVisibilityFilter?: InputMaybe<HubVisibility>;
-  /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  profileData: CreateProfileInput;
-  /** The subdomain to associate the Innovation Hub with. */
-  subdomain: Scalars['String'];
-  /** The type of Innovation Hub. */
-  type: InnovationHubType;
-};
-
 export type CreateInnovationPackOnLibraryInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -1619,10 +1579,6 @@ export type DeleteInnovationFlowTemplateInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteInnovationHubInput = {
-  ID: Scalars['UUID'];
-};
-
 export type DeleteInnovationPackInput = {
   ID: Scalars['UUID_NAMEID'];
 };
@@ -1697,6 +1653,15 @@ export type Discussion = {
   timestamp?: Maybe<Scalars['Float']>;
 };
 
+export type DiscussionAddMessageReactionInput = {
+  /** The Discussion the message is being reacted to */
+  discussionID: Scalars['UUID'];
+  /** The message being reacted to */
+  messageID: Scalars['String'];
+  /** The reaction being sent */
+  text: Scalars['String'];
+};
+
 export enum DiscussionCategory {
   ChallengeCentric = 'CHALLENGE_CENTRIC',
   CommunityBuilding = 'COMMUNITY_BUILDING',
@@ -1716,11 +1681,27 @@ export type DiscussionRemoveMessageInput = {
   messageID: Scalars['MessageID'];
 };
 
+export type DiscussionRemoveMessageReactionInput = {
+  /** The Discussion with the message whose reaction is being removed */
+  discussionID: Scalars['UUID'];
+  /** Reaction that is being removed */
+  reactionID: Scalars['String'];
+};
+
 export type DiscussionSendMessageInput = {
   /** The Discussion the message is being sent to */
   discussionID: Scalars['UUID'];
   /** The message being sent */
   message: Scalars['String'];
+};
+
+export type DiscussionSendMessageReplyInput = {
+  /** The Discussion the message is being replied to */
+  discussionID: Scalars['UUID'];
+  /** The message being sent */
+  message: Scalars['String'];
+  /** The message being replied to */
+  threadID: Scalars['String'];
 };
 
 export type Document = {
@@ -1976,7 +1957,7 @@ export type InnovationHub = {
   __typename?: 'InnovationHub';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  hubListFilter?: Maybe<Array<Hub>>;
+  hubListFilter: Array<Hub>;
   /** If defined, what type of visibility to filter the Hubs on. You can have only one type of filter active at any given time. */
   hubVisibilityFilter?: Maybe<HubVisibility>;
   /** The ID of the entity */
@@ -2065,6 +2046,8 @@ export type Message = {
   id: Scalars['MessageID'];
   /** The message being sent */
   message: Scalars['Markdown'];
+  /** Reactions on this message */
+  reactions: Array<Reaction>;
   /** The user that created this Aspect */
   sender?: Maybe<User>;
   /** The server timestamp in UTC */
@@ -2101,6 +2084,8 @@ export type MoveAspectInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add a reaction to a message from the specified Discussion.  */
+  addReactionToMessageInDiscussion: Message;
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
@@ -2187,8 +2172,6 @@ export type Mutation = {
   createHub: Hub;
   /** Creates a new InnovationFlowTemplate on the specified TemplatesSet. */
   createInnovationFlowTemplate: InnovationFlowTemplate;
-  /** Create Innovation Hub. */
-  createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
   /** Creates a new Opportunity within the parent Challenge. */
@@ -2235,8 +2218,6 @@ export type Mutation = {
   deleteHub: Hub;
   /** Deletes the specified InnovationFlowTemplate. */
   deleteInnovationFlowTemplate: InnovationFlowTemplate;
-  /** Delete Innovation Hub. */
-  deleteInnovationHub: InnovationHub;
   /** Deletes the specified InnovationPack. */
   deleteInnovationPack: InnovationPack;
   /** Deletes the specified Opportunity. */
@@ -2279,14 +2260,16 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Moves the specified Aspect to another Callout. */
   moveAspectToCallout: Aspect;
-  /** Removes a comment message. */
-  removeComment: Scalars['MessageID'];
   /** Removes a message from the specified Discussion. */
   removeMessageFromDiscussion: Scalars['MessageID'];
+  /** Removes a message. */
+  removeMessageOnRoom: Scalars['MessageID'];
   /** Removes an Organization as a Lead of the specified Community. */
   removeOrganizationAsCommunityLead: Community;
   /** Removes an Organization as a member of the specified Community. */
   removeOrganizationAsCommunityMember: Community;
+  /** Remove a reaction to a message from the specified Discussion.  */
+  removeReactionToMessageInDiscussion: Scalars['Boolean'];
   /** Removes an update message. */
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
@@ -2315,16 +2298,18 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
-  /** Sends an comment message. Returns the id of the new Update message. */
-  sendComment: Message;
   /** Send a message on a Comments Callout */
   sendMessageOnCallout: Message;
+  /** Sends a reply to a message from the specified Discussion.  */
+  sendMessageReplyToDiscussion: Message;
   /** Send message to Community Leads. */
   sendMessageToCommunityLeads: Scalars['Boolean'];
   /** Sends a message to the specified Discussion.  */
   sendMessageToDiscussion: Message;
   /** Send message to an Organization. */
   sendMessageToOrganization: Scalars['Boolean'];
+  /** Sends an comment message. Returns the id of the new Update message. */
+  sendMessageToRoom: Message;
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
   /** Sends an update message. Returns the id of the new Update message. */
@@ -2363,8 +2348,6 @@ export type Mutation = {
   updateHubVisibility: Hub;
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
-  /** Update Innovation Hub. */
-  updateInnovationHub: InnovationHub;
   /** Updates the InnovationPack. */
   updateInnovationPack: InnovationPack;
   /** Updates the specified Opportunity. */
@@ -2399,6 +2382,10 @@ export type Mutation = {
   uploadFileOnReference: Reference;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddReactionToMessageInDiscussionArgs = {
+  messageData: DiscussionAddMessageReactionInput;
 };
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
@@ -2557,10 +2544,6 @@ export type MutationCreateInnovationFlowTemplateArgs = {
   innovationFlowTemplateInput: CreateInnovationFlowTemplateOnTemplatesSetInput;
 };
 
-export type MutationCreateInnovationHubArgs = {
-  createData: CreateInnovationHubInput;
-};
-
 export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
 };
@@ -2649,10 +2632,6 @@ export type MutationDeleteInnovationFlowTemplateArgs = {
   deleteData: DeleteInnovationFlowTemplateInput;
 };
 
-export type MutationDeleteInnovationHubArgs = {
-  deleteData: DeleteInnovationHubInput;
-};
-
 export type MutationDeleteInnovationPackArgs = {
   deleteData: DeleteInnovationPackInput;
 };
@@ -2737,12 +2716,12 @@ export type MutationMoveAspectToCalloutArgs = {
   moveAspectData: MoveAspectInput;
 };
 
-export type MutationRemoveCommentArgs = {
-  messageData: CommentsRemoveMessageInput;
-};
-
 export type MutationRemoveMessageFromDiscussionArgs = {
   messageData: DiscussionRemoveMessageInput;
+};
+
+export type MutationRemoveMessageOnRoomArgs = {
+  messageData: RoomRemoveMessageInput;
 };
 
 export type MutationRemoveOrganizationAsCommunityLeadArgs = {
@@ -2751,6 +2730,10 @@ export type MutationRemoveOrganizationAsCommunityLeadArgs = {
 
 export type MutationRemoveOrganizationAsCommunityMemberArgs = {
   membershipData: RemoveCommunityMemberOrganizationInput;
+};
+
+export type MutationRemoveReactionToMessageInDiscussionArgs = {
+  messageData: DiscussionRemoveMessageReactionInput;
 };
 
 export type MutationRemoveUpdateArgs = {
@@ -2809,12 +2792,12 @@ export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
 };
 
-export type MutationSendCommentArgs = {
-  messageData: CommentsSendMessageInput;
-};
-
 export type MutationSendMessageOnCalloutArgs = {
   data: SendMessageOnCalloutInput;
+};
+
+export type MutationSendMessageReplyToDiscussionArgs = {
+  messageData: DiscussionSendMessageReplyInput;
 };
 
 export type MutationSendMessageToCommunityLeadsArgs = {
@@ -2827,6 +2810,10 @@ export type MutationSendMessageToDiscussionArgs = {
 
 export type MutationSendMessageToOrganizationArgs = {
   messageData: CommunicationSendMessageToOrganizationInput;
+};
+
+export type MutationSendMessageToRoomArgs = {
+  messageData: RoomSendMessageInput;
 };
 
 export type MutationSendMessageToUserArgs = {
@@ -2903,10 +2890,6 @@ export type MutationUpdateHubVisibilityArgs = {
 
 export type MutationUpdateInnovationFlowTemplateArgs = {
   innovationFlowTemplateInput: UpdateInnovationFlowTemplateInput;
-};
-
-export type MutationUpdateInnovationHubArgs = {
-  updateData: UpdateInnovationHubInput;
 };
 
 export type MutationUpdateInnovationPackArgs = {
@@ -3165,8 +3148,8 @@ export type Platform = {
   communication: Communication;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Details about an Innovation Hubs on the platform. If the arguments are omitted, the current Innovation Hub you are in will be returned. */
-  innovationHub?: Maybe<InnovationHub>;
+  /** Details about an Innovation Hubs on the platform */
+  innovationHub: InnovationHub;
   /** List of Innovation Hubs on the platform */
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Library for the platform */
@@ -3538,6 +3521,19 @@ export type QuestionTemplate = {
   sortOrder?: Maybe<Scalars['Float']>;
 };
 
+/** A reaction to a message. */
+export type Reaction = {
+  __typename?: 'Reaction';
+  /** The id for the reaction. */
+  id: Scalars['MessageID'];
+  /** The user that reacted */
+  sender?: Maybe<User>;
+  /** The reaction text */
+  text: Scalars['Markdown'];
+  /** The server timestamp in UTC */
+  timestamp: Scalars['Float'];
+};
+
 export type Reference = {
   __typename?: 'Reference';
   /** The authorization rules for the entity */
@@ -3764,6 +3760,32 @@ export type RolesUserInput = {
   filter?: InputMaybe<HubFilterInput>;
   /** The ID of the user to retrieve the roles of. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type Room2 = {
+  __typename?: 'Room2';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Messages in this Room. */
+  messages?: Maybe<Array<Message>>;
+  /** The number of messages in the Room. */
+  messagesCount: Scalars['Float'];
+};
+
+export type RoomRemoveMessageInput = {
+  /** The message id that should be removed */
+  messageID: Scalars['MessageID'];
+  /** The Room to remove a message from. */
+  roomID: Scalars['UUID'];
+};
+
+export type RoomSendMessageInput = {
+  /** The message being sent */
+  message: Scalars['String'];
+  /** The Room the message is being sent to */
+  roomID: Scalars['UUID'];
 };
 
 export type SearchInput = {
@@ -4330,18 +4352,6 @@ export type UpdateInnovationFlowTemplateInput = {
   definition?: InputMaybe<Scalars['LifecycleDefinition']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
-};
-
-export type UpdateInnovationHubInput = {
-  ID: Scalars['UUID'];
-  /** A list of Hubs to include in this Innovation Hub. Only valid when type 'list' is used. */
-  hubListFilter?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  /** Hubs with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
-  hubVisibilityFilter?: InputMaybe<HubVisibility>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The Profile of this entity. */
-  profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateInnovationPackInput = {
@@ -4994,7 +5004,7 @@ export type ChallengePageQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -5332,7 +5342,7 @@ export type ChallengeProfileFragment = {
                           profile: { __typename?: 'Profile'; id: string; displayName: string };
                         }
                       | undefined;
-                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                    comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -7457,7 +7467,7 @@ export type HubPageQuery = {
                             profile: { __typename?: 'Profile'; id: string; displayName: string };
                           }
                         | undefined;
-                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                      comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -7788,7 +7798,7 @@ export type HubPageFragment = {
                           profile: { __typename?: 'Profile'; id: string; displayName: string };
                         }
                       | undefined;
-                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                    comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -9043,14 +9053,12 @@ export type BannerInnovationHubQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-          hubListFilter?: Array<{ __typename?: 'Hub'; id: string }> | undefined;
-        }
-      | undefined;
+    innovationHub: {
+      __typename?: 'InnovationHub';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      hubListFilter: Array<{ __typename?: 'Hub'; id: string }>;
+    };
   };
 };
 
@@ -9166,7 +9174,7 @@ export type OpportunityPageQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9450,7 +9458,7 @@ export type OpportunityPageFragment = {
                           profile: { __typename?: 'Profile'; id: string; displayName: string };
                         }
                       | undefined;
-                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                    comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -10534,9 +10542,9 @@ export type CalloutPageCalloutQuery = {
                   | undefined;
                 comments?:
                   | {
-                      __typename?: 'Comments';
+                      __typename?: 'Room2';
                       id: string;
-                      commentsCount: number;
+                      messagesCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -10736,9 +10744,9 @@ export type CalloutPageCalloutQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room2';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10944,9 +10952,9 @@ export type CalloutPageCalloutQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room2';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -12410,7 +12418,7 @@ export type HubAspectQuery = {
                       };
                       comments?:
                         | {
-                            __typename?: 'Comments';
+                            __typename?: 'Room2';
                             id: string;
                             authorization?:
                               | {
@@ -12530,7 +12538,7 @@ export type ChallengeAspectQuery = {
                         };
                         comments?:
                           | {
-                              __typename?: 'Comments';
+                              __typename?: 'Room2';
                               id: string;
                               authorization?:
                                 | {
@@ -12651,7 +12659,7 @@ export type OpportunityAspectQuery = {
                         };
                         comments?:
                           | {
-                              __typename?: 'Comments';
+                              __typename?: 'Room2';
                               id: string;
                               authorization?:
                                 | {
@@ -12756,7 +12764,7 @@ export type AspectDashboardDataFragment = {
               };
               comments?:
                 | {
-                    __typename?: 'Comments';
+                    __typename?: 'Room2';
                     id: string;
                     authorization?:
                       | {
@@ -12834,7 +12842,7 @@ export type AspectDashboardFragment = {
   };
   comments?:
     | {
-        __typename?: 'Comments';
+        __typename?: 'Room2';
         id: string;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -13411,7 +13419,7 @@ export type AspectCardFragment = {
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
-  comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+  comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -13449,7 +13457,7 @@ export type ContributeTabAspectFragment = {
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
-  comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+  comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -13588,7 +13596,7 @@ export type DashboardTopCalloutsFragment = {
                     profile: { __typename?: 'Profile'; id: string; displayName: string };
                   }
                 | undefined;
-              comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+              comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -13723,7 +13731,7 @@ export type DashboardTopCalloutFragment = {
         createdBy?:
           | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
           | undefined;
-        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+        comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -14103,9 +14111,9 @@ export type CreateCalloutMutation = {
       | undefined;
     comments?:
       | {
-          __typename?: 'Comments';
+          __typename?: 'Room2';
           id: string;
-          commentsCount: number;
+          messagesCount: number;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -14312,10 +14320,10 @@ export type CreateAspectFromContributeTabMutation = {
 };
 
 export type RemoveCommentFromCalloutMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
+  messageData: RoomRemoveMessageInput;
 }>;
 
-export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeComment: string };
+export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
 export type CalloutMessageReceivedSubscriptionVariables = Exact<{
   calloutIDs: Array<Scalars['UUID']> | Scalars['UUID'];
@@ -14486,9 +14494,9 @@ export type CalloutsQuery = {
                   | undefined;
                 comments?:
                   | {
-                      __typename?: 'Comments';
+                      __typename?: 'Room2';
                       id: string;
-                      commentsCount: number;
+                      messagesCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -14692,9 +14700,9 @@ export type CalloutsQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room2';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -14904,9 +14912,9 @@ export type CalloutsQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room2';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -15033,7 +15041,7 @@ export type HubCalloutAspectsSubscriptionQuery = {
                             profile: { __typename?: 'Profile'; id: string; displayName: string };
                           }
                         | undefined;
-                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                      comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -15115,7 +15123,7 @@ export type ChallengeCalloutAspectsSubscriptionQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -15198,7 +15206,7 @@ export type OpportunityCalloutAspectsSubscriptionQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -15435,9 +15443,9 @@ export type CollaborationWithCalloutsFragment = {
           | undefined;
         comments?:
           | {
-              __typename?: 'Comments';
+              __typename?: 'Room2';
               id: string;
-              commentsCount: number;
+              messagesCount: number;
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -15611,9 +15619,9 @@ export type CalloutFragment = {
     | undefined;
   comments?:
     | {
-        __typename?: 'Comments';
+        __typename?: 'Room2';
         id: string;
-        commentsCount: number;
+        messagesCount: number;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -17448,7 +17456,7 @@ export type AspectsOnCalloutFragment = {
         createdBy?:
           | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
           | undefined;
-        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+        comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -17502,7 +17510,7 @@ export type CalloutAspectCreatedSubscription = {
       createdBy?:
         | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
         | undefined;
-      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+      comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -21591,23 +21599,19 @@ export type InnovationHubQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            tagline: string;
-            description?: string | undefined;
-            banner?:
-              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        }
-      | undefined;
+    innovationHub: {
+      __typename?: 'InnovationHub';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline: string;
+        description?: string | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+      };
+    };
   };
 };
 
@@ -23752,7 +23756,7 @@ export type SearchQuery = {
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
                 }
               | undefined;
-            comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+            comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
           };
           hub: {
             __typename?: 'Hub';
@@ -23838,7 +23842,7 @@ export type SearchResultCardFragment = {
     createdBy?:
       | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
       | undefined;
-    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+    comments?: { __typename?: 'Room2'; id: string; messagesCount: number } | undefined;
   };
   hub: {
     __typename?: 'Hub';
@@ -24475,9 +24479,9 @@ export type CreateRelationMutation = {
 };
 
 export type CommentsWithMessagesFragment = {
-  __typename?: 'Comments';
+  __typename?: 'Room2';
   id: string;
-  commentsCount: number;
+  messagesCount: number;
   authorization?:
     | {
         __typename?: 'Authorization';
@@ -24514,12 +24518,12 @@ export type CommentsWithMessagesFragment = {
 };
 
 export type PostCommentMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
+  messageData: RoomSendMessageInput;
 }>;
 
 export type PostCommentMutation = {
   __typename?: 'Mutation';
-  sendComment: {
+  sendMessageToRoom: {
     __typename?: 'Message';
     id: string;
     message: string;
@@ -24529,10 +24533,10 @@ export type PostCommentMutation = {
 };
 
 export type RemoveCommentMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
+  messageData: RoomRemoveMessageInput;
 }>;
 
-export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
+export type RemoveCommentMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
@@ -24689,9 +24693,9 @@ export type HubCalendarEventsQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room2';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -24804,9 +24808,9 @@ export type CalendarEventDetailsQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room2';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -24901,9 +24905,9 @@ export type CalendarEventDetailsFragment = {
     | undefined;
   comments?:
     | {
-        __typename?: 'Comments';
+        __typename?: 'Room2';
         id: string;
-        commentsCount: number;
+        messagesCount: number;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -24996,9 +25000,9 @@ export type CreateCalendarEventMutation = {
       | undefined;
     comments?:
       | {
-          __typename?: 'Comments';
+          __typename?: 'Room2';
           id: string;
-          commentsCount: number;
+          messagesCount: number;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -25081,9 +25085,9 @@ export type UpdateCalendarEventMutation = {
       | undefined;
     comments?:
       | {
-          __typename?: 'Comments';
+          __typename?: 'Room2';
           id: string;
-          commentsCount: number;
+          messagesCount: number;
           authorization?:
             | {
                 __typename?: 'Authorization';
