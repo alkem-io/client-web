@@ -18,7 +18,6 @@ export const useConfig = () => {
       platform: context.config?.platform,
       features: context.config?.platform.featureFlags,
       sentry: context.config?.sentry,
-      storage: context.config?.storage,
       apm: context.config?.apm,
       geo: context.config?.geo,
       loading: context.loading,

@@ -27,12 +27,6 @@ export interface Configuration {
     endpoint: string;
     submitPII: boolean;
   };
-  storage: {
-    file: {
-      mimeTypes: string[];
-      maxFileSize: number;
-    };
-  };
   apm: {
     rumEnabled: boolean;
     endpoint: string;
