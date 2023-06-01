@@ -3,10 +3,11 @@ import { split } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
-
+import { env } from '../../../types/env';
 import { logger } from '../../../services/logging/winston/logger';
 
 const WS_RETRY_ATTEMPTS = 10;
+const DOMAIN = env?.REACT_APP_ALKEMIO_DOMAIN ?? window.location.origin;
 
 export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => {
   const uploadLink = createUploadLink({
@@ -16,10 +17,8 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
   if (enableWebSockets) {
     // if creating the web socket link fails fall back to http only
     try {
-      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      // building the url plainly instead of using URL
-      // URL forces the default protocol on the uri
-      const wsUrl = `${wsProtocol}//${window.location.hostname}:${window.location.port}/graphql`;
+      // change the protocol and concatenate graphql endpoint
+      const wsUrl = DOMAIN.replace('http', 'ws').concat('/graphql');
       // https://github.com/enisdenjo/graphql-ws/blob/master/docs/interfaces/client.ClientOptions.md
       const wsLink = new GraphQLWsLink(
         createClient({
