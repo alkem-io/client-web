@@ -135,7 +135,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               hubId={hubNameId!}
               canCreateCallout={canCreateCallout}
               loading={loading}
-              journeyTypeName="hub"
+              journeyTypeName={journeyTypeName}
               sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}

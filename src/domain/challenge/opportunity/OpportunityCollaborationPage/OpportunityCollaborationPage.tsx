@@ -10,8 +10,7 @@ import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutsGroup.HomeLeft:
-    case CalloutsGroup.HomeRight:
+    case CalloutsGroup.HomeTop:
       return <OpportunityDashboardPage />;
     default:
       return <ContributePage journeyTypeName="opportunity" />;

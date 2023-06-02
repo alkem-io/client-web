@@ -10,8 +10,7 @@ import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutsGroup.HomeLeft:
-    case CalloutsGroup.HomeRight:
+    case CalloutsGroup.HomeTop:
       return <ChallengeDashboardPage />;
     default:
       return <ContributePage journeyTypeName="challenge" />;

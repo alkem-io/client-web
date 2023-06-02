@@ -38,10 +38,6 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
   const notify = useNotification();
   const { innovationPackNameId, aspectNameId, whiteboardNameId, innovationTemplateId } = useUrlParams();
 
-  if (!innovationPackNameId) {
-    throw new Error('Must be within InnovationPack');
-  }
-
   const innovationPackRoute = `${routePrefix}/${innovationPackNameId}`;
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(innovationPackRoute);
 
@@ -144,7 +140,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
               templatesSetId={templatesSetID}
               templates={postTemplates}
               onCloseTemplateDialog={backFromTemplateDialog}
-              refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
+              refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
               buildTemplateLink={({ id }) =>
                 buildLink(`${innovationPackRoute}/${RoutePaths.aspectTemplatesRoutePath}/${id}`)
               }

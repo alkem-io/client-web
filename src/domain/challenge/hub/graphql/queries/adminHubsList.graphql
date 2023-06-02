@@ -1,6 +1,0 @@
-query adminHubsList {
-  hubs(filter: {visibilities: [ARCHIVED, ACTIVE, DEMO]}) {
-    ...AdminHub
-    visibility
-  }
-}
