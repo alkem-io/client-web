@@ -23,6 +23,7 @@ import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
+import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 
 type NeededFields = 'id' | 'calloutNameId';
 export type LinkCollectionCalloutData = Pick<ReferencesFragmentWithCallout, NeededFields>;
@@ -157,66 +158,78 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
 
     return (
       <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
-        <CalloutLayout
-          callout={callout}
-          contributionsCount={contributionsCount}
-          {...calloutLayoutProps}
-          expanded={expanded}
-          onExpand={onExpand}
-          skipReferences
-          disableMarginal
+        <StorageConfigContextProvider
+          locationType="callout"
+          calloutId={callout.id}
+          journeyTypeName={calloutLayoutProps.journeyTypeName}
+          hubNameId={calloutLayoutProps.hubNameId}
+          challengeNameId={calloutLayoutProps.challengeNameId}
+          opportunityNameId={calloutLayoutProps.opportunityNameId}
         >
-          <References
-            references={expanded ? callout.profile.references : limitedReferences}
-            noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-            canEdit={canEditLinks}
-            onEdit={ref => setEditReference(ref)}
-          />
-
-          <Box display="flex" justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'} alignItems="end">
-            {isListTruncated && !expanded && (
-              <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-                {t('callout.link-collection.more-links', { count: callout.profile.references?.length })}
-              </Caption>
-            )}
-            {canAddLinks && (
-              <IconButton aria-label="Add" size="small" onClick={() => setAddNewReferenceDialogOpen(true)}>
-                <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-              </IconButton>
-            )}
-          </Box>
-          <CreateReferencesDialog
-            open={addNewReferenceDialogOpen}
-            title={<Box>{t('callout.link-collection.add-link', { title: callout.profile.displayName })}</Box>}
-            onClose={closeAddNewDialog}
-            onAddMore={getNewReferenceId}
-            onRemove={removeNewReference}
-            onSave={handleSaveNewLinks}
-          />
-          <EditReferenceDialog
-            open={Boolean(editReference)}
-            onClose={closeEditDialog}
-            title={<Box>{t('callout.link-collection.edit-link', { title: editReference?.name })}</Box>}
-            reference={editReference!}
-            onSave={values => handleEditLink(values)}
-            canDelete={canDeleteLinks}
-            onDelete={() => setDeletingReferenceId(editReference?.id)}
-          />
-          <ConfirmationDialog
-            actions={{
-              onConfirm: handleDeleteLink,
-              onCancel: () => setDeletingReferenceId(undefined),
-            }}
-            options={{
-              show: Boolean(deletingReferenceId),
-            }}
-            entities={{
-              titleId: 'callout.link-collection.delete-confirm-title',
-              content: t('callout.link-collection.delete-confirm', { title: callout.profile.displayName }),
-              confirmButtonTextId: 'buttons.delete',
-            }}
-          />
-        </CalloutLayout>
+          <CalloutLayout
+            callout={callout}
+            contributionsCount={contributionsCount}
+            {...calloutLayoutProps}
+            expanded={expanded}
+            onExpand={onExpand}
+            skipReferences
+            disableMarginal
+          >
+            <References
+              references={expanded ? callout.profile.references : limitedReferences}
+              noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
+              canEdit={canEditLinks}
+              onEdit={ref => setEditReference(ref)}
+            />
+            <Box
+              display="flex"
+              justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
+              alignItems="end"
+            >
+              {isListTruncated && !expanded && (
+                <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
+                  {t('callout.link-collection.more-links', { count: callout.profile.references?.length })}
+                </Caption>
+              )}
+              {canAddLinks && (
+                <IconButton aria-label="Add" size="small" onClick={() => setAddNewReferenceDialogOpen(true)}>
+                  <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+                </IconButton>
+              )}
+            </Box>
+            <CreateReferencesDialog
+              open={addNewReferenceDialogOpen}
+              title={<Box>{t('callout.link-collection.add-link', { title: callout.profile.displayName })}</Box>}
+              onClose={closeAddNewDialog}
+              onAddMore={getNewReferenceId}
+              onRemove={removeNewReference}
+              onSave={handleSaveNewLinks}
+            />
+            <EditReferenceDialog
+              open={Boolean(editReference)}
+              onClose={closeEditDialog}
+              title={<Box>{t('callout.link-collection.edit-link', { title: editReference?.name })}</Box>}
+              reference={editReference!}
+              onSave={values => handleEditLink(values)}
+              canDelete={canDeleteLinks}
+              onDelete={() => setDeletingReferenceId(editReference?.id)}
+            />
+            <ConfirmationDialog
+              actions={{
+                onConfirm: handleDeleteLink,
+                onCancel: () => setDeletingReferenceId(undefined),
+              }}
+              options={{
+                show: Boolean(deletingReferenceId),
+              }}
+              entities={{
+                titleId: 'callout.link-collection.delete-confirm-title',
+                content: t('callout.link-collection.delete-confirm', { title: callout.profile.displayName }),
+                confirmButtonTextId: 'buttons.delete',
+              }}
+            />
+          </CalloutLayout>
+        </StorageConfigContextProvider>
       </PageContentBlock>
     );
   }
