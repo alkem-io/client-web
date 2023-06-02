@@ -1,29 +1,21 @@
-import React, { ReactElement } from 'react';
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
+import React, { ReactElement, ReactNode } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
-interface ListItemLinkProps {
+export interface ListItemLinkProps {
   icon?: ReactElement;
-  primary: string;
+  primary: ReactNode;
   to: string;
+  actions?: ReactNode;
 }
 
-const ListItemLink = (props: ListItemLinkProps) => {
-  const { icon, primary, to } = props;
-
-  const Link = React.useMemo(
-    () =>
-      React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => (
-        <RouterLink to={to} ref={ref} {...itemProps} />
-      )),
-    [to]
-  );
-
+const ListItemLink = ({ icon, primary, to, actions }: ListItemLinkProps) => {
   return (
     <li>
-      <ListItem button component={Link}>
+      <ListItem component={RouterLink} to={to}>
         <ListItemText primary={primary} />
         {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+        {actions}
       </ListItem>
     </li>
   );
