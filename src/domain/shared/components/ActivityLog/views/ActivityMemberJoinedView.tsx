@@ -4,6 +4,7 @@ import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { Community } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
+import { Caption } from '../../../../../core/ui/typography';
 
 export interface ActivityMemberJoinedViewProps extends ActivityViewProps {
   member: Author;
@@ -30,5 +31,9 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = props
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
+  return (
+    <ActivityBaseView {...resultProps}>
+      <Caption>{description}</Caption>
+    </ActivityBaseView>
+  );
 };
