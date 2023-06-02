@@ -4,6 +4,7 @@ import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildOpportunityUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
+import { Caption } from '../../../../../core/ui/typography';
 
 export interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
   opportunity: NameableEntity;
@@ -26,5 +27,9 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
+  return (
+    <ActivityBaseView {...resultProps}>
+      <Caption>{description}</Caption>
+    </ActivityBaseView>
+  );
 };

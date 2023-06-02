@@ -20,6 +20,7 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../routes/constants';
 import { useConfig } from '../../config/useConfig';
+import { useUserContext } from '../../../community/contributor/user';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
@@ -31,7 +32,13 @@ const isMember = (journey: { community?: { myMembershipStatus?: CommunityMembers
 const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) => {
   const { t } = useTranslation();
 
-  const { data: spacesData } = useHomePageSpacesQuery();
+  const { isAuthenticated } = useUserContext();
+
+  const { data: spacesData } = useHomePageSpacesQuery({
+    variables: {
+      includeMembershipStatus: isAuthenticated,
+    },
+  });
 
   const allSpaces = spacesData?.hubs;
 
@@ -60,12 +67,12 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
               <HubCard
-                banner={space.profile.banner}
-                displayName={space.profile.displayName}
+                banner={space.profile?.banner}
+                displayName={space.profile?.displayName!}
                 vision={space.context?.vision!}
                 membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                tagline={space.profile.tagline}
-                tags={space.profile.tagset?.tags ?? []}
+                tagline={space.profile?.tagline!}
+                tags={space.profile?.tagset?.tags ?? []}
                 journeyUri={buildHubUrl(space.nameID)}
                 member={isMember(space)}
                 hubVisibility={space.visibility}
@@ -73,25 +80,27 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
             ))}
           </ScrollableCardsLayoutContainer>
         </PageContentBlock>
-        <PageContentBlock>
-          <PageContentBlockHeader
-            title={t('pages.home.sections.my-hubs.header', { myHubsCount: userSpaces?.length })}
-          />
-          <ScrollableCardsLayoutContainer orientation="horizontal" cards>
-            {userSpaces?.map(space => (
-              <HubCard
-                banner={space.profile.banner}
-                displayName={space.profile.displayName}
-                vision={space.context?.vision!}
-                membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                tagline={space.profile.tagline}
-                tags={space.profile.tagset?.tags ?? []}
-                journeyUri={buildHubUrl(space.nameID)}
-                hubVisibility={space.visibility}
-              />
-            ))}
-          </ScrollableCardsLayoutContainer>
-        </PageContentBlock>
+        {userSpaces && userSpaces.length > 0 && (
+          <PageContentBlock>
+            <PageContentBlockHeader
+              title={t('pages.home.sections.my-hubs.header', { myHubsCount: userSpaces.length })}
+            />
+            <ScrollableCardsLayoutContainer orientation="horizontal" cards>
+              {userSpaces.map(space => (
+                <HubCard
+                  banner={space.profile?.banner}
+                  displayName={space.profile?.displayName!}
+                  vision={space.context?.vision!}
+                  membersCount={getMetricCount(space.metrics, MetricType.Member)}
+                  tagline={space.profile?.tagline!}
+                  tags={space.profile?.tagset?.tags ?? []}
+                  journeyUri={buildHubUrl(space.nameID)}
+                  hubVisibility={space.visibility}
+                />
+              ))}
+            </ScrollableCardsLayoutContainer>
+          </PageContentBlock>
+        )}
         <PageContentBlock disablePadding>
           <Gutters
             row
