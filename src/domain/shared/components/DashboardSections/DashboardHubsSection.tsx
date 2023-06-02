@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import HubCard, { HubCardProps } from '../../../challenge/hub/HubCard/HubCard';
@@ -9,6 +9,7 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import { Theme, useMediaQuery } from '@mui/material';
 
 type NeededFields = 'nameID' | 'authorization' | 'id' | 'visibility';
 
@@ -41,28 +42,28 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
   children,
   ...props
 }) => {
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
   return (
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
       {children}
-      <ScrollableCardsLayout items={hubs} cards={false}>
-        {hub => {
-          return (
-            <HubCard
-              banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
-              hubId={hub.id}
-              displayName={hub.profile.displayName}
-              journeyUri={buildHubUrl(hub.nameID)}
-              vision={hub.context?.vision!}
-              membersCount={getMetricCount(hub.metrics, MetricType.Member)}
-              tagline={hub.profile.tagline!}
-              tags={hub.profile.tagset?.tags!}
-              hubVisibility={hub.visibility}
-              {...getHubCardProps?.(hub)}
-            />
-          );
-        }}
-      </ScrollableCardsLayout>
+      <ScrollableCardsLayoutContainer minHeight={0} orientation={isMobile ? 'vertical' : undefined} sameHeight>
+        {hubs.map(hub => (
+          <HubCard
+            banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
+            hubId={hub.id}
+            displayName={hub.profile.displayName}
+            journeyUri={buildHubUrl(hub.nameID)}
+            vision={hub.context?.vision!}
+            membersCount={getMetricCount(hub.metrics, MetricType.Member)}
+            tagline={hub.profile.tagline!}
+            tags={hub.profile.tagset?.tags!}
+            hubVisibility={hub.visibility}
+            {...getHubCardProps?.(hub)}
+          />
+        ))}
+      </ScrollableCardsLayoutContainer>
     </PageContentBlock>
   );
 };
