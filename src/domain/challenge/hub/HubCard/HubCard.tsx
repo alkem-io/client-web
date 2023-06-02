@@ -43,9 +43,7 @@ const HubCard = ({ hubId, displayName, vision, membersCount, tagline, hubVisibil
             {displayName}
           </BlockTitle>
           <Caption noWrap component="dd">
-            {membersCount === 1
-              ? t('community.members-count-one')
-              : t('community.members-count', { count: membersCount })}
+            {t('community.members-count', { count: membersCount })}
           </Caption>
         </>
       }
