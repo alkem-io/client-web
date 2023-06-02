@@ -1,4 +1,4 @@
-query HomePageSpaces {
+query HomePageSpaces($includeMembershipStatus: Boolean!) {
   hubs(filter: { visibilities: [ACTIVE] }) {
     id
     nameID
@@ -25,9 +25,11 @@ query HomePageSpaces {
       name
       value
     }
-    community {
-      id
-      myMembershipStatus
+    ... on Hub @include(if: $includeMembershipStatus) {
+      community {
+        id
+        myMembershipStatus
+      }
     }
     visibility
   }

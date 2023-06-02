@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import HubCard, { HubCardProps } from '../../../challenge/hub/HubCard/HubCard';
@@ -45,24 +45,22 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
       {children}
-      <ScrollableCardsLayout items={hubs} cards={false}>
-        {hub => {
-          return (
-            <HubCard
-              banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
-              hubId={hub.id}
-              displayName={hub.profile.displayName}
-              journeyUri={buildHubUrl(hub.nameID)}
-              vision={hub.context?.vision!}
-              membersCount={getMetricCount(hub.metrics, MetricType.Member)}
-              tagline={hub.profile.tagline!}
-              tags={hub.profile.tagset?.tags!}
-              hubVisibility={hub.visibility}
-              {...getHubCardProps?.(hub)}
-            />
-          );
-        }}
-      </ScrollableCardsLayout>
+      <ScrollableCardsLayoutContainer>
+        {hubs.map(hub => (
+          <HubCard
+            banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
+            hubId={hub.id}
+            displayName={hub.profile.displayName}
+            journeyUri={buildHubUrl(hub.nameID)}
+            vision={hub.context?.vision!}
+            membersCount={getMetricCount(hub.metrics, MetricType.Member)}
+            tagline={hub.profile.tagline!}
+            tags={hub.profile.tagset?.tags!}
+            hubVisibility={hub.visibility}
+            {...getHubCardProps?.(hub)}
+          />
+        ))}
+      </ScrollableCardsLayoutContainer>
     </PageContentBlock>
   );
 };
