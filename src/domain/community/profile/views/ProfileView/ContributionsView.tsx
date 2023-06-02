@@ -8,6 +8,7 @@ import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import ContributionDetailsCard from '../../ContributionDetails/ContributionDetailsCard';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 
 export interface ContributionViewProps {
   title: string;
@@ -66,28 +67,31 @@ export const ContributionsView = ({
             <SkeletonItem />
           </>
         )}
-        {!loading &&
-          contributions.map(contributionItem => (
-            <ContributionDetailsContainer key={getContributionItemKey(contributionItem)} entities={contributionItem}>
-              {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
-                if (loading || !details) {
-                  return null;
-                }
-                return (
-                  <ContributionDetailsCard
-                    {...details}
-                    enableLeave={enableLeave}
-                    leavingCommunity={isLeavingCommunity}
-                    handleLeaveCommunity={leaveCommunity}
-                    leavingCommunityDialogOpen={leavingCommunityId === details?.communityId}
-                    onLeaveCommunityDialogOpen={isOpen =>
-                      setLeavingCommunityId(isOpen ? details?.communityId : undefined)
-                    }
-                  />
-                );
-              }}
-            </ContributionDetailsContainer>
-          ))}
+        {!loading && (
+          <ScrollableCardsLayoutContainer>
+            {contributions.map(contributionItem => (
+              <ContributionDetailsContainer key={getContributionItemKey(contributionItem)} entities={contributionItem}>
+                {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
+                  if (loading || !details) {
+                    return null;
+                  }
+                  return (
+                    <ContributionDetailsCard
+                      {...details}
+                      enableLeave={enableLeave}
+                      leavingCommunity={isLeavingCommunity}
+                      handleLeaveCommunity={leaveCommunity}
+                      leavingCommunityDialogOpen={leavingCommunityId === details?.communityId}
+                      onLeaveCommunityDialogOpen={isOpen =>
+                        setLeavingCommunityId(isOpen ? details?.communityId : undefined)
+                      }
+                    />
+                  );
+                }}
+              </ContributionDetailsContainer>
+            ))}
+          </ScrollableCardsLayoutContainer>
+        )}
         {!contributions.length && (
           <Grid item flexGrow={1} flexBasis={'50%'}>
             {t('contributions-view.no-data', { name: title })}
