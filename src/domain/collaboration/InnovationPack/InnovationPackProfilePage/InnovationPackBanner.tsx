@@ -44,6 +44,7 @@ export interface InnovationPackBannerProps {
   tagline: ReactNode;
   providerDisplayName: string;
   providerUri: string;
+  providerVisualUri: string;
 }
 
 const InnovationPackBanner = ({
@@ -51,6 +52,7 @@ const InnovationPackBanner = ({
   tagline,
   providerDisplayName,
   providerUri,
+  providerVisualUri,
 }: InnovationPackBannerProps) => {
   return (
     <Root>
@@ -60,6 +62,9 @@ const InnovationPackBanner = ({
         <ContributorCardHorizontal
           profile={{
             displayName: providerDisplayName,
+            visual: {
+              uri: providerVisualUri,
+            },
           }}
           url={providerUri}
         />

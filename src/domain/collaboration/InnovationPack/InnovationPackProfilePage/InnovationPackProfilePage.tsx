@@ -84,6 +84,7 @@ const InnovationPackProfilePage = () => {
         tagline={tagline}
         providerDisplayName={providerProfile?.displayName ?? ''}
         providerUri={providerUri ?? ''}
+        providerVisualUri={providerProfile?.visual?.uri ?? ''}
         currentSection={EntityPageSection.Profile}
         showSettings={canUpdate}
       >
