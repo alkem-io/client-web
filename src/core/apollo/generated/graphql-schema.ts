@@ -3383,6 +3383,8 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** The authorization policy for the platform */
   authorization: Authorization;
+  /** A particular whiteboard, identified by the provided ID. */
+  canvas: Canvas;
   /** A specific Collaboration entity. */
   collaboration: Collaboration;
   /** A specific Community entity. */
@@ -3437,6 +3439,10 @@ export type QueryActivityLogOnCollaborationArgs = {
 
 export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
+};
+
+export type QueryCanvasArgs = {
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type QueryCollaborationArgs = {
@@ -16515,6 +16521,90 @@ export type HubCanvasesQuery = {
                   | undefined;
               }>
             | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasWithValueQueryVariables = Exact<{
+  canvasId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasWithValueQuery = {
+  __typename?: 'Query';
+  canvas: {
+    __typename?: 'Canvas';
+    id: string;
+    nameID: string;
+    createdDate: Date;
+    value: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      preview?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+    authorization?:
+      | {
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          anonymousReadAccess: boolean;
+        }
+      | undefined;
+    checkout?:
+      | {
+          __typename?: 'CanvasCheckout';
+          id: string;
+          lockedBy: string;
+          status: CanvasCheckoutStateEnum;
+          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+    createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }
       | undefined;
   };

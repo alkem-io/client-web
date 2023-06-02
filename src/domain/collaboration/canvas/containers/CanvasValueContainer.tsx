@@ -2,6 +2,7 @@ import { FC, useEffect, useMemo } from 'react';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasContentUpdatedDocument,
+  useCanvasWithValueQuery,
   useChallengeCanvasValuesQuery,
   useHubCanvasValuesQuery,
   useOpportunityCanvasValuesQuery,
@@ -68,69 +69,84 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
-  const skipHub = !Boolean(calloutId) || Boolean(challengeNameId) || Boolean(opportunityNameId) || !Boolean(canvasId);
-  const skipChallenge =
-    !Boolean(calloutId) || Boolean(opportunityNameId) || !Boolean(challengeNameId) || !Boolean(canvasId);
-  const skipOpportunity = !Boolean(calloutId) || !Boolean(opportunityNameId) || !Boolean(canvasId);
-
   const {
-    data: challengeData,
-    loading: loadingChallengeCanvasValue,
-    subscribeToMore: subChallenge,
-  } = useChallengeCanvasValuesQuery({
+    data: canvasWithValueData,
+    loading: loadingCanvasWithValue,
+    subscribeToMore: subCanvasWithValue,
+  } = useCanvasWithValueQuery({
     errorPolicy: 'all',
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
-    skip: skipChallenge,
     variables: {
-      hubId: hubNameId!,
-      challengeId: challengeNameId!,
-      canvasId: canvasId!,
-      calloutId: calloutId!,
-    },
-  });
-
-  const {
-    data: opportunityData,
-    loading: loadingOpportunityCanvasValue,
-    subscribeToMore: subOpportunity,
-  } = useOpportunityCanvasValuesQuery({
-    errorPolicy: 'all',
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-and-network',
-    skip: skipOpportunity,
-    variables: {
-      hubId: hubNameId!,
-      opportunityId: opportunityNameId!,
-      calloutId: calloutId!,
       canvasId: canvasId!,
     },
   });
 
-  const {
-    data: hubData,
-    loading: loadingHubCanvasValue,
-    subscribeToMore: subHub,
-  } = useHubCanvasValuesQuery({
-    errorPolicy: 'all',
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-and-network',
-    skip: skipHub,
-    variables: {
-      hubId: hubNameId!,
-      canvasId: canvasId!,
-      calloutId: calloutId!,
-    },
-  });
+  const canvas = canvasWithValueData?.canvas;
 
-  const canvas = useMemo(() => {
-    const sourceArray =
-      getCanvasCalloutContainingCanvas(hubData?.hub.collaboration?.callouts, canvasId!)?.canvases ||
-      getCanvasCalloutContainingCanvas(challengeData?.hub.challenge.collaboration?.callouts, canvasId!)?.canvases ||
-      getCanvasCalloutContainingCanvas(opportunityData?.hub.opportunity.collaboration?.callouts, canvasId!)?.canvases;
+  // const skipHub = !Boolean(calloutId) || Boolean(challengeNameId) || Boolean(opportunityNameId) || !Boolean(canvasId);
+  // const skipChallenge =
+  //   !Boolean(calloutId) || Boolean(opportunityNameId) || !Boolean(challengeNameId) || !Boolean(canvasId);
+  // const skipOpportunity = !Boolean(calloutId) || !Boolean(opportunityNameId) || !Boolean(canvasId);
 
-    return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
-  }, [hubData, challengeData, opportunityData, canvasId]);
+  // const {
+  //   data: challengeData,
+  //   loading: loadingChallengeCanvasValue,
+  //   subscribeToMore: subChallenge,
+  // } = useChallengeCanvasValuesQuery({
+  //   errorPolicy: 'all',
+  //   fetchPolicy: 'network-only',
+  //   nextFetchPolicy: 'cache-and-network',
+  //   skip: skipChallenge,
+  //   variables: {
+  //     hubId: hubNameId!,
+  //     challengeId: challengeNameId!,
+  //     canvasId: canvasId!,
+  //     calloutId: calloutId!,
+  //   },
+  // });
+
+  // const {
+  //   data: opportunityData,
+  //   loading: loadingOpportunityCanvasValue,
+  //   subscribeToMore: subOpportunity,
+  // } = useOpportunityCanvasValuesQuery({
+  //   errorPolicy: 'all',
+  //   fetchPolicy: 'network-only',
+  //   nextFetchPolicy: 'cache-and-network',
+  //   skip: skipOpportunity,
+  //   variables: {
+  //     hubId: hubNameId!,
+  //     opportunityId: opportunityNameId!,
+  //     calloutId: calloutId!,
+  //     canvasId: canvasId!,
+  //   },
+  // });
+
+  // const {
+  //   data: hubData,
+  //   loading: loadingHubCanvasValue,
+  //   subscribeToMore: subHub,
+  // } = useHubCanvasValuesQuery({
+  //   errorPolicy: 'all',
+  //   fetchPolicy: 'network-only',
+  //   nextFetchPolicy: 'cache-and-network',
+  //   skip: skipHub,
+  //   variables: {
+  //     hubId: hubNameId!,
+  //     canvasId: canvasId!,
+  //     calloutId: calloutId!,
+  //   },
+  // });
+
+  // const canvas = useMemo(() => {
+  //   const sourceArray =
+  //     getCanvasCalloutContainingCanvas(hubData?.hub.collaboration?.callouts, canvasId!)?.canvases ||
+  //     getCanvasCalloutContainingCanvas(challengeData?.hub.challenge.collaboration?.callouts, canvasId!)?.canvases ||
+  //     getCanvasCalloutContainingCanvas(opportunityData?.hub.opportunity.collaboration?.callouts, canvasId!)?.canvases;
+
+  //   return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
+  // }, [hubData, challengeData, opportunityData, canvasId]);
 
   useEffect(() => {
     if (canvas) {
@@ -179,7 +195,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
           canvas,
         },
         {
-          loadingCanvasValue: loadingHubCanvasValue || loadingChallengeCanvasValue || loadingOpportunityCanvasValue,
+          loadingCanvasValue: loadingCanvasWithValue,
         },
         {}
       )}

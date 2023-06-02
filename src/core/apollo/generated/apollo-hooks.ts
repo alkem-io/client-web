@@ -12147,6 +12147,63 @@ export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryV
   return { query: HubCanvasesDocument, variables: variables };
 }
 
+export const CanvasWithValueDocument = gql`
+  query canvasWithValue($canvasId: UUID_NAMEID!) {
+    canvas(ID: $canvasId) {
+      ...CanvasDetails
+      ...CanvasValue
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+  ${CanvasValueFragmentDoc}
+`;
+
+/**
+ * __useCanvasWithValueQuery__
+ *
+ * To run a query within a React component, call `useCanvasWithValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCanvasWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCanvasWithValueQuery({
+ *   variables: {
+ *      canvasId: // value for 'canvasId'
+ *   },
+ * });
+ */
+export function useCanvasWithValueQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CanvasWithValueQuery, SchemaTypes.CanvasWithValueQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CanvasWithValueQuery, SchemaTypes.CanvasWithValueQueryVariables>(
+    CanvasWithValueDocument,
+    options
+  );
+}
+
+export function useCanvasWithValueLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CanvasWithValueQuery, SchemaTypes.CanvasWithValueQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CanvasWithValueQuery, SchemaTypes.CanvasWithValueQueryVariables>(
+    CanvasWithValueDocument,
+    options
+  );
+}
+
+export type CanvasWithValueQueryHookResult = ReturnType<typeof useCanvasWithValueQuery>;
+export type CanvasWithValueLazyQueryHookResult = ReturnType<typeof useCanvasWithValueLazyQuery>;
+export type CanvasWithValueQueryResult = Apollo.QueryResult<
+  SchemaTypes.CanvasWithValueQuery,
+  SchemaTypes.CanvasWithValueQueryVariables
+>;
+export function refetchCanvasWithValueQuery(variables: SchemaTypes.CanvasWithValueQueryVariables) {
+  return { query: CanvasWithValueDocument, variables: variables };
+}
+
 export const HubCanvasValuesDocument = gql`
   query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $canvasId: UUID_NAMEID!) {
     hub(ID: $hubId) {

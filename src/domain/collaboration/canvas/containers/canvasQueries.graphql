@@ -145,6 +145,13 @@ query hubCanvases($hubId: UUID_NAMEID!) {
   }
 }
 
+query canvasWithValue($canvasId: UUID_NAMEID!) {
+  canvas(ID: $canvasId) {
+    ...CanvasDetails
+    ...CanvasValue
+  }
+}
+
 query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $canvasId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
