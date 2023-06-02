@@ -1328,7 +1328,7 @@
     "hub": {
       "title": "Хъб",
       "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
-      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
+      "demo-hub": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
         "title": "Форма за присъединяване {{entity}} \"{{name}}\"",
         "subheader": "Моля, попълнете въпросите долу, които, заедно с вашия профил ще бъдат изпратени към съответната страна.",
