@@ -9,7 +9,6 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
-import { Theme, useMediaQuery } from '@mui/material';
 
 type NeededFields = 'nameID' | 'authorization' | 'id' | 'visibility';
 
@@ -42,13 +41,11 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
   children,
   ...props
 }) => {
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
-
   return (
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
       {children}
-      <ScrollableCardsLayoutContainer minHeight={0} orientation={isMobile ? 'vertical' : undefined} sameHeight>
+      <ScrollableCardsLayoutContainer>
         {hubs.map(hub => (
           <HubCard
             banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}

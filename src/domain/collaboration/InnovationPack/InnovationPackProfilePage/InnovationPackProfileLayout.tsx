@@ -14,6 +14,7 @@ const InnovationPackProfileLayout = ({
   tagline,
   providerDisplayName,
   providerUri,
+  providerVisualUri,
   showSettings,
   ...props
 }: PropsWithChildren<InnovationPackProfileLayoutProps>) => {
@@ -28,6 +29,7 @@ const InnovationPackProfileLayout = ({
           tagline={tagline}
           providerDisplayName={providerDisplayName}
           providerUri={providerUri}
+          providerVisualUri={providerVisualUri}
         />
       }
       tabs={<Tabs showSettings={showSettings} />}
