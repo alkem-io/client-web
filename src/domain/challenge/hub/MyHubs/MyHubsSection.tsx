@@ -29,11 +29,10 @@ const MyHubsSection = ({ userHubRoles, loading }: MyHubsSectionProps) => {
   // TODO other labels such as Lead etc.
   // const isLead = (hubId: string) => hubRolesByHubId[hubId]?.roles.includes(USER_ROLE_HUB_LEAD);
   //
-  const getHubCardProps: DashboardHubSectionProps['getHubCardProps'] = hub => {
+  const getHubCardProps: DashboardHubSectionProps['getHubCardProps'] = () => {
     return {
       // lead: isLead(hub.id),
       member: false,
-      isDemoHub: hub?.visibility === HubVisibility.Demo,
     };
   };
 
