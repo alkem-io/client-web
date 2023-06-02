@@ -4,6 +4,7 @@ import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildCanvasUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
+import { Caption } from '../../../../../core/ui/typography';
 
 export interface ActivityCanvasCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -28,5 +29,9 @@ export const ActivityCanvasCreatedView: FC<ActivityCanvasCreatedViewProps> = pro
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
+  return (
+    <ActivityBaseView {...resultProps}>
+      <Caption>{description}</Caption>
+    </ActivityBaseView>
+  );
 };

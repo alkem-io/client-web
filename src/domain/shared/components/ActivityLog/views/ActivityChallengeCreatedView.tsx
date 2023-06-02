@@ -4,6 +4,7 @@ import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
+import { Caption } from '../../../../../core/ui/typography';
 
 export interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
   challenge: NameableEntity;
@@ -22,5 +23,9 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
+  return (
+    <ActivityBaseView {...resultProps}>
+      <Caption>{description}</Caption>
+    </ActivityBaseView>
+  );
 };
