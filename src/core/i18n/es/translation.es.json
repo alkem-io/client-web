@@ -1328,7 +1328,7 @@
     "hub": {
       "title": "Hub",
       "archived-hub-notice": "Este Hub está archivado. ¿Interesado en traerlo de vuelta a la vida? <contact>Haz clic aquí para contactar con Alkemio</contact>.",
-      "demo-hub-notice": "Este es un Hub de demostración. <alkemio>Haz clic aquí para colaborar en Hubs activos</alkemio>.",
+      "demo-hub": "Este es un Hub de demostración. <alkemio>Haz clic aquí para colaborar en Hubs activos</alkemio>.",
       "application": {
         "title": "Formulario para unirse al {{entity}} \"{{name}}\"",
         "subheader": "Por favor contesta a estas preguntas, que se enviarán a la persona correspondiente de validar tu solicitud.",
