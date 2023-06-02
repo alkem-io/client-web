@@ -87,6 +87,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
                 tagline={space.profile.tagline}
                 tags={space.profile.tagset?.tags ?? []}
                 journeyUri={buildHubUrl(space.nameID)}
+                hubVisibility={space.visibility}
               />
             ))}
           </ScrollableCardsLayoutContainer>
