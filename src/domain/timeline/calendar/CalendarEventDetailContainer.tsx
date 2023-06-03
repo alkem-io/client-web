@@ -4,8 +4,8 @@ import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '../../../c
 import {
   MessageDetailsFragmentDoc,
   useCalendarEventDetailsQuery,
-  usePostCommentMutation,
-  useRemoveCommentMutation,
+  useRemoveMessageOnRoomMutation,
+  useSendMessageToRoomMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,
@@ -101,9 +101,9 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
+  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
+  const [deleteComment, { loading: deletingComment }] = useRemoveMessageOnRoomMutation({
     update: (cache, { data }) =>
       data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
   });
@@ -118,7 +118,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentMutation({
+  const [postComment, { loading: postingComment }] = useSendMessageToRoomMutation({
     update: (cache, { data }) => {
       const cacheCommentsId = cache.identify({
         id: commentsId,

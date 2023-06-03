@@ -4,8 +4,8 @@ import {
   CommunicationUpdateMessageReceivedDocument,
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
-  useRemoveUpdateCommunityMutation,
-  useSendUpdateMutation,
+  useRemoveMessageOnRoomMutation,
+  useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   CommunicationUpdateMessageReceivedSubscription,
@@ -57,7 +57,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const updatesId = data?.hub.community?.communication?.updates?.id || '';
 
-  const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
+  const [sendUpdate, { loading: loadingSendUpdate }] = useSendMessageToRoomMutation({
     refetchQueries:
       isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !hubId || !communityId
         ? []
@@ -67,22 +67,22 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
     async message => {
       const update = await sendUpdate({
-        variables: { msgData: { message, updatesID: updatesId } },
+        variables: { messageData: { message, roomID: updatesId } },
       });
-      return update.data?.sendUpdate as Message;
+      return update.data?.sendMessageToRoom as Message;
     },
     [sendUpdate, updatesId]
   );
 
-  const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveUpdateCommunityMutation();
+  const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveMessageOnRoomMutation();
 
   const onRemove = useCallback<CommunityUpdatesActions['onRemove']>(
     async messageId => {
       const update = await removeUpdate({
-        variables: { msgData: { messageID: messageId, updatesID: updatesId } },
+        variables: { messageData: { messageID: messageId, roomID: updatesId } },
         refetchQueries: hubId && communityId ? [refetchCommunityUpdatesQuery({ hubId, communityId })] : [],
       });
-      return update.data?.removeUpdate;
+      return update.data?.removeMessageOnRoom;
     },
     [communityId, updatesId, hubId, removeUpdate]
   );

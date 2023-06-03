@@ -11,8 +11,8 @@ import {
   refetchPlatformDiscussionsQuery,
   useDeleteDiscussionMutation,
   usePlatformDiscussionQuery,
-  usePostDiscussionCommentMutation,
-  useDeleteCommentMutation,
+  useRemoveMessageOnRoomMutation,
+  useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
@@ -71,7 +71,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
 
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(
-    compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.messages?.map(c => c.sender?.id))])
+    compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.comments.messages?.map(c => c.sender?.id))])
   );
 
   const discussion = useMemo<Discussion | undefined>(
@@ -87,9 +87,9 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
             author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,
             authors: authors.authors ?? [],
             createdAt: rawDiscussion.timestamp ? new Date(rawDiscussion.timestamp) : undefined,
-            commentsCount: rawDiscussion.commentsCount,
+            commentsCount: rawDiscussion.comments.messagesCount,
             comments:
-              rawDiscussion.messages?.map<Message>(m => ({
+              rawDiscussion.comments.messages?.map<Message>(m => ({
                 id: m.id,
                 body: m.message,
                 author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
@@ -100,7 +100,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     [rawDiscussion, authors]
   );
 
-  const [postComment] = usePostDiscussionCommentMutation();
+  const [postComment] = useSendMessageToRoomMutation();
 
   const handlePostComment = (post: string) => {
     if (!discussion) {
@@ -121,7 +121,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
             messages(existingMessages = []) {
               if (data) {
                 const newMessage = cache.writeFragment({
-                  data: data?.sendMessageToDiscussion,
+                  data: data?.sendMessageToRoom,
                   fragment: MessageDetailsFragmentDoc,
                 });
                 return [...existingMessages, newMessage];
@@ -132,8 +132,8 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         });
       },
       variables: {
-        input: {
-          discussionID: discussion.id,
+        messageData: {
+          roomID: discussion.comments.id,
           message: post,
         },
       },
@@ -162,7 +162,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     navigate('/forum');
   };
 
-  const [deleteComment] = useDeleteCommentMutation({
+  const [deleteComment] = useRemoveMessageOnRoomMutation({
     refetchQueries: [
       refetchPlatformDiscussionQuery({
         discussionId: discussionNameId!,
@@ -177,7 +177,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     await deleteComment({
       variables: {
         messageData: {
-          discussionID: discussion.id,
+          roomID: discussion.comments.id,
           messageID: deleteCommentId,
         },
       },

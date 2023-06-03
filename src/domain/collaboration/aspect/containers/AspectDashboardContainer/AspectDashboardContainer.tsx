@@ -176,7 +176,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
+  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
     update: (cache, { data }) =>

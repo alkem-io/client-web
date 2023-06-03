@@ -44,7 +44,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     nameID,
   } = discussion;
 
-  const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.CreateComment) ?? false;
+  const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.CreateMessage) ?? false;
   const canDeleteDiscussion = myPrivileges?.some(x => x === AuthorizationPrivilege.Delete) ?? false;
   const canDeleteComment = (authorId?: string) =>
     (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
