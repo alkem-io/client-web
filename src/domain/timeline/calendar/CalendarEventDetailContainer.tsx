@@ -12,7 +12,7 @@ import {
   renderComponentOrChildrenFn,
 } from '../../../common/utils/containers/ComponentOrChildrenFn';
 import { useUserContext } from '../../community/contributor/user';
-import { Message } from '../../shared/components/Comments/models/message';
+import { Message } from '../../communication/messages/models/message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
 import useCalendarEventCommentsMessageReceivedSubscription from './calendar/useCalendarEventCommentsMessageReceivedSubscription';

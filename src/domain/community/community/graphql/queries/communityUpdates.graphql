@@ -10,6 +10,7 @@ query communityMessages($hubId: UUID_NAMEID!, $communityId: UUID!) {
           messages {
             ...MessageDetails
           }
+          messagesCount
         }
       }
     }

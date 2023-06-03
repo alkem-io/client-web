@@ -12,6 +12,7 @@ query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
             id
             ...MessageDetails
           }
+          messagesCount
         }
       }
     }

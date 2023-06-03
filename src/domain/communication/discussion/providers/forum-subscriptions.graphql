@@ -1,0 +1,23 @@
+subscription communicationDiscussionUpdated($communicationID: UUID!) {
+  communicationDiscussionUpdated(communicationID: $communicationID) {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      tagline
+      visuals {
+        ...VisualFull
+      }
+    }
+    createdBy
+    timestamp
+    category
+    comments {
+      id
+      messagesCount
+    }
+  }
+}
+

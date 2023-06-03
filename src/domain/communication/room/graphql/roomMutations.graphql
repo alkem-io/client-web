@@ -26,23 +26,3 @@ mutation removeMessageOnRoom($messageData: RoomRemoveMessageInput!) {
   removeMessageOnRoom(messageData: $messageData)
 }
 
-query MentionableUsers($filter: UserFilterInput, $first: Int) {
-  usersPaginated(filter: $filter, first: $first) {
-    users {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        location {
-          id
-          city
-          country
-        }
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-      }
-    }
-  }
-}

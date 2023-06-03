@@ -1,22 +1,22 @@
 import createUseSubscriptionToSubEntityHook from '../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
   CalloutFragment,
-  CalloutMessageReceivedSubscription,
-  SubscriptionCalloutMessageReceivedArgs,
+  RoomMessageReceivedSubscription,
+  SubscriptionRoomMessageReceivedArgs,
 } from '../../../core/apollo/generated/graphql-schema';
-import { CalloutMessageReceivedDocument } from '../../../core/apollo/generated/apollo-hooks';
+import { RoomMessageReceivedDocument } from '../../../core/apollo/generated/apollo-hooks';
 
 const useCalloutMessageReceivedSubscriptionOnExplorePage = calloutIDs =>
   createUseSubscriptionToSubEntityHook<
     CalloutFragment,
-    CalloutMessageReceivedSubscription,
-    SubscriptionCalloutMessageReceivedArgs
+    RoomMessageReceivedSubscription,
+    SubscriptionRoomMessageReceivedArgs
   >({
-    subscriptionDocument: CalloutMessageReceivedDocument,
-    getSubscriptionVariables: () => ({ calloutIDs }),
+    subscriptionDocument: RoomMessageReceivedDocument,
+    getSubscriptionVariables: () => ({ calloutIDs }), // todo: expand the args on the subscription to send in a set of room IDs
     updateSubEntity: (subEntity, subscriptionData) => {
       if (subEntity) {
-        const message = subscriptionData.calloutMessageReceived.message;
+        const message = subscriptionData.roomMessageReceived.message;
         subEntity.comments?.messages?.push(message);
       }
     },

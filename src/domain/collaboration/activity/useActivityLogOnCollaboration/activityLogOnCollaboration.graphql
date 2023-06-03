@@ -201,6 +201,7 @@ fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussio
 fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
   updates {
     id
+    messagesCount
   }
   message
 }

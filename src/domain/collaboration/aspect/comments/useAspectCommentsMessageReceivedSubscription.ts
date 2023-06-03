@@ -1,20 +1,19 @@
-import { AspectDashboardFragment } from '../../../../core/apollo/generated/graphql-schema';
-import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
-  AspectCommentsMessageReceivedSubscription,
-  AspectCommentsMessageReceivedSubscriptionVariables,
+  AspectDashboardFragment,
+  RoomMessageReceivedSubscription,
+  RoomMessageReceivedSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { AspectCommentsMessageReceivedDocument } from '../../../../core/apollo/generated/apollo-hooks';
-
+import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import { RoomMessageReceivedDocument } from '../../../../core/apollo/generated/apollo-hooks';
 const useAspectCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntityHook<
   AspectDashboardFragment,
-  AspectCommentsMessageReceivedSubscription,
-  AspectCommentsMessageReceivedSubscriptionVariables
+  RoomMessageReceivedSubscription,
+  RoomMessageReceivedSubscriptionVariables
 >({
-  subscriptionDocument: AspectCommentsMessageReceivedDocument,
-  getSubscriptionVariables: aspect => ({ aspectID: aspect.id }),
+  subscriptionDocument: RoomMessageReceivedDocument,
+  getSubscriptionVariables: aspect => ({ roomID: aspect.comments.id }),
   updateSubEntity: (aspect, subscriptionData) => {
-    const message = subscriptionData.aspectCommentsMessageReceived.message;
+    const message = subscriptionData.roomMessageReceived.message;
     aspect?.comments?.messages?.push(message);
   },
 });

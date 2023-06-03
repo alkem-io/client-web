@@ -10,6 +10,7 @@ fragment DiscussionDetails on Discussion {
   timestamp
   category
   comments {
+    id
     messagesCount
   }
   authorization {
@@ -43,6 +44,7 @@ query platformDiscussions {
         category
         timestamp
         comments {
+          id
           messagesCount
         }
         createdBy

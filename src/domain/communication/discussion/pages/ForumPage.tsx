@@ -87,7 +87,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
           authors: authors.authors ?? [],
           description: d.profile.description,
           createdAt: d.timestamp ? new Date(d.timestamp) : undefined,
-          commentsCount: d.comments.messagesCount,
+          comments: d.comments,
         })) ?? []
     );
   }, [data, authors, authors.authors, categorySelected]);

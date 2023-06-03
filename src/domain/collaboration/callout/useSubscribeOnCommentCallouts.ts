@@ -3,7 +3,7 @@ import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
-  useCalloutMessageReceivedSubscription,
+  useRoomMessageReceivedSubscription,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 
@@ -15,7 +15,7 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
 
   const enabled = areSubscriptionsEnabled && isAuthenticated && calloutIDs.length > 0 && !skip;
 
-  useCalloutMessageReceivedSubscription({
+  useRoomMessageReceivedSubscription({
     shouldResubscribe: true,
     variables: { calloutIDs },
     skip: !enabled,
@@ -31,7 +31,7 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
       }
 
       const calloutCommentsCacheId = client.cache.identify({
-        id: data.calloutMessageReceived.commentsID,
+        id: data.roomMessageReceived.roomID,
         __typename: 'Comments',
       });
 
@@ -44,7 +44,7 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
         fields: {
           messages(existingMessages = []) {
             const newMessage = client.cache.writeFragment({
-              data: data.calloutMessageReceived.message,
+              data: data.roomMessageReceived.message,
               fragment: MessageDetailsFragmentDoc,
               fragmentName: 'MessageDetails',
             });

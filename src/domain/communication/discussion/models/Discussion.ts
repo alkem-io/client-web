@@ -1,6 +1,5 @@
-import { AuthorizationPrivilege, DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, DiscussionCategory, Room } from '../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import { Message as Comment } from '../../../shared/components/Comments/models/message';
 
 export interface Discussion {
   id: string;
@@ -12,6 +11,5 @@ export interface Discussion {
   authors: Author[];
   description?: string;
   createdAt: Date | undefined;
-  comments?: Comment[];
-  commentsCount: number;
+  comments: Room; //todo: should not be from generated code?
 }

@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { buildUpdatesUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
-import { Updates } from '../../../../../core/apollo/generated/graphql-schema';
+import { Room } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
-  updates: Updates;
+  updates: Room;
   message: string;
 }
 
