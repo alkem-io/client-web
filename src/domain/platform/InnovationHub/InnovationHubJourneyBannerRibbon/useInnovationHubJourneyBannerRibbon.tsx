@@ -30,7 +30,7 @@ const useInnovationHubJourneyBannerRibbon = ({
         t={t}
         i18nKey="innovationHub.foreignJourney"
         values={{
-          journey: journeyTypeName,
+          journey: t(`common.${journeyTypeName}` as const),
           hub: innovationHub?.profile?.displayName,
         }}
         components={{ strong: <strong /> }}

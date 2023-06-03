@@ -45,12 +45,12 @@ interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
 }
 
 interface UseStorageConfigOptionsOrganization extends UseStorageConfigOptionsBase {
-  organizationId: string;
+  organizationId: string | undefined;
   locationType: 'organization';
 }
 
 interface UseStorageConfigOptionsInnovationPack extends UseStorageConfigOptionsBase {
-  innovationPackId: string;
+  innovationPackId: string | undefined;
   locationType: 'innovationPack';
 }
 
@@ -66,6 +66,16 @@ export interface StorageConfigProvided {
   storageConfig: StorageConfig | undefined;
 }
 
+const requiredIds: Record<JourneyTypeName, (keyof JourneyLocation)[]> = {
+  hub: ['hubNameId'],
+  challenge: ['hubNameId', 'challengeNameId'],
+  opportunity: ['hubNameId', 'opportunityNameId'],
+};
+
+const isEveryJourneyIdPresent = (journeyLocation: JourneyLocation, journeyTypeName: JourneyTypeName | undefined) => {
+  return journeyTypeName && requiredIds[journeyTypeName].every(idAttr => journeyLocation[idAttr]);
+};
+
 const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): StorageConfigProvided => {
   const journeyTypeName = 'journeyTypeName' in options ? options.journeyTypeName : undefined;
 
@@ -79,7 +89,7 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: locationType !== 'journey',
+    skip: locationType !== 'journey' || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
   const calloutOptions = options as UseStorageConfigOptionsCallout;
@@ -93,7 +103,7 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: locationType !== 'callout',
+    skip: locationType !== 'callout' || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
   const aspectOptions = options as UseStorageConfigOptionsAspect;
@@ -108,7 +118,8 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: locationType !== 'aspect' || !aspectOptions.aspectId,
+    skip:
+      locationType !== 'aspect' || !aspectOptions.aspectId || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
@@ -119,14 +130,18 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
 
   const organizationOptions = options as UseStorageConfigOptionsOrganization;
   const { data: organizationStorageConfigData } = useOrganizationStorageConfigQuery({
-    variables: organizationOptions,
-    skip: locationType !== 'organization',
+    variables: {
+      organizationId: organizationOptions.organizationId!, // presence ensured by skip
+    },
+    skip: locationType !== 'organization' || !organizationOptions.organizationId,
   });
 
   const innovationPackOptions = options as UseStorageConfigOptionsInnovationPack;
   const { data: innovationPackStorageConfigData } = useInnovationPackStorageConfigQuery({
-    variables: innovationPackOptions,
-    skip: locationType !== 'innovationPack',
+    variables: {
+      innovationPackId: innovationPackOptions.innovationPackId!, // presence ensured by skip
+    },
+    skip: locationType !== 'innovationPack' || !innovationPackOptions.innovationPackId,
   });
 
   const journey =

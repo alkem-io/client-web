@@ -95,7 +95,12 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
               />
             </FormRow>
             <FormRow>
-              <FormikMarkdownField title={t('common.description')} name="profile.description" />
+              <FormikMarkdownField
+                title={t('common.description')}
+                name="profile.description"
+                maxLength={MID_TEXT_LENGTH}
+                withCounter
+              />
             </FormRow>
             {!isNew && profileId ? (
               <>
