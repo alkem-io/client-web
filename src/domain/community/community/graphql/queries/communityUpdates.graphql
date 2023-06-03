@@ -2,7 +2,16 @@ query communityMessages($hubId: UUID_NAMEID!, $communityId: UUID!) {
   hub(ID: $hubId) {
     id
     community(ID: $communityId) {
-      ...CommunityMessages
+      id
+      communication {
+        id
+        updates {
+          id
+          messages {
+            ...MessageDetails
+          }
+        }
+      }
     }
   }
 }

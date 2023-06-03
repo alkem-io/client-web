@@ -1,4 +1,4 @@
-fragment CommentsWithMessages on Room2 {
+fragment CommentsWithMessages on Room {
   id
   messagesCount
   authorization {
@@ -11,7 +11,7 @@ fragment CommentsWithMessages on Room2 {
   }
 }
 
-mutation PostComment($messageData: RoomSendMessageInput!) {
+mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {
   sendMessageToRoom(messageData: $messageData) {
     id
     message
@@ -22,7 +22,7 @@ mutation PostComment($messageData: RoomSendMessageInput!) {
   }
 }
 
-mutation RemoveComment($messageData: RoomRemoveMessageInput!) {
+mutation removeMessageOnRoom($messageData: RoomRemoveMessageInput!) {
   removeMessageOnRoom(messageData: $messageData)
 }
 

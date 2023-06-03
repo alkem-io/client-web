@@ -1,7 +1,0 @@
-subscription AspectCommentsMessageReceived($aspectID: UUID!) {
-  aspectCommentsMessageReceived(aspectID: $aspectID) {
-    message {
-      ...MessageDetails
-    }
-  }
-}
