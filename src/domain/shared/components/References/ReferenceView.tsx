@@ -40,7 +40,7 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
 
   return (
     <Tooltip title={children} placement="top-start" disableInteractive>
-      <CardText sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{children}</CardText>
+      <CardText noWrap>{children}</CardText>
     </Tooltip>
   );
 };
