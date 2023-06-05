@@ -412,7 +412,8 @@
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
-    "members-count": "Members ({{count}})",
+    "members-count": "{{count}} Member",
+    "members-count_plural": "{{count}} Members",
     "application-form": {
       "title": "Application Form",
       "subtitle": "This section allows you to modify the questions for users wanting to join the Space. <br /><b>Please note</b> that these questions will only be shown when the switch \"Allow applications to this Space\" is turned <b>on</b>, and \"Allow any registered user to join this Space\" is switched <b>off</b>. These can be set in the <b>Membership</b> block above.",
