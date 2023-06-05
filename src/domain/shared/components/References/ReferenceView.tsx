@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Box, IconButton, Tooltip, styled } from '@mui/material';
+import { Box, IconButton, Tooltip, styled, useTheme } from '@mui/material';
 import { Reference } from '../../../common/profile/Profile';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { RoundedIconProps } from '../../../../core/ui/icon/RoundedIcon';
@@ -10,6 +10,7 @@ import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import EditIcon from '@mui/icons-material/Edit';
 import { isFileAttachmentUrl } from '../../../../core/utils/links';
 import { Attachment as AttachmentIcon } from '@mui/icons-material';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export interface ReferenceViewProps {
   reference: Reference;
@@ -17,8 +18,6 @@ export interface ReferenceViewProps {
   canEdit?: boolean;
   onClickEdit?: () => void;
 }
-
-const REFERENCE_DESCRIPTION_MAX_LENGTH = 80; // characters
 
 const Root = styled(Box)(() => ({
   display: 'flex',
@@ -39,24 +38,15 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
     return null;
   }
 
-  const isCut = children.length > REFERENCE_DESCRIPTION_MAX_LENGTH;
-
-  const descriptionText = isCut ? `${children.slice(0, REFERENCE_DESCRIPTION_MAX_LENGTH)}…` : children;
-
-  const formattedDescription = <CardText>{descriptionText}</CardText>;
-
-  if (isCut) {
-    return (
-      <Tooltip title={children} placement="top-start" disableInteractive>
-        {formattedDescription}
-      </Tooltip>
-    );
-  }
-
-  return formattedDescription;
+  return (
+    <Tooltip title={children} placement="top-start" disableInteractive>
+      <CardText sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{children}</CardText>
+    </Tooltip>
+  );
 };
 
 const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit }) => {
+  const theme = useTheme();
   return (
     <Root>
       <BadgeCardView
@@ -68,7 +58,7 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit
             {isFileAttachmentUrl(reference.uri) ? <AttachmentIcon /> : <ReferenceIcon />}
           </RoundedBadge>
         }
-        sx={{ flexGrow: 1 }}
+        sx={{ flexGrow: 1, maxWidth: `calc(100% - ${gutters(2)(theme)})` }}
       >
         <Tooltip title={reference.uri} placement="top-start" disableInteractive>
           <BlockSectionTitle>{reference.name}</BlockSectionTitle>
