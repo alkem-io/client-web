@@ -152,27 +152,6 @@ query canvasWithValue($canvasId: UUID_NAMEID!) {
   }
 }
 
-query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $canvasId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    collaboration {
-      id
-      callouts(IDs: [$calloutId]) {
-        id
-        type
-        authorization {
-          id
-          myPrivileges
-        }
-        canvases(IDs: [$canvasId]) {
-          ...CanvasDetails
-          ...CanvasValue
-        }
-      }
-    }
-  }
-}
-
 query challengeCanvasFromCallout(
   $hubId: UUID_NAMEID!
   $challengeId: UUID_NAMEID!
@@ -190,35 +169,6 @@ query challengeCanvasFromCallout(
   }
 }
 
-query challengeCanvasValues(
-  $hubId: UUID_NAMEID!
-  $challengeId: UUID_NAMEID!
-  $calloutId: UUID_NAMEID!
-  $canvasId: UUID_NAMEID!
-) {
-  hub(ID: $hubId) {
-    id
-    challenge(ID: $challengeId) {
-      id
-      collaboration {
-        id
-        callouts(IDs: [$calloutId]) {
-          id
-          type
-          authorization {
-            id
-            myPrivileges
-          }
-          canvases(IDs: [$canvasId]) {
-            ...CanvasDetails
-            ...CanvasValue
-          }
-        }
-      }
-    }
-  }
-}
-
 query opportunityCanvasFromCallout(
   $hubId: UUID_NAMEID!
   $opportunityId: UUID_NAMEID!
@@ -231,35 +181,6 @@ query opportunityCanvasFromCallout(
       id
       collaboration {
         ...CalloutWithCanvas
-      }
-    }
-  }
-}
-
-query opportunityCanvasValues(
-  $hubId: UUID_NAMEID!
-  $opportunityId: UUID_NAMEID!
-  $calloutId: UUID_NAMEID!
-  $canvasId: UUID_NAMEID!
-) {
-  hub(ID: $hubId) {
-    id
-    opportunity(ID: $opportunityId) {
-      id
-      collaboration {
-        id
-        callouts(IDs: [$calloutId]) {
-          id
-          type
-          authorization {
-            id
-            myPrivileges
-          }
-          canvases(IDs: [$canvasId]) {
-            ...CanvasDetails
-            ...CanvasValue
-          }
-        }
       }
     }
   }
