@@ -27,7 +27,7 @@ export interface InnovationPackFormValues {
 }
 
 interface InnovationPackFormProps {
-  isNew: boolean;
+  isNew?: boolean;
   nameID?: string;
   profile?: {
     id?: string;
@@ -45,7 +45,7 @@ interface InnovationPackFormProps {
 }
 
 const InnovationPackForm: FC<InnovationPackFormProps> = ({
-  isNew,
+  isNew = false,
   nameID,
   profile,
   providerId,
