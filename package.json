@@ -30,6 +30,7 @@
     "@elastic/apm-rum-react": "^1.4.2",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
+    "@hocuspocus/provider": "^2.0.6",
     "@mui/icons-material": "^5.11.16",
     "@mui/lab": "^5.0.0-alpha.56",
     "@mui/material": "^5.2.0",
@@ -42,6 +43,9 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@tiptap/core": "^2.0.3",
+    "@tiptap/extension-collaboration": "^2.0.3",
+    "@tiptap/extension-collaboration-cursor": "^2.0.3",
     "@tiptap/extension-highlight": "^2.0.0-beta.220",
     "@tiptap/extension-image": "^2.0.0-beta.220",
     "@tiptap/extension-link": "^2.0.0-beta.220",
@@ -112,6 +116,8 @@
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.0",
     "xstate": "^4.23.1",
+    "y-prosemirror": "^1.0.20",
+    "yjs": "^13.6.1",
     "yup": "^0.31.1"
   },
   "resolutions": {

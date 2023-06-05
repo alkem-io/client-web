@@ -22,6 +22,7 @@ interface MarkdownFieldProps extends InputProps {
   withCounter?: boolean;
   helperText?: string;
   loading?: boolean; // TODO make use of
+  collaborationRoomId?: string;
 }
 
 interface FilledDetectorProps {
@@ -52,6 +53,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   required = false,
   readOnly = false,
   disabled = false,
+  collaborationRoomId,
   placeholder,
   maxLength,
   withCounter = false,
@@ -120,6 +122,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           inputProps={{
             controlsVisible: 'always',
             maxLength: estimatedVisibleMaxLength,
+            collaborationRoomId,
           }}
           readOnly={readOnly}
           placeholder={placeholder}

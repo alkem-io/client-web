@@ -1,4 +1,13 @@
-import React, { FormEvent, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  FormEvent,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Box, lighten, useTheme } from '@mui/material';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -14,9 +23,17 @@ import { EditorState } from '@tiptap/pm/state';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
+import * as Y from 'yjs';
+import { HocuspocusProvider } from '@hocuspocus/provider';
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import { useUserContext } from '../../../../domain/community/contributor/user';
+import { useConfig } from '../../../../domain/platform/config/useConfig';
+import { Caption } from '../../typography';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
+  collaborationRoomId: string;
   maxLength?: number;
 }
 
@@ -42,17 +59,79 @@ const proseMirrorStyles = {
   '& p:first-child': { marginTop: 0 },
   '& p:last-child': { marginBottom: 0 },
   '& img': { maxWidth: '100%' },
+  '& .collaboration-cursor__caret::before': {
+    content: '" "',
+    position: 'absolute',
+    left: gutters(-1),
+    borderLeft: '1px solid red',
+    height: gutters(),
+  },
+  '& .collaboration-cursor__caret': {
+    position: 'relative',
+    display: 'inline-block',
+    marginLeft: gutters(),
+  },
 } as const;
 
 const editorSettings: Partial<EditorOptions> = {
   extensions: [StarterKit, ImageExtension, Link, Highlight],
 };
 
+type CollaborationParams =
+  | {
+      collaborationEnabled: true;
+      ydoc: Y.Doc;
+      provider: HocuspocusProvider;
+    }
+  | {
+      collaborationEnabled: false;
+      ydoc: undefined;
+      provider: undefined;
+    };
+
 export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-  ({ value, onChange, maxLength, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
+  ({ value, onChange, collaborationRoomId, maxLength, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
 
+    const { platform } = useConfig();
+    const { ydoc, provider, collaborationEnabled } = useMemo<CollaborationParams>(() => {
+      if (!collaborationRoomId) {
+        console.log('no collaborationRoomId');
+        return { collaborationEnabled: false };
+      }
+      console.log('Collaboration enabled');
+      const ydoc = new Y.Doc();
+      return {
+        collaborationEnabled: true,
+        ydoc,
+        provider: new HocuspocusProvider({
+          url: 'ws://127.0.0.1:8081', // platform?....
+          name: collaborationRoomId,
+          document: ydoc,
+          onStatus: ({ status }) => {
+            console.log('onStatus', status);
+          },
+          onMessage: data => {
+            const decoder = data.message.decoder;
+            console.log('onMessage', data, new TextDecoder().decode(data.message.decoder.arr));
+          },
+          onSynced: ({ state }) => {
+            console.log('onSynced', state);
+          },
+          onAwarenessUpdate: ({ states }) => {
+            setRoomUsers(states.length);
+            console.log('onAwarenessUpdate', states);
+          },
+          onAwarenessChange: data => {
+            console.log('onAwarenessChange', data);
+          },
+        }),
+      };
+    }, [platform, collaborationRoomId]);
+
+    const [roomUsers, setRoomUsers] = useState(0);
+    //provider?.send()
     const [hasFocus, setHasFocus] = useState(false);
     const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
     const isInteractingWithInput = hasFocus || isControlsDialogOpen;
@@ -62,16 +141,56 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
 
     const updateHtmlContent = async () => {
+      console.log('updateHtmlContent', value);
       const content = await markdownToHTML(value);
       setHtmlContent(String(content));
     };
+    const { user, loading } = useUserContext();
+
+    const builtEditorSettings = useMemo<Partial<EditorOptions>>(() => {
+      console.log('build EditorSettings');
+      if (!collaborationEnabled) {
+        console.log('no collaboration id');
+        return {
+          extensions: [StarterKit, ImageExtension, Link, Highlight],
+        };
+      } else {
+        console.log('settings with collab');
+        return {
+          extensions: [
+            StarterKit.configure({ history: false }),
+            ImageExtension,
+            Link,
+            Highlight,
+            Collaboration.configure({
+              document: ydoc,
+            }),
+            CollaborationCursor.configure({
+              provider,
+              user: { name: user?.user.profile.displayName, color: '#ffcc00' },
+            }),
+          ],
+        };
+      }
+    }, [ydoc, user, loading, collaborationRoomId]);
 
     const editor = useEditor(
       {
-        ...editorSettings,
+        ...builtEditorSettings,
         content: htmlContent,
       },
       [htmlContent]
+    );
+
+    useEffect(
+      () => () => {
+        if (collaborationEnabled) {
+          console.log('leave the collaboration room');
+          provider?.destroy();
+          editor?.destroy(); // probably not needed
+        }
+      },
+      []
     );
 
     // Currently used to highlight overflow but can be reused for other similar features as well
@@ -286,6 +405,9 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
               }
             </CharacterCountContainer>
           </Box>
+        </Box>
+        <Box textAlign="right" color="red">
+          <Caption>{roomUsers} clients</Caption>
         </Box>
       </Box>
     );

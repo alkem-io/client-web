@@ -242,6 +242,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               title={t('components.callout-creation.info-step.description')}
               rows={7}
               maxLength={MID_TEXT_LENGTH}
+              collaborationRoomId={editMode ? `callouts/${callout.id}` : undefined}
               withCounter
             />
             {editMode && formConfiguration.references && (
