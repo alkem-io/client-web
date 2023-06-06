@@ -1328,7 +1328,7 @@
     "hub": {
       "title": "Центр",
       "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
-      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
+      "demo-hub": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
         "title": "Заява на приєднання {{entity}} \"{{name}}\"",
         "subheader": "Будь ласка, дайте відповідь на питання нижче, які будуть надіслані до відповідної структури, разом із вашим профілем.",

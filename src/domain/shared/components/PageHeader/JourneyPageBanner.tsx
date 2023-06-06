@@ -15,9 +15,12 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
+import { env } from '../../../../types/env';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
+
+const ALKEMIO_DOMAIN = env?.REACT_APP_ALKEMIO_DOMAIN ?? '/';
 
 const Root = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.neutralLight.main,
@@ -82,7 +85,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
       }
       if (hubVisibility === HubVisibility.Demo) {
         message = tLinks('pages.generic.demo-notice.demo-hub', {
-          alkemio: { href: '/', target: '_blank' },
+          alkemio: { href: ALKEMIO_DOMAIN, target: '_blank' },
         });
       }
       break;

@@ -409,6 +409,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1908,6 +1916,16 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -21349,7 +21367,9 @@ export type InnovationHubHomeInnovationHubFragment = {
   };
 };
 
-export type HomePageSpacesQueryVariables = Exact<{ [key: string]: never }>;
+export type HomePageSpacesQueryVariables = Exact<{
+  includeMembershipStatus: Scalars['Boolean'];
+}>;
 
 export type HomePageSpacesQuery = {
   __typename?: 'Query';
@@ -21358,7 +21378,10 @@ export type HomePageSpacesQuery = {
     id: string;
     nameID: string;
     visibility: HubVisibility;
-    profile: {
+    community?:
+      | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
+      | undefined;
+    profile?: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
@@ -21368,9 +21391,6 @@ export type HomePageSpacesQuery = {
     };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-    community?:
-      | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
-      | undefined;
   }>;
 };
 

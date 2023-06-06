@@ -19814,7 +19814,7 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
 }
 
 export const HomePageSpacesDocument = gql`
-  query HomePageSpaces {
+  query HomePageSpaces($includeMembershipStatus: Boolean!) {
     hubs(filter: { visibilities: [ACTIVE] }) {
       id
       nameID
@@ -19841,9 +19841,11 @@ export const HomePageSpacesDocument = gql`
         name
         value
       }
-      community {
-        id
-        myMembershipStatus
+      ... on Hub @include(if: $includeMembershipStatus) {
+        community {
+          id
+          myMembershipStatus
+        }
       }
       visibility
     }
@@ -19862,11 +19864,12 @@ export const HomePageSpacesDocument = gql`
  * @example
  * const { data, loading, error } = useHomePageSpacesQuery({
  *   variables: {
+ *      includeMembershipStatus: // value for 'includeMembershipStatus'
  *   },
  * });
  */
 export function useHomePageSpacesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>(
@@ -19891,7 +19894,7 @@ export type HomePageSpacesQueryResult = Apollo.QueryResult<
   SchemaTypes.HomePageSpacesQuery,
   SchemaTypes.HomePageSpacesQueryVariables
 >;
-export function refetchHomePageSpacesQuery(variables?: SchemaTypes.HomePageSpacesQueryVariables) {
+export function refetchHomePageSpacesQuery(variables: SchemaTypes.HomePageSpacesQueryVariables) {
   return { query: HomePageSpacesDocument, variables: variables };
 }
 
