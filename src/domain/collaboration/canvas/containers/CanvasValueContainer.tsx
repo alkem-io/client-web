@@ -54,7 +54,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const {
     data: canvasWithValueData,
     loading: loadingCanvasWithValue,
-    subscribeToMore: subCanvasWithValue,
+    subscribeToMore: subscribeToCanvas,
   } = useCanvasWithValueQuery({
     errorPolicy: 'all',
     fetchPolicy: 'network-only',
@@ -75,7 +75,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
   const skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId;
 
-  useSubscribeToCanvas(canvasWithValueData, data => data?.canvas, subCanvasWithValue, {
+  useSubscribeToCanvas(canvasWithValueData, data => data?.canvas, subscribeToCanvas, {
     skip: skipCanvasSubscription,
   });
 
