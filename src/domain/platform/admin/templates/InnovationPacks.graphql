@@ -36,7 +36,7 @@ fragment InnovationPackProviderProfileWithAvatar on Organization {
   profile {
     id
     displayName
-    visual(type: AVATAR) {
+    avatar: visual(type: AVATAR) {
       id
       uri
     }

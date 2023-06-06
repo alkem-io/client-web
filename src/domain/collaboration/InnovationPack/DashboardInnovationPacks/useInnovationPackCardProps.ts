@@ -16,7 +16,7 @@ const useInnovationPackCardProps = (
           description: innovationPack.profile.description,
           tags: innovationPack.profile.tagset?.tags,
           providerDisplayName: innovationPack.provider?.profile.displayName,
-          providerAvatarUri: innovationPack.provider?.profile.visual?.uri,
+          providerAvatarUri: innovationPack.provider?.profile.avatar?.uri,
           whiteboardTemplatesCount: innovationPack.templates?.whiteboardTemplates.length,
           postTemplatesCount: innovationPack.templates?.postTemplates.length,
           innovationFlowTemplatesCount: innovationPack.templates?.innovationFlowTemplates.length,

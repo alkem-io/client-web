@@ -11087,7 +11087,7 @@ export type InnovationPackProfilePageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   };
                 }
               | undefined;
@@ -21470,7 +21470,7 @@ export type InnovationLibraryQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               };
             }
           | undefined;
@@ -21545,7 +21545,7 @@ export type InnovationPackCardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
       }
     | undefined;
@@ -22614,7 +22614,7 @@ export type InnovationPacksQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               };
             }
           | undefined;
@@ -22720,7 +22720,7 @@ export type InnovationPackProviderProfileWithAvatarFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
   };
 };
 
@@ -22830,6 +22830,7 @@ export type InnovationPackProfileFragment = {
   id: string;
   displayName: string;
   description?: string | undefined;
+  tagline: string;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
@@ -22945,7 +22946,12 @@ export type AdminInnovationPackQuery = {
                   __typename?: 'Organization';
                   id: string;
                   nameID: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  };
                 }
               | undefined;
             profile: {
@@ -22953,6 +22959,7 @@ export type AdminInnovationPackQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              tagline: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
                 | Array<{

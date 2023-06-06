@@ -2437,7 +2437,7 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
     profile {
       id
       displayName
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         id
         uri
       }
@@ -2581,6 +2581,7 @@ export const InnovationPackProfileFragmentDoc = gql`
     id
     displayName
     description
+    tagline
     tagset {
       id
       name
@@ -21862,12 +21863,7 @@ export const AdminInnovationPackDocument = gql`
           id
           nameID
           provider {
-            id
-            nameID
-            profile {
-              id
-              displayName
-            }
+            ...InnovationPackProviderProfileWithAvatar
           }
           profile {
             ...InnovationPackProfile
@@ -21887,6 +21883,7 @@ export const AdminInnovationPackDocument = gql`
       }
     }
   }
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
   ${InnovationPackProfileFragmentDoc}
   ${AdminInnovationPackTemplatesFragmentDoc}
 `;
