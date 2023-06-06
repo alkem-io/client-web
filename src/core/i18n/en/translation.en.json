@@ -1364,12 +1364,10 @@
             "description": "Here you can see the document storage for this {{entity}}.",
             "title": "Documents",
             "grid": {
-              "title": "Title",
               "mimeType": "Type",
               "size": "Size",
               "uploadedBy": "Uploaded by",
-              "uploadedAt": "Uploaded at",
-              "location": "Location"
+              "uploadedAt": "Uploaded at"
             },
             "delete": {
               "title": "Delete this document?",
