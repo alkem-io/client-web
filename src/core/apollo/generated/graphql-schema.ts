@@ -3442,7 +3442,7 @@ export type QueryAdminCommunicationMembershipArgs = {
 };
 
 export type QueryCanvasArgs = {
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
 };
 
 export type QueryCollaborationArgs = {
@@ -16527,7 +16527,7 @@ export type HubCanvasesQuery = {
 };
 
 export type CanvasWithValueQueryVariables = Exact<{
-  canvasId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID'];
 }>;
 
 export type CanvasWithValueQuery = {

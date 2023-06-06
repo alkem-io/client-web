@@ -12148,7 +12148,7 @@ export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryV
 }
 
 export const CanvasWithValueDocument = gql`
-  query canvasWithValue($canvasId: UUID_NAMEID!) {
+  query canvasWithValue($canvasId: UUID!) {
     canvas(ID: $canvasId) {
       ...CanvasDetails
       ...CanvasValue
