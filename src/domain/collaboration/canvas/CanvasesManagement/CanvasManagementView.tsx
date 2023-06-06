@@ -15,7 +15,6 @@ import {
 import { ViewProps } from '../../../../core/container/view';
 import { useCanvasLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
 
@@ -86,8 +85,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
     skip: isCanvasCheckedOutByMe,
   });
 
-  const urlParams = useUrlParams();
-
   const handleCancel = (canvas: CanvasDetailsFragment) => {
     backToCanvases();
     actions.onCheckin(canvas);
@@ -95,13 +92,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
 
   return (
     <>
-      <CanvasValueContainer
-        canvasId={canvas?.id}
-        calloutId={calloutId}
-        hubNameId={urlParams.hubNameId ?? ''}
-        challengeNameId={urlParams.challengeNameId}
-        opportunityNameId={urlParams.opportunityNameId}
-      >
+      <CanvasValueContainer canvasId={canvas?.id}>
         {entities => (
           <CanvasDialog
             entities={{
