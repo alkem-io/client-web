@@ -7,17 +7,17 @@ import {
 } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 
-const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => {
+const useSubscribeOnCommentCallout = (roomID: string, skip?: boolean) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
   const { isAuthenticated } = useUserContext();
 
-  const enabled = areSubscriptionsEnabled && isAuthenticated && calloutIDs.length > 0 && !skip;
+  const enabled = areSubscriptionsEnabled && isAuthenticated && !skip;
 
   useRoomMessageReceivedSubscription({
     shouldResubscribe: true,
-    variables: { calloutIDs },
+    variables: { roomID },
     skip: !enabled,
     onSubscriptionData: ({ subscriptionData, client }) => {
       if (subscriptionData.error) {
@@ -58,4 +58,4 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
   return enabled;
 };
 
-export default useSubscribeOnCommentCallouts;
+export default useSubscribeOnCommentCallout;

@@ -13439,6 +13439,14 @@ export const PlatformDiscussionsDocument = gql`
           comments {
             id
             messagesCount
+            messages {
+              id
+              message
+              sender {
+                id
+              }
+              timestamp
+            }
           }
           createdBy
           authorization {

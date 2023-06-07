@@ -86,7 +86,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                           <Grid item xs={12} key={c.id}>
                             <MessageView
                               message={c}
-                              canDelete={canDeleteComment(c.sender?.id)}
+                              canDelete={canDeleteComment(c.author?.id)}
                               onDelete={onDeleteComment}
                             />
                           </Grid>

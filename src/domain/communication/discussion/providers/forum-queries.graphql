@@ -46,6 +46,14 @@ query platformDiscussions {
         comments {
           id
           messagesCount
+          messages {
+            id
+            message
+            sender {
+              id
+            }
+            timestamp
+          }
         }
         createdBy
         authorization {
@@ -72,7 +80,7 @@ query platformDiscussion($discussionId: String!) {
         ...DiscussionDetails
         comments {
           messages {
-              ...MessageDetails
+            ...MessageDetails
           }
         }
       }

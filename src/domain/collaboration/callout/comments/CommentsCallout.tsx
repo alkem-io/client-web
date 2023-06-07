@@ -15,6 +15,7 @@ import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUse
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import useSubscribeOnCommentCallout from '../useSubscribeOnCommentCallout';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -24,25 +25,12 @@ interface CommentsCalloutProps extends BaseCalloutViewProps {
     comments: CommentsCalloutData;
   };
   calloutNames: string[];
-  isSubscribedToComments: boolean;
 }
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
-  (
-    {
-      callout,
-      loading,
-      expanded,
-      isSubscribedToComments,
-      contributionsCount,
-      onExpand,
-      blockProps,
-      ...calloutLayoutProps
-    },
-    ref
-  ) => {
+  ({ callout, loading, expanded, contributionsCount, onExpand, blockProps, ...calloutLayoutProps }, ref) => {
     const { user: userMetadata, isAuthenticated } = useUserContext();
     const user = userMetadata?.user;
 
@@ -79,6 +67,8 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
       update: (cache, { data }) =>
         data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
     });
+
+    const isSubscribedToComments = useSubscribeOnCommentCallout(commentsId);
 
     const handleDeleteMessage = (commentsId: string, messageId: string) =>
       deleteMessage({
