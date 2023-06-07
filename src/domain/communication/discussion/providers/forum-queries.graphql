@@ -37,7 +37,7 @@ query platformDiscussions {
           displayName
           description
           tagline
-          visuals {
+          visual(type: AVATAR) {
             ...VisualFull
           }
         }
@@ -47,12 +47,7 @@ query platformDiscussions {
           id
           messagesCount
           messages {
-            id
-            message
-            sender {
-              id
-            }
-            timestamp
+            ...MessageDetails
           }
         }
         createdBy

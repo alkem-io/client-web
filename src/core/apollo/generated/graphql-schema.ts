@@ -683,7 +683,7 @@ export type Callout = {
   authorization?: Maybe<Authorization>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
-  /** The comments associated with this Callout. */
+  /** The comments for this Callout. */
   comments?: Maybe<Room>;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
@@ -1632,7 +1632,7 @@ export type Discussion = {
   authorization?: Maybe<Authorization>;
   /** The category assigned to this Discussion. */
   category: DiscussionCategory;
-  /** The comment in this Discussion. */
+  /** The comments for this Discussion. */
   comments: Room;
   /** The id of the user that created this discussion */
   createdBy?: Maybe<Scalars['UUID']>;
@@ -2044,7 +2044,7 @@ export type Message = {
   message: Scalars['Markdown'];
   /** Reactions on this message */
   reactions: Array<Reaction>;
-  /** The user that created this Message */
+  /** The user that created this Aspect */
   sender?: Maybe<User>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float'];
@@ -17424,19 +17424,21 @@ export type PlatformDiscussionsQuery = {
               displayName: string;
               description?: string | undefined;
               tagline: string;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
             };
             comments: {
               __typename?: 'Room';
@@ -17447,7 +17449,25 @@ export type PlatformDiscussionsQuery = {
                 id: string;
                 message: string;
                 timestamp: number;
-                sender?: { __typename?: 'User'; id: string } | undefined;
+                sender?:
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      nameID: string;
+                      firstName: string;
+                      lastName: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                      };
+                    }
+                  | undefined;
               }>;
             };
             authorization?:

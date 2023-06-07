@@ -13430,7 +13430,7 @@ export const PlatformDiscussionsDocument = gql`
             displayName
             description
             tagline
-            visuals {
+            visual(type: AVATAR) {
               ...VisualFull
             }
           }
@@ -13440,12 +13440,7 @@ export const PlatformDiscussionsDocument = gql`
             id
             messagesCount
             messages {
-              id
-              message
-              sender {
-                id
-              }
-              timestamp
+              ...MessageDetails
             }
           }
           createdBy
@@ -13459,6 +13454,7 @@ export const PlatformDiscussionsDocument = gql`
     }
   }
   ${VisualFullFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
