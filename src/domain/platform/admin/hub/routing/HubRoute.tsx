@@ -5,6 +5,7 @@ import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import HubCommunicationsPage from '../../../../challenge/hub/pages/HubCommunication/HubCommunicationsPage';
 import HubProfilePage from '../../../../challenge/hub/pages/HubProfile/HubProfilePage';
+import HubSettingsPage from '../../../../challenge/hub/pages/HubSettings/HubSettingsPage';
 import { ChallengesRoute } from '../../challenge/routing/ChallengesRoute';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import HubCommunityAdminPage from '../HubCommunityAdminPage';
@@ -24,6 +25,7 @@ export const HubRoute: FC = () => {
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<HubProfilePage />} />
+        <Route path="settings" element={<HubSettingsPage />} />
         <Route path="context" element={<HubContextPage />} />
         <Route path="communications" element={<HubCommunicationsPage communityId={communityId} />} />
         <Route path="community" element={<HubCommunityAdminPage />} />
