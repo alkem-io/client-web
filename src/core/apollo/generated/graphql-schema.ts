@@ -17361,7 +17361,14 @@ export type CreateDiscussionMutation = {
     timestamp?: number | undefined;
     category: DiscussionCategory;
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-    comments: { __typename?: 'Room'; id: string; messagesCount: number };
+    comments: {
+      __typename?: 'Room';
+      id: string;
+      messagesCount: number;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -17385,7 +17392,14 @@ export type DiscussionDetailsFragment = {
   timestamp?: number | undefined;
   category: DiscussionCategory;
   profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  comments: { __typename?: 'Room'; id: string; messagesCount: number };
+  comments: {
+    __typename?: 'Room';
+    id: string;
+    messagesCount: number;
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
   authorization?:
     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -17444,31 +17458,9 @@ export type PlatformDiscussionsQuery = {
               __typename?: 'Room';
               id: string;
               messagesCount: number;
-              messages: Array<{
-                __typename?: 'Message';
-                id: string;
-                message: string;
-                timestamp: number;
-                sender?:
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      nameID: string;
-                      firstName: string;
-                      lastName: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        tagsets?:
-                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                          | undefined;
-                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                      };
-                    }
-                  | undefined;
-              }>;
+              authorization?:
+                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
             };
             authorization?:
               | {
@@ -17541,6 +17533,9 @@ export type PlatformDiscussionQuery = {
                     }
                   | undefined;
               }>;
+              authorization?:
+                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
             };
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
             authorization?:
@@ -17585,7 +17580,34 @@ export type CommunicationDiscussionUpdatedSubscription = {
         alternativeText?: string | undefined;
       }>;
     };
-    comments: { __typename?: 'Room'; id: string; messagesCount: number };
+    comments: {
+      __typename?: 'Room';
+      id: string;
+      messagesCount: number;
+      messages: Array<{
+        __typename?: 'Message';
+        id: string;
+        message: string;
+        timestamp: number;
+        sender?:
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              firstName: string;
+              lastName: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
   };
 };
 

@@ -26,7 +26,6 @@ import { useUserContext } from '../../../community/contributor/user';
 import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import useInnovationHubOutsideRibbon from '../../../platform/InnovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
-import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -89,12 +88,8 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
           comments: {
             id: d.comments.id,
             messagesCount: d.comments.messagesCount,
-            messages: d.comments.messages.map(x => ({
-              id: x.id,
-              body: x.message,
-              author: x?.sender?.id ? buildAuthorFromUser(x.sender) : undefined,
-              createdAt: new Date(x.timestamp),
-            })),
+            messages: [],
+            myPrivileges: d.comments.authorization?.myPrivileges,
           },
         })) ?? []
     );

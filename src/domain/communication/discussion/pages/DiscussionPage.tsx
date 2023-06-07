@@ -93,10 +93,11 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
                 rawDiscussion.comments.messages?.map<Message>(m => ({
                   id: m.id,
                   body: m.message,
-                  sender: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
+                  author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
                   createdAt: new Date(m.timestamp),
                 })) ?? [],
               messagesCount: rawDiscussion.comments.messagesCount,
+              myPrivileges: rawDiscussion.comments.authorization?.myPrivileges,
             },
           }
         : undefined,

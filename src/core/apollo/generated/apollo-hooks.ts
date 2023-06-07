@@ -1740,6 +1740,9 @@ export const DiscussionDetailsFragmentDoc = gql`
     comments {
       id
       messagesCount
+      authorization {
+        myPrivileges
+      }
     }
     authorization {
       myPrivileges
@@ -13439,8 +13442,8 @@ export const PlatformDiscussionsDocument = gql`
           comments {
             id
             messagesCount
-            messages {
-              ...MessageDetails
+            authorization {
+              myPrivileges
             }
           }
           createdBy
@@ -13454,7 +13457,6 @@ export const PlatformDiscussionsDocument = gql`
     }
   }
   ${VisualFullFragmentDoc}
-  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -13606,10 +13608,14 @@ export const CommunicationDiscussionUpdatedDocument = gql`
       comments {
         id
         messagesCount
+        messages {
+          ...MessageDetails
+        }
       }
     }
   }
   ${VisualFullFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**

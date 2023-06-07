@@ -12,6 +12,9 @@ fragment DiscussionDetails on Discussion {
   comments {
     id
     messagesCount
+    authorization {
+      myPrivileges
+    }
   }
   authorization {
     myPrivileges
@@ -46,8 +49,8 @@ query platformDiscussions {
         comments {
           id
           messagesCount
-          messages {
-            ...MessageDetails
+          authorization {
+            myPrivileges
           }
         }
         createdBy
