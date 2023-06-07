@@ -94,10 +94,10 @@ const SignUp = () => {
               justifyContent="start"
               onClick={signUp}
             >
-              Sign up with E-Mail
+              {t('authentication.signUp.signUpEmail')}
             </AcceptTermsButton>
             <Paragraph textAlign="center" marginY={4}>
-              Already have an account?
+              {t('authentication.signUp.alreadyHaveAccount')}
             </Paragraph>
             <AuthActionButton onClick={signIn}>Sign in</AuthActionButton>
           </KratosUI>
