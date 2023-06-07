@@ -17,9 +17,6 @@ subscription communicationDiscussionUpdated($communicationID: UUID!) {
     comments {
       id
       messagesCount
-      messages {
-        ...MessageDetails
-      }
     }
   }
 }

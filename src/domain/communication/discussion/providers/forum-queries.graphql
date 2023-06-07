@@ -15,6 +15,9 @@ fragment DiscussionDetails on Discussion {
     authorization {
       myPrivileges
     }
+    messages {
+      ...MessageDetails
+    }
   }
   authorization {
     myPrivileges
@@ -76,11 +79,6 @@ query platformDiscussion($discussionId: String!) {
       }
       discussion(ID: $discussionId) {
         ...DiscussionDetails
-        comments {
-          messages {
-            ...MessageDetails
-          }
-        }
       }
     }
   }

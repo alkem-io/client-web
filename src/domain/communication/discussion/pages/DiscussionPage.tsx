@@ -29,22 +29,19 @@ import { useNavigate } from 'react-router-dom';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
   DiscussionDetailsFragment,
-  MessageDetailsFragment,
   RoomMessageReceivedSubscription,
   RoomMessageReceivedSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 
 const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
-  DiscussionDetailsFragment & {
-    messages?: MessageDetailsFragment[];
-  },
+  DiscussionDetailsFragment,
   RoomMessageReceivedSubscription,
   RoomMessageReceivedSubscriptionVariables
 >({
   subscriptionDocument: RoomMessageReceivedDocument,
   getSubscriptionVariables: discussion => ({ roomID: discussion.comments.id }),
   updateSubEntity: (discussion, subscriptionData) => {
-    discussion?.messages?.push(subscriptionData.roomMessageReceived.message);
+    discussion?.comments.messages.push(subscriptionData.roomMessageReceived.message);
   },
 });
 

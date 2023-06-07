@@ -1743,11 +1743,15 @@ export const DiscussionDetailsFragmentDoc = gql`
       authorization {
         myPrivileges
       }
+      messages {
+        ...MessageDetails
+      }
     }
     authorization {
       myPrivileges
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 export const ApplicationInfoFragmentDoc = gql`
   fragment ApplicationInfo on Application {
@@ -13523,17 +13527,11 @@ export const PlatformDiscussionDocument = gql`
         }
         discussion(ID: $discussionId) {
           ...DiscussionDetails
-          comments {
-            messages {
-              ...MessageDetails
-            }
-          }
         }
       }
     }
   }
   ${DiscussionDetailsFragmentDoc}
-  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -13608,14 +13606,10 @@ export const CommunicationDiscussionUpdatedDocument = gql`
       comments {
         id
         messagesCount
-        messages {
-          ...MessageDetails
-        }
       }
     }
   }
   ${VisualFullFragmentDoc}
-  ${MessageDetailsFragmentDoc}
 `;
 
 /**
