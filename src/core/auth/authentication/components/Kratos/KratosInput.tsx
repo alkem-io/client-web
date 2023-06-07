@@ -50,7 +50,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
     <Grid item xs={12}>
       <TextField
         name={name}
-        label={getNodeTitle(node)}
+        label={getNodeTitle(node, t)}
         onBlur={() => setTouched(true)}
         onChange={e => setValue(e.target.value)}
         value={value ? String(value) : ''}
