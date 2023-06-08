@@ -10,7 +10,6 @@ import { ChallengesRoute } from '../../challenge/routing/ChallengesRoute';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import HubCommunityAdminPage from '../HubCommunityAdminPage';
 import HubTemplatesAdminRoutes from '../HubTemplatesAdminRoutes';
-import HubAuthorizationRoute from './HubAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import HubContextPage from '../../../../challenge/hub/pages/HubContext/HubContextPage';
 import HubStorageAdminPage from '../storage/HubStorageAdminPage';
@@ -34,7 +33,6 @@ export const HubRoute: FC = () => {
         <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />
         <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
         <Route path="challenges/*" element={<ChallengesRoute />} />
-        <Route path="authorization/*" element={<HubAuthorizationRoute resourceId={hubId} />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>

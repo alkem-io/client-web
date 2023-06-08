@@ -47,11 +47,6 @@ const tabs: TabDefinition<SettingsSection>[] = [
     icon: ForumOutlinedIcon,
   },
   {
-    section: SettingsSection.Authorization,
-    route: 'authorization',
-    icon: GppGoodOutlinedIcon,
-  },
-  {
     section: SettingsSection.Challenges,
     route: 'challenges',
     icon: FlagOutlinedIcon,
