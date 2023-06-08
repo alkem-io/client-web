@@ -136,6 +136,10 @@
         "linkedin": "LinkedIn",
         "microsoft": "Microsoft"
       }
+    },
+    "signUp": {
+      "signUpEmail": "Sign up with E-Mail",
+      "alreadyHaveAccount": "Already have an account?"
     }
   },
   "common": {
@@ -1964,6 +1968,20 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, click here to contact the Alkemio team."
+    },
+    "fields": {
+      "ID": "ID",
+      "Password": "Password",
+      "E-Mail": "E-Mail",
+      "Email": "$t(kratos.fields.E-Mail)",
+      "First Name": "First Name",
+      "Last Name": "Last Name",
+      "Sign in": "Sign in",
+      "Sign up": "Sign up",
+      "Submit": "Submit",
+      "Verify code": "Verify code",
+      "Resend code": "Resend code",
+      "Save": "Save"
     }
   },
   "apollo": {
