@@ -2300,8 +2300,6 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
-  /** Send a message on a Comments Callout */
-  sendMessageOnCallout: Message;
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
@@ -2802,10 +2800,6 @@ export type MutationRemoveUserFromOrganizationArgs = {
 
 export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
-};
-
-export type MutationSendMessageOnCalloutArgs = {
-  data: SendMessageOnCalloutInput;
 };
 
 export type MutationSendMessageReplyToRoomArgs = {
@@ -3968,13 +3962,6 @@ export type SearchResultUserGroup = SearchResult & {
   type: SearchResultType;
   /** The User Group that was found. */
   userGroup: UserGroup;
-};
-
-export type SendMessageOnCalloutInput = {
-  /** The Callout the message is being sent to */
-  calloutID: Scalars['UUID'];
-  /** The message contents */
-  message: Scalars['String'];
 };
 
 export type Sentry = {
@@ -13764,37 +13751,6 @@ export type DashboardTopCalloutFragment = {
           | undefined;
       }>
     | undefined;
-};
-
-export type PostCommentInCalloutMutationVariables = Exact<{
-  data: SendMessageOnCalloutInput;
-}>;
-
-export type PostCommentInCalloutMutation = {
-  __typename?: 'Mutation';
-  sendMessageOnCallout: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender?:
-      | {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        }
-      | undefined;
-  };
 };
 
 export type TemplatesForCalloutCreationQueryVariables = Exact<{

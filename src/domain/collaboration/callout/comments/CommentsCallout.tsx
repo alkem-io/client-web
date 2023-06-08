@@ -5,8 +5,8 @@ import CommentsComponent from '../../../shared/components/Comments/CommentsCompo
 import { useUserContext } from '../../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
-  usePostCommentInCalloutMutation,
   useRemoveCommentFromCalloutMutation,
+  useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Message } from '../../../communication/messages/models/message';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
@@ -80,7 +80,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         },
       });
 
-    const [postMessage, { loading: postingComment }] = usePostCommentInCalloutMutation({
+    const [postMessage, { loading: postingComment }] = useSendMessageToRoomMutation({
       update: (cache, { data }) => {
         if (isSubscribedToComments) {
           return;
@@ -104,7 +104,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
               }
 
               const newMessage = cache.writeFragment({
-                data: data?.sendMessageOnCallout,
+                data: data?.sendMessageToRoom,
                 fragment: MessageDetailsFragmentDoc,
                 fragmentName: 'MessageDetails',
               });
@@ -118,8 +118,8 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
     const handlePostMessage = async (commentsId: string, message: string) =>
       postMessage({
         variables: {
-          data: {
-            calloutID: callout.id,
+          messageData: {
+            roomID: commentsId,
             message,
           },
         },

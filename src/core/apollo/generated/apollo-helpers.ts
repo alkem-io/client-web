@@ -1315,7 +1315,6 @@ export type MutationKeySpecifier = (
   | 'removeUserFromGroup'
   | 'removeUserFromOrganization'
   | 'revokeCredentialFromUser'
-  | 'sendMessageOnCallout'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
@@ -1469,7 +1468,6 @@ export type MutationFieldPolicy = {
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  sendMessageOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
