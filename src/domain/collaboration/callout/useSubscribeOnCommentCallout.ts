@@ -6,7 +6,6 @@ import {
   useRoomMessageReceivedSubscription,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
-import { gql } from '@apollo/client';
 
 const useSubscribeOnCommentCallout = (roomID: string, skip?: boolean) => {
   const handleError = useApolloErrorHandler();
@@ -27,37 +26,20 @@ const useSubscribeOnCommentCallout = (roomID: string, skip?: boolean) => {
 
       const data = subscriptionData?.data;
 
-      console.log('data: ', data);
-
       if (!data) {
         return;
       }
 
       const calloutCommentsCacheId = client.cache.identify({
         id: data.roomMessageReceived.roomID,
-        __typename: 'Comments',
+        __typename: 'Room',
       });
-
-      console.log('calloutCommentsCacheId: ', calloutCommentsCacheId);
 
       if (!calloutCommentsCacheId) {
         return;
       }
 
-      console.log(client.cache);
-
-      const comments = client.readFragment({
-        id: calloutCommentsCacheId,
-        fragment: gql`
-          fragment commentsFrag on Comments {
-            id
-          }
-        `,
-      });
-
-      console.log(comments);
-
-      const res = client.cache.modify({
+      client.cache.modify({
         id: calloutCommentsCacheId,
         fields: {
           messages(existingMessages = []) {
@@ -70,8 +52,6 @@ const useSubscribeOnCommentCallout = (roomID: string, skip?: boolean) => {
           },
         },
       });
-
-      console.log(res);
     },
   });
 
