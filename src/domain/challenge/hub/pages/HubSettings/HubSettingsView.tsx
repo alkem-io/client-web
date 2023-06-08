@@ -22,7 +22,7 @@ import { Box, CircularProgress } from '@mui/material';
 
 export const HubSettingsView: FC = () => {
   const { t } = useTranslation();
-  const { hubNameId } = useHub();
+  const { hubNameId, host: hostOrganization } = useHub();
   const notify = useNotification();
 
   const { data: preferencesData, loading } = useHubPreferencesQuery({
@@ -174,7 +174,8 @@ export const HubSettingsView: FC = () => {
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.hostOrganizationJoin"
-                      components={{ b: <strong /> }}
+                      values={{ host: hostOrganization?.displayName }}
+                      components={{ b: <strong />, i: <em /> }}
                     />
                   ),
                 },

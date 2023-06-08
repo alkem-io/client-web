@@ -63,7 +63,7 @@ export const HubProfile: FC = () => {
         isEdit
         name={hub.profile.displayName}
         nameID={hubNameId}
-        hostID={hub.hostId}
+        hostID={hub.host?.id}
         tagset={hub.profile.tagset}
         context={hub.context}
         profile={hub.profile}
