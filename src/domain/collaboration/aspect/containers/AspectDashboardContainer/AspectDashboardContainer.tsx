@@ -10,11 +10,11 @@ import {
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
-  usePostCommentMutation,
-  useRemoveCommentMutation,
+  useRemoveMessageOnRoomMutation,
+  useSendMessageToRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/contributor/user';
-import { Message } from '../../../../shared/components/Comments/models/message';
+import { Message } from '../../../../communication/messages/models/message';
 import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -176,9 +176,9 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
+  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
+  const [deleteComment, { loading: deletingComment }] = useRemoveMessageOnRoomMutation({
     update: (cache, { data }) =>
       data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
   });
@@ -193,7 +193,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentMutation({
+  const [postComment, { loading: postingComment }] = useSendMessageToRoomMutation({
     update: (cache, { data }) => {
       const cacheCommentsId = cache.identify({
         id: commentsId,

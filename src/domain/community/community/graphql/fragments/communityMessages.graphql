@@ -1,15 +1,4 @@
-fragment CommunityMessages on Community {
-  id
-  communication {
-    id
-    updates {
-      id
-      messages {
-        ...MessageDetails
-      }
-    }
-  }
-}
+
 
 fragment MessageDetails on Message {
   id

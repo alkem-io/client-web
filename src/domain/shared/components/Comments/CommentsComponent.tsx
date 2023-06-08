@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import { last } from 'lodash';
-import { Message } from './models/message';
+import { Message } from '../../../communication/messages/models/message';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';

@@ -9,29 +9,12 @@ query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
         updates {
           id
           messages {
+            id
             ...MessageDetails
           }
+          messagesCount
         }
       }
-    }
-  }
-}
-
-mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
-  sendUpdate(messageData: $msgData) {
-    ...MessageDetails
-  }
-}
-
-mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
-  removeUpdate(messageData: $msgData)
-}
-
-subscription communicationUpdateMessageReceived {
-  communicationUpdateMessageReceived {
-    updatesID
-    message {
-      ...MessageDetails
     }
   }
 }
