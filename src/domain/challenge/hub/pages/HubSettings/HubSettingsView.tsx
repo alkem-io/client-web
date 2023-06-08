@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import scrollToTop from '../../../../../common/utils/scroll/scrollToTop';
 import {
@@ -36,10 +36,8 @@ export const HubSettingsView: FC = () => {
   const handleUpdatePreference = async (
     preference: HubPreferenceType,
     newValue: string,
-    setLoadingState?: (loading: boolean) => void,
     showNotification: boolean = true
   ) => {
-    setLoadingState?.(true);
     await updatePreference({
       variables: {
         preferenceData: {
@@ -49,7 +47,6 @@ export const HubSettingsView: FC = () => {
         },
       },
     });
-    setLoadingState?.(false);
     if (showNotification) {
       notify(t('pages.admin.hub.settings.savedSuccessfully'), 'success');
     }
@@ -64,15 +61,12 @@ export const HubSettingsView: FC = () => {
   );
 
   // Visibility:
-  const [isVisibilityLoading, setVisibilityLoading] = useState(false);
-
   const currentVisibilityValue = useMemo(() => {
     const value = getBooleanPreferenceValue(PreferenceType.AuthorizationAnonymousReadAccess);
     return value === undefined ? undefined : value ? 'public' : 'private';
   }, [preferencesData]);
 
   // Membership
-  const [isMembershipLoading, setMembershipLoading] = useState(false);
   const currentMembershipValue = useMemo(() => {
     const preferences = {
       MembershipJoinHubFromAnyone: getBooleanPreferenceValue(PreferenceType.MembershipJoinHubFromAnyone),
@@ -98,22 +92,15 @@ export const HubSettingsView: FC = () => {
     await handleUpdatePreference(
       HubPreferenceType.MembershipJoinHubFromAnyone,
       value === 'noApplicationRequired' || value === 'applicationRequired' ? 'true' : 'false',
-      setMembershipLoading,
       false
     );
     await handleUpdatePreference(
       HubPreferenceType.MembershipApplicationsFromAnyone,
       value === 'noApplicationRequired' || value === 'invitationOnly' ? 'false' : 'true',
-      setMembershipLoading,
       true
     );
   };
 
-  // Host organization trust
-  const [isTrustHostOrganizationLoading, setTrustHostOrganizationLoading] = useState(false);
-
-  // Membership Actions
-  const [isMemberActionsLoading, setMemberActionsLoading] = useState(false);
   return (
     <PageContent background="transparent">
       {!loading && (
@@ -130,12 +117,10 @@ export const HubSettingsView: FC = () => {
                   label: <Trans i18nKey="pages.admin.hub.settings.visibility.private" components={{ b: <strong /> }} />,
                 },
               }}
-              loading={isVisibilityLoading}
               onChange={newValue =>
                 handleUpdatePreference(
                   HubPreferenceType.AuthorizationAnonymousReadAccess,
-                  newValue === 'public' ? 'true' : 'false',
-                  setVisibilityLoading
+                  newValue === 'public' ? 'true' : 'false'
                 )
               }
             />
@@ -169,12 +154,14 @@ export const HubSettingsView: FC = () => {
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.invitationOnly"
-                      components={{ b: <strong /> }}
+                      components={{
+                        b: <strong />,
+                        community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
+                      }}
                     />
                   ),
                 },
               }}
-              loading={isMembershipLoading}
               onChange={newValue => onMembershipChange(newValue)}
             />
 
@@ -192,13 +179,11 @@ export const HubSettingsView: FC = () => {
                   ),
                 },
               }}
-              loading={isTrustHostOrganizationLoading}
               onChange={(setting, newValue) => {
                 if (setting === 'trustHostOrganization') {
-                  handleUpdatePreference(
+                  return handleUpdatePreference(
                     HubPreferenceType.MembershipJoinHubFromHostOrganizationMembers,
-                    newValue ? 'true' : 'false',
-                    setTrustHostOrganizationLoading
+                    newValue ? 'true' : 'false'
                   );
                 }
               }}
@@ -235,20 +220,17 @@ export const HubSettingsView: FC = () => {
                   ),
                 },
               }}
-              loading={isMemberActionsLoading}
               onChange={async (setting, newValue) => {
                 if (setting === 'createBlocks') {
                   await handleUpdatePreference(
                     HubPreferenceType.AllowMembersToCreateCallouts,
-                    newValue ? 'true' : 'false',
-                    setMemberActionsLoading
+                    newValue ? 'true' : 'false'
                   );
                 }
                 if (setting === 'createChallenges') {
                   await handleUpdatePreference(
                     HubPreferenceType.AllowMembersToCreateChallenges,
-                    newValue ? 'true' : 'false',
-                    setMemberActionsLoading
+                    newValue ? 'true' : 'false'
                   );
                 }
               }}

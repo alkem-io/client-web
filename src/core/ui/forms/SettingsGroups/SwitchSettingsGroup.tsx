@@ -1,11 +1,11 @@
 import { Box, CircularProgress, FormControlLabel, FormGroup, Switch, SwitchProps } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 const LoadingSwitch: FC<SwitchProps & { loading?: boolean }> = ({ loading, ...props }) => {
   return loading ? (
     <Box position="relative">
       <CircularProgress sx={{ width: '100%', height: '100%', position: 'absolute' }} />
-      <Switch {...props} disabled />
+      <Switch {...props} />
     </Box>
   ) : (
     <Switch {...props} />
@@ -14,15 +14,23 @@ const LoadingSwitch: FC<SwitchProps & { loading?: boolean }> = ({ loading, ...pr
 
 interface SwitchSettingsGroupProps<T extends Record<string, { checked: boolean; label: ReactNode }>> {
   options: T;
-  loading?: boolean;
   onChange: (key: keyof T, newValue: boolean) => void;
 }
 
 function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label: ReactNode }>>({
   options,
-  loading,
   onChange,
 }: SwitchSettingsGroupProps<T>) {
+  const [itemLoading, setItemLoading] = useState<keyof T | undefined>();
+  const handleChange = async (key: keyof T, newValue: boolean) => {
+    const option = options[key];
+    if (option) {
+      setItemLoading(key);
+      await onChange(key, newValue);
+      setItemLoading(undefined);
+    }
+  };
+
   return (
     <FormGroup>
       {Object.entries(options).map(([key, option]) => {
@@ -32,8 +40,9 @@ function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label:
             control={
               <LoadingSwitch
                 checked={option.checked}
-                loading={loading}
-                onChange={(event, newValue) => onChange(key, newValue)}
+                loading={itemLoading === key}
+                disabled={Boolean(itemLoading)}
+                onChange={(event, newValue) => handleChange(key, newValue)}
               />
             }
             label={option.label}
