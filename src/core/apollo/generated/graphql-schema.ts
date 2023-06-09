@@ -597,8 +597,10 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 export enum AuthorizationPrivilege {
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
+  CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
+  CommunityInvite = 'COMMUNITY_INVITE',
   CommunityJoin = 'COMMUNITY_JOIN',
   Contribute = 'CONTRIBUTE',
   Create = 'CREATE',
@@ -1105,6 +1107,8 @@ export type Community = Groupable & {
   groups?: Maybe<Array<UserGroup>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Invitations for this community. */
+  invitations?: Maybe<Array<Invitation>>;
   /** All Organizations that are leads in this Community. */
   leadOrganizations?: Maybe<Array<Organization>>;
   /** All users that are leads in this Community. */
@@ -1226,6 +1230,8 @@ export type ContributorRoles = {
   /** Details of Hubs the User or Organization is a member of, with child memberships */
   hubs: Array<RolesResultHub>;
   id: Scalars['UUID'];
+  /** Open invitations for this contributor. */
+  invitations?: Maybe<Array<InvitationForRoleResult>>;
   /** Details of the Organizations the User is a member of, with child memberships. */
   organizations: Array<RolesResultOrganization>;
 };
@@ -1399,6 +1405,12 @@ export type CreateInnovationPackOnLibraryInput = {
   /** The provider Organization for the InnovationPack */
   providerID: Scalars['UUID_NAMEID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type CreateInvitationExistingUserOnCommunityInput = {
+  communityID: Scalars['UUID'];
+  /** The identifier for the user being invited. */
+  invitedUser: Scalars['UUID'];
 };
 
 export type CreateLocationInput = {
@@ -1633,6 +1645,10 @@ export type DeleteInnovationHubInput = {
 
 export type DeleteInnovationPackInput = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeleteInvitationInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteOpportunityInput = {
@@ -2030,6 +2046,48 @@ export type InnovationPack = {
   templates?: Maybe<TemplatesSet>;
 };
 
+export type Invitation = {
+  __typename?: 'Invitation';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The User who triggered the invitation. */
+  createdBy: User;
+  createdDate: Scalars['DateTime'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  lifecycle: Lifecycle;
+  updatedDate: Scalars['DateTime'];
+  /** The User who is invited. */
+  user: User;
+};
+
+export type InvitationEventInput = {
+  eventName: Scalars['String'];
+  invitationID: Scalars['UUID'];
+};
+
+export type InvitationForRoleResult = {
+  __typename?: 'InvitationForRoleResult';
+  /** ID for the Challenge being invited to, if any. Or the Challenge containing the Opportunity being invited to. */
+  challengeID?: Maybe<Scalars['UUID']>;
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the ultimate containing Hub */
+  hubID: Scalars['UUID'];
+  /** ID for the application */
+  id: Scalars['UUID'];
+  /** ID for the Opportunity being invited to, if any. */
+  opportunityID?: Maybe<Scalars['UUID']>;
+  /** The current state of the invitation. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+};
+
 export type Library = {
   __typename?: 'Library';
   /** The authorization rules for the entity */
@@ -2257,6 +2315,8 @@ export type Mutation = {
   deleteInnovationHub: InnovationHub;
   /** Deletes the specified InnovationPack. */
   deleteInnovationPack: InnovationPack;
+  /** Removes the specified User invitation. */
+  deleteInvitation: Invitation;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
@@ -2283,6 +2343,8 @@ export type Mutation = {
   eventOnCanvasCheckout: CanvasCheckout;
   /** Trigger an event on the Challenge. */
   eventOnChallenge: Challenge;
+  /** Trigger an event on the Invitation. */
+  eventOnCommunityInvitation: Application;
   /** Trigger an event on the Opportunity. */
   eventOnOpportunity: Opportunity;
   /** Trigger an event on the Organization Verification. */
@@ -2291,6 +2353,8 @@ export type Mutation = {
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
+  /** Invite an existing User to join the specified Community as a member. */
+  inviteExistingUserForCommunityMembership: Invitation;
   /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
@@ -2675,6 +2739,10 @@ export type MutationDeleteInnovationPackArgs = {
   deleteData: DeleteInnovationPackInput;
 };
 
+export type MutationDeleteInvitationArgs = {
+  deleteData: DeleteInvitationInput;
+};
+
 export type MutationDeleteOpportunityArgs = {
   deleteData: DeleteOpportunityInput;
 };
@@ -2727,6 +2795,10 @@ export type MutationEventOnChallengeArgs = {
   challengeEventData: ChallengeEventInput;
 };
 
+export type MutationEventOnCommunityInvitationArgs = {
+  invitationEventData: InvitationEventInput;
+};
+
 export type MutationEventOnOpportunityArgs = {
   opportunityEventData: OpportunityEventInput;
 };
@@ -2741,6 +2813,10 @@ export type MutationEventOnProjectArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
+};
+
+export type MutationInviteExistingUserForCommunityMembershipArgs = {
+  invitationData: CreateInvitationExistingUserOnCommunityInput;
 };
 
 export type MutationJoinCommunityArgs = {
@@ -3310,6 +3386,7 @@ export enum PreferenceType {
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
   NotificationCommunityCollaborationInterestUser = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_USER',
+  NotificationCommunityInvitationUser = 'NOTIFICATION_COMMUNITY_INVITATION_USER',
   NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
@@ -4627,6 +4704,7 @@ export enum UserPreferenceType {
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
   NotificationCommunityCollaborationInterestUser = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_USER',
+  NotificationCommunityInvitationUser = 'NOTIFICATION_COMMUNITY_INVITATION_USER',
   NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
@@ -7294,14 +7372,6 @@ export type HubProviderQuery = {
           }
         | undefined;
     };
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | undefined;
   };
 };
 
@@ -7380,14 +7450,26 @@ export type HubInfoFragment = {
         }
       | undefined;
   };
-  host?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        nameID: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      }
-    | undefined;
+};
+
+export type HubHostQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubHostQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  };
 };
 
 export type HubPageQueryVariables = Exact<{
@@ -8514,14 +8596,6 @@ export type HubDetailsFragment = {
       | undefined;
   };
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-  host?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        nameID: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      }
-    | undefined;
   context?:
     | {
         __typename?: 'Context';
@@ -8622,14 +8696,6 @@ export type CreateHubMutation = {
         | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | undefined;
     context?:
       | {
           __typename?: 'Context';
@@ -8706,14 +8772,6 @@ export type UpdateHubMutation = {
         | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | undefined;
     context?:
       | {
           __typename?: 'Context';

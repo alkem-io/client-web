@@ -795,6 +795,7 @@ export type CommunityKeySpecifier = (
   | 'displayName'
   | 'groups'
   | 'id'
+  | 'invitations'
   | 'leadOrganizations'
   | 'leadUsers'
   | 'memberOrganizations'
@@ -813,6 +814,7 @@ export type CommunityFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -883,6 +885,7 @@ export type ContributorRolesKeySpecifier = (
   | 'applications'
   | 'hubs'
   | 'id'
+  | 'invitations'
   | 'organizations'
   | ContributorRolesKeySpecifier
 )[];
@@ -890,6 +893,7 @@ export type ContributorRolesFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = ('id' | 'resourceID' | 'type' | CredentialKeySpecifier)[];
@@ -1166,6 +1170,48 @@ export type InnovationPackFieldPolicy = {
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InvitationKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'createdDate'
+  | 'id'
+  | 'lifecycle'
+  | 'updatedDate'
+  | 'user'
+  | InvitationKeySpecifier
+)[];
+export type InvitationFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InvitationForRoleResultKeySpecifier = (
+  | 'challengeID'
+  | 'communityID'
+  | 'createdDate'
+  | 'displayName'
+  | 'hubID'
+  | 'id'
+  | 'opportunityID'
+  | 'state'
+  | 'updatedDate'
+  | InvitationForRoleResultKeySpecifier
+)[];
+export type InvitationForRoleResultFieldPolicy = {
+  challengeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LibraryKeySpecifier = (
   | 'authorization'
   | 'id'
@@ -1299,6 +1345,7 @@ export type MutationKeySpecifier = (
   | 'deleteInnovationFlowTemplate'
   | 'deleteInnovationHub'
   | 'deleteInnovationPack'
+  | 'deleteInvitation'
   | 'deleteOpportunity'
   | 'deleteOrganization'
   | 'deletePostTemplate'
@@ -1312,10 +1359,12 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnCanvasCheckout'
   | 'eventOnChallenge'
+  | 'eventOnCommunityInvitation'
   | 'eventOnOpportunity'
   | 'eventOnOrganizationVerification'
   | 'eventOnProject'
   | 'grantCredentialToUser'
+  | 'inviteExistingUserForCommunityMembership'
   | 'joinCommunity'
   | 'messageUser'
   | 'moveAspectToCallout'
@@ -1451,6 +1500,7 @@ export type MutationFieldPolicy = {
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1464,10 +1514,12 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnCanvasCheckout?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventOnCommunityInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveAspectToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2770,6 +2822,14 @@ export type StrictTypedTypePolicies = {
   InnovationPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationPackKeySpecifier | (() => undefined | InnovationPackKeySpecifier);
     fields?: InnovationPackFieldPolicy;
+  };
+  Invitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InvitationKeySpecifier | (() => undefined | InvitationKeySpecifier);
+    fields?: InvitationFieldPolicy;
+  };
+  InvitationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InvitationForRoleResultKeySpecifier | (() => undefined | InvitationForRoleResultKeySpecifier);
+    fields?: InvitationForRoleResultFieldPolicy;
   };
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);

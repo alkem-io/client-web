@@ -1,7 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import HubEditForm, { HubEditFormValuesType } from '../../../../platform/admin/components/HubEditForm';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
-import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import {
+  useHubHostQuery,
+  useOrganizationsListQuery,
+  useUpdateHubMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { Box, Container } from '@mui/material';
@@ -12,6 +16,7 @@ import { sortBy } from 'lodash';
 export const HubProfile: FC = () => {
   const { hubNameId, ...hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
+  const { data: hostOrganization } = useHubHostQuery({ variables: { hubId: hubNameId }, skip: !hubNameId });
   const notify = useNotification();
 
   const [updateHub, { loading: loading1 }] = useUpdateHubMutation({
@@ -63,7 +68,7 @@ export const HubProfile: FC = () => {
         isEdit
         name={hub.profile.displayName}
         nameID={hubNameId}
-        hostID={hub.host?.id}
+        hostID={hostOrganization?.hub.host?.id}
         tagset={hub.profile.tagset}
         context={hub.context}
         profile={hub.profile}

@@ -28,11 +28,6 @@ interface HubContextProps {
   permissions: HubPermissions;
   error?: ApolloError;
   refetchHub: () => void;
-  host?: {
-    id: string;
-    nameId: string;
-    displayName: string;
-  };
   // TODO Some components just randomly access HubContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
   context?: HubInfoFragment['context'];
@@ -138,13 +133,6 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
         error,
         refetchHub,
         profile,
-        host: hub?.host
-          ? {
-              id: hub.host.id,
-              nameId: hub.host.nameID,
-              displayName: hub.host.profile.displayName,
-            }
-          : undefined,
         context: hub?.context,
         visibility,
       }}

@@ -579,14 +579,6 @@ export const HubDetailsFragmentDoc = gql`
       id
       anonymousReadAccess
     }
-    host {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
     context {
       ...ContextDetails
     }
@@ -5541,6 +5533,59 @@ export type HubProviderQueryResult = Apollo.QueryResult<
 >;
 export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryVariables) {
   return { query: HubProviderDocument, variables: variables };
+}
+
+export const HubHostDocument = gql`
+  query hubHost($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      host {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHubHostQuery__
+ *
+ * To run a query within a React component, call `useHubHostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubHostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubHostQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubHostQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubHostQuery, SchemaTypes.HubHostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubHostQuery, SchemaTypes.HubHostQueryVariables>(HubHostDocument, options);
+}
+
+export function useHubHostLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubHostQuery, SchemaTypes.HubHostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubHostQuery, SchemaTypes.HubHostQueryVariables>(HubHostDocument, options);
+}
+
+export type HubHostQueryHookResult = ReturnType<typeof useHubHostQuery>;
+export type HubHostLazyQueryHookResult = ReturnType<typeof useHubHostLazyQuery>;
+export type HubHostQueryResult = Apollo.QueryResult<SchemaTypes.HubHostQuery, SchemaTypes.HubHostQueryVariables>;
+export function refetchHubHostQuery(variables: SchemaTypes.HubHostQueryVariables) {
+  return { query: HubHostDocument, variables: variables };
 }
 
 export const HubPageDocument = gql`

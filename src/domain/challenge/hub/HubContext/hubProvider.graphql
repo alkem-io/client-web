@@ -26,3 +26,17 @@ fragment HubInfo on Hub {
   }
   visibility
 }
+
+query hubHost($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    host {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+}

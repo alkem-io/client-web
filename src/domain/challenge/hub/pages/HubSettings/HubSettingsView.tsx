@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
+  useHubHostQuery,
   useHubPreferencesQuery,
   useUpdatePreferenceOnHubMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -22,7 +23,12 @@ import { Box, CircularProgress } from '@mui/material';
 
 export const HubSettingsView: FC = () => {
   const { t } = useTranslation();
-  const { hubNameId, host: hostOrganization } = useHub();
+  const { hubNameId } = useHub();
+  const { data: hostOrganization } = useHubHostQuery({
+    variables: { hubId: hubNameId },
+    skip: !hubNameId,
+  });
+
   const notify = useNotification();
 
   const { data: preferencesData, loading } = useHubPreferencesQuery({
@@ -177,7 +183,7 @@ export const HubSettingsView: FC = () => {
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.hostOrganizationJoin"
-                      values={{ host: hostOrganization?.displayName }}
+                      values={{ host: hostOrganization?.hub?.host?.profile?.displayName }}
                       components={{ b: <strong />, i: <em /> }}
                     />
                   ),
