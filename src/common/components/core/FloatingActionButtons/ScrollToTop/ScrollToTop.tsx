@@ -1,7 +1,7 @@
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import React, { useEffect, useState } from 'react';
 import { IconButton } from '@mui/material';
-import scrollToTop from '../../../../utils/scroll/scrollToTop';
+import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 
 const SCROLL_OFFSET = 36;
 

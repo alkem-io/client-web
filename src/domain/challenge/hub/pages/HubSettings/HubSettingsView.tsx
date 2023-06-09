@@ -1,7 +1,8 @@
-import { FC, useCallback, useMemo } from 'react';
+import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import scrollToTop from '../../../../../common/utils/scroll/scrollToTop';
+import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
+  useHubHostQuery,
   useHubPreferencesQuery,
   useUpdatePreferenceOnHubMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -17,17 +18,23 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { BlockSectionTitle, BlockTitle, Text } from '../../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { useHub } from '../../HubContext/useHub';
 import { Box, CircularProgress } from '@mui/material';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
 export const HubSettingsView: FC = () => {
   const { t } = useTranslation();
-  const { hubNameId, host: hostOrganization } = useHub();
+  const { hubNameId } = useUrlParams();
+
+  const { data: hostOrganization } = useHubHostQuery({
+    variables: { hubId: hubNameId! },
+    skip: !hubNameId,
+  });
+
   const notify = useNotification();
 
   const { data: preferencesData, loading } = useHubPreferencesQuery({
     variables: {
-      hubNameId,
+      hubNameId: hubNameId!,
     },
     skip: !hubNameId,
   });
@@ -41,7 +48,7 @@ export const HubSettingsView: FC = () => {
     await updatePreference({
       variables: {
         preferenceData: {
-          hubID: hubNameId,
+          hubID: hubNameId!,
           type: preference,
           value: newValue,
         },
@@ -52,22 +59,27 @@ export const HubSettingsView: FC = () => {
     }
   };
 
-  const getBooleanPreferenceValue = useCallback(
-    (preference: PreferenceType) => {
-      const value = preferencesData?.hub.preferences?.find(pref => pref.definition.type === preference)?.value;
-      return value === 'true' ? true : value === 'false' ? false : undefined;
-    },
-    [preferencesData]
-  );
+  const getBooleanPreferenceValue = (preference: PreferenceType) => {
+    const value = preferencesData?.hub.preferences?.find(pref => pref.definition.type === preference)?.value;
+    if (value === 'true') {
+      return true;
+    } else if (value === 'false') {
+      return false;
+    }
+    return undefined;
+  };
 
   // Visibility:
-  const currentVisibilityValue = useMemo(() => {
+  const getVisibilityValue = () => {
     const value = getBooleanPreferenceValue(PreferenceType.AuthorizationAnonymousReadAccess);
-    return value === undefined ? undefined : value ? 'public' : 'private';
-  }, [preferencesData]);
+    if (value === undefined) {
+      return undefined;
+    }
+    return value ? 'public' : 'private';
+  };
 
   // Membership
-  const currentMembershipValue = useMemo(() => {
+  const getMembershipValue = () => {
     const preferences = {
       MembershipJoinHubFromAnyone: getBooleanPreferenceValue(PreferenceType.MembershipJoinHubFromAnyone),
       MembershipApplicationsFromAnyone: getBooleanPreferenceValue(PreferenceType.MembershipApplicationsFromAnyone),
@@ -86,7 +98,7 @@ export const HubSettingsView: FC = () => {
     } else if (!preferences.MembershipJoinHubFromAnyone && !preferences.MembershipApplicationsFromAnyone) {
       return 'invitationOnly';
     }
-  }, [preferencesData]);
+  };
 
   const onMembershipChange = async (value: 'noApplicationRequired' | 'applicationRequired' | 'invitationOnly') => {
     await handleUpdatePreference(
@@ -103,12 +115,12 @@ export const HubSettingsView: FC = () => {
 
   return (
     <PageContent background="transparent">
-      {!loading && (
+      {!loading && hubNameId && (
         <>
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.hub.settings.visibility.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={currentVisibilityValue}
+              value={getVisibilityValue()}
               options={{
                 public: {
                   label: <Trans i18nKey="pages.admin.hub.settings.visibility.public" components={{ b: <strong /> }} />,
@@ -129,7 +141,7 @@ export const HubSettingsView: FC = () => {
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.hub.settings.membership.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={currentMembershipValue}
+              value={getMembershipValue()}
               options={{
                 noApplicationRequired: {
                   label: (
@@ -174,7 +186,7 @@ export const HubSettingsView: FC = () => {
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.hostOrganizationJoin"
-                      values={{ host: hostOrganization?.displayName }}
+                      values={{ host: hostOrganization?.hub?.host?.profile?.displayName }}
                       components={{ b: <strong />, i: <em /> }}
                     />
                   ),
