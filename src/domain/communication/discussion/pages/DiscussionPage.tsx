@@ -17,7 +17,7 @@ import {
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Message } from '../../messages/models/message';
+import { Message } from '../../room/models/Message';
 import { Skeleton } from '@mui/material';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
@@ -92,6 +92,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
                   body: m.message,
                   author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
                   createdAt: new Date(m.timestamp),
+                  reactions: m.reactions,
                 })) ?? [],
               messagesCount: rawDiscussion.comments.messagesCount,
               myPrivileges: rawDiscussion.comments.authorization?.myPrivileges,

@@ -12,7 +12,7 @@ import {
   renderComponentOrChildrenFn,
 } from '../../../common/utils/containers/ComponentOrChildrenFn';
 import { useUserContext } from '../../community/contributor/user';
-import { Message } from '../../communication/messages/models/message';
+import { Message } from '../../communication/room/models/Message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
 import useCalendarEventCommentsMessageReceivedSubscription from './calendar/useCalendarEventCommentsMessageReceivedSubscription';
@@ -84,6 +84,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
         body: x.message,
         author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
+        reactions: x.reactions,
       })),
     [_messages]
   );

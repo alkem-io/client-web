@@ -8,9 +8,9 @@ import DashboardGenericSection from '../../../shared/components/DashboardSection
 import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import MessageView from '../../../shared/components/Comments/MessageView';
-import { Message } from '../../../communication/messages/models/message';
-import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
+import MessageView from '../../../communication/room/Comments/MessageView';
+import { Message } from '../../../communication/room/models/Message';
+import PostMessageToCommentsForm from '../../../communication/room/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../../shared/components/References/References';
 import TagLabel from '../../../../common/components/composite/common/TagLabel/TagLabel';

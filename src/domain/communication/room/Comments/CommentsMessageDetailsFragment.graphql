@@ -1,9 +1,16 @@
-
-
 fragment MessageDetails on Message {
   id
   message
   timestamp
+  reactions {
+    id
+    emoji
+    sender {
+      id
+      firstName
+      lastName
+    }
+  }
   sender {
     id
     nameID
@@ -12,7 +19,7 @@ fragment MessageDetails on Message {
     profile {
       id
       displayName
-      visual(type: AVATAR) {
+      visual(type: AVATAR) { # TODO avatar: ...
         id
         uri
       }

@@ -14,7 +14,7 @@ import {
   useSendMessageToRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/contributor/user';
-import { Message } from '../../../../communication/messages/models/message';
+import { Message } from '../../../../communication/room/models/Message';
 import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -159,6 +159,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         body: x.message,
         author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
+        reactions: x.reactions,
       })),
     [_messages]
   );

@@ -1,14 +1,14 @@
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
-import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
+import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
   useRemoveCommentFromCalloutMutation,
   useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Message } from '../../../communication/messages/models/message';
+import { Message } from '../../../communication/room/models/Message';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
@@ -35,16 +35,17 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
     const user = userMetadata?.user;
 
     const commentsId = callout.comments.id;
-    const _messages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
+    const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
     const messages = useMemo<Message[]>(
       () =>
-        _messages?.map(x => ({
-          id: x.id,
-          body: x.message,
-          author: x?.sender?.id ? buildAuthorFromUser(x.sender) : undefined,
-          createdAt: new Date(x.timestamp),
+        fetchedMessages?.map(message => ({
+          id: message.id,
+          body: message.message,
+          author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
+          createdAt: new Date(message.timestamp),
+          reactions: message.reactions,
         })),
-      [_messages]
+      [fetchedMessages]
     );
 
     const isAuthor = useCallback(

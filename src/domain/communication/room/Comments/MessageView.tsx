@@ -2,12 +2,13 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, IconButton, Paper, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Message } from '../../../communication/messages/models/message';
+import { Message } from '../models/Message';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
-import AuthorAvatar from '../AuthorAvatar/AuthorAvatar';
+import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
+import AuthorAvatar from '../../../shared/components/AuthorAvatar/AuthorAvatar';
 import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
+import CommentReactions from './CommentReactions';
 
 const MessageContentWrapper = styled(Box)(({ theme }) => ({
   overflowWrap: 'break-word',
@@ -44,6 +45,7 @@ export interface MessageViewProps {
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
   root?: boolean;
   actions?: ReactNode;
+  onAddReaction?: () => void;
 }
 
 export const MessageView = ({
@@ -52,6 +54,7 @@ export const MessageView = ({
   onDelete,
   root = false,
   actions,
+  onAddReaction,
   children,
 }: PropsWithChildren<MessageViewProps>) => {
   const { author, body, id } = message;
@@ -80,7 +83,12 @@ export const MessageView = ({
             </Typography>
           </Box>
         </Paper>
-        <MessageActionsContainer>{actions}</MessageActionsContainer>
+        <MessageActionsContainer>
+          <Box component="li">
+            <CommentReactions reactions={message.reactions} onAddReaction={onAddReaction} />
+          </Box>
+          {actions}
+        </MessageActionsContainer>
         {children}
       </Box>
     </Box>
