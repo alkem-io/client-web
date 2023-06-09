@@ -18,14 +18,15 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { BlockSectionTitle, BlockTitle, Text } from '../../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { useHub } from '../../HubContext/useHub';
 import { Box, CircularProgress } from '@mui/material';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
 export const HubSettingsView: FC = () => {
   const { t } = useTranslation();
-  const { hubNameId } = useHub();
+  const { hubNameId } = useUrlParams();
+
   const { data: hostOrganization } = useHubHostQuery({
-    variables: { hubId: hubNameId },
+    variables: { hubId: hubNameId! },
     skip: !hubNameId,
   });
 
@@ -33,7 +34,7 @@ export const HubSettingsView: FC = () => {
 
   const { data: preferencesData, loading } = useHubPreferencesQuery({
     variables: {
-      hubNameId,
+      hubNameId: hubNameId!,
     },
     skip: !hubNameId,
   });
@@ -47,7 +48,7 @@ export const HubSettingsView: FC = () => {
     await updatePreference({
       variables: {
         preferenceData: {
-          hubID: hubNameId,
+          hubID: hubNameId!,
           type: preference,
           value: newValue,
         },
@@ -71,7 +72,9 @@ export const HubSettingsView: FC = () => {
   // Visibility:
   const getVisibilityValue = () => {
     const value = getBooleanPreferenceValue(PreferenceType.AuthorizationAnonymousReadAccess);
-    if (value === undefined) return undefined;
+    if (value === undefined) {
+      return undefined;
+    }
     return value ? 'public' : 'private';
   };
 
@@ -112,7 +115,7 @@ export const HubSettingsView: FC = () => {
 
   return (
     <PageContent background="transparent">
-      {!loading && (
+      {!loading && hubNameId && (
         <>
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.hub.settings.visibility.title')}</BlockTitle>
