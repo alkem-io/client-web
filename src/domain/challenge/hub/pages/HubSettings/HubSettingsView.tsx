@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import scrollToTop from '../../../../../common/utils/scroll/scrollToTop';
+import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
   useHubPreferencesQuery,
   useUpdatePreferenceOnHubMutation,
