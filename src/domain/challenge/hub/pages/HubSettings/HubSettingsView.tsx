@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo } from 'react';
+import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
@@ -52,22 +52,25 @@ export const HubSettingsView: FC = () => {
     }
   };
 
-  const getBooleanPreferenceValue = useCallback(
-    (preference: PreferenceType) => {
-      const value = preferencesData?.hub.preferences?.find(pref => pref.definition.type === preference)?.value;
-      return value === 'true' ? true : value === 'false' ? false : undefined;
-    },
-    [preferencesData]
-  );
+  const getBooleanPreferenceValue = (preference: PreferenceType) => {
+    const value = preferencesData?.hub.preferences?.find(pref => pref.definition.type === preference)?.value;
+    if (value === 'true') {
+      return true;
+    } else if (value === 'false') {
+      return false;
+    }
+    return undefined;
+  };
 
   // Visibility:
-  const currentVisibilityValue = useMemo(() => {
+  const getVisibilityValue = () => {
     const value = getBooleanPreferenceValue(PreferenceType.AuthorizationAnonymousReadAccess);
-    return value === undefined ? undefined : value ? 'public' : 'private';
-  }, [preferencesData]);
+    if (value === undefined) return undefined;
+    return value ? 'public' : 'private';
+  };
 
   // Membership
-  const currentMembershipValue = useMemo(() => {
+  const getMembershipValue = () => {
     const preferences = {
       MembershipJoinHubFromAnyone: getBooleanPreferenceValue(PreferenceType.MembershipJoinHubFromAnyone),
       MembershipApplicationsFromAnyone: getBooleanPreferenceValue(PreferenceType.MembershipApplicationsFromAnyone),
@@ -86,7 +89,7 @@ export const HubSettingsView: FC = () => {
     } else if (!preferences.MembershipJoinHubFromAnyone && !preferences.MembershipApplicationsFromAnyone) {
       return 'invitationOnly';
     }
-  }, [preferencesData]);
+  };
 
   const onMembershipChange = async (value: 'noApplicationRequired' | 'applicationRequired' | 'invitationOnly') => {
     await handleUpdatePreference(
@@ -108,7 +111,7 @@ export const HubSettingsView: FC = () => {
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.hub.settings.visibility.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={currentVisibilityValue}
+              value={getVisibilityValue()}
               options={{
                 public: {
                   label: <Trans i18nKey="pages.admin.hub.settings.visibility.public" components={{ b: <strong /> }} />,
@@ -129,7 +132,7 @@ export const HubSettingsView: FC = () => {
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.hub.settings.membership.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={currentMembershipValue}
+              value={getMembershipValue()}
               options={{
                 noApplicationRequired: {
                   label: (
