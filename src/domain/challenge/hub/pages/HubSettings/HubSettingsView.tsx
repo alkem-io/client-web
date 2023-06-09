@@ -25,18 +25,20 @@ export const HubSettingsView: FC = () => {
   const { t } = useTranslation();
   const { hubNameId } = useUrlParams();
 
+  if (!hubNameId) {
+    throw new Error('Must be within a Hub route.');
+  }
+
   const { data: hostOrganization } = useHubHostQuery({
-    variables: { hubId: hubNameId! },
-    skip: !hubNameId,
+    variables: { hubId: hubNameId },
   });
 
   const notify = useNotification();
 
   const { data: preferencesData, loading } = useHubPreferencesQuery({
     variables: {
-      hubNameId: hubNameId!,
+      hubNameId: hubNameId,
     },
-    skip: !hubNameId,
   });
   const [updatePreference] = useUpdatePreferenceOnHubMutation();
 
@@ -48,7 +50,7 @@ export const HubSettingsView: FC = () => {
     await updatePreference({
       variables: {
         preferenceData: {
-          hubID: hubNameId!,
+          hubID: hubNameId,
           type: preference,
           value: newValue,
         },
@@ -115,7 +117,7 @@ export const HubSettingsView: FC = () => {
 
   return (
     <PageContent background="transparent">
-      {!loading && hubNameId && (
+      {!loading && (
         <>
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.hub.settings.visibility.title')}</BlockTitle>
