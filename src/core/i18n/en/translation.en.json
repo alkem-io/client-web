@@ -102,6 +102,7 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
+    "reply": "Reply",
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
@@ -1156,9 +1157,8 @@
       "delete-discussion": "Delete discussion?",
       "delete-comment": "Delete comment?"
     },
-    "comment": {
-      "posted": "{{name}} on {{- date}}",
-      "reply": "Replay to this comment"
+    "message": {
+      "root": "started the discussion"
     },
     "post-comment": {
       "fields": {

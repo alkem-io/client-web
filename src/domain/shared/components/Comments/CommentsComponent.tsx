@@ -13,6 +13,7 @@ import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradi
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CaptionSmall } from '../../../../core/ui/typography';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import MessageWithRepliesView from './MessageWithRepliesView';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -105,14 +106,33 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           scrollerRef={commentsContainerRef}
           onScroll={handleScroll}
         >
-          <Gutters>
+          <Gutters gap={0}>
             {messages.map(message => (
-              <MessageView
+              <MessageWithRepliesView
                 key={message.id}
                 message={message}
                 canDelete={canDeleteMessage(message.id)}
                 onDelete={onDeleteComment}
-              />
+                reply={
+                  canPostMessages && (
+                    <PostMessageToCommentsForm
+                      placeholder={t('pages.aspect.dashboard.comment.placeholder')}
+                      onPostComment={onPostComment}
+                      maxLength={MID_TEXT_LENGTH}
+                      disabled={loading}
+                    />
+                  )
+                }
+              >
+                {messages.map(message => (
+                  <MessageView
+                    key={message.id}
+                    message={message}
+                    canDelete={canDeleteMessage(message.id)}
+                    onDelete={onDeleteComment}
+                  />
+                ))}
+              </MessageWithRepliesView>
             ))}
           </Gutters>
         </ScrollerWithGradient>
