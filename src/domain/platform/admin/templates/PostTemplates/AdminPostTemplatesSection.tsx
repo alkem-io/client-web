@@ -18,7 +18,7 @@ import PostTemplateView from './PostTemplateView';
 import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
-import AspectImportTemplateCard from './PostImportTemplateCard';
+import PostImportTemplateCard from './PostImportTemplateCard';
 
 interface AdminPostTemplatesSectionProps {
   templateId: string | undefined;
@@ -26,7 +26,7 @@ interface AdminPostTemplatesSectionProps {
   templates: AdminPostTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (aspect: AdminPostTemplateFragment) => LinkWithState;
+  buildTemplateLink: (post: AdminPostTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
@@ -45,7 +45,7 @@ const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
         templateType: t('common.cards'),
       })}
       templateCardComponent={PostTemplateCard}
-      templateImportCardComponent={AspectImportTemplateCard}
+      templateImportCardComponent={PostImportTemplateCard}
       templatePreviewComponent={PostTemplateView}
       createTemplateDialogComponent={CreatePostTemplateDialog}
       editTemplateDialogComponent={EditPostTemplateDialog}

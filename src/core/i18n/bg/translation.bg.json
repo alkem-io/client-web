@@ -111,8 +111,8 @@
     "remove": "Премахни",
     "callout": "Призив",
     "callouts": "Callouts",
-    "canvas": "Платно",
-    "canvases": "Платна",
+    "whiteboard": "Платно",
+    "whiteboards": "Платна",
     "comment": "Коментар",
     "comments": "Коментари",
     "contributions": "Принос",
@@ -129,8 +129,8 @@
     "filterby": "Филтрирай по...",
     "email": "Имейл",
     "state": "Състояние",
-    "aspect": "Аспект",
-    "aspects": "Аспекти",
+    "post": "Аспект",
+    "posts": "Аспекти",
     "host": "Домакин",
     "lead": "Лидер",
     "hub": "Хъб",
@@ -407,7 +407,7 @@
     "url": "URL",
     "copy": "Копирай",
     "copied": "Копирано!",
-    "canvas-checkedout": "Моля, натисни първо \"Запази & спри промяната\""
+    "whiteboard-checkedout": "Моля, натисни първо \"Запази & спри промяната\""
   },
   "context": {
     "hub": {
@@ -521,13 +521,13 @@
       "nonBlank": "{{field}} не трябва да съдържа само празни символи"
     }
   },
-  "aspect-templates": {
-    "aspect-template": "Шаблон на картата",
+  "post-templates": {
+    "post-template": "Шаблон на картата",
     "default-description": "Описание по подразбиране на картата",
     "banner-narrow": "Banner narrow"
   },
-  "canvas-templates": {
-    "canvas-template": "Шаблон на платното"
+  "whiteboard-templates": {
+    "whiteboard-template": "Шаблон на платното"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",
@@ -568,7 +568,7 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "публикува нов $t(common.callout)",
-        "canvas-created": "добави нов $t(common.canvas) към '{{parentDisplayName}}'",
+        "whiteboard-created": "добави нов $t(common.whiteboard) към '{{parentDisplayName}}'",
         "card-comment-created": "коментира на '{{cardDisplayName}}'",
         "card-created": "добави {{cardType}} Карта към '{{calloutDisplayName}}'",
         "discussion-comment-created": "коментира на '{{calloutDisplayName}}'",
@@ -579,7 +579,7 @@
       },
       "activity-description": {
         "callout-published": "{{displayName}}",
-        "canvas-created": "{{displayName}}",
+        "whiteboard-created": "{{displayName}}",
         "card-comment-created": "{{comment}}",
         "card-created": "{{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
@@ -610,8 +610,8 @@
         "type-comments-help": "Изберете \"Коментари\", когато искате хората да отговарят в проста тесктова форма, като форум",
         "type-cards": "Карти",
         "type-cards-help": "Изберете \"Карти\", когато искате хората да отговарят във формата на карти.",
-        "type-canvases": "Платна",
-        "type-canvases-help": "Изберете \"Платна\", когато искате хората да отговарят визуално върху бяла дъска, предоставяйки им да рисуват и да добавят текст. ",
+        "type-whiteboards": "Платна",
+        "type-whiteboards-help": "Изберете \"Платна\", когато искате хората да отговарят визуално върху бяла дъска, предоставяйки им да рисуват и да добавят текст. ",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
@@ -628,7 +628,7 @@
     "callout-edit": {
       "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "Типа на допълнителния контекст за добавяне.",
@@ -1028,8 +1028,8 @@
         "discussions": {
           "description": "Here you can read and participate in discussions around this {{entity}}."
         },
-        "canvases": {
-          "description": "Canvases can be seen as digital whiteboards. Here you can create a canvas for this {{entity}} as well as find ones created by the others."
+        "whiteboards": {
+          "description": "Whiteboards can be seen as digital whiteboards. Here you can create a whiteboard for this {{entity}} as well as find ones created by the others."
         },
         "profile": {
           "description": ""
@@ -1069,8 +1069,8 @@
           },
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
-            "aspect-templates": "Card Templates",
-            "canvas-templates": "Canvas Templates",
+            "post-templates": "Card Templates",
+            "whiteboard-templates": "Whiteboard Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
             "import": {
@@ -1180,7 +1180,7 @@
       "title": "Give feedback on this community context",
       "success": "Feedback submitted"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Напишете коментара си тук"
@@ -1424,11 +1424,11 @@
         "no-data": "Няма налични актуализации"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Платна в този {{blockName}}",
       "subheader": "Създай своя персонализирана визуализация и я сподели с останалите.",
-      "add-canvas": "Създай платно",
-      "no-canvases": "Все още не са създадени платна. Бъди първият, който ще създаде ново платно.",
+      "add-whiteboard": "Създай платно",
+      "no-whiteboards": "Все още не са създадени платна. Бъди първият, който ще създаде ново платно.",
       "state": {
         "available": "Можеш да работиш по това платно",
         "checkedout": "Някой вече работи по това платно",
@@ -1518,7 +1518,7 @@
     "verification-success": {
       "header": "Благодарим, че потвърдихте имейл адреса си!",
       "subheader": "Профилът ви е напълно активиран. Насладете се!",
-      "message": "Please do consider filling out all aspects of your profile. It helps with both applying to join communities and with others being able to connect with you."
+      "message": "Please do consider filling out all posts of your profile. It helps with both applying to join communities and with others being able to connect with you."
     },
     "recovery": {
       "header": "Password recovery",
@@ -1641,7 +1641,7 @@
   "dashboard-community-section": {
     "title": "Общност"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Нов Аспект",
     "edit": "Редактирай Аспект",
     "type": {

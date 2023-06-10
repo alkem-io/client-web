@@ -37,13 +37,13 @@ const PostTemplateView = ({ template }: PostTemplateViewProps) => {
         <TagsComponent tags={tags || []} />
       </Box>
       <Box>
-        <TypographyTitle>{t('aspect-edit.type.title')}</TypographyTitle>
+        <TypographyTitle>{t('post-edit.type.title')}</TypographyTitle>
         <Typography variant="h6" color="primary">
           {templateType}
         </Typography>
       </Box>
       <Box>
-        <TypographyTitle>{t('aspect-templates.default-description')}</TypographyTitle>
+        <TypographyTitle>{t('post-templates.default-description')}</TypographyTitle>
         <Typography variant="body2" component="div">
           <WrapperMarkdown>{defaultDescription}</WrapperMarkdown>
         </Typography>

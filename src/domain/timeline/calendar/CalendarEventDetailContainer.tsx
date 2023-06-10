@@ -43,7 +43,7 @@ interface Provided {
 }
 export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<EventIds, Provided>;
 
-// TODO: VERY BASED ON domain/collaboration/aspect/containers/AspectDashboardContainer/AspectDashboardContainer.tsx
+// TODO: VERY BASED ON domain/collaboration/post/containers/PostDashboardContainer/PostDashboardContainer.tsx
 // Maybe put common logic together
 const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ hubNameId, eventId, ...rendered }) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();

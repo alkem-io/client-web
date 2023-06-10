@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import AspectCallout from '../aspect/AspectCallout';
-import CanvasCallout from '../canvas/CanvasCallout';
+import PostCallout from '../post/PostCallout';
+import WhiteboardCallout from '../whiteboard/WhiteboardCallout';
 import CommentsCallout from '../comments/CommentsCallout';
 import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
@@ -16,21 +16,16 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(({ callout, ...
   const canCreate = (privilege: AuthorizationPrivilege) => callout.authorization?.myPrivileges?.includes(privilege);
 
   switch (callout.type) {
-    case CalloutType.Card:
+    case CalloutType.Post:
       return (
-        <AspectCallout
-          ref={ref}
-          callout={callout}
-          canCreate={canCreate(AuthorizationPrivilege.CreateAspect)}
-          {...props}
-        />
+        <PostCallout ref={ref} callout={callout} canCreate={canCreate(AuthorizationPrivilege.CreatePost)} {...props} />
       );
-    case CalloutType.Canvas:
+    case CalloutType.Whiteboard:
       return (
-        <CanvasCallout
+        <WhiteboardCallout
           ref={ref}
           callout={callout}
-          canCreate={canCreate(AuthorizationPrivilege.CreateCanvas)}
+          canCreate={canCreate(AuthorizationPrivilege.CreateWhiteboard)}
           {...props}
         />
       );

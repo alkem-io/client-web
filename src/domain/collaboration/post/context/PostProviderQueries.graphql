@@ -1,0 +1,71 @@
+query HubPostProvider($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration {
+      ...PostProviderData
+    }
+  }
+}
+
+query ChallengePostProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        ...PostProviderData
+      }
+    }
+  }
+}
+
+query OpportunityPostProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        ...PostProviderData
+      }
+    }
+  }
+}
+
+fragment PostProviderData on Collaboration {
+  id
+  callouts(IDs: [$calloutNameId]) {
+    id
+    type
+    posts(IDs: [$postNameId]) {
+      ...PostProvided
+    }
+  }
+}
+
+fragment PostProvided on Post {
+  id
+  nameID
+  profile {
+    id
+    displayName
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+fragment CalloutPostInfo on Collaboration {
+ 			id
+      callouts
+      {
+        id
+        nameID
+        type
+        posts
+        {
+          id
+          nameID
+        }
+      }
+}

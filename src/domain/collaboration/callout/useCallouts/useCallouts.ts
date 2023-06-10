@@ -9,10 +9,10 @@ import {
   Callout,
   CalloutType,
   CalloutVisibility,
-  CanvasDetailsFragment,
+  WhiteboardDetailsFragment,
   WhiteboardTemplate,
   CommentsWithMessagesFragment,
-  ContributeTabAspectFragment,
+  ContributeTabPostFragment,
   CalloutsQueryVariables,
   ReferenceDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -24,32 +24,32 @@ import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import { Tagset } from '../../../common/profile/Profile';
 
 interface CalloutChildTypePropName {
-  [CalloutType.Card]: 'aspects';
-  [CalloutType.Canvas]: 'canvases';
+  [CalloutType.Post]: 'posts';
+  [CalloutType.Whiteboard]: 'whiteboards';
   [CalloutType.Comments]: 'comments';
   [CalloutType.LinkCollection]: 'links';
-  [CalloutType.SingleWhiteboard]: 'canvases';
+  [CalloutType.SingleWhiteboard]: 'whiteboards';
 }
 
-export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
+export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
-export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId: string };
+export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
 
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
 export type ReferencesFragmentWithCallout = ReferenceDetailsFragment & { calloutNameId: string };
 
 interface CalloutChildPropValue {
-  aspects: never;
-  canvases: CanvasFragmentWithCallout[];
+  posts: never;
+  whiteboards: WhiteboardFragmentWithCallout[];
   comments: CommentsWithMessagesFragmentWithCallout;
   links: ReferencesFragmentWithCallout;
-  whiteboard: CanvasFragmentWithCallout[];
+  whiteboard: WhiteboardFragmentWithCallout[];
 }
 
 type CalloutCardTemplateType = {
-  [CalloutType.Card]: { postTemplate: CalloutPostTemplate };
-  [CalloutType.Canvas]: { whiteboardTemplate: WhiteboardTemplate };
+  [CalloutType.Post]: { postTemplate: CalloutPostTemplate };
+  [CalloutType.Whiteboard]: { whiteboardTemplate: WhiteboardTemplate };
   [CalloutType.Comments]: {};
   [CalloutType.LinkCollection]: {};
   [CalloutType.SingleWhiteboard]: { whiteboardTemplate: WhiteboardTemplate };
@@ -69,8 +69,8 @@ export type TypedCallout = Pick<
   'id' | 'nameID' | 'state' | 'activity' | 'authorization' | 'sortOrder' | 'group'
 > &
   (
-    | CalloutTypesWithChildTypes[CalloutType.Card]
-    | CalloutTypesWithChildTypes[CalloutType.Canvas]
+    | CalloutTypesWithChildTypes[CalloutType.Post]
+    | CalloutTypesWithChildTypes[CalloutType.Whiteboard]
     | CalloutTypesWithChildTypes[CalloutType.Comments]
     | CalloutTypesWithChildTypes[CalloutType.LinkCollection]
     | CalloutTypesWithChildTypes[CalloutType.SingleWhiteboard]
@@ -163,8 +163,8 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         return {
           ...callout,
-          // Add calloutNameId to all canvases
-          canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
+          // Add calloutNameId to all whiteboards
+          whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
           comments: { ...callout.comments, calloutNameId: callout.nameID },
           authorization,
           draft,

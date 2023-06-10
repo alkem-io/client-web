@@ -34,16 +34,16 @@ query search($searchData: SearchInput!) {
       score
       terms
       type
-      ... on SearchResultCard {
-        ...SearchResultCard
+      ... on SearchResultPost {
+        ...SearchResultPost
       }
     }
     contributionResultsCount
   }
 }
 
-fragment SearchResultCard on SearchResultCard {
-  card {
+fragment SearchResultPost on SearchResultPost {
+  post {
     id
     nameID
     profile {
@@ -51,7 +51,7 @@ fragment SearchResultCard on SearchResultCard {
       visual(type: CARD) {
         ...VisualUri
       }
-      ...SearchResultCardProfile
+      ...SearchResultPostProfile
     }
     createdBy {
       id
@@ -66,10 +66,10 @@ fragment SearchResultCard on SearchResultCard {
       messagesCount
     }
   }
-  ...CardParent
+  ...PostParent
 }
 
-fragment CardParent on SearchResultCard {
+fragment PostParent on SearchResultPost {
   hub {
     id
     nameID
@@ -157,7 +157,7 @@ fragment SearchResultProfile on Profile {
   }
 }
 
-fragment SearchResultCardProfile on Profile {
+fragment SearchResultPostProfile on Profile {
   id
   description
   tagset {

@@ -14,8 +14,8 @@ const availableCalloutTypes = [
   CalloutType.Comments,
   CalloutType.SingleWhiteboard,
   CalloutType.LinkCollection,
-  CalloutType.Card,
-  CalloutType.Canvas,
+  CalloutType.Post,
+  CalloutType.Whiteboard,
 ];
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {

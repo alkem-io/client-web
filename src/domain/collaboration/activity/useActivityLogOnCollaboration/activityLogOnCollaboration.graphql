@@ -38,14 +38,14 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     ... on ActivityLogEntryCalloutPublished {
       ...ActivityLogCalloutPublished
     }
-    ... on ActivityLogEntryCalloutCardCreated {
+    ... on ActivityLogEntryCalloutPostCreated {
       ...ActivityLogCalloutCardCreated
     }
-    ... on ActivityLogEntryCalloutCardComment {
+    ... on ActivityLogEntryCalloutPostComment {
       ...ActivityLogCalloutCardComment
     }
-    ... on ActivityLogEntryCalloutCanvasCreated {
-      ...ActivityLogCalloutCanvasCreated
+    ... on ActivityLogEntryCalloutWhiteboardCreated {
+      ...ActivityLogCalloutWhiteboardCreated
     }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
@@ -104,7 +104,7 @@ fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
   }
 }
 
-fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
+fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutPostCreated {
   callout {
     id
     nameID
@@ -113,7 +113,7 @@ fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
       displayName
     }
   }
-  card {
+  post {
     id
     nameID
     type
@@ -125,7 +125,7 @@ fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
   }
 }
 
-fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
+fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutPostComment {
   callout {
     id
     nameID
@@ -134,7 +134,7 @@ fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
       displayName
     }
   }
-  card {
+  post {
     id
     nameID
     profile {
@@ -144,7 +144,7 @@ fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
   }
 }
 
-fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
+fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
   callout {
     id
     nameID
@@ -153,7 +153,7 @@ fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated
       displayName
     }
   }
-  canvas {
+  whiteboard {
     id
     nameID
     profile {

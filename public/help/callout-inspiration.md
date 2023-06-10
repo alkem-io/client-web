@@ -25,4 +25,4 @@ _After thinking of the questions, you have to choose the best Callout type to ge
 
 - If you want it to be a low threshold way of answering, you can use **Discussions**. Members can submit a simple answer, such as introducing themselves or ideas for a webinar;
 - **Cards** are a way to submit your knowledge, such as ideas, related initiatives, or relevant stakeholders, that require additional information. For example, a longer description, references, visuals, and allowing others to comment;
-- Lastly, **Canvases** can be used to allow people to visualize their input, such as personas, stakeholder mapping, business models, etc.
+- Lastly, **Whiteboards** can be used to allow people to visualize their input, such as personas, stakeholder mapping, business models, etc.

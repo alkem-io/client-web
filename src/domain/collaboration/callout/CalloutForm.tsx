@@ -18,7 +18,7 @@ import { ProfileReferenceSegment } from '../../platform/admin/components/Common/
 import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
-import EmptyWhiteboard from '../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import EmptyWhiteboard from '../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
 import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
@@ -163,13 +163,13 @@ const CalloutForm: FC<CalloutFormProps> = ({
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     postTemplateData: yup.object().when('type', {
-      is: CalloutType.Card,
+      is: CalloutType.Post,
       then: yup.object().shape({
         defaultDescription: yup.string().required(t('common.field-required')),
       }),
     }),
     whiteboardTemplateData: yup.object().when('type', {
-      is: CalloutType.Canvas,
+      is: CalloutType.Whiteboard,
       then: yup.object().shape({
         profile: yup.object().shape({
           displayName: yup.string(),
@@ -216,8 +216,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
     references: calloutType !== CalloutType.LinkCollection,
     linkCollectionAdd: calloutType === CalloutType.LinkCollection,
     tags: true,
-    postTemplate: calloutType === CalloutType.Card,
-    whiteboardTemplate: calloutType === CalloutType.Canvas,
+    postTemplate: calloutType === CalloutType.Post,
+    whiteboardTemplate: calloutType === CalloutType.Whiteboard,
     newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.SingleWhiteboard,
     groupChange: editMode && Boolean(canChangeCalloutGroup),
     whiteboard: calloutType === CalloutType.SingleWhiteboard,
@@ -259,7 +259,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <TagsetSegment
                 tagsets={tagsets}
                 title={t('common.tags')}
-                helpText={t('components.aspect-creation.info-step.tags-help-text')}
+                helpText={t('components.post-creation.info-step.tags-help-text')}
               />
             )}
             {!editMode && formConfiguration.linkCollectionAdd && (

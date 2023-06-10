@@ -1,5 +1,5 @@
-mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
-  createAspectOnCallout(aspectData: $aspectData) {
+mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
+  createPostOnCallout(postData: $postData) {
     id
     nameID
     type

@@ -7,8 +7,8 @@ interface HubTemplatesAdminRoutesProps extends SettingsPageProps {
 }
 
 enum RoutePaths {
-  aspectTemplatesRoutePath = 'aspect-templates',
-  whiteboardTemplatesRoutePath = 'canvas-templates',
+  postTemplatesRoutePath = 'post-templates',
+  whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
 }
 
@@ -19,11 +19,11 @@ const HubTemplatesAdminRoutes = (props: HubTemplatesAdminRoutesProps) => {
     <Routes>
       <Route index element={<HubTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />} />
       <Route
-        path={`${RoutePaths.aspectTemplatesRoutePath}/:aspectTemplateId`}
+        path={`${RoutePaths.postTemplatesRoutePath}/:postTemplateId`}
         element={<HubTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.aspectTemplatesRoutePath}/:aspectTemplateId/edit`}
+        path={`${RoutePaths.postTemplatesRoutePath}/:postTemplateId/edit`}
         element={<HubTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
       />
       <Route

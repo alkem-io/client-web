@@ -154,8 +154,8 @@
     "remove": "Verwijder",
     "callout": "Oproep",
     "callouts": "Oproepen",
-    "canvas": "Whiteboard",
-    "canvases": "Whiteboards",
+    "whiteboard": "Whiteboard",
+    "whiteboards": "Whiteboards",
     "calendar": "Kalender",
     "comment": "Opmerking",
     "comments": "Opmerkingen",
@@ -177,8 +177,8 @@
     "forum": "Forum",
     "email": "Email",
     "state": "Staat",
-    "aspect": "Kaart",
-    "aspects": "Kaarten",
+    "post": "Kaart",
+    "posts": "Kaarten",
     "host": "Host",
     "lead": "Lead",
     "hub": "Space",
@@ -591,20 +591,20 @@
       "atLeastOne": "Selecteer ten minste één item."
     }
   },
-  "aspect-templates": {
+  "post-templates": {
     "template-library": "Template bibliotheek: Kaarten",
-    "aspect-template": "Kaart template",
+    "post-template": "Kaart template",
     "default-description": "Standaard text",
     "banner-narrow": "Smalle banner"
   },
-  "canvas-templates": {
+  "whiteboard-templates": {
     "template-library": "Template bibliotheek: Whiteboards",
     "filter-placeholder": "Templates zoeken...",
-    "canvas-template": "Whiteboard template",
+    "whiteboard-template": "Whiteboard template",
     "hub-templates": "Templates geselecteerd door de host van deze community",
     "load-platform-templates": "Of klik hier om door alle platformtemplates te bladeren",
     "platform-templates": "Platform templates",
-    "error-importing": "Fout bij importeren Canvas Template",
+    "error-importing": "Fout bij importeren Whiteboard Template",
     "edit-template-button": "Template bewerken",
     "edit-dialog-title": "Whiteboard template bewerken"
   },
@@ -709,7 +709,7 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "heeft een nieuwe $t(common.callout) gepubliceerd",
-        "canvas-created": "heeft een $t(common.canvas) toegevoegd aan '{{parentDisplayName}}'",
+        "whiteboard-created": "heeft een $t(common.whiteboard) toegevoegd aan '{{parentDisplayName}}'",
         "card-comment-created": "heeft gereageerd op '{{cardDisplayName}}'",
         "card-created": "voegde een {{cardType}} Kaart toe aan '{{calloutDisplayName}}'",
         "discussion-comment-created": "heeft gereageerd op '{{calloutDisplayName}}'",
@@ -720,7 +720,7 @@
       },
       "activity-description": {
         "callout-published": "{{displayName}}",
-        "canvas-created": "{{displayName}}",
+        "whiteboard-created": "{{displayName}}",
         "card-comment-created": "{{comment}}",
         "card-created": "{{cardDisplayName}}] - {{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
@@ -757,8 +757,8 @@
         "type-comments-help": "Selecteer ‘Discussie’ als je wilt dat mensen antwoorden via een simpele reactie.",
         "type-cards": "Kaarten",
         "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
-        "type-canvases": "Whiteboards",
-        "type-canvases-help": "Selecteer ‘Whiteboards’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven.",
+        "type-whiteboards": "Whiteboards",
+        "type-whiteboards-help": "Selecteer ‘Whiteboards’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven.",
         "unique-title-validation-text": "Deze titel wordt al gebruikt voor een andere $t(common.callout)"
       },
       "template-step": {
@@ -771,7 +771,7 @@
         "whiteboard-empty-template": "Leeg Template",
         "whiteboard-reset-template": "Template leeg maken",
         "no-card-template-selected": "Kies een template",
-        "no-canvas-template-selected": "Selecteer een whiteboard template"
+        "no-whiteboard-template-selected": "Selecteer een whiteboard template"
       },
       "create-step": {
         "title": "Maak aan",
@@ -789,11 +789,11 @@
       "title": "Wat zou je willen toevoegen?",
       "label": {
         "COMMENTS": "Post",
-        "CARD": "Oproep voor Posts",
-        "CANVAS": "Oproep voor Whiteboards"
+        "POST": "Oproep voor Posts",
+        "WHITEBOARD": "Oproep voor Whiteboards"
       }
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Dien je antwoord in op {{calloutDisplayName}}",
       "type-step": {
         "title": "Het soort additionele context om toe te voegen.",
@@ -1210,7 +1210,7 @@
         "discussions": {
           "description": "Hier kun meer lezen over en bijdragen een de discussies van deze {{entity}}."
         },
-        "canvases": {
+        "whiteboards": {
           "description": "Whiteboards kunnen worden gezien als digitaal doek. Hier kun je een whiteboard maken voor deze {{entity}} en whiteboards vinden die door de anderen zijn gemaakt."
         },
         "profile": {
@@ -1262,8 +1262,8 @@
           },
           "templates": {
             "description": "Hier kun je Templates maken en aanpassen voor deze {{entity}}.",
-            "aspect-templates": "Templates voor Kaarten",
-            "canvas-templates": "Whiteboard templates",
+            "post-templates": "Templates voor Kaarten",
+            "whiteboard-templates": "Whiteboard templates",
             "innovation-templates": "Templates voor Innovation Flows",
             "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Space? Je kunt ook de template informatie aanpassen?",
             "import": {
@@ -1382,7 +1382,7 @@
       "title": "Geef feedback op de context van deze community",
       "success": "Feedback verstuurd"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Typ hier uw opmerking"
@@ -1661,11 +1661,11 @@
         "no-data": "Geen updates beschikbaar"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Whiteboards in deze {{blockName}}",
       "subheader": "Maak een visualisatie en deel deze met anderen.",
-      "add-canvas": "Creëer een whiteboard",
-      "no-canvases": "Er zijn nog geen whiteboards aangemaakt. Wees de eerste die er een toevoegt.",
+      "add-whiteboard": "Creëer een whiteboard",
+      "no-whiteboards": "Er zijn nog geen whiteboards aangemaakt. Wees de eerste die er een toevoegt.",
       "locked-by": "{{user}} bewerkt momenteel dit whiteboard",
       "state": {
         "checkedout": "Iemand anders is momenteel dit Whiteboard aan het bewerken"
@@ -1754,7 +1754,7 @@
     "verification-success": {
       "header": "Bedankt voor het verifiëren van uw email!",
       "subheader": "Uw profiel is nu volledig geactiveerd op het platform. Veel plezier!",
-      "message": "Overweeg alle aspecten van jouw profiel in te vullen. Dat helpt bij zowel het lid worden van communities als jouw vindbaarheid voor andere gebruikers."
+      "message": "Overweeg alle posten van jouw profiel in te vullen. Dat helpt bij zowel het lid worden van communities als jouw vindbaarheid voor andere gebruikers."
     },
     "recovery": {
       "header": "Wachtwoordherstel",
@@ -1900,7 +1900,7 @@
   "dashboard-community-section": {
     "title": "Community"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Nieuw Kaart",
     "edit": "Pas Kaart aan",
     "type": {

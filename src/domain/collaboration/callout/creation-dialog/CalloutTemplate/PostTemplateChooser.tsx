@@ -6,8 +6,8 @@ import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/Form
 import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { Caption, CardText } from '../../../../../core/ui/typography';
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
-import { PostTemplateWithValue } from '../../../aspect/PostTemplateCard/PostTemplate';
-import PostTemplatesLibrary from '../../../aspect/PostTemplatesLibrary/PostTemplatesLibrary';
+import { PostTemplateWithValue } from '../../../post/PostTemplateCard/PostTemplate';
+import PostTemplatesLibrary from '../../../post/PostTemplatesLibrary/PostTemplatesLibrary';
 
 interface PostTemplatesChooserProps {
   name: string;

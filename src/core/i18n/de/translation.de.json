@@ -154,8 +154,8 @@
     "remove": "Entfernen",
     "callout": "Legende",
     "callouts": "Legenden",
-    "canvas": "Whiteboard",
-    "canvases": "Whiteboards",
+    "whiteboard": "Whiteboard",
+    "whiteboards": "Whiteboards",
     "calendar": "Kalender",
     "comment": "Kommentar",
     "comments": "Comments",
@@ -177,8 +177,8 @@
     "forum": "Forum",
     "email": "Email",
     "state": "Zustand",
-    "aspect": "Karte",
-    "aspects": "Karten",
+    "post": "Karte",
+    "posts": "Karten",
     "host": "Selbst hosten",
     "lead": "Blei",
     "hub": "Hauptinsel",
@@ -591,16 +591,16 @@
       "atLeastOne": "Mindestens ein {{item}} muss ausgewählt sein."
     }
   },
-  "aspect-templates": {
+  "post-templates": {
     "template-library": "Vorlagen-Bibliothek: Karten",
-    "aspect-template": "Kartenvorlagen",
+    "post-template": "Kartenvorlagen",
     "default-description": "Standard Karteninhalt",
     "banner-narrow": "Banner schmal"
   },
-  "canvas-templates": {
+  "whiteboard-templates": {
     "template-library": "Vorlagen-Bibliothek: Karten",
     "filter-placeholder": "Vorlagen suchen...",
-    "canvas-template": "Whiteboard-Template",
+    "whiteboard-template": "Whiteboard-Template",
     "hub-templates": "Vom Host dieser Community ausgewählte Vorlagen",
     "load-platform-templates": "Oder klicken Sie hier, um durch alle Plattformvorlagen zu browsen",
     "platform-templates": "Plattformvorlagen",
@@ -709,7 +709,7 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "hat $tveröffentlicht (common.callout)",
-        "canvas-created": "hat $t(common.canvas) zu '{{parentDisplayName}} ' hinzugefügt",
+        "whiteboard-created": "hat $t(common.whiteboard) zu '{{parentDisplayName}} ' hinzugefügt",
         "card-comment-created": "kommentierte '{{cardDisplayName}}'",
         "card-created": "hat eine {{cardType}} Karte zu '{{calloutDisplayName}} ' hinzugefügt",
         "discussion-comment-created": "kommentierte '{{calloutDisplayName}}'",
@@ -720,7 +720,7 @@
       },
       "activity-description": {
         "callout-published": "displayName",
-        "canvas-created": "displayName",
+        "whiteboard-created": "displayName",
         "card-comment-created": "{{comment}}",
         "card-created": "{{cardDisplayName}} - {{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
@@ -757,8 +757,8 @@
         "type-comments-help": "Wählen Sie \"Kommentare\", wenn Sie möchten, dass Personen in einem einfachen Textformat antworten, wie ein Messageboard.",
         "type-cards": "Karten",
         "type-cards-help": "Wählen Sie \"Karten\", wenn Sie möchten, dass Personen im Kartenformat antworten.",
-        "type-canvases": "Whiteboards",
-        "type-canvases-help": "Wählen Sie »Whiteboards«, wenn jemand auf einem visuellen Whiteboard antworten soll und es ihnen erlaubt Text zu zeichnen und zu verwenden.",
+        "type-whiteboards": "Whiteboards",
+        "type-whiteboards-help": "Wählen Sie »Whiteboards«, wenn jemand auf einem visuellen Whiteboard antworten soll und es ihnen erlaubt Text zu zeichnen und zu verwenden.",
         "unique-title-validation-text": "Dieser Titel wird bereits für $tverwendet (common.callout)"
       },
       "template-step": {
@@ -771,7 +771,7 @@
         "whiteboard-empty-template": "Leere Vorlage",
         "whiteboard-reset-template": "Leere Vorlage",
         "no-card-template-selected": "Bitte wähle eine Vorlage aus",
-        "no-canvas-template-selected": "Bitte wähle eine Vorlage aus"
+        "no-whiteboard-template-selected": "Bitte wähle eine Vorlage aus"
       },
       "create-step": {
         "title": "Erstellen",
@@ -789,11 +789,11 @@
       "title": "Was möchten Sie tun?",
       "label": {
         "COMMENTS": "Posten",
-        "CARD": "Tags für Einträge",
-        "CANVAS": "Whiteboard leeren"
+        "POST": "Tags für Einträge",
+        "WHITEBOARD": "Whiteboard leeren"
       }
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Senden Sie Ihre Antwort an {{calloutDisplayName}}",
       "type-step": {
         "title": "Der Typ des zusätzlichen Kontexts, der hinzugefügt werden soll.",
@@ -1210,7 +1210,7 @@
         "discussions": {
           "description": "Hier kannst du Diskussionen rund um diese {{entity}} lesen und daran teilnehmen."
         },
-        "canvases": {
+        "whiteboards": {
           "description": "Whiteboards können als digitale Leinwand angesehen werden. Hier können Sie ein Whiteboard für diese {{entity}} erstellen und die von den anderen erstellten finden."
         },
         "profile": {
@@ -1262,8 +1262,8 @@
           },
           "templates": {
             "description": "Hier können Sie Vorlagen für {{entity}} erstellen und bearbeiten.",
-            "aspect-templates": "Kartenvorlagen",
-            "canvas-templates": "Whiteboard-Template",
+            "post-templates": "Kartenvorlagen",
+            "whiteboard-templates": "Whiteboard-Template",
             "innovation-templates": "Innovationsflussvorlage",
             "delete-confirmation": "Sind Sie sicher, dass Sie {{template}} aus dem Hub löschen möchten? Sie können auch die Informationen dieser Vorlage bearbeiten.",
             "import": {
@@ -1382,7 +1382,7 @@
       "title": "Feedback zu diesem Community-Kontext geben",
       "success": "Feedback gesendet"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Geben Sie hier Ihren Kommentar ein"
@@ -1661,11 +1661,11 @@
         "no-data": "Keine Updates verfügbar"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Whiteboards in diesem {{blockName}}",
       "subheader": "Erstellen Sie Ihre individuelle Visualisierung und teilen Sie sie mit anderen.",
-      "add-canvas": "Whiteboard leeren",
-      "no-canvases": "Es wurden noch keine Whiteboards erstellt. Seien Sie der erste, der eins hinzufügt.",
+      "add-whiteboard": "Whiteboard leeren",
+      "no-whiteboards": "Es wurden noch keine Whiteboards erstellt. Seien Sie der erste, der eins hinzufügt.",
       "locked-by": "{{user}} bearbeitet gerade dieses Whiteboard",
       "state": {
         "checkedout": "Jemand anderes bearbeitet gerade dieses Whiteboard"
@@ -1900,7 +1900,7 @@
   "dashboard-community-section": {
     "title": "Gemeinschaft"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Neue Karte",
     "edit": "Begrüßungskarte Bearbeiten",
     "type": {
