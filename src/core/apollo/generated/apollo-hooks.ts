@@ -1267,6 +1267,29 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     message
   }
 `;
+export const ProfileDisplayNameFragmentDoc = gql`
+  fragment ProfileDisplayName on Profile {
+    id
+    displayName
+  }
+`;
+export const PrivilegesOnCollaborationFragmentDoc = gql`
+  fragment PrivilegesOnCollaboration on Collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+`;
+export const ReferenceDetailsFragmentDoc = gql`
+  fragment ReferenceDetails on Reference {
+    id
+    name
+    uri
+    description
+  }
+`;
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
@@ -1297,6 +1320,134 @@ export const MessageDetailsFragmentDoc = gql`
       }
     }
   }
+`;
+export const CommentsWithMessagesFragmentDoc = gql`
+  fragment CommentsWithMessages on Room {
+    id
+    messagesCount
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+    messages {
+      ...MessageDetails
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+export const CalloutPostTemplateFragmentDoc = gql`
+  fragment CalloutPostTemplate on Callout {
+    postTemplate {
+      id
+      type
+      defaultDescription
+      profile {
+        tagset {
+          id
+          tags
+        }
+        visual(type: CARD) {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
+export const CalloutWhiteboardTemplateFragmentDoc = gql`
+  fragment CalloutWhiteboardTemplate on Callout {
+    whiteboardTemplate {
+      id
+      value
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          id
+          tags
+        }
+        visual(type: CARD) {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
+export const CalloutFragmentDoc = gql`
+  fragment Callout on Callout {
+    id
+    nameID
+    type
+    group
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        tags
+      }
+      references {
+        ...ReferenceDetails
+      }
+    }
+    state
+    sortOrder
+    activity
+    whiteboards {
+      ...WhiteboardDetails
+    }
+    comments {
+      ...CommentsWithMessages
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    visibility
+    ...CalloutPostTemplate
+    ...CalloutWhiteboardTemplate
+  }
+  ${ReferenceDetailsFragmentDoc}
+  ${WhiteboardDetailsFragmentDoc}
+  ${CommentsWithMessagesFragmentDoc}
+  ${CalloutPostTemplateFragmentDoc}
+  ${CalloutWhiteboardTemplateFragmentDoc}
+`;
+export const CollaborationWithCalloutsFragmentDoc = gql`
+  fragment CollaborationWithCallouts on Collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    callouts(groups: $calloutGroups, IDs: $calloutIds) {
+      ...Callout
+    }
+  }
+  ${CalloutFragmentDoc}
+`;
+export const ContributeTabPostFragmentDoc = gql`
+  fragment ContributeTabPost on Post {
+    ...PostCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${PostCardFragmentDoc}
+`;
+export const PostsOnCalloutFragmentDoc = gql`
+  fragment PostsOnCallout on Callout {
+    id
+    posts {
+      ...ContributeTabPost
+    }
+  }
+  ${ContributeTabPostFragmentDoc}
 `;
 export const PostDashboardFragmentDoc = gql`
   fragment PostDashboard on Post {
@@ -1457,137 +1608,56 @@ export const CalloutPostInfoFragmentDoc = gql`
     }
   }
 `;
-export const ProfileDisplayNameFragmentDoc = gql`
-  fragment ProfileDisplayName on Profile {
+export const TemplateProviderProfileFragmentDoc = gql`
+  fragment TemplateProviderProfile on Profile {
     id
     displayName
-  }
-`;
-export const PrivilegesOnCollaborationFragmentDoc = gql`
-  fragment PrivilegesOnCollaboration on Collaboration {
-    id
-    authorization {
-      id
-      myPrivileges
+    visual(type: AVATAR) {
+      ...VisualUri
     }
   }
+  ${VisualUriFragmentDoc}
 `;
-export const ReferenceDetailsFragmentDoc = gql`
-  fragment ReferenceDetails on Reference {
-    id
-    name
-    uri
-    description
-  }
-`;
-export const CommentsWithMessagesFragmentDoc = gql`
-  fragment CommentsWithMessages on Room {
-    id
-    messagesCount
-    authorization {
-      id
-      myPrivileges
-      anonymousReadAccess
-    }
-    messages {
-      ...MessageDetails
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-export const CalloutPostTemplateFragmentDoc = gql`
-  fragment CalloutPostTemplate on Callout {
-    postTemplate {
-      id
-      type
-      defaultDescription
-      profile {
-        tagset {
-          id
-          tags
-        }
-        visual(type: CARD) {
-          id
-          uri
-        }
-      }
-    }
-  }
-`;
-export const CalloutWhiteboardTemplateFragmentDoc = gql`
-  fragment CalloutWhiteboardTemplate on Callout {
-    whiteboardTemplate {
-      id
-      value
-      profile {
-        id
-        displayName
-        description
-        tagset {
-          id
-          tags
-        }
-        visual(type: CARD) {
-          id
-          uri
-        }
-      }
-    }
-  }
-`;
-export const CalloutFragmentDoc = gql`
-  fragment Callout on Callout {
+export const InnovationPackWithProviderFragmentDoc = gql`
+  fragment InnovationPackWithProvider on InnovationPack {
     id
     nameID
-    type
-    group
     profile {
       id
       displayName
-      description
-      tagset {
-        id
-        tags
-      }
-      references {
-        ...ReferenceDetails
-      }
     }
-    state
-    sortOrder
-    activity
-    whiteboards {
-      ...WhiteboardDetails
-    }
-    comments {
-      ...CommentsWithMessages
-    }
-    authorization {
+    provider {
       id
-      myPrivileges
+      profile {
+        ...TemplateProviderProfile
+      }
     }
-    visibility
-    ...CalloutPostTemplate
-    ...CalloutWhiteboardTemplate
   }
-  ${ReferenceDetailsFragmentDoc}
-  ${WhiteboardDetailsFragmentDoc}
-  ${CommentsWithMessagesFragmentDoc}
-  ${CalloutPostTemplateFragmentDoc}
-  ${CalloutWhiteboardTemplateFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
 `;
-export const CollaborationWithCalloutsFragmentDoc = gql`
-  fragment CollaborationWithCallouts on Collaboration {
+export const InnovationFlowTemplateCardFragmentDoc = gql`
+  fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
     id
-    authorization {
-      id
-      myPrivileges
-    }
-    callouts(groups: $calloutGroups, IDs: $calloutIds) {
-      ...Callout
+    definition
+    type
+    profile {
+      ...TemplateCardProfileInfo
     }
   }
-  ${CalloutFragmentDoc}
+  ${TemplateCardProfileInfoFragmentDoc}
+`;
+export const LockedByDetailsFragmentDoc = gql`
+  fragment LockedByDetails on User {
+    id
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
 `;
 export const WhiteboardSummaryFragmentDoc = gql`
   fragment WhiteboardSummary on Whiteboard {
@@ -1654,76 +1724,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
     }
   }
   ${WhiteboardDetailsFragmentDoc}
-`;
-export const LockedByDetailsFragmentDoc = gql`
-  fragment LockedByDetails on User {
-    id
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const ContributeTabPostFragmentDoc = gql`
-  fragment ContributeTabPost on Post {
-    ...PostCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${PostCardFragmentDoc}
-`;
-export const PostsOnCalloutFragmentDoc = gql`
-  fragment PostsOnCallout on Callout {
-    id
-    posts {
-      ...ContributeTabPost
-    }
-  }
-  ${ContributeTabPostFragmentDoc}
-`;
-export const TemplateProviderProfileFragmentDoc = gql`
-  fragment TemplateProviderProfile on Profile {
-    id
-    displayName
-    visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const InnovationPackWithProviderFragmentDoc = gql`
-  fragment InnovationPackWithProvider on InnovationPack {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-    provider {
-      id
-      profile {
-        ...TemplateProviderProfile
-      }
-    }
-  }
-  ${TemplateProviderProfileFragmentDoc}
-`;
-export const InnovationFlowTemplateCardFragmentDoc = gql`
-  fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
-    id
-    definition
-    type
-    profile {
-      ...TemplateCardProfileInfo
-    }
-  }
-  ${TemplateCardProfileInfoFragmentDoc}
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -8986,1009 +8986,6 @@ export function refetchActivityLogOnCollaborationQuery(
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
 
-export const HubPostTemplatesLibraryDocument = gql`
-  query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      id
-      templates {
-        id
-        postTemplates {
-          ...PostTemplateCard
-        }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
-        }
-      }
-    }
-  }
-  ${PostTemplateCardFragmentDoc}
-  ${TemplateProviderProfileFragmentDoc}
-`;
-
-/**
- * __useHubPostTemplatesLibraryQuery__
- *
- * To run a query within a React component, call `useHubPostTemplatesLibraryQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubPostTemplatesLibraryQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *   },
- * });
- */
-export function useHubPostTemplatesLibraryQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.HubPostTemplatesLibraryQuery,
-    SchemaTypes.HubPostTemplatesLibraryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubPostTemplatesLibraryQuery, SchemaTypes.HubPostTemplatesLibraryQueryVariables>(
-    HubPostTemplatesLibraryDocument,
-    options
-  );
-}
-
-export function useHubPostTemplatesLibraryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.HubPostTemplatesLibraryQuery,
-    SchemaTypes.HubPostTemplatesLibraryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.HubPostTemplatesLibraryQuery,
-    SchemaTypes.HubPostTemplatesLibraryQueryVariables
-  >(HubPostTemplatesLibraryDocument, options);
-}
-
-export type HubPostTemplatesLibraryQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryQuery>;
-export type HubPostTemplatesLibraryLazyQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryLazyQuery>;
-export type HubPostTemplatesLibraryQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubPostTemplatesLibraryQuery,
-  SchemaTypes.HubPostTemplatesLibraryQueryVariables
->;
-export function refetchHubPostTemplatesLibraryQuery(variables: SchemaTypes.HubPostTemplatesLibraryQueryVariables) {
-  return { query: HubPostTemplatesLibraryDocument, variables: variables };
-}
-
-export const PlatformPostTemplatesLibraryDocument = gql`
-  query PlatformPostTemplatesLibrary {
-    platform {
-      id
-      library {
-        id
-        innovationPacks {
-          id
-          nameID
-          profile {
-            id
-            displayName
-          }
-          provider {
-            id
-            profile {
-              ...TemplateProviderProfile
-            }
-          }
-          templates {
-            id
-            postTemplates {
-              ...PostTemplateCard
-            }
-          }
-        }
-      }
-    }
-  }
-  ${TemplateProviderProfileFragmentDoc}
-  ${PostTemplateCardFragmentDoc}
-`;
-
-/**
- * __usePlatformPostTemplatesLibraryQuery__
- *
- * To run a query within a React component, call `usePlatformPostTemplatesLibraryQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformPostTemplatesLibraryQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePlatformPostTemplatesLibraryQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformPostTemplatesLibraryQuery,
-    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.PlatformPostTemplatesLibraryQuery,
-    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
-  >(PlatformPostTemplatesLibraryDocument, options);
-}
-
-export function usePlatformPostTemplatesLibraryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformPostTemplatesLibraryQuery,
-    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PlatformPostTemplatesLibraryQuery,
-    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
-  >(PlatformPostTemplatesLibraryDocument, options);
-}
-
-export type PlatformPostTemplatesLibraryQueryHookResult = ReturnType<typeof usePlatformPostTemplatesLibraryQuery>;
-export type PlatformPostTemplatesLibraryLazyQueryHookResult = ReturnType<
-  typeof usePlatformPostTemplatesLibraryLazyQuery
->;
-export type PlatformPostTemplatesLibraryQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformPostTemplatesLibraryQuery,
-  SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
->;
-export function refetchPlatformPostTemplatesLibraryQuery(
-  variables?: SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
-) {
-  return { query: PlatformPostTemplatesLibraryDocument, variables: variables };
-}
-
-export const HubPostDocument = gql`
-  query HubPost($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      collaboration {
-        ...PostDashboardData
-      }
-    }
-  }
-  ${PostDashboardDataFragmentDoc}
-`;
-
-/**
- * __useHubPostQuery__
- *
- * To run a query within a React component, call `useHubPostQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubPostQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useHubPostQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>(HubPostDocument, options);
-}
-
-export function useHubPostLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>(HubPostDocument, options);
-}
-
-export type HubPostQueryHookResult = ReturnType<typeof useHubPostQuery>;
-export type HubPostLazyQueryHookResult = ReturnType<typeof useHubPostLazyQuery>;
-export type HubPostQueryResult = Apollo.QueryResult<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>;
-export function refetchHubPostQuery(variables: SchemaTypes.HubPostQueryVariables) {
-  return { query: HubPostDocument, variables: variables };
-}
-
-export const ChallengePostDocument = gql`
-  query ChallengePost(
-    $hubNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID!
-    $postNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      challenge(ID: $challengeNameId) {
-        id
-        collaboration {
-          ...PostDashboardData
-        }
-      }
-    }
-  }
-  ${PostDashboardDataFragmentDoc}
-`;
-
-/**
- * __useChallengePostQuery__
- *
- * To run a query within a React component, call `useChallengePostQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengePostQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useChallengePostQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>(
-    ChallengePostDocument,
-    options
-  );
-}
-
-export function useChallengePostLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>(
-    ChallengePostDocument,
-    options
-  );
-}
-
-export type ChallengePostQueryHookResult = ReturnType<typeof useChallengePostQuery>;
-export type ChallengePostLazyQueryHookResult = ReturnType<typeof useChallengePostLazyQuery>;
-export type ChallengePostQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengePostQuery,
-  SchemaTypes.ChallengePostQueryVariables
->;
-export function refetchChallengePostQuery(variables: SchemaTypes.ChallengePostQueryVariables) {
-  return { query: ChallengePostDocument, variables: variables };
-}
-
-export const OpportunityPostDocument = gql`
-  query OpportunityPost(
-    $hubNameId: UUID_NAMEID!
-    $opportunityNameId: UUID_NAMEID!
-    $postNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      opportunity(ID: $opportunityNameId) {
-        id
-        collaboration {
-          ...PostDashboardData
-        }
-      }
-    }
-  }
-  ${PostDashboardDataFragmentDoc}
-`;
-
-/**
- * __useOpportunityPostQuery__
- *
- * To run a query within a React component, call `useOpportunityPostQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityPostQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useOpportunityPostQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>(
-    OpportunityPostDocument,
-    options
-  );
-}
-
-export function useOpportunityPostLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>(
-    OpportunityPostDocument,
-    options
-  );
-}
-
-export type OpportunityPostQueryHookResult = ReturnType<typeof useOpportunityPostQuery>;
-export type OpportunityPostLazyQueryHookResult = ReturnType<typeof useOpportunityPostLazyQuery>;
-export type OpportunityPostQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityPostQuery,
-  SchemaTypes.OpportunityPostQueryVariables
->;
-export function refetchOpportunityPostQuery(variables: SchemaTypes.OpportunityPostQueryVariables) {
-  return { query: OpportunityPostDocument, variables: variables };
-}
-
-export const UpdatePostDocument = gql`
-  mutation updatePost($input: UpdatePostInput!) {
-    updatePost(postData: $input) {
-      id
-      type
-      profile {
-        id
-        displayName
-        description
-        tagset {
-          id
-          name
-          tags
-        }
-        references {
-          id
-          name
-          description
-          uri
-        }
-      }
-    }
-  }
-`;
-export type UpdatePostMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdatePostMutation,
-  SchemaTypes.UpdatePostMutationVariables
->;
-
-/**
- * __useUpdatePostMutation__
- *
- * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdatePostMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdatePostMutation, SchemaTypes.UpdatePostMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdatePostMutation, SchemaTypes.UpdatePostMutationVariables>(
-    UpdatePostDocument,
-    options
-  );
-}
-
-export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
-export type UpdatePostMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostMutation>;
-export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdatePostMutation,
-  SchemaTypes.UpdatePostMutationVariables
->;
-export const HubPostSettingsDocument = gql`
-  query HubPostSettings($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      collaboration {
-        id
-        callouts(IDs: [$calloutNameId]) {
-          ...PostSettingsCallout
-        }
-      }
-    }
-  }
-  ${PostSettingsCalloutFragmentDoc}
-`;
-
-/**
- * __useHubPostSettingsQuery__
- *
- * To run a query within a React component, call `useHubPostSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubPostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubPostSettingsQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useHubPostSettingsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>(
-    HubPostSettingsDocument,
-    options
-  );
-}
-
-export function useHubPostSettingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>(
-    HubPostSettingsDocument,
-    options
-  );
-}
-
-export type HubPostSettingsQueryHookResult = ReturnType<typeof useHubPostSettingsQuery>;
-export type HubPostSettingsLazyQueryHookResult = ReturnType<typeof useHubPostSettingsLazyQuery>;
-export type HubPostSettingsQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubPostSettingsQuery,
-  SchemaTypes.HubPostSettingsQueryVariables
->;
-export function refetchHubPostSettingsQuery(variables: SchemaTypes.HubPostSettingsQueryVariables) {
-  return { query: HubPostSettingsDocument, variables: variables };
-}
-
-export const ChallengePostSettingsDocument = gql`
-  query ChallengePostSettings(
-    $hubNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID!
-    $postNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      challenge(ID: $challengeNameId) {
-        id
-        collaboration {
-          id
-          callouts(IDs: [$calloutNameId]) {
-            ...PostSettingsCallout
-          }
-        }
-      }
-    }
-  }
-  ${PostSettingsCalloutFragmentDoc}
-`;
-
-/**
- * __useChallengePostSettingsQuery__
- *
- * To run a query within a React component, call `useChallengePostSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengePostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengePostSettingsQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useChallengePostSettingsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengePostSettingsQuery,
-    SchemaTypes.ChallengePostSettingsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengePostSettingsQuery, SchemaTypes.ChallengePostSettingsQueryVariables>(
-    ChallengePostSettingsDocument,
-    options
-  );
-}
-
-export function useChallengePostSettingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengePostSettingsQuery,
-    SchemaTypes.ChallengePostSettingsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengePostSettingsQuery, SchemaTypes.ChallengePostSettingsQueryVariables>(
-    ChallengePostSettingsDocument,
-    options
-  );
-}
-
-export type ChallengePostSettingsQueryHookResult = ReturnType<typeof useChallengePostSettingsQuery>;
-export type ChallengePostSettingsLazyQueryHookResult = ReturnType<typeof useChallengePostSettingsLazyQuery>;
-export type ChallengePostSettingsQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengePostSettingsQuery,
-  SchemaTypes.ChallengePostSettingsQueryVariables
->;
-export function refetchChallengePostSettingsQuery(variables: SchemaTypes.ChallengePostSettingsQueryVariables) {
-  return { query: ChallengePostSettingsDocument, variables: variables };
-}
-
-export const OpportunityPostSettingsDocument = gql`
-  query OpportunityPostSettings(
-    $hubNameId: UUID_NAMEID!
-    $opportunityNameId: UUID_NAMEID!
-    $postNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      opportunity(ID: $opportunityNameId) {
-        id
-        collaboration {
-          id
-          callouts(IDs: [$calloutNameId]) {
-            ...PostSettingsCallout
-          }
-        }
-      }
-    }
-  }
-  ${PostSettingsCalloutFragmentDoc}
-`;
-
-/**
- * __useOpportunityPostSettingsQuery__
- *
- * To run a query within a React component, call `useOpportunityPostSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityPostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityPostSettingsQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useOpportunityPostSettingsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityPostSettingsQuery,
-    SchemaTypes.OpportunityPostSettingsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityPostSettingsQuery, SchemaTypes.OpportunityPostSettingsQueryVariables>(
-    OpportunityPostSettingsDocument,
-    options
-  );
-}
-
-export function useOpportunityPostSettingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityPostSettingsQuery,
-    SchemaTypes.OpportunityPostSettingsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityPostSettingsQuery,
-    SchemaTypes.OpportunityPostSettingsQueryVariables
-  >(OpportunityPostSettingsDocument, options);
-}
-
-export type OpportunityPostSettingsQueryHookResult = ReturnType<typeof useOpportunityPostSettingsQuery>;
-export type OpportunityPostSettingsLazyQueryHookResult = ReturnType<typeof useOpportunityPostSettingsLazyQuery>;
-export type OpportunityPostSettingsQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityPostSettingsQuery,
-  SchemaTypes.OpportunityPostSettingsQueryVariables
->;
-export function refetchOpportunityPostSettingsQuery(variables: SchemaTypes.OpportunityPostSettingsQueryVariables) {
-  return { query: OpportunityPostSettingsDocument, variables: variables };
-}
-
-export const HubPostProviderDocument = gql`
-  query HubPostProvider($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      collaboration {
-        ...PostProviderData
-      }
-    }
-  }
-  ${PostProviderDataFragmentDoc}
-`;
-
-/**
- * __useHubPostProviderQuery__
- *
- * To run a query within a React component, call `useHubPostProviderQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubPostProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubPostProviderQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useHubPostProviderQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>(
-    HubPostProviderDocument,
-    options
-  );
-}
-
-export function useHubPostProviderLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>(
-    HubPostProviderDocument,
-    options
-  );
-}
-
-export type HubPostProviderQueryHookResult = ReturnType<typeof useHubPostProviderQuery>;
-export type HubPostProviderLazyQueryHookResult = ReturnType<typeof useHubPostProviderLazyQuery>;
-export type HubPostProviderQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubPostProviderQuery,
-  SchemaTypes.HubPostProviderQueryVariables
->;
-export function refetchHubPostProviderQuery(variables: SchemaTypes.HubPostProviderQueryVariables) {
-  return { query: HubPostProviderDocument, variables: variables };
-}
-
-export const ChallengePostProviderDocument = gql`
-  query ChallengePostProvider(
-    $hubNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID!
-    $postNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      challenge(ID: $challengeNameId) {
-        id
-        collaboration {
-          ...PostProviderData
-        }
-      }
-    }
-  }
-  ${PostProviderDataFragmentDoc}
-`;
-
-/**
- * __useChallengePostProviderQuery__
- *
- * To run a query within a React component, call `useChallengePostProviderQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengePostProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengePostProviderQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useChallengePostProviderQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengePostProviderQuery,
-    SchemaTypes.ChallengePostProviderQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengePostProviderQuery, SchemaTypes.ChallengePostProviderQueryVariables>(
-    ChallengePostProviderDocument,
-    options
-  );
-}
-
-export function useChallengePostProviderLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengePostProviderQuery,
-    SchemaTypes.ChallengePostProviderQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengePostProviderQuery, SchemaTypes.ChallengePostProviderQueryVariables>(
-    ChallengePostProviderDocument,
-    options
-  );
-}
-
-export type ChallengePostProviderQueryHookResult = ReturnType<typeof useChallengePostProviderQuery>;
-export type ChallengePostProviderLazyQueryHookResult = ReturnType<typeof useChallengePostProviderLazyQuery>;
-export type ChallengePostProviderQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengePostProviderQuery,
-  SchemaTypes.ChallengePostProviderQueryVariables
->;
-export function refetchChallengePostProviderQuery(variables: SchemaTypes.ChallengePostProviderQueryVariables) {
-  return { query: ChallengePostProviderDocument, variables: variables };
-}
-
-export const OpportunityPostProviderDocument = gql`
-  query OpportunityPostProvider(
-    $hubNameId: UUID_NAMEID!
-    $opportunityNameId: UUID_NAMEID!
-    $postNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      opportunity(ID: $opportunityNameId) {
-        id
-        collaboration {
-          ...PostProviderData
-        }
-      }
-    }
-  }
-  ${PostProviderDataFragmentDoc}
-`;
-
-/**
- * __useOpportunityPostProviderQuery__
- *
- * To run a query within a React component, call `useOpportunityPostProviderQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityPostProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityPostProviderQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *      postNameId: // value for 'postNameId'
- *      calloutNameId: // value for 'calloutNameId'
- *   },
- * });
- */
-export function useOpportunityPostProviderQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityPostProviderQuery,
-    SchemaTypes.OpportunityPostProviderQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityPostProviderQuery, SchemaTypes.OpportunityPostProviderQueryVariables>(
-    OpportunityPostProviderDocument,
-    options
-  );
-}
-
-export function useOpportunityPostProviderLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityPostProviderQuery,
-    SchemaTypes.OpportunityPostProviderQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityPostProviderQuery,
-    SchemaTypes.OpportunityPostProviderQueryVariables
-  >(OpportunityPostProviderDocument, options);
-}
-
-export type OpportunityPostProviderQueryHookResult = ReturnType<typeof useOpportunityPostProviderQuery>;
-export type OpportunityPostProviderLazyQueryHookResult = ReturnType<typeof useOpportunityPostProviderLazyQuery>;
-export type OpportunityPostProviderQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityPostProviderQuery,
-  SchemaTypes.OpportunityPostProviderQueryVariables
->;
-export function refetchOpportunityPostProviderQuery(variables: SchemaTypes.OpportunityPostProviderQueryVariables) {
-  return { query: OpportunityPostProviderDocument, variables: variables };
-}
-
-export const CreatePostDocument = gql`
-  mutation CreatePost($postData: CreatePostOnCalloutInput!) {
-    createPostOnCallout(postData: $postData) {
-      id
-      nameID
-      type
-      profile {
-        id
-        description
-        displayName
-        tagset {
-          id
-          name
-          tags
-        }
-        visuals {
-          ...VisualUri
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export type CreatePostMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreatePostMutation,
-  SchemaTypes.CreatePostMutationVariables
->;
-
-/**
- * __useCreatePostMutation__
- *
- * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePostMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
- *   variables: {
- *      postData: // value for 'postData'
- *   },
- * });
- */
-export function useCreatePostMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreatePostMutation, SchemaTypes.CreatePostMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreatePostMutation, SchemaTypes.CreatePostMutationVariables>(
-    CreatePostDocument,
-    options
-  );
-}
-
-export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
-export type CreatePostMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostMutation>;
-export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreatePostMutation,
-  SchemaTypes.CreatePostMutationVariables
->;
-export const DeletePostDocument = gql`
-  mutation deletePost($input: DeletePostInput!) {
-    deletePost(deleteData: $input) {
-      id
-    }
-  }
-`;
-export type DeletePostMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeletePostMutation,
-  SchemaTypes.DeletePostMutationVariables
->;
-
-/**
- * __useDeletePostMutation__
- *
- * To run a mutation, you first call `useDeletePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletePostMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeletePostMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>(
-    DeletePostDocument,
-    options
-  );
-}
-
-export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
-export type DeletePostMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostMutation>;
-export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeletePostMutation,
-  SchemaTypes.DeletePostMutationVariables
->;
-export const MovePostToCalloutDocument = gql`
-  mutation MovePostToCallout($postId: UUID!, $calloutId: UUID!) {
-    movePostToCallout(movePostData: { postID: $postId, calloutID: $calloutId }) {
-      id
-      nameID
-      callout {
-        id
-        nameID
-      }
-    }
-  }
-`;
-export type MovePostToCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.MovePostToCalloutMutation,
-  SchemaTypes.MovePostToCalloutMutationVariables
->;
-
-/**
- * __useMovePostToCalloutMutation__
- *
- * To run a mutation, you first call `useMovePostToCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMovePostToCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [movePostToCalloutMutation, { data, loading, error }] = useMovePostToCalloutMutation({
- *   variables: {
- *      postId: // value for 'postId'
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useMovePostToCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.MovePostToCalloutMutation,
-    SchemaTypes.MovePostToCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.MovePostToCalloutMutation, SchemaTypes.MovePostToCalloutMutationVariables>(
-    MovePostToCalloutDocument,
-    options
-  );
-}
-
-export type MovePostToCalloutMutationHookResult = ReturnType<typeof useMovePostToCalloutMutation>;
-export type MovePostToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MovePostToCalloutMutation>;
-export type MovePostToCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.MovePostToCalloutMutation,
-  SchemaTypes.MovePostToCalloutMutationVariables
->;
 export const UpdateCalloutsSortOrderDocument = gql`
   mutation UpdateCalloutsSortOrder($collaborationId: UUID!, $calloutIds: [UUID_NAMEID!]!) {
     updateCalloutsSortOrder(sortOrderData: { collaborationID: $collaborationId, calloutIDs: $calloutIds }) {
@@ -11479,6 +10476,1052 @@ export function refetchPrivilegesOnOpportunityCollaborationQuery(
   return { query: PrivilegesOnOpportunityCollaborationDocument, variables: variables };
 }
 
+export const CalloutPostCreatedDocument = gql`
+  subscription CalloutPostCreated($calloutID: UUID!) {
+    calloutPostCreated(calloutID: $calloutID) {
+      post {
+        ...ContributeTabPost
+      }
+    }
+  }
+  ${ContributeTabPostFragmentDoc}
+`;
+
+/**
+ * __useCalloutPostCreatedSubscription__
+ *
+ * To run a query within a React component, call `useCalloutPostCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutPostCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutPostCreatedSubscription({
+ *   variables: {
+ *      calloutID: // value for 'calloutID'
+ *   },
+ * });
+ */
+export function useCalloutPostCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalloutPostCreatedSubscription,
+    SchemaTypes.CalloutPostCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalloutPostCreatedSubscription,
+    SchemaTypes.CalloutPostCreatedSubscriptionVariables
+  >(CalloutPostCreatedDocument, options);
+}
+
+export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
+export type CalloutPostCreatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
+export const HubPostTemplatesLibraryDocument = gql`
+  query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        postTemplates {
+          ...PostTemplateCard
+        }
+      }
+      host {
+        id
+        nameID
+        profile {
+          ...TemplateProviderProfile
+        }
+      }
+    }
+  }
+  ${PostTemplateCardFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
+`;
+
+/**
+ * __useHubPostTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `useHubPostTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPostTemplatesLibraryQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubPostTemplatesLibraryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPostTemplatesLibraryQuery, SchemaTypes.HubPostTemplatesLibraryQueryVariables>(
+    HubPostTemplatesLibraryDocument,
+    options
+  );
+}
+
+export function useHubPostTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >(HubPostTemplatesLibraryDocument, options);
+}
+
+export type HubPostTemplatesLibraryQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryQuery>;
+export type HubPostTemplatesLibraryLazyQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryLazyQuery>;
+export type HubPostTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPostTemplatesLibraryQuery,
+  SchemaTypes.HubPostTemplatesLibraryQueryVariables
+>;
+export function refetchHubPostTemplatesLibraryQuery(variables: SchemaTypes.HubPostTemplatesLibraryQueryVariables) {
+  return { query: HubPostTemplatesLibraryDocument, variables: variables };
+}
+
+export const PlatformPostTemplatesLibraryDocument = gql`
+  query PlatformPostTemplatesLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          id
+          nameID
+          profile {
+            id
+            displayName
+          }
+          provider {
+            id
+            profile {
+              ...TemplateProviderProfile
+            }
+          }
+          templates {
+            id
+            postTemplates {
+              ...PostTemplateCard
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
+`;
+
+/**
+ * __usePlatformPostTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `usePlatformPostTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformPostTemplatesLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformPostTemplatesLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >(PlatformPostTemplatesLibraryDocument, options);
+}
+
+export function usePlatformPostTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >(PlatformPostTemplatesLibraryDocument, options);
+}
+
+export type PlatformPostTemplatesLibraryQueryHookResult = ReturnType<typeof usePlatformPostTemplatesLibraryQuery>;
+export type PlatformPostTemplatesLibraryLazyQueryHookResult = ReturnType<
+  typeof usePlatformPostTemplatesLibraryLazyQuery
+>;
+export type PlatformPostTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformPostTemplatesLibraryQuery,
+  SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+>;
+export function refetchPlatformPostTemplatesLibraryQuery(
+  variables?: SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+) {
+  return { query: PlatformPostTemplatesLibraryDocument, variables: variables };
+}
+
+export const HubPostDocument = gql`
+  query HubPost($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      collaboration {
+        ...PostDashboardData
+      }
+    }
+  }
+  ${PostDashboardDataFragmentDoc}
+`;
+
+/**
+ * __useHubPostQuery__
+ *
+ * To run a query within a React component, call `useHubPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPostQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useHubPostQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>(HubPostDocument, options);
+}
+
+export function useHubPostLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>(HubPostDocument, options);
+}
+
+export type HubPostQueryHookResult = ReturnType<typeof useHubPostQuery>;
+export type HubPostLazyQueryHookResult = ReturnType<typeof useHubPostLazyQuery>;
+export type HubPostQueryResult = Apollo.QueryResult<SchemaTypes.HubPostQuery, SchemaTypes.HubPostQueryVariables>;
+export function refetchHubPostQuery(variables: SchemaTypes.HubPostQueryVariables) {
+  return { query: HubPostDocument, variables: variables };
+}
+
+export const ChallengePostDocument = gql`
+  query ChallengePost(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $postNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      challenge(ID: $challengeNameId) {
+        id
+        collaboration {
+          ...PostDashboardData
+        }
+      }
+    }
+  }
+  ${PostDashboardDataFragmentDoc}
+`;
+
+/**
+ * __useChallengePostQuery__
+ *
+ * To run a query within a React component, call `useChallengePostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengePostQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useChallengePostQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>(
+    ChallengePostDocument,
+    options
+  );
+}
+
+export function useChallengePostLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengePostQuery, SchemaTypes.ChallengePostQueryVariables>(
+    ChallengePostDocument,
+    options
+  );
+}
+
+export type ChallengePostQueryHookResult = ReturnType<typeof useChallengePostQuery>;
+export type ChallengePostLazyQueryHookResult = ReturnType<typeof useChallengePostLazyQuery>;
+export type ChallengePostQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengePostQuery,
+  SchemaTypes.ChallengePostQueryVariables
+>;
+export function refetchChallengePostQuery(variables: SchemaTypes.ChallengePostQueryVariables) {
+  return { query: ChallengePostDocument, variables: variables };
+}
+
+export const OpportunityPostDocument = gql`
+  query OpportunityPost(
+    $hubNameId: UUID_NAMEID!
+    $opportunityNameId: UUID_NAMEID!
+    $postNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      opportunity(ID: $opportunityNameId) {
+        id
+        collaboration {
+          ...PostDashboardData
+        }
+      }
+    }
+  }
+  ${PostDashboardDataFragmentDoc}
+`;
+
+/**
+ * __useOpportunityPostQuery__
+ *
+ * To run a query within a React component, call `useOpportunityPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityPostQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useOpportunityPostQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>(
+    OpportunityPostDocument,
+    options
+  );
+}
+
+export function useOpportunityPostLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityPostQuery, SchemaTypes.OpportunityPostQueryVariables>(
+    OpportunityPostDocument,
+    options
+  );
+}
+
+export type OpportunityPostQueryHookResult = ReturnType<typeof useOpportunityPostQuery>;
+export type OpportunityPostLazyQueryHookResult = ReturnType<typeof useOpportunityPostLazyQuery>;
+export type OpportunityPostQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityPostQuery,
+  SchemaTypes.OpportunityPostQueryVariables
+>;
+export function refetchOpportunityPostQuery(variables: SchemaTypes.OpportunityPostQueryVariables) {
+  return { query: OpportunityPostDocument, variables: variables };
+}
+
+export const UpdatePostDocument = gql`
+  mutation updatePost($input: UpdatePostInput!) {
+    updatePost(postData: $input) {
+      id
+      type
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          id
+          name
+          tags
+        }
+        references {
+          id
+          name
+          description
+          uri
+        }
+      }
+    }
+  }
+`;
+export type UpdatePostMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePostMutation,
+  SchemaTypes.UpdatePostMutationVariables
+>;
+
+/**
+ * __useUpdatePostMutation__
+ *
+ * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdatePostMutation, SchemaTypes.UpdatePostMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdatePostMutation, SchemaTypes.UpdatePostMutationVariables>(
+    UpdatePostDocument,
+    options
+  );
+}
+
+export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
+export type UpdatePostMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostMutation>;
+export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePostMutation,
+  SchemaTypes.UpdatePostMutationVariables
+>;
+export const HubPostSettingsDocument = gql`
+  query HubPostSettings($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          ...PostSettingsCallout
+        }
+      }
+    }
+  }
+  ${PostSettingsCalloutFragmentDoc}
+`;
+
+/**
+ * __useHubPostSettingsQuery__
+ *
+ * To run a query within a React component, call `useHubPostSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPostSettingsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useHubPostSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>(
+    HubPostSettingsDocument,
+    options
+  );
+}
+
+export function useHubPostSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubPostSettingsQuery, SchemaTypes.HubPostSettingsQueryVariables>(
+    HubPostSettingsDocument,
+    options
+  );
+}
+
+export type HubPostSettingsQueryHookResult = ReturnType<typeof useHubPostSettingsQuery>;
+export type HubPostSettingsLazyQueryHookResult = ReturnType<typeof useHubPostSettingsLazyQuery>;
+export type HubPostSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPostSettingsQuery,
+  SchemaTypes.HubPostSettingsQueryVariables
+>;
+export function refetchHubPostSettingsQuery(variables: SchemaTypes.HubPostSettingsQueryVariables) {
+  return { query: HubPostSettingsDocument, variables: variables };
+}
+
+export const ChallengePostSettingsDocument = gql`
+  query ChallengePostSettings(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $postNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      challenge(ID: $challengeNameId) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            ...PostSettingsCallout
+          }
+        }
+      }
+    }
+  }
+  ${PostSettingsCalloutFragmentDoc}
+`;
+
+/**
+ * __useChallengePostSettingsQuery__
+ *
+ * To run a query within a React component, call `useChallengePostSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengePostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengePostSettingsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useChallengePostSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengePostSettingsQuery,
+    SchemaTypes.ChallengePostSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengePostSettingsQuery, SchemaTypes.ChallengePostSettingsQueryVariables>(
+    ChallengePostSettingsDocument,
+    options
+  );
+}
+
+export function useChallengePostSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengePostSettingsQuery,
+    SchemaTypes.ChallengePostSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengePostSettingsQuery, SchemaTypes.ChallengePostSettingsQueryVariables>(
+    ChallengePostSettingsDocument,
+    options
+  );
+}
+
+export type ChallengePostSettingsQueryHookResult = ReturnType<typeof useChallengePostSettingsQuery>;
+export type ChallengePostSettingsLazyQueryHookResult = ReturnType<typeof useChallengePostSettingsLazyQuery>;
+export type ChallengePostSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengePostSettingsQuery,
+  SchemaTypes.ChallengePostSettingsQueryVariables
+>;
+export function refetchChallengePostSettingsQuery(variables: SchemaTypes.ChallengePostSettingsQueryVariables) {
+  return { query: ChallengePostSettingsDocument, variables: variables };
+}
+
+export const OpportunityPostSettingsDocument = gql`
+  query OpportunityPostSettings(
+    $hubNameId: UUID_NAMEID!
+    $opportunityNameId: UUID_NAMEID!
+    $postNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      opportunity(ID: $opportunityNameId) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            ...PostSettingsCallout
+          }
+        }
+      }
+    }
+  }
+  ${PostSettingsCalloutFragmentDoc}
+`;
+
+/**
+ * __useOpportunityPostSettingsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityPostSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityPostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityPostSettingsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useOpportunityPostSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityPostSettingsQuery,
+    SchemaTypes.OpportunityPostSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityPostSettingsQuery, SchemaTypes.OpportunityPostSettingsQueryVariables>(
+    OpportunityPostSettingsDocument,
+    options
+  );
+}
+
+export function useOpportunityPostSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityPostSettingsQuery,
+    SchemaTypes.OpportunityPostSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityPostSettingsQuery,
+    SchemaTypes.OpportunityPostSettingsQueryVariables
+  >(OpportunityPostSettingsDocument, options);
+}
+
+export type OpportunityPostSettingsQueryHookResult = ReturnType<typeof useOpportunityPostSettingsQuery>;
+export type OpportunityPostSettingsLazyQueryHookResult = ReturnType<typeof useOpportunityPostSettingsLazyQuery>;
+export type OpportunityPostSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityPostSettingsQuery,
+  SchemaTypes.OpportunityPostSettingsQueryVariables
+>;
+export function refetchOpportunityPostSettingsQuery(variables: SchemaTypes.OpportunityPostSettingsQueryVariables) {
+  return { query: OpportunityPostSettingsDocument, variables: variables };
+}
+
+export const HubPostProviderDocument = gql`
+  query HubPostProvider($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      collaboration {
+        ...PostProviderData
+      }
+    }
+  }
+  ${PostProviderDataFragmentDoc}
+`;
+
+/**
+ * __useHubPostProviderQuery__
+ *
+ * To run a query within a React component, call `useHubPostProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPostProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPostProviderQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useHubPostProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>(
+    HubPostProviderDocument,
+    options
+  );
+}
+
+export function useHubPostProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubPostProviderQuery, SchemaTypes.HubPostProviderQueryVariables>(
+    HubPostProviderDocument,
+    options
+  );
+}
+
+export type HubPostProviderQueryHookResult = ReturnType<typeof useHubPostProviderQuery>;
+export type HubPostProviderLazyQueryHookResult = ReturnType<typeof useHubPostProviderLazyQuery>;
+export type HubPostProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPostProviderQuery,
+  SchemaTypes.HubPostProviderQueryVariables
+>;
+export function refetchHubPostProviderQuery(variables: SchemaTypes.HubPostProviderQueryVariables) {
+  return { query: HubPostProviderDocument, variables: variables };
+}
+
+export const ChallengePostProviderDocument = gql`
+  query ChallengePostProvider(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $postNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      challenge(ID: $challengeNameId) {
+        id
+        collaboration {
+          ...PostProviderData
+        }
+      }
+    }
+  }
+  ${PostProviderDataFragmentDoc}
+`;
+
+/**
+ * __useChallengePostProviderQuery__
+ *
+ * To run a query within a React component, call `useChallengePostProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengePostProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengePostProviderQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useChallengePostProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengePostProviderQuery,
+    SchemaTypes.ChallengePostProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengePostProviderQuery, SchemaTypes.ChallengePostProviderQueryVariables>(
+    ChallengePostProviderDocument,
+    options
+  );
+}
+
+export function useChallengePostProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengePostProviderQuery,
+    SchemaTypes.ChallengePostProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengePostProviderQuery, SchemaTypes.ChallengePostProviderQueryVariables>(
+    ChallengePostProviderDocument,
+    options
+  );
+}
+
+export type ChallengePostProviderQueryHookResult = ReturnType<typeof useChallengePostProviderQuery>;
+export type ChallengePostProviderLazyQueryHookResult = ReturnType<typeof useChallengePostProviderLazyQuery>;
+export type ChallengePostProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengePostProviderQuery,
+  SchemaTypes.ChallengePostProviderQueryVariables
+>;
+export function refetchChallengePostProviderQuery(variables: SchemaTypes.ChallengePostProviderQueryVariables) {
+  return { query: ChallengePostProviderDocument, variables: variables };
+}
+
+export const OpportunityPostProviderDocument = gql`
+  query OpportunityPostProvider(
+    $hubNameId: UUID_NAMEID!
+    $opportunityNameId: UUID_NAMEID!
+    $postNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      opportunity(ID: $opportunityNameId) {
+        id
+        collaboration {
+          ...PostProviderData
+        }
+      }
+    }
+  }
+  ${PostProviderDataFragmentDoc}
+`;
+
+/**
+ * __useOpportunityPostProviderQuery__
+ *
+ * To run a query within a React component, call `useOpportunityPostProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityPostProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityPostProviderQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      postNameId: // value for 'postNameId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useOpportunityPostProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityPostProviderQuery,
+    SchemaTypes.OpportunityPostProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityPostProviderQuery, SchemaTypes.OpportunityPostProviderQueryVariables>(
+    OpportunityPostProviderDocument,
+    options
+  );
+}
+
+export function useOpportunityPostProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityPostProviderQuery,
+    SchemaTypes.OpportunityPostProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityPostProviderQuery,
+    SchemaTypes.OpportunityPostProviderQueryVariables
+  >(OpportunityPostProviderDocument, options);
+}
+
+export type OpportunityPostProviderQueryHookResult = ReturnType<typeof useOpportunityPostProviderQuery>;
+export type OpportunityPostProviderLazyQueryHookResult = ReturnType<typeof useOpportunityPostProviderLazyQuery>;
+export type OpportunityPostProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityPostProviderQuery,
+  SchemaTypes.OpportunityPostProviderQueryVariables
+>;
+export function refetchOpportunityPostProviderQuery(variables: SchemaTypes.OpportunityPostProviderQueryVariables) {
+  return { query: OpportunityPostProviderDocument, variables: variables };
+}
+
+export const CreatePostDocument = gql`
+  mutation CreatePost($postData: CreatePostOnCalloutInput!) {
+    createPostOnCallout(postData: $postData) {
+      id
+      nameID
+      type
+      profile {
+        id
+        description
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export type CreatePostMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreatePostMutation,
+  SchemaTypes.CreatePostMutationVariables
+>;
+
+/**
+ * __useCreatePostMutation__
+ *
+ * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+ *   variables: {
+ *      postData: // value for 'postData'
+ *   },
+ * });
+ */
+export function useCreatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreatePostMutation, SchemaTypes.CreatePostMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreatePostMutation, SchemaTypes.CreatePostMutationVariables>(
+    CreatePostDocument,
+    options
+  );
+}
+
+export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
+export type CreatePostMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostMutation>;
+export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreatePostMutation,
+  SchemaTypes.CreatePostMutationVariables
+>;
+export const DeletePostDocument = gql`
+  mutation deletePost($input: DeletePostInput!) {
+    deletePost(deleteData: $input) {
+      id
+    }
+  }
+`;
+export type DeletePostMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeletePostMutation,
+  SchemaTypes.DeletePostMutationVariables
+>;
+
+/**
+ * __useDeletePostMutation__
+ *
+ * To run a mutation, you first call `useDeletePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeletePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>(
+    DeletePostDocument,
+    options
+  );
+}
+
+export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
+export type DeletePostMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostMutation>;
+export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeletePostMutation,
+  SchemaTypes.DeletePostMutationVariables
+>;
+export const MovePostToCalloutDocument = gql`
+  mutation MovePostToCallout($postId: UUID!, $calloutId: UUID!) {
+    movePostToCallout(movePostData: { postID: $postId, calloutID: $calloutId }) {
+      id
+      nameID
+      callout {
+        id
+        nameID
+      }
+    }
+  }
+`;
+export type MovePostToCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MovePostToCalloutMutation,
+  SchemaTypes.MovePostToCalloutMutationVariables
+>;
+
+/**
+ * __useMovePostToCalloutMutation__
+ *
+ * To run a mutation, you first call `useMovePostToCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMovePostToCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [movePostToCalloutMutation, { data, loading, error }] = useMovePostToCalloutMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useMovePostToCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MovePostToCalloutMutation,
+    SchemaTypes.MovePostToCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MovePostToCalloutMutation, SchemaTypes.MovePostToCalloutMutationVariables>(
+    MovePostToCalloutDocument,
+    options
+  );
+}
+
+export type MovePostToCalloutMutationHookResult = ReturnType<typeof useMovePostToCalloutMutation>;
+export type MovePostToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MovePostToCalloutMutation>;
+export type MovePostToCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MovePostToCalloutMutation,
+  SchemaTypes.MovePostToCalloutMutationVariables
+>;
 export const HubWhiteboardTemplatesLibraryDocument = gql`
   query HubWhiteboardTemplatesLibrary($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -11797,6 +11840,67 @@ export function refetchPlatformWhiteboardTemplateValueQuery(
   variables: SchemaTypes.PlatformWhiteboardTemplateValueQueryVariables
 ) {
   return { query: PlatformWhiteboardTemplateValueDocument, variables: variables };
+}
+
+export const WhiteboardLockedByDetailsDocument = gql`
+  query WhiteboardLockedByDetails($ids: [UUID!]!) {
+    usersById(IDs: $ids) {
+      ...LockedByDetails
+    }
+  }
+  ${LockedByDetailsFragmentDoc}
+`;
+
+/**
+ * __useWhiteboardLockedByDetailsQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardLockedByDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardLockedByDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardLockedByDetailsQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useWhiteboardLockedByDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardLockedByDetailsQuery,
+    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.WhiteboardLockedByDetailsQuery,
+    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
+  >(WhiteboardLockedByDetailsDocument, options);
+}
+
+export function useWhiteboardLockedByDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardLockedByDetailsQuery,
+    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardLockedByDetailsQuery,
+    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
+  >(WhiteboardLockedByDetailsDocument, options);
+}
+
+export type WhiteboardLockedByDetailsQueryHookResult = ReturnType<typeof useWhiteboardLockedByDetailsQuery>;
+export type WhiteboardLockedByDetailsLazyQueryHookResult = ReturnType<typeof useWhiteboardLockedByDetailsLazyQuery>;
+export type WhiteboardLockedByDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardLockedByDetailsQuery,
+  SchemaTypes.WhiteboardLockedByDetailsQueryVariables
+>;
+export function refetchWhiteboardLockedByDetailsQuery(variables: SchemaTypes.WhiteboardLockedByDetailsQueryVariables) {
+  return { query: WhiteboardLockedByDetailsDocument, variables: variables };
 }
 
 export const WhiteboardTemplatesDocument = gql`
@@ -12611,110 +12715,6 @@ export function useWhiteboardContentUpdatedSubscription(
 export type WhiteboardContentUpdatedSubscriptionHookResult = ReturnType<typeof useWhiteboardContentUpdatedSubscription>;
 export type WhiteboardContentUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.WhiteboardContentUpdatedSubscription>;
-export const WhiteboardLockedByDetailsDocument = gql`
-  query WhiteboardLockedByDetails($ids: [UUID!]!) {
-    usersById(IDs: $ids) {
-      ...LockedByDetails
-    }
-  }
-  ${LockedByDetailsFragmentDoc}
-`;
-
-/**
- * __useWhiteboardLockedByDetailsQuery__
- *
- * To run a query within a React component, call `useWhiteboardLockedByDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardLockedByDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWhiteboardLockedByDetailsQuery({
- *   variables: {
- *      ids: // value for 'ids'
- *   },
- * });
- */
-export function useWhiteboardLockedByDetailsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardLockedByDetailsQuery,
-    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.WhiteboardLockedByDetailsQuery,
-    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
-  >(WhiteboardLockedByDetailsDocument, options);
-}
-
-export function useWhiteboardLockedByDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardLockedByDetailsQuery,
-    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.WhiteboardLockedByDetailsQuery,
-    SchemaTypes.WhiteboardLockedByDetailsQueryVariables
-  >(WhiteboardLockedByDetailsDocument, options);
-}
-
-export type WhiteboardLockedByDetailsQueryHookResult = ReturnType<typeof useWhiteboardLockedByDetailsQuery>;
-export type WhiteboardLockedByDetailsLazyQueryHookResult = ReturnType<typeof useWhiteboardLockedByDetailsLazyQuery>;
-export type WhiteboardLockedByDetailsQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardLockedByDetailsQuery,
-  SchemaTypes.WhiteboardLockedByDetailsQueryVariables
->;
-export function refetchWhiteboardLockedByDetailsQuery(variables: SchemaTypes.WhiteboardLockedByDetailsQueryVariables) {
-  return { query: WhiteboardLockedByDetailsDocument, variables: variables };
-}
-
-export const CalloutPostCreatedDocument = gql`
-  subscription CalloutPostCreated($calloutID: UUID!) {
-    calloutPostCreated(calloutID: $calloutID) {
-      post {
-        ...ContributeTabPost
-      }
-    }
-  }
-  ${ContributeTabPostFragmentDoc}
-`;
-
-/**
- * __useCalloutPostCreatedSubscription__
- *
- * To run a query within a React component, call `useCalloutPostCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCalloutPostCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutPostCreatedSubscription({
- *   variables: {
- *      calloutID: // value for 'calloutID'
- *   },
- * });
- */
-export function useCalloutPostCreatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CalloutPostCreatedSubscription,
-    SchemaTypes.CalloutPostCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CalloutPostCreatedSubscription,
-    SchemaTypes.CalloutPostCreatedSubscriptionVariables
-  >(CalloutPostCreatedDocument, options);
-}
-
-export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
-export type CalloutPostCreatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
 export const ProfileVerifiedCredentialDocument = gql`
   subscription profileVerifiedCredential {
     profileVerifiedCredential {

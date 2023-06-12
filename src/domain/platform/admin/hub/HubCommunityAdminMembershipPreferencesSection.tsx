@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import {
   HubPreferencesQuery,
   HubPreferencesQueryVariables,
-  HubPreferenceType,
+  SpacePreferenceType,
   UpdatePreferenceOnHubMutationVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ import PreferenceSection from '../../../../common/components/composite/common/Pr
 
 const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;
 
-const selectedGroups = ['MembershipHub'];
+const selectedGroups = ['MembershipSpace'];
 
 // TODO migrate to hook+view
 export const HubCommunityAdminMembershipPreferencesSection: FC = () => {
@@ -30,7 +30,7 @@ export const HubCommunityAdminMembershipPreferencesSection: FC = () => {
   ): UpdatePreferenceOnHubMutationVariables => ({
     preferenceData: {
       hubID: hubNameId,
-      type: type as HubPreferenceType,
+      type: type as SpacePreferenceType,
       value: value ? 'true' : 'false',
     },
   });

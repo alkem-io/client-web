@@ -8,7 +8,7 @@ import {
   AuthorizationCredential,
   HubPreferencesQuery,
   HubPreferencesQueryVariables,
-  HubPreferenceType,
+  SpacePreferenceType,
   UpdatePreferenceOnHubMutationVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { usePreferences } from '../../../../common/preference/usePreferences';
@@ -43,7 +43,7 @@ const HubAuthorizationPage: FC<HubAuthorizationPageProps> = ({ resourceId, route
   ): UpdatePreferenceOnHubMutationVariables => ({
     preferenceData: {
       hubID: hubNameId,
-      type: type as HubPreferenceType,
+      type: type as SpacePreferenceType,
       value: value ? 'true' : 'false',
     },
   });
