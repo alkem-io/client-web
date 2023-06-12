@@ -1,21 +1,24 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
 
-import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
-import { Loading } from '../../../../../common/components/core';
-import { useHub } from '../../HubContext/useHub';
+import EditMemberCredentials from '../../../platform/admin/components/Authorization/EditMemberCredentials';
+import { Loading } from '../../../../common/components/core';
+import { useHub } from '../HubContext/useHub';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsHubAdminMutation,
   useRemoveUserAsHubAdminMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 
 interface HubAuthorizationViewProps {
   credential: AuthorizationCredential;
   resourceId: string | undefined;
 }
-
+/**
+ * @deprecated - Temporarily moved here because on the next sprint we are going to join this component to chose Hub admins
+ * with the Community Tab's components. The rest of the elements in the HubAuthorizationView have been moved to other places or removed
+ */
 const HubAuthorizationView: FC<HubAuthorizationViewProps> = ({ credential, resourceId = '' }) => {
   const [grant, { loading: addingMember }] = useAssignUserAsHubAdminMutation({});
 
