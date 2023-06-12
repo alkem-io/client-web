@@ -7,7 +7,6 @@ import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import CommunityGroupListPage from '../community/CommunityListPage';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import useHubApplications from './providers/useHubApplications';
-import { HubCommunityAdminMembershipPreferencesSection } from './HubCommunityAdminMembershipPreferencesSection';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
 import {
   refetchHubAvailableLeadUsersQuery,
@@ -22,13 +21,11 @@ import useCommunityUserAssignment from '../community/useCommunityUserAssignment'
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
-import { Trans, useTranslation } from 'react-i18next';
-import { Text } from '../../../../core/ui/typography';
+import HubAuthorizationView from '../../../challenge/hub/HubCommunityPage/HubAuthorizationView';
+import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { t } = useTranslation();
   const { hubId, communityId } = useHub();
 
   const { applications, loading: isLoadingApplications } = useHubApplications();
@@ -81,6 +78,9 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) =
   return (
     <HubSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <Gutters>
+        <PageContentBlock>
+          <HubAuthorizationView credential={AuthorizationCredential.HubAdmin} resourceId={hubId} />
+        </PageContentBlock>
         <EditCommunityMembersSection memberType="leads">
           <EditMemberUsersWithPopup {...leadUsersProps} />
         </EditCommunityMembersSection>
@@ -90,17 +90,6 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) =
         </EditCommunityMembersSection>
         {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
         {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
-        <HubCommunityAdminMembershipPreferencesSection />
-        <DashboardGenericSection
-          headerText={t('community.application-form.title')}
-          subHeaderText={
-            <Text>
-              <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
-            </Text>
-          }
-        >
-          <CommunityApplicationForm hubId={hubId} />
-        </DashboardGenericSection>
       </Gutters>
     </HubSettingsLayout>
   );
