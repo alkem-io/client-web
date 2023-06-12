@@ -569,8 +569,8 @@
       "actions": {
         "callout-published": "публикува нов $t(common.callout)",
         "whiteboard-created": "добави нов $t(common.whiteboard) към '{{parentDisplayName}}'",
-        "card-comment-created": "коментира на '{{cardDisplayName}}'",
-        "card-created": "добави {{cardType}} Карта към '{{calloutDisplayName}}'",
+        "post-comment-created": "коментира на '{{postDisplayName}}'",
+        "post-created": "добави {{postType}} Карта към '{{calloutDisplayName}}'",
         "discussion-comment-created": "коментира на '{{calloutDisplayName}}'",
         "member-joined": "нов член се включи в {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "създаде нов $t(common.challenge)",
@@ -580,8 +580,8 @@
       "activity-description": {
         "callout-published": "{{displayName}}",
         "whiteboard-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDescription}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -596,20 +596,20 @@
       "headline": "Alkemio расте! Общо, платформата в момента съдържа:"
     },
     "context-section": {
-      "create-card": "Аспектът е успешно създаден",
+      "create-post": "Аспектът е успешно създаден",
       "give-feedback": "Напишете отзив"
     },
     "callout-creation": {
       "title": "Създай нов Callout",
       "callout-type-label": "Callout type",
-      "card-type-label": "Тип карта",
+      "post-type-label": "Тип карта",
       "info-step": {
         "title": "Детайли",
         "description": "Описание",
         "type-comments": "Коментари",
         "type-comments-help": "Изберете \"Коментари\", когато искате хората да отговарят в проста тесктова форма, като форум",
-        "type-cards": "Карти",
-        "type-cards-help": "Изберете \"Карти\", когато искате хората да отговарят във формата на карти.",
+        "type-posts": "Карти",
+        "type-posts-help": "Изберете \"Карти\", когато искате хората да отговарят във формата на карти.",
         "type-whiteboards": "Платна",
         "type-whiteboards-help": "Изберете \"Платна\", когато искате хората да отговарят визуално върху бяла дъска, предоставяйки им да рисуват и да добавят текст. ",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
@@ -617,12 +617,12 @@
       "template-step": {
         "title": "Шаблони",
         "no-templates": "Няма налични шаблони",
-        "card-template-label": "Card Template",
-        "no-card-template-selected": "Please select a card template"
+        "post-template-label": "Card Template",
+        "no-post-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Създай",
-        "card-template-label": "Изберете шаблон на Картата"
+        "post-template-label": "Изберете шаблон на Картата"
       }
     },
     "callout-edit": {
@@ -1047,7 +1047,7 @@
     },
     "contribute": {
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
-      "no-cards": "No Card found"
+      "no-posts": "No Card found"
     },
     "admin": {
       "generic": {

@@ -710,8 +710,8 @@
       "actions": {
         "callout-published": "heeft een nieuwe $t(common.callout) gepubliceerd",
         "whiteboard-created": "heeft een $t(common.whiteboard) toegevoegd aan '{{parentDisplayName}}'",
-        "card-comment-created": "heeft gereageerd op '{{cardDisplayName}}'",
-        "card-created": "voegde een {{cardType}} Kaart toe aan '{{calloutDisplayName}}'",
+        "post-comment-created": "heeft gereageerd op '{{postDisplayName}}'",
+        "post-created": "voegde een {{postType}} Kaart toe aan '{{calloutDisplayName}}'",
         "discussion-comment-created": "heeft gereageerd op '{{calloutDisplayName}}'",
         "member-joined": "nieuw lid toegetreden tot {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "heeft een nieuwe $t(common.challenge) aangemaakt",
@@ -721,8 +721,8 @@
       "activity-description": {
         "callout-published": "{{displayName}}",
         "whiteboard-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}}] - {{cardDescription}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}}] - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -738,7 +738,7 @@
       "headline": "Alkemio groeit! Op het platform zijn in totaal:"
     },
     "context-section": {
-      "create-card": "Kaart aangemaakt!",
+      "create-post": "Kaart aangemaakt!",
       "give-feedback": "Geef feedback"
     },
     "callout-publish": {
@@ -748,15 +748,15 @@
       "title": "Plaats een nieuwe oproep",
       "titleWithType": "{{type}} toevoegen",
       "callout-type-label": "Oproep type",
-      "card-type-label": "Kaart label",
+      "post-type-label": "Kaart label",
       "custom-template": "Eigen template",
       "info-step": {
         "title": "Details",
         "description": "Omschrijving",
         "type-comments": "Discussie",
         "type-comments-help": "Selecteer ‘Discussie’ als je wilt dat mensen antwoorden via een simpele reactie.",
-        "type-cards": "Kaarten",
-        "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
+        "type-posts": "Kaarten",
+        "type-posts-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
         "type-whiteboards": "Whiteboards",
         "type-whiteboards-help": "Selecteer ‘Whiteboards’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven.",
         "unique-title-validation-text": "Deze titel wordt al gebruikt voor een andere $t(common.callout)"
@@ -764,18 +764,18 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "Geen templates beschikbaar",
-        "card-template-label": "Standaard tekst:",
-        "card-template-text": "Voeg een standaard tekst toe aan de berichten, bijvoorbeeld een aantal vragen die mensen kunnen beantwoorden.",
-        "card-template-default-description": "Standaard beschrijving",
+        "post-template-label": "Standaard tekst:",
+        "post-template-text": "Voeg een standaard tekst toe aan de berichten, bijvoorbeeld een aantal vragen die mensen kunnen beantwoorden.",
+        "post-template-default-description": "Standaard beschrijving",
         "whiteboard-template-label": "Template:",
         "whiteboard-empty-template": "Leeg Template",
         "whiteboard-reset-template": "Template leeg maken",
-        "no-card-template-selected": "Kies een template",
+        "no-post-template-selected": "Kies een template",
         "no-whiteboard-template-selected": "Selecteer een whiteboard template"
       },
       "create-step": {
         "title": "Maak aan",
-        "card-template-label": "Kies een template voor de Kaart"
+        "post-template-label": "Kies een template voor de Kaart"
       },
       "publish-dialog": {
         "text": "Je bent bezig met het publiceren van {{calloutDisplayName}}.\nWil je een melding over deze nieuwe oproep sturen naar de leden van deze community?",
@@ -1237,7 +1237,7 @@
     },
     "contribute": {
       "initial-text": "Hier kun je **samenwerken met de community**. Door het delen van ideeën en inzichten maken we samen impact",
-      "no-cards": "Geen Kaarten gevonden"
+      "no-posts": "Geen Kaarten gevonden"
     },
     "admin": {
       "generic": {

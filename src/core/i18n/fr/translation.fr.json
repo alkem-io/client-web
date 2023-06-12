@@ -710,8 +710,8 @@
       "actions": {
         "callout-published": "a publié un nouveau $t(common.callout)",
         "whiteboard-created": "a ajouté un $t(common.whiteboard) à '{{parentDisplayName}}'",
-        "card-comment-created": "a commenté '{{cardDisplayName}}'",
-        "card-created": "a ajouté une carte {{cardType}} à '{{calloutDisplayName}}'",
+        "post-comment-created": "a commenté '{{postDisplayName}}'",
+        "post-created": "a ajouté une carte {{postType}} à '{{calloutDisplayName}}'",
         "discussion-comment-created": "a commenté '{{calloutDisplayName}}'",
         "member-joined": "nouveau membre a rejoint le {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "a créé un nouveau $t(common.challenge)",
@@ -721,8 +721,8 @@
       "activity-description": {
         "callout-published": "{{displayName}}",
         "whiteboard-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -738,7 +738,7 @@
       "headline": "Alkemio grandit ! Au total, la plateforme héberge maintenant :"
     },
     "context-section": {
-      "create-card": "Réussie de la création de la redirection",
+      "create-post": "Réussie de la création de la redirection",
       "give-feedback": "Donner votre avis"
     },
     "callout-publish": {
@@ -748,15 +748,15 @@
       "title": "Créer un nouveau rappel",
       "titleWithType": "Créer {{type}}",
       "callout-type-label": "Type de Callout",
-      "card-type-label": "Étiquette de la carte",
+      "post-type-label": "Étiquette de la carte",
       "custom-template": "Modèle personnalisé",
       "info-step": {
         "title": "Détails",
         "description": "Description",
         "type-comments": "Commentaires",
         "type-comments-help": "Sélectionnez « Commentaires» lorsque vous voulez que les gens répondent dans un format texte simple, comme un babillard.",
-        "type-cards": "Cartes",
-        "type-cards-help": "Sélectionnez « Cartes» lorsque vous voulez que les gens répondent dans un format de carte.",
+        "type-posts": "Cartes",
+        "type-posts-help": "Sélectionnez « Cartes» lorsque vous voulez que les gens répondent dans un format de carte.",
         "type-whiteboards": "Tableaux blancs",
         "type-whiteboards-help": "Sélectionnez 'Tableau blanc' lorsque vous voulez que les gens répondent sur un tableau blanc, ce qui leur permet de dessiner et d'utiliser du texte.",
         "unique-title-validation-text": "Ce titre est déjà utilisé pour un autre $t(common.callout)"
@@ -764,18 +764,18 @@
       "template-step": {
         "title": "Modèles",
         "no-templates": "Aucun modèle disponible",
-        "card-template-label": "Texte par défaut:",
-        "card-template-text": "Ajoutez du texte par défaut aux messages, par exemple des questions auxquelles vous aimeriez que les gens répondent.",
-        "card-template-default-description": "Description par défaut",
+        "post-template-label": "Texte par défaut:",
+        "post-template-text": "Ajoutez du texte par défaut aux messages, par exemple des questions auxquelles vous aimeriez que les gens répondent.",
+        "post-template-default-description": "Description par défaut",
         "whiteboard-template-label": "Modèle:",
         "whiteboard-empty-template": "Modèle vide",
         "whiteboard-reset-template": "Réinitialiser le modèle vide",
-        "no-card-template-selected": "Veuillez sélectionner un modèle de carte",
+        "no-post-template-selected": "Veuillez sélectionner un modèle de carte",
         "no-whiteboard-template-selected": "Veuillez sélectionner un modèle de tableau blanc"
       },
       "create-step": {
         "title": "Créer",
-        "card-template-label": "Choisir un fichier modèle"
+        "post-template-label": "Choisir un fichier modèle"
       },
       "publish-dialog": {
         "text": "Vous êtes sur le point de publier {{calloutDisplayName}}.\nVoulez-vous que les membres de cette communauté reçoivent une notification ?",
@@ -1237,7 +1237,7 @@
     },
     "contribute": {
       "initial-text": "Ici, vous pouvez **vous engager auprès de votre communauté**. Partagez des idées et des idées. Faites des impacts ensemble",
-      "no-cards": "Aucune carte trouvée"
+      "no-posts": "Aucune carte trouvée"
     },
     "admin": {
       "generic": {

@@ -16,7 +16,7 @@ const PostTemplatePreview: FC<PostTemplatePreviewProps> = ({ template }) => {
   return (
     <>
       <BlockSectionTitle sx={{ marginBottom: 1.5 }}>
-        {t('components.callout-creation.template-step.card-template-default-description')}
+        {t('components.callout-creation.template-step.post-template-default-description')}
       </BlockSectionTitle>
 
       <Box

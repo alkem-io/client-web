@@ -80,7 +80,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     opportunityNameId,
   });
 
-  const calloutsOfTypeCard = callouts?.filter(({ type }) => type === CalloutType.Post);
+  const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.Post);
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
@@ -120,9 +120,9 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
         },
       });
       if (errors) {
-        notify(t('post-edit.cardLocation.error'), 'error');
+        notify(t('post-edit.postLocation.error'), 'error');
       } else if (!shouldUpdate) {
-        notify(t('post-edit.cardLocation.success'), 'success');
+        notify(t('post-edit.postLocation.success'), 'success');
       }
       const targetCalloutNameId = data!.movePostToCallout.callout!.nameID;
       const postNameId = data!.movePostToCallout.nameID;
@@ -171,11 +171,11 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
                 <SectionSpacer double />
                 {canMoveCard && (
                   <Box>
-                    <Typography variant={'h4'}>{t('post-edit.cardLocation.title')}</Typography>
+                    <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
                     <SectionSpacer />
                     <Autocomplete
                       disablePortal
-                      options={calloutsOfTypeCard ?? []}
+                      options={calloutsOfTypePost ?? []}
                       value={callouts?.find(({ id }) => id === targetCalloutId) ?? null!}
                       getOptionLabel={callout => callout.profile.displayName}
                       onChange={(event, callout) => {
@@ -185,8 +185,8 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
                       renderInput={params => (
                         <TextField
                           {...params}
-                          label={t('post-edit.cardLocation.label')}
-                          helperText={t('post-edit.cardLocation.reminder')}
+                          label={t('post-edit.postLocation.label')}
+                          helperText={t('post-edit.postLocation.reminder')}
                         />
                       )}
                     />

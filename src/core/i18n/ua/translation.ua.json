@@ -569,8 +569,8 @@
       "actions": {
         "callout-published": "published a new $t(common.callout)",
         "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on '{{cardDisplayName}}'",
-        "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
+        "post-comment-created": "commented on '{{postDisplayName}}'",
+        "post-created": "added a {{postType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
@@ -580,8 +580,8 @@
       "activity-description": {
         "callout-published": "{{displayName}}",
         "whiteboard-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDescription}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -596,20 +596,20 @@
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },
     "context-section": {
-      "create-card": "Аспект створено",
+      "create-post": "Аспект створено",
       "give-feedback": "Give feedback"
     },
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
-      "card-type-label": "Card type",
+      "post-type-label": "Card type",
       "info-step": {
         "title": "Деталі",
         "description": "Опис",
         "type-comments": "Comments",
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
-        "type-cards": "Карти",
-        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
+        "type-posts": "Карти",
+        "type-posts-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-whiteboards": "Полотна",
         "type-whiteboards-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
@@ -617,12 +617,12 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Card Template",
-        "no-card-template-selected": "Please select a card template"
+        "post-template-label": "Card Template",
+        "no-post-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Create",
-        "card-template-label": "Choose Card template"
+        "post-template-label": "Choose Card template"
       }
     },
     "callout-edit": {
@@ -1047,7 +1047,7 @@
     },
     "contribute": {
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
-      "no-cards": "Карта Не Знайдена"
+      "no-posts": "Карта Не Знайдена"
     },
     "admin": {
       "generic": {

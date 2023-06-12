@@ -31,8 +31,8 @@ export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) =>
     <>
       <Box display="flex" alignItems="center">
         <Box>
-          <Caption>{t('components.callout-creation.template-step.card-template-label')}</Caption>
-          <CardText>{t('components.callout-creation.template-step.card-template-text')}</CardText>
+          <Caption>{t('components.callout-creation.template-step.post-template-label')}</Caption>
+          <CardText>{t('components.callout-creation.template-step.post-template-text')}</CardText>
         </Box>
         <Box sx={{ marginLeft: 'auto' }}>
           <PostTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
@@ -40,7 +40,7 @@ export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) =>
       </Box>
       <FormikMarkdownField
         name={`${name}.defaultDescription`}
-        title={t('components.callout-creation.template-step.card-template-default-description')}
+        title={t('components.callout-creation.template-step.post-template-default-description')}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />

@@ -169,8 +169,8 @@ const ActivityViewChooser = ({
           callout={activityCalloutCardCreated.callout}
           card={activityCalloutCardCreated.post}
           author={author}
-          cardType={activityCalloutCardCreated.post.type}
-          cardDescription={activityCalloutCardCreated.post.profile.description!}
+          postType={activityCalloutCardCreated.post.type}
+          postDescription={activityCalloutCardCreated.post.profile.description!}
           {...activity}
           {...rest}
         />

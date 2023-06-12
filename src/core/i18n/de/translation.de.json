@@ -710,8 +710,8 @@
       "actions": {
         "callout-published": "hat $tveröffentlicht (common.callout)",
         "whiteboard-created": "hat $t(common.whiteboard) zu '{{parentDisplayName}} ' hinzugefügt",
-        "card-comment-created": "kommentierte '{{cardDisplayName}}'",
-        "card-created": "hat eine {{cardType}} Karte zu '{{calloutDisplayName}} ' hinzugefügt",
+        "post-comment-created": "kommentierte '{{postDisplayName}}'",
+        "post-created": "hat eine {{postType}} Karte zu '{{calloutDisplayName}} ' hinzugefügt",
         "discussion-comment-created": "kommentierte '{{calloutDisplayName}}'",
         "member-joined": "neues Mitglied ist {{journeyType}} '{{journeyDisplayName}} ' beigetreten",
         "challenge-created": "hat eine neue $terstellt (common.challenge)",
@@ -721,8 +721,8 @@
       "activity-description": {
         "callout-published": "displayName",
         "whiteboard-created": "displayName",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "displayName",
@@ -738,7 +738,7 @@
       "headline": "Alkemio wächst! Insgesamt ist die Plattform jetzt Gastgeber:"
     },
     "context-section": {
-      "create-card": "Karte erfolgreich erstellt",
+      "create-post": "Karte erfolgreich erstellt",
       "give-feedback": "Feedback geben"
     },
     "callout-publish": {
@@ -748,15 +748,15 @@
       "title": "Neuen Callout erstellen",
       "titleWithType": "Erschaffe %{type}",
       "callout-type-label": "Callout Typ",
-      "card-type-label": "Kartenlabel",
+      "post-type-label": "Kartenlabel",
       "custom-template": "Eigene Vorlage",
       "info-step": {
         "title": "Details",
         "description": "Beschreibung",
         "type-comments": "Comments",
         "type-comments-help": "Wählen Sie \"Kommentare\", wenn Sie möchten, dass Personen in einem einfachen Textformat antworten, wie ein Messageboard.",
-        "type-cards": "Karten",
-        "type-cards-help": "Wählen Sie \"Karten\", wenn Sie möchten, dass Personen im Kartenformat antworten.",
+        "type-posts": "Karten",
+        "type-posts-help": "Wählen Sie \"Karten\", wenn Sie möchten, dass Personen im Kartenformat antworten.",
         "type-whiteboards": "Whiteboards",
         "type-whiteboards-help": "Wählen Sie »Whiteboards«, wenn jemand auf einem visuellen Whiteboard antworten soll und es ihnen erlaubt Text zu zeichnen und zu verwenden.",
         "unique-title-validation-text": "Dieser Titel wird bereits für $tverwendet (common.callout)"
@@ -764,18 +764,18 @@
       "template-step": {
         "title": "Vorlagen",
         "no-templates": "Keine Vorlagen verfügbar",
-        "card-template-label": "Standardtext",
-        "card-template-text": "Fügen Sie Standardtext zu den Beiträgen hinzu, zum Beispiel Fragen, die Sie gerne beantworten möchten.",
-        "card-template-default-description": "Standard Beschreibung",
+        "post-template-label": "Standardtext",
+        "post-template-text": "Fügen Sie Standardtext zu den Beiträgen hinzu, zum Beispiel Fragen, die Sie gerne beantworten möchten.",
+        "post-template-default-description": "Standard Beschreibung",
         "whiteboard-template-label": "Vorlage:",
         "whiteboard-empty-template": "Leere Vorlage",
         "whiteboard-reset-template": "Leere Vorlage",
-        "no-card-template-selected": "Bitte wähle eine Vorlage aus",
+        "no-post-template-selected": "Bitte wähle eine Vorlage aus",
         "no-whiteboard-template-selected": "Bitte wähle eine Vorlage aus"
       },
       "create-step": {
         "title": "Erstellen",
-        "card-template-label": "Wähle eine Vorlage"
+        "post-template-label": "Wähle eine Vorlage"
       },
       "publish-dialog": {
         "text": "Sie sind dabei, {{calloutDisplayName}}zu veröffentlichen.\nMöchten Sie, dass Mitglieder dieser Community eine Benachrichtigung erhalten?",
@@ -1237,7 +1237,7 @@
     },
     "contribute": {
       "initial-text": "Hier kannst du **mit deiner Community zusammenarbeiten**. Ideen und Einsichten gemeinsam teilen",
-      "no-cards": "Keine Karte gefunden"
+      "no-posts": "Keine Karte gefunden"
     },
     "admin": {
       "generic": {

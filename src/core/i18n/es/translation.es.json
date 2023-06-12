@@ -569,8 +569,8 @@
       "actions": {
         "callout-published": "ha publicado un nuevo $t(common.callout)",
         "whiteboard-created": "ha añadido un $t(common.whiteboard) a '{{parentDisplayName}}'",
-        "card-comment-created": "comentarios{{cardDisplayName}}",
-        "card-created": "añadida una tarjeta {{cardType}} a '{{calloutDisplayName}}'",
+        "post-comment-created": "comentarios{{postDisplayName}}",
+        "post-created": "añadida una tarjeta {{postType}} a '{{calloutDisplayName}}'",
         "discussion-comment-created": "comentó sobre '{{calloutDisplayName}}'",
         "member-joined": "nuevo miembro se unió al {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "creó un nuevo $t(common.challenge)",
@@ -580,8 +580,8 @@
       "activity-description": {
         "callout-published": "Hola, {{displayName}}",
         "whiteboard-created": "Hola, {{displayName}}",
-        "card-comment-created": "comentario",
-        "card-created": "descripción de la tarjeta",
+        "post-comment-created": "comentario",
+        "post-created": "descripción de la tarjeta",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "nombre del usuario",
         "challenge-created": "{{displayName}}",
@@ -596,20 +596,20 @@
       "headline": "¡Alkemio esta creciendo! En total, la plataforma acoge ahora:"
     },
     "context-section": {
-      "create-card": "Tarjeta creada con éxito",
+      "create-post": "Tarjeta creada con éxito",
       "give-feedback": "Dar feedback"
     },
     "callout-creation": {
       "title": "Crear Callout",
       "callout-type-label": "Tipo de Callout",
-      "card-type-label": "Tipo de tarjeta",
+      "post-type-label": "Tipo de tarjeta",
       "info-step": {
         "title": "Detalles",
         "description": "Descripción",
         "type-comments": "Comentarios",
         "type-comments-help": "Selecciona ‘Comentarios’ cuando quieras que la gente responda en formato de texto simple, como un panel de anuncios",
-        "type-cards": "Tarjetas",
-        "type-cards-help": "Selecciona ‘Tarjetas’ cuando quieras que la gente responda en un formato de Tarjeta.",
+        "type-posts": "Tarjetas",
+        "type-posts-help": "Selecciona ‘Tarjetas’ cuando quieras que la gente responda en un formato de Tarjeta.",
         "type-whiteboards": "Pizarras",
         "type-whiteboards-help": "Selecciona ‘Pizarras’ cuando quieras que la gente responda en una pizarra visual y permitirles dibujar y utilizar texto.",
         "unique-title-validation-text": "Este título ya está en uso$t(common.callout)"
@@ -617,12 +617,12 @@
       "template-step": {
         "title": "Plantillas",
         "no-templates": "Plantillas no disponibles",
-        "card-template-label": "Plantillas de tarjetas",
-        "no-card-template-selected": "Por favor selecciona una plantilla de tarjeta"
+        "post-template-label": "Plantillas de tarjetas",
+        "no-post-template-selected": "Por favor selecciona una plantilla de tarjeta"
       },
       "create-step": {
         "title": "Crear",
-        "card-template-label": "Elije una plantilla para la nueva Tarjeta"
+        "post-template-label": "Elije una plantilla para la nueva Tarjeta"
       }
     },
     "callout-edit": {
@@ -1047,7 +1047,7 @@
     },
     "contribute": {
       "initial-text": "Aquí puedes **relacionarte con tu comunidad**. Compartiendo ideas e informaciones. Creando impacto juntos",
-      "no-cards": "No se ha encontrado ninguna Tarjeta"
+      "no-posts": "No se ha encontrado ninguna Tarjeta"
     },
     "admin": {
       "generic": {

@@ -184,8 +184,8 @@
     "forum": "Forum",
     "email": "Email",
     "state": "State",
-    "post": "Card",
-    "posts": "Cards",
+    "post": "Post",
+    "posts": "Posts",
     "host": "Host",
     "lead": "Lead",
     "hub": "Space",
@@ -433,9 +433,9 @@
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
-    "closed": "This Callout is closed. You can still comment on the individual cards.",
+    "closed": "This Callout is closed. You can still comment on the individual Posts.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All cards, whiteboards and messages under the Callout will also be deleted.",
+    "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
@@ -627,9 +627,9 @@
     }
   },
   "post-templates": {
-    "template-library": "Template Library: Cards",
-    "post-template": "Card template",
-    "default-description": "Default Card content",
+    "template-library": "Template Library: Posts",
+    "post-template": "Post template",
+    "default-description": "Default Post content",
     "banner-narrow": "Banner narrow"
   },
   "whiteboard-templates": {
@@ -750,8 +750,8 @@
       "actions": {
         "callout-published": "published a new $t(common.callout)",
         "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on '{{cardDisplayName}}'",
-        "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
+        "post-comment-created": "commented on '{{postDisplayName}}'",
+        "post-created": "added a {{postType}} Post to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
@@ -761,8 +761,8 @@
       "activity-description": {
         "callout-published": "{{displayName}}",
         "whiteboard-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -778,7 +778,7 @@
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },
     "context-section": {
-      "create-card": "Successfully created the Card",
+      "create-post": "Successfully created the Post",
       "give-feedback": "Give feedback"
     },
     "callout-publish": {
@@ -788,15 +788,15 @@
       "title": "What do you want to ask your community?",
       "titleWithType": "Create {{type}}",
       "callout-type-label": "Callout type",
-      "card-type-label": "Card label",
+      "post-type-label": "Post label",
       "custom-template": "Custom Template",
       "info-step": {
         "title": "Details",
         "description": "Description",
         "type-comments": "Comments",
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard.",
-        "type-cards": "Cards",
-        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
+        "type-posts": "Posts",
+        "type-posts-help": "Select Posts when you want people to answer in a card format.",
         "type-whiteboards": "Whiteboards",
         "type-whiteboards-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
@@ -808,18 +808,18 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Default text:",
-        "card-template-text": "Add default text to the posts, for example questions that you like people to answer.",
-        "card-template-default-description": "Default description",
+        "post-template-label": "Default text:",
+        "post-template-text": "Add default text to the posts, for example questions that you like people to answer.",
+        "post-template-default-description": "Default description",
         "whiteboard-template-label": "Template:",
         "whiteboard-empty-template": "Empty Template",
         "whiteboard-reset-template": "Reset Empty Template",
-        "no-card-template-selected": "Please select a card template",
+        "no-post-template-selected": "Please select a Post template",
         "no-whiteboard-template-selected": "Please select a whiteboard template"
       },
       "create-step": {
         "title": "Create",
-        "card-template-label": "Choose Card template"
+        "post-template-label": "Choose Post template"
       },
       "publish-dialog": {
         "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
@@ -844,17 +844,17 @@
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "Card label",
-        "type-help-text-short": "Please choose the Card label that best matches the context you wish to share."
+        "label": "Post label",
+        "type-help-text-short": "Please choose the Post label that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
         "description": "Please share the details",
-        "description-placeholder": "A description for this Card",
-        "tags-help-text": "Add free form tags to help quickly convey the key information about the Card. Good tags also help make the Card easier to find in searches.",
-        "name-help-text": "A descriptive name for this Card.",
+        "description-placeholder": "A description for this Post",
+        "tags-help-text": "Add free form tags to help quickly convey the key information about the Post. Good tags also help make the Post easier to find in searches.",
+        "name-help-text": "A descriptive name for this Post.",
         "name-id-help-text": "Name ID help text",
-        "unique-name-validation-text": "${path} is already used in another Card"
+        "unique-name-validation-text": "${path} is already used in another Post"
       },
       "create-step": {
         "title": "Create",
@@ -862,12 +862,12 @@
         "name": "Name",
         "description": "Description",
         "links": "Relevant Links",
-        "explanation": "By completing this step the Card will be created and you will have the option to add visuals."
+        "explanation": "By completing this step the Post will be created and you will have the option to add visuals."
       },
       "visuals-step": {
         "title": "Visuals",
-        "headline": "Congratulations, you have now successfully created an Card!",
-        "explanation": "To further personalize your Card, please consider adding visuals such as a Banner to the card.",
+        "headline": "Congratulations, you have now successfully created an Post!",
+        "explanation": "To further personalize your Post, please consider adding visuals such as a Banner to the Post.",
         "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding attachments and a Banner for the Dashboard card."
       }
     },
@@ -1299,7 +1299,7 @@
     },
     "contribute": {
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
-      "no-cards": "No Card found"
+      "no-posts": "No Posts found"
     },
     "innovationLibrary": {
       "shortName": "Library",
@@ -1575,7 +1575,7 @@
           "opportunity": "Opportunities",
           "user": "Users",
           "organization": "Organizations",
-          "card": "Cards",
+          "post": "Posts",
           "whiteboard": "Whiteboards (available soon)",
           "callout": "Callouts (available soon)"
         }
@@ -2032,18 +2032,18 @@
     "title": "Community"
   },
   "post-edit": {
-    "new": "New Card",
-    "edit": "Edit Card",
+    "new": "New Post",
+    "edit": "Edit Post",
     "type": {
-      "title": "Card label",
+      "title": "Post label",
       "help-text": "What type of information do you want to share?"
     },
-    "cardLocation": {
-      "title": "Card location",
+    "postLocation": {
+      "title": "Post location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the card’s location. Moving the card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move cards within the same Space, Challenge or Opportunity.",
-      "success": "Successfully moved card to the new Callout.",
-      "error": "Something went wrong when moving the card, please try again."
+      "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
+      "success": "Successfully moved Post to the new Callout.",
+      "error": "Something went wrong when moving the Post, please try again."
     }
   },
   "innovation-edit": {

@@ -20,16 +20,16 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
   ...baseProps
 }) => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.card-comment-created', {
-    cardDisplayName: card.profile.displayName,
+  const action = t('components.activity-log-view.actions.post-comment-created', {
+    postDisplayName: card.profile.displayName,
     interpolation: {
       escapeValue: false,
     },
   });
   const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
   const comment = replaceQuotesInOldDescription(description);
-  const translatedDescription = t('components.activity-log-view.activity-description.card-comment-created', {
-    cardDisplayName: card.profile.displayName,
+  const translatedDescription = t('components.activity-log-view.activity-description.post-comment-created', {
+    postDisplayName: card.profile.displayName,
     comment,
     interpolation: {
       escapeValue: false,
