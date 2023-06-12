@@ -15,9 +15,9 @@ import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { compact } from 'lodash';
 import {
   AuthorizationPrivilege,
-  Communication,
   CommunicationDiscussionUpdatedSubscription,
   CommunicationDiscussionUpdatedSubscriptionVariables,
+  PlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
@@ -31,7 +31,7 @@ const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
 
 const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
-  Pick<Communication, 'id' | 'discussions'>,
+  PlatformDiscussionsQuery['platform']['communication'],
   CommunicationDiscussionUpdatedSubscription,
   CommunicationDiscussionUpdatedSubscriptionVariables
 >({
@@ -41,13 +41,11 @@ const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
     if (!communication?.discussions) {
       return;
     }
-    const discussionIndex = communication.discussions.findIndex(
-      d => d.id === subscriptionData.communicationDiscussionUpdated.id
-    );
-    if (discussionIndex === -1) {
+    const discussion = communication.discussions.find(d => d.id === subscriptionData.communicationDiscussionUpdated.id);
+    if (!discussion) {
       return;
     }
-    communication.discussions[discussionIndex] = subscriptionData.communicationDiscussionUpdated;
+    Object.assign(discussion, subscriptionData.communicationDiscussionUpdated);
   },
 });
 
@@ -87,7 +85,12 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
           authors: authors.authors ?? [],
           description: d.profile.description,
           createdAt: d.timestamp ? new Date(d.timestamp) : undefined,
-          commentsCount: d.commentsCount,
+          comments: {
+            id: d.comments.id,
+            messagesCount: d.comments.messagesCount,
+            messages: [],
+            myPrivileges: d.comments.authorization?.myPrivileges,
+          },
         })) ?? []
     );
   }, [data, authors, authors.authors, categorySelected]);

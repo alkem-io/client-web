@@ -9,7 +9,7 @@ import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import MessageView from '../../../shared/components/Comments/MessageView';
-import { Message } from '../../../shared/components/Comments/models/message';
+import { Message } from '../../../communication/messages/models/message';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../../shared/components/References/References';

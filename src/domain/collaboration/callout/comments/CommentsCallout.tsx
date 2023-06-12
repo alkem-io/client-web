@@ -5,16 +5,17 @@ import CommentsComponent from '../../../shared/components/Comments/CommentsCompo
 import { useUserContext } from '../../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
-  usePostCommentInCalloutMutation,
   useRemoveCommentFromCalloutMutation,
+  useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Message } from '../../../shared/components/Comments/models/message';
+import { Message } from '../../../communication/messages/models/message';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import useSubscribeOnCommentCallout from '../useSubscribeOnCommentCallout';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -24,25 +25,12 @@ interface CommentsCalloutProps extends BaseCalloutViewProps {
     comments: CommentsCalloutData;
   };
   calloutNames: string[];
-  isSubscribedToComments: boolean;
 }
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
-  (
-    {
-      callout,
-      loading,
-      expanded,
-      isSubscribedToComments,
-      contributionsCount,
-      onExpand,
-      blockProps,
-      ...calloutLayoutProps
-    },
-    ref
-  ) => {
+  ({ callout, loading, expanded, contributionsCount, onExpand, blockProps, ...calloutLayoutProps }, ref) => {
     const { user: userMetadata, isAuthenticated } = useUserContext();
     const user = userMetadata?.user;
 
@@ -73,23 +61,26 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
     const canPostMessages =
-      commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) && callout.state !== CalloutState.Closed;
+      commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage) && callout.state !== CalloutState.Closed;
 
     const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
-      update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
+      update: (cache, { data }) =>
+        data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
     });
+
+    const isSubscribedToComments = useSubscribeOnCommentCallout(commentsId);
 
     const handleDeleteMessage = (commentsId: string, messageId: string) =>
       deleteMessage({
         variables: {
           messageData: {
-            commentsID: commentsId,
+            roomID: commentsId,
             messageID: messageId,
           },
         },
       });
 
-    const [postMessage, { loading: postingComment }] = usePostCommentInCalloutMutation({
+    const [postMessage, { loading: postingComment }] = useSendMessageToRoomMutation({
       update: (cache, { data }) => {
         if (isSubscribedToComments) {
           return;
@@ -113,7 +104,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
               }
 
               const newMessage = cache.writeFragment({
-                data: data?.sendMessageOnCallout,
+                data: data?.sendMessageToRoom,
                 fragment: MessageDetailsFragmentDoc,
                 fragmentName: 'MessageDetails',
               });
@@ -127,8 +118,8 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
     const handlePostMessage = async (commentsId: string, message: string) =>
       postMessage({
         variables: {
-          data: {
-            calloutID: callout.id,
+          messageData: {
+            roomID: commentsId,
             message,
           },
         },

@@ -10,11 +10,11 @@ import {
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
-  usePostCommentMutation,
-  useRemoveCommentMutation,
+  useRemoveMessageOnRoomMutation,
+  useSendMessageToRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/contributor/user';
-import { Message } from '../../../../shared/components/Comments/models/message';
+import { Message } from '../../../../communication/messages/models/message';
 import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -176,23 +176,24 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
+  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
-    update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
+  const [deleteComment, { loading: deletingComment }] = useRemoveMessageOnRoomMutation({
+    update: (cache, { data }) =>
+      data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
   });
 
   const handleDeleteComment = (commentsId: string, messageId: string) =>
     deleteComment({
       variables: {
         messageData: {
-          commentsID: commentsId,
+          roomID: commentsId,
           messageID: messageId,
         },
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentMutation({
+  const [postComment, { loading: postingComment }] = useSendMessageToRoomMutation({
     update: (cache, { data }) => {
       const cacheCommentsId = cache.identify({
         id: commentsId,
@@ -229,7 +230,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
             }
 
             const newMessage = cache.writeFragment({
-              data: data?.sendComment,
+              data: data?.sendMessageToRoom,
               fragment: MessageDetailsFragmentDoc,
               fragmentName: 'MessageDetails',
             });
@@ -244,7 +245,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     postComment({
       variables: {
         messageData: {
-          commentsID: commentsId,
+          roomID: commentsId,
           message,
         },
       },

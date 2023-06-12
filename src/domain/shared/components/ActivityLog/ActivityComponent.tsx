@@ -220,15 +220,7 @@ const ActivityViewChooser = ({
       );
     case ActivityEventType.UpdateSent:
       const activityUpdateSent = activity as ActivityLogResult<ActivityLogUpdateSentFragment>;
-      return (
-        <ActivityUpdateSentView
-          updates={activityUpdateSent.updates}
-          message={activityUpdateSent.message}
-          author={author}
-          {...activity}
-          {...rest}
-        />
-      );
+      return <ActivityUpdateSentView message={activityUpdateSent.message} author={author} {...activity} {...rest} />;
   }
   throw new Error(`Unable to choose a view for activity type: ${activity.type}`);
 };

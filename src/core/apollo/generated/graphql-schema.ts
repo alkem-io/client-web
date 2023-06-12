@@ -13,6 +13,7 @@ export type Scalars = {
   CID: string;
   DID: string;
   DateTime: Date;
+  Emoji: string;
   JSON: string;
   LifecycleDefinition: string;
   Markdown: string;
@@ -295,7 +296,7 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   /** The event type for this Activity. */
   type: ActivityEventType;
   /** The Updates for this Community. */
-  updates: Updates;
+  updates: Room;
 };
 
 export type ActivityLogInput = {
@@ -409,22 +410,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The parent Callout of the Aspect */
+  /** The parent Callout of the Post */
   callout?: Maybe<Callout>;
-  /** The comments for this Aspect. */
-  comments?: Maybe<Comments>;
+  /** The comments on this Post. */
+  comments: Room;
   /** The user that created this Aspect */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -434,16 +427,8 @@ export type Aspect = {
   nameID: Scalars['NameID'];
   /** The Profile for this Card. */
   profile: Profile;
-  /** The aspect type, e.g. knowledge, idea, stakeholder persona etc. */
+  /** The Post type, e.g. knowledge, idea, stakeholder persona etc. */
   type: Scalars['String'];
-};
-
-export type AspectCommentsMessageReceived = {
-  __typename?: 'AspectCommentsMessageReceived';
-  /** The identifier for the Aspect. */
-  aspectID: Scalars['String'];
-  /** The message that has been sent. */
-  message: Message;
 };
 
 export type AssignChallengeAdminInput = {
@@ -608,9 +593,11 @@ export enum AuthorizationPrivilege {
   CreateCallout = 'CREATE_CALLOUT',
   CreateCanvas = 'CREATE_CANVAS',
   CreateChallenge = 'CREATE_CHALLENGE',
-  CreateComment = 'CREATE_COMMENT',
   CreateDiscussion = 'CREATE_DISCUSSION',
   CreateHub = 'CREATE_HUB',
+  CreateMessage = 'CREATE_MESSAGE',
+  CreateMessageReaction = 'CREATE_MESSAGE_REACTION',
+  CreateMessageReply = 'CREATE_MESSAGE_REPLY',
   CreateOpportunity = 'CREATE_OPPORTUNITY',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreateRelation = 'CREATE_RELATION',
@@ -654,8 +641,8 @@ export type CalendarEvent = {
   __typename?: 'CalendarEvent';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The comments for this CalendarEvent. */
-  comments?: Maybe<Comments>;
+  /** The comments for this CalendarEvent */
+  comments: Room;
   /** The user that created this CalendarEvent */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -679,14 +666,6 @@ export type CalendarEvent = {
   wholeDay: Scalars['Boolean'];
 };
 
-export type CalendarEventCommentsMessageReceived = {
-  __typename?: 'CalendarEventCommentsMessageReceived';
-  /** The identifier for the CalendarEvent. */
-  calendarEventID: Scalars['String'];
-  /** The message that has been sent. */
-  message: Message;
-};
-
 export enum CalendarEventType {
   Event = 'EVENT',
   Milestone = 'MILESTONE',
@@ -704,8 +683,8 @@ export type Callout = {
   authorization?: Maybe<Authorization>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
-  /** The Comments object for this Callout. */
-  comments?: Maybe<Comments>;
+  /** The comments for this Callout. */
+  comments?: Maybe<Room>;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
   /** Callout group. */
@@ -752,16 +731,6 @@ export type CalloutAspectCreated = {
   aspect: Aspect;
   /** The identifier for the Callout on which the aspect was created. */
   calloutID: Scalars['String'];
-};
-
-export type CalloutMessageReceived = {
-  __typename?: 'CalloutMessageReceived';
-  /** The identifier for the Callout. */
-  calloutID: Scalars['String'];
-  /** The identifier for the Comments. */
-  commentsID: Scalars['String'];
-  /** The message that has been sent. */
-  message: Message;
 };
 
 export enum CalloutState {
@@ -926,32 +895,6 @@ export type CollaborationCalloutsArgs = {
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
 };
 
-export type Comments = {
-  __typename?: 'Comments';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The number of comments. */
-  commentsCount: Scalars['Float'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Messages in this Comments. */
-  messages?: Maybe<Array<Message>>;
-};
-
-export type CommentsRemoveMessageInput = {
-  /** The Comments the message is being removed from. */
-  commentsID: Scalars['UUID'];
-  /** The message id that should be removed */
-  messageID: Scalars['MessageID'];
-};
-
-export type CommentsSendMessageInput = {
-  /** The Comments the message is being sent to */
-  commentsID: Scalars['UUID'];
-  /** The message being sent */
-  message: Scalars['String'];
-};
-
 export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
@@ -963,8 +906,8 @@ export type Communication = {
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Updates for this Communication. */
-  updates?: Maybe<Updates>;
+  /** The updates on this Communication. */
+  updates: Room;
 };
 
 export type CommunicationDiscussionArgs = {
@@ -1040,14 +983,6 @@ export type CommunicationCreateDiscussionInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type CommunicationDiscussionMessageReceived = {
-  __typename?: 'CommunicationDiscussionMessageReceived';
-  /** The identifier for the Discussion on which the message was sent. */
-  discussionID: Scalars['String'];
-  /** The message that has been sent. */
-  message: Message;
-};
-
 export type CommunicationRoom = {
   __typename?: 'CommunicationRoom';
   /** The display name of the room */
@@ -1077,14 +1012,6 @@ export type CommunicationSendMessageToUserInput = {
   message: Scalars['String'];
   /** All Users the message is being sent to */
   receiverIds: Array<Scalars['UUID']>;
-};
-
-export type CommunicationUpdateMessageReceived = {
-  __typename?: 'CommunicationUpdateMessageReceived';
-  /** The message that has been sent. */
-  message: Message;
-  /** The identifier for the Updates on which the message was sent. */
-  updatesID: Scalars['String'];
 };
 
 export type Community = Groupable & {
@@ -1705,14 +1632,12 @@ export type Discussion = {
   authorization?: Maybe<Authorization>;
   /** The category assigned to this Discussion. */
   category: DiscussionCategory;
-  /** The number of comments. */
-  commentsCount: Scalars['Float'];
+  /** The comments for this Discussion. */
+  comments: Room;
   /** The id of the user that created this discussion */
   createdBy?: Maybe<Scalars['UUID']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Messages for this Discussion. */
-  messages?: Maybe<Array<Message>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The Profile for this Discussion. */
@@ -1732,20 +1657,6 @@ export enum DiscussionCategory {
   Questions = 'QUESTIONS',
   Sharing = 'SHARING',
 }
-
-export type DiscussionRemoveMessageInput = {
-  /** The Discussion to remove a message from. */
-  discussionID: Scalars['UUID'];
-  /** The message id that should be removed */
-  messageID: Scalars['MessageID'];
-};
-
-export type DiscussionSendMessageInput = {
-  /** The Discussion the message is being sent to */
-  discussionID: Scalars['UUID'];
-  /** The message being sent */
-  message: Scalars['String'];
-};
 
 export type Document = {
   __typename?: 'Document';
@@ -1932,16 +1843,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -2141,6 +2042,8 @@ export type Message = {
   id: Scalars['MessageID'];
   /** The message being sent */
   message: Scalars['Markdown'];
+  /** Reactions on this message */
+  reactions: Array<Reaction>;
   /** The user that created this Aspect */
   sender?: Maybe<User>;
   /** The server timestamp in UTC */
@@ -2177,6 +2080,8 @@ export type MoveAspectInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add a reaction to a message from the specified Room. */
+  addReactionToMessageInRoom: Message;
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
@@ -2361,16 +2266,14 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Moves the specified Aspect to another Callout. */
   moveAspectToCallout: Aspect;
-  /** Removes a comment message. */
-  removeComment: Scalars['MessageID'];
-  /** Removes a message from the specified Discussion. */
-  removeMessageFromDiscussion: Scalars['MessageID'];
+  /** Removes a message. */
+  removeMessageOnRoom: Scalars['MessageID'];
   /** Removes an Organization as a Lead of the specified Community. */
   removeOrganizationAsCommunityLead: Community;
   /** Removes an Organization as a member of the specified Community. */
   removeOrganizationAsCommunityMember: Community;
-  /** Removes an update message. */
-  removeUpdate: Scalars['MessageID'];
+  /** Remove a reaction on a message from the specified Room. */
+  removeReactionToMessageInRoom: Message;
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
   /** Removes a User as a Lead of the specified Community. */
@@ -2397,20 +2300,16 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
-  /** Sends an comment message. Returns the id of the new Update message. */
-  sendComment: Message;
-  /** Send a message on a Comments Callout */
-  sendMessageOnCallout: Message;
+  /** Sends a reply to a message from the specified Room. */
+  sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
   sendMessageToCommunityLeads: Scalars['Boolean'];
-  /** Sends a message to the specified Discussion.  */
-  sendMessageToDiscussion: Message;
   /** Send message to an Organization. */
   sendMessageToOrganization: Scalars['Boolean'];
+  /** Sends an comment message. Returns the id of the new Update message. */
+  sendMessageToRoom: Message;
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
-  /** Sends an update message. Returns the id of the new Update message. */
-  sendUpdate: Message;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** Updates the specified Aspect. */
@@ -2481,6 +2380,10 @@ export type Mutation = {
   uploadFileOnReference: Reference;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddReactionToMessageInRoomArgs = {
+  messageData: RoomAddReactionToMessageInput;
 };
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
@@ -2831,12 +2734,8 @@ export type MutationMoveAspectToCalloutArgs = {
   moveAspectData: MoveAspectInput;
 };
 
-export type MutationRemoveCommentArgs = {
-  messageData: CommentsRemoveMessageInput;
-};
-
-export type MutationRemoveMessageFromDiscussionArgs = {
-  messageData: DiscussionRemoveMessageInput;
+export type MutationRemoveMessageOnRoomArgs = {
+  messageData: RoomRemoveMessageInput;
 };
 
 export type MutationRemoveOrganizationAsCommunityLeadArgs = {
@@ -2847,8 +2746,8 @@ export type MutationRemoveOrganizationAsCommunityMemberArgs = {
   membershipData: RemoveCommunityMemberOrganizationInput;
 };
 
-export type MutationRemoveUpdateArgs = {
-  messageData: UpdatesRemoveMessageInput;
+export type MutationRemoveReactionToMessageInRoomArgs = {
+  messageData: RoomRemoveReactionToMessageInput;
 };
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
@@ -2903,32 +2802,24 @@ export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
 };
 
-export type MutationSendCommentArgs = {
-  messageData: CommentsSendMessageInput;
-};
-
-export type MutationSendMessageOnCalloutArgs = {
-  data: SendMessageOnCalloutInput;
+export type MutationSendMessageReplyToRoomArgs = {
+  messageData: RoomSendMessageReplyInput;
 };
 
 export type MutationSendMessageToCommunityLeadsArgs = {
   messageData: CommunicationSendMessageToCommunityLeadsInput;
 };
 
-export type MutationSendMessageToDiscussionArgs = {
-  messageData: DiscussionSendMessageInput;
-};
-
 export type MutationSendMessageToOrganizationArgs = {
   messageData: CommunicationSendMessageToOrganizationInput;
 };
 
-export type MutationSendMessageToUserArgs = {
-  messageData: CommunicationSendMessageToUserInput;
+export type MutationSendMessageToRoomArgs = {
+  messageData: RoomSendMessageInput;
 };
 
-export type MutationSendUpdateArgs = {
-  messageData: UpdatesSendMessageInput;
+export type MutationSendMessageToUserArgs = {
+  messageData: CommunicationSendMessageToUserInput;
 };
 
 export type MutationUpdateActorArgs = {
@@ -3639,6 +3530,17 @@ export type QuestionTemplate = {
   sortOrder?: Maybe<Scalars['Float']>;
 };
 
+/** A reaction to a message. */
+export type Reaction = {
+  __typename?: 'Reaction';
+  /** The id for the reaction. */
+  id: Scalars['MessageID'];
+  /** The reaction Emoji */
+  text: Scalars['Emoji'];
+  /** The server timestamp in UTC */
+  timestamp: Scalars['Float'];
+};
+
 export type Reference = {
   __typename?: 'Reference';
   /** The authorization rules for the entity */
@@ -3867,6 +3769,65 @@ export type RolesUserInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type Room = {
+  __typename?: 'Room';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Messages in this Room. */
+  messages: Array<Message>;
+  /** The number of messages in the Room. */
+  messagesCount: Scalars['Float'];
+};
+
+export type RoomAddReactionToMessageInput = {
+  /** The message id that is being reacted to */
+  messageID: Scalars['MessageID'];
+  /** The Room to remove a message from. */
+  roomID: Scalars['UUID'];
+  /** The reaction to the message. */
+  text: Scalars['Emoji'];
+};
+
+export type RoomMessageReceived = {
+  __typename?: 'RoomMessageReceived';
+  /** The message that has been sent. */
+  message: Message;
+  /** The identifier for the Room on which the message was sent. */
+  roomID: Scalars['String'];
+};
+
+export type RoomRemoveMessageInput = {
+  /** The message id that should be removed */
+  messageID: Scalars['MessageID'];
+  /** The Room to remove a message from. */
+  roomID: Scalars['UUID'];
+};
+
+export type RoomRemoveReactionToMessageInput = {
+  /** The reaction that is being removed */
+  reactionID: Scalars['MessageID'];
+  /** The Room to remove a message from. */
+  roomID: Scalars['UUID'];
+};
+
+export type RoomSendMessageInput = {
+  /** The message being sent */
+  message: Scalars['String'];
+  /** The Room the message is being sent to */
+  roomID: Scalars['UUID'];
+};
+
+export type RoomSendMessageReplyInput = {
+  /** The message being sent */
+  message: Scalars['String'];
+  /** The Room the message is being sent to */
+  roomID: Scalars['UUID'];
+  /** The message starting the thread being replied to */
+  threadID: Scalars['MessageID'];
+};
+
 export type SearchInput = {
   /** Restrict the search to only the specified Hub. Default is all Hubs. */
   searchInHubFilter?: InputMaybe<Scalars['UUID_NAMEID']>;
@@ -4003,13 +3964,6 @@ export type SearchResultUserGroup = SearchResult & {
   userGroup: UserGroup;
 };
 
-export type SendMessageOnCalloutInput = {
-  /** The Callout the message is being sent to */
-  calloutID: Scalars['UUID'];
-  /** The message contents */
-  message: Scalars['String'];
-};
-
 export type Sentry = {
   __typename?: 'Sentry';
   /** Flag indicating if the client should use Sentry for monitoring. */
@@ -4068,48 +4022,28 @@ export type StorageConfig = {
 export type Subscription = {
   __typename?: 'Subscription';
   activityCreated: ActivityCreatedSubscriptionResult;
-  /** Receive new comment on Aspect */
-  aspectCommentsMessageReceived: AspectCommentsMessageReceived;
-  /** Receive new comment on CalendarEvent */
-  calendarEventCommentsMessageReceived: CalendarEventCommentsMessageReceived;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutAspectCreated: CalloutAspectCreated;
-  /** Receive comments on Callouts */
-  calloutMessageReceived: CalloutMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Challenges created on the Hub. */
   challengeCreated: ChallengeCreated;
-  /** Receive new Discussion messages */
-  communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive updates on Discussions */
   communicationDiscussionUpdated: Discussion;
-  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
-  communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
   /** Receive new Opportunities created on the Challenge. */
   opportunityCreated: OpportunityCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
+  /** Receive new Room messages */
+  roomMessageReceived: RoomMessageReceived;
 };
 
 export type SubscriptionActivityCreatedArgs = {
   input: ActivityCreatedSubscriptionInput;
 };
 
-export type SubscriptionAspectCommentsMessageReceivedArgs = {
-  aspectID: Scalars['UUID'];
-};
-
-export type SubscriptionCalendarEventCommentsMessageReceivedArgs = {
-  calendarEventID: Scalars['UUID'];
-};
-
 export type SubscriptionCalloutAspectCreatedArgs = {
   calloutID: Scalars['UUID'];
-};
-
-export type SubscriptionCalloutMessageReceivedArgs = {
-  calloutIDs: Array<Scalars['UUID']>;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
@@ -4120,20 +4054,16 @@ export type SubscriptionChallengeCreatedArgs = {
   hubID: Scalars['UUID_NAMEID'];
 };
 
-export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
-  discussionID: Scalars['UUID'];
-};
-
 export type SubscriptionCommunicationDiscussionUpdatedArgs = {
   communicationID: Scalars['UUID'];
 };
 
-export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
-  updatesIDs?: InputMaybe<Array<Scalars['UUID']>>;
-};
-
 export type SubscriptionOpportunityCreatedArgs = {
   challengeID: Scalars['UUID'];
+};
+
+export type SubscriptionRoomMessageReceivedArgs = {
+  roomID: Scalars['UUID'];
 };
 
 export type Tagset = {
@@ -4597,30 +4527,6 @@ export type UpdateWhiteboardTemplateInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   value?: InputMaybe<Scalars['JSON']>;
-};
-
-export type Updates = {
-  __typename?: 'Updates';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Messages in this Updates. */
-  messages?: Maybe<Array<Message>>;
-};
-
-export type UpdatesRemoveMessageInput = {
-  /** The message id that should be removed */
-  messageID: Scalars['String'];
-  /** The Updates the message is being removed from. */
-  updatesID: Scalars['UUID'];
-};
-
-export type UpdatesSendMessageInput = {
-  /** The message being sent */
-  message: Scalars['String'];
-  /** The Updates the message is being sent to */
-  updatesID: Scalars['UUID'];
 };
 
 export type User = {
@@ -5096,7 +5002,7 @@ export type ChallengePageQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -5434,7 +5340,7 @@ export type ChallengeProfileFragment = {
                           profile: { __typename?: 'Profile'; id: string; displayName: string };
                         }
                       | undefined;
-                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -7563,7 +7469,7 @@ export type HubPageQuery = {
                             profile: { __typename?: 'Profile'; id: string; displayName: string };
                           }
                         | undefined;
-                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                      comments: { __typename?: 'Room'; id: string; messagesCount: number };
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -7894,7 +7800,7 @@ export type HubPageFragment = {
                           profile: { __typename?: 'Profile'; id: string; displayName: string };
                         }
                       | undefined;
-                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -9248,7 +9154,7 @@ export type OpportunityPageQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9532,7 +9438,7 @@ export type OpportunityPageFragment = {
                           profile: { __typename?: 'Profile'; id: string; displayName: string };
                         }
                       | undefined;
-                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -10616,9 +10522,9 @@ export type CalloutPageCalloutQuery = {
                   | undefined;
                 comments?:
                   | {
-                      __typename?: 'Comments';
+                      __typename?: 'Room';
                       id: string;
-                      commentsCount: number;
+                      messagesCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -10627,35 +10533,33 @@ export type CalloutPageCalloutQuery = {
                             anonymousReadAccess: boolean;
                           }
                         | undefined;
-                      messages?:
-                        | Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
-                              | undefined;
-                          }>
-                        | undefined;
+                      messages: Array<{
+                        __typename?: 'Message';
+                        id: string;
+                        message: string;
+                        timestamp: number;
+                        sender?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              nameID: string;
+                              firstName: string;
+                              lastName: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                tagsets?:
+                                  | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                                  | undefined;
+                                location?:
+                                  | { __typename?: 'Location'; id: string; city: string; country: string }
+                                  | undefined;
+                              };
+                            }
+                          | undefined;
+                      }>;
                     }
                   | undefined;
                 authorization?:
@@ -10818,9 +10722,9 @@ export type CalloutPageCalloutQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10829,40 +10733,33 @@ export type CalloutPageCalloutQuery = {
                               anonymousReadAccess: boolean;
                             }
                           | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender?:
-                                | {
-                                    __typename?: 'User';
-                                    id: string;
-                                    nameID: string;
-                                    firstName: string;
-                                    lastName: string;
-                                    profile: {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      displayName: string;
-                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    };
-                                  }
-                                | undefined;
-                            }>
-                          | undefined;
+                        messages: Array<{
+                          __typename?: 'Message';
+                          id: string;
+                          message: string;
+                          timestamp: number;
+                          sender?:
+                            | {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                lastName: string;
+                                profile: {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  tagsets?:
+                                    | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                                    | undefined;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; city: string; country: string }
+                                    | undefined;
+                                };
+                              }
+                            | undefined;
+                        }>;
                       }
                     | undefined;
                   authorization?:
@@ -11026,9 +10923,9 @@ export type CalloutPageCalloutQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11037,40 +10934,33 @@ export type CalloutPageCalloutQuery = {
                               anonymousReadAccess: boolean;
                             }
                           | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender?:
-                                | {
-                                    __typename?: 'User';
-                                    id: string;
-                                    nameID: string;
-                                    firstName: string;
-                                    lastName: string;
-                                    profile: {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      displayName: string;
-                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    };
-                                  }
-                                | undefined;
-                            }>
-                          | undefined;
+                        messages: Array<{
+                          __typename?: 'Message';
+                          id: string;
+                          message: string;
+                          timestamp: number;
+                          sender?:
+                            | {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                lastName: string;
+                                profile: {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  tagsets?:
+                                    | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                                    | undefined;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; city: string; country: string }
+                                    | undefined;
+                                };
+                              }
+                            | undefined;
+                        }>;
                       }
                     | undefined;
                   authorization?:
@@ -12196,7 +12086,7 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        updates: { __typename?: 'Updates'; id: string };
+        updates: { __typename?: 'Room'; id: string; messagesCount: number };
       }
   >;
 };
@@ -12315,7 +12205,7 @@ export type ActivityLogCalloutDiscussionCommentFragment = {
 export type ActivityLogUpdateSentFragment = {
   __typename?: 'ActivityLogEntryUpdateSent';
   message: string;
-  updates: { __typename?: 'Updates'; id: string };
+  updates: { __typename?: 'Room'; id: string; messagesCount: number };
 };
 
 export type PostTemplateCardFragment = {
@@ -12490,53 +12380,44 @@ export type HubAspectQuery = {
                           | undefined;
                         visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       };
-                      comments?:
-                        | {
-                            __typename?: 'Comments';
-                            id: string;
-                            authorization?:
-                              | {
-                                  __typename?: 'Authorization';
+                      comments: {
+                        __typename?: 'Room';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages: Array<{
+                          __typename?: 'Message';
+                          id: string;
+                          message: string;
+                          timestamp: number;
+                          sender?:
+                            | {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                lastName: string;
+                                profile: {
+                                  __typename?: 'Profile';
                                   id: string;
-                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                }
-                              | undefined;
-                            messages?:
-                              | Array<{
-                                  __typename?: 'Message';
-                                  id: string;
-                                  message: string;
-                                  timestamp: number;
-                                  sender?:
-                                    | {
-                                        __typename?: 'User';
-                                        id: string;
-                                        nameID: string;
-                                        firstName: string;
-                                        lastName: string;
-                                        profile: {
-                                          __typename?: 'Profile';
-                                          id: string;
-                                          displayName: string;
-                                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                          tagsets?:
-                                            | Array<{
-                                                __typename?: 'Tagset';
-                                                id: string;
-                                                name: string;
-                                                tags: Array<string>;
-                                              }>
-                                            | undefined;
-                                          location?:
-                                            | { __typename?: 'Location'; id: string; city: string; country: string }
-                                            | undefined;
-                                        };
-                                      }
+                                  displayName: string;
+                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  tagsets?:
+                                    | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                     | undefined;
-                                }>
-                              | undefined;
-                          }
-                        | undefined;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; city: string; country: string }
+                                    | undefined;
+                                };
+                              }
+                            | undefined;
+                        }>;
+                      };
                     }>
                   | undefined;
               }>
@@ -12610,53 +12491,44 @@ export type ChallengeAspectQuery = {
                             | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         };
-                        comments?:
-                          | {
-                              __typename?: 'Comments';
-                              id: string;
-                              authorization?:
-                                | {
-                                    __typename?: 'Authorization';
+                        comments: {
+                          __typename?: 'Room';
+                          id: string;
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
+                          messages: Array<{
+                            __typename?: 'Message';
+                            id: string;
+                            message: string;
+                            timestamp: number;
+                            sender?:
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  nameID: string;
+                                  firstName: string;
+                                  lastName: string;
+                                  profile: {
+                                    __typename?: 'Profile';
                                     id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                  }
-                                | undefined;
-                              messages?:
-                                | Array<{
-                                    __typename?: 'Message';
-                                    id: string;
-                                    message: string;
-                                    timestamp: number;
-                                    sender?:
-                                      | {
-                                          __typename?: 'User';
-                                          id: string;
-                                          nameID: string;
-                                          firstName: string;
-                                          lastName: string;
-                                          profile: {
-                                            __typename?: 'Profile';
-                                            id: string;
-                                            displayName: string;
-                                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                            tagsets?:
-                                              | Array<{
-                                                  __typename?: 'Tagset';
-                                                  id: string;
-                                                  name: string;
-                                                  tags: Array<string>;
-                                                }>
-                                              | undefined;
-                                            location?:
-                                              | { __typename?: 'Location'; id: string; city: string; country: string }
-                                              | undefined;
-                                          };
-                                        }
+                                    displayName: string;
+                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    tagsets?:
+                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                       | undefined;
-                                  }>
-                                | undefined;
-                            }
-                          | undefined;
+                                    location?:
+                                      | { __typename?: 'Location'; id: string; city: string; country: string }
+                                      | undefined;
+                                  };
+                                }
+                              | undefined;
+                          }>;
+                        };
                       }>
                     | undefined;
                 }>
@@ -12731,53 +12603,44 @@ export type OpportunityAspectQuery = {
                             | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         };
-                        comments?:
-                          | {
-                              __typename?: 'Comments';
-                              id: string;
-                              authorization?:
-                                | {
-                                    __typename?: 'Authorization';
+                        comments: {
+                          __typename?: 'Room';
+                          id: string;
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
+                          messages: Array<{
+                            __typename?: 'Message';
+                            id: string;
+                            message: string;
+                            timestamp: number;
+                            sender?:
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  nameID: string;
+                                  firstName: string;
+                                  lastName: string;
+                                  profile: {
+                                    __typename?: 'Profile';
                                     id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                  }
-                                | undefined;
-                              messages?:
-                                | Array<{
-                                    __typename?: 'Message';
-                                    id: string;
-                                    message: string;
-                                    timestamp: number;
-                                    sender?:
-                                      | {
-                                          __typename?: 'User';
-                                          id: string;
-                                          nameID: string;
-                                          firstName: string;
-                                          lastName: string;
-                                          profile: {
-                                            __typename?: 'Profile';
-                                            id: string;
-                                            displayName: string;
-                                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                            tagsets?:
-                                              | Array<{
-                                                  __typename?: 'Tagset';
-                                                  id: string;
-                                                  name: string;
-                                                  tags: Array<string>;
-                                                }>
-                                              | undefined;
-                                            location?:
-                                              | { __typename?: 'Location'; id: string; city: string; country: string }
-                                              | undefined;
-                                          };
-                                        }
+                                    displayName: string;
+                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    tagsets?:
+                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                       | undefined;
-                                  }>
-                                | undefined;
-                            }
-                          | undefined;
+                                    location?:
+                                      | { __typename?: 'Location'; id: string; city: string; country: string }
+                                      | undefined;
+                                  };
+                                }
+                              | undefined;
+                          }>;
+                        };
                       }>
                     | undefined;
                 }>
@@ -12836,48 +12699,42 @@ export type AspectDashboardDataFragment = {
                   | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-              comments?:
-                | {
-                    __typename?: 'Comments';
-                    id: string;
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
+              comments: {
+                __typename?: 'Room';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                messages: Array<{
+                  __typename?: 'Message';
+                  id: string;
+                  message: string;
+                  timestamp: number;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        nameID: string;
+                        firstName: string;
+                        lastName: string;
+                        profile: {
+                          __typename?: 'Profile';
                           id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                    messages?:
-                      | Array<{
-                          __typename?: 'Message';
-                          id: string;
-                          message: string;
-                          timestamp: number;
-                          sender?:
-                            | {
-                                __typename?: 'User';
-                                id: string;
-                                nameID: string;
-                                firstName: string;
-                                lastName: string;
-                                profile: {
-                                  __typename?: 'Profile';
-                                  id: string;
-                                  displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                  tagsets?:
-                                    | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                                    | undefined;
-                                  location?:
-                                    | { __typename?: 'Location'; id: string; city: string; country: string }
-                                    | undefined;
-                                };
-                              }
+                          displayName: string;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?:
+                            | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                             | undefined;
-                        }>
-                      | undefined;
-                  }
-                | undefined;
+                          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>;
+              };
             }>
           | undefined;
       }>
@@ -12914,42 +12771,36 @@ export type AspectDashboardFragment = {
       | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
-  comments?:
-    | {
-        __typename?: 'Comments';
-        id: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        messages?:
-          | Array<{
-              __typename?: 'Message';
+  comments: {
+    __typename?: 'Room';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    messages: Array<{
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender?:
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              message: string;
-              timestamp: number;
-              sender?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    nameID: string;
-                    firstName: string;
-                    lastName: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
-                      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    };
-                  }
-                | undefined;
-            }>
-          | undefined;
-      }
-    | undefined;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          }
+        | undefined;
+    }>;
+  };
 };
 
 export type UpdateAspectMutationVariables = Exact<{
@@ -13493,7 +13344,7 @@ export type AspectCardFragment = {
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
-  comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+  comments: { __typename?: 'Room'; id: string; messagesCount: number };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -13531,7 +13382,7 @@ export type ContributeTabAspectFragment = {
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
-  comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+  comments: { __typename?: 'Room'; id: string; messagesCount: number };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -13600,40 +13451,6 @@ export type MoveAspectToCalloutMutation = {
   };
 };
 
-export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
-  aspectID: Scalars['UUID'];
-}>;
-
-export type AspectCommentsMessageReceivedSubscription = {
-  __typename?: 'Subscription';
-  aspectCommentsMessageReceived: {
-    __typename?: 'AspectCommentsMessageReceived';
-    message: {
-      __typename?: 'Message';
-      id: string;
-      message: string;
-      timestamp: number;
-      sender?:
-        | {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          }
-        | undefined;
-    };
-  };
-};
-
 export type UpdateCalloutsSortOrderMutationVariables = Exact<{
   collaborationId: Scalars['UUID'];
   calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
@@ -13670,7 +13487,7 @@ export type DashboardTopCalloutsFragment = {
                     profile: { __typename?: 'Profile'; id: string; displayName: string };
                   }
                 | undefined;
-              comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+              comments: { __typename?: 'Room'; id: string; messagesCount: number };
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -13805,7 +13622,7 @@ export type DashboardTopCalloutFragment = {
         createdBy?:
           | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
           | undefined;
-        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+        comments: { __typename?: 'Room'; id: string; messagesCount: number };
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13914,37 +13731,6 @@ export type DashboardTopCalloutFragment = {
           | undefined;
       }>
     | undefined;
-};
-
-export type PostCommentInCalloutMutationVariables = Exact<{
-  data: SendMessageOnCalloutInput;
-}>;
-
-export type PostCommentInCalloutMutation = {
-  __typename?: 'Mutation';
-  sendMessageOnCallout: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender?:
-      | {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        }
-      | undefined;
-  };
 };
 
 export type TemplatesForCalloutCreationQueryVariables = Exact<{
@@ -14185,9 +13971,9 @@ export type CreateCalloutMutation = {
       | undefined;
     comments?:
       | {
-          __typename?: 'Comments';
+          __typename?: 'Room';
           id: string;
-          commentsCount: number;
+          messagesCount: number;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -14196,33 +13982,31 @@ export type CreateCalloutMutation = {
                 anonymousReadAccess: boolean;
               }
             | undefined;
-          messages?:
-            | Array<{
-                __typename?: 'Message';
-                id: string;
-                message: string;
-                timestamp: number;
-                sender?:
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      nameID: string;
-                      firstName: string;
-                      lastName: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        tagsets?:
-                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                          | undefined;
-                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                      };
-                    }
-                  | undefined;
-              }>
-            | undefined;
+          messages: Array<{
+            __typename?: 'Message';
+            id: string;
+            message: string;
+            timestamp: number;
+            sender?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  firstName: string;
+                  lastName: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    tagsets?:
+                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                      | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | undefined;
+          }>;
         }
       | undefined;
     authorization?:
@@ -14394,45 +14178,10 @@ export type CreateAspectFromContributeTabMutation = {
 };
 
 export type RemoveCommentFromCalloutMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
+  messageData: RoomRemoveMessageInput;
 }>;
 
-export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeComment: string };
-
-export type CalloutMessageReceivedSubscriptionVariables = Exact<{
-  calloutIDs: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type CalloutMessageReceivedSubscription = {
-  __typename?: 'Subscription';
-  calloutMessageReceived: {
-    __typename?: 'CalloutMessageReceived';
-    commentsID: string;
-    message: {
-      __typename?: 'Message';
-      id: string;
-      message: string;
-      timestamp: number;
-      sender?:
-        | {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          }
-        | undefined;
-    };
-  };
-};
+export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
 export type CalloutsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
@@ -14568,9 +14317,9 @@ export type CalloutsQuery = {
                   | undefined;
                 comments?:
                   | {
-                      __typename?: 'Comments';
+                      __typename?: 'Room';
                       id: string;
-                      commentsCount: number;
+                      messagesCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -14579,35 +14328,33 @@ export type CalloutsQuery = {
                             anonymousReadAccess: boolean;
                           }
                         | undefined;
-                      messages?:
-                        | Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
-                              | undefined;
-                          }>
-                        | undefined;
+                      messages: Array<{
+                        __typename?: 'Message';
+                        id: string;
+                        message: string;
+                        timestamp: number;
+                        sender?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              nameID: string;
+                              firstName: string;
+                              lastName: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                tagsets?:
+                                  | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                                  | undefined;
+                                location?:
+                                  | { __typename?: 'Location'; id: string; city: string; country: string }
+                                  | undefined;
+                              };
+                            }
+                          | undefined;
+                      }>;
                     }
                   | undefined;
                 authorization?:
@@ -14774,9 +14521,9 @@ export type CalloutsQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -14785,40 +14532,33 @@ export type CalloutsQuery = {
                               anonymousReadAccess: boolean;
                             }
                           | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender?:
-                                | {
-                                    __typename?: 'User';
-                                    id: string;
-                                    nameID: string;
-                                    firstName: string;
-                                    lastName: string;
-                                    profile: {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      displayName: string;
-                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    };
-                                  }
-                                | undefined;
-                            }>
-                          | undefined;
+                        messages: Array<{
+                          __typename?: 'Message';
+                          id: string;
+                          message: string;
+                          timestamp: number;
+                          sender?:
+                            | {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                lastName: string;
+                                profile: {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  tagsets?:
+                                    | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                                    | undefined;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; city: string; country: string }
+                                    | undefined;
+                                };
+                              }
+                            | undefined;
+                        }>;
                       }
                     | undefined;
                   authorization?:
@@ -14986,9 +14726,9 @@ export type CalloutsQuery = {
                     | undefined;
                   comments?:
                     | {
-                        __typename?: 'Comments';
+                        __typename?: 'Room';
                         id: string;
-                        commentsCount: number;
+                        messagesCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -14997,40 +14737,33 @@ export type CalloutsQuery = {
                               anonymousReadAccess: boolean;
                             }
                           | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender?:
-                                | {
-                                    __typename?: 'User';
-                                    id: string;
-                                    nameID: string;
-                                    firstName: string;
-                                    lastName: string;
-                                    profile: {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      displayName: string;
-                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    };
-                                  }
-                                | undefined;
-                            }>
-                          | undefined;
+                        messages: Array<{
+                          __typename?: 'Message';
+                          id: string;
+                          message: string;
+                          timestamp: number;
+                          sender?:
+                            | {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                lastName: string;
+                                profile: {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  tagsets?:
+                                    | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                                    | undefined;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; city: string; country: string }
+                                    | undefined;
+                                };
+                              }
+                            | undefined;
+                        }>;
                       }
                     | undefined;
                   authorization?:
@@ -15115,7 +14848,7 @@ export type HubCalloutAspectsSubscriptionQuery = {
                             profile: { __typename?: 'Profile'; id: string; displayName: string };
                           }
                         | undefined;
-                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                      comments: { __typename?: 'Room'; id: string; messagesCount: number };
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -15197,7 +14930,7 @@ export type ChallengeCalloutAspectsSubscriptionQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -15280,7 +15013,7 @@ export type OpportunityCalloutAspectsSubscriptionQuery = {
                               profile: { __typename?: 'Profile'; id: string; displayName: string };
                             }
                           | undefined;
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -15517,9 +15250,9 @@ export type CollaborationWithCalloutsFragment = {
           | undefined;
         comments?:
           | {
-              __typename?: 'Comments';
+              __typename?: 'Room';
               id: string;
-              commentsCount: number;
+              messagesCount: number;
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -15528,35 +15261,31 @@ export type CollaborationWithCalloutsFragment = {
                     anonymousReadAccess: boolean;
                   }
                 | undefined;
-              messages?:
-                | Array<{
-                    __typename?: 'Message';
-                    id: string;
-                    message: string;
-                    timestamp: number;
-                    sender?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          nameID: string;
-                          firstName: string;
-                          lastName: string;
-                          profile: {
-                            __typename?: 'Profile';
-                            id: string;
-                            displayName: string;
-                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                            tagsets?:
-                              | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                              | undefined;
-                            location?:
-                              | { __typename?: 'Location'; id: string; city: string; country: string }
-                              | undefined;
-                          };
-                        }
-                      | undefined;
-                  }>
-                | undefined;
+              messages: Array<{
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender?:
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      nameID: string;
+                      firstName: string;
+                      lastName: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                      };
+                    }
+                  | undefined;
+              }>;
             }
           | undefined;
         authorization?:
@@ -15693,9 +15422,9 @@ export type CalloutFragment = {
     | undefined;
   comments?:
     | {
-        __typename?: 'Comments';
+        __typename?: 'Room';
         id: string;
-        commentsCount: number;
+        messagesCount: number;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -15704,33 +15433,29 @@ export type CalloutFragment = {
               anonymousReadAccess: boolean;
             }
           | undefined;
-        messages?:
-          | Array<{
-              __typename?: 'Message';
-              id: string;
-              message: string;
-              timestamp: number;
-              sender?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    nameID: string;
-                    firstName: string;
-                    lastName: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
-                      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    };
-                  }
-                | undefined;
-            }>
-          | undefined;
+        messages: Array<{
+          __typename?: 'Message';
+          id: string;
+          message: string;
+          timestamp: number;
+          sender?:
+            | {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                firstName: string;
+                lastName: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | undefined;
+        }>;
       }
     | undefined;
   authorization?:
@@ -17248,7 +16973,7 @@ export type AspectsOnCalloutFragment = {
         createdBy?:
           | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
           | undefined;
-        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+        comments: { __typename?: 'Room'; id: string; messagesCount: number };
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -17302,7 +17027,7 @@ export type CalloutAspectCreatedSubscription = {
       createdBy?:
         | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
         | undefined;
-      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+      comments: { __typename?: 'Room'; id: string; messagesCount: number };
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -17571,41 +17296,40 @@ export type CreateDiscussionMutation = {
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: DiscussionCategory;
-    commentsCount: number;
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    comments: {
+      __typename?: 'Room';
+      id: string;
+      messagesCount: number;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      messages: Array<{
+        __typename?: 'Message';
+        id: string;
+        message: string;
+        timestamp: number;
+        sender?:
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              firstName: string;
+              lastName: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  };
-};
-
-export type PostDiscussionCommentMutationVariables = Exact<{
-  input: DiscussionSendMessageInput;
-}>;
-
-export type PostDiscussionCommentMutation = {
-  __typename?: 'Mutation';
-  sendMessageToDiscussion: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender?:
-      | {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        }
       | undefined;
   };
 };
@@ -17619,12 +17343,6 @@ export type DeleteDiscussionMutation = {
   deleteDiscussion: { __typename?: 'Discussion'; id: string };
 };
 
-export type DeleteCommentMutationVariables = Exact<{
-  messageData: DiscussionRemoveMessageInput;
-}>;
-
-export type DeleteCommentMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
-
 export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
@@ -17632,8 +17350,38 @@ export type DiscussionDetailsFragment = {
   createdBy?: string | undefined;
   timestamp?: number | undefined;
   category: DiscussionCategory;
-  commentsCount: number;
   profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  comments: {
+    __typename?: 'Room';
+    id: string;
+    messagesCount: number;
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    messages: Array<{
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender?:
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          }
+        | undefined;
+    }>;
+  };
   authorization?:
     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -17665,7 +17413,6 @@ export type PlatformDiscussionsQuery = {
             nameID: string;
             category: DiscussionCategory;
             timestamp?: number | undefined;
-            commentsCount: number;
             createdBy?: string | undefined;
             profile: {
               __typename?: 'Profile';
@@ -17673,19 +17420,29 @@ export type PlatformDiscussionsQuery = {
               displayName: string;
               description?: string | undefined;
               tagline: string;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+            comments: {
+              __typename?: 'Room';
+              id: string;
+              messagesCount: number;
+              authorization?:
+                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
             };
             authorization?:
               | {
@@ -17729,35 +17486,40 @@ export type PlatformDiscussionQuery = {
             createdBy?: string | undefined;
             timestamp?: number | undefined;
             category: DiscussionCategory;
-            commentsCount: number;
-            messages?:
-              | Array<{
-                  __typename?: 'Message';
-                  id: string;
-                  message: string;
-                  timestamp: number;
-                  sender?:
-                    | {
-                        __typename?: 'User';
-                        id: string;
-                        nameID: string;
-                        firstName: string;
-                        lastName: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          tagsets?:
-                            | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                            | undefined;
-                          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                }>
-              | undefined;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            comments: {
+              __typename?: 'Room';
+              id: string;
+              messagesCount: number;
+              authorization?:
+                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+              messages: Array<{
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender?:
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      nameID: string;
+                      firstName: string;
+                      lastName: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                      };
+                    }
+                  | undefined;
+              }>;
+            };
             authorization?:
               | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -17780,7 +17542,6 @@ export type CommunicationDiscussionUpdatedSubscription = {
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: DiscussionCategory;
-    commentsCount: number;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17801,41 +17562,7 @@ export type CommunicationDiscussionUpdatedSubscription = {
         alternativeText?: string | undefined;
       }>;
     };
-  };
-};
-
-export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{
-  discussionID: Scalars['UUID'];
-}>;
-
-export type CommunicationDiscussionMessageReceivedSubscription = {
-  __typename?: 'Subscription';
-  communicationDiscussionMessageReceived: {
-    __typename?: 'CommunicationDiscussionMessageReceived';
-    discussionID: string;
-    message: {
-      __typename?: 'Message';
-      id: string;
-      message: string;
-      timestamp: number;
-      sender?:
-        | {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          }
-        | undefined;
-    };
+    comments: { __typename?: 'Room'; id: string; messagesCount: number };
   };
 };
 
@@ -17857,74 +17584,19 @@ export type SendMessageToCommunityLeadsMutationVariables = Exact<{
 
 export type SendMessageToCommunityLeadsMutation = { __typename?: 'Mutation'; sendMessageToCommunityLeads: boolean };
 
-export type CommunityUpdatesQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityUpdatesQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          displayName: string;
-          communication?:
-            | {
-                __typename?: 'Communication';
-                id: string;
-                updates?:
-                  | {
-                      __typename?: 'Updates';
-                      id: string;
-                      messages?:
-                        | Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
-                              | undefined;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type SendUpdateMutationVariables = Exact<{
-  msgData: UpdatesSendMessageInput;
-}>;
-
-export type SendUpdateMutation = {
-  __typename?: 'Mutation';
-  sendUpdate: {
+export type CommentsWithMessagesFragment = {
+  __typename?: 'Room';
+  id: string;
+  messagesCount: number;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        anonymousReadAccess: boolean;
+      }
+    | undefined;
+  messages: Array<{
     __typename?: 'Message';
     id: string;
     message: string;
@@ -17946,22 +17618,39 @@ export type SendUpdateMutation = {
           };
         }
       | undefined;
+  }>;
+};
+
+export type SendMessageToRoomMutationVariables = Exact<{
+  messageData: RoomSendMessageInput;
+}>;
+
+export type SendMessageToRoomMutation = {
+  __typename?: 'Mutation';
+  sendMessageToRoom: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender?: { __typename?: 'User'; id: string } | undefined;
   };
 };
 
-export type RemoveUpdateCommunityMutationVariables = Exact<{
-  msgData: UpdatesRemoveMessageInput;
+export type RemoveMessageOnRoomMutationVariables = Exact<{
+  messageData: RoomRemoveMessageInput;
 }>;
 
-export type RemoveUpdateCommunityMutation = { __typename?: 'Mutation'; removeUpdate: string };
+export type RemoveMessageOnRoomMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
-export type CommunicationUpdateMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
+export type RoomMessageReceivedSubscriptionVariables = Exact<{
+  roomID: Scalars['UUID'];
+}>;
 
-export type CommunicationUpdateMessageReceivedSubscription = {
+export type RoomMessageReceivedSubscription = {
   __typename?: 'Subscription';
-  communicationUpdateMessageReceived: {
-    __typename?: 'CommunicationUpdateMessageReceived';
-    updatesID: string;
+  roomMessageReceived: {
+    __typename?: 'RoomMessageReceived';
+    roomID: string;
     message: {
       __typename?: 'Message';
       id: string;
@@ -17985,6 +17674,64 @@ export type CommunicationUpdateMessageReceivedSubscription = {
           }
         | undefined;
     };
+  };
+};
+
+export type CommunityUpdatesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityUpdatesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          displayName: string;
+          communication?:
+            | {
+                __typename?: 'Communication';
+                id: string;
+                updates: {
+                  __typename?: 'Room';
+                  id: string;
+                  messagesCount: number;
+                  messages: Array<{
+                    __typename?: 'Message';
+                    id: string;
+                    message: string;
+                    timestamp: number;
+                    sender?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          nameID: string;
+                          firstName: string;
+                          lastName: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            tagsets?:
+                              | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                              | undefined;
+                            location?:
+                              | { __typename?: 'Location'; id: string; city: string; country: string }
+                              | undefined;
+                          };
+                        }
+                      | undefined;
+                  }>;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -18911,52 +18658,6 @@ export type ContributingUsersQuery = {
   }>;
 };
 
-export type CommunityMessagesFragment = {
-  __typename?: 'Community';
-  id: string;
-  communication?:
-    | {
-        __typename?: 'Communication';
-        id: string;
-        updates?:
-          | {
-              __typename?: 'Updates';
-              id: string;
-              messages?:
-                | Array<{
-                    __typename?: 'Message';
-                    id: string;
-                    message: string;
-                    timestamp: number;
-                    sender?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          nameID: string;
-                          firstName: string;
-                          lastName: string;
-                          profile: {
-                            __typename?: 'Profile';
-                            id: string;
-                            displayName: string;
-                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                            tagsets?:
-                              | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                              | undefined;
-                            location?:
-                              | { __typename?: 'Location'; id: string; city: string; country: string }
-                              | undefined;
-                          };
-                        }
-                      | undefined;
-                  }>
-                | undefined;
-            }
-          | undefined;
-      }
-    | undefined;
-};
-
 export type MessageDetailsFragment = {
   __typename?: 'Message';
   id: string;
@@ -19127,41 +18828,38 @@ export type CommunityMessagesQuery = {
             | {
                 __typename?: 'Communication';
                 id: string;
-                updates?:
-                  | {
-                      __typename?: 'Updates';
-                      id: string;
-                      messages?:
-                        | Array<{
-                            __typename?: 'Message';
+                updates: {
+                  __typename?: 'Room';
+                  id: string;
+                  messagesCount: number;
+                  messages: Array<{
+                    __typename?: 'Message';
+                    id: string;
+                    message: string;
+                    timestamp: number;
+                    sender?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          nameID: string;
+                          firstName: string;
+                          lastName: string;
+                          profile: {
+                            __typename?: 'Profile';
                             id: string;
-                            message: string;
-                            timestamp: number;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
+                            displayName: string;
+                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            tagsets?:
+                              | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                               | undefined;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
+                            location?:
+                              | { __typename?: 'Location'; id: string; city: string; country: string }
+                              | undefined;
+                          };
+                        }
+                      | undefined;
+                  }>;
+                };
               }
             | undefined;
         }
@@ -23561,7 +23259,7 @@ export type SearchQuery = {
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
                 }
               | undefined;
-            comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+            comments: { __typename?: 'Room'; id: string; messagesCount: number };
           };
           hub: {
             __typename?: 'Hub';
@@ -23647,7 +23345,7 @@ export type SearchResultCardFragment = {
     createdBy?:
       | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
       | undefined;
-    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+    comments: { __typename?: 'Room'; id: string; messagesCount: number };
   };
   hub: {
     __typename?: 'Hub';
@@ -24283,66 +23981,6 @@ export type CreateRelationMutation = {
   createRelationOnCollaboration: { __typename?: 'Relation'; id: string };
 };
 
-export type CommentsWithMessagesFragment = {
-  __typename?: 'Comments';
-  id: string;
-  commentsCount: number;
-  authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
-    | undefined;
-  messages?:
-    | Array<{
-        __typename?: 'Message';
-        id: string;
-        message: string;
-        timestamp: number;
-        sender?:
-          | {
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              firstName: string;
-              lastName: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-              };
-            }
-          | undefined;
-      }>
-    | undefined;
-};
-
-export type PostCommentMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
-}>;
-
-export type PostCommentMutation = {
-  __typename?: 'Mutation';
-  sendComment: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender?: { __typename?: 'User'; id: string } | undefined;
-  };
-};
-
-export type RemoveCommentMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
-}>;
-
-export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
-
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
@@ -24496,55 +24134,46 @@ export type HubCalendarEventsQuery = {
                         };
                       }
                     | undefined;
-                  comments?:
-                    | {
-                        __typename?: 'Comments';
-                        id: string;
-                        commentsCount: number;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
+                  comments: {
+                    __typename?: 'Room';
+                    id: string;
+                    messagesCount: number;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          anonymousReadAccess: boolean;
+                        }
+                      | undefined;
+                    messages: Array<{
+                      __typename?: 'Message';
+                      id: string;
+                      message: string;
+                      timestamp: number;
+                      sender?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            nameID: string;
+                            firstName: string;
+                            lastName: string;
+                            profile: {
+                              __typename?: 'Profile';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender?:
-                                | {
-                                    __typename?: 'User';
-                                    id: string;
-                                    nameID: string;
-                                    firstName: string;
-                                    lastName: string;
-                                    profile: {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      displayName: string;
-                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    };
-                                  }
+                              displayName: string;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              tagsets?:
+                                | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                 | undefined;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
+                              location?:
+                                | { __typename?: 'Location'; id: string; city: string; country: string }
+                                | undefined;
+                            };
+                          }
+                        | undefined;
+                    }>;
+                  };
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -24611,55 +24240,46 @@ export type CalendarEventDetailsQuery = {
                         };
                       }
                     | undefined;
-                  comments?:
-                    | {
-                        __typename?: 'Comments';
-                        id: string;
-                        commentsCount: number;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
+                  comments: {
+                    __typename?: 'Room';
+                    id: string;
+                    messagesCount: number;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          anonymousReadAccess: boolean;
+                        }
+                      | undefined;
+                    messages: Array<{
+                      __typename?: 'Message';
+                      id: string;
+                      message: string;
+                      timestamp: number;
+                      sender?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            nameID: string;
+                            firstName: string;
+                            lastName: string;
+                            profile: {
+                              __typename?: 'Profile';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender?:
-                                | {
-                                    __typename?: 'User';
-                                    id: string;
-                                    nameID: string;
-                                    firstName: string;
-                                    lastName: string;
-                                    profile: {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      displayName: string;
-                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    };
-                                  }
+                              displayName: string;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              tagsets?:
+                                | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                 | undefined;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
+                              location?:
+                                | { __typename?: 'Location'; id: string; city: string; country: string }
+                                | undefined;
+                            };
+                          }
+                        | undefined;
+                    }>;
+                  };
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -24708,48 +24328,42 @@ export type CalendarEventDetailsFragment = {
         };
       }
     | undefined;
-  comments?:
-    | {
-        __typename?: 'Comments';
-        id: string;
-        commentsCount: number;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
+  comments: {
+    __typename?: 'Room';
+    id: string;
+    messagesCount: number;
+    authorization?:
+      | {
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          anonymousReadAccess: boolean;
+        }
+      | undefined;
+    messages: Array<{
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender?:
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-        messages?:
-          | Array<{
-              __typename?: 'Message';
-              id: string;
-              message: string;
-              timestamp: number;
-              sender?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    nameID: string;
-                    firstName: string;
-                    lastName: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
-                      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    };
-                  }
-                | undefined;
-            }>
-          | undefined;
-      }
-    | undefined;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          }
+        | undefined;
+    }>;
+  };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -24803,48 +24417,42 @@ export type CreateCalendarEventMutation = {
           };
         }
       | undefined;
-    comments?:
-      | {
-          __typename?: 'Comments';
-          id: string;
-          commentsCount: number;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
+    comments: {
+      __typename?: 'Room';
+      id: string;
+      messagesCount: number;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            anonymousReadAccess: boolean;
+          }
+        | undefined;
+      messages: Array<{
+        __typename?: 'Message';
+        id: string;
+        message: string;
+        timestamp: number;
+        sender?:
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              firstName: string;
+              lastName: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
-          messages?:
-            | Array<{
-                __typename?: 'Message';
-                id: string;
-                message: string;
-                timestamp: number;
-                sender?:
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      nameID: string;
-                      firstName: string;
-                      lastName: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        tagsets?:
-                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                          | undefined;
-                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                      };
-                    }
-                  | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -24888,48 +24496,42 @@ export type UpdateCalendarEventMutation = {
           };
         }
       | undefined;
-    comments?:
-      | {
-          __typename?: 'Comments';
-          id: string;
-          commentsCount: number;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
+    comments: {
+      __typename?: 'Room';
+      id: string;
+      messagesCount: number;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            anonymousReadAccess: boolean;
+          }
+        | undefined;
+      messages: Array<{
+        __typename?: 'Message';
+        id: string;
+        message: string;
+        timestamp: number;
+        sender?:
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              firstName: string;
+              lastName: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
-          messages?:
-            | Array<{
-                __typename?: 'Message';
-                id: string;
-                message: string;
-                timestamp: number;
-                sender?:
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      nameID: string;
-                      firstName: string;
-                      lastName: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        tagsets?:
-                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                          | undefined;
-                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                      };
-                    }
-                  | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -24950,38 +24552,4 @@ export type DeleteCalendarEventMutationVariables = Exact<{
 export type DeleteCalendarEventMutation = {
   __typename?: 'Mutation';
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
-};
-
-export type CalendarEventCommentsMessageReceivedSubscriptionVariables = Exact<{
-  calendarEventID: Scalars['UUID'];
-}>;
-
-export type CalendarEventCommentsMessageReceivedSubscription = {
-  __typename?: 'Subscription';
-  calendarEventCommentsMessageReceived: {
-    __typename?: 'CalendarEventCommentsMessageReceived';
-    message: {
-      __typename?: 'Message';
-      id: string;
-      message: string;
-      timestamp: number;
-      sender?:
-        | {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          }
-        | undefined;
-    };
-  };
 };

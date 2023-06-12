@@ -6,7 +6,7 @@ import Filter from '../../../platform/admin/components/Common/Filter';
 import MessageView from '../../../shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { Message } from '../../../shared/components/Comments/models/message';
+import { Message } from '../../messages/models/message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, BlockSectionTitle } from '../../../../core/ui/typography';
@@ -32,19 +32,9 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const {
-    id,
-    description,
-    author,
-    authors,
-    createdAt,
-    commentsCount: totalComments,
-    comments,
-    myPrivileges,
-    nameID,
-  } = discussion;
+  const { id, description, author, authors, createdAt, comments, myPrivileges, nameID } = discussion;
 
-  const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.CreateComment) ?? false;
+  const canPost = comments.myPrivileges?.some(x => x === AuthorizationPrivilege.CreateMessage) ?? false;
   const canDeleteDiscussion = myPrivileges?.some(x => x === AuthorizationPrivilege.Delete) ?? false;
   const canDeleteComment = (authorId?: string) =>
     (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
@@ -81,12 +71,12 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
               <Box paddingY={2}>
                 <BlockSectionTitle>
                   {t('components.discussion.summary', {
-                    comment: totalComments,
+                    comment: comments.messagesCount,
                     contributed: authors.length,
                   })}
                 </BlockSectionTitle>
               </Box>
-              <Filter data={comments}>
+              <Filter data={comments.messages}>
                 {filteredComments => {
                   if (filteredComments.length === 0) return null;
                   return (
