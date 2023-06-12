@@ -1907,7 +1907,7 @@
       "title": "Kaart label",
       "help-text": "Welke informatie type wil je delen?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Kaart locatie",
       "label": "Bijdragen aan oproep",
       "reminder": "Wees voorzichtig met het verplaatsen van de kaart. Als je de kaart naar een andere Callout verplaatst, zal hij verdwijnen van de huidige Callout. Dit kan het voor mensen, ook voor de persoon die deze kaart heeft gemaakt, moeilijk maken om hem terug te vinden. Het is alleen mogelijk om kaarten te verplaatsen binnen dezelfde Space, Challenge of Opportunity.",

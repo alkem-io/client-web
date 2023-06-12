@@ -177,8 +177,6 @@
     "forum": "Forum",
     "email": "Email",
     "state": "Zustand",
-    "post": "Karte",
-    "posts": "Karten",
     "host": "Selbst hosten",
     "lead": "Blei",
     "hub": "Hauptinsel",
@@ -1458,7 +1456,7 @@
           "opportunity": "Sonderangebot",
           "user": "Benutzer",
           "organization": "Organisationen",
-          "card": "Karten",
+          "post": "Karten",
           "whiteboard": "Whiteboards (bald verfügbar)",
           "callout": "Anrufe (bald verfügbar)"
         }
@@ -1907,7 +1905,7 @@
       "title": "Kartenlabel",
       "help-text": "Welche Daten möchten Sie ändern?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Kartenstandort",
       "label": "Beitrag zum Callout",
       "reminder": "Wenn Sie die Karte zu einem anderen Callout verschieben, wird sie vom aktuellen Callout verschwinden. Dies könnte es für Personen, einschließlich der Person, die diese Karte erstellt hat, schwierig machen, sie zurückzuholen. Beachte, dass du nur Karten innerhalb des gleichen Hubs, der Herausforderung oder der Chance verschieben kannst.",

@@ -1648,7 +1648,7 @@
       "title": "Card Type",
       "help-text": "What type of information do you want to share?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Card location",
       "label": "Contributing to Callout",
       "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",

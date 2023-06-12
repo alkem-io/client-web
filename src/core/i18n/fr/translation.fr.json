@@ -1907,7 +1907,7 @@
       "title": "Étiquette de la carte",
       "help-text": "Quel type d'informations voulez-vous partager?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Lieu de la carte",
       "label": "Contribuer à Callout",
       "reminder": "Soyez prudent en changeant la position de la carte. Le déplacement de la carte vers une autre carte le fera disparaître du rappel actuel. Cela pourrait rendre difficile pour les personnes, y compris la personne qui a créé cette carte, de le récupérer. Notez que vous ne pouvez déplacer des cartes que dans le même Hub, Challenge ou Opportunité.",

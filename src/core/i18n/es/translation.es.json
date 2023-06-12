@@ -1648,7 +1648,7 @@
       "title": "Tipo de Tarjeta",
       "help-text": "¿Qué tipo de información quieres compartir?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Ubicación de la tarjeta",
       "label": "Contribuyendo a Callout",
       "reminder": "Tenga cuidado al cambiar la ubicación de la tarjeta. Si se mueve la tarjeta a otro Callout esto desaparecerá del actual Callout. Esto podría complicar las cosas quando las personas, incluida la persona que creó esta tarjeta, intentarán recuperarla. Ten en cuenta que sólo puedes mover tarjetas dentro del mismo Hub, Desafío y Oportunidad.",
