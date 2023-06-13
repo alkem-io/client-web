@@ -37,7 +37,7 @@ export const AspectCardFragmentDoc = gql`
     createdDate
     comments {
       id
-      commentsCount
+      messagesCount
     }
     profile {
       id
@@ -1289,6 +1289,7 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
   fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
     updates {
       id
+      messagesCount
     }
     message
   }
@@ -1507,9 +1508,9 @@ export const ReferenceDetailsFragmentDoc = gql`
   }
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
-  fragment CommentsWithMessages on Comments {
+  fragment CommentsWithMessages on Room {
     id
-    commentsCount
+    messagesCount
     authorization {
       id
       myPrivileges
@@ -1763,11 +1764,21 @@ export const DiscussionDetailsFragmentDoc = gql`
     createdBy
     timestamp
     category
-    commentsCount
+    comments {
+      id
+      messagesCount
+      authorization {
+        myPrivileges
+      }
+      messages {
+        ...MessageDetails
+      }
+    }
     authorization {
       myPrivileges
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 export const ApplicationFormFragmentDoc = gql`
   fragment ApplicationForm on Form {
@@ -1861,21 +1872,6 @@ export const CommunityMembersFragmentDoc = gql`
   }
   ${UserCardFragmentDoc}
   ${OrganizationCardFragmentDoc}
-`;
-export const CommunityMessagesFragmentDoc = gql`
-  fragment CommunityMessages on Community {
-    id
-    communication {
-      id
-      updates {
-        id
-        messages {
-          ...MessageDetails
-        }
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
 `;
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
@@ -2800,7 +2796,7 @@ export const SearchResultCardFragmentDoc = gql`
       createdDate
       comments {
         id
-        commentsCount
+        messagesCount
       }
     }
     ...CardParent
@@ -10127,51 +10123,6 @@ export type MoveAspectToCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MoveAspectToCalloutMutation,
   SchemaTypes.MoveAspectToCalloutMutationVariables
 >;
-export const AspectCommentsMessageReceivedDocument = gql`
-  subscription AspectCommentsMessageReceived($aspectID: UUID!) {
-    aspectCommentsMessageReceived(aspectID: $aspectID) {
-      message {
-        ...MessageDetails
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useAspectCommentsMessageReceivedSubscription__
- *
- * To run a query within a React component, call `useAspectCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useAspectCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAspectCommentsMessageReceivedSubscription({
- *   variables: {
- *      aspectID: // value for 'aspectID'
- *   },
- * });
- */
-export function useAspectCommentsMessageReceivedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.AspectCommentsMessageReceivedSubscription,
-    SchemaTypes.AspectCommentsMessageReceivedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.AspectCommentsMessageReceivedSubscription,
-    SchemaTypes.AspectCommentsMessageReceivedSubscriptionVariables
-  >(AspectCommentsMessageReceivedDocument, options);
-}
-
-export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
-  typeof useAspectCommentsMessageReceivedSubscription
->;
-export type AspectCommentsMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
 export const UpdateCalloutsSortOrderDocument = gql`
   mutation UpdateCalloutsSortOrder($collaborationId: UUID!, $calloutIds: [UUID_NAMEID!]!) {
     updateCalloutsSortOrder(sortOrderData: { collaborationID: $collaborationId, calloutIDs: $calloutIds }) {
@@ -10221,55 +10172,6 @@ export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<Schema
 export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutsSortOrderMutation,
   SchemaTypes.UpdateCalloutsSortOrderMutationVariables
->;
-export const PostCommentInCalloutDocument = gql`
-  mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
-    sendMessageOnCallout(data: $data) {
-      ...MessageDetails
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-export type PostCommentInCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.PostCommentInCalloutMutation,
-  SchemaTypes.PostCommentInCalloutMutationVariables
->;
-
-/**
- * __usePostCommentInCalloutMutation__
- *
- * To run a mutation, you first call `usePostCommentInCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePostCommentInCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [postCommentInCalloutMutation, { data, loading, error }] = usePostCommentInCalloutMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function usePostCommentInCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.PostCommentInCalloutMutation,
-    SchemaTypes.PostCommentInCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.PostCommentInCalloutMutation,
-    SchemaTypes.PostCommentInCalloutMutationVariables
-  >(PostCommentInCalloutDocument, options);
-}
-
-export type PostCommentInCalloutMutationHookResult = ReturnType<typeof usePostCommentInCalloutMutation>;
-export type PostCommentInCalloutMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInCalloutMutation>;
-export type PostCommentInCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.PostCommentInCalloutMutation,
-  SchemaTypes.PostCommentInCalloutMutationVariables
 >;
 export const TemplatesForCalloutCreationDocument = gql`
   query TemplatesForCalloutCreation($hubId: UUID_NAMEID!) {
@@ -11124,8 +11026,8 @@ export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
 >;
 export const RemoveCommentFromCalloutDocument = gql`
-  mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
-    removeComment(messageData: $messageData)
+  mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
+    removeMessageOnRoom(messageData: $messageData)
   }
 `;
 export type RemoveCommentFromCalloutMutationFn = Apollo.MutationFunction<
@@ -11170,50 +11072,6 @@ export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.RemoveCommentFromCalloutMutation,
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
-export const CalloutMessageReceivedDocument = gql`
-  subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
-    calloutMessageReceived(calloutIDs: $calloutIDs) {
-      commentsID
-      message {
-        ...MessageDetails
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useCalloutMessageReceivedSubscription__
- *
- * To run a query within a React component, call `useCalloutMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCalloutMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutMessageReceivedSubscription({
- *   variables: {
- *      calloutIDs: // value for 'calloutIDs'
- *   },
- * });
- */
-export function useCalloutMessageReceivedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CalloutMessageReceivedSubscription,
-    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CalloutMessageReceivedSubscription,
-    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
-  >(CalloutMessageReceivedDocument, options);
-}
-
-export type CalloutMessageReceivedSubscriptionHookResult = ReturnType<typeof useCalloutMessageReceivedSubscription>;
-export type CalloutMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CalloutMessageReceivedSubscription>;
 export const CalloutsDocument = gql`
   query Callouts(
     $hubNameId: UUID_NAMEID!
@@ -13584,55 +13442,6 @@ export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateDiscussionMutation,
   SchemaTypes.CreateDiscussionMutationVariables
 >;
-export const PostDiscussionCommentDocument = gql`
-  mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
-    sendMessageToDiscussion(messageData: $input) {
-      ...MessageDetails
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-export type PostDiscussionCommentMutationFn = Apollo.MutationFunction<
-  SchemaTypes.PostDiscussionCommentMutation,
-  SchemaTypes.PostDiscussionCommentMutationVariables
->;
-
-/**
- * __usePostDiscussionCommentMutation__
- *
- * To run a mutation, you first call `usePostDiscussionCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePostDiscussionCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [postDiscussionCommentMutation, { data, loading, error }] = usePostDiscussionCommentMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function usePostDiscussionCommentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.PostDiscussionCommentMutation,
-    SchemaTypes.PostDiscussionCommentMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.PostDiscussionCommentMutation,
-    SchemaTypes.PostDiscussionCommentMutationVariables
-  >(PostDiscussionCommentDocument, options);
-}
-
-export type PostDiscussionCommentMutationHookResult = ReturnType<typeof usePostDiscussionCommentMutation>;
-export type PostDiscussionCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostDiscussionCommentMutation>;
-export type PostDiscussionCommentMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.PostDiscussionCommentMutation,
-  SchemaTypes.PostDiscussionCommentMutationVariables
->;
 export const DeleteDiscussionDocument = gql`
   mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
     deleteDiscussion(deleteData: $deleteData) {
@@ -13681,52 +13490,6 @@ export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDiscussionMutation,
   SchemaTypes.DeleteDiscussionMutationVariables
 >;
-export const DeleteCommentDocument = gql`
-  mutation deleteComment($messageData: DiscussionRemoveMessageInput!) {
-    removeMessageFromDiscussion(messageData: $messageData)
-  }
-`;
-export type DeleteCommentMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteCommentMutation,
-  SchemaTypes.DeleteCommentMutationVariables
->;
-
-/**
- * __useDeleteCommentMutation__
- *
- * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function useDeleteCommentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteCommentMutation,
-    SchemaTypes.DeleteCommentMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteCommentMutation, SchemaTypes.DeleteCommentMutationVariables>(
-    DeleteCommentDocument,
-    options
-  );
-}
-
-export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
-export type DeleteCommentMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCommentMutation>;
-export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteCommentMutation,
-  SchemaTypes.DeleteCommentMutationVariables
->;
 export const PlatformDiscussionsDocument = gql`
   query platformDiscussions {
     platform {
@@ -13747,13 +13510,19 @@ export const PlatformDiscussionsDocument = gql`
             displayName
             description
             tagline
-            visuals {
+            visual(type: AVATAR) {
               ...VisualFull
             }
           }
           category
           timestamp
-          commentsCount
+          comments {
+            id
+            messagesCount
+            authorization {
+              myPrivileges
+            }
+          }
           createdBy
           authorization {
             id
@@ -13831,15 +13600,11 @@ export const PlatformDiscussionDocument = gql`
         }
         discussion(ID: $discussionId) {
           ...DiscussionDetails
-          messages {
-            ...MessageDetails
-          }
         }
       }
     }
   }
   ${DiscussionDetailsFragmentDoc}
-  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -13911,7 +13676,10 @@ export const CommunicationDiscussionUpdatedDocument = gql`
       createdBy
       timestamp
       category
-      commentsCount
+      comments {
+        id
+        messagesCount
+      }
     }
   }
   ${VisualFullFragmentDoc}
@@ -13951,52 +13719,6 @@ export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
 >;
 export type CommunicationDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
-export const CommunicationDiscussionMessageReceivedDocument = gql`
-  subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
-    communicationDiscussionMessageReceived(discussionID: $discussionID) {
-      discussionID
-      message {
-        ...MessageDetails
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useCommunicationDiscussionMessageReceivedSubscription__
- *
- * To run a query within a React component, call `useCommunicationDiscussionMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommunicationDiscussionMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunicationDiscussionMessageReceivedSubscription({
- *   variables: {
- *      discussionID: // value for 'discussionID'
- *   },
- * });
- */
-export function useCommunicationDiscussionMessageReceivedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
-  >(CommunicationDiscussionMessageReceivedDocument, options);
-}
-
-export type CommunicationDiscussionMessageReceivedSubscriptionHookResult = ReturnType<
-  typeof useCommunicationDiscussionMessageReceivedSubscription
->;
-export type CommunicationDiscussionMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionMessageReceivedSubscription>;
 export const SendMessageToUserDocument = gql`
   mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
     sendMessageToUser(messageData: $messageData)
@@ -14137,6 +13859,149 @@ export type SendMessageToCommunityLeadsMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.SendMessageToCommunityLeadsMutation,
   SchemaTypes.SendMessageToCommunityLeadsMutationVariables
 >;
+export const SendMessageToRoomDocument = gql`
+  mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {
+    sendMessageToRoom(messageData: $messageData) {
+      id
+      message
+      sender {
+        id
+      }
+      timestamp
+    }
+  }
+`;
+export type SendMessageToRoomMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToRoomMutation,
+  SchemaTypes.SendMessageToRoomMutationVariables
+>;
+
+/**
+ * __useSendMessageToRoomMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToRoomMutation, { data, loading, error }] = useSendMessageToRoomMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToRoomMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToRoomMutation,
+    SchemaTypes.SendMessageToRoomMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.SendMessageToRoomMutation, SchemaTypes.SendMessageToRoomMutationVariables>(
+    SendMessageToRoomDocument,
+    options
+  );
+}
+
+export type SendMessageToRoomMutationHookResult = ReturnType<typeof useSendMessageToRoomMutation>;
+export type SendMessageToRoomMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToRoomMutation>;
+export type SendMessageToRoomMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToRoomMutation,
+  SchemaTypes.SendMessageToRoomMutationVariables
+>;
+export const RemoveMessageOnRoomDocument = gql`
+  mutation removeMessageOnRoom($messageData: RoomRemoveMessageInput!) {
+    removeMessageOnRoom(messageData: $messageData)
+  }
+`;
+export type RemoveMessageOnRoomMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveMessageOnRoomMutation,
+  SchemaTypes.RemoveMessageOnRoomMutationVariables
+>;
+
+/**
+ * __useRemoveMessageOnRoomMutation__
+ *
+ * To run a mutation, you first call `useRemoveMessageOnRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMessageOnRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMessageOnRoomMutation, { data, loading, error }] = useRemoveMessageOnRoomMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useRemoveMessageOnRoomMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveMessageOnRoomMutation,
+    SchemaTypes.RemoveMessageOnRoomMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemoveMessageOnRoomMutation, SchemaTypes.RemoveMessageOnRoomMutationVariables>(
+    RemoveMessageOnRoomDocument,
+    options
+  );
+}
+
+export type RemoveMessageOnRoomMutationHookResult = ReturnType<typeof useRemoveMessageOnRoomMutation>;
+export type RemoveMessageOnRoomMutationResult = Apollo.MutationResult<SchemaTypes.RemoveMessageOnRoomMutation>;
+export type RemoveMessageOnRoomMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveMessageOnRoomMutation,
+  SchemaTypes.RemoveMessageOnRoomMutationVariables
+>;
+export const RoomMessageReceivedDocument = gql`
+  subscription roomMessageReceived($roomID: UUID!) {
+    roomMessageReceived(roomID: $roomID) {
+      roomID
+      message {
+        ...MessageDetails
+      }
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useRoomMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useRoomMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRoomMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRoomMessageReceivedSubscription({
+ *   variables: {
+ *      roomID: // value for 'roomID'
+ *   },
+ * });
+ */
+export function useRoomMessageReceivedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.RoomMessageReceivedSubscription,
+    SchemaTypes.RoomMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.RoomMessageReceivedSubscription,
+    SchemaTypes.RoomMessageReceivedSubscriptionVariables
+  >(RoomMessageReceivedDocument, options);
+}
+
+export type RoomMessageReceivedSubscriptionHookResult = ReturnType<typeof useRoomMessageReceivedSubscription>;
+export type RoomMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.RoomMessageReceivedSubscription>;
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubId) {
@@ -14149,8 +14014,10 @@ export const CommunityUpdatesDocument = gql`
           updates {
             id
             messages {
+              id
               ...MessageDetails
             }
+            messagesCount
           }
         }
       }
@@ -14209,143 +14076,6 @@ export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpd
   return { query: CommunityUpdatesDocument, variables: variables };
 }
 
-export const SendUpdateDocument = gql`
-  mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
-    sendUpdate(messageData: $msgData) {
-      ...MessageDetails
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-export type SendUpdateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.SendUpdateMutation,
-  SchemaTypes.SendUpdateMutationVariables
->;
-
-/**
- * __useSendUpdateMutation__
- *
- * To run a mutation, you first call `useSendUpdateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendUpdateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [sendUpdateMutation, { data, loading, error }] = useSendUpdateMutation({
- *   variables: {
- *      msgData: // value for 'msgData'
- *   },
- * });
- */
-export function useSendUpdateMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.SendUpdateMutation, SchemaTypes.SendUpdateMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.SendUpdateMutation, SchemaTypes.SendUpdateMutationVariables>(
-    SendUpdateDocument,
-    options
-  );
-}
-
-export type SendUpdateMutationHookResult = ReturnType<typeof useSendUpdateMutation>;
-export type SendUpdateMutationResult = Apollo.MutationResult<SchemaTypes.SendUpdateMutation>;
-export type SendUpdateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.SendUpdateMutation,
-  SchemaTypes.SendUpdateMutationVariables
->;
-export const RemoveUpdateCommunityDocument = gql`
-  mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
-    removeUpdate(messageData: $msgData)
-  }
-`;
-export type RemoveUpdateCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUpdateCommunityMutation,
-  SchemaTypes.RemoveUpdateCommunityMutationVariables
->;
-
-/**
- * __useRemoveUpdateCommunityMutation__
- *
- * To run a mutation, you first call `useRemoveUpdateCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUpdateCommunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUpdateCommunityMutation, { data, loading, error }] = useRemoveUpdateCommunityMutation({
- *   variables: {
- *      msgData: // value for 'msgData'
- *   },
- * });
- */
-export function useRemoveUpdateCommunityMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUpdateCommunityMutation,
-    SchemaTypes.RemoveUpdateCommunityMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUpdateCommunityMutation,
-    SchemaTypes.RemoveUpdateCommunityMutationVariables
-  >(RemoveUpdateCommunityDocument, options);
-}
-
-export type RemoveUpdateCommunityMutationHookResult = ReturnType<typeof useRemoveUpdateCommunityMutation>;
-export type RemoveUpdateCommunityMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUpdateCommunityMutation>;
-export type RemoveUpdateCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUpdateCommunityMutation,
-  SchemaTypes.RemoveUpdateCommunityMutationVariables
->;
-export const CommunicationUpdateMessageReceivedDocument = gql`
-  subscription communicationUpdateMessageReceived {
-    communicationUpdateMessageReceived {
-      updatesID
-      message {
-        ...MessageDetails
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useCommunicationUpdateMessageReceivedSubscription__
- *
- * To run a query within a React component, call `useCommunicationUpdateMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommunicationUpdateMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunicationUpdateMessageReceivedSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useCommunicationUpdateMessageReceivedSubscription(
-  baseOptions?: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CommunicationUpdateMessageReceivedSubscription,
-    SchemaTypes.CommunicationUpdateMessageReceivedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CommunicationUpdateMessageReceivedSubscription,
-    SchemaTypes.CommunicationUpdateMessageReceivedSubscriptionVariables
-  >(CommunicationUpdateMessageReceivedDocument, options);
-}
-
-export type CommunicationUpdateMessageReceivedSubscriptionHookResult = ReturnType<
-  typeof useCommunicationUpdateMessageReceivedSubscription
->;
-export type CommunicationUpdateMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CommunicationUpdateMessageReceivedSubscription>;
 export const CommunityUserPrivilegesDocument = gql`
   query communityUserPrivileges($hubNameId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubNameId) {
@@ -16080,11 +15810,21 @@ export const CommunityMessagesDocument = gql`
     hub(ID: $hubId) {
       id
       community(ID: $communityId) {
-        ...CommunityMessages
+        id
+        communication {
+          id
+          updates {
+            id
+            messages {
+              ...MessageDetails
+            }
+            messagesCount
+          }
+        }
       }
     }
   }
-  ${CommunityMessagesFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -23523,102 +23263,6 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutation,
   SchemaTypes.CreateRelationMutationVariables
 >;
-export const PostCommentDocument = gql`
-  mutation PostComment($messageData: CommentsSendMessageInput!) {
-    sendComment(messageData: $messageData) {
-      id
-      message
-      sender {
-        id
-      }
-      timestamp
-    }
-  }
-`;
-export type PostCommentMutationFn = Apollo.MutationFunction<
-  SchemaTypes.PostCommentMutation,
-  SchemaTypes.PostCommentMutationVariables
->;
-
-/**
- * __usePostCommentMutation__
- *
- * To run a mutation, you first call `usePostCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePostCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [postCommentMutation, { data, loading, error }] = usePostCommentMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function usePostCommentMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.PostCommentMutation, SchemaTypes.PostCommentMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.PostCommentMutation, SchemaTypes.PostCommentMutationVariables>(
-    PostCommentDocument,
-    options
-  );
-}
-
-export type PostCommentMutationHookResult = ReturnType<typeof usePostCommentMutation>;
-export type PostCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentMutation>;
-export type PostCommentMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.PostCommentMutation,
-  SchemaTypes.PostCommentMutationVariables
->;
-export const RemoveCommentDocument = gql`
-  mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
-    removeComment(messageData: $messageData)
-  }
-`;
-export type RemoveCommentMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveCommentMutation,
-  SchemaTypes.RemoveCommentMutationVariables
->;
-
-/**
- * __useRemoveCommentMutation__
- *
- * To run a mutation, you first call `useRemoveCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeCommentMutation, { data, loading, error }] = useRemoveCommentMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function useRemoveCommentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveCommentMutation,
-    SchemaTypes.RemoveCommentMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.RemoveCommentMutation, SchemaTypes.RemoveCommentMutationVariables>(
-    RemoveCommentDocument,
-    options
-  );
-}
-
-export type RemoveCommentMutationHookResult = ReturnType<typeof useRemoveCommentMutation>;
-export type RemoveCommentMutationResult = Apollo.MutationResult<SchemaTypes.RemoveCommentMutation>;
-export type RemoveCommentMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveCommentMutation,
-  SchemaTypes.RemoveCommentMutationVariables
->;
 export const MentionableUsersDocument = gql`
   query MentionableUsers($filter: UserFilterInput, $first: Int) {
     usersPaginated(filter: $filter, first: $first) {
@@ -24101,48 +23745,3 @@ export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
   SchemaTypes.DeleteCalendarEventMutationVariables
 >;
-export const CalendarEventCommentsMessageReceivedDocument = gql`
-  subscription CalendarEventCommentsMessageReceived($calendarEventID: UUID!) {
-    calendarEventCommentsMessageReceived(calendarEventID: $calendarEventID) {
-      message {
-        ...MessageDetails
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useCalendarEventCommentsMessageReceivedSubscription__
- *
- * To run a query within a React component, call `useCalendarEventCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCalendarEventCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalendarEventCommentsMessageReceivedSubscription({
- *   variables: {
- *      calendarEventID: // value for 'calendarEventID'
- *   },
- * });
- */
-export function useCalendarEventCommentsMessageReceivedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CalendarEventCommentsMessageReceivedSubscription,
-    SchemaTypes.CalendarEventCommentsMessageReceivedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CalendarEventCommentsMessageReceivedSubscription,
-    SchemaTypes.CalendarEventCommentsMessageReceivedSubscriptionVariables
-  >(CalendarEventCommentsMessageReceivedDocument, options);
-}
-
-export type CalendarEventCommentsMessageReceivedSubscriptionHookResult = ReturnType<
-  typeof useCalendarEventCommentsMessageReceivedSubscription
->;
-export type CalendarEventCommentsMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CalendarEventCommentsMessageReceivedSubscription>;

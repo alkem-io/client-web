@@ -5,19 +5,19 @@ import RemoveModal from '../../../../common/components/core/RemoveModal';
 import { useUserContext } from '../../../community/contributor/user';
 import DiscussionView from '../views/DiscussionView';
 import {
-  CommunicationDiscussionMessageReceivedDocument,
   MessageDetailsFragmentDoc,
+  RoomMessageReceivedDocument,
   refetchPlatformDiscussionQuery,
   refetchPlatformDiscussionsQuery,
   useDeleteDiscussionMutation,
   usePlatformDiscussionQuery,
-  usePostDiscussionCommentMutation,
-  useDeleteCommentMutation,
+  useRemoveMessageOnRoomMutation,
+  useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Message } from '../../../shared/components/Comments/models/message';
+import { Message } from '../../messages/models/message';
 import { Skeleton } from '@mui/material';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
@@ -28,23 +28,20 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { useNavigate } from 'react-router-dom';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
-  CommunicationDiscussionMessageReceivedSubscription,
-  CommunicationDiscussionMessageReceivedSubscriptionVariables,
   DiscussionDetailsFragment,
-  MessageDetailsFragment,
+  RoomMessageReceivedSubscription,
+  RoomMessageReceivedSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 
 const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
-  DiscussionDetailsFragment & {
-    messages?: MessageDetailsFragment[];
-  },
-  CommunicationDiscussionMessageReceivedSubscription,
-  CommunicationDiscussionMessageReceivedSubscriptionVariables
+  DiscussionDetailsFragment,
+  RoomMessageReceivedSubscription,
+  RoomMessageReceivedSubscriptionVariables
 >({
-  subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
-  getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),
+  subscriptionDocument: RoomMessageReceivedDocument,
+  getSubscriptionVariables: discussion => ({ roomID: discussion.comments.id }),
   updateSubEntity: (discussion, subscriptionData) => {
-    discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
+    discussion?.comments.messages.push(subscriptionData.roomMessageReceived.message);
   },
 });
 
@@ -71,7 +68,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
 
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(
-    compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.messages?.map(c => c.sender?.id))])
+    compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.comments.messages?.map(c => c.sender?.id))])
   );
 
   const discussion = useMemo<Discussion | undefined>(
@@ -87,20 +84,24 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
             author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,
             authors: authors.authors ?? [],
             createdAt: rawDiscussion.timestamp ? new Date(rawDiscussion.timestamp) : undefined,
-            commentsCount: rawDiscussion.commentsCount,
-            comments:
-              rawDiscussion.messages?.map<Message>(m => ({
-                id: m.id,
-                body: m.message,
-                author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
-                createdAt: new Date(m.timestamp),
-              })) ?? [],
+            comments: {
+              id: rawDiscussion.comments.id,
+              messages:
+                rawDiscussion.comments.messages?.map<Message>(m => ({
+                  id: m.id,
+                  body: m.message,
+                  author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
+                  createdAt: new Date(m.timestamp),
+                })) ?? [],
+              messagesCount: rawDiscussion.comments.messagesCount,
+              myPrivileges: rawDiscussion.comments.authorization?.myPrivileges,
+            },
           }
         : undefined,
     [rawDiscussion, authors]
   );
 
-  const [postComment] = usePostDiscussionCommentMutation();
+  const [postComment] = useSendMessageToRoomMutation();
 
   const handlePostComment = (post: string) => {
     if (!discussion) {
@@ -121,7 +122,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
             messages(existingMessages = []) {
               if (data) {
                 const newMessage = cache.writeFragment({
-                  data: data?.sendMessageToDiscussion,
+                  data: data?.sendMessageToRoom,
                   fragment: MessageDetailsFragmentDoc,
                 });
                 return [...existingMessages, newMessage];
@@ -132,8 +133,8 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         });
       },
       variables: {
-        input: {
-          discussionID: discussion.id,
+        messageData: {
+          roomID: discussion.comments.id,
           message: post,
         },
       },
@@ -162,7 +163,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     navigate('/forum');
   };
 
-  const [deleteComment] = useDeleteCommentMutation({
+  const [deleteComment] = useRemoveMessageOnRoomMutation({
     refetchQueries: [
       refetchPlatformDiscussionQuery({
         discussionId: discussionNameId!,
@@ -177,7 +178,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     await deleteComment({
       variables: {
         messageData: {
-          discussionID: discussion.id,
+          roomID: discussion.comments.id,
           messageID: deleteCommentId,
         },
       },

@@ -19,6 +19,6 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
   }
 }
 
-mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
-  removeComment(messageData: $messageData)
+mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
+  removeMessageOnRoom(messageData: $messageData)
 }
