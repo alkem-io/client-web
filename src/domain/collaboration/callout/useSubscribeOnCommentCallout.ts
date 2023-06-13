@@ -3,21 +3,21 @@ import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
-  useCalloutMessageReceivedSubscription,
+  useRoomMessageReceivedSubscription,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 
-const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => {
+const useSubscribeOnCommentCallout = (roomID: string, skip?: boolean) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
   const { isAuthenticated } = useUserContext();
 
-  const enabled = areSubscriptionsEnabled && isAuthenticated && calloutIDs.length > 0 && !skip;
+  const enabled = areSubscriptionsEnabled && isAuthenticated && !skip;
 
-  useCalloutMessageReceivedSubscription({
+  useRoomMessageReceivedSubscription({
     shouldResubscribe: true,
-    variables: { calloutIDs },
+    variables: { roomID },
     skip: !enabled,
     onSubscriptionData: ({ subscriptionData, client }) => {
       if (subscriptionData.error) {
@@ -31,8 +31,8 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
       }
 
       const calloutCommentsCacheId = client.cache.identify({
-        id: data.calloutMessageReceived.commentsID,
-        __typename: 'Comments',
+        id: data.roomMessageReceived.roomID,
+        __typename: 'Room',
       });
 
       if (!calloutCommentsCacheId) {
@@ -44,7 +44,7 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
         fields: {
           messages(existingMessages = []) {
             const newMessage = client.cache.writeFragment({
-              data: data.calloutMessageReceived.message,
+              data: data.roomMessageReceived.message,
               fragment: MessageDetailsFragmentDoc,
               fragmentName: 'MessageDetails',
             });
@@ -58,4 +58,4 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
   return enabled;
 };
 
-export default useSubscribeOnCommentCallouts;
+export default useSubscribeOnCommentCallout;

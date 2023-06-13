@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, BoxProps, Grid, IconButton, styled, Typography } from '@mui/material';
-import { Message } from './models/message';
+import { Message } from '../../../communication/messages/models/message';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
 import AuthorAvatar from '../AuthorAvatar/AuthorAvatar';
