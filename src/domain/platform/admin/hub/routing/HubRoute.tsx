@@ -8,7 +8,6 @@ import HubProfilePage from '../../../../challenge/hub/pages/HubProfile/HubProfil
 import HubSettingsPage from '../../../../challenge/hub/pages/HubSettings/HubSettingsPage';
 import { ChallengesRoute } from '../../challenge/routing/ChallengesRoute';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
-import HubCommunityAdminPage from '../HubCommunityAdminPage';
 import HubTemplatesAdminRoutes from '../HubTemplatesAdminRoutes';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import HubContextPage from '../../../../challenge/hub/pages/HubContext/HubContextPage';
@@ -27,7 +26,6 @@ export const HubRoute: FC = () => {
         <Route path="profile" element={<HubProfilePage />} />
         <Route path="settings" element={<HubSettingsPage />} />
         <Route path="context" element={<HubContextPage />} />
-        <Route path="communityOld" element={<HubCommunityAdminPage />} />
         <Route path="community" element={<HubCommunityPage />} />
         <Route path="communications" element={<HubCommunicationsPage communityId={communityId} />} />
         <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} />} />

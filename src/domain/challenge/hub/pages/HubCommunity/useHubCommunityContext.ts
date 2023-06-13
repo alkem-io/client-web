@@ -74,33 +74,34 @@ const useHubCommunityContext = (hubId: string) => {
 
   // Members:
   const users = useMemo(() => {
-    const result = (data?.hub.community?.memberUsers ?? []).map<CommunityMemberUserFragmentWithRoles>(user => ({
+    const members = data?.hub.community?.memberUsers ?? [];
+    const leads = data?.hub.community?.leadUsers ?? [];
+    const admins = dataAdmins?.usersWithAuthorizationCredential ?? [];
+
+    const result = members.map<CommunityMemberUserFragmentWithRoles>(user => ({
       ...user,
       isMember: true,
-      isLead: false,
-      isAdmin: false,
+      isLead: leads.find(lead => lead.id === user.id) !== undefined,
+      isAdmin: admins.find(admins => admins.id === user.id) !== undefined,
     }));
 
-    // Add Leads
-    (data?.hub.community?.leadUsers ?? []).forEach(lead => {
+    // Push the rest of the leads that are not yet in the list of members
+    leads.forEach(lead => {
       const member = result.find(user => user.id === lead.id);
-      if (member) {
-        // If already a member set the lead role
-        member.isLead = true;
-      } else {
-        // If not, add the entire user to the list
-        result.push({ ...lead, isMember: false, isLead: true, isAdmin: false });
+      if (!member) {
+        result.push({
+          ...lead,
+          isMember: false,
+          isLead: true,
+          isAdmin: admins.find(admins => admins.id === lead.id) !== undefined,
+        });
       }
     });
 
-    // Add Admins:
-    (dataAdmins?.usersWithAuthorizationCredential ?? []).forEach(admin => {
+    // Push the admins that are not yet in the list of members and leads
+    admins.forEach(admin => {
       const member = result.find(user => user.id === admin.id);
-      if (member) {
-        // If already a member set the admin role
-        member.isAdmin = true;
-      } else {
-        // If not, add the entire user to the list
+      if (!member) {
         result.push({
           ...admin,
           isMember: false,
@@ -109,41 +110,39 @@ const useHubCommunityContext = (hubId: string) => {
         });
       }
     });
+
     return result;
   }, [data, dataAdmins]);
 
   const organizations = useMemo(() => {
-    // Members:
-    const result = (data?.hub.community?.memberOrganizations ?? []).map<OrganizationDetailsFragmentWithRoles>(
-      organization => ({
-        ...organization,
-        isMember: true,
-        isLead: false,
-        isFaicilitating: false,
-      })
-    );
+    const members = data?.hub.community?.memberOrganizations ?? [];
+    const leads = data?.hub.community?.leadOrganizations ?? [];
 
-    // Add Leads
-    (data?.hub.community?.leadOrganizations ?? []).forEach(lead => {
+    const result = members.map<OrganizationDetailsFragmentWithRoles>(member => ({
+      ...member,
+      isMember: true,
+      isLead: leads.find(lead => lead.id === member.id) !== undefined,
+      isFacilitating: data?.hub.host?.id === member.id,
+    }));
+
+    // Push the rest of the leads that are not yet in the list of members
+    leads.forEach(lead => {
       const member = result.find(organization => organization.id === lead.id);
-      if (member) {
-        // If already a member set the lead role
-        member.isLead = true;
-      } else {
-        // If not, add the entire organization to the list
-        result.push({ ...lead, isMember: false, isLead: true, isFaicilitating: false });
+      if (!member) {
+        result.push({
+          ...lead,
+          isMember: false,
+          isLead: true,
+          isFacilitating: data?.hub.host?.id === lead.id,
+        });
       }
     });
 
-    // Add Facilitating:
+    // Add Facilitating if it's not yet in the result
     if (data?.hub.host) {
       const member = result.find(organization => organization.id === data.hub.host!.id);
-      if (member) {
-        // If already a member set the lead role
-        member.isFaicilitating = true;
-      } else {
-        // If not, add the entire organization to the list
-        result.push({ ...data.hub.host, isMember: false, isLead: false, isFaicilitating: true });
+      if (!member) {
+        result.push({ ...data.hub.host, isMember: false, isLead: false, isFacilitating: true });
       }
     }
     return result;

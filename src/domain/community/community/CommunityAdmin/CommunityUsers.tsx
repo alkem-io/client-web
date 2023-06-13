@@ -80,14 +80,12 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
         </Link>
       ),
       valueGetter: ({ row }: GetterParams) => row.profile.displayName,
-      flex: 1,
       resizable: true,
     },
     {
       field: 'email',
       headerName: t('common.email'),
       renderHeader: () => <>{t('common.email')}</>,
-      flex: 1,
       resizable: true,
     },
     {

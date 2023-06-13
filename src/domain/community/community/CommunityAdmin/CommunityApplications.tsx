@@ -94,7 +94,6 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
         </Link>
       ),
       valueGetter: ({ row }: GetterParams) => row.user.profile.displayName,
-      flex: 1,
       resizable: true,
     },
     {
@@ -103,7 +102,6 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       renderHeader: () => <>{t('common.email')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.user.email}</>,
       valueGetter: ({ row }: GetterParams) => row.user.email,
-      flex: 1,
       resizable: true,
     },
     {
@@ -186,7 +184,8 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
               },
             ]}
             flex={{
-              displayName: 1,
+              'user.profile.displayName': 1,
+              'user.email': 1,
             }}
             initialState={initialState}
             pageSize={10}

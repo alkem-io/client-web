@@ -23,7 +23,7 @@ import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './Com
 export interface OrganizationDetailsFragmentWithRoles extends OrganizationDetailsFragment {
   isMember: boolean;
   isLead: boolean;
-  isFaicilitating: boolean;
+  isFacilitating: boolean;
 }
 
 type RenderParams = GridRenderCellParams<string, OrganizationDetailsFragmentWithRoles>;
@@ -88,7 +88,6 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
         </Link>
       ),
       valueGetter: ({ row }: GetterParams) => row.profile.displayName,
-      flex: 1,
       resizable: true,
     },
     {
@@ -98,10 +97,10 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
     },
     {
-      field: 'isFaicilitating',
+      field: 'isFacilitating',
       headerName: t('common.authorization'),
       renderHeader: () => <>{t('common.authorization')}</>,
-      renderCell: ({ row }: RenderParams) => <>{row.isFaicilitating ? t('pages.community.hub-host.title') : ''}</>,
+      renderCell: ({ row }: RenderParams) => <>{row.isFacilitating ? t('pages.community.hub-host.title') : ''}</>,
       width: 200,
     },
   ];
@@ -164,7 +163,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
               },
             ]}
             flex={{
-              displayName: 1,
+              'profile.displayName': 1,
             }}
             initialState={initialState}
             filterModel={filterModel}
