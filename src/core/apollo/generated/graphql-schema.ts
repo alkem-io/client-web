@@ -2064,6 +2064,8 @@ export type Message = {
   reactions: Array<Reaction>;
   /** The user that created this Aspect */
   sender?: Maybe<User>;
+  /** The message being replied to */
+  threadID?: Maybe<Scalars['String']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float'];
 };
@@ -17807,6 +17809,30 @@ export type CommentsWithMessagesFragment = {
         }
       | undefined;
   }>;
+};
+
+export type RemoveReactionMutationVariables = Exact<{
+  roomId: Scalars['UUID'];
+  reactionId: Scalars['MessageID'];
+}>;
+
+export type RemoveReactionMutation = { __typename?: 'Mutation'; removeReactionToMessageInRoom: boolean };
+
+export type ReplyToMessageMutationVariables = Exact<{
+  roomId: Scalars['UUID'];
+  message: Scalars['String'];
+  threadId: Scalars['MessageID'];
+}>;
+
+export type ReplyToMessageMutation = {
+  __typename?: 'Mutation';
+  sendMessageReplyToRoom: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender?: { __typename?: 'User'; id: string } | undefined;
+  };
 };
 
 export type MentionableUsersQueryVariables = Exact<{

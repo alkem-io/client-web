@@ -1207,12 +1207,21 @@ export type LocationFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageKeySpecifier = ('id' | 'message' | 'reactions' | 'sender' | 'timestamp' | MessageKeySpecifier)[];
+export type MessageKeySpecifier = (
+  | 'id'
+  | 'message'
+  | 'reactions'
+  | 'sender'
+  | 'threadID'
+  | 'timestamp'
+  | MessageKeySpecifier
+)[];
 export type MessageFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reactions?: FieldPolicy<any> | FieldReadFunction<any>;
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
+  threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('metrics' | 'services' | MetadataKeySpecifier)[];

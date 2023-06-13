@@ -2,6 +2,7 @@ import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 
 export interface Message {
   id: string;
+  threadID?: string;
   author?: Author;
   createdAt: Date;
   body: string;
@@ -14,4 +15,5 @@ export interface Message {
       lastName: string;
     };
   }[];
+  replies?: Message[];
 }

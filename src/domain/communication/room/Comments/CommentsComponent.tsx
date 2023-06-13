@@ -13,7 +13,8 @@ import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradi
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CaptionSmall } from '../../../../core/ui/typography';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import MessageWithRepliesView from './MessageWithRepliesView';
+import useCommentReactionsMutations from './useCommentReactionsMutations';
+import MessagesThread from './MessagesThread';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -23,7 +24,8 @@ export interface CommentsComponentProps {
   canReadMessages: boolean;
   canPostMessages: boolean;
   canDeleteMessage: (messageId: string) => boolean;
-  handlePostMessage: (commentsId: string, message: string) => Promise<FetchResult<unknown>> | void;
+  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
+  postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   maxHeight?: number;
   loading?: boolean;
@@ -50,7 +52,8 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   last: isShowingLastMessage,
   messages = [],
   commentsId,
-  handlePostMessage,
+  postMessage,
+  postReply,
   handleDeleteMessage,
   canPostMessages,
   canDeleteMessage,
@@ -65,7 +68,6 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
-  const onPostComment = (message: string) => (commentsId ? handlePostMessage(commentsId, message) : undefined);
   const handleDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
   const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
@@ -90,6 +92,8 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
     }
   }, [messages]);
 
+  const commentReactionsMutations = useCommentReactionsMutations(commentsId);
+
   const handleScroll = () => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
@@ -107,33 +111,15 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           onScroll={handleScroll}
         >
           <Gutters gap={0}>
-            {messages.map(message => (
-              <MessageWithRepliesView
-                key={message.id}
-                message={message}
-                canDelete={canDeleteMessage(message.id)}
-                onDelete={onDeleteComment}
-                reply={
-                  canPostMessages && (
-                    <PostMessageToCommentsForm
-                      placeholder={t('pages.aspect.dashboard.comment.placeholder')}
-                      onPostComment={onPostComment}
-                      maxLength={MID_TEXT_LENGTH}
-                      disabled={loading}
-                    />
-                  )
-                }
-              >
-                {messages.map(message => (
-                  <MessageView
-                    key={message.id}
-                    message={message}
-                    canDelete={canDeleteMessage(message.id)}
-                    onDelete={onDeleteComment}
-                  />
-                ))}
-              </MessageWithRepliesView>
-            ))}
+            <MessagesThread
+              messages={messages}
+              loading={loading}
+              canPostMessages={canPostMessages}
+              onReply={postReply}
+              canDeleteMessage={canDeleteMessage}
+              onDeleteMessage={onDeleteComment}
+              {...commentReactionsMutations}
+            />
           </Gutters>
         </ScrollerWithGradient>
       )}
@@ -145,6 +131,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
             message={lastMessage}
             canDelete={canDeleteMessage(lastMessage.id)}
             onDelete={onDeleteComment}
+            {...commentReactionsMutations}
           />
           <CaptionSmall textAlign="center" onClick={onClickMore}>
             {t('common.show-all')}
@@ -154,7 +141,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.aspect.dashboard.comment.placeholder')}
-          onPostComment={onPostComment}
+          onPostComment={postMessage}
           maxLength={MID_TEXT_LENGTH}
           disabled={loading}
         />

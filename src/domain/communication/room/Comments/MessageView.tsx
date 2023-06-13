@@ -21,7 +21,7 @@ const MessageContentWrapper = styled(Box)(({ theme }) => ({
 const MessageActionsContainer = styled('ul')(({ theme }) => ({
   display: 'flex',
   margin: 0,
-  marginLeft: theme.spacing(1.5),
+  marginLeft: theme.spacing(1),
   padding: 0,
   minHeight: gutters()(theme),
   '& > li': {
@@ -45,7 +45,8 @@ export interface MessageViewProps {
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
   root?: boolean;
   actions?: ReactNode;
-  onAddReaction?: () => void;
+  addReaction: (reaction: { emoji: string; messageId: string }) => void;
+  removeReaction: (reactionId: string) => void;
 }
 
 export const MessageView = ({
@@ -54,12 +55,15 @@ export const MessageView = ({
   onDelete,
   root = false,
   actions,
-  onAddReaction,
+  addReaction,
+  removeReaction,
   children,
 }: PropsWithChildren<MessageViewProps>) => {
   const { author, body, id } = message;
 
   const { t } = useTranslation();
+
+  const handleAddReaction = (emoji: string) => addReaction?.({ emoji, messageId: message.id });
 
   return (
     <Box display="flex" gap={gutters(0.5)}>
@@ -85,7 +89,11 @@ export const MessageView = ({
         </Paper>
         <MessageActionsContainer>
           <Box component="li">
-            <CommentReactions reactions={message.reactions} onAddReaction={onAddReaction} />
+            <CommentReactions
+              reactions={message.reactions}
+              onAddReaction={handleAddReaction}
+              onRemoveReaction={removeReaction}
+            />
           </Box>
           {actions}
         </MessageActionsContainer>

@@ -6,12 +6,10 @@ import {
   Scalars,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
-  MessageDetailsFragmentDoc,
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
   useRemoveMessageOnRoomMutation,
-  useSendMessageToRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/contributor/user';
 import { Message } from '../../../../communication/room/models/Message';
@@ -24,6 +22,7 @@ import useAspectCommentsMessageReceivedSubscription from '../../comments/useAspe
 import { getCardCallout } from '../getAspectCallout';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
 import { buildAuthorFromUser } from '../../../../../common/utils/buildAuthorFromUser';
+import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -39,18 +38,21 @@ interface Provided {
   canDeleteComment: (messageId: string) => boolean;
   aspect?: AspectDashboardFragment;
   messages: Message[];
-  commentsId?: string;
+  roomId: string | undefined;
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentsId: string, message: string) => void;
+  postMessage: (message: string) => void;
+  postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteComment: (commentsId: string, messageId: string) => void;
   loading: boolean;
   error?: ApolloError;
-  deletingComment?: boolean;
-  postingComment?: boolean;
+  deletingComment: boolean;
+  postingMessage: boolean;
+  postingReply: boolean;
   aspectUrl: string;
 }
+
 export type AspectDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
 const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
@@ -139,7 +141,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     subscribeToOpportunity
   );
 
-  const isSubscribedToComments = [
+  const isSubscribedToMessages = [
     hubCommentsSubscription,
     challengeCommentsSubscription,
     opportunityCommentsSubscription,
@@ -150,7 +152,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const creatorName = creator?.profile.displayName;
   const createdDate = aspect?.createdDate.toString();
 
-  const commentsId = aspect?.comments?.id;
+  const roomId = aspect?.comments?.id;
   const _messages = useMemo(() => aspect?.comments?.messages ?? [], [aspect?.comments?.messages]);
   const messages = useMemo<Message[]>(
     () =>
@@ -194,63 +196,10 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = useSendMessageToRoomMutation({
-    update: (cache, { data }) => {
-      const cacheCommentsId = cache.identify({
-        id: commentsId,
-        __typename: 'Comments',
-      });
-
-      if (!cacheCommentsId) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          commentsCount(oldCount = 0) {
-            if (!data) {
-              return oldCount;
-            }
-
-            return oldCount + 1;
-          },
-        },
-      });
-
-      if (isSubscribedToComments) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          messages(existingMessages = []) {
-            if (!data) {
-              return existingMessages;
-            }
-
-            const newMessage = cache.writeFragment({
-              data: data?.sendMessageToRoom,
-              fragment: MessageDetailsFragmentDoc,
-              fragmentName: 'MessageDetails',
-            });
-            return [...existingMessages, newMessage];
-          },
-        },
-      });
-    },
+  const { postMessage, postReply, postingMessage, postingReply } = usePostMessageMutations({
+    roomId,
+    isSubscribedToMessages,
   });
-
-  const handlePostComment = async (commentsId: string, message: string) =>
-    postComment({
-      variables: {
-        messageData: {
-          roomID: commentsId,
-          message,
-        },
-      },
-    });
 
   const aspectUrl = buildAspectUrl(calloutNameId, aspectNameId, {
     hubNameId,
@@ -264,16 +213,18 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     canDeleteComment,
     aspect,
     messages,
-    commentsId,
+    roomId,
     creatorAvatar,
     creatorName,
     createdDate,
-    handlePostComment,
+    postMessage,
+    postReply,
     handleDeleteComment,
     loading,
     error,
     deletingComment,
-    postingComment,
+    postingMessage,
+    postingReply,
     aspectUrl,
   });
 };

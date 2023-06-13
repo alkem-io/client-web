@@ -11,12 +11,6 @@ const ChildMessageContainer = styled(Box)(({ theme }) => ({
   borderLeft: `${theme.spacing(0.3)} ${theme.palette.background.default} solid`,
   paddingLeft: theme.spacing(1),
   marginBottom: gutters()(theme),
-  // '&:before': {
-  //   content: '""',
-  //   width: theme.spacing(0.3),
-  //   marginRight: theme.spacing(1),
-  //   backgroundColor: theme.palette.background.default,
-  // },
 }));
 
 interface MessageWithRepliesViewProps extends MessageViewProps {

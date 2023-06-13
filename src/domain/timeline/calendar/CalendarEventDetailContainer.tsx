@@ -2,10 +2,8 @@ import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
 import {
-  MessageDetailsFragmentDoc,
   useCalendarEventDetailsQuery,
   useRemoveMessageOnRoomMutation,
-  useSendMessageToRoomMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,
@@ -16,6 +14,7 @@ import { Message } from '../../communication/room/models/Message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
 import useCalendarEventCommentsMessageReceivedSubscription from './calendar/useCalendarEventCommentsMessageReceivedSubscription';
+import usePostMessageMutations from '../../communication/room/Comments/usePostMessageMutations';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
@@ -30,16 +29,18 @@ interface Provided {
   canDeleteComment: (messageId: string) => boolean;
   event?: CalendarEventDetailData;
   messages: Message[];
-  commentsId?: string;
+  roomId: string | undefined;
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentsId: string, message: string) => void;
+  postMessage: (message: string) => void;
+  postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteComment: (commentsId: string, messageId: string) => void;
   loading: boolean;
   error?: ApolloError;
   deletingComment?: boolean;
-  postingComment?: boolean;
+  postingMessage: boolean;
+  postingReply: boolean;
 }
 export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<EventIds, Provided>;
 
@@ -68,14 +69,14 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
     subscribeToMessages
   );
 
-  const isSubscribedToComments = eventCommentsSubscription.enabled;
+  const isSubscribedToMessages = eventCommentsSubscription.enabled;
 
   const creator = event?.createdBy;
   const creatorAvatar = creator?.profile.visual?.uri;
   const creatorName = creator?.profile.displayName;
   const createdDate = event?.createdDate.toString();
 
-  const commentsId = event?.comments?.id;
+  const roomId = event?.comments?.id;
   const _messages = useMemo(() => event?.comments?.messages ?? [], [event?.comments?.messages]);
   const messages = useMemo<Message[]>(
     () =>
@@ -119,63 +120,10 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
       },
     });
 
-  const [postComment, { loading: postingComment }] = useSendMessageToRoomMutation({
-    update: (cache, { data }) => {
-      const cacheCommentsId = cache.identify({
-        id: commentsId,
-        __typename: 'Comments',
-      });
-
-      if (!cacheCommentsId) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          commentsCount(oldCount = 0) {
-            if (!data) {
-              return oldCount;
-            }
-
-            return oldCount + 1;
-          },
-        },
-      });
-
-      if (isSubscribedToComments) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          messages(existingMessages = []) {
-            if (!data) {
-              return existingMessages;
-            }
-
-            const newMessage = cache.writeFragment({
-              data: data?.sendMessageToRoom,
-              fragment: MessageDetailsFragmentDoc,
-              fragmentName: 'MessageDetails',
-            });
-            return [...existingMessages, newMessage];
-          },
-        },
-      });
-    },
+  const postMessageProps = usePostMessageMutations({
+    roomId,
+    isSubscribedToMessages,
   });
-
-  const handlePostComment = async (commentsId: string, message: string) =>
-    postComment({
-      variables: {
-        messageData: {
-          roomID: commentsId,
-          message,
-        },
-      },
-    });
 
   return renderComponentOrChildrenFn(rendered, {
     canReadComments,
@@ -183,16 +131,15 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
     canDeleteComment,
     event,
     messages,
-    commentsId,
+    roomId,
     creatorAvatar,
     creatorName,
     createdDate,
-    handlePostComment,
     handleDeleteComment,
     loading,
     error,
     deletingComment,
-    postingComment,
+    ...postMessageProps,
   });
 };
 

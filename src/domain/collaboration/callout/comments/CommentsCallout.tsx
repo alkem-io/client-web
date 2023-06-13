@@ -3,19 +3,15 @@ import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
 import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
 import { useUserContext } from '../../../community/contributor/user';
-import {
-  MessageDetailsFragmentDoc,
-  useRemoveCommentFromCalloutMutation,
-  useSendMessageToRoomMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { Message } from '../../../communication/room/models/Message';
+import { useRemoveCommentFromCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
-import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import useSubscribeOnCommentCallout from '../useSubscribeOnCommentCallout';
+import usePostMessageMutations from '../../../communication/room/Comments/usePostMessageMutations';
+import { useMessages } from '../../../communication/room/Comments/useMessages';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -36,20 +32,10 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     const commentsId = callout.comments.id;
     const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
-    const messages = useMemo<Message[]>(
-      () =>
-        fetchedMessages?.map(message => ({
-          id: message.id,
-          body: message.message,
-          author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
-          createdAt: new Date(message.timestamp),
-          reactions: message.reactions,
-        })),
-      [fetchedMessages]
-    );
+    const messages = useMessages(fetchedMessages);
 
     const isAuthor = useCallback(
-      (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
+      (msgId: string, userId?: string) => messages?.find(x => x.id === msgId)?.author?.id === userId ?? false,
       [messages]
     );
 
@@ -81,50 +67,10 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         },
       });
 
-    const [postMessage, { loading: postingComment }] = useSendMessageToRoomMutation({
-      update: (cache, { data }) => {
-        if (isSubscribedToComments) {
-          return;
-        }
-
-        const cacheCommentsId = cache.identify({
-          id: commentsId,
-          __typename: 'Comments',
-        });
-
-        if (!cacheCommentsId) {
-          return;
-        }
-
-        cache.modify({
-          id: cacheCommentsId,
-          fields: {
-            messages(existingMessages = []) {
-              if (!data) {
-                return existingMessages;
-              }
-
-              const newMessage = cache.writeFragment({
-                data: data?.sendMessageToRoom,
-                fragment: MessageDetailsFragmentDoc,
-                fragmentName: 'MessageDetails',
-              });
-              return [...existingMessages, newMessage];
-            },
-          },
-        });
-      },
+    const { postMessage, postReply, postingMessage, postingReply } = usePostMessageMutations({
+      roomId: commentsId,
+      isSubscribedToMessages: isSubscribedToComments,
     });
-
-    const handlePostMessage = async (commentsId: string, message: string) =>
-      postMessage({
-        variables: {
-          messageData: {
-            roomID: commentsId,
-            message,
-          },
-        },
-      });
 
     const breakpoint = useCurrentBreakpoint();
 
@@ -144,10 +90,11 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
             commentsId={commentsId}
             canReadMessages={canReadMessages}
             canPostMessages={canPostMessages}
-            handlePostMessage={handlePostMessage}
+            postMessage={postMessage}
+            postReply={postReply}
             canDeleteMessage={canDeleteMessage}
             handleDeleteMessage={handleDeleteMessage}
-            loading={loading || postingComment || deletingMessage}
+            loading={loading || postingMessage || postingReply || deletingMessage}
             last={lastMessageOnly}
             maxHeight={COMMENTS_CONTAINER_HEIGHT}
             onClickMore={onExpand}

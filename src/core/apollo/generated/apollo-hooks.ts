@@ -13844,6 +13844,108 @@ export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddReactionMutation,
   SchemaTypes.AddReactionMutationVariables
 >;
+export const RemoveReactionDocument = gql`
+  mutation RemoveReaction($roomId: UUID!, $reactionId: MessageID!) {
+    removeReactionToMessageInRoom(reactionData: { reactionID: $reactionId, roomID: $roomId })
+  }
+`;
+export type RemoveReactionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveReactionMutation,
+  SchemaTypes.RemoveReactionMutationVariables
+>;
+
+/**
+ * __useRemoveReactionMutation__
+ *
+ * To run a mutation, you first call `useRemoveReactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveReactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeReactionMutation, { data, loading, error }] = useRemoveReactionMutation({
+ *   variables: {
+ *      roomId: // value for 'roomId'
+ *      reactionId: // value for 'reactionId'
+ *   },
+ * });
+ */
+export function useRemoveReactionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveReactionMutation,
+    SchemaTypes.RemoveReactionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemoveReactionMutation, SchemaTypes.RemoveReactionMutationVariables>(
+    RemoveReactionDocument,
+    options
+  );
+}
+
+export type RemoveReactionMutationHookResult = ReturnType<typeof useRemoveReactionMutation>;
+export type RemoveReactionMutationResult = Apollo.MutationResult<SchemaTypes.RemoveReactionMutation>;
+export type RemoveReactionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveReactionMutation,
+  SchemaTypes.RemoveReactionMutationVariables
+>;
+export const ReplyToMessageDocument = gql`
+  mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!) {
+    sendMessageReplyToRoom(messageData: { roomID: $roomId, threadID: $threadId, message: $message }) {
+      id
+      message
+      sender {
+        id
+      }
+      timestamp
+    }
+  }
+`;
+export type ReplyToMessageMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ReplyToMessageMutation,
+  SchemaTypes.ReplyToMessageMutationVariables
+>;
+
+/**
+ * __useReplyToMessageMutation__
+ *
+ * To run a mutation, you first call `useReplyToMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReplyToMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [replyToMessageMutation, { data, loading, error }] = useReplyToMessageMutation({
+ *   variables: {
+ *      roomId: // value for 'roomId'
+ *      message: // value for 'message'
+ *      threadId: // value for 'threadId'
+ *   },
+ * });
+ */
+export function useReplyToMessageMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ReplyToMessageMutation,
+    SchemaTypes.ReplyToMessageMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ReplyToMessageMutation, SchemaTypes.ReplyToMessageMutationVariables>(
+    ReplyToMessageDocument,
+    options
+  );
+}
+
+export type ReplyToMessageMutationHookResult = ReturnType<typeof useReplyToMessageMutation>;
+export type ReplyToMessageMutationResult = Apollo.MutationResult<SchemaTypes.ReplyToMessageMutation>;
+export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ReplyToMessageMutation,
+  SchemaTypes.ReplyToMessageMutationVariables
+>;
 export const MentionableUsersDocument = gql`
   query MentionableUsers($filter: UserFilterInput, $first: Int) {
     usersPaginated(filter: $filter, first: $first) {
