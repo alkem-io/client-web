@@ -1,3 +1,5 @@
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, IconButton, Link, TextField, Tooltip } from '@mui/material';
 import {
   GridColDef,
@@ -7,18 +9,17 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { useTranslation } from 'react-i18next';
 import { FC, useState } from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
+import { useTranslation } from 'react-i18next';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { CommunityMemberUserFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { BlockTitle } from '../../../../core/ui/typography';
-import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import { useUserContext } from '../../contributor/user';
+import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
+import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 
 export interface CommunityMemberUserFragmentWithRoles extends CommunityMemberUserFragment {
   isMember: boolean;
@@ -48,9 +49,11 @@ const initialState: GridInitialState = {
 
 interface CommunityUsersProps {
   users: CommunityMemberUserFragmentWithRoles[] | undefined;
-  onUserLeadChange: (userId, newValue) => Promise<unknown> | void;
-  onUserAuthorizationChange: (userId, newValue) => Promise<unknown> | void;
-  onRemoveMember: (userId) => Promise<unknown> | void;
+  onUserLeadChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
+  onUserAuthorizationChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
+  onRemoveMember: (userId: string) => Promise<unknown> | void;
+  onAddMember: (memberId: string) => Promise<unknown> | undefined;
+  fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   loading?: boolean;
 }
 
@@ -59,6 +62,8 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
   onUserLeadChange,
   onUserAuthorizationChange,
   onRemoveMember,
+  onAddMember,
+  fetchAvailableUsers,
   loading,
 }) => {
   const { user: currentUser } = useUserContext();
@@ -121,12 +126,13 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
   };
 
   const [editingUser, setEditingUser] = useState<CommunityMemberUserFragmentWithRoles>();
+  const [isAddingNewUser, setAddingNewUser] = useState(false);
 
   return (
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.memberUsers', { count: users.length })}</BlockTitle>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => {}}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewUser(true)}>
           {t('common.add')}
         </Button>
       </Box>
@@ -183,6 +189,13 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
           onAdminChange={onUserAuthorizationChange}
           onRemoveMember={onRemoveMember}
           onClose={() => setEditingUser(undefined)}
+        />
+      )}
+      {isAddingNewUser && (
+        <CommunityAddMembersDialog
+          onAdd={onAddMember}
+          fetchAvailableEntities={fetchAvailableUsers}
+          onClose={() => setAddingNewUser(false)}
         />
       )}
     </>

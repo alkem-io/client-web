@@ -423,6 +423,7 @@
     "host": "Host",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
+    "addMember": "Add member",
     "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
     "application-form": {
       "title": "Application Form",

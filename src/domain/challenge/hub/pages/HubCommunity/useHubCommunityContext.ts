@@ -1,10 +1,14 @@
 import { useMemo } from 'react';
 import {
+  useAllOrganizationsLazyQuery,
   useAssignOrganizationAsCommunityLeadMutation,
+  useAssignOrganizationAsCommunityMemberMutation,
   useAssignUserAsCommunityLeadMutation,
+  useAssignUserAsCommunityMemberMutation,
   useAssignUserAsHubAdminMutation,
   useEventOnApplicationMutation,
   useHubApplicationsQuery,
+  useHubAvailableMemberUsersLazyQuery,
   useHubCommunityMembersQuery,
   useRemoveOrganizationAsCommunityLeadMutation,
   useRemoveOrganizationAsCommunityMemberMutation,
@@ -16,6 +20,23 @@ import {
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityUsers';
+
+const MAX_AVAILABLE_MEMBERS = 100;
+const buildUserFilterObject = (filter: string | undefined) =>
+  filter
+    ? {
+        firstName: filter,
+        lastName: filter,
+        email: filter,
+      }
+    : undefined;
+
+const buildOrganizationFilterObject = (filter: string | undefined) =>
+  filter
+    ? {
+        displayName: filter,
+      }
+    : undefined;
 
 const useHubCommunityContext = (hubId: string) => {
   if (!hubId) {
@@ -128,6 +149,64 @@ const useHubCommunityContext = (hubId: string) => {
     return result;
   }, [data, dataAdmins]);
 
+  // Available new members:
+  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useHubAvailableMemberUsersLazyQuery();
+  const getAvailableUsers = async (filter: string | undefined) => {
+    const { data } = await fetchAvailableUsers({
+      variables: {
+        hubId,
+        first: MAX_AVAILABLE_MEMBERS,
+        filter: buildUserFilterObject(filter),
+      },
+    });
+    return data?.hub.community?.availableMemberUsers?.users;
+  };
+
+  const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
+  const getAvailableOrganizations = async (filter: string | undefined) => {
+    const { data } = await fetchAllOrganizations({
+      variables: {
+        first: MAX_AVAILABLE_MEMBERS,
+        filter: buildOrganizationFilterObject(filter),
+      },
+    });
+    // Filter out already member organizations
+    return data?.organizationsPaginated.organization.filter(
+      org => organizations.find(member => member.id === org.id) === undefined
+    );
+  };
+
+  // Adding new members:
+  const [addUserToCommunity] = useAssignUserAsCommunityMemberMutation();
+  const handleAddUser = async (memberId: string) => {
+    if (!communityId) {
+      return;
+    }
+    await addUserToCommunity({
+      variables: {
+        communityId,
+        memberId,
+      },
+    });
+    await refetchAvailableMemberUsers();
+    return refetchCommunityMembers();
+  };
+
+  const [addOrganizationToCommunity] = useAssignOrganizationAsCommunityMemberMutation();
+  const handleAddOrganization = async (memberId: string) => {
+    if (!communityId) {
+      return;
+    }
+    await addOrganizationToCommunity({
+      variables: {
+        communityId,
+        memberId,
+      },
+    });
+    await refetchAvailableMemberOrganizations();
+    return refetchCommunityMembers();
+  };
+
   // Mutations:
   const [updateApplication] = useEventOnApplicationMutation({});
   const handleApplicationStateChange = async (applicationId: string, newState: string) => {
@@ -169,7 +248,6 @@ const useHubCommunityContext = (hubId: string) => {
   const [assignUserAsHubAdmin] = useAssignUserAsHubAdminMutation();
   const [removeUserAsHubAdmin] = useRemoveUserAsHubAdminMutation();
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
-    console.log(`user ${memberId} is admin: ${isAdmin}`);
     if (isAdmin) {
       await assignUserAsHubAdmin({
         variables: {
@@ -252,8 +330,12 @@ const useHubCommunityContext = (hubId: string) => {
     onUserLeadChange: handleUserLeadChange,
     onUserAuthorizationChange: handleUserAuthorizationChange,
     onOrganizationLeadChange: onOrganizationLeadChange,
+    onAddUser: handleAddUser,
+    onAddOrganization: handleAddOrganization,
     onRemoveUser: handleRemoveUser,
     onRemoveOrganization: handleRemoveOrganization,
+    getAvailableUsers,
+    getAvailableOrganizations,
     loading: loadingAdmins || loadingMembers || loadingApplications,
   };
 };

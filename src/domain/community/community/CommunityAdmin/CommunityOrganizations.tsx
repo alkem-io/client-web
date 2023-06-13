@@ -18,6 +18,7 @@ import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
+import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 
 export interface OrganizationDetailsFragmentWithRoles extends OrganizationDetailsFragment {
   isMember: boolean;
@@ -48,6 +49,8 @@ const initialState: GridInitialState = {
 interface CommunityOrganizationsProps {
   organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
   onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
+  onAddMember: (organizationId) => Promise<unknown> | undefined;
+  fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   onRemoveMember: (organizationId) => Promise<unknown> | void;
   loading?: boolean;
 }
@@ -55,6 +58,8 @@ interface CommunityOrganizationsProps {
 const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
   organizations = [],
   onOrganizationLeadChange,
+  onAddMember,
+  fetchAvailableOrganizations,
   onRemoveMember,
   loading,
 }) => {
@@ -123,12 +128,13 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
   };
 
   const [editingOrganization, setEditingOrganization] = useState<OrganizationDetailsFragmentWithRoles>();
+  const [isAddingNewOrganization, setAddingNewOrganization] = useState(false);
 
   return (
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.memberOrganizations', { count: organizations.length })}</BlockTitle>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => {}}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewOrganization(true)}>
           {t('common.add')}
         </Button>
       </Box>
@@ -173,6 +179,13 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
           onLeadChange={onOrganizationLeadChange}
           onRemoveMember={onRemoveMember}
           onClose={() => setEditingOrganization(undefined)}
+        />
+      )}
+      {isAddingNewOrganization && (
+        <CommunityAddMembersDialog
+          onAdd={onAddMember}
+          fetchAvailableEntities={fetchAvailableOrganizations}
+          onClose={() => setAddingNewOrganization(false)}
         />
       )}
     </>

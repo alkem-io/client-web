@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
 import { ApplicationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { DialogActions, DialogContent } from '../../../../../common/components/core/dialog';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import LifecycleButton from '../../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
 import { Optional } from '../../../../../types/util';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import { ProfileChip } from '../../../contributor/ProfileChip/ProfileChip';
+import { Actions } from '../../../../../core/ui/actions/Actions';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {
@@ -112,37 +113,35 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
         />
       </DialogHeader>
       {!loading && (
-        <>
-          <DialogContent dividers>
-            <div className={styles.body}>
-              <div className={styles.questions}>
-                {questions.map(x => (
-                  <div key={x.id} className={styles.question}>
-                    <label aria-label="Questions">{x.name}</label>
-                    <WrapperTypography weight={'boldLight'} aria-label="Answer">
-                      {x.value}
-                    </WrapperTypography>
-                  </div>
-                ))}
-              </div>
+        <Gutters>
+          <div className={styles.body}>
+            <div className={styles.questions}>
+              {questions.map(x => (
+                <div key={x.id} className={styles.question}>
+                  <label aria-label="Questions">{x.name}</label>
+                  <WrapperTypography weight={'boldLight'} aria-label="Answer">
+                    {x.value}
+                  </WrapperTypography>
+                </div>
+              ))}
             </div>
-            {(createdDate || updatedDate) && (
-              <div className={styles.date}>
-                {createdDate && (
-                  <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date created">
-                    {t('components.application-dialog.created', { date: createdDate })}
-                  </WrapperTypography>
-                )}
-                {updatedDate && (
-                  <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date updated">
-                    {t('components.application-dialog.updated', { date: updatedDate })}
-                  </WrapperTypography>
-                )}
-              </div>
-            )}
-          </DialogContent>
+          </div>
+          {(createdDate || updatedDate) && (
+            <div className={styles.date}>
+              {createdDate && (
+                <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date created">
+                  {t('components.application-dialog.created', { date: createdDate })}
+                </WrapperTypography>
+              )}
+              {updatedDate && (
+                <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date updated">
+                  {t('components.application-dialog.updated', { date: updatedDate })}
+                </WrapperTypography>
+              )}
+            </div>
+          )}
           {nextEvents.length > 0 && (
-            <DialogActions>
+            <Actions justifyContent="end" flexDirection="row-reverse">
               {nextEvents.map((x, i) => (
                 <LifecycleButton
                   key={i}
@@ -153,9 +152,9 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
                   }}
                 />
               ))}
-            </DialogActions>
+            </Actions>
           )}
-        </>
+        </Gutters>
       )}
     </Dialog>
   );
