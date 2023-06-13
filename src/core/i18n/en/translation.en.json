@@ -25,7 +25,8 @@
   "fields": {
     "displayName": "Title",
     "startTime": "Start Time",
-    "endTime": "End Time"
+    "endTime": "End Time",
+    "name": "Name"
   },
   "calendar": {
     "add-event": "Add event",
@@ -60,6 +61,7 @@
     "publish": "Publish",
     "unpublish": "Unpublish",
     "save-draft": "Save as draft",
+    "archive": "Archive",
     "save": "Save",
     "back": "Back",
     "next": "Next",
@@ -184,6 +186,7 @@
     "forum": "Forum",
     "email": "Email",
     "state": "State",
+    "status": "Status",
     "aspect": "Card",
     "aspects": "Cards",
     "host": "Host",
@@ -204,6 +207,7 @@
     "interest": "Interest",
     "interests": "Interests",
     "project": "Project",
+    "role": "Role",
     "agreements": "Agreements",
     "templates": "Templates",
     "template": "Template",
@@ -410,10 +414,10 @@
     }
   },
   "community": {
-    "leading-users": "Leading Users",
-    "member-users": "Member Users",
+    "memberUsers": "Member Users ({{count}})",
     "leading-organizations": "Leading Organizations",
-    "member-organizations": "Member Organizations",
+    "memberOrganizations": "Member Organizations ({{count}})",
+    "pendingApplications": "Pending applications & invitations",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
@@ -427,6 +431,27 @@
       "move-down": "Move question one position down",
       "delete-question": "Delete question",
       "updated-successfully": "Application form updated successfully."
+    },
+    "applicationStatus": {
+      "applicationReceived": "Application Received",
+      "applicationApproved": "Application Approved",
+      "applicationRejected": "Application Rejected",
+      "applicationArchived": "Application Archived"
+    },
+    "confirmDeleteApplication": {
+      "title": "Deleting application from {{user}}",
+      "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+    },
+    "memberSettings": {
+      "title": "Member Settings",
+      "lead": "This member is a <b>lead</b>: (s)he will be shown as the person to host this Community. NB: There can be <b>no more than 2 leads</b> per Space. When there are already 2 leads selected, this option will be disabled for others.",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors",
+      "removeMember": {
+        "sectionTitle": "Remove member",
+        "remove": "Click here to remove this user from {{space}}. Be careful, this action cannot be undone.",
+        "dialogTitle": "Are you sure you want to remove this member?",
+        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Space and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
+      }
     }
   },
   "callout": {

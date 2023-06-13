@@ -14,6 +14,7 @@ import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRou
 import HubContextPage from '../../../../challenge/hub/pages/HubContext/HubContextPage';
 import HubStorageAdminPage from '../storage/HubStorageAdminPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import HubCommunityPage from '../../../../challenge/hub/pages/HubCommunity/HubCommunityPage';
 
 export const HubRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -26,8 +27,9 @@ export const HubRoute: FC = () => {
         <Route path="profile" element={<HubProfilePage />} />
         <Route path="settings" element={<HubSettingsPage />} />
         <Route path="context" element={<HubContextPage />} />
+        <Route path="communityOld" element={<HubCommunityAdminPage />} />
+        <Route path="community" element={<HubCommunityPage />} />
         <Route path="communications" element={<HubCommunicationsPage communityId={communityId} />} />
-        <Route path="community" element={<HubCommunityAdminPage />} />
         <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} />} />
         <Route path="storage" element={<HubStorageAdminPage hubId={hubId} />} />
         <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />

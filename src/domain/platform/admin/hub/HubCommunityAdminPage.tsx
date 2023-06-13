@@ -25,6 +25,9 @@ import HubAuthorizationView from '../../../challenge/hub/HubCommunityPage/HubAut
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
+/**
+ * @deprecated REMOVE ME //!!
+ */
 const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { hubId, communityId } = useHub();
 

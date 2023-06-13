@@ -1,0 +1,197 @@
+import { Box, IconButton, Link } from '@mui/material';
+import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { BlockTitle } from '../../../../core/ui/typography';
+import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
+import DataGridTable from '../../../../core/ui/table/DataGridTable';
+import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { gutters } from '../../../../core/ui/grid/utils';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ApplicationInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+
+type RenderParams = GridRenderCellParams<string, ApplicationInfoFragment>;
+type GetterParams = GridValueGetterParams<string, ApplicationInfoFragment>;
+
+const initialState: GridInitialState = {
+  pagination: {
+    page: 0,
+    pageSize: 5,
+  },
+  sorting: {
+    sortModel: [
+      {
+        field: 'isLead',
+        sort: 'desc',
+      },
+    ],
+  },
+};
+
+interface CommunityApplicationsProps {
+  // TODO: In the near future this will also receive invitations
+  applications: ApplicationInfoFragment[] | undefined;
+  onApplicationStateChange: (applicationId: string, state: string) => Promise<unknown>;
+  loading?: boolean;
+}
+
+const CommunityApplications: FC<CommunityApplicationsProps> = ({
+  applications = [],
+  onApplicationStateChange,
+  loading,
+}) => {
+  const { t } = useTranslation();
+  const [applicationSelected, setApplicationSelected] = useState<ApplicationInfoFragment>();
+  const [deletingApplication, setDeletingApplication] = useState<ApplicationInfoFragment>();
+
+  const formatState = (state: string | undefined) => {
+    switch (state) {
+      case 'new':
+        return t('community.applicationStatus.applicationReceived');
+      case 'approved':
+        return t('community.applicationStatus.applicationApproved');
+      case 'rejected':
+        return t('community.applicationStatus.applicationRejected');
+      case 'archived':
+        return t('community.applicationStatus.applicationArchived'); // TODO: Maybe they want to hide archived applications? //!!
+      // TODO: (Handle Invitations)
+      /*  InvitationAccepted,
+      InvitationRejected,
+      InvitedToAlkemio,
+      InvitedToSpace,
+      */
+    }
+  };
+
+  const applicationsColumns: GridColDef[] = [
+    {
+      field: 'user.profile.displayName',
+      headerName: t('fields.name'),
+      renderHeader: () => <>{t('fields.name')}</>,
+      renderCell: ({ row }: RenderParams) => (
+        <Link href={buildUserProfileUrl(row.user.nameID)} target="_blank">
+          {row.user.profile.displayName}
+        </Link>
+      ),
+      valueGetter: ({ row }: GetterParams) => row.user.profile.displayName,
+      flex: 1,
+      resizable: true,
+    },
+    {
+      field: 'user.email',
+      headerName: t('common.email'),
+      renderHeader: () => <>{t('common.email')}</>,
+      renderCell: ({ row }: RenderParams) => <>{row.user.email}</>,
+      valueGetter: ({ row }: GetterParams) => row.user.email,
+      flex: 1,
+      resizable: true,
+    },
+    {
+      field: 'status',
+      headerName: t('common.status'),
+      minWidth: 200,
+      renderHeader: () => <>{t('common.status')}</>,
+      renderCell: ({ row }: RenderParams) => <>{formatState(row.lifecycle.state)}</>,
+      valueGetter: ({ row }: GetterParams) => row.lifecycle.state,
+      filterable: false, // TODO maybe... (has to be a combobox, maybe when we implement invitations)
+    },
+  ];
+
+  const onHelpClick = () => {}; //!! PENDING
+
+  const handleApplicationDelete = async (application: ApplicationInfoFragment) => {
+    switch (application.lifecycle.state) {
+      case 'new': {
+        await onApplicationStateChange(application.id, 'REJECT');
+        await onApplicationStateChange(application.id, 'ARCHIVE');
+        break;
+      }
+      case 'approved': {
+        await onApplicationStateChange(application.id, 'ARCHIVE');
+        break;
+      }
+      case 'rejected': {
+        await onApplicationStateChange(application.id, 'ARCHIVE');
+        break;
+      }
+    }
+    setDeletingApplication(undefined);
+  };
+
+  return (
+    <>
+      <Box display="flex" justifyContent="space-between">
+        <BlockTitle>{t('community.pendingApplications')}</BlockTitle>
+        <IconButton onClick={onHelpClick}>
+          <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
+        </IconButton>
+      </Box>
+      <Box minHeight={gutters(10)}>
+        {loading ? (
+          <DataGridSkeleton />
+        ) : (
+          <DataGridTable
+            rows={applications}
+            columns={applicationsColumns}
+            actions={[
+              {
+                name: 'view',
+                render: ({ row }) => (
+                  /* TODO: handle row type here and decide if show button or not, Application, invitation ... */
+                  <IconButton onClick={() => setApplicationSelected(row)}>
+                    <VisibilityIcon color="primary" />
+                  </IconButton>
+                ),
+              },
+              {
+                name: 'delete',
+                render: ({ row }) => (
+                  <IconButton onClick={() => setDeletingApplication(row)}>
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                ),
+              },
+            ]}
+            flex={{
+              displayName: 1,
+            }}
+            initialState={initialState}
+            pageSize={10}
+            disableDelete={() => true}
+          />
+        )}
+      </Box>
+      {applicationSelected && (
+        <ApplicationDialog
+          app={applicationSelected}
+          onHide={() => setApplicationSelected(undefined)}
+          onSetNewState={onApplicationStateChange}
+        />
+      )}
+      {deletingApplication && (
+        <ConfirmationDialog
+          actions={{
+            onConfirm: () => handleApplicationDelete(deletingApplication),
+            onCancel: () => setDeletingApplication(undefined),
+          }}
+          options={{
+            show: Boolean(deletingApplication),
+          }}
+          entities={{
+            title: t('community.confirmDeleteApplication.title', {
+              user: deletingApplication.user.profile.displayName,
+            }),
+            content: t('community.confirmDeleteApplication.content'),
+            confirmButtonTextId: 'buttons.archive',
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+export default CommunityApplications;

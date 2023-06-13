@@ -2,7 +2,9 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useHubApplicationsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 const EMPTY = [];
-
+/**
+ * @deprecated //!! REMOVE ME
+ */
 const useHubApplications = () => {
   const { hubNameId = '' } = useUrlParams();
 

@@ -26,7 +26,9 @@ const toApplicationViewmodel = (applications: ApplicationInfoFragment[]): Applic
 interface ApplicationsAdminViewProps {
   applications: ApplicationInfoFragment[];
 }
-
+/**
+ * @deprecated Use CommunityApplications. Stays for Challenges, but Spaces are already using CommunityApplications
+ */
 export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applications }) => {
   const { t } = useTranslation();
 
