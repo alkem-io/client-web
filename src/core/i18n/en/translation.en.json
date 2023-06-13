@@ -423,6 +423,7 @@
     "host": "Host",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
+    "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
     "application-form": {
       "title": "Application Form",
       "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
@@ -432,6 +433,7 @@
       "delete-question": "Delete question",
       "updated-successfully": "Application form updated successfully."
     },
+    "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
       "applicationReceived": "Application Received",
       "applicationApproved": "Application Approved",

@@ -9171,6 +9171,7 @@ export type HubApplicationsQuery = {
                     id: string;
                     displayName: string;
                     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
                 };
                 questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
@@ -9202,6 +9203,7 @@ export type ApplicationInfoFragment = {
       id: string;
       displayName: string;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
@@ -22033,6 +22035,7 @@ export type ChallengeApplicationsQuery = {
                       id: string;
                       displayName: string;
                       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     };
                   };
                   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;

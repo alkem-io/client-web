@@ -17,6 +17,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { BlockTitle } from '../../../../core/ui/typography';
+import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 
 export interface OrganizationDetailsFragmentWithRoles extends OrganizationDetailsFragment {
   isMember: boolean;
@@ -46,12 +47,17 @@ const initialState: GridInitialState = {
 
 interface CommunityOrganizationsProps {
   organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
-  onLeadChange: (userId, newValue) => Promise<unknown> | void;
-  onRemoveMember: (userId) => Promise<unknown> | void;
+  onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
+  onRemoveMember: (organizationId) => Promise<unknown> | void;
   loading?: boolean;
 }
 
-const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({ organizations = [], loading }) => {
+const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
+  organizations = [],
+  onOrganizationLeadChange,
+  onRemoveMember,
+  loading,
+}) => {
   const { t } = useTranslation();
 
   const organizationsColumns: GridColDef[] = [
@@ -116,6 +122,8 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({ organizations
     }
   };
 
+  const [editingOrganization, setEditingOrganization] = useState<OrganizationDetailsFragmentWithRoles>();
+
   return (
     <>
       <Box display="flex" justifyContent="space-between">
@@ -143,7 +151,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({ organizations
               {
                 name: 'edit',
                 render: ({ row }) => (
-                  <IconButton component={Link} href={buildOrganizationUrl(row.id)} target="_blank">
+                  <IconButton onClick={() => setEditingOrganization(row)}>
                     <EditIcon color="primary" />
                   </IconButton>
                 ),
@@ -159,6 +167,14 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({ organizations
           />
         )}
       </Box>
+      {editingOrganization && (
+        <CommunityMemberSettingsDialog
+          member={editingOrganization}
+          onLeadChange={onOrganizationLeadChange}
+          onRemoveMember={onRemoveMember}
+          onClose={() => setEditingOrganization(undefined)}
+        />
+      )}
     </>
   );
 };

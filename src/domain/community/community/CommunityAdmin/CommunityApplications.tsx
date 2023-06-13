@@ -1,18 +1,19 @@
-import { Box, IconButton, Link } from '@mui/material';
-import { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Box, IconButton, Link, Tooltip } from '@mui/material';
+import { FC, useMemo, useState } from 'react';
+import { TFunction, useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../core/ui/typography';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { gutters } from '../../../../core/ui/grid/utils';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ApplicationInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import { formatDateTime } from '../../../../core/utils/time/utils';
 
 type RenderParams = GridRenderCellParams<string, ApplicationInfoFragment>;
 type GetterParams = GridValueGetterParams<string, ApplicationInfoFragment>;
@@ -25,11 +26,45 @@ const initialState: GridInitialState = {
   sorting: {
     sortModel: [
       {
-        field: 'isLead',
+        field: 'state',
         sort: 'desc',
       },
     ],
   },
+};
+
+// Format of Application/Invitation states
+const formatState = (state: string | undefined, t: TFunction<'translation', undefined>) => {
+  switch (state) {
+    case 'new':
+      return <strong>{t('community.applicationStatus.applicationReceived')}</strong>;
+    case 'approved':
+      return t('community.applicationStatus.applicationApproved');
+    case 'rejected':
+      return t('community.applicationStatus.applicationRejected');
+    case 'archived':
+      return t('community.applicationStatus.applicationArchived');
+    // TODO: (Handle Invitations)
+    /*  InvitationAccepted,
+    InvitationRejected,
+    InvitedToAlkemio,
+    InvitedToSpace,
+    */
+  }
+};
+
+const sortState = (state: string | undefined) => {
+  switch (state) {
+    case 'new':
+      return 100;
+    case 'approved':
+      return 50;
+    case 'rejected':
+      return 50;
+    case 'archived':
+      return 10;
+    // TODO: (Handle Invitations)
+  }
 };
 
 interface CommunityApplicationsProps {
@@ -47,25 +82,6 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
   const { t } = useTranslation();
   const [applicationSelected, setApplicationSelected] = useState<ApplicationInfoFragment>();
   const [deletingApplication, setDeletingApplication] = useState<ApplicationInfoFragment>();
-
-  const formatState = (state: string | undefined) => {
-    switch (state) {
-      case 'new':
-        return t('community.applicationStatus.applicationReceived');
-      case 'approved':
-        return t('community.applicationStatus.applicationApproved');
-      case 'rejected':
-        return t('community.applicationStatus.applicationRejected');
-      case 'archived':
-        return t('community.applicationStatus.applicationArchived'); // TODO: Maybe they want to hide archived applications? //!!
-      // TODO: (Handle Invitations)
-      /*  InvitationAccepted,
-      InvitationRejected,
-      InvitedToAlkemio,
-      InvitedToSpace,
-      */
-    }
-  };
 
   const applicationsColumns: GridColDef[] = [
     {
@@ -91,17 +107,28 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       resizable: true,
     },
     {
-      field: 'status',
+      field: 'createdDate',
+      headerName: t('common.date'),
+      minWidth: 200,
+      type: 'date',
+      renderHeader: () => <>{t('common.date')}</>,
+      renderCell: ({ row }: RenderParams) => formatDateTime(row.createdDate),
+    },
+    {
+      field: 'state',
       headerName: t('common.status'),
       minWidth: 200,
       renderHeader: () => <>{t('common.status')}</>,
-      renderCell: ({ row }: RenderParams) => <>{formatState(row.lifecycle.state)}</>,
-      valueGetter: ({ row }: GetterParams) => row.lifecycle.state,
+      renderCell: ({ row }: RenderParams) => formatState(row.lifecycle.state, t),
+      valueGetter: ({ row }: GetterParams) => sortState(row.lifecycle.state),
       filterable: false, // TODO maybe... (has to be a combobox, maybe when we implement invitations)
     },
   ];
 
-  const onHelpClick = () => {}; //!! PENDING
+  const visibleApplications = useMemo(
+    () => applications.filter(application => application.lifecycle.state !== 'archived'),
+    [applications]
+  );
 
   const handleApplicationDelete = async (application: ApplicationInfoFragment) => {
     switch (application.lifecycle.state) {
@@ -126,16 +153,18 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.pendingApplications')}</BlockTitle>
-        <IconButton onClick={onHelpClick}>
-          <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
-        </IconButton>
+        <Tooltip title={t('community.applicationsHelp')} arrow>
+          <IconButton>
+            <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
+          </IconButton>
+        </Tooltip>
       </Box>
       <Box minHeight={gutters(10)}>
         {loading ? (
           <DataGridSkeleton />
         ) : (
           <DataGridTable
-            rows={applications}
+            rows={visibleApplications}
             columns={applicationsColumns}
             actions={[
               {
@@ -143,7 +172,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
                 render: ({ row }) => (
                   /* TODO: handle row type here and decide if show button or not, Application, invitation ... */
                   <IconButton onClick={() => setApplicationSelected(row)}>
-                    <VisibilityIcon color="primary" />
+                    <VisibilityOutlinedIcon color="primary" />
                   </IconButton>
                 ),
               },
@@ -168,7 +197,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       {applicationSelected && (
         <ApplicationDialog
           app={applicationSelected}
-          onHide={() => setApplicationSelected(undefined)}
+          onClose={() => setApplicationSelected(undefined)}
           onSetNewState={onApplicationStateChange}
         />
       )}

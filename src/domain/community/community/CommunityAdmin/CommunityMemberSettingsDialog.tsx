@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { Button, Checkbox, FormControlLabel, Link } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import useLoadingState from '../../../shared/utils/useLoadingState';
@@ -13,7 +13,7 @@ import { LoadingButton } from '@mui/lab';
 import Gutters from '../../../../core/ui/grid/Gutters';
 
 interface CommunityMemberSettingsDialogProps {
-  user: {
+  member: {
     id: string;
     profile: {
       displayName: string;
@@ -25,36 +25,41 @@ interface CommunityMemberSettingsDialogProps {
         country: string;
       };
     };
-    firstName: string;
-    email: string;
+    firstName?: string;
+    email?: string;
     isLead: boolean;
-    isAdmin: boolean;
+    isAdmin?: boolean;
   };
   onClose?: () => void;
-  onLeadChange: (userId: string, isLead: boolean) => Promise<unknown> | void;
-  onAdminChange?: (userId: string, isAdmin: boolean) => Promise<unknown> | void;
-  onRemoveMember?: (userId: string) => void;
+  onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown> | void;
+  onAdminChange?: (memberId: string, isAdmin: boolean) => Promise<unknown> | void;
+  onRemoveMember?: (memberId: string) => void;
 }
 
 const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
   onClose,
-  user,
+  member,
   onLeadChange,
   onAdminChange,
   onRemoveMember,
 }) => {
   const { t } = useTranslation();
-  const [isLead, setIsLead] = useState(user.isLead);
-  const [isAdmin, setIsAdmin] = useState(user.isAdmin);
+  const [isLead, setIsLead] = useState(member.isLead);
+  const [isAdmin, setIsAdmin] = useState(member.isAdmin);
   const [removingMember, setRemovingMember] = useState(false);
 
   const [handleSave, isLoading] = useLoadingState(async () => {
-    if (isLead !== user.isLead) {
-      await onLeadChange(user.id, isLead);
+    if (isLead !== member.isLead) {
+      await onLeadChange(member.id, isLead);
     }
-    if (isAdmin !== user.isAdmin) {
-      await onAdminChange?.(user.id, isLead);
+    if (typeof isAdmin !== 'undefined' && isAdmin !== member.isAdmin) {
+      await onAdminChange?.(member.id, isAdmin);
     }
+    onClose?.();
+  });
+
+  const [handleRemoveMember, removingMemberLoading] = useLoadingState(async (memberId: string) => {
+    await onRemoveMember?.(memberId);
     onClose?.();
   });
 
@@ -64,11 +69,11 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
         <DialogHeader onClose={onClose}>{t('community.memberSettings.title')}</DialogHeader>
         <Gutters>
           <ProfileChip
-            key={user.id}
-            displayName={user.profile.displayName}
-            avatarUrl={user.profile.visual?.uri}
-            city={user.profile.location?.city}
-            country={user.profile.location?.country}
+            key={member.id}
+            displayName={member.profile.displayName}
+            avatarUrl={member.profile.visual?.uri}
+            city={member.profile.location?.city}
+            country={member.profile.location?.country}
           />
           <BlockSectionTitle>{t('common.role')}</BlockSectionTitle>
           <FormControlLabel
@@ -87,14 +92,14 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
           {onRemoveMember && (
             <>
               <BlockSectionTitle>{t('community.memberSettings.removeMember.sectionTitle')}</BlockSectionTitle>
-              <Link onClick={() => setRemovingMember(true)}>
-                <DeleteIcon color="error" sx={{ textAlign: 'bottom' }} />
+              <Link onClick={() => setRemovingMember(true)} sx={{ cursor: 'pointer' }}>
+                <DeleteOutlineIcon color="error" sx={{ verticalAlign: 'bottom', marginRight: 1 }} />
                 {t('community.memberSettings.removeMember.remove')}
               </Link>
             </>
           )}
 
-          <Actions>
+          <Actions justifyContent="end">
             <Button variant="text" onClick={onClose}>
               {t('buttons.cancel')}
             </Button>
@@ -107,7 +112,7 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
       {removingMember && onRemoveMember && (
         <ConfirmationDialog
           actions={{
-            onConfirm: () => onRemoveMember(user.id),
+            onConfirm: () => handleRemoveMember(member.id),
             onCancel: () => setRemovingMember(false),
           }}
           options={{
@@ -116,11 +121,14 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
           entities={{
             title: t('community.memberSettings.removeMember.dialogTitle'),
             content: t('community.memberSettings.removeMember.dialogContent', {
-              member: user.profile.displayName,
-              memberFirstName: user.firstName,
+              member: member.profile.displayName,
+              memberFirstName: member.firstName,
               // TODO: Add Space name to this message
             }),
             confirmButtonTextId: 'buttons.confirm',
+          }}
+          state={{
+            isLoading: removingMemberLoading,
           }}
         />
       )}

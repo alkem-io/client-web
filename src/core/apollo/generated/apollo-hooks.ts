@@ -924,6 +924,11 @@ export const ApplicationInfoFragmentDoc = gql`
         visual(type: AVATAR) {
           ...VisualUri
         }
+        location {
+          id
+          city
+          country
+        }
       }
     }
     questions {

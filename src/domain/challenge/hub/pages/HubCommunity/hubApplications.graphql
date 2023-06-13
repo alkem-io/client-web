@@ -29,6 +29,11 @@ fragment ApplicationInfo on Application {
       visual(type: AVATAR) {
         ...VisualUri
       }
+      location {
+        id
+        city
+        country
+      }
     }
   }
   questions {

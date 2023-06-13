@@ -68,7 +68,7 @@ export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applicat
         />
       </Box>
       {appChosen && (
-        <ApplicationDialog app={appChosen} onHide={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
+        <ApplicationDialog app={appChosen} onClose={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
       )}
     </DashboardGenericSection>
   );

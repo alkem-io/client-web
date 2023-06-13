@@ -130,8 +130,8 @@ const useHubCommunityContext = (hubId: string) => {
 
   // Mutations:
   const [updateApplication] = useEventOnApplicationMutation({});
-  const handleApplicationStateChange = (applicationId: string, newState: string) => {
-    return updateApplication({
+  const handleApplicationStateChange = async (applicationId: string, newState: string) => {
+    await updateApplication({
       variables: {
         input: {
           applicationID: applicationId,
@@ -139,6 +139,7 @@ const useHubCommunityContext = (hubId: string) => {
         },
       },
     });
+    return refetchCommunityMembers();
   };
 
   const [assignUserAsCommunityLead] = useAssignUserAsCommunityLeadMutation();
@@ -168,6 +169,7 @@ const useHubCommunityContext = (hubId: string) => {
   const [assignUserAsHubAdmin] = useAssignUserAsHubAdminMutation();
   const [removeUserAsHubAdmin] = useRemoveUserAsHubAdminMutation();
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
+    console.log(`user ${memberId} is admin: ${isAdmin}`);
     if (isAdmin) {
       await assignUserAsHubAdmin({
         variables: {

@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Link, TextField } from '@mui/material';
+import { Box, Button, IconButton, Link, TextField, Tooltip } from '@mui/material';
 import {
   GridColDef,
   GridFilterModel,
@@ -18,6 +18,7 @@ import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
+import { useUserContext } from '../../contributor/user';
 
 export interface CommunityMemberUserFragmentWithRoles extends CommunityMemberUserFragment {
   isMember: boolean;
@@ -60,6 +61,7 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
   onRemoveMember,
   loading,
 }) => {
+  const { user: currentUser } = useUserContext();
   const { t } = useTranslation();
 
   const usersColumns: GridColDef[] = [
@@ -146,16 +148,27 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
             actions={[
               {
                 name: 'edit',
-                render: ({ row }) => (
-                  <IconButton onClick={() => setEditingUser(row)}>
-                    <EditIcon color="primary" />
-                  </IconButton>
-                ),
+                render: ({ row }: { row: CommunityMemberUserFragmentWithRoles }) => {
+                  if (currentUser && row.id !== currentUser?.user.id) {
+                    return (
+                      <IconButton onClick={() => setEditingUser(row)}>
+                        <EditIcon color="primary" />
+                      </IconButton>
+                    );
+                  } else {
+                    return (
+                      <Tooltip title={t('community.unauthorizedPermissionsChange')}>
+                        <Box>
+                          <IconButton disabled>
+                            <EditIcon color="disabled" />
+                          </IconButton>
+                        </Box>
+                      </Tooltip>
+                    );
+                  }
+                },
               },
             ]}
-            flex={{
-              displayName: 1,
-            }}
             initialState={initialState}
             filterModel={filterModel}
             pageSize={10}
@@ -165,7 +178,7 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
       </Box>
       {editingUser && (
         <CommunityMemberSettingsDialog
-          user={editingUser}
+          member={editingUser}
           onLeadChange={onUserLeadChange}
           onAdminChange={onUserAuthorizationChange}
           onRemoveMember={onRemoveMember}

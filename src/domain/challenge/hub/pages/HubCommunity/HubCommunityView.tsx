@@ -51,7 +51,7 @@ export const HubCommunityView: FC<HubCommunityViewProps> = ({ hubId }) => {
         <PageContentBlock>
           <CommunityOrganizations
             organizations={organizations}
-            onLeadChange={onOrganizationLeadChange}
+            onOrganizationLeadChange={onOrganizationLeadChange}
             onRemoveMember={onRemoveOrganization}
             loading={loading}
           />
