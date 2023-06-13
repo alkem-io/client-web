@@ -106,14 +106,17 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
         collaborationEnabled: true,
         ydoc,
         provider: new HocuspocusProvider({
-          url: 'ws://127.0.0.1:8081', // platform?....
+          url: 'ws://localhost:3000/api/private/ws', // platform?....
           name: collaborationRoomId,
           document: ydoc,
+          parameters: {
+            type: 'callout',
+            id: collaborationRoomId,
+          },
           onStatus: ({ status }) => {
             console.log('onStatus', status);
           },
           onMessage: data => {
-            const decoder = data.message.decoder;
             console.log('onMessage', data, new TextDecoder().decode(data.message.decoder.arr));
           },
           onSynced: ({ state }) => {
@@ -143,7 +146,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     const updateHtmlContent = async () => {
       console.log('updateHtmlContent', value);
       const content = await markdownToHTML(value);
-      setHtmlContent(String(content));
+      //setHtmlContent(String(content));
     };
     const { user, loading } = useUserContext();
 
