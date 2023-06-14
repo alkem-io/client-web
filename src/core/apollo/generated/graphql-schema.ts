@@ -9042,6 +9042,79 @@ export type BannerInnovationHubQuery = {
   };
 };
 
+export type HubApplicationsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubApplicationsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          applications?:
+            | Array<{
+                __typename?: 'Application';
+                id: string;
+                createdDate: Date;
+                updatedDate: Date;
+                lifecycle: {
+                  __typename?: 'Lifecycle';
+                  id: string;
+                  state?: string | undefined;
+                  nextEvents?: Array<string> | undefined;
+                };
+                user: {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  email: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                };
+                questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ApplicationInfoFragment = {
+  __typename?: 'Application';
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  lifecycle: {
+    __typename?: 'Lifecycle';
+    id: string;
+    state?: string | undefined;
+    nextEvents?: Array<string> | undefined;
+  };
+  user: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    email: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+};
+
 export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
   input: AssignOpportunityAdminInput;
 }>;
@@ -17775,31 +17848,6 @@ export type JoinCommunityMutation = {
   joinCommunity: { __typename?: 'Community'; id: string };
 };
 
-export type ApplicationInfoFragment = {
-  __typename?: 'Application';
-  id: string;
-  createdDate: Date;
-  updatedDate: Date;
-  lifecycle: {
-    __typename?: 'Lifecycle';
-    id: string;
-    state?: string | undefined;
-    nextEvents?: Array<string> | undefined;
-  };
-  user: {
-    __typename?: 'User';
-    id: string;
-    email: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  };
-  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
-};
-
 export type ApplyForCommunityMembershipMutationVariables = Exact<{
   input: CommunityApplyInput;
 }>;
@@ -18901,10 +18949,17 @@ export type BasicOrganizationDetailsFragment = {
 export type CommunityMemberUserFragment = {
   __typename?: 'User';
   id: string;
+  nameID: string;
+  email: string;
   firstName: string;
   lastName: string;
-  email: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  };
 };
 
 export type AllOrganizationsQueryVariables = Exact<{
@@ -18958,20 +19013,34 @@ export type ChallengeCommunityMembersQuery = {
               | Array<{
                   __typename?: 'User';
                   id: string;
+                  nameID: string;
+                  email: string;
                   firstName: string;
                   lastName: string;
-                  email: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
                 }>
               | undefined;
             leadUsers?:
               | Array<{
                   __typename?: 'User';
                   id: string;
+                  nameID: string;
+                  email: string;
                   firstName: string;
                   lastName: string;
-                  email: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
                 }>
               | undefined;
             memberOrganizations?:
@@ -19029,20 +19098,34 @@ export type HubCommunityMembersQuery = {
             | Array<{
                 __typename?: 'User';
                 id: string;
+                nameID: string;
+                email: string;
                 firstName: string;
                 lastName: string;
-                email: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
               }>
             | undefined;
           leadUsers?:
             | Array<{
                 __typename?: 'User';
                 id: string;
+                nameID: string;
+                email: string;
                 firstName: string;
                 lastName: string;
-                email: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
               }>
             | undefined;
           memberOrganizations?:
@@ -19061,6 +19144,38 @@ export type HubCommunityMembersQuery = {
                 };
               }>
             | undefined;
+          leadOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+          };
         }
       | undefined;
   };
@@ -19167,20 +19282,34 @@ export type OpportunityCommunityMembersQuery = {
               | Array<{
                   __typename?: 'User';
                   id: string;
+                  nameID: string;
+                  email: string;
                   firstName: string;
                   lastName: string;
-                  email: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
                 }>
               | undefined;
             leadUsers?:
               | Array<{
                   __typename?: 'User';
                   id: string;
+                  nameID: string;
+                  email: string;
                   firstName: string;
                   lastName: string;
-                  email: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
                 }>
               | undefined;
             memberOrganizations?:
@@ -20855,6 +20984,7 @@ export type UsersWithCredentialsQuery = {
   usersWithAuthorizationCredential: Array<{
     __typename?: 'User';
     id: string;
+    nameID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -21596,12 +21726,14 @@ export type ChallengeApplicationsQuery = {
                   user: {
                     __typename?: 'User';
                     id: string;
+                    nameID: string;
                     email: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
                       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     };
                   };
                   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
@@ -21937,50 +22069,6 @@ export type AdminHubFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-};
-
-export type HubApplicationsQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubApplicationsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          applications?:
-            | Array<{
-                __typename?: 'Application';
-                id: string;
-                createdDate: Date;
-                updatedDate: Date;
-                lifecycle: {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                };
-                user: {
-                  __typename?: 'User';
-                  id: string;
-                  email: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                };
-                questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
 };
 
 export type HubStorageAdminQueryVariables = Exact<{

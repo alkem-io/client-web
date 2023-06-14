@@ -904,6 +904,41 @@ export const HubNameFragmentDoc = gql`
     }
   }
 `;
+export const ApplicationInfoFragmentDoc = gql`
+  fragment ApplicationInfo on Application {
+    id
+    createdDate
+    updatedDate
+    lifecycle {
+      id
+      state
+      nextEvents
+    }
+    user {
+      id
+      nameID
+      email
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+    questions {
+      id
+      name
+      value
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const OpportunityPageFragmentDoc = gql`
   fragment OpportunityPage on Opportunity {
     id
@@ -1745,35 +1780,6 @@ export const DiscussionDetailsFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-export const ApplicationInfoFragmentDoc = gql`
-  fragment ApplicationInfo on Application {
-    id
-    createdDate
-    updatedDate
-    lifecycle {
-      id
-      state
-      nextEvents
-    }
-    user {
-      id
-      email
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-      }
-    }
-    questions {
-      id
-      name
-      value
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const ApplicationFormFragmentDoc = gql`
   fragment ApplicationForm on Form {
     id
@@ -1922,14 +1928,24 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
 export const CommunityMemberUserFragmentDoc = gql`
   fragment CommunityMemberUser on User {
     id
+    nameID
     profile {
       id
       displayName
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
     }
+    email
     firstName
     lastName
-    email
   }
+  ${VisualUriFragmentDoc}
 `;
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
@@ -7233,6 +7249,67 @@ export type BannerInnovationHubQueryResult = Apollo.QueryResult<
 >;
 export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerInnovationHubQueryVariables) {
   return { query: BannerInnovationHubDocument, variables: variables };
+}
+
+export const HubApplicationsDocument = gql`
+  query hubApplications($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      community {
+        id
+        applications {
+          ...ApplicationInfo
+        }
+      }
+    }
+  }
+  ${ApplicationInfoFragmentDoc}
+`;
+
+/**
+ * __useHubApplicationsQuery__
+ *
+ * To run a query within a React component, call `useHubApplicationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubApplicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubApplicationsQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubApplicationsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>(
+    HubApplicationsDocument,
+    options
+  );
+}
+
+export function useHubApplicationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>(
+    HubApplicationsDocument,
+    options
+  );
+}
+
+export type HubApplicationsQueryHookResult = ReturnType<typeof useHubApplicationsQuery>;
+export type HubApplicationsLazyQueryHookResult = ReturnType<typeof useHubApplicationsLazyQuery>;
+export type HubApplicationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubApplicationsQuery,
+  SchemaTypes.HubApplicationsQueryVariables
+>;
+export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicationsQueryVariables) {
+  return { query: HubApplicationsDocument, variables: variables };
 }
 
 export const AssignUserAsOpportunityAdminDocument = gql`
@@ -16028,6 +16105,12 @@ export const HubCommunityMembersDocument = gql`
         memberOrganizations {
           ...OrganizationDetails
         }
+        leadOrganizations {
+          ...OrganizationDetails
+        }
+      }
+      host {
+        ...OrganizationDetails
       }
     }
   }
@@ -18984,6 +19067,7 @@ export const UsersWithCredentialsDocument = gql`
   query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
       id
+      nameID
       firstName
       lastName
       email
@@ -20860,67 +20944,6 @@ export type AdminHubsListQueryResult = Apollo.QueryResult<
 >;
 export function refetchAdminHubsListQuery(variables?: SchemaTypes.AdminHubsListQueryVariables) {
   return { query: AdminHubsListDocument, variables: variables };
-}
-
-export const HubApplicationsDocument = gql`
-  query hubApplications($hubId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      id
-      community {
-        id
-        applications {
-          ...ApplicationInfo
-        }
-      }
-    }
-  }
-  ${ApplicationInfoFragmentDoc}
-`;
-
-/**
- * __useHubApplicationsQuery__
- *
- * To run a query within a React component, call `useHubApplicationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubApplicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubApplicationsQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *   },
- * });
- */
-export function useHubApplicationsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>(
-    HubApplicationsDocument,
-    options
-  );
-}
-
-export function useHubApplicationsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>(
-    HubApplicationsDocument,
-    options
-  );
-}
-
-export type HubApplicationsQueryHookResult = ReturnType<typeof useHubApplicationsQuery>;
-export type HubApplicationsLazyQueryHookResult = ReturnType<typeof useHubApplicationsLazyQuery>;
-export type HubApplicationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubApplicationsQuery,
-  SchemaTypes.HubApplicationsQueryVariables
->;
-export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicationsQueryVariables) {
-  return { query: HubApplicationsDocument, variables: variables };
 }
 
 export const HubStorageAdminDocument = gql`
