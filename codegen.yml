@@ -18,6 +18,7 @@ generates:
         Upload: File
         TextID: string
         NameID: string
+        Emoji: string
         UUID: string
         UUID_NAMEID: string
         UUID_NAMEID_EMAIL: string

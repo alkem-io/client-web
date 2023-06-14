@@ -25,7 +25,8 @@
   "fields": {
     "displayName": "Title",
     "startTime": "Start Time",
-    "endTime": "End Time"
+    "endTime": "End Time",
+    "name": "Name"
   },
   "calendar": {
     "add-event": "Add event",
@@ -60,6 +61,7 @@
     "publish": "Publish",
     "unpublish": "Unpublish",
     "save-draft": "Save as draft",
+    "archive": "Archive",
     "save": "Save",
     "back": "Back",
     "next": "Next",
@@ -102,6 +104,7 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
+    "reply": "Reply",
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
@@ -136,6 +139,10 @@
         "linkedin": "LinkedIn",
         "microsoft": "Microsoft"
       }
+    },
+    "signUp": {
+      "signUpEmail": "Sign up with E-Mail",
+      "alreadyHaveAccount": "Already have an account?"
     }
   },
   "common": {
@@ -180,6 +187,7 @@
     "forum": "Forum",
     "email": "Email",
     "state": "State",
+    "status": "Status",
     "aspect": "Card",
     "aspects": "Cards",
     "host": "Host",
@@ -200,6 +208,7 @@
     "interest": "Interest",
     "interests": "Interests",
     "project": "Project",
+    "role": "Role",
     "agreements": "Agreements",
     "templates": "Templates",
     "template": "Template",
@@ -234,6 +243,7 @@
     "community": "Community",
     "people": "People",
     "settings": "Settings",
+    "hub-settings": "$t(common.settings)",
     "search": "Search...",
     "storage": "Storage",
     "reference": "Reference",
@@ -405,23 +415,47 @@
     }
   },
   "community": {
-    "leading-users": "Leading Users",
-    "member-users": "Member Users",
+    "memberUsers": "Member Users ({{count}})",
     "leading-organizations": "Leading Organizations",
-    "member-organizations": "Member Organizations",
+    "memberOrganizations": "Member Organizations ({{count}})",
+    "pendingApplications": "Pending applications & invitations",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
+    "addMember": "Add member",
+    "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
     "application-form": {
       "title": "Application Form",
-      "subtitle": "This section allows you to modify the questions for users wanting to join the Space. <br /><b>Please note</b> that these questions will only be shown when the switch \"Allow applications to this Space\" is turned <b>on</b>, and \"Allow any registered user to join this Space\" is switched <b>off</b>. These can be set in the <b>Membership</b> block above.",
+      "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
       "required-question": "Required question",
       "move-up": "Move question one position up",
       "move-down": "Move question one position down",
       "delete-question": "Delete question",
       "updated-successfully": "Application form updated successfully."
+    },
+    "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
+    "applicationStatus": {
+      "applicationReceived": "Application Received",
+      "applicationApproved": "Application Approved",
+      "applicationRejected": "Application Rejected",
+      "applicationArchived": "Application Archived"
+    },
+    "confirmDeleteApplication": {
+      "title": "Deleting application from {{user}}",
+      "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+    },
+    "memberSettings": {
+      "title": "Member Settings",
+      "lead": "This member is a <b>lead</b>: (s)he will be shown as the person to host this Community. NB: There can be <b>no more than 2 leads</b> per Space. When there are already 2 leads selected, this option will be disabled for others.",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors",
+      "removeMember": {
+        "sectionTitle": "Remove member",
+        "remove": "Click here to remove this user from {{space}}. Be careful, this action cannot be undone.",
+        "dialogTitle": "Are you sure you want to remove this member?",
+        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Space and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
+      }
     }
   },
   "callout": {
@@ -1151,9 +1185,8 @@
       "delete-discussion": "Delete discussion?",
       "delete-comment": "Delete comment?"
     },
-    "comment": {
-      "posted": "{{name}} on {{- date}}",
-      "reply": "Replay to this comment"
+    "message": {
+      "root": "started the discussion"
     },
     "post-comment": {
       "fields": {
@@ -1348,6 +1381,9 @@
           "my-profile": {
             "description": "Here you can edit your profile details."
           },
+          "hub-settings": {
+            "description": ""
+          },
           "membership": {
             "description": "Here you can see the membership information."
           },
@@ -1364,12 +1400,10 @@
             "description": "Here you can see the document storage for this {{entity}}.",
             "title": "Documents",
             "grid": {
-              "title": "Title",
               "mimeType": "Type",
               "size": "Size",
               "uploadedBy": "Uploaded by",
-              "uploadedAt": "Uploaded at",
-              "location": "Location"
+              "uploadedAt": "Uploaded at"
             },
             "delete": {
               "title": "Delete this document?",
@@ -1437,6 +1471,27 @@
         "notifications": {
           "hub-created": "Space created successfuly.",
           "hub-removed": "Space '{{name}}' removed successfully."
+        },
+        "settings": {
+          "savedSuccessfully": "Settings saved successfully",
+          "visibility": {
+            "title": "Visibility",
+            "public": "<b>Public:</b> this hub and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
+            "private": "<b>Private:</b> this hub is visible for everyone on the platform, but the content is only visible for members."
+          },
+          "membership": {
+            "title": "Membership",
+            "noApplicationRequired": "<b>No Application required:</b> all Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
+            "applicationRequired": "<b>Application required:</b> if people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
+            "invitationOnly": "<b>Invitation only:</b> users can only become a member after you’ve invited them (which you can do from the <community>Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
+            "trustedApplicants": "Trusted applicants",
+            "hostOrganizationJoin": "<b>Host organization:</b> allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited."
+          },
+          "memberActions": {
+            "title": "Member Actions",
+            "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
+            "createChallenges": "<b>Create Challenges</b>: allow members to create Challenges in this Space. If you deactivate this, you can still create Challenges yourself and add other people as an admin inside the Challenge."
+          }
         }
       },
       "opportunity": {
@@ -1964,6 +2019,20 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, click here to contact the Alkemio team."
+    },
+    "fields": {
+      "ID": "ID",
+      "Password": "Password",
+      "E-Mail": "E-Mail",
+      "Email": "$t(kratos.fields.E-Mail)",
+      "First Name": "First Name",
+      "Last Name": "Last Name",
+      "Sign in": "Sign in",
+      "Sign up": "Sign up",
+      "Submit": "Submit",
+      "Verify code": "Verify code",
+      "Resend code": "Resend code",
+      "Save": "Save"
     }
   },
   "apollo": {

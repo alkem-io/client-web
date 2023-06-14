@@ -16,7 +16,6 @@ import {
   CalloutsQueryVariables,
   ReferenceDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import useSubscribeOnCommentCallouts from '../useSubscribeOnCommentCallouts';
 import { CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
@@ -84,7 +83,6 @@ export type TypedCallout = Pick<
     };
     draft: boolean;
     editable: boolean;
-    isSubscribedToComments: boolean;
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
@@ -153,10 +151,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const collaboration = (calloutsData?.hub.opportunity ?? calloutsData?.hub.challenge ?? calloutsData?.hub)
     ?.collaboration;
 
-  const commentCalloutIds = collaboration?.callouts?.filter(x => x.type === CalloutType.Comments).map(x => x.id) ?? [];
-
-  const subscribedToComments = useSubscribeOnCommentCallouts(commentCalloutIds);
-
   const canCreateCallout =
     collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout) ?? false;
 
@@ -167,7 +161,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       collaboration?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const isSubscribedToComments = commentCalloutIds.includes(callout.id) && subscribedToComments;
         return {
           ...callout,
           // Add calloutNameId to all canvases
@@ -176,7 +169,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           authorization,
           draft,
           editable,
-          isSubscribedToComments,
         } as TypedCallout;
       }),
     [collaboration]

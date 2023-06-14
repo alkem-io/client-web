@@ -12,6 +12,12 @@ query hubCommunityMembers($hubId: UUID_NAMEID!) {
       memberOrganizations {
         ...OrganizationDetails
       }
+      leadOrganizations {
+        ...OrganizationDetails
+      }
+    }
+    host {
+      ...OrganizationDetails
     }
   }
 }

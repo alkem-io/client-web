@@ -3,10 +3,10 @@ import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '../../../platform/admin/components/Common/Filter';
-import MessageView from '../../../shared/components/Comments/MessageView';
-import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
+import MessageView from '../../room/Comments/MessageView';
+import PostMessageToCommentsForm from '../../room/Comments/PostMessageToCommentsForm';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { Message } from '../../../shared/components/Comments/models/message';
+import { Message } from '../../room/models/Message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, BlockSectionTitle } from '../../../../core/ui/typography';
@@ -14,11 +14,15 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
 import { useResolvedPath } from 'react-router-dom';
+import useCommentReactionsMutations from '../../room/Comments/useCommentReactionsMutations';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import MessagesThread from '../../room/Comments/MessagesThread';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
   currentUserId?: string;
-  onPostComment?: (comment: string) => Promise<FetchResult<unknown>> | void;
+  postMessage: (comment: string) => Promise<FetchResult<unknown>> | void;
+  postReply: (reply: { messageText: string; threadId: string }) => void;
   onDeleteDiscussion?: () => void;
   onDeleteComment?: (id: string) => void;
 }
@@ -26,25 +30,16 @@ export interface DiscussionViewProps {
 export const DiscussionView: FC<DiscussionViewProps> = ({
   discussion,
   currentUserId,
-  onPostComment,
+  postMessage,
+  postReply,
   onDeleteDiscussion,
   onDeleteComment,
 }) => {
   const { t } = useTranslation();
 
-  const {
-    id,
-    description,
-    author,
-    authors,
-    createdAt,
-    commentsCount: totalComments,
-    comments,
-    myPrivileges,
-    nameID,
-  } = discussion;
+  const { id, description, author, authors, createdAt, comments, myPrivileges, nameID } = discussion;
 
-  const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.CreateComment) ?? false;
+  const canPost = comments.myPrivileges?.some(x => x === AuthorizationPrivilege.CreateMessage) ?? false;
   const canDeleteDiscussion = myPrivileges?.some(x => x === AuthorizationPrivilege.Delete) ?? false;
   const canDeleteComment = (authorId?: string) =>
     (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
@@ -60,6 +55,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
   const { pathname } = useResolvedPath('..');
   const discussionUrl = buildDiscussionUrl(pathname, nameID);
 
+  const commentReactionsMutations = useCommentReactionsMutations(discussion.comments.id);
+
   return (
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
       <Grid item xs={12} container direction="column">
@@ -72,7 +69,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             message={initialComment}
             canDelete={canDeleteDiscussion}
             onDelete={onDeleteDiscussion}
-            isRootComment
+            root
+            {...commentReactionsMutations}
           />
         </Grid>
         <Grid item>
@@ -81,28 +79,25 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
               <Box paddingY={2}>
                 <BlockSectionTitle>
                   {t('components.discussion.summary', {
-                    comment: totalComments,
+                    comment: comments.messagesCount,
                     contributed: authors.length,
                   })}
                 </BlockSectionTitle>
               </Box>
-              <Filter data={comments}>
+              <Filter data={comments.messages}>
                 {filteredComments => {
                   if (filteredComments.length === 0) return null;
                   return (
-                    <Box marginTop={2}>
-                      <Grid container spacing={3}>
-                        {filteredComments.map(c => (
-                          <Grid item xs={12} key={c.id}>
-                            <MessageView
-                              message={c}
-                              canDelete={canDeleteComment(c.author?.id)}
-                              onDelete={onDeleteComment}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </Box>
+                    <Gutters>
+                      <MessagesThread
+                        canPostMessages
+                        messages={filteredComments}
+                        canDeleteMessage={canDeleteComment}
+                        onDeleteMessage={onDeleteComment}
+                        onReply={postReply}
+                        {...commentReactionsMutations}
+                      />
+                    </Gutters>
                   );
                 }}
               </Filter>
@@ -114,7 +109,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <Box paddingY={2}>
               {canPost && (
                 <PostMessageToCommentsForm
-                  onPostComment={comment => onPostComment?.(comment)}
+                  onPostComment={comment => postMessage?.(comment)}
                   title={t('components.post-comment.fields.description.title')}
                   placeholder={t('components.post-comment.fields.description.placeholder')}
                   maxLength={LONG_TEXT_LENGTH}

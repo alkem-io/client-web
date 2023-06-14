@@ -9,7 +9,16 @@ fragment DiscussionDetails on Discussion {
   createdBy
   timestamp
   category
-  commentsCount
+  comments {
+    id
+    messagesCount
+    authorization {
+      myPrivileges
+    }
+    messages {
+      ...MessageDetails
+    }
+  }
   authorization {
     myPrivileges
   }
@@ -34,13 +43,19 @@ query platformDiscussions {
           displayName
           description
           tagline
-          visuals {
+          visual(type: AVATAR) {
             ...VisualFull
           }
         }
         category
         timestamp
-        commentsCount
+        comments {
+          id
+          messagesCount
+          authorization {
+            myPrivileges
+          }
+        }
         createdBy
         authorization {
           id
@@ -64,9 +79,6 @@ query platformDiscussion($discussionId: String!) {
       }
       discussion(ID: $discussionId) {
         ...DiscussionDetails
-        messages {
-          ...MessageDetails
-        }
       }
     }
   }

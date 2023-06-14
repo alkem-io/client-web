@@ -1,5 +1,4 @@
 import {
-  DataGrid,
   GridColDef,
   GridFilterModel,
   GridLinkOperator,
@@ -12,10 +11,9 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../layout/EntitySettingsLayout/types';
 import HubSettingsLayout from '../HubSettingsLayout';
-import { Box, IconButton, Link, Skeleton, TextField, Theme, styled, useMediaQuery } from '@mui/material';
+import { Box, IconButton, Link, Skeleton, TextField, Theme, useMediaQuery } from '@mui/material';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useDeleteDocumentMutation, useHubStorageAdminQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, DocumentDataFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { formatFileSize } from '../../../../../core/utils/Storage';
@@ -27,10 +25,11 @@ import {
   buildUserProfileUrl,
 } from '../../../../../common/utils/urlBuilders';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import { BlockSectionTitle } from '../../../../../core/ui/typography';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { compact, sortBy } from 'lodash';
 import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
 import { formatDateTime } from '../../../../../core/utils/time/utils';
+import DataGridTable from '../../../../../core/ui/table/DataGridTable';
 
 interface HubStorageAdminPageProps extends SettingsPageProps {
   hubId: string | undefined;
@@ -47,27 +46,14 @@ interface DocumentDataFragmentWithLocation extends DocumentDataFragment {
 type RenderParams = GridRenderCellParams<string, DocumentDataFragmentWithLocation>;
 type GetterParams = GridValueGetterParams<string, DocumentDataFragmentWithLocation>;
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  '.MuiDataGrid-columnHeaders': {
-    color: theme.palette.primary.contrastText,
-    background: theme.palette.primary.main,
-    fontWeight: 'bold',
-    '.MuiIconButton-root': {
-      color: theme.palette.primary.contrastText,
-    },
-  },
-  '.MuiDataGrid-row:nth-child(odd)': {
-    background: theme.palette.background.default,
-  },
-  '.MuiDataGrid-row:nth-child(even)': {
-    background: theme.palette.background.paper,
-  },
-  '.MuiDataGrid-columnSeparator': {
-    color: 'transparent',
-  },
-}));
-
 const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
+
+const initialPagination = {
+  pagination: {
+    page: 0,
+    pageSize: 5,
+  },
+} as const;
 
 const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -151,10 +137,7 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
   const columns: GridColDef[] = [
     {
       field: 'displayName',
-      headerName: t('pages.admin.generic.sections.storage.grid.title'),
       minWidth: 400,
-      resizable: true,
-      flex: 1,
       renderCell: ({ row }: RenderParams) => (
         <Link href={buildDocumentUrl(row.id)} target="_blank">
           {row.displayName}
@@ -165,22 +148,17 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
       field: 'mimeType',
       headerName: t('pages.admin.generic.sections.storage.grid.mimeType'),
       width: 120,
-      resizable: true,
-      renderCell: ({ row }: RenderParams) => row.mimeType,
     },
     {
       field: 'size',
       headerName: t('pages.admin.generic.sections.storage.grid.size'),
       type: 'number',
       width: 120,
-      resizable: true,
-      renderCell: ({ row }: RenderParams) => formatFileSize(row.size),
     },
     {
       field: 'createdBy',
       headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
       minWidth: 150,
-      resizable: true,
       renderCell: ({ row }: RenderParams) =>
         row.createdBy ? (
           <RouterLink to={buildUserProfileUrl(row.createdBy.nameID)}>{row.createdBy.profile.displayName}</RouterLink>
@@ -192,14 +170,12 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
       headerName: t('pages.admin.generic.sections.storage.grid.uploadedAt'),
       type: 'date',
       minWidth: 200,
-      resizable: true,
       renderCell: ({ row }: RenderParams) => formatDateTime(row.uploadedDate),
     },
     {
       field: 'location',
-      headerName: t('pages.admin.generic.sections.storage.grid.location'),
+      headerName: t('common.location'),
       minWidth: 250,
-      resizable: true,
       renderCell: ({ row }: RenderParams) => {
         const JourneyIcon = journeyIcon[row.location.type];
         return (
@@ -211,44 +187,12 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
       },
       valueGetter: ({ row }: GetterParams) => row.location.displayName,
     },
-    {
-      field: 'viewFile',
-      width: 30,
-      resizable: false,
-      headerName: '',
-      sortable: false,
-      filterable: false,
-      hideable: false,
-      disableColumnMenu: true,
-      renderCell: ({ row }: RenderParams) => (
-        <IconButton component={Link} href={buildDocumentUrl(row.id)} target="_blank">
-          <VisibilityOutlinedIcon color="primary" />
-        </IconButton>
-      ),
-    },
-    {
-      field: 'deleteFile',
-      width: 30,
-      resizable: false,
-      headerName: '',
-      sortable: false,
-      filterable: false,
-      hideable: false,
-      disableColumnMenu: true,
-      renderCell: ({ row }: RenderParams) =>
-        row.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ? (
-          // TODO: Button Delete disabled for now on purpose.
-          <IconButton onClick={() => setDeletingDocument(row)} disabled>
-            <DeleteOutlineIcon color="disabled" />
-          </IconButton>
-        ) : undefined,
-    },
   ];
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Storage} tabRoutePrefix={routePrefix}>
       <PageContentBlock>
-        <BlockSectionTitle>{t('pages.admin.generic.sections.storage.title')}</BlockSectionTitle>
+        <PageContentBlockHeader title={t('pages.admin.generic.sections.storage.title')} />
         <Box width={isMobile ? '100%' : '50%'}>
           <TextField
             value={filterString}
@@ -264,19 +208,32 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
           {loading ? (
             <Skeleton />
           ) : (
-            <StyledDataGrid
-              isRowSelectable={() => false}
+            <DataGridTable
               rows={rows}
               columns={columns}
+              actions={[
+                {
+                  name: 'view',
+                  render: ({ row }) => (
+                    <IconButton component={Link} href={buildDocumentUrl(row.id)} target="_blank">
+                      <VisibilityOutlinedIcon color="primary" />
+                    </IconButton>
+                  ),
+                },
+              ]}
+              format={{
+                size: file => formatFileSize(file.size),
+              }}
+              flex={{
+                displayName: 1,
+              }}
               filterModel={filterModel}
               onFilterModelChange={setFilterModel}
-              initialState={{
-                pagination: {
-                  page: 0,
-                  pageSize: 5,
-                },
-              }}
+              initialState={initialPagination}
               pageSize={5}
+              onDelete={file => setDeletingDocument(file)}
+              canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete)}
+              disableDelete={() => true}
             />
           )}
         </Box>
