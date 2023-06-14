@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import { last } from 'lodash';
-import { Message } from '../../../communication/messages/models/message';
+import { Message } from '../models/Message';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
@@ -13,6 +13,8 @@ import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradi
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CaptionSmall } from '../../../../core/ui/typography';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import useCommentReactionsMutations from './useCommentReactionsMutations';
+import MessagesThread from './MessagesThread';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -22,7 +24,8 @@ export interface CommentsComponentProps {
   canReadMessages: boolean;
   canPostMessages: boolean;
   canDeleteMessage: (messageId: string) => boolean;
-  handlePostMessage: (commentsId: string, message: string) => Promise<FetchResult<unknown>> | void;
+  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
+  postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   maxHeight?: number;
   loading?: boolean;
@@ -49,7 +52,8 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   last: isShowingLastMessage,
   messages = [],
   commentsId,
-  handlePostMessage,
+  postMessage,
+  postReply,
   handleDeleteMessage,
   canPostMessages,
   canDeleteMessage,
@@ -64,7 +68,6 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
-  const onPostComment = (message: string) => (commentsId ? handlePostMessage(commentsId, message) : undefined);
   const handleDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
   const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
@@ -89,6 +92,8 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
     }
   }, [messages]);
 
+  const commentReactionsMutations = useCommentReactionsMutations(commentsId);
+
   const handleScroll = () => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
@@ -105,15 +110,16 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           scrollerRef={commentsContainerRef}
           onScroll={handleScroll}
         >
-          <Gutters>
-            {messages.map(message => (
-              <MessageView
-                key={message.id}
-                message={message}
-                canDelete={canDeleteMessage(message.id)}
-                onDelete={onDeleteComment}
-              />
-            ))}
+          <Gutters gap={0}>
+            <MessagesThread
+              messages={messages}
+              loading={loading}
+              canPostMessages={canPostMessages}
+              onReply={postReply}
+              canDeleteMessage={canDeleteMessage}
+              onDeleteMessage={onDeleteComment}
+              {...commentReactionsMutations}
+            />
           </Gutters>
         </ScrollerWithGradient>
       )}
@@ -125,6 +131,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
             message={lastMessage}
             canDelete={canDeleteMessage(lastMessage.id)}
             onDelete={onDeleteComment}
+            {...commentReactionsMutations}
           />
           <CaptionSmall textAlign="center" onClick={onClickMore}>
             {t('common.show-all')}
@@ -134,7 +141,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.aspect.dashboard.comment.placeholder')}
-          onPostComment={onPostComment}
+          onPostComment={postMessage}
           maxLength={MID_TEXT_LENGTH}
           disabled={loading}
         />

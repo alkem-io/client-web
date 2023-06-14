@@ -8,7 +8,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
 import { makeAbsoluteUrl } from '../../../../core/utils/links';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
-import { useCombinedRefs } from '../../utils/useCombinedRefs';
+import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;
