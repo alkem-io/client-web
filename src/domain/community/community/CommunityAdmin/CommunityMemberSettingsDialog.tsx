@@ -3,7 +3,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
+import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import { Button, Checkbox, FormControlLabel, Link } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
@@ -17,7 +17,7 @@ interface CommunityMemberSettingsDialogProps {
     id: string;
     profile: {
       displayName: string;
-      visual?: {
+      avatar?: {
         uri: string;
       };
       location?: {
@@ -32,6 +32,9 @@ interface CommunityMemberSettingsDialogProps {
   };
   onClose?: () => void;
   onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown> | void;
+  canAddLead?: boolean;
+  maxLeads?: number;
+  canRemoveLead?: boolean;
   onAdminChange?: (memberId: string, isAdmin: boolean) => Promise<unknown> | void;
   onRemoveMember?: (memberId: string) => void;
 }
@@ -40,6 +43,9 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
   onClose,
   member,
   onLeadChange,
+  canAddLead = true,
+  maxLeads = 2,
+  canRemoveLead = true,
   onAdminChange,
   onRemoveMember,
 }) => {
@@ -71,15 +77,28 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
           <ProfileChip
             key={member.id}
             displayName={member.profile.displayName}
-            avatarUrl={member.profile.visual?.uri}
+            avatarUrl={member.profile.avatar?.uri}
             city={member.profile.location?.city}
             country={member.profile.location?.country}
           />
           <BlockSectionTitle>{t('common.role')}</BlockSectionTitle>
           <FormControlLabel
-            control={<Checkbox checked={isLead} onChange={(event, newValue) => setIsLead(newValue)} />}
-            label={<Trans i18nKey="community.memberSettings.lead" components={{ b: <strong /> }} />}
+            control={
+              <Checkbox
+                checked={isLead}
+                onChange={(event, newValue) => setIsLead(newValue)}
+                disabled={(!canAddLead && !member.isLead) || (!canRemoveLead && member.isLead)}
+              />
+            }
+            label={
+              <Trans i18nKey="community.memberSettings.lead" components={{ b: <strong /> }} values={{ maxLeads }} />
+            }
           />
+          <Caption>
+            Note that there is a specific <strong>maximum number of leads</strong> for the communities. If the maximum
+            number if reached, this option will be disabled for others.
+          </Caption>
+
           {onAdminChange && (
             <>
               <BlockSectionTitle>{t('common.authorization')}</BlockSectionTitle>

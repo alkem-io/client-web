@@ -15,9 +15,32 @@ query hubCommunityMembers($hubId: UUID_NAMEID!) {
       leadOrganizations {
         ...OrganizationDetails
       }
+      policy {
+        ...CommunityPolicy
+      }
+      authorization {
+        id
+        myPrivileges
+      }
     }
     host {
       ...OrganizationDetails
     }
+  }
+}
+
+fragment CommunityPolicy on CommunityPolicy {
+  id
+  lead {
+    maxOrg
+    maxUser
+    minOrg
+    minUser
+  }
+  member {
+    maxOrg
+    maxUser
+    minOrg
+    minUser
   }
 }

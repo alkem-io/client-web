@@ -49,6 +49,7 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
   const [filter, setFilter] = useState<string>();
   const [availableEntities, setData] = useState<Entity[]>();
   const [loadingItemId, setLoadingItemId] = useState<string>();
+  const [addedMemberIds, setAddedMemberIds] = useState<string[]>([]);
 
   const fetchData = async () => {
     let fetched = await fetchAvailableEntities(filter);
@@ -75,6 +76,7 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
     setLoadingItemId(itemId);
     await onAdd(itemId);
     await fetchData();
+    setAddedMemberIds([...addedMemberIds, itemId]);
     setLoadingItemId(undefined);
   };
 
@@ -101,11 +103,15 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
                 {
                   name: 'add',
                   render: ({ row }: { row: Entity }) => {
-                    return (
-                      <LoadingIconButton loading={loadingItemId === row.id} onClick={() => handleAdd(row.id)}>
-                        <AddIcon color="primary" />
-                      </LoadingIconButton>
-                    );
+                    if (addedMemberIds.includes(row.id)) {
+                      return <>{t('common.added')}</>;
+                    } else {
+                      return (
+                        <LoadingIconButton loading={loadingItemId === row.id} onClick={() => handleAdd(row.id)}>
+                          <AddIcon color="primary" />
+                        </LoadingIconButton>
+                      );
+                    }
                   },
                 },
               ]}

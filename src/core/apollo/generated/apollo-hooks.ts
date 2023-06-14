@@ -1932,7 +1932,7 @@ export const CommunityMemberUserFragmentDoc = gql`
     profile {
       id
       displayName
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualUri
       }
       location {
@@ -1946,6 +1946,23 @@ export const CommunityMemberUserFragmentDoc = gql`
     lastName
   }
   ${VisualUriFragmentDoc}
+`;
+export const CommunityPolicyFragmentDoc = gql`
+  fragment CommunityPolicy on CommunityPolicy {
+    id
+    lead {
+      maxOrg
+      maxUser
+      minOrg
+      minUser
+    }
+    member {
+      maxOrg
+      maxUser
+      minOrg
+      minUser
+    }
+  }
 `;
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
@@ -2130,7 +2147,7 @@ export const OrganizationDetailsFragmentDoc = gql`
     profile {
       id
       displayName
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -16108,6 +16125,13 @@ export const HubCommunityMembersDocument = gql`
         leadOrganizations {
           ...OrganizationDetails
         }
+        policy {
+          ...CommunityPolicy
+        }
+        authorization {
+          id
+          myPrivileges
+        }
       }
       host {
         ...OrganizationDetails
@@ -16116,6 +16140,7 @@ export const HubCommunityMembersDocument = gql`
   }
   ${CommunityMemberUserFragmentDoc}
   ${OrganizationDetailsFragmentDoc}
+  ${CommunityPolicyFragmentDoc}
 `;
 
 /**

@@ -159,6 +159,7 @@
     "tags": "Tags",
     "administration": "Administration",
     "add": "Add",
+    "added": "Added",
     "remove": "Remove",
     "callout": "Callout",
     "callouts": "Callouts",
@@ -447,11 +448,11 @@
     },
     "memberSettings": {
       "title": "Member Settings",
-      "lead": "This member is a <b>lead</b>: (s)he will be shown as the person to host this Community. NB: There can be <b>no more than 2 leads</b> per Space. When there are already 2 leads selected, this option will be disabled for others.",
-      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors",
+      "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the Community. ",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors.",
       "removeMember": {
         "sectionTitle": "Remove member",
-        "remove": "Click here to remove this user from {{space}}. Be careful, this action cannot be undone.",
+        "remove": "Click here to remove this user from this Space. Be careful, this action cannot be undone.",
         "dialogTitle": "Are you sure you want to remove this member?",
         "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Space and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
       }
@@ -467,6 +468,7 @@
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
+    "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
     "link-collection": {
       "add-link": "Add link to {{title}}",
       "edit-link": "Edit {{title}}",
@@ -1483,7 +1485,7 @@
             "title": "Membership",
             "noApplicationRequired": "<b>No Application required:</b> all Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
             "applicationRequired": "<b>Application required:</b> if people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
-            "invitationOnly": "<b>Invitation only:</b> users can only become a member after you’ve invited them (which you can do from the <community>Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
+            "invitationOnly": "<b>Invitation only:</b> users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
             "hostOrganizationJoin": "<b>Host organization:</b> allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited."
           },
