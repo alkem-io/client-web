@@ -30,17 +30,17 @@ const useSubscribeOnCommentCallout = (roomID: string, skip?: boolean) => {
         return;
       }
 
-      const calloutCommentsCacheId = client.cache.identify({
+      const cacheRoomId = client.cache.identify({
         id: data.roomMessageReceived.roomID,
         __typename: 'Room',
       });
 
-      if (!calloutCommentsCacheId) {
+      if (!cacheRoomId) {
         return;
       }
 
       client.cache.modify({
-        id: calloutCommentsCacheId,
+        id: cacheRoomId,
         fields: {
           messages(existingMessages = []) {
             const newMessage = client.cache.writeFragment({

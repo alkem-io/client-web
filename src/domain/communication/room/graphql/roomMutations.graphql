@@ -1,16 +1,3 @@
-fragment CommentsWithMessages on Room {
-  id
-  messagesCount
-  authorization {
-    id
-    myPrivileges
-    anonymousReadAccess
-  }
-  messages {
-    ...MessageDetails
-  }
-}
-
 mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {
   sendMessageToRoom(messageData: $messageData) {
     id
@@ -25,4 +12,3 @@ mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {
 mutation removeMessageOnRoom($messageData: RoomRemoveMessageInput!) {
   removeMessageOnRoom(messageData: $messageData)
 }
-

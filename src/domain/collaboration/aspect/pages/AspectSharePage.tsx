@@ -21,7 +21,7 @@ const AspectSharePage: FC<AspectSharePageProps> = ({ onClose }) => {
         opportunityNameId={opportunityNameId}
         calloutNameId={calloutNameId}
       >
-        {({ aspect, messages, commentsId, ...rest }) => (
+        {({ aspect, messages, ...rest }) => (
           <AspectDashboardView
             mode="share"
             banner={aspect?.profile.visual?.uri}
@@ -31,7 +31,6 @@ const AspectSharePage: FC<AspectSharePageProps> = ({ onClose }) => {
             tags={aspect?.profile.tagset?.tags}
             references={aspect?.profile.references}
             messages={messages}
-            commentId={commentsId}
             {...rest}
           />
         )}
