@@ -1259,20 +1259,26 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     message
   }
 `;
+export const ReactionDetailsFragmentDoc = gql`
+  fragment ReactionDetails on Reaction {
+    id
+    emoji
+    sender {
+      id
+      firstName
+      lastName
+    }
+  }
+`;
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
     message
     timestamp
     reactions {
-      id
-      emoji
-      sender {
-        id
-        firstName
-        lastName
-      }
+      ...ReactionDetails
     }
+    threadID
     sender {
       id
       nameID
@@ -1281,7 +1287,7 @@ export const MessageDetailsFragmentDoc = gql`
       profile {
         id
         displayName
-        visual(type: AVATAR) {
+        avatar: visual(type: AVATAR) {
           id
           uri
         }
@@ -1298,6 +1304,7 @@ export const MessageDetailsFragmentDoc = gql`
       }
     }
   }
+  ${ReactionDetailsFragmentDoc}
 `;
 export const AspectDashboardFragmentDoc = gql`
   fragment AspectDashboard on Aspect {

@@ -1,5 +1,5 @@
 import { Identifiable } from '../../../shared/types/Identifiable';
-import { groupBy, sortBy } from 'lodash';
+import { compact, groupBy, sortBy } from 'lodash';
 import React, { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
 import { useUserContext } from '../../../community/contributor/user';
@@ -24,23 +24,20 @@ interface CommentReactionsProps {
 
 const CommentReactions = ({ reactions, onAddReaction, onRemoveReaction }: CommentReactionsProps) => {
   const { user } = useUserContext();
+  const userId = user?.user.id;
 
   const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {
     const sortedReactions = sortBy(reactions, r => r.emoji);
 
     return Object.entries(groupBy(sortedReactions, r => r.emoji)).map(([emoji, reactions]) => {
-      const senders = reactions.map(r => r.sender!);
-
-      const userId = user?.user.id;
-
       return {
         emoji,
         count: reactions.length,
-        senders: reactions.map(r => r.sender!),
-        ownReactionId: userId && senders.find(s => s.id === userId)?.id,
+        senders: compact(reactions.map(r => r.sender)),
+        ownReactionId: userId && reactions.find(reaction => reaction.sender?.id === userId)?.id,
       };
     });
-  }, [reactions]);
+  }, [reactions, userId]);
 
   const [isReactionDialogOpen, setIsReactionDialogOpen] = useState(false);
 

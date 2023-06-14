@@ -93,6 +93,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
                   body: m.message,
                   author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
                   createdAt: new Date(m.timestamp),
+                  threadID: m.threadID,
                   reactions: m.reactions,
                 })) ?? [],
               messagesCount: rawDiscussion.comments.messagesCount,

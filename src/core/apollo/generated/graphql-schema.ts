@@ -3289,6 +3289,7 @@ export enum PreferenceType {
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
   NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
+  NotificationCommentReply = 'NOTIFICATION_COMMENT_REPLY',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
@@ -4624,6 +4625,7 @@ export enum UserPreferenceType {
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
   NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
+  NotificationCommentReply = 'NOTIFICATION_COMMENT_REPLY',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
@@ -10560,6 +10562,7 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         message: string;
                         timestamp: number;
+                        threadID?: string | undefined;
                         reactions: Array<{
                           __typename?: 'Reaction';
                           id: string;
@@ -10577,7 +10580,7 @@ export type CalloutPageCalloutQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                   | undefined;
@@ -10766,6 +10769,7 @@ export type CalloutPageCalloutQuery = {
                           id: string;
                           message: string;
                           timestamp: number;
+                          threadID?: string | undefined;
                           reactions: Array<{
                             __typename?: 'Reaction';
                             id: string;
@@ -10785,7 +10789,7 @@ export type CalloutPageCalloutQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                     | undefined;
@@ -10975,6 +10979,7 @@ export type CalloutPageCalloutQuery = {
                           id: string;
                           message: string;
                           timestamp: number;
+                          threadID?: string | undefined;
                           reactions: Array<{
                             __typename?: 'Reaction';
                             id: string;
@@ -10994,7 +10999,7 @@ export type CalloutPageCalloutQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                     | undefined;
@@ -12439,6 +12444,7 @@ export type HubAspectQuery = {
                           id: string;
                           message: string;
                           timestamp: number;
+                          threadID?: string | undefined;
                           reactions: Array<{
                             __typename?: 'Reaction';
                             id: string;
@@ -12458,7 +12464,7 @@ export type HubAspectQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                     | undefined;
@@ -12558,6 +12564,7 @@ export type ChallengeAspectQuery = {
                             id: string;
                             message: string;
                             timestamp: number;
+                            threadID?: string | undefined;
                             reactions: Array<{
                               __typename?: 'Reaction';
                               id: string;
@@ -12577,7 +12584,7 @@ export type ChallengeAspectQuery = {
                                     __typename?: 'Profile';
                                     id: string;
                                     displayName: string;
-                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                     tagsets?:
                                       | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                       | undefined;
@@ -12678,6 +12685,7 @@ export type OpportunityAspectQuery = {
                             id: string;
                             message: string;
                             timestamp: number;
+                            threadID?: string | undefined;
                             reactions: Array<{
                               __typename?: 'Reaction';
                               id: string;
@@ -12697,7 +12705,7 @@ export type OpportunityAspectQuery = {
                                     __typename?: 'Profile';
                                     id: string;
                                     displayName: string;
-                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                     tagsets?:
                                       | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                       | undefined;
@@ -12782,6 +12790,7 @@ export type AspectDashboardDataFragment = {
                   id: string;
                   message: string;
                   timestamp: number;
+                  threadID?: string | undefined;
                   reactions: Array<{
                     __typename?: 'Reaction';
                     id: string;
@@ -12799,7 +12808,7 @@ export type AspectDashboardDataFragment = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                           tagsets?:
                             | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                             | undefined;
@@ -12856,6 +12865,7 @@ export type AspectDashboardFragment = {
       id: string;
       message: string;
       timestamp: number;
+      threadID?: string | undefined;
       reactions: Array<{
         __typename?: 'Reaction';
         id: string;
@@ -12873,7 +12883,7 @@ export type AspectDashboardFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -14067,6 +14077,7 @@ export type CreateCalloutMutation = {
             id: string;
             message: string;
             timestamp: number;
+            threadID?: string | undefined;
             reactions: Array<{
               __typename?: 'Reaction';
               id: string;
@@ -14084,7 +14095,7 @@ export type CreateCalloutMutation = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?:
                       | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                       | undefined;
@@ -14419,6 +14430,7 @@ export type CalloutsQuery = {
                         id: string;
                         message: string;
                         timestamp: number;
+                        threadID?: string | undefined;
                         reactions: Array<{
                           __typename?: 'Reaction';
                           id: string;
@@ -14436,7 +14448,7 @@ export type CalloutsQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                   | undefined;
@@ -14629,6 +14641,7 @@ export type CalloutsQuery = {
                           id: string;
                           message: string;
                           timestamp: number;
+                          threadID?: string | undefined;
                           reactions: Array<{
                             __typename?: 'Reaction';
                             id: string;
@@ -14648,7 +14661,7 @@ export type CalloutsQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                     | undefined;
@@ -14842,6 +14855,7 @@ export type CalloutsQuery = {
                           id: string;
                           message: string;
                           timestamp: number;
+                          threadID?: string | undefined;
                           reactions: Array<{
                             __typename?: 'Reaction';
                             id: string;
@@ -14861,7 +14875,7 @@ export type CalloutsQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                     | undefined;
@@ -15374,6 +15388,7 @@ export type CollaborationWithCalloutsFragment = {
                 id: string;
                 message: string;
                 timestamp: number;
+                threadID?: string | undefined;
                 reactions: Array<{
                   __typename?: 'Reaction';
                   id: string;
@@ -15391,7 +15406,7 @@ export type CollaborationWithCalloutsFragment = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         tagsets?:
                           | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                           | undefined;
@@ -15552,6 +15567,7 @@ export type CalloutFragment = {
           id: string;
           message: string;
           timestamp: number;
+          threadID?: string | undefined;
           reactions: Array<{
             __typename?: 'Reaction';
             id: string;
@@ -15569,7 +15585,7 @@ export type CalloutFragment = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
                   location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 };
@@ -17429,6 +17445,7 @@ export type CreateDiscussionMutation = {
         id: string;
         message: string;
         timestamp: number;
+        threadID?: string | undefined;
         reactions: Array<{
           __typename?: 'Reaction';
           id: string;
@@ -17446,7 +17463,7 @@ export type CreateDiscussionMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
               };
@@ -17489,6 +17506,7 @@ export type DiscussionDetailsFragment = {
       id: string;
       message: string;
       timestamp: number;
+      threadID?: string | undefined;
       reactions: Array<{
         __typename?: 'Reaction';
         id: string;
@@ -17506,7 +17524,7 @@ export type DiscussionDetailsFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -17631,6 +17649,7 @@ export type PlatformDiscussionQuery = {
                 id: string;
                 message: string;
                 timestamp: number;
+                threadID?: string | undefined;
                 reactions: Array<{
                   __typename?: 'Reaction';
                   id: string;
@@ -17648,7 +17667,7 @@ export type PlatformDiscussionQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         tagsets?:
                           | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                           | undefined;
@@ -17743,6 +17762,7 @@ export type MessageDetailsFragment = {
   id: string;
   message: string;
   timestamp: number;
+  threadID?: string | undefined;
   reactions: Array<{
     __typename?: 'Reaction';
     id: string;
@@ -17760,12 +17780,19 @@ export type MessageDetailsFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         };
       }
     | undefined;
+};
+
+export type ReactionDetailsFragment = {
+  __typename?: 'Reaction';
+  id: string;
+  emoji: string;
+  sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
 };
 
 export type CommentsWithMessagesFragment = {
@@ -17785,6 +17812,7 @@ export type CommentsWithMessagesFragment = {
     id: string;
     message: string;
     timestamp: number;
+    threadID?: string | undefined;
     reactions: Array<{
       __typename?: 'Reaction';
       id: string;
@@ -17802,7 +17830,7 @@ export type CommentsWithMessagesFragment = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -17894,6 +17922,7 @@ export type RoomMessageReceivedSubscription = {
       id: string;
       message: string;
       timestamp: number;
+      threadID?: string | undefined;
       reactions: Array<{
         __typename?: 'Reaction';
         id: string;
@@ -17911,7 +17940,7 @@ export type RoomMessageReceivedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -17949,6 +17978,7 @@ export type CommunityUpdatesQuery = {
                     id: string;
                     message: string;
                     timestamp: number;
+                    threadID?: string | undefined;
                     reactions: Array<{
                       __typename?: 'Reaction';
                       id: string;
@@ -17966,7 +17996,7 @@ export type CommunityUpdatesQuery = {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
-                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             tagsets?:
                               | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                               | undefined;
@@ -19063,6 +19093,7 @@ export type CommunityMessagesQuery = {
                     id: string;
                     message: string;
                     timestamp: number;
+                    threadID?: string | undefined;
                     reactions: Array<{
                       __typename?: 'Reaction';
                       id: string;
@@ -19080,7 +19111,7 @@ export type CommunityMessagesQuery = {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
-                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             tagsets?:
                               | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                               | undefined;
@@ -24359,6 +24390,7 @@ export type HubCalendarEventsQuery = {
                       id: string;
                       message: string;
                       timestamp: number;
+                      threadID?: string | undefined;
                       reactions: Array<{
                         __typename?: 'Reaction';
                         id: string;
@@ -24376,7 +24408,7 @@ export type HubCalendarEventsQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
-                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               tagsets?:
                                 | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                 | undefined;
@@ -24471,6 +24503,7 @@ export type CalendarEventDetailsQuery = {
                       id: string;
                       message: string;
                       timestamp: number;
+                      threadID?: string | undefined;
                       reactions: Array<{
                         __typename?: 'Reaction';
                         id: string;
@@ -24488,7 +24521,7 @@ export type CalendarEventDetailsQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
-                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               tagsets?:
                                 | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                                 | undefined;
@@ -24565,6 +24598,7 @@ export type CalendarEventDetailsFragment = {
       id: string;
       message: string;
       timestamp: number;
+      threadID?: string | undefined;
       reactions: Array<{
         __typename?: 'Reaction';
         id: string;
@@ -24582,7 +24616,7 @@ export type CalendarEventDetailsFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -24660,6 +24694,7 @@ export type CreateCalendarEventMutation = {
         id: string;
         message: string;
         timestamp: number;
+        threadID?: string | undefined;
         reactions: Array<{
           __typename?: 'Reaction';
           id: string;
@@ -24677,7 +24712,7 @@ export type CreateCalendarEventMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
               };
@@ -24745,6 +24780,7 @@ export type UpdateCalendarEventMutation = {
         id: string;
         message: string;
         timestamp: number;
+        threadID?: string | undefined;
         reactions: Array<{
           __typename?: 'Reaction';
           id: string;
@@ -24762,7 +24798,7 @@ export type UpdateCalendarEventMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
               };

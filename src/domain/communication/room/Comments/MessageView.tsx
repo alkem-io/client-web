@@ -46,7 +46,7 @@ export interface MessageViewProps {
   root?: boolean;
   actions?: ReactNode;
   addReaction: (reaction: { emoji: string; messageId: string }) => void;
-  removeReaction: (reactionId: string) => void;
+  removeReaction: (reactionId: string, messageId: string) => void;
 }
 
 export const MessageView = ({
@@ -64,6 +64,7 @@ export const MessageView = ({
   const { t } = useTranslation();
 
   const handleAddReaction = (emoji: string) => addReaction?.({ emoji, messageId: message.id });
+  const handleRemoveReaction = (reactionId: string) => removeReaction?.(reactionId, message.id);
 
   return (
     <Box display="flex" gap={gutters(0.5)}>
@@ -92,7 +93,7 @@ export const MessageView = ({
             <CommentReactions
               reactions={message.reactions}
               onAddReaction={handleAddReaction}
-              onRemoveReaction={removeReaction}
+              onRemoveReaction={handleRemoveReaction}
             />
           </Box>
           {actions}

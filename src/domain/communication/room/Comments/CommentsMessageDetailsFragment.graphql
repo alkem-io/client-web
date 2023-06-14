@@ -3,14 +3,9 @@ fragment MessageDetails on Message {
   message
   timestamp
   reactions {
-    id
-    emoji
-    sender {
-      id
-      firstName
-      lastName
-    }
+    ...ReactionDetails
   }
+  threadID
   sender {
     id
     nameID
@@ -19,7 +14,7 @@ fragment MessageDetails on Message {
     profile {
       id
       displayName
-      visual(type: AVATAR) { # TODO avatar: ...
+      avatar: visual(type: AVATAR) {
         id
         uri
       }
@@ -34,5 +29,15 @@ fragment MessageDetails on Message {
         country
       }
     }
+  }
+}
+
+fragment ReactionDetails on Reaction {
+  id
+  emoji
+  sender {
+    id
+    firstName
+    lastName
   }
 }

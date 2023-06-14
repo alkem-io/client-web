@@ -98,20 +98,6 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                         {...commentReactionsMutations}
                       />
                     </Gutters>
-                    // <Box marginTop={2}>
-                    //   <Grid container spacing={3}>
-                    //     {filteredComments.map(c => (
-                    //       <Grid item xs={12} key={c.id}>
-                    //         <MessageView
-                    //           message={c}
-                    //           canDelete={canDeleteComment(c.author?.id)}
-                    //           onDelete={onDeleteComment}
-                    //           {...commentReactionsMutations}
-                    //         />
-                    //       </Grid>
-                    //     ))}
-                    //   </Grid>
-                    // </Box>
                   );
                 }}
               </Filter>
