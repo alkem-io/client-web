@@ -33,7 +33,6 @@ interface CommunityMemberSettingsDialogProps {
   onClose?: () => void;
   onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown> | void;
   canAddLead?: boolean;
-  maxLeads?: number;
   canRemoveLead?: boolean;
   onAdminChange?: (memberId: string, isAdmin: boolean) => Promise<unknown> | void;
   onRemoveMember?: (memberId: string) => void;
@@ -44,7 +43,6 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
   member,
   onLeadChange,
   canAddLead = true,
-  maxLeads = 2,
   canRemoveLead = true,
   onAdminChange,
   onRemoveMember,
@@ -90,13 +88,10 @@ const CommunityMemberSettingsDialog: FC<CommunityMemberSettingsDialogProps> = ({
                 disabled={(!canAddLead && !member.isLead) || (!canRemoveLead && member.isLead)}
               />
             }
-            label={
-              <Trans i18nKey="community.memberSettings.lead" components={{ b: <strong /> }} values={{ maxLeads }} />
-            }
+            label={<Trans i18nKey="community.memberSettings.lead" components={{ b: <strong /> }} />}
           />
           <Caption>
-            Note that there is a specific <strong>maximum number of leads</strong> for the communities. If the maximum
-            number if reached, this option will be disabled for others.
+            <Trans i18nKey="community.memberSettings.maxLeadsWarning" components={{ b: <strong /> }} />
           </Caption>
 
           {onAdminChange && (
