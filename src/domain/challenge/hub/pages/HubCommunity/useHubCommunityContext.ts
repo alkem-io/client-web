@@ -17,7 +17,7 @@ import {
   useRemoveUserAsHubAdminMutation,
   useUsersWithCredentialsQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityUsers';
 
@@ -54,6 +54,13 @@ const useHubCommunityContext = (hubId: string) => {
   });
 
   const communityId = data?.hub.community?.id;
+  const communityPolicy = data?.hub.community?.policy;
+
+  const permissions = {
+    canAddMembers: (data?.hub.community?.authorization?.myPrivileges ?? []).some(
+      priv => priv === AuthorizationPrivilege.CommunityAddMember
+    ),
+  };
 
   const {
     data: dataAdmins,
@@ -324,6 +331,8 @@ const useHubCommunityContext = (hubId: string) => {
   return {
     users,
     organizations,
+    communityPolicy,
+    permissions,
     applications: dataApplications?.hub.community?.applications,
     onApplicationStateChange: handleApplicationStateChange,
     onUserLeadChange: handleUserLeadChange,

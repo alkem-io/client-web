@@ -14,6 +14,7 @@ import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '../../../../core/utils/time/utils';
+import useLoadingState from '../../../shared/utils/useLoadingState';
 
 type RenderParams = GridRenderCellParams<string, ApplicationInfoFragment>;
 type GetterParams = GridValueGetterParams<string, ApplicationInfoFragment>;
@@ -128,24 +129,26 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     [applications]
   );
 
-  const handleApplicationDelete = async (application: ApplicationInfoFragment) => {
-    switch (application.lifecycle.state) {
-      case 'new': {
-        await onApplicationStateChange(application.id, 'REJECT');
-        await onApplicationStateChange(application.id, 'ARCHIVE');
-        break;
+  const [handleApplicationDelete, loadingDeleteApplication] = useLoadingState(
+    async (application: ApplicationInfoFragment) => {
+      switch (application.lifecycle.state) {
+        case 'new': {
+          await onApplicationStateChange(application.id, 'REJECT');
+          await onApplicationStateChange(application.id, 'ARCHIVE');
+          break;
+        }
+        case 'approved': {
+          await onApplicationStateChange(application.id, 'ARCHIVE');
+          break;
+        }
+        case 'rejected': {
+          await onApplicationStateChange(application.id, 'ARCHIVE');
+          break;
+        }
       }
-      case 'approved': {
-        await onApplicationStateChange(application.id, 'ARCHIVE');
-        break;
-      }
-      case 'rejected': {
-        await onApplicationStateChange(application.id, 'ARCHIVE');
-        break;
-      }
+      setDeletingApplication(undefined);
     }
-    setDeletingApplication(undefined);
-  };
+  );
 
   return (
     <>
@@ -176,9 +179,10 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
               },
               {
                 name: 'delete',
-                render: ({ row }) => (
-                  <IconButton onClick={() => setDeletingApplication(row)}>
-                    <DeleteIcon color="error" />
+                render: ({ row }: { row: ApplicationInfoFragment }) => (
+                  // TODO: Disabled for approved Applications for now: see #2900
+                  <IconButton onClick={() => setDeletingApplication(row)} disabled={row.lifecycle.state === 'approved'}>
+                    <DeleteIcon color={row.lifecycle.state === 'approved' ? 'disabled' : 'error'} />
                   </IconButton>
                 ),
               },
@@ -215,6 +219,9 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
             }),
             content: t('community.confirmDeleteApplication.content'),
             confirmButtonTextId: 'buttons.archive',
+          }}
+          state={{
+            isLoading: loadingDeleteApplication,
           }}
         />
       )}
