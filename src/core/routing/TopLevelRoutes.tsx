@@ -20,8 +20,7 @@ import UserRoute from '../../domain/community/contributor/user/routing/UserRoute
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
 import { ChallengeExplorerPage } from '../../domain/platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing/IdentityRoute';
-import { INSPIRATION_ROUTE, ROUTE_HOME } from '../../domain/platform/routes/constants';
-import InspirationPage from '../help/pages/InspirationPage';
+import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
 import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
@@ -199,16 +198,6 @@ export const TopLevelRoutes: FC = () => {
             <WithApmTransaction path="/restricted">
               <Restricted />
             </WithApmTransaction>
-          }
-        />
-        <Route
-          path={INSPIRATION_ROUTE}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={INSPIRATION_ROUTE}>
-                <InspirationPage />
-              </WithApmTransaction>
-            </NonIdentity>
           }
         />
         <Route
