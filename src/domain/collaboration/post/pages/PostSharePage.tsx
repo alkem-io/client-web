@@ -21,7 +21,7 @@ const PostSharePage: FC<PostSharePageProps> = ({ onClose }) => {
         opportunityNameId={opportunityNameId}
         calloutNameId={calloutNameId}
       >
-        {({ post, messages, commentsId, ...rest }) => (
+        {({ post, messages, roomId, ...rest }) => (
           <PostDashboardView
             mode="share"
             banner={post?.profile.visual?.uri}
@@ -31,7 +31,7 @@ const PostSharePage: FC<PostSharePageProps> = ({ onClose }) => {
             tags={post?.profile.tagset?.tags}
             references={post?.profile.references}
             messages={messages}
-            commentId={commentsId}
+            roomId={roomId}
             {...rest}
           />
         )}
