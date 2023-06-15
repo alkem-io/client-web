@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import TranslationKey from '../../../types/TranslationKey';
 import { GUTTER_PX } from '../grid/constants';
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '.MuiDataGrid-columnHeaders': {
     color: theme.palette.primary.contrastText,
     background: theme.palette.primary.main,

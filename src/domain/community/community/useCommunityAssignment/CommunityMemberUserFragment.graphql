@@ -1,10 +1,19 @@
 fragment CommunityMemberUser on User {
   id
+  nameID
   profile {
     id
     displayName
+    visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
   }
+  email
   firstName
   lastName
-  email
 }

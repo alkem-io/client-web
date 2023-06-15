@@ -378,6 +378,11 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
+export type ApplicationTemplateFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  questions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AspectKeySpecifier = (
   | 'authorization'
   | 'callout'
@@ -1026,6 +1031,17 @@ export type HubFieldPolicy = {
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type HubAspectTemplateKeySpecifier = (
+  | 'defaultDescription'
+  | 'type'
+  | 'typeDescription'
+  | HubAspectTemplateKeySpecifier
+)[];
+export type HubAspectTemplateFieldPolicy = {
+  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ISearchResultsKeySpecifier = (
   | 'contributionResults'
   | 'contributionResultsCount'
@@ -1191,12 +1207,21 @@ export type LocationFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageKeySpecifier = ('id' | 'message' | 'reactions' | 'sender' | 'timestamp' | MessageKeySpecifier)[];
+export type MessageKeySpecifier = (
+  | 'id'
+  | 'message'
+  | 'reactions'
+  | 'sender'
+  | 'threadID'
+  | 'timestamp'
+  | MessageKeySpecifier
+)[];
 export type MessageFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reactions?: FieldPolicy<any> | FieldReadFunction<any>;
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
+  threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('metrics' | 'services' | MetadataKeySpecifier)[];
@@ -1859,10 +1884,11 @@ export type QuestionTemplateFieldPolicy = {
   required?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ReactionKeySpecifier = ('id' | 'text' | 'timestamp' | ReactionKeySpecifier)[];
+export type ReactionKeySpecifier = ('emoji' | 'id' | 'sender' | 'timestamp' | ReactionKeySpecifier)[];
 export type ReactionFieldPolicy = {
+  emoji?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  text?: FieldPolicy<any> | FieldReadFunction<any>;
+  sender?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ReferenceKeySpecifier = ('authorization' | 'description' | 'id' | 'name' | 'uri' | ReferenceKeySpecifier)[];
@@ -2488,6 +2514,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
   };
+  ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
+    fields?: ApplicationTemplateFieldPolicy;
+  };
   Aspect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AspectKeySpecifier | (() => undefined | AspectKeySpecifier);
     fields?: AspectFieldPolicy;
@@ -2691,6 +2721,10 @@ export type StrictTypedTypePolicies = {
   Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
+  };
+  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
+    fields?: HubAspectTemplateFieldPolicy;
   };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);

@@ -5,26 +5,22 @@ import RemoveModal from '../../../../common/components/core/RemoveModal';
 import { useUserContext } from '../../../community/contributor/user';
 import DiscussionView from '../views/DiscussionView';
 import {
-  MessageDetailsFragmentDoc,
-  RoomMessageReceivedDocument,
   refetchPlatformDiscussionQuery,
   refetchPlatformDiscussionsQuery,
+  RoomMessageReceivedDocument,
   useDeleteDiscussionMutation,
   usePlatformDiscussionQuery,
   useRemoveMessageOnRoomMutation,
-  useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Message } from '../../messages/models/message';
+import { Message } from '../../room/models/Message';
 import { Skeleton } from '@mui/material';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
-import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
-import { useConfig } from '../../../platform/config/useConfig';
 import { useNavigate } from 'react-router-dom';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
@@ -32,6 +28,7 @@ import {
   RoomMessageReceivedSubscription,
   RoomMessageReceivedSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
+import usePostMessageMutations from '../../room/Comments/usePostMessageMutations';
 
 const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
   DiscussionDetailsFragment,
@@ -52,7 +49,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
-  const { isFeatureEnabled } = useConfig();
 
   const {
     data,
@@ -64,7 +60,12 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     },
     skip: !discussionNameId,
   });
-  useDiscussionMessagesSubscription(data, data => data?.platform.communication.discussion, subscribeToMore);
+
+  const { enabled: isSubscribedToMessages } = useDiscussionMessagesSubscription(
+    data,
+    data => data?.platform.communication.discussion,
+    subscribeToMore
+  );
 
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(
@@ -92,6 +93,8 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
                   body: m.message,
                   author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
                   createdAt: new Date(m.timestamp),
+                  threadID: m.threadID,
+                  reactions: m.reactions,
                 })) ?? [],
               messagesCount: rawDiscussion.comments.messagesCount,
               myPrivileges: rawDiscussion.comments.authorization?.myPrivileges,
@@ -101,45 +104,10 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     [rawDiscussion, authors]
   );
 
-  const [postComment] = useSendMessageToRoomMutation();
-
-  const handlePostComment = (post: string) => {
-    if (!discussion) {
-      return;
-    }
-
-    return postComment({
-      update: (cache, { data }) => {
-        if (isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
-          return;
-        }
-        cache.modify({
-          id: cache.identify({
-            id: discussionNameId,
-            __typename: 'Discussion',
-          }),
-          fields: {
-            messages(existingMessages = []) {
-              if (data) {
-                const newMessage = cache.writeFragment({
-                  data: data?.sendMessageToRoom,
-                  fragment: MessageDetailsFragmentDoc,
-                });
-                return [...existingMessages, newMessage];
-              }
-              return existingMessages;
-            },
-          },
-        });
-      },
-      variables: {
-        messageData: {
-          roomID: discussion.comments.id,
-          message: post,
-        },
-      },
-    });
-  };
+  const { postMessage, postReply } = usePostMessageMutations({
+    roomId: discussion?.comments.id,
+    isSubscribedToMessages: isSubscribedToMessages,
+  });
 
   const [deleteDiscussionId, setDeleteDiscussionId] = useState<string>();
   const [deleteCommentId, setDeleteCommentId] = useState<string>();
@@ -206,9 +174,10 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
           <DiscussionView
             currentUserId={user?.user.id}
             discussion={discussion}
-            onPostComment={handlePostComment}
+            postMessage={postMessage}
+            postReply={postReply}
             onDeleteDiscussion={() => setDeleteDiscussionId(discussion.id)}
-            onDeleteComment={(id: string) => setDeleteCommentId(id)}
+            onDeleteComment={setDeleteCommentId}
           />
         )}
       </DiscussionsLayout>

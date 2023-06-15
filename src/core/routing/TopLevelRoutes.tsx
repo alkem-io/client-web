@@ -10,7 +10,6 @@ import AboutPage from '../../domain/platform/TopLevelPages/About';
 import { Error404 } from '../pages/Errors/Error404';
 import ContributorsPage from '../../domain/community/contributor/ContributorsPage';
 import { AdminRoute } from '../../domain/platform/admin/routing/AdminRoute';
-import { MessagesRoute } from '../../domain/communication/messages/routing/MessagesRoute';
 import OrganizationRoute from '../../domain/community/contributor/organization/routing/OrganizationRoute';
 import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
 import { Restricted } from './Restricted';
@@ -170,18 +169,6 @@ export const TopLevelRoutes: FC = () => {
                 <OrganizationProvider>
                   <OrganizationRoute />
                 </OrganizationProvider>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path="/messages"
-          element={
-            <NonIdentity>
-              <WithApmTransaction path="/messages">
-                <NoIdentityRedirect>
-                  <MessagesRoute />
-                </NoIdentityRedirect>
               </WithApmTransaction>
             </NonIdentity>
           }
