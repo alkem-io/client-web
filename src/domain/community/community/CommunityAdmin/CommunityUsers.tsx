@@ -12,7 +12,7 @@ import {
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
-import { CommunityMemberUserFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityMemberUserFragment, CommunityPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
@@ -20,6 +20,7 @@ import { BlockTitle } from '../../../../core/ui/typography';
 import { useUserContext } from '../../contributor/user';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
+import useCommunityPolicyChecker from './useCommunityPolicyChecker';
 
 export interface CommunityMemberUserFragmentWithRoles extends CommunityMemberUserFragment {
   isMember: boolean;
@@ -52,8 +53,10 @@ interface CommunityUsersProps {
   onUserLeadChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
   onUserAuthorizationChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
   onRemoveMember: (userId: string) => Promise<unknown> | void;
+  canAddMembers: boolean;
   onAddMember: (memberId: string) => Promise<unknown> | undefined;
   fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
+  communityPolicy?: CommunityPolicyFragment;
   loading?: boolean;
 }
 
@@ -62,12 +65,15 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
   onUserLeadChange,
   onUserAuthorizationChange,
   onRemoveMember,
+  canAddMembers,
   onAddMember,
   fetchAvailableUsers,
+  communityPolicy,
   loading,
 }) => {
   const { user: currentUser } = useUserContext();
   const { t } = useTranslation();
+  const { canAddLeadUser, canRemoveLeadUser } = useCommunityPolicyChecker(communityPolicy, users);
 
   const usersColumns: GridColDef[] = [
     {
@@ -130,9 +136,11 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.memberUsers', { count: users.length })}</BlockTitle>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewUser(true)}>
-          {t('common.add')}
-        </Button>
+        {canAddMembers && (
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewUser(true)}>
+            {t('common.add')}
+          </Button>
+        )}
       </Box>
       <TextField
         value={filterString}
@@ -184,6 +192,8 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
         <CommunityMemberSettingsDialog
           member={editingUser}
           onLeadChange={onUserLeadChange}
+          canAddLead={canAddLeadUser}
+          canRemoveLead={canRemoveLeadUser}
           onAdminChange={onUserAuthorizationChange}
           onRemoveMember={onRemoveMember}
           onClose={() => setEditingUser(undefined)}

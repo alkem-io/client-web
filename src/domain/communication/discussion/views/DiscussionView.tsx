@@ -65,13 +65,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
             <ShareButton url={discussionUrl} entityTypeName="discussion" />
           </Box>
-          <MessageView
-            message={initialComment}
-            canDelete={canDeleteDiscussion}
-            onDelete={onDeleteDiscussion}
-            root
-            {...commentReactionsMutations}
-          />
+          <MessageView message={initialComment} canDelete={canDeleteDiscussion} onDelete={onDeleteDiscussion} root />
         </Grid>
         <Grid item>
           {comments && (

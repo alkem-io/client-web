@@ -16,6 +16,8 @@ export const HubCommunityView: FC<HubCommunityViewProps> = ({ hubId }) => {
     users,
     organizations,
     applications,
+    communityPolicy,
+    permissions,
     onApplicationStateChange,
     onUserLeadChange,
     onUserAuthorizationChange,
@@ -46,9 +48,11 @@ export const HubCommunityView: FC<HubCommunityViewProps> = ({ hubId }) => {
             users={users}
             onUserLeadChange={onUserLeadChange}
             onUserAuthorizationChange={onUserAuthorizationChange}
+            canAddMembers={permissions.canAddMembers}
             onAddMember={onAddUser}
             onRemoveMember={onRemoveUser}
             fetchAvailableUsers={getAvailableUsers}
+            communityPolicy={communityPolicy}
             loading={loading}
           />
         </PageContentBlock>
@@ -58,9 +62,11 @@ export const HubCommunityView: FC<HubCommunityViewProps> = ({ hubId }) => {
           <CommunityOrganizations
             organizations={organizations}
             onOrganizationLeadChange={onOrganizationLeadChange}
+            canAddMembers={permissions.canAddMembers}
             onAddMember={onAddOrganization}
             onRemoveMember={onRemoveOrganization}
             fetchAvailableOrganizations={getAvailableOrganizations}
+            communityPolicy={communityPolicy}
             loading={loading}
           />
         </PageContentBlock>

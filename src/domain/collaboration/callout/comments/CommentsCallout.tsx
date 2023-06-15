@@ -34,16 +34,11 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
     const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
     const messages = useMessages(fetchedMessages);
 
-    const isAuthor = useCallback(
-      (msgId: string, userId?: string) => messages?.find(x => x.id === msgId)?.author?.id === userId ?? false,
-      [messages]
-    );
-
     const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
     const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
     const canDeleteMessage = useCallback(
-      msgId => canDeleteMessages || (isAuthenticated && isAuthor(msgId, user?.id)),
-      [user, isAuthenticated, isAuthor, canDeleteMessages]
+      authorId => canDeleteMessages || (isAuthenticated && authorId === user?.id),
+      [user, isAuthenticated, canDeleteMessages]
     );
 
     const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);

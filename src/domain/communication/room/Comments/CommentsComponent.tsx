@@ -23,7 +23,7 @@ export interface CommentsComponentProps {
   commentsId: string | undefined;
   canReadMessages: boolean;
   canPostMessages: boolean;
-  canDeleteMessage: (messageId: string) => boolean;
+  canDeleteMessage: (authorId: string | undefined) => boolean;
   postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
   postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
@@ -129,7 +129,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           <MessageView
             key={lastMessage.id}
             message={lastMessage}
-            canDelete={canDeleteMessage(lastMessage.id)}
+            canDelete={canDeleteMessage(lastMessage.author?.id)}
             onDelete={onDeleteComment}
             {...commentReactionsMutations}
           />
