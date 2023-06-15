@@ -35,7 +35,7 @@ interface EntityIds {
 interface Provided {
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteComment: (messageId: string) => boolean;
+  canDeleteComment: (authorId: string | undefined) => boolean;
   aspect?: AspectDashboardFragment;
   messages: Message[];
   roomId: string | undefined;
@@ -162,20 +162,16 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
         reactions: x.reactions,
+        threadID: x.threadID,
       })),
     [_messages]
-  );
-
-  const isAuthor = useCallback(
-    (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
-    [messages]
   );
 
   const commentsPrivileges = aspect?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
-    msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [user, isAuthenticated, canDeleteComments, isAuthor]
+    authorId => canDeleteComments || (isAuthenticated && authorId === user?.id),
+    [user, isAuthenticated, canDeleteComments]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
