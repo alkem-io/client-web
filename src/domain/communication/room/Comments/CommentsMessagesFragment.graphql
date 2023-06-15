@@ -1,0 +1,12 @@
+fragment CommentsWithMessages on Room {
+  id
+  messagesCount
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
+  messages {
+    ...MessageDetails
+  }
+}

@@ -20,6 +20,7 @@ import CommunityApplicationForm from '../../../../community/community/CommunityA
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { Box, CircularProgress } from '@mui/material';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { isEqual } from 'lodash';
 
 export const HubSettingsView: FC = () => {
   const { t } = useTranslation();
@@ -81,38 +82,61 @@ export const HubSettingsView: FC = () => {
   };
 
   // Membership
+  enum MembershipOption {
+    noApplicationRequired = 'noApplicationRequired',
+    applicationRequired = 'applicationRequired',
+    invitationOnly = 'invitationOnly',
+  }
+  // There are 2 preferences for the 3 different options:
+  const membershipTruthTable = {
+    [MembershipOption.noApplicationRequired]: {
+      [PreferenceType.MembershipApplicationsFromAnyone]: false,
+      [PreferenceType.MembershipJoinHubFromAnyone]: true,
+    },
+    [MembershipOption.applicationRequired]: {
+      [PreferenceType.MembershipApplicationsFromAnyone]: true,
+      [PreferenceType.MembershipJoinHubFromAnyone]: false,
+    },
+    [MembershipOption.invitationOnly]: {
+      [PreferenceType.MembershipApplicationsFromAnyone]: false,
+      [PreferenceType.MembershipJoinHubFromAnyone]: false,
+    },
+  };
+
   const getMembershipValue = () => {
     const preferences = {
-      MembershipJoinHubFromAnyone: getBooleanPreferenceValue(PreferenceType.MembershipJoinSpaceFromAnyone),
-      MembershipApplicationsFromAnyone: getBooleanPreferenceValue(PreferenceType.MembershipApplicationsFromAnyone),
+      [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipApplicationsFromAnyone
+      ),
+      [PreferenceType.MembershipJoinHubFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipJoinHubFromAnyone
+      ),
     };
 
-    if (
-      preferences.MembershipJoinHubFromAnyone === undefined ||
-      preferences.MembershipApplicationsFromAnyone === undefined
-    ) {
-      return undefined;
-    }
-    if (preferences.MembershipJoinHubFromAnyone && preferences.MembershipApplicationsFromAnyone) {
-      return 'applicationRequired';
-    } else if (preferences.MembershipJoinHubFromAnyone && !preferences.MembershipApplicationsFromAnyone) {
-      return 'noApplicationRequired';
-    } else if (!preferences.MembershipJoinHubFromAnyone && !preferences.MembershipApplicationsFromAnyone) {
-      return 'invitationOnly';
+    for (const [key, value] of Object.entries(membershipTruthTable)) {
+      if (isEqual(preferences, value)) {
+        return key as MembershipOption;
+      }
     }
   };
 
-  const onMembershipChange = async (value: 'noApplicationRequired' | 'applicationRequired' | 'invitationOnly') => {
-    await handleUpdatePreference(
-      SpacePreferenceType.MembershipJoinSpaceFromAnyone,
-      value === 'noApplicationRequired' || value === 'applicationRequired' ? 'true' : 'false',
-      false
-    );
-    await handleUpdatePreference(
-      SpacePreferenceType.MembershipApplicationsFromAnyone,
-      value === 'noApplicationRequired' || value === 'invitationOnly' ? 'false' : 'true',
-      true
-    );
+  const onMembershipChange = async (value: MembershipOption) => {
+    const currentPreferences = {
+      [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipApplicationsFromAnyone
+      ),
+      [PreferenceType.MembershipJoinHubFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipJoinHubFromAnyone
+      ),
+    };
+    const nextPreferences = membershipTruthTable[value];
+
+    for (const [key, value] of Object.entries(currentPreferences)) {
+      if (value !== nextPreferences[key]) {
+        await handleUpdatePreference(key as HubPreferenceType, `${nextPreferences[key]}`, false);
+      }
+    }
+    notify(t('pages.admin.hub.settings.savedSuccessfully'), 'success');
   };
 
   return (
@@ -145,7 +169,7 @@ export const HubSettingsView: FC = () => {
             <RadioSettingsGroup
               value={getMembershipValue()}
               options={{
-                noApplicationRequired: {
+                [MembershipOption.noApplicationRequired]: {
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.noApplicationRequired"
@@ -153,7 +177,7 @@ export const HubSettingsView: FC = () => {
                     />
                   ),
                 },
-                applicationRequired: {
+                [MembershipOption.applicationRequired]: {
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.applicationRequired"
@@ -164,7 +188,7 @@ export const HubSettingsView: FC = () => {
                     />
                   ),
                 },
-                invitationOnly: {
+                [MembershipOption.invitationOnly]: {
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.invitationOnly"

@@ -1620,6 +1620,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'foundation'
   | 'help'
   | 'impact'
+  | 'inspiration'
   | 'newuser'
   | 'opensource'
   | 'privacy'
@@ -1641,6 +1642,7 @@ export type PlatformLocationsFieldPolicy = {
   foundation?: FieldPolicy<any> | FieldReadFunction<any>;
   help?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
+  inspiration?: FieldPolicy<any> | FieldReadFunction<any>;
   newuser?: FieldPolicy<any> | FieldReadFunction<any>;
   opensource?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;

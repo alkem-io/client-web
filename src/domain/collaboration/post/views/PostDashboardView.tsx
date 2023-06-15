@@ -8,19 +8,21 @@ import DashboardGenericSection from '../../../shared/components/DashboardSection
 import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import MessageView from '../../../shared/components/Comments/MessageView';
-import { Message } from '../../../communication/messages/models/message';
-import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
+import { Message } from '../../../communication/room/models/Message';
+import PostMessageToCommentsForm from '../../../communication/room/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../../shared/components/References/References';
 import TagLabel from '../../../../common/components/composite/common/TagLabel/TagLabel';
 import DashboardColumn from '../../../../common/components/composite/sections/DashboardSection/DashboardColumn';
-import { mapWithSeparator } from '../../../shared/utils/joinNodes';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import useCommentReactionsMutations from '../../../communication/room/Comments/useCommentReactionsMutations';
+import MessagesThread from '../../../communication/room/Comments/MessagesThread';
+import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -29,20 +31,21 @@ export interface PostDashboardViewProps {
   mode: 'messages' | 'share';
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteComment: (messageId: string) => boolean;
+  canDeleteComment: (authorId: string | undefined) => boolean;
   banner?: string;
   displayName?: string;
   description?: string;
   type?: string;
   messages?: Message[];
-  commentId?: string;
+  roomId: string | undefined;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
   bannerOverlayOverride?: ReactNode;
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentId: string, message: string) => Promise<FetchResult<unknown>> | void;
+  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
+  postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
   postUrl: string;
   loading: boolean;
@@ -73,13 +76,12 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
   const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
-  const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
+  const { banner, description, displayName, type, messages = [], roomId, tags = [], references } = props;
   const { creatorName, creatorAvatar, createdDate } = props;
   const { canReadComments, canDeleteComment, canPostComments } = props;
-  const { handlePostComment, handleDeleteComment } = props;
+  const { postMessage, postReply, handleDeleteComment } = props;
 
-  const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
-  const deleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
+  const deleteComment = (id: string) => (roomId ? handleDeleteComment(roomId, id) : undefined);
   const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
   const { height: containerHeight = 0 } = useResizeDetector({
@@ -102,6 +104,8 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
       scroller.scrollToBottom({ container: commentsContainerRef.current });
     }
   }, [messages]);
+
+  const commentReactionsMutations = useCommentReactionsMutations(roomId);
 
   const handleCommentsScroll = () => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
@@ -152,26 +156,31 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
       {mode === 'messages' && canReadComments && (
         <DashboardColumn>
           <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
-            <Box
-              sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}
-              ref={commentsContainerRef}
+            <ScrollerWithGradient
+              maxHeight={COMMENTS_CONTAINER_HEIGHT}
+              minHeight={0}
+              marginRight={1}
+              flexGrow={1}
+              scrollerRef={commentsContainerRef}
               onScroll={handleCommentsScroll}
             >
-              {mapWithSeparator(messages, SectionSpacer, message => (
-                <MessageView
-                  key={message.id}
-                  message={message}
-                  canDelete={canDeleteComment(message.id)}
-                  onDelete={onDeleteComment}
+              <Gutters gap={0}>
+                <MessagesThread
+                  messages={messages}
+                  canPostMessages={canPostComments}
+                  onReply={postReply}
+                  canDeleteMessage={canDeleteComment}
+                  onDeleteMessage={onDeleteComment}
+                  {...commentReactionsMutations}
                 />
-              ))}
-            </Box>
+              </Gutters>
+            </ScrollerWithGradient>
             <SectionSpacer double />
             <Box>
               {canPostComments && (
                 <PostMessageToCommentsForm
                   placeholder={t('pages.post.dashboard.comment.placeholder')}
-                  onPostComment={onPostComment}
+                  onPostComment={postMessage}
                   maxLength={MID_TEXT_LENGTH}
                 />
               )}

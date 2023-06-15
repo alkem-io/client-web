@@ -14,6 +14,7 @@ export interface Configuration {
     impact: string;
     foundation: string;
     opensource: string;
+    inspiration: string;
     releases: string;
     help: string;
     community: string;

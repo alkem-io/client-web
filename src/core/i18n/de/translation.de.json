@@ -185,8 +185,8 @@
     "challenges": "Herausforderungen",
     "all-entities": "Alle {{entityType}} ({{count}})",
     "contributors": "Mitwirkende",
-    "opportunity": "Verkaufschance",
-    "opportunities": "Sonderangebot",
+    "opportunity": "Möglichkeit",
+    "opportunities": "Möglichkeiten",
     "organization": "Organisation",
     "organizations": "Organisationen",
     "communications": "Aktualisierungen",
@@ -326,17 +326,17 @@
           "hidden": true
         },
         "OPPORTUNITY_ADMIN": {
-          "name": "Verkaufschance Admin",
+          "name": "Möglichkeit Admin",
           "order": 9,
           "hidden": true
         },
         "OPPORTUNITY_MEMBER": {
-          "name": "Verkaufschance Mitglied",
+          "name": "Möglichkeit Mitglied",
           "order": 10,
           "hidden": true
         },
         "OPPORTUNITY_LEAD": {
-          "name": "Verkaufschance Lead",
+          "name": "Möglichkeit Lead",
           "order": 11,
           "hidden": true
         },
@@ -1169,8 +1169,8 @@
   "navigation": {
     "admin": {
       "opportunity": {
-        "create": "Verkaufs-Chance erstellen",
-        "edit": "Verkaufs-Chance erstellen"
+        "create": "Möglichkeit erstellen",
+        "edit": "Möglichkeit erstellen"
       },
       "challenge": {
         "create": "Herausforderung erstellen",
@@ -1453,7 +1453,7 @@
           "all": "Alle",
           "hub": "Hubs",
           "challenge": "Herausforderungen",
-          "opportunity": "Sonderangebot",
+          "opportunity": "Möglichkeit",
           "user": "Benutzer",
           "organization": "Organisationen",
           "post": "Karten",
@@ -1609,12 +1609,12 @@
       }
     },
     "opportunity": {
-      "title": "Verkaufschance",
+      "title": "Möglichkeit",
       "sections": {
         "dashboard": {
           "statistics": {
-            "title": "Opportunity-Statistiken",
-            "help-text": "Opportunity-Statistiken"
+            "title": "Möglichkeit-Statistiken",
+            "help-text": "Möglichkeit-Statistiken"
           },
           "projects": {
             "title": "Projekte",

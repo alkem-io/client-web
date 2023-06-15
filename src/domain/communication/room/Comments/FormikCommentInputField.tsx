@@ -19,7 +19,7 @@ import { useField, useFormikContext } from 'formik';
 import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
 import TranslationKey from '../../../../types/TranslationKey';
-import { useValidationMessageTranslation } from '../../i18n/ValidationMessageTranslation';
+import { useValidationMessageTranslation } from '../../../shared/i18n/ValidationMessageTranslation';
 import { CommentInputField, MENTION_SYMBOL } from './CommentInputField';
 import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
 import EmojiSelector from '../../../../core/ui/forms/emoji/EmojiSelector';

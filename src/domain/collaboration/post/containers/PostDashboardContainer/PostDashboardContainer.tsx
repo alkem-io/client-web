@@ -6,15 +6,13 @@ import {
   Scalars,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
-  MessageDetailsFragmentDoc,
   useChallengePostQuery,
   useHubPostQuery,
   useOpportunityPostQuery,
   useRemoveMessageOnRoomMutation,
-  useSendMessageToRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/contributor/user';
-import { Message } from '../../../../communication/messages/models/message';
+import { Message } from '../../../../communication/room/models/Message';
 import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -24,6 +22,7 @@ import usePostCommentsMessageReceivedSubscription from '../../comments/usePostCo
 import { getCardCallout } from '../getPostCallout';
 import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
 import { buildAuthorFromUser } from '../../../../../common/utils/buildAuthorFromUser';
+import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
 
 interface EntityIds {
   postNameId: Scalars['UUID_NAMEID'];
@@ -39,11 +38,12 @@ interface Provided {
   canDeleteComment: (messageId: string) => boolean;
   post?: PostDashboardFragment;
   messages: Message[];
-  commentsId?: string;
+  roomId: string | undefined;
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentsId: string, message: string) => void;
+  postMessage: (message: string) => void;
+  postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteComment: (commentsId: string, messageId: string) => void;
   loading: boolean;
   error?: ApolloError;
@@ -136,7 +136,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     subscribeToOpportunity
   );
 
-  const isSubscribedToComments = [
+  const isSubscribedToMessages = [
     hubCommentsSubscription,
     challengeCommentsSubscription,
     opportunityCommentsSubscription,
@@ -147,7 +147,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   const creatorName = creator?.profile.displayName;
   const createdDate = post?.createdDate.toString();
 
-  const commentsId = post?.comments?.id;
+  const roomId = post?.comments?.id;
   const _messages = useMemo(() => post?.comments?.messages ?? [], [post?.comments?.messages]);
   const messages = useMemo<Message[]>(
     () =>
@@ -156,20 +156,17 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
         body: x.message,
         author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
+        reactions: x.reactions,
+        threadID: x.threadID,
       })),
     [_messages]
-  );
-
-  const isAuthor = useCallback(
-    (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
-    [messages]
   );
 
   const commentsPrivileges = post?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
-    msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [user, isAuthenticated, canDeleteComments, isAuthor]
+    authorId => canDeleteComments || (isAuthenticated && authorId === user?.id),
+    [user, isAuthenticated, canDeleteComments]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
@@ -190,63 +187,10 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = useSendMessageToRoomMutation({
-    update: (cache, { data }) => {
-      const cacheCommentsId = cache.identify({
-        id: commentsId,
-        __typename: 'Comments',
-      });
-
-      if (!cacheCommentsId) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          commentsCount(oldCount = 0) {
-            if (!data) {
-              return oldCount;
-            }
-
-            return oldCount + 1;
-          },
-        },
-      });
-
-      if (isSubscribedToComments) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          messages(existingMessages = []) {
-            if (!data) {
-              return existingMessages;
-            }
-
-            const newMessage = cache.writeFragment({
-              data: data?.sendMessageToRoom,
-              fragment: MessageDetailsFragmentDoc,
-              fragmentName: 'MessageDetails',
-            });
-            return [...existingMessages, newMessage];
-          },
-        },
-      });
-    },
+  const { postMessage, postReply, postingMessage, postingReply } = usePostMessageMutations({
+    roomId,
+    isSubscribedToMessages,
   });
-
-  const handlePostComment = async (commentsId: string, message: string) =>
-    postComment({
-      variables: {
-        messageData: {
-          roomID: commentsId,
-          message,
-        },
-      },
-    });
 
   const postUrl = buildPostUrl(calloutNameId, postNameId, {
     hubNameId,
@@ -260,16 +204,18 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     canDeleteComment,
     post,
     messages,
-    commentsId,
+    roomId,
     creatorAvatar,
     creatorName,
     createdDate,
-    handlePostComment,
+    postMessage,
+    postReply,
     handleDeleteComment,
     loading,
     error,
     deletingComment,
-    postingComment,
+    postingMessage,
+    postingReply,
     postUrl,
   });
 };

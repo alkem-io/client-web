@@ -38,7 +38,7 @@ const CalendarEventDetail = ({
 
   return (
     <CalendarEventDetailContainer hubNameId={hubNameId} eventId={eventId}>
-      {({ event, messages, commentsId, createdDate, ...rest }) => {
+      {({ event, messages, createdDate, ...rest }) => {
         // createdDate is read here to remove it from the rest object and not show it
         // Also displayName is passed as a space because we are already showing the event
         //   title in the bannerOverlays
@@ -76,7 +76,6 @@ const CalendarEventDetail = ({
                 tags={event?.profile.tagset?.tags}
                 references={event?.profile.references}
                 messages={messages}
-                commentId={event?.comments?.id}
                 postUrl=""
                 bannerOverlayOverride={<EventCardHeader event={event} />}
                 {...rest}
