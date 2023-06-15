@@ -45,8 +45,8 @@ export interface MessageViewProps {
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
   root?: boolean;
   actions?: ReactNode;
-  addReaction: (reaction: { emoji: string; messageId: string }) => void;
-  removeReaction: (reactionId: string, messageId: string) => void;
+  addReaction?: (reaction: { emoji: string; messageId: string }) => void;
+  removeReaction?: (reactionId: string, messageId: string) => void;
 }
 
 export const MessageView = ({
@@ -63,6 +63,7 @@ export const MessageView = ({
 
   const { t } = useTranslation();
 
+  const enabledReactions = addReaction && removeReaction;
   const handleAddReaction = (emoji: string) => addReaction?.({ emoji, messageId: message.id });
   const handleRemoveReaction = (reactionId: string) => removeReaction?.(reactionId, message.id);
 
@@ -89,13 +90,15 @@ export const MessageView = ({
           </Box>
         </Paper>
         <MessageActionsContainer>
-          <Box component="li">
-            <CommentReactions
-              reactions={message.reactions}
-              onAddReaction={handleAddReaction}
-              onRemoveReaction={handleRemoveReaction}
-            />
-          </Box>
+          {enabledReactions && (
+            <Box component="li">
+              <CommentReactions
+                reactions={message.reactions}
+                onAddReaction={handleAddReaction}
+                onRemoveReaction={handleRemoveReaction}
+              />
+            </Box>
+          )}
           {actions}
         </MessageActionsContainer>
         {children}
