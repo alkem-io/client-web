@@ -91,15 +91,15 @@ export const HubSettingsView: FC = () => {
   const membershipTruthTable = {
     [MembershipOption.noApplicationRequired]: {
       [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinHubFromAnyone]: true,
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: true,
     },
     [MembershipOption.applicationRequired]: {
       [PreferenceType.MembershipApplicationsFromAnyone]: true,
-      [PreferenceType.MembershipJoinHubFromAnyone]: false,
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
     },
     [MembershipOption.invitationOnly]: {
       [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinHubFromAnyone]: false,
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
     },
   };
 
@@ -108,8 +108,8 @@ export const HubSettingsView: FC = () => {
       [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
         PreferenceType.MembershipApplicationsFromAnyone
       ),
-      [PreferenceType.MembershipJoinHubFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinHubFromAnyone
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipJoinSpaceFromAnyone
       ),
     };
 
@@ -125,15 +125,15 @@ export const HubSettingsView: FC = () => {
       [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
         PreferenceType.MembershipApplicationsFromAnyone
       ),
-      [PreferenceType.MembershipJoinHubFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinHubFromAnyone
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipJoinSpaceFromAnyone
       ),
     };
     const nextPreferences = membershipTruthTable[value];
 
     for (const [key, value] of Object.entries(currentPreferences)) {
       if (value !== nextPreferences[key]) {
-        await handleUpdatePreference(key as HubPreferenceType, `${nextPreferences[key]}`, false);
+        await handleUpdatePreference(key as SpacePreferenceType, `${nextPreferences[key]}`, false);
       }
     }
     notify(t('pages.admin.hub.settings.savedSuccessfully'), 'success');
