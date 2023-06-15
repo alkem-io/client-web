@@ -12,7 +12,7 @@ interface MessagesThreadProps {
   loading?: boolean;
   canPostMessages: boolean;
   onReply: (reply: { threadId: string; messageText: string }) => void;
-  canDeleteMessage: (messageId: string) => boolean;
+  canDeleteMessage: (authorId: string | undefined) => boolean;
   onDeleteMessage: MessageViewProps['onDelete'];
   addReaction: MessageViewProps['addReaction'];
   removeReaction: MessageViewProps['removeReaction'];
@@ -38,7 +38,7 @@ const MessagesThread = ({
         <MessageWithRepliesView
           key={message.id}
           message={message}
-          canDelete={canDeleteMessage(message.id)}
+          canDelete={canDeleteMessage(message.author?.id)}
           onDelete={onDeleteMessage}
           addReaction={addReaction}
           removeReaction={removeReaction}
@@ -63,7 +63,7 @@ const MessagesThread = ({
             <MessageView
               key={message.id}
               message={message}
-              canDelete={canDeleteMessage(message.id)}
+              canDelete={canDeleteMessage(message.author?.id)}
               onDelete={onDeleteMessage}
               addReaction={addReaction}
               removeReaction={removeReaction}

@@ -30,7 +30,7 @@ export interface AspectDashboardViewProps {
   mode: 'messages' | 'share';
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteComment: (messageId: string) => boolean;
+  canDeleteComment: (authorId: string | undefined) => boolean;
   banner?: string;
   displayName?: string;
   description?: string;
