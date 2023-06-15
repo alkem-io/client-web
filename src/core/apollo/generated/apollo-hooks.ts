@@ -2724,6 +2724,7 @@ export const ConfigurationFragmentDoc = gql`
       impact
       foundation
       opensource
+      inspiration
       releases
       help
       community

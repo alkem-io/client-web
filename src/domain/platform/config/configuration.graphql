@@ -32,6 +32,7 @@ fragment Configuration on Config {
     impact
     foundation
     opensource
+    inspiration
     releases
     help
     community
