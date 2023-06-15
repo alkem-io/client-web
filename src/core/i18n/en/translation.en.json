@@ -1335,7 +1335,7 @@
     "innovationLibrary": {
       "shortName": "Library",
       "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use.",
+      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "Innovation Packs"
