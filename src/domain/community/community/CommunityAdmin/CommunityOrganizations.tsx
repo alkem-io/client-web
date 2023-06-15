@@ -12,13 +12,14 @@ import { FC, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
-import { OrganizationDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityPolicyFragment, OrganizationDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
+import useCommunityPolicyChecker from './useCommunityPolicyChecker';
 
 export interface OrganizationDetailsFragmentWithRoles extends OrganizationDetailsFragment {
   isMember: boolean;
@@ -49,21 +50,29 @@ const initialState: GridInitialState = {
 interface CommunityOrganizationsProps {
   organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
   onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
+  canAddMembers: boolean;
   onAddMember: (organizationId) => Promise<unknown> | undefined;
   fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   onRemoveMember: (organizationId) => Promise<unknown> | void;
+  communityPolicy?: CommunityPolicyFragment;
   loading?: boolean;
 }
 
 const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
   organizations = [],
   onOrganizationLeadChange,
+  canAddMembers,
   onAddMember,
   fetchAvailableOrganizations,
   onRemoveMember,
+  communityPolicy,
   loading,
 }) => {
   const { t } = useTranslation();
+  const { canAddLeadOrganization, canRemoveLeadOrganization } = useCommunityPolicyChecker(
+    communityPolicy,
+    organizations
+  );
 
   const organizationsColumns: GridColDef[] = [
     {
@@ -74,7 +83,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
         <Link href={buildOrganizationUrl(row.nameID)} target="_blank">
-          <Avatar src={row.profile.visual?.uri} />
+          <Avatar src={row.profile.avatar?.uri} />
         </Link>
       ),
     },
@@ -133,9 +142,11 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.memberOrganizations', { count: organizations.length })}</BlockTitle>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewOrganization(true)}>
-          {t('common.add')}
-        </Button>
+        {canAddMembers && (
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewOrganization(true)}>
+            {t('common.add')}
+          </Button>
+        )}
       </Box>
       <TextField
         value={filterString}
@@ -176,6 +187,8 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
         <CommunityMemberSettingsDialog
           member={editingOrganization}
           onLeadChange={onOrganizationLeadChange}
+          canAddLead={canAddLeadOrganization}
+          canRemoveLead={canRemoveLeadOrganization}
           onRemoveMember={onRemoveMember}
           onClose={() => setEditingOrganization(undefined)}
         />

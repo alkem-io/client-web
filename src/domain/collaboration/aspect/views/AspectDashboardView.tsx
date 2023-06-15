@@ -22,6 +22,7 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useCommentReactionsMutations from '../../../communication/room/Comments/useCommentReactionsMutations';
 import MessagesThread from '../../../communication/room/Comments/MessagesThread';
+import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -155,21 +156,25 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
       {mode === 'messages' && canReadComments && (
         <DashboardColumn>
           <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
-            <Gutters
+            <ScrollerWithGradient
               maxHeight={COMMENTS_CONTAINER_HEIGHT}
-              overflowY="auto"
-              ref={commentsContainerRef}
+              minHeight={0}
+              marginRight={1}
+              flexGrow={1}
+              scrollerRef={commentsContainerRef}
               onScroll={handleCommentsScroll}
             >
-              <MessagesThread
-                messages={messages}
-                canPostMessages={canPostComments}
-                onReply={postReply}
-                canDeleteMessage={canDeleteComment}
-                onDeleteMessage={onDeleteComment}
-                {...commentReactionsMutations}
-              />
-            </Gutters>
+              <Gutters gap={0}>
+                <MessagesThread
+                  messages={messages}
+                  canPostMessages={canPostComments}
+                  onReply={postReply}
+                  canDeleteMessage={canDeleteComment}
+                  onDeleteMessage={onDeleteComment}
+                  {...commentReactionsMutations}
+                />
+              </Gutters>
+            </ScrollerWithGradient>
             <SectionSpacer double />
             <Box>
               {canPostComments && (
