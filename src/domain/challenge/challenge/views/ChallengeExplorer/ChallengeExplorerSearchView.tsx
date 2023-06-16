@@ -11,6 +11,7 @@ import { Text } from '../../../../../core/ui/typography/components';
 import ChallengeCard from '../../ChallengeCard/ChallengeCard';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -39,38 +40,40 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
     <>
       {challenges && challenges.length > 0 && (
         <GroupBy data={challenges} groupKey={groupKey}>
-          {groups => {
-            return groups.map(({ keyValue, values }) => (
-              <PageContentBlock key={keyValue}>
-                <PageContentBlockHeader
-                  title={
-                    <>
-                      <HubIcon sx={{ verticalAlign: 'bottom' }} /> {values[0].hubDisplayName}
-                    </>
-                  }
-                />
-                <Text>{values[0].hubTagline}</Text>
-                <ScrollableCardsLayout maxHeight={gutters(40)} items={values} cards={false}>
-                  {challenge => (
-                    <ChallengeCard
-                      challengeId={challenge.id}
-                      challengeNameId={challenge.nameID}
-                      banner={challenge.banner}
-                      displayName={challenge.displayName}
-                      tags={challenge.tags}
-                      tagline={challenge.tagline}
-                      vision={challenge.vision}
-                      journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                      hubDisplayName={challenge.hubDisplayName}
-                      hubUri={buildHubUrl(challenge.hubNameId)}
-                      hubVisibility={challenge.hubVisibility}
-                      hideJoin
-                    />
-                  )}
-                </ScrollableCardsLayout>
-              </PageContentBlock>
-            ));
-          }}
+          {groups => (
+            <Gutters disablePadding>
+              {groups.map(({ keyValue, values }) => (
+                <PageContentBlock key={keyValue}>
+                  <PageContentBlockHeader
+                    title={
+                      <>
+                        <HubIcon sx={{ verticalAlign: 'bottom' }} /> {values[0].hubDisplayName}
+                      </>
+                    }
+                  />
+                  <Text>{values[0].hubTagline}</Text>
+                  <ScrollableCardsLayout maxHeight={gutters(40)} items={values} cards={false}>
+                    {challenge => (
+                      <ChallengeCard
+                        challengeId={challenge.id}
+                        challengeNameId={challenge.nameID}
+                        banner={challenge.banner}
+                        displayName={challenge.displayName}
+                        tags={challenge.tags}
+                        tagline={challenge.tagline}
+                        vision={challenge.vision}
+                        journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                        hubDisplayName={challenge.hubDisplayName}
+                        hubUri={buildHubUrl(challenge.hubNameId)}
+                        hubVisibility={challenge.hubVisibility}
+                        hideJoin
+                      />
+                    )}
+                  </ScrollableCardsLayout>
+                </PageContentBlock>
+              ))}
+            </Gutters>
+          )}
         </GroupBy>
       )}
       {!loading && searchTerms && searchTerms?.length > 0 && !challenges?.length && (
