@@ -1236,7 +1236,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       profile {
         id
         displayName
-        visual(type: AVATAR) {
+        avatar: visual(type: AVATAR) {
           id
           uri
         }
@@ -9033,7 +9033,7 @@ export const ActivityLogOnCollaborationDocument = gql`
         profile {
           id
           displayName
-          visual(type: AVATAR) {
+          avatar: visual(type: AVATAR) {
             id
             uri
           }
