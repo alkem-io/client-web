@@ -46,7 +46,7 @@ const AdminNewInnovationPackPage = () => {
       refetchQueries: [refetchAdminInnovationPacksListQuery()],
     });
     if (data?.createInnovationPackOnLibrary.nameID) {
-      navigate(`../${data?.createInnovationPackOnLibrary.nameID}`);
+      navigate(`/innovation-packs/${data?.createInnovationPackOnLibrary.nameID}/settings`);
     }
   };
 
