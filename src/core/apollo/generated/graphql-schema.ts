@@ -410,14 +410,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1853,16 +1845,6 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
-};
-
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
@@ -2360,8 +2342,8 @@ export type Mutation = {
   updateEcosystemModel: EcosystemModel;
   /** Updates the Hub. */
   updateHub: Hub;
-  /** Update the visibility of the specified Hub. */
-  updateHubVisibility: Hub;
+  /** Update the platform settings, such as visibility, of the specified Hub. */
+  updateHubPlatformSettings: Hub;
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Update Innovation Hub. */
@@ -2902,8 +2884,8 @@ export type MutationUpdateHubArgs = {
   hubData: UpdateHubInput;
 };
 
-export type MutationUpdateHubVisibilityArgs = {
-  visibilityData: UpdateHubVisibilityInput;
+export type MutationUpdateHubPlatformSettingsArgs = {
+  updateData: UpdateHubPlatformSettingsInput;
 };
 
 export type MutationUpdateInnovationFlowTemplateArgs = {
@@ -2983,6 +2965,12 @@ export type MutationUploadImageOnVisualArgs = {
   file: Scalars['Upload'];
   uploadData: VisualUploadImageInput;
 };
+
+export enum MutationType {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Update = 'UPDATE',
+}
 
 export type Nvp = {
   __typename?: 'NVP';
@@ -3815,6 +3803,37 @@ export type RoomAddReactionToMessageInput = {
   roomID: Scalars['UUID'];
 };
 
+/** The event happened in the subscribed room */
+export type RoomEventSubscriptionResult = {
+  __typename?: 'RoomEventSubscriptionResult';
+  /** A message related event. */
+  message?: Maybe<RoomMessageEventSubscriptionResult>;
+  /** A message reaction related event. */
+  reaction?: Maybe<RoomMessageReactionEventSubscriptionResult>;
+  /** The identifier for the Room on which the event happened. */
+  roomID: Scalars['String'];
+};
+
+/** A message event happened in the subscribed room */
+export type RoomMessageEventSubscriptionResult = {
+  __typename?: 'RoomMessageEventSubscriptionResult';
+  /** A message related event. */
+  data: Message;
+  /** The type of event. */
+  type: MutationType;
+};
+
+/** A message reaction event happened in the subscribed room */
+export type RoomMessageReactionEventSubscriptionResult = {
+  __typename?: 'RoomMessageReactionEventSubscriptionResult';
+  /** A message related event. */
+  data: Reaction;
+  /** The message on which the reaction event happened. */
+  messageID?: Maybe<Scalars['String']>;
+  /** The type of event. */
+  type: MutationType;
+};
+
 export type RoomMessageReceived = {
   __typename?: 'RoomMessageReceived';
   /** The message that has been sent. */
@@ -4059,6 +4078,8 @@ export type Subscription = {
   opportunityCreated: OpportunityCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
+  /** Receive Room event */
+  roomEvents: RoomEventSubscriptionResult;
   /** Receive new Room messages */
   roomMessageReceived: RoomMessageReceived;
 };
@@ -4085,6 +4106,10 @@ export type SubscriptionCommunicationDiscussionUpdatedArgs = {
 
 export type SubscriptionOpportunityCreatedArgs = {
   challengeID: Scalars['UUID'];
+};
+
+export type SubscriptionRoomEventsArgs = {
+  roomID: Scalars['UUID'];
 };
 
 export type SubscriptionRoomMessageReceivedArgs = {
@@ -4365,19 +4390,23 @@ export type UpdateHubInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UpdateHubPlatformSettingsInput = {
+  /** Update the host Organization for the Hub. */
+  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
+  /** The identifier for the Hub whose visibility is to be updated. */
+  hubID: Scalars['String'];
+  /** Upate the URL path for the Space. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** Visibility of the Hub. */
+  visibility?: InputMaybe<HubVisibility>;
+};
+
 export type UpdateHubPreferenceInput = {
   /** ID of the Hub */
   hubID: Scalars['UUID_NAMEID'];
   /** Type of the user preference */
   type: HubPreferenceType;
   value: Scalars['String'];
-};
-
-export type UpdateHubVisibilityInput = {
-  /** The identifier for the Hub whose visibility is to be updated. */
-  hubID: Scalars['String'];
-  /** Visibility of the Hub. */
-  visibility: HubVisibility;
 };
 
 export type UpdateInnovationFlowTemplateInput = {
@@ -22329,14 +22358,20 @@ export type AvailableUserFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type UpdateHubVisibilityMutationVariables = Exact<{
+export type UpdateHubPlatformSettingsMutationVariables = Exact<{
   hubId: Scalars['String'];
   visibility: HubVisibility;
 }>;
 
-export type UpdateHubVisibilityMutation = {
+export type UpdateHubPlatformSettingsMutation = {
   __typename?: 'Mutation';
-  updateHubVisibility: { __typename?: 'Hub'; id: string; visibility: HubVisibility };
+  updateHubPlatformSettings: {
+    __typename?: 'Hub';
+    id: string;
+    visibility: HubVisibility;
+    nameID: string;
+    host?: { __typename?: 'Organization'; id: string } | undefined;
+  };
 };
 
 export type AdminHubsListQueryVariables = Exact<{ [key: string]: never }>;

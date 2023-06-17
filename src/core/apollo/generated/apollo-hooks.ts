@@ -21112,55 +21112,60 @@ export function refetchOpportunityAvailableMemberUsersQuery(
   return { query: OpportunityAvailableMemberUsersDocument, variables: variables };
 }
 
-export const UpdateHubVisibilityDocument = gql`
-  mutation UpdateHubVisibility($hubId: String!, $visibility: HubVisibility!) {
-    updateHubVisibility(visibilityData: { hubID: $hubId, visibility: $visibility }) {
+export const UpdateHubPlatformSettingsDocument = gql`
+  mutation UpdateHubPlatformSettings($hubId: String!, $visibility: HubVisibility!) {
+    updateHubPlatformSettings(updateData: { hubID: $hubId, visibility: $visibility }) {
       id
       visibility
+      nameID
+      host {
+        id
+      }
     }
   }
 `;
-export type UpdateHubVisibilityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateHubVisibilityMutation,
-  SchemaTypes.UpdateHubVisibilityMutationVariables
+export type UpdateHubPlatformSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateHubPlatformSettingsMutation,
+  SchemaTypes.UpdateHubPlatformSettingsMutationVariables
 >;
 
 /**
- * __useUpdateHubVisibilityMutation__
+ * __useUpdateHubPlatformSettingsMutation__
  *
- * To run a mutation, you first call `useUpdateHubVisibilityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateHubVisibilityMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateHubPlatformSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHubPlatformSettingsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateHubVisibilityMutation, { data, loading, error }] = useUpdateHubVisibilityMutation({
+ * const [updateHubPlatformSettingsMutation, { data, loading, error }] = useUpdateHubPlatformSettingsMutation({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      visibility: // value for 'visibility'
  *   },
  * });
  */
-export function useUpdateHubVisibilityMutation(
+export function useUpdateHubPlatformSettingsMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateHubVisibilityMutation,
-    SchemaTypes.UpdateHubVisibilityMutationVariables
+    SchemaTypes.UpdateHubPlatformSettingsMutation,
+    SchemaTypes.UpdateHubPlatformSettingsMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateHubVisibilityMutation, SchemaTypes.UpdateHubVisibilityMutationVariables>(
-    UpdateHubVisibilityDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.UpdateHubPlatformSettingsMutation,
+    SchemaTypes.UpdateHubPlatformSettingsMutationVariables
+  >(UpdateHubPlatformSettingsDocument, options);
 }
 
-export type UpdateHubVisibilityMutationHookResult = ReturnType<typeof useUpdateHubVisibilityMutation>;
-export type UpdateHubVisibilityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateHubVisibilityMutation>;
-export type UpdateHubVisibilityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateHubVisibilityMutation,
-  SchemaTypes.UpdateHubVisibilityMutationVariables
+export type UpdateHubPlatformSettingsMutationHookResult = ReturnType<typeof useUpdateHubPlatformSettingsMutation>;
+export type UpdateHubPlatformSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateHubPlatformSettingsMutation>;
+export type UpdateHubPlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateHubPlatformSettingsMutation,
+  SchemaTypes.UpdateHubPlatformSettingsMutationVariables
 >;
 export const AdminHubsListDocument = gql`
   query adminHubsList {
