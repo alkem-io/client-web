@@ -1,6 +1,7 @@
 import { Excalidraw } from '@alkemio/excalidraw';
-import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import { ExportedDataState, ImportedDataState } from '@alkemio/excalidraw/types/data/types';
 import {
+  AppState, BinaryFiles,
   ExcalidrawAPIRefValue,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
@@ -9,11 +10,14 @@ import {
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { debounce, merge } from 'lodash';
-import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
+import { debounce, merge, unionBy } from 'lodash';
+import React, { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../../domain/shared/utils/useCombinedRefs';
 import EmptyWhiteboard from './EmptyWhiteboard';
+import { HocuspocusProvider } from '@hocuspocus/provider';
+import * as Y from 'yjs';
+import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -106,6 +110,25 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
       };
     }, [handleScroll]);
 
+    const ydoc = new Y.Doc();
+    const yjson = ydoc.getMap<ImportedDataState>('json');
+
+    // yjson.observeDeep(() => {
+    //   const updatedJson = yjson.toJSON();
+    //   // Handle the updated JSON object
+    //   console.log(updatedJson);
+    // });
+
+    new HocuspocusProvider({
+      url: 'ws://localhost:3000/api/private/ws', // platform?....
+      name: 'asd123',
+      document: ydoc,
+      onMessage: data => {
+        Y.applyUpdate(ydoc, data.message.data);
+        // console.log('onMessage received', data.event.data, data.message.data);
+      },
+    });
+
     const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
       () => (exportedElements, appState) =>
         (
@@ -155,6 +178,17 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
 
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
+    const handleChange = useCallback((elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
+      const oldJson = yjson.toJSON() as ImportedDataState;
+      const oldElements = oldJson.elements;
+
+      if (oldElements) {
+        const mergedElements = unionBy(elements, oldElements, 'id');
+        // @ts-ignore
+        yjson.set('elements', mergedElements);
+      }
+    }, []);
+
     return (
       <div className={styles.container}>
         {canvas && (
@@ -166,6 +200,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
             isCollaborating={false}
             gridModeEnabled
             viewModeEnabled
+            onChange={handleChange}
             {...restOptions}
           />
         )}
