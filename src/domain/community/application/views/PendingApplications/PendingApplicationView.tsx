@@ -136,7 +136,7 @@ const PendingApplicationView: FC<PendingApplicationViewProps> = ({ entities, act
       {state.isDialogOpened && (
         <ApplicationDialog
           app={applicationForDialog}
-          onHide={actions.handleDialogClose}
+          onClose={actions.handleDialogClose}
           loading={state.loadingDialog}
         />
       )}

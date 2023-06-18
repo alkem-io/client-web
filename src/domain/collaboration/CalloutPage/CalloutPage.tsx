@@ -3,8 +3,7 @@ import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useCalloutPageCalloutQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 import CalloutView from '../callout/CalloutView/CalloutView';
-import useSubscribeOnCommentCallouts from '../callout/useSubscribeOnCommentCallouts';
-import { AuthorizationPrivilege, CalloutType, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
@@ -66,10 +65,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       calloutData?.hub.collaboration
     )?.callouts ?? [];
 
-  const isCommentsCallout = callout?.type === CalloutType.Comments;
-
-  const isSubscribedToComments = useSubscribeOnCommentCallouts(isCommentsCallout ? [callout.id] : []);
-
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
   const typedCallout = useMemo(() => {
@@ -121,7 +116,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           challengeNameId={challengeNameId}
           opportunityNameId={opportunityNameId}
           journeyTypeName={journeyTypeName}
-          isSubscribedToComments={isSubscribedToComments}
           calloutNames={[]}
           contributionsCount={typedCallout.activity}
           onVisibilityChange={handleVisibilityChange}

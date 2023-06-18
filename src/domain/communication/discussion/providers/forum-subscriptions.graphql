@@ -14,15 +14,9 @@ subscription communicationDiscussionUpdated($communicationID: UUID!) {
     createdBy
     timestamp
     category
-    commentsCount
-  }
-}
-
-subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
-  communicationDiscussionMessageReceived(discussionID: $discussionID) {
-    discussionID
-    message {
-      ...MessageDetails
+    comments {
+      id
+      messagesCount
     }
   }
 }

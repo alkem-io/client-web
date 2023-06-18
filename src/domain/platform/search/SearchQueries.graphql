@@ -63,7 +63,7 @@ fragment SearchResultCard on SearchResultCard {
     createdDate
     comments {
       id
-      commentsCount
+      messagesCount
     }
   }
   ...CardParent

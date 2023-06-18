@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
 import { ApplicationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
-import Avatar from '../../../../../common/components/core/Avatar';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import LifecycleButton from '../../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
 import { Optional } from '../../../../../types/util';
-import { Loading } from '../../../../../common/components/core';
+import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
+import { ProfileChip } from '../../../contributor/ProfileChip/ProfileChip';
+import { Actions } from '../../../../../core/ui/actions/Actions';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {
@@ -77,12 +78,15 @@ export type ApplicationDialogDataType = Optional<ApplicationInfoFragment, 'lifec
 
 export interface ApplicationDialogProps {
   app?: ApplicationDialogDataType;
-  onHide: () => void;
+  onClose: () => void;
   onSetNewState?: (appId: string, newState: string) => void;
   loading?: boolean;
 }
-
-export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewState, loading }) => {
+/**
+ * // TODO:
+ * @deprecated Rewrite this with new components and put it somewhere else
+ */
+export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, onSetNewState, loading }) => {
   const { t } = useTranslation();
   const styles = appStyles();
 
@@ -100,73 +104,57 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onS
 
   return (
     <Dialog open maxWidth="md" fullWidth aria-labelledby="dialog-title">
-      {loading && (
-        <DialogTitle id="dialog-title" onClose={onHide}>
-          <Loading />
-        </DialogTitle>
-      )}
+      <DialogHeader onClose={onClose}>
+        <ProfileChip
+          displayName={username}
+          avatarUrl={avatarSrc}
+          city={user?.profile.location?.city}
+          country={user?.profile.location?.country}
+        />
+      </DialogHeader>
       {!loading && (
-        <>
-          <DialogTitle id="dialog-title" onClose={onHide}>
-            <div className={styles.title}>
-              <div className={styles.header}>
-                {!user && t('components.application-dialog.title')}
-                {user && (
-                  <div className={styles.profile}>
-                    <Avatar src={avatarSrc} size={'lg'} aria-label="User avatar" />
-                    <div className={styles.userName}>
-                      <WrapperTypography variant={'h3'} aria-label="Username">
-                        {username}
-                      </WrapperTypography>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </DialogTitle>
-          <DialogContent dividers>
-            <div className={styles.body}>
-              <div className={styles.questions}>
-                {questions.map(x => (
-                  <div key={x.id} className={styles.question}>
-                    <label aria-label="Questions">{x.name}</label>
-                    <WrapperTypography weight={'boldLight'} aria-label="Answer">
-                      {x.value}
-                    </WrapperTypography>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {(createdDate || updatedDate) && (
-              <div className={styles.date}>
-                {createdDate && (
-                  <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date created">
-                    {t('components.application-dialog.created', { date: createdDate })}
+        <Gutters>
+          <div className={styles.body}>
+            <div className={styles.questions}>
+              {questions.map(x => (
+                <div key={x.id} className={styles.question}>
+                  <label aria-label="Questions">{x.name}</label>
+                  <WrapperTypography weight={'boldLight'} aria-label="Answer">
+                    {x.value}
                   </WrapperTypography>
-                )}
-                {updatedDate && (
-                  <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date updated">
-                    {t('components.application-dialog.updated', { date: updatedDate })}
-                  </WrapperTypography>
-                )}
-              </div>
-            )}
-          </DialogContent>
+                </div>
+              ))}
+            </div>
+          </div>
+          {(createdDate || updatedDate) && (
+            <div className={styles.date}>
+              {createdDate && (
+                <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date created">
+                  {t('components.application-dialog.created', { date: createdDate })}
+                </WrapperTypography>
+              )}
+              {updatedDate && (
+                <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date updated">
+                  {t('components.application-dialog.updated', { date: updatedDate })}
+                </WrapperTypography>
+              )}
+            </div>
+          )}
           {nextEvents.length > 0 && (
-            <DialogActions>
+            <Actions justifyContent="end" flexDirection="row-reverse">
               {nextEvents.map((x, i) => (
                 <LifecycleButton
                   key={i}
                   stateName={x}
                   onClick={() => {
                     onSetNewState && onSetNewState(appId, x);
-                    onHide();
+                    onClose();
                   }}
                 />
               ))}
-            </DialogActions>
+            </Actions>
           )}
-        </>
+        </Gutters>
       )}
     </Dialog>
   );

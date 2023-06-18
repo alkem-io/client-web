@@ -149,7 +149,6 @@ const CalloutsView = ({
               onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
               onVisibilityChange={handleVisibilityChange}
               onCalloutDelete={handleDelete}
-              isSubscribedToComments={callout.isSubscribedToComments}
               calloutUri={calloutUri}
               onExpand={() => handleExpand(callout)}
               blockProps={blockProps}

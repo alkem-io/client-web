@@ -9,6 +9,8 @@ import {
 import { FormEvent } from 'react';
 import { UiNodeAnchor, UiNodeInput } from './UiNodeTypes';
 import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './constants';
+import { TFunction } from 'react-i18next';
+import TranslationKey from '../../../../../types/TranslationKey';
 
 export function isUiNodeAnchorAttributes(pet: UiNodeAttributes): pet is UiNodeAnchorAttributes {
   return (pet as UiNodeAnchorAttributes).href !== undefined;
@@ -42,19 +44,18 @@ export function getNodeValue({ attributes }: UiNode) {
   return '';
 }
 
-export const getNodeTitle = ({ attributes, meta }: UiNode): string => {
-  if (isUiNodeInputAttributes(attributes)) {
-    if (meta?.label?.text) {
-      return meta.label.text;
-    }
-    return attributes.name;
+export const getNodeTitle = ({ attributes, meta }: UiNode, t: TFunction): string => {
+  if (!isUiNodeInputAttributes(attributes)) {
+    throw new Error('Not an Input node');
   }
 
-  if (meta?.label?.text) {
-    return meta.label.text;
+  const labelText = meta.label?.text;
+
+  if (!labelText) {
+    throw new Error('No label text specified for the Node');
   }
 
-  return '';
+  return t(`kratos.fields.${labelText}` as TranslationKey, labelText) as string;
 };
 
 export const guessVariant = ({ attributes }: UiNode) => {

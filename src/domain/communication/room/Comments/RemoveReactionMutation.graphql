@@ -1,0 +1,6 @@
+mutation RemoveReaction($roomId: UUID!, $reactionId: MessageID!) {
+  removeReactionToMessageInRoom(reactionData: {
+    reactionID: $reactionId,
+    roomID: $roomId
+  })
+}

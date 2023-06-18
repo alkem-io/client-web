@@ -19,7 +19,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
   const navigate = useNavigate();
   const { pathname } = useResolvedPath('..');
 
-  const { nameID, title, createdAt, author, authors = [], commentsCount, category } = discussion;
+  const { nameID, title, createdAt, author, authors = [], comments, category } = discussion;
 
   return (
     <ListItemButton disableGutters onClick={() => navigate(buildDiscussionUrl(pathname, nameID))}>
@@ -34,7 +34,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
               {t('components.discussions-list.posted', {
                 name: author?.displayName,
                 date: formatLongDate(createdAt),
-                count: commentsCount,
+                count: comments.messagesCount,
               })}
             </Caption>
           </Box>

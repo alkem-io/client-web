@@ -2,7 +2,7 @@ import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../../community/contributor/user';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
-import { useCommunicationUpdateMessageReceivedSubscription } from '../../../core/apollo/generated/apollo-hooks';
+import { useRoomMessageReceivedSubscription } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { logger } from '../../../services/logging/winston/logger';
 
@@ -26,7 +26,7 @@ const useCommunityUpdatesSubscriber = (shouldSkip: boolean) => {
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
-  useCommunicationUpdateMessageReceivedSubscription({
+  useRoomMessageReceivedSubscription({
     shouldResubscribe: true,
     skip: shouldSkip,
     onSubscriptionData: options => {
@@ -35,7 +35,7 @@ const useCommunityUpdatesSubscriber = (shouldSkip: boolean) => {
         return;
       }
 
-      const subData = options.subscriptionData.data?.communicationUpdateMessageReceived;
+      const subData = options.subscriptionData.data?.roomMessageReceived;
       if (!subData) return;
 
       const senderId = subData.message.sender?.id;

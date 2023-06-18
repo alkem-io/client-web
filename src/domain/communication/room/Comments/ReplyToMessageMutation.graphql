@@ -1,0 +1,10 @@
+mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!) {
+  sendMessageReplyToRoom(messageData: { roomID: $roomId, threadID: $threadId, message: $message }) {
+    id
+    message
+    sender {
+      id
+    }
+    timestamp
+  }
+}

@@ -1,8 +1,6 @@
 import { TabDefinition } from './EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -17,6 +15,7 @@ export enum SettingsSection {
   Opportunities = 'opportunities',
   Templates = 'templates',
   Storage = 'storage',
+  HubSettings = 'hub-settings',
   MyProfile = 'my-profile',
   Membership = 'membership',
   Organizations = 'organizations',
@@ -24,34 +23,6 @@ export enum SettingsSection {
   Credentials = 'credentials',
   InnovationFlow = 'innovation-flow',
 }
-
-export const CommonTabs: TabDefinition<SettingsSection>[] = [
-  {
-    section: SettingsSection.Profile,
-    route: 'profile',
-    icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Context,
-    route: 'context',
-    icon: ListOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Community,
-    route: 'community',
-    icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Communications,
-    route: 'communications',
-    icon: ForumOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Authorization,
-    route: 'authorization',
-    icon: GppGoodOutlinedIcon,
-  },
-];
 
 export const UserProfileTabs: TabDefinition<SettingsSection>[] = [
   {

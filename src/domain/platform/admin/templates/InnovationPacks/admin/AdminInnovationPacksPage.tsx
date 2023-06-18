@@ -10,6 +10,7 @@ import SearchableListLayout from '../../../../../shared/components/SearchableLis
 import SimpleSearchableList from '../../../../../shared/components/SimpleSearchableList';
 import AdminLayout from '../../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../../layout/toplevel/constants';
+import { buildInnovationPackSettingsUrl } from '../../../../../collaboration/InnovationPack/urlBuilders';
 
 interface AdminInnovationPacksPageProps {}
 
@@ -33,10 +34,10 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
     () =>
       sortBy(
         data?.platform.library.innovationPacks
-          .map(ip => ({
-            value: ip.profile.displayName,
-            url: `${pathname}/${ip.nameID}`,
-            ...ip,
+          .map(pack => ({
+            value: pack.profile.displayName,
+            url: buildInnovationPackSettingsUrl(pack.nameID),
+            ...pack,
           }))
           .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
         ip => ip.profile.displayName.toLowerCase() // sortBy

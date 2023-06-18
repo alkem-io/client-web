@@ -1,20 +1,20 @@
-import { CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
-  CalendarEventCommentsMessageReceivedSubscription,
-  CalendarEventCommentsMessageReceivedSubscriptionVariables,
+  CalendarEventDetailsFragment,
+  RoomMessageReceivedSubscription,
+  RoomMessageReceivedSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { CalendarEventCommentsMessageReceivedDocument } from '../../../../core/apollo/generated/apollo-hooks';
+import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import { RoomMessageReceivedDocument } from '../../../../core/apollo/generated/apollo-hooks';
 
 const useCalendarEventCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntityHook<
   CalendarEventDetailsFragment,
-  CalendarEventCommentsMessageReceivedSubscription,
-  CalendarEventCommentsMessageReceivedSubscriptionVariables
+  RoomMessageReceivedSubscription,
+  RoomMessageReceivedSubscriptionVariables
 >({
-  subscriptionDocument: CalendarEventCommentsMessageReceivedDocument,
-  getSubscriptionVariables: calendarEvent => ({ calendarEventID: calendarEvent.id }),
+  subscriptionDocument: RoomMessageReceivedDocument,
+  getSubscriptionVariables: calendarEvent => ({ roomID: calendarEvent.comments.id }),
   updateSubEntity: (calendarEvent, subscriptionData) => {
-    const message = subscriptionData.calendarEventCommentsMessageReceived.message;
+    const message = subscriptionData.roomMessageReceived.message;
     calendarEvent?.comments?.messages?.push(message);
   },
 });

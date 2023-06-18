@@ -1,19 +1,12 @@
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import React, { useEffect, useState } from 'react';
 import { IconButton } from '@mui/material';
+import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 
 const SCROLL_OFFSET = 36;
 
 const ScrollToTop = () => {
   const [visible, setVisible] = useState(false);
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
-  };
 
   useEffect(() => {
     const toggleVisible = () => {

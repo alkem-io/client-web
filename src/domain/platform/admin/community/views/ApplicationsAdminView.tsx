@@ -26,7 +26,9 @@ const toApplicationViewmodel = (applications: ApplicationInfoFragment[]): Applic
 interface ApplicationsAdminViewProps {
   applications: ApplicationInfoFragment[];
 }
-
+/**
+ * @deprecated Use CommunityApplications. Stays for Challenges, but Spaces are already using CommunityApplications
+ */
 export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applications }) => {
   const { t } = useTranslation();
 
@@ -66,7 +68,7 @@ export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applicat
         />
       </Box>
       {appChosen && (
-        <ApplicationDialog app={appChosen} onHide={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
+        <ApplicationDialog app={appChosen} onClose={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
       )}
     </DashboardGenericSection>
   );

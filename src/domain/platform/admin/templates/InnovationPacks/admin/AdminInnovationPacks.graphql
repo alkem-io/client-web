@@ -25,6 +25,7 @@ fragment InnovationPackProfile on Profile {
   id
   displayName
   description
+  tagline
   tagset {
     id
     name
@@ -60,12 +61,7 @@ query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
         id
         nameID
         provider {
-          id
-          nameID
-          profile {
-            id
-            displayName
-          }
+          ...InnovationPackProviderProfileWithAvatar
         }
         profile {
           ...InnovationPackProfile

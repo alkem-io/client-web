@@ -30,7 +30,6 @@ interface HubContextProps {
   refetchHub: () => void;
   // TODO Some components just randomly access HubContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
-  hostId?: string;
   context?: HubInfoFragment['context'];
   profile: HubInfoFragment['profile'];
   visibility: HubVisibility;
@@ -134,7 +133,6 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
         error,
         refetchHub,
         profile,
-        hostId: hub?.host?.id,
         context: hub?.context,
         visibility,
       }}
