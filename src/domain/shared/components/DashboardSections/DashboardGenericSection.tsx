@@ -7,8 +7,8 @@ import React, { FC, useState } from 'react';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import Section, { SectionProps, SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';
-import SectionSubHeader from '../Section/SectionSubheader';
 import Button from '@mui/material/Button';
+import { Caption } from '../../../../core/ui/typography';
 
 export interface DashboardGenericSectionProps {
   bannerUrl?: string;
@@ -92,7 +92,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
           {primaryAction}
         </SectionHeader>
       )}
-      {subHeaderText && typeof subHeaderText === 'string' ? <SectionSubHeader text={subHeaderText} /> : subHeaderText}
+      {subHeaderText && typeof subHeaderText === 'string' ? <Caption>{subHeaderText}</Caption> : subHeaderText}
       {(headerText || subHeaderText) && !(headerSpacing === 'none') && (
         <SectionSpacer double={headerSpacing === 'double'} />
       )}
