@@ -16,6 +16,7 @@ const EmojiSelector: FC<EmojiSelectorProps> = ({ anchorElement, open, onEmojiCli
       <ClickAwayListener onClickAway={onClose}>
         <Paper elevation={3}>
           <EmojiPicker
+            autoFocusSearch={false}
             emojiStyle={EmojiStyle.NATIVE}
             skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
             onEmojiClick={(emoji, event) => onEmojiClick(emoji.emoji, event)}
