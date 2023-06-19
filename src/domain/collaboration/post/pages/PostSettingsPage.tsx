@@ -60,6 +60,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     calloutNameId,
   });
 
+  console.log(entities);
   const notify = useNotification();
 
   const canMoveCard = entities.post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.MovePost);
