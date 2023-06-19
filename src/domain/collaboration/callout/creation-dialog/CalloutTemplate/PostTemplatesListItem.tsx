@@ -22,7 +22,7 @@ export interface PostTemplatesListItemType {
   title: string;
 }
 
-interface CanvasListItemProps extends ListItemButtonProps {
+interface WhiteboardListItemProps extends ListItemButtonProps {
   postTemplate: PostTemplatesListItemType;
   isSelected?: boolean;
 }
@@ -35,7 +35,7 @@ export const PostTemplatesListItemSkeleton: FC<ListItemProps> = props => {
   );
 };
 
-export const PostTemplateListItem: FC<CanvasListItemProps> = ({ postTemplate, isSelected, ...rest }) => {
+export const PostTemplateListItem: FC<WhiteboardListItemProps> = ({ postTemplate, isSelected, ...rest }) => {
   const styles = useStyles();
 
   return (

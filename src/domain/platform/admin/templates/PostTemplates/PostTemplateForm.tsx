@@ -50,10 +50,10 @@ const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemp
       validator={validator}
     >
       <TemplateFormRows>
-        <FormikInputField name="type" title={t('aspect-edit.type.title')} />
+        <FormikInputField name="type" title={t('post-edit.type.title')} />
         <FormikMarkdownField
           name="defaultDescription"
-          title={t('aspect-templates.default-description')}
+          title={t('post-templates.default-description')}
           maxLength={VERY_LONG_TEXT_LENGTH}
           withCounter
         />

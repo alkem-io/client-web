@@ -111,8 +111,8 @@
     "remove": "Видалити",
     "callout": "Callout",
     "callouts": "Callouts",
-    "canvas": "Полотно",
-    "canvases": "Полотна",
+    "whiteboard": "Полотно",
+    "whiteboards": "Полотна",
     "comment": "Коментувати",
     "comments": "Коментарі",
     "contributions": "Contributions",
@@ -129,8 +129,8 @@
     "filterby": "Filter by...",
     "email": "Пошта",
     "state": "Стан",
-    "aspect": "Аспект",
-    "aspects": "Аспекти",
+    "post": "Аспект",
+    "posts": "Аспекти",
     "host": "Host",
     "lead": "Lead",
     "hub": "Центр",
@@ -394,7 +394,7 @@
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
+    "delete-confirm-text": "All posts, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries."
   },
@@ -407,7 +407,7 @@
     "url": "URL",
     "copy": "Copy",
     "copied": "Copied!",
-    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
+    "whiteboard-checkedout": "Please click 'Save & Stop Editing' first"
   },
   "context": {
     "hub": {
@@ -521,13 +521,13 @@
       "nonBlank": "Значення не повинно складатися лише з пробілів"
     }
   },
-  "aspect-templates": {
-    "aspect-template": "Шаблон карти",
+  "post-templates": {
+    "post-template": "Шаблон карти",
     "default-description": "Default Card description",
     "banner-narrow": "Banner narrow"
   },
-  "canvas-templates": {
-    "canvas-template": "Canvas template"
+  "whiteboard-templates": {
+    "whiteboard-template": "Whiteboard template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",
@@ -568,9 +568,9 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "published a new $t(common.callout)",
-        "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on '{{cardDisplayName}}'",
-        "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
+        "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
+        "post-comment-created": "commented on '{{postDisplayName}}'",
+        "post-created": "added a {{postType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
@@ -579,9 +579,9 @@
       },
       "activity-description": {
         "callout-published": "{{displayName}}",
-        "canvas-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDescription}}",
+        "whiteboard-created": "{{displayName}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -596,39 +596,39 @@
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },
     "context-section": {
-      "create-card": "Аспект створено",
+      "create-post": "Аспект створено",
       "give-feedback": "Give feedback"
     },
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
-      "card-type-label": "Card type",
+      "post-type-label": "Card type",
       "info-step": {
         "title": "Деталі",
         "description": "Опис",
         "type-comments": "Comments",
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
-        "type-cards": "Карти",
-        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
-        "type-canvases": "Полотна",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "type-posts": "Карти",
+        "type-posts-help": "Select ‘Cards’ when you want people to answer in a card format.",
+        "type-whiteboards": "Полотна",
+        "type-whiteboards-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Card Template",
-        "no-card-template-selected": "Please select a card template"
+        "post-template-label": "Card Template",
+        "no-post-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Create",
-        "card-template-label": "Choose Card template"
+        "post-template-label": "Choose Card template"
       }
     },
     "callout-edit": {
       "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "Тип контексту для додавання",
@@ -1028,8 +1028,8 @@
         "discussions": {
           "description": "Here you can read and participate in discussions around this {{entity}}."
         },
-        "canvases": {
-          "description": "Canvases can be seen as digital whiteboards. Here you can create a canvas for this {{entity}} as well as find ones created by the others."
+        "whiteboards": {
+          "description": "Whiteboards can be seen as digital whiteboards. Here you can create a whiteboard for this {{entity}} as well as find ones created by the others."
         },
         "profile": {
           "description": ""
@@ -1047,7 +1047,7 @@
     },
     "contribute": {
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
-      "no-cards": "Карта Не Знайдена"
+      "no-posts": "Карта Не Знайдена"
     },
     "admin": {
       "generic": {
@@ -1069,8 +1069,8 @@
           },
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
-            "aspect-templates": "Card Templates",
-            "canvas-templates": "Canvas Templates",
+            "post-templates": "Card Templates",
+            "whiteboard-templates": "Whiteboard Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
             "import": {
@@ -1180,7 +1180,7 @@
       "title": "Give feedback on this community context",
       "success": "Feedback submitted"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Напишіть свій коментар тут"
@@ -1424,11 +1424,11 @@
         "no-data": "Немає оновлень"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Полотна в {{blockName}}",
       "subheader": "Створіть власну візуалізацію та поділіться нею з іншим.",
-      "add-canvas": "Створити полотно",
-      "no-canvases": "Полотно ще не було створене. Встигніть зробити це першим.",
+      "add-whiteboard": "Створити полотно",
+      "no-whiteboards": "Полотно ще не було створене. Встигніть зробити це першим.",
       "state": {
         "available": "Ви можете плацювати над своїм полотном",
         "checkedout": "Хтось вже працює з цим полотном",
@@ -1518,7 +1518,7 @@
     "verification-success": {
       "header": "Дякую за верефікацію вашої електронної пошти!",
       "subheader": "Відтепер, Ваш профіль повністю активований на нашій платформі. Насолоджуйтесь!",
-      "message": "Please do consider filling out all aspects of your profile. It helps with both applying to join communities and with others being able to connect with you."
+      "message": "Please do consider filling out all posts of your profile. It helps with both applying to join communities and with others being able to connect with you."
     },
     "recovery": {
       "header": "Password recovery",
@@ -1641,14 +1641,14 @@
   "dashboard-community-section": {
     "title": "Спільнота"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Новий аспект",
     "edit": "Редагувати аспект",
     "type": {
       "title": "Тип Карти",
       "help-text": "What type of information do you want to share?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Card location",
       "label": "Contributing to Callout",
       "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",

@@ -140,7 +140,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
       )}
       {canPostMessages && (
         <PostMessageToCommentsForm
-          placeholder={t('pages.aspect.dashboard.comment.placeholder')}
+          placeholder={t('pages.post.dashboard.comment.placeholder')}
           onPostComment={postMessage}
           maxLength={MID_TEXT_LENGTH}
           disabled={loading}

@@ -32,7 +32,7 @@ export const typePolicies: TypedTypePolicies = {
       availableMemberUsers: paginationFieldPolicy(['filter'], 'User'),
     },
   },
-  Aspect: {
+  Post: {
     fields: {
       references: {
         merge: false,

@@ -15,11 +15,11 @@ interface CalloutTypeSelectProps {
   disabled?: boolean;
 }
 const availableCalloutTypes = [
-  CalloutType.Comments,
-  CalloutType.SingleWhiteboard,
+  CalloutType.Post,
+  CalloutType.Whiteboard,
   CalloutType.LinkCollection,
-  CalloutType.Card,
-  CalloutType.Canvas,
+  CalloutType.PostCollection,
+  CalloutType.WhiteboardCollection,
 ];
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {

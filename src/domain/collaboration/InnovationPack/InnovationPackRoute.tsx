@@ -15,7 +15,7 @@ const InnovationPackRoute = () => {
         <Route path={`:${nameOfUrl.innovationPackNameId}`} element={<InnovationPackProfilePage />} />
         <Route path={`:${nameOfUrl.innovationPackNameId}/settings`} element={<AdminInnovationPackPage />} />
         <Route
-          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.aspectTemplatesRoutePath}/:${nameOfUrl.aspectNameId}`}
+          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />
         <Route

@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useMemo } from 'react';
 import { Box, styled } from '@mui/material';
 import {
   ActivityEventType,
-  ActivityLogCalloutCanvasCreatedFragment,
+  ActivityLogCalloutWhiteboardCreatedFragment,
   ActivityLogCalloutCardCommentFragment,
   ActivityLogCalloutCardCreatedFragment,
   ActivityLogCalloutDiscussionCommentFragment,
@@ -16,7 +16,7 @@ import {
 import { LATEST_ACTIVITIES_COUNT } from './constants';
 import {
   ActivityCalloutPublishedView,
-  ActivityCanvasCreatedView,
+  ActivityWhiteboardCreatedView,
   ActivityCardCommentCreatedView,
   ActivityCardCreatedView,
   ActivityChallengeCreatedView,
@@ -49,7 +49,7 @@ export type ActivityLogResult<T> = T & ActivityLogEntry;
 
 export type ActivityLogResultType = ActivityLogResult<
   | ActivityLogMemberJoinedFragment
-  | ActivityLogCalloutCanvasCreatedFragment
+  | ActivityLogCalloutWhiteboardCreatedFragment
   | ActivityLogCalloutCardCreatedFragment
   | ActivityLogCalloutCardCommentFragment
   | ActivityLogCalloutDiscussionCommentFragment
@@ -139,37 +139,38 @@ const ActivityViewChooser = ({
           {...rest}
         />
       );
-    case ActivityEventType.CanvasCreated:
-      const activityCalloutCanvasCreated = activity as ActivityLogResult<ActivityLogCalloutCanvasCreatedFragment>;
+    case ActivityEventType.WhiteboardCreated:
+      const activityCalloutWhiteboardCreated =
+        activity as ActivityLogResult<ActivityLogCalloutWhiteboardCreatedFragment>;
       return (
-        <ActivityCanvasCreatedView
-          callout={activityCalloutCanvasCreated.callout}
-          canvas={activityCalloutCanvasCreated.canvas}
+        <ActivityWhiteboardCreatedView
+          callout={activityCalloutWhiteboardCreated.callout}
+          whiteboard={activityCalloutWhiteboardCreated.whiteboard}
           author={author}
           {...activity}
           {...rest}
         />
       );
-    case ActivityEventType.CardComment:
+    case ActivityEventType.PostComment:
       const activityCalloutCardComment = activity as ActivityLogResult<ActivityLogCalloutCardCommentFragment>;
       return (
         <ActivityCardCommentCreatedView
           callout={activityCalloutCardComment.callout}
-          card={activityCalloutCardComment.card}
+          card={activityCalloutCardComment.post}
           author={author}
           {...activity}
           {...rest}
         />
       );
-    case ActivityEventType.CardCreated:
+    case ActivityEventType.PostCreated:
       const activityCalloutCardCreated = activity as ActivityLogResult<ActivityLogCalloutCardCreatedFragment>;
       return (
         <ActivityCardCreatedView
           callout={activityCalloutCardCreated.callout}
-          card={activityCalloutCardCreated.card}
+          card={activityCalloutCardCreated.post}
           author={author}
-          cardType={activityCalloutCardCreated.card.type}
-          cardDescription={activityCalloutCardCreated.card.profile.description!}
+          postType={activityCalloutCardCreated.post.type}
+          postDescription={activityCalloutCardCreated.post.profile.description!}
           {...activity}
           {...rest}
         />
