@@ -378,11 +378,6 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
-export type ApplicationTemplateFieldPolicy = {
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-  questions?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type AspectKeySpecifier = (
   | 'authorization'
   | 'callout'
@@ -1031,17 +1026,6 @@ export type HubFieldPolicy = {
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type HubAspectTemplateKeySpecifier = (
-  | 'defaultDescription'
-  | 'type'
-  | 'typeDescription'
-  | HubAspectTemplateKeySpecifier
-)[];
-export type HubAspectTemplateFieldPolicy = {
-  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ISearchResultsKeySpecifier = (
   | 'contributionResults'
   | 'contributionResultsCount'
@@ -1360,7 +1344,7 @@ export type MutationKeySpecifier = (
   | 'updateDocument'
   | 'updateEcosystemModel'
   | 'updateHub'
-  | 'updateHubVisibility'
+  | 'updateHubPlatformSettings'
   | 'updateInnovationFlowTemplate'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
@@ -1513,7 +1497,7 @@ export type MutationFieldPolicy = {
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateHubPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2041,6 +2025,37 @@ export type RoomFieldPolicy = {
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type RoomEventSubscriptionResultKeySpecifier = (
+  | 'message'
+  | 'reaction'
+  | 'roomID'
+  | RoomEventSubscriptionResultKeySpecifier
+)[];
+export type RoomEventSubscriptionResultFieldPolicy = {
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  reaction?: FieldPolicy<any> | FieldReadFunction<any>;
+  roomID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoomMessageEventSubscriptionResultKeySpecifier = (
+  | 'data'
+  | 'type'
+  | RoomMessageEventSubscriptionResultKeySpecifier
+)[];
+export type RoomMessageEventSubscriptionResultFieldPolicy = {
+  data?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoomMessageReactionEventSubscriptionResultKeySpecifier = (
+  | 'data'
+  | 'messageID'
+  | 'type'
+  | RoomMessageReactionEventSubscriptionResultKeySpecifier
+)[];
+export type RoomMessageReactionEventSubscriptionResultFieldPolicy = {
+  data?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageID?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type RoomMessageReceivedKeySpecifier = ('message' | 'roomID' | RoomMessageReceivedKeySpecifier)[];
 export type RoomMessageReceivedFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2207,6 +2222,7 @@ export type SubscriptionKeySpecifier = (
   | 'communicationDiscussionUpdated'
   | 'opportunityCreated'
   | 'profileVerifiedCredential'
+  | 'roomEvents'
   | 'roomMessageReceived'
   | SubscriptionKeySpecifier
 )[];
@@ -2218,6 +2234,7 @@ export type SubscriptionFieldPolicy = {
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
+  roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   roomMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = ('authorization' | 'id' | 'name' | 'tags' | TagsetKeySpecifier)[];
@@ -2516,10 +2533,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
   };
-  ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
-    fields?: ApplicationTemplateFieldPolicy;
-  };
   Aspect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AspectKeySpecifier | (() => undefined | AspectKeySpecifier);
     fields?: AspectFieldPolicy;
@@ -2724,10 +2737,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
   };
-  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
-    fields?: HubAspectTemplateFieldPolicy;
-  };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
@@ -2913,6 +2922,27 @@ export type StrictTypedTypePolicies = {
   Room?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RoomKeySpecifier | (() => undefined | RoomKeySpecifier);
     fields?: RoomFieldPolicy;
+  };
+  RoomEventSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | RoomEventSubscriptionResultKeySpecifier
+      | (() => undefined | RoomEventSubscriptionResultKeySpecifier);
+    fields?: RoomEventSubscriptionResultFieldPolicy;
+  };
+  RoomMessageEventSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | RoomMessageEventSubscriptionResultKeySpecifier
+      | (() => undefined | RoomMessageEventSubscriptionResultKeySpecifier);
+    fields?: RoomMessageEventSubscriptionResultFieldPolicy;
+  };
+  RoomMessageReactionEventSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | RoomMessageReactionEventSubscriptionResultKeySpecifier
+      | (() => undefined | RoomMessageReactionEventSubscriptionResultKeySpecifier);
+    fields?: RoomMessageReactionEventSubscriptionResultFieldPolicy;
   };
   RoomMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RoomMessageReceivedKeySpecifier | (() => undefined | RoomMessageReceivedKeySpecifier);

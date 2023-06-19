@@ -1,0 +1,10 @@
+mutation UpdateHubPlatformSettings($hubId: String!, $visibility: HubVisibility! ) {
+  updateHubPlatformSettings(updateData: { hubID: $hubId, visibility: $visibility }) {
+    id
+    visibility
+    nameID
+    host {
+      id
+    }
+  }
+}
