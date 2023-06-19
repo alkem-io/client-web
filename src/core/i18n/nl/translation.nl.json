@@ -788,9 +788,9 @@
     "calloutTypeSelect": {
       "title": "Wat zou je willen toevoegen?",
       "label": {
-        "COMMENTS": "Post",
-        "POST": "Oproep voor Posts",
-        "WHITEBOARD": "Oproep voor Whiteboards"
+        "POST": "Post",
+        "POST_COLLECTION": "Oproep voor Posts",
+        "WHITEBOARD_COLLECTION": "Oproep voor Whiteboards"
       }
     },
     "post-creation": {

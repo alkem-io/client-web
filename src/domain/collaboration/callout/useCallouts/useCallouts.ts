@@ -24,11 +24,11 @@ import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import { Tagset } from '../../../common/profile/Profile';
 
 interface CalloutChildTypePropName {
-  [CalloutType.Post]: 'posts';
-  [CalloutType.Whiteboard]: 'whiteboards';
-  [CalloutType.Comments]: 'comments';
+  [CalloutType.PostCollection]: 'posts';
+  [CalloutType.WhiteboardCollection]: 'whiteboards';
+  [CalloutType.Post]: 'comments';
   [CalloutType.LinkCollection]: 'links';
-  [CalloutType.SingleWhiteboard]: 'whiteboards';
+  [CalloutType.Whiteboard]: 'whiteboards';
 }
 
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
@@ -48,11 +48,11 @@ interface CalloutChildPropValue {
 }
 
 type CalloutCardTemplateType = {
-  [CalloutType.Post]: { postTemplate: CalloutPostTemplate };
-  [CalloutType.Whiteboard]: { whiteboardTemplate: WhiteboardTemplate };
-  [CalloutType.Comments]: {};
+  [CalloutType.PostCollection]: { postTemplate: CalloutPostTemplate };
+  [CalloutType.WhiteboardCollection]: { whiteboardTemplate: WhiteboardTemplate };
+  [CalloutType.Post]: {};
   [CalloutType.LinkCollection]: {};
-  [CalloutType.SingleWhiteboard]: { whiteboardTemplate: WhiteboardTemplate };
+  [CalloutType.Whiteboard]: { whiteboardTemplate: WhiteboardTemplate };
 };
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -69,11 +69,11 @@ export type TypedCallout = Pick<
   'id' | 'nameID' | 'state' | 'activity' | 'authorization' | 'sortOrder' | 'group'
 > &
   (
+    | CalloutTypesWithChildTypes[CalloutType.PostCollection]
+    | CalloutTypesWithChildTypes[CalloutType.WhiteboardCollection]
     | CalloutTypesWithChildTypes[CalloutType.Post]
-    | CalloutTypesWithChildTypes[CalloutType.Whiteboard]
-    | CalloutTypesWithChildTypes[CalloutType.Comments]
     | CalloutTypesWithChildTypes[CalloutType.LinkCollection]
-    | CalloutTypesWithChildTypes[CalloutType.SingleWhiteboard]
+    | CalloutTypesWithChildTypes[CalloutType.Whiteboard]
   ) & {
     profile: {
       id: string;

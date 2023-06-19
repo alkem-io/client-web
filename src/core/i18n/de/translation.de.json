@@ -786,9 +786,9 @@
     "calloutTypeSelect": {
       "title": "Was möchten Sie tun?",
       "label": {
-        "COMMENTS": "Posten",
-        "POST": "Tags für Einträge",
-        "WHITEBOARD": "Whiteboard leeren"
+        "POST": "Posten",
+        "POST_COLLECTION": "Tags für Einträge",
+        "WHITEBOARD_COLLECTION": "Whiteboard leeren"
       }
     },
     "post-creation": {

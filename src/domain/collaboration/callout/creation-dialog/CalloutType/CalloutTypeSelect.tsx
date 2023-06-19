@@ -15,10 +15,10 @@ interface CalloutTypeSelectProps {
   disabled?: boolean;
 }
 const availableCalloutTypes = [
-  CalloutType.Comments,
-  CalloutType.SingleWhiteboard,
-  CalloutType.LinkCollection,
   CalloutType.Post,
+  CalloutType.Whiteboard,
+  CalloutType.LinkCollection,
+  CalloutType.PostCollection,
   CalloutType.Whiteboard,
 ];
 

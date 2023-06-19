@@ -16,11 +16,11 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(({ callout, ...
   const canCreate = (privilege: AuthorizationPrivilege) => callout.authorization?.myPrivileges?.includes(privilege);
 
   switch (callout.type) {
-    case CalloutType.Post:
+    case CalloutType.PostCollection:
       return (
         <PostCallout ref={ref} callout={callout} canCreate={canCreate(AuthorizationPrivilege.CreatePost)} {...props} />
       );
-    case CalloutType.Whiteboard:
+    case CalloutType.WhiteboardCollection:
       return (
         <WhiteboardCallout
           ref={ref}
@@ -29,11 +29,11 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(({ callout, ...
           {...props}
         />
       );
-    case CalloutType.Comments:
+    case CalloutType.Post:
       return <CommentsCallout ref={ref} callout={callout} {...props} />;
     case CalloutType.LinkCollection:
       return <LinkCollectionCallout ref={ref} callout={callout} {...props} />;
-    case CalloutType.SingleWhiteboard:
+    case CalloutType.Whiteboard:
       return <SingleWhiteboardCallout ref={ref} callout={callout} {...props} />;
     default:
       throw new Error(`Unexpected Callout type "${callout['type']}"`);

@@ -5,7 +5,8 @@ export const getWhiteboardCallout = <T extends { type: CalloutType; nameID: stri
   calloutNameId: string
 ) =>
   callouts?.find(
-    x => (x.type === CalloutType.Whiteboard || x.type === CalloutType.SingleWhiteboard) && x.nameID === calloutNameId
+    x =>
+      (x.type === CalloutType.WhiteboardCollection || x.type === CalloutType.Whiteboard) && x.nameID === calloutNameId
   );
 
 export const getWhiteboardCalloutContainingWhiteboard = <
@@ -17,7 +18,7 @@ export const getWhiteboardCalloutContainingWhiteboard = <
 ) =>
   whiteboards?.find(
     x =>
-      (x.type === CalloutType.Whiteboard || x.type === CalloutType.SingleWhiteboard) &&
+      (x.type === CalloutType.WhiteboardCollection || x.type === CalloutType.Whiteboard) &&
       x.whiteboards?.some(x => x.id === whiteboardId)
   );
 
@@ -25,7 +26,7 @@ export const getAllWhiteboardsOnCallouts = <T extends { type: CalloutType; white
   callouts: T[] | undefined
 ) => {
   const filteredCallouts =
-    callouts?.filter(x => x.type === CalloutType.Whiteboard || x.type === CalloutType.SingleWhiteboard) ?? [];
+    callouts?.filter(x => x.type === CalloutType.WhiteboardCollection || x.type === CalloutType.Whiteboard) ?? [];
   return filteredCallouts.reduce((acc, curr) => {
     const currWhiteboards = curr?.whiteboards ?? [];
     return [...acc, ...currWhiteboards];

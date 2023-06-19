@@ -864,11 +864,11 @@
     "calloutTypeSelect": {
       "title": "What would you like to add?",
       "label": {
-        "COMMENTS": "Post",
-        "POST": "Call for Posts",
-        "WHITEBOARD": "Call for Whiteboards",
+        "POST": "Post",
+        "POST_COLLECTION": "Call for Posts",
+        "WHITEBOARD_COLLECTION": "Call for Whiteboards",
         "LINK_COLLECTION": "Collection of Links",
-        "SINGLE_WHITEBOARD": "Whiteboard"
+        "WHITEBOARD": "Whiteboard"
       }
     },
     "post-creation": {

@@ -719,11 +719,11 @@ export enum CalloutState {
 }
 
 export enum CalloutType {
-  Comments = 'COMMENTS',
   LinkCollection = 'LINK_COLLECTION',
   Post = 'POST',
-  SingleWhiteboard = 'SINGLE_WHITEBOARD',
+  PostCollection = 'POST_COLLECTION',
   Whiteboard = 'WHITEBOARD',
+  WhiteboardCollection = 'WHITEBOARD_COLLECTION',
 }
 
 export enum CalloutVisibility {
@@ -2884,6 +2884,12 @@ export type MutationUploadImageOnVisualArgs = {
   uploadData: VisualUploadImageInput;
 };
 
+export enum MutationType {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Update = 'UPDATE',
+}
+
 export type Nvp = {
   __typename?: 'NVP';
   /** The ID of the entity */
@@ -3736,6 +3742,37 @@ export type RoomAddReactionToMessageInput = {
   roomID: Scalars['UUID'];
 };
 
+/** The event happened in the subscribed room */
+export type RoomEventSubscriptionResult = {
+  __typename?: 'RoomEventSubscriptionResult';
+  /** A message related event. */
+  message?: Maybe<RoomMessageEventSubscriptionResult>;
+  /** A message reaction related event. */
+  reaction?: Maybe<RoomMessageReactionEventSubscriptionResult>;
+  /** The identifier for the Room on which the event happened. */
+  roomID: Scalars['String'];
+};
+
+/** A message event happened in the subscribed room */
+export type RoomMessageEventSubscriptionResult = {
+  __typename?: 'RoomMessageEventSubscriptionResult';
+  /** A message related event. */
+  data: Message;
+  /** The type of event. */
+  type: MutationType;
+};
+
+/** A message reaction event happened in the subscribed room */
+export type RoomMessageReactionEventSubscriptionResult = {
+  __typename?: 'RoomMessageReactionEventSubscriptionResult';
+  /** A message related event. */
+  data: Reaction;
+  /** The message on which the reaction event happened. */
+  messageID?: Maybe<Scalars['String']>;
+  /** The type of event. */
+  type: MutationType;
+};
+
 export type RoomMessageReceived = {
   __typename?: 'RoomMessageReceived';
   /** The message that has been sent. */
@@ -3987,6 +4024,8 @@ export type Subscription = {
   opportunityCreated: OpportunityCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
+  /** Receive Room event */
+  roomEvents: RoomEventSubscriptionResult;
   /** Receive new Room messages */
   roomMessageReceived: RoomMessageReceived;
   /** Receive updated content of a whiteboard */
@@ -4011,6 +4050,10 @@ export type SubscriptionCommunicationDiscussionUpdatedArgs = {
 
 export type SubscriptionOpportunityCreatedArgs = {
   challengeID: Scalars['UUID'];
+};
+
+export type SubscriptionRoomEventsArgs = {
+  roomID: Scalars['UUID'];
 };
 
 export type SubscriptionRoomMessageReceivedArgs = {

@@ -178,7 +178,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       }),
     }),
     whiteboard: yup.object().when('type', {
-      is: CalloutType.SingleWhiteboard,
+      is: CalloutType.Whiteboard,
       then: yup.object().shape({
         value: yup.string().required(),
       }),
@@ -218,9 +218,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
     tags: true,
     postTemplate: calloutType === CalloutType.Post,
     whiteboardTemplate: calloutType === CalloutType.Whiteboard,
-    newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.SingleWhiteboard,
+    newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.Whiteboard,
     groupChange: editMode && Boolean(canChangeCalloutGroup),
-    whiteboard: calloutType === CalloutType.SingleWhiteboard,
+    whiteboard: calloutType === CalloutType.Whiteboard,
   };
 
   return (
