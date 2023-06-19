@@ -9,10 +9,10 @@ import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 
 const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
   [CalloutType.PostCollection]: LibraryBooksIcon,
-  [CalloutType.Whiteboard]: FilterNoneIcon,
+  [CalloutType.WhiteboardCollection]: FilterNoneIcon,
   [CalloutType.Post]: NotesIcon,
   [CalloutType.LinkCollection]: AttachFileIcon,
-  [CalloutType.WhiteboardCollection]: DrawOutlinedIcon,
+  [CalloutType.Whiteboard]: DrawOutlinedIcon,
 };
 
 export default calloutIcons;

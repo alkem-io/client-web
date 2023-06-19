@@ -19,7 +19,7 @@ const availableCalloutTypes = [
   CalloutType.Whiteboard,
   CalloutType.LinkCollection,
   CalloutType.PostCollection,
-  CalloutType.Whiteboard,
+  CalloutType.WhiteboardCollection,
 ];
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
