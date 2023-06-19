@@ -45,7 +45,8 @@ const CommentReactions = ({ reactions, onAddReaction, onRemoveReaction }: Commen
 
   const handleEmojiClick = (emoji: string) => {
     setIsReactionDialogOpen(false);
-    onAddReaction?.(emoji);
+    const isReactionUsedByUser = reactions.find(r => r.emoji === emoji && r.sender?.id === userId);
+    if (!isReactionUsedByUser) onAddReaction?.(emoji);
   };
 
   return (

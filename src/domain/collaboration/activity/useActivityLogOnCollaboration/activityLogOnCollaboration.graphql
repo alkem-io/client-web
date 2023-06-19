@@ -17,7 +17,7 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
       profile {
         id
         displayName
-        visual(type: AVATAR) {
+        avatar: visual(type: AVATAR) {
           id
           uri
         }

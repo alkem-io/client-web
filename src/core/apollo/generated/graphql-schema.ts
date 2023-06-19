@@ -2256,8 +2256,8 @@ export type Mutation = {
   updateEcosystemModel: EcosystemModel;
   /** Updates the Hub. */
   updateHub: Hub;
-  /** Update the visibility of the specified Hub. */
-  updateHubVisibility: Hub;
+  /** Update the platform settings, such as visibility, of the specified Hub. */
+  updateHubPlatformSettings: Hub;
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Update Innovation Hub. */
@@ -2794,8 +2794,8 @@ export type MutationUpdateHubArgs = {
   hubData: UpdateHubInput;
 };
 
-export type MutationUpdateHubVisibilityArgs = {
-  visibilityData: UpdateHubVisibilityInput;
+export type MutationUpdateHubPlatformSettingsArgs = {
+  updateData: UpdateHubPlatformSettingsInput;
 };
 
 export type MutationUpdateInnovationFlowTemplateArgs = {
@@ -4320,19 +4320,23 @@ export type UpdateHubInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UpdateHubPlatformSettingsInput = {
+  /** Update the host Organization for the Hub. */
+  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
+  /** The identifier for the Hub whose visibility is to be updated. */
+  hubID: Scalars['String'];
+  /** Upate the URL path for the Space. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** Visibility of the Hub. */
+  visibility?: InputMaybe<HubVisibility>;
+};
+
 export type UpdateHubPreferenceInput = {
   /** ID of the Hub */
   hubID: Scalars['UUID_NAMEID'];
   /** Type of the user preference */
   type: SpacePreferenceType;
   value: Scalars['String'];
-};
-
-export type UpdateHubVisibilityInput = {
-  /** The identifier for the Hub whose visibility is to be updated. */
-  hubID: Scalars['String'];
-  /** Visibility of the Hub. */
-  visibility: HubVisibility;
 };
 
 export type UpdateInnovationFlowTemplateInput = {
@@ -11286,7 +11290,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11318,7 +11322,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11356,7 +11360,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11395,7 +11399,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11428,7 +11432,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11466,7 +11470,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11499,7 +11503,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11541,7 +11545,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11573,7 +11577,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -11602,7 +11606,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragmen
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11635,7 +11639,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11674,7 +11678,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostCreated_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11714,7 +11718,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11748,7 +11752,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragmen
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11787,7 +11791,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11821,7 +11825,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11864,7 +11868,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11897,7 +11901,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -11942,7 +11946,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -11974,7 +11978,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -12012,7 +12016,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -12051,7 +12055,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -12084,7 +12088,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -12122,7 +12126,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -12155,7 +12159,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -12197,7 +12201,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -12230,7 +12234,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
@@ -22357,14 +22361,20 @@ export type AvailableUserFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type UpdateHubVisibilityMutationVariables = Exact<{
+export type UpdateHubPlatformSettingsMutationVariables = Exact<{
   hubId: Scalars['String'];
   visibility: HubVisibility;
 }>;
 
-export type UpdateHubVisibilityMutation = {
+export type UpdateHubPlatformSettingsMutation = {
   __typename?: 'Mutation';
-  updateHubVisibility: { __typename?: 'Hub'; id: string; visibility: HubVisibility };
+  updateHubPlatformSettings: {
+    __typename?: 'Hub';
+    id: string;
+    visibility: HubVisibility;
+    nameID: string;
+    host?: { __typename?: 'Organization'; id: string } | undefined;
+  };
 };
 
 export type AdminHubsListQueryVariables = Exact<{ [key: string]: never }>;

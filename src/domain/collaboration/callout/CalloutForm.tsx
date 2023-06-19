@@ -3,7 +3,7 @@ import { Formik, FormikConfig } from 'formik';
 import { CalloutState, CalloutType, Tagset } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { MID_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
@@ -159,7 +159,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator.concat(uniqueNameValidator),
-    description: MarkdownValidator(MID_TEXT_LENGTH),
+    description: MarkdownValidator(LONG_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     postTemplateData: yup.object().when('type', {
@@ -241,7 +241,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               name="description"
               title={t('components.callout-creation.info-step.description')}
               rows={7}
-              maxLength={MID_TEXT_LENGTH}
+              maxLength={LONG_TEXT_LENGTH}
               withCounter
             />
             {editMode && formConfiguration.references && (

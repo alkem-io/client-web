@@ -1278,7 +1278,7 @@ export type MutationKeySpecifier = (
   | 'updateDocument'
   | 'updateEcosystemModel'
   | 'updateHub'
-  | 'updateHubVisibility'
+  | 'updateHubPlatformSettings'
   | 'updateInnovationFlowTemplate'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
@@ -1431,7 +1431,7 @@ export type MutationFieldPolicy = {
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateHubPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
