@@ -1,6 +1,6 @@
 import {
   ChallengePreferenceType,
-  HubPreferenceType,
+  SpacePreferenceType,
   OrganizationPreferenceType,
   UserPreferenceType,
 } from '../../../core/apollo/generated/graphql-schema';
@@ -9,4 +9,4 @@ export type PreferenceTypes =
   | UserPreferenceType
   | OrganizationPreferenceType
   | ChallengePreferenceType
-  | HubPreferenceType;
+  | SpacePreferenceType;

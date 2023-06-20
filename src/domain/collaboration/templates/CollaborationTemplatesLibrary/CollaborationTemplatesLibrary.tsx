@@ -144,7 +144,7 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
             <Gutters>
               {templatesFromHub && (
                 <>
-                  <BlockTitle>{t('canvas-templates.hub-templates')}</BlockTitle>
+                  <BlockTitle>{t('whiteboard-templates.hub-templates')}</BlockTitle>
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromHub}
                     templateCardComponent={templateCardComponent}
@@ -162,11 +162,11 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
                   gap={1}
                   sx={{ cursor: 'pointer' }}
                 >
-                  <ImageSearchIcon /> {t('canvas-templates.load-platform-templates')}
+                  <ImageSearchIcon /> {t('whiteboard-templates.load-platform-templates')}
                 </Link>
               ) : (
                 <>
-                  <BlockTitle>{t('canvas-templates.platform-templates')}</BlockTitle>
+                  <BlockTitle>{t('whiteboard-templates.platform-templates')}</BlockTitle>
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromPlatform}
                     templateCardComponent={templateCardComponent}

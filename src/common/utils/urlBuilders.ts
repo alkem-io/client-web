@@ -117,14 +117,18 @@ export const buildUpdatesUrl = (journeyLocation: JourneyLocation) => {
   return `${buildJourneyUrl(journeyLocation)}${updatesPath}`;
 };
 
-export const buildAspectUrl = (calloutNameId: string, aspectNameId: string, journeyLocation: JourneyLocation) => {
-  const aspectUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/aspects/${aspectNameId}`;
-  return `${buildJourneyUrl(journeyLocation)}${aspectUrl}`;
+export const buildPostUrl = (calloutNameId: string, postNameId: string, journeyLocation: JourneyLocation) => {
+  const postUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/posts/${postNameId}`;
+  return `${buildJourneyUrl(journeyLocation)}${postUrl}`;
 };
 
-export const buildCanvasUrl = (calloutNameId: string, canvasNameId: string, journeyLocation: JourneyLocation) => {
-  const canvasUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/canvases/${canvasNameId}`;
-  return `${buildJourneyUrl(journeyLocation)}${canvasUrl}`;
+export const buildWhiteboardUrl = (
+  calloutNameId: string,
+  whiteboardNameId: string,
+  journeyLocation: JourneyLocation
+) => {
+  const whiteboardUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/whiteboards/${whiteboardNameId}`;
+  return `${buildJourneyUrl(journeyLocation)}${whiteboardUrl}`;
 };
 
 export const buildEventUrl = (eventNameId: string, journeyLocation: JourneyLocation) => {

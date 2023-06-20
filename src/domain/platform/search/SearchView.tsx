@@ -6,7 +6,7 @@ import { useSearchQuery } from '../../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
   SearchResult,
-  SearchResultCardFragment,
+  SearchResultPostFragment,
   SearchResultChallengeFragment,
   SearchResultHubFragment,
   SearchResultOpportunityFragment,
@@ -34,7 +34,7 @@ export type SearchResultT<T> = T & SearchResult;
 export type SearchResultMetaType = SearchResultT<
   | SearchResultUserFragment
   | SearchResultOrganizationFragment
-  | SearchResultCardFragment
+  | SearchResultPostFragment
   | SearchResultHubFragment
   | SearchResultChallengeFragment
   | SearchResultOpportunityFragment
@@ -120,7 +120,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, hubI
       results?.filter(
         ({ type }) =>
           type ===
-          SearchResultType.Card /*|| type === SearchResultType.Whiteboard || type === SearchResultType.Callout*/
+          SearchResultType.Post /*|| type === SearchResultType.Whiteboard || type === SearchResultType.Callout*/
       ),
       results?.filter(({ type }) => type === SearchResultType.User || type === SearchResultType.Organization),
     ],

@@ -6,7 +6,7 @@ import {
   useHubPreferencesQuery,
   useUpdatePreferenceOnHubMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { HubPreferenceType, PreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
+import { SpacePreferenceType, PreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockCollapsible from '../../../../../core/ui/content/PageContentBlockCollapsible';
@@ -44,7 +44,7 @@ export const HubSettingsView: FC = () => {
   const [updatePreference] = useUpdatePreferenceOnHubMutation();
 
   const handleUpdatePreference = async (
-    preference: HubPreferenceType,
+    preference: SpacePreferenceType,
     newValue: string,
     showNotification: boolean = true
   ) => {
@@ -91,15 +91,15 @@ export const HubSettingsView: FC = () => {
   const membershipTruthTable = {
     [MembershipOption.noApplicationRequired]: {
       [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinHubFromAnyone]: true,
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: true,
     },
     [MembershipOption.applicationRequired]: {
       [PreferenceType.MembershipApplicationsFromAnyone]: true,
-      [PreferenceType.MembershipJoinHubFromAnyone]: false,
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
     },
     [MembershipOption.invitationOnly]: {
       [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinHubFromAnyone]: false,
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
     },
   };
 
@@ -108,8 +108,8 @@ export const HubSettingsView: FC = () => {
       [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
         PreferenceType.MembershipApplicationsFromAnyone
       ),
-      [PreferenceType.MembershipJoinHubFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinHubFromAnyone
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipJoinSpaceFromAnyone
       ),
     };
 
@@ -125,15 +125,15 @@ export const HubSettingsView: FC = () => {
       [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
         PreferenceType.MembershipApplicationsFromAnyone
       ),
-      [PreferenceType.MembershipJoinHubFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinHubFromAnyone
+      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
+        PreferenceType.MembershipJoinSpaceFromAnyone
       ),
     };
     const nextPreferences = membershipTruthTable[value];
 
     for (const [key, value] of Object.entries(currentPreferences)) {
       if (value !== nextPreferences[key]) {
-        await handleUpdatePreference(key as HubPreferenceType, `${nextPreferences[key]}`, false);
+        await handleUpdatePreference(key as SpacePreferenceType, `${nextPreferences[key]}`, false);
       }
     }
     notify(t('pages.admin.hub.settings.savedSuccessfully'), 'success');
@@ -157,7 +157,7 @@ export const HubSettingsView: FC = () => {
               }}
               onChange={newValue =>
                 handleUpdatePreference(
-                  HubPreferenceType.AuthorizationAnonymousReadAccess,
+                  SpacePreferenceType.AuthorizationAnonymousReadAccess,
                   newValue === 'public' ? 'true' : 'false'
                 )
               }
@@ -208,7 +208,7 @@ export const HubSettingsView: FC = () => {
               options={{
                 trustHostOrganization: {
                   checked:
-                    getBooleanPreferenceValue(PreferenceType.MembershipJoinHubFromHostOrganizationMembers) ?? false,
+                    getBooleanPreferenceValue(PreferenceType.MembershipJoinSpaceFromHostOrganizationMembers) ?? false,
                   label: (
                     <Trans
                       i18nKey="pages.admin.hub.settings.membership.hostOrganizationJoin"
@@ -221,7 +221,7 @@ export const HubSettingsView: FC = () => {
               onChange={(setting, newValue) => {
                 if (setting === 'trustHostOrganization') {
                   return handleUpdatePreference(
-                    HubPreferenceType.MembershipJoinHubFromHostOrganizationMembers,
+                    SpacePreferenceType.MembershipJoinSpaceFromHostOrganizationMembers,
                     newValue ? 'true' : 'false'
                   );
                 }
@@ -262,13 +262,13 @@ export const HubSettingsView: FC = () => {
               onChange={async (setting, newValue) => {
                 if (setting === 'createBlocks') {
                   await handleUpdatePreference(
-                    HubPreferenceType.AllowMembersToCreateCallouts,
+                    SpacePreferenceType.AllowMembersToCreateCallouts,
                     newValue ? 'true' : 'false'
                   );
                 }
                 if (setting === 'createChallenges') {
                   await handleUpdatePreference(
-                    HubPreferenceType.AllowMembersToCreateChallenges,
+                    SpacePreferenceType.AllowMembersToCreateChallenges,
                     newValue ? 'true' : 'false'
                   );
                 }

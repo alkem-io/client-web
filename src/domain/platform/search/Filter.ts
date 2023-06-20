@@ -40,8 +40,8 @@ export const contributionFilterConfig: FilterConfig = {
     value: ['card'], // , 'whiteboard', 'callout'], // TODO: Enable 'whiteboard' and 'callout' when server is ready
     typename: 'all',
   },
-  card: {
-    title: 'pages.search.filter.key.card',
+  post: {
+    title: 'pages.search.filter.key.post',
     value: ['card'],
     typename: 'card',
   },

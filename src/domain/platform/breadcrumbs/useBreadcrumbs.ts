@@ -18,7 +18,7 @@ export interface BreadcrumbsItem {
 }
 
 export const useBreadcrumbs = () => {
-  const { hubNameId, challengeNameId, opportunityNameId, aspectNameId } = useUrlParams();
+  const { hubNameId, challengeNameId, opportunityNameId, postNameId } = useUrlParams();
 
   const showOpportunity = false; // TODO: Never show opportunity for now.
 
@@ -51,8 +51,8 @@ export const useBreadcrumbs = () => {
   const breadcrumbs = useMemo(() => {
     const items: BreadcrumbsItem[] = [];
     if (!loading) {
-      // Hub breadcrumb - if we are watching a challenge or an aspect
-      if (hubNameId && (challengeNameId || aspectNameId)) {
+      // Hub breadcrumb - if we are watching a challenge or an post
+      if (hubNameId && (challengeNameId || postNameId)) {
         items.push({
           title: _hub?.hub.profile.displayName || '',
           icon: HubIcon,
@@ -60,8 +60,8 @@ export const useBreadcrumbs = () => {
           entity: 'hub',
         });
       }
-      // Challenge breadcrumb - if we are watching an opportunity or an aspect in a challenge
-      if (hubNameId && challengeNameId && (opportunityNameId || aspectNameId)) {
+      // Challenge breadcrumb - if we are watching an opportunity or an post in a challenge
+      if (hubNameId && challengeNameId && (opportunityNameId || postNameId)) {
         items.push({
           title: _challenge?.hub.challenge.profile.displayName || '',
           icon: ChallengeIcon,
@@ -86,7 +86,7 @@ export const useBreadcrumbs = () => {
     challengeNameId,
     opportunityNameId,
     showOpportunity,
-    aspectNameId,
+    postNameId,
     _challenge?.hub.challenge.profile.displayName,
     _hub?.hub.profile.displayName,
     _opportunity?.hub.opportunity.profile.displayName,

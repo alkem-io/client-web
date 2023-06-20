@@ -1,7 +1,7 @@
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import {
-  useCalloutAspectStorageConfigQuery,
+  useCalloutPostStorageConfigQuery,
   useCalloutStorageConfigQuery,
   useInnovationPackStorageConfigQuery,
   useJourneyStorageConfigQuery,
@@ -15,7 +15,7 @@ export interface StorageConfig {
   maxFileSize: number;
 }
 
-type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'aspect' | 'innovationPack';
+type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'post' | 'innovationPack';
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
@@ -32,11 +32,11 @@ interface UseStorageConfigOptionsCallout extends UseStorageConfigOptionsBase, Jo
   locationType: 'callout';
 }
 
-interface UseStorageConfigOptionsAspect extends UseStorageConfigOptionsBase, JourneyLocation {
-  aspectId: string | undefined;
+interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase, JourneyLocation {
+  postId: string | undefined;
   calloutId: string;
   journeyTypeName: JourneyTypeName;
-  locationType: 'aspect';
+  locationType: 'post';
 }
 
 interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
@@ -59,7 +59,7 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsUser
   | UseStorageConfigOptionsOrganization
   | UseStorageConfigOptionsCallout
-  | UseStorageConfigOptionsAspect
+  | UseStorageConfigOptionsPost
   | UseStorageConfigOptionsInnovationPack;
 
 export interface StorageConfigProvided {
@@ -106,20 +106,19 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     skip: locationType !== 'callout' || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
-  const aspectOptions = options as UseStorageConfigOptionsAspect;
-  const { data: aspectStorageConfigData } = useCalloutAspectStorageConfigQuery({
+  const postOptions = options as UseStorageConfigOptionsPost;
+  const { data: postStorageConfigData } = useCalloutPostStorageConfigQuery({
     variables: {
-      aspectId: aspectOptions.aspectId!, // ensured by skip
-      calloutId: aspectOptions.calloutId,
-      hubNameId: aspectOptions.hubNameId,
-      challengeNameId: aspectOptions.challengeNameId,
-      opportunityNameId: aspectOptions.opportunityNameId,
+      postId: postOptions.postId!, // ensured by skip
+      calloutId: postOptions.calloutId,
+      hubNameId: postOptions.hubNameId,
+      challengeNameId: postOptions.challengeNameId,
+      opportunityNameId: postOptions.opportunityNameId,
       includeHub: journeyTypeName === 'hub',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip:
-      locationType !== 'aspect' || !aspectOptions.aspectId || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
+    skip: locationType !== 'post' || !postOptions.postId || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
@@ -156,17 +155,17 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       calloutStorageConfigData?.hub.collaboration
     )?.callouts ?? [];
 
-  const [aspect] =
+  const [post] =
     (
-      aspectStorageConfigData?.hub.opportunity?.collaboration ??
-      aspectStorageConfigData?.hub.challenge?.collaboration ??
-      aspectStorageConfigData?.hub.collaboration
-    )?.callouts?.[0]?.aspects ?? [];
+      postStorageConfigData?.hub.opportunity?.collaboration ??
+      postStorageConfigData?.hub.challenge?.collaboration ??
+      postStorageConfigData?.hub.collaboration
+    )?.callouts?.[0]?.posts ?? [];
 
   const { profile } =
     journey ??
     callout ??
-    aspect ??
+    post ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??

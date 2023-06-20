@@ -20,12 +20,12 @@ import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 import { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
-import CanvasImportTemplateCard from './WhitebaordImportTemplateCard';
+import WhiteboardImportTemplateCard from './WhitebaordImportTemplateCard';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   WhiteboardPreviewImage,
   useUploadWhiteboardVisuals,
-} from '../../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+} from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { CreateWhiteboardTemplateMutation } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface AdminWhiteboardTemplatesSectionProps {
@@ -35,7 +35,7 @@ interface AdminWhiteboardTemplatesSectionProps {
   templates: AdminWhiteboardTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (aspect: AdminWhiteboardTemplateFragment) => LinkWithState;
+  buildTemplateLink: (post: AdminWhiteboardTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
@@ -74,7 +74,7 @@ const AdminWhiteboardTemplatesSection = ({
     [hubNameId, innovationPackNameId, fetchWhiteboardTemplateFromHubValue, fetchWhiteboardTemplateFromPlatformValue]
   );
 
-  const getCanvasValue = () => {
+  const getWhiteboardValue = () => {
     switch (whiteboardTemplatesLocation) {
       case 'hub':
         return dataFromHub?.hub.templates?.whiteboardTemplate;
@@ -84,16 +84,16 @@ const AdminWhiteboardTemplatesSection = ({
   };
 
   // Importing only makes sense on hub templates, not on platform templates:
-  const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
+  const [fetchInnovationPackWhiteboardValue, { data: importedWhiteboardValue }] =
     useInnovationPackWhiteboardTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
   const getImportedTemplateValue = useCallback(
     (template: AdminWhiteboardTemplateFragment & TemplateInnovationPackMetaInfo) => {
-      fetchInnovationPackCanvasValue({
+      fetchInnovationPackWhiteboardValue({
         variables: { innovationPackId: template.innovationPackId, whiteboardTemplateId: template.id },
       });
     },
-    [fetchInnovationPackCanvasValue]
+    [fetchInnovationPackWhiteboardValue]
   );
 
   const onMutationCalled = (
@@ -110,19 +110,19 @@ const AdminWhiteboardTemplatesSection = ({
       {...props}
       headerText={t('common.enums.templateTypes.WhiteboardTemplate')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
-        templateType: t('common.canvases'),
+        templateType: t('common.whiteboards'),
       })}
       templateCardComponent={WhiteboardTemplateCard}
-      templateImportCardComponent={CanvasImportTemplateCard}
+      templateImportCardComponent={WhiteboardImportTemplateCard}
       templatePreviewComponent={WhiteboardTemplatePreview}
       getTemplateValue={getTemplateValue}
       getImportedTemplateValue={getImportedTemplateValue}
-      templateValue={getCanvasValue()}
-      importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
+      templateValue={getWhiteboardValue()}
+      importedTemplateValue={importedWhiteboardValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
       //getImportedTemplateValue={getImportedTemplateValue}
-      //importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
+      //importedTemplateValue={importedWhiteboardValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
       // TODO:
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
