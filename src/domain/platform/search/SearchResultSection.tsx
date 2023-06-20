@@ -2,7 +2,7 @@ import { FilterConfig, FilterDefinition } from './Filter';
 import React, { FC, ReactNode, useMemo } from 'react';
 import { EntityFilter } from './EntityFilter';
 import CardsLayout from '../../../core/ui/card/CardsLayout/CardsLayout';
-import SearchResultCardChooser from './SearchResultCardChooser';
+import SearchResultPostChooser from './SearchResultPostChooser';
 import { SearchResultMetaType } from './SearchView';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
@@ -29,7 +29,7 @@ const SearchResultSection: FC<ResultSectionProps> = ({
 }) => {
   const titleWithCount = useMemo(() => `${title} (${results.length})`, [title, results.length]);
   const { t } = useTranslation();
-  const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined
+  const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined;
   return (
     <PageContentBlock>
       <PageContentBlockHeader
@@ -50,7 +50,7 @@ const SearchResultSection: FC<ResultSectionProps> = ({
         cards={false}
         disablePadding
       >
-        {result => <SearchResultCardChooser result={result} />}
+        {result => <SearchResultPostChooser result={result} />}
       </CardsLayout>
     </PageContentBlock>
   );

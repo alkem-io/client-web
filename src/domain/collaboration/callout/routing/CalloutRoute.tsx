@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import AspectProvider from '../../aspect/context/AspectProvider';
-import AspectRoute from '../../aspect/views/AspectRoute';
-import CanvasRoute from '../../canvas/views/CanvasRoute';
+import PostProvider from '../../post/context/PostProvider';
+import PostRoute from '../../post/views/PostRoute';
+import WhiteboardRoute from '../../whiteboard/views/WhiteboardRoute';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { nameOfUrl } from '../../../../core/routing/urlParams';
 
@@ -15,16 +15,16 @@ const CalloutRoute: FC<CalloutRouteProps> = ({ parentPagePath, journeyTypeName }
   return (
     <Routes>
       <Route
-        path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+        path={`posts/:${nameOfUrl.postNameId}/*`}
         element={
-          <AspectProvider>
-            <AspectRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />
-          </AspectProvider>
+          <PostProvider>
+            <PostRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />
+          </PostProvider>
         }
       />
       <Route
-        path={`canvases/:${nameOfUrl.whiteboardNameId}/*`}
-        element={<CanvasRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />}
+        path={`whiteboards/:${nameOfUrl.whiteboardNameId}/*`}
+        element={<WhiteboardRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />}
       />
     </Routes>
   );

@@ -1,0 +1,9 @@
+subscription roomMessageReceived($roomID: UUID!) {
+  roomMessageReceived(roomID: $roomID) {
+    roomID
+    message {
+      ...MessageDetails
+    }
+  }
+}
+

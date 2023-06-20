@@ -154,8 +154,8 @@
     "remove": "Entfernen",
     "callout": "Legende",
     "callouts": "Legenden",
-    "canvas": "Whiteboard",
-    "canvases": "Whiteboards",
+    "whiteboard": "Whiteboard",
+    "whiteboards": "Whiteboards",
     "calendar": "Kalender",
     "comment": "Kommentar",
     "comments": "Comments",
@@ -177,8 +177,6 @@
     "forum": "Forum",
     "email": "Email",
     "state": "Zustand",
-    "aspect": "Karte",
-    "aspects": "Karten",
     "host": "Selbst hosten",
     "lead": "Blei",
     "hub": "Hauptinsel",
@@ -187,8 +185,8 @@
     "challenges": "Herausforderungen",
     "all-entities": "Alle {{entityType}} ({{count}})",
     "contributors": "Mitwirkende",
-    "opportunity": "Verkaufschance",
-    "opportunities": "Sonderangebot",
+    "opportunity": "Möglichkeit",
+    "opportunities": "Möglichkeiten",
     "organization": "Organisation",
     "organizations": "Organisationen",
     "communications": "Aktualisierungen",
@@ -328,17 +326,17 @@
           "hidden": true
         },
         "OPPORTUNITY_ADMIN": {
-          "name": "Verkaufschance Admin",
+          "name": "Möglichkeit Admin",
           "order": 9,
           "hidden": true
         },
         "OPPORTUNITY_MEMBER": {
-          "name": "Verkaufschance Mitglied",
+          "name": "Möglichkeit Mitglied",
           "order": 10,
           "hidden": true
         },
         "OPPORTUNITY_LEAD": {
-          "name": "Verkaufschance Lead",
+          "name": "Möglichkeit Lead",
           "order": 11,
           "hidden": true
         },
@@ -591,16 +589,16 @@
       "atLeastOne": "Mindestens ein {{item}} muss ausgewählt sein."
     }
   },
-  "aspect-templates": {
+  "post-templates": {
     "template-library": "Vorlagen-Bibliothek: Karten",
-    "aspect-template": "Kartenvorlagen",
+    "post-template": "Kartenvorlagen",
     "default-description": "Standard Karteninhalt",
     "banner-narrow": "Banner schmal"
   },
-  "canvas-templates": {
+  "whiteboard-templates": {
     "template-library": "Vorlagen-Bibliothek: Karten",
     "filter-placeholder": "Vorlagen suchen...",
-    "canvas-template": "Whiteboard-Template",
+    "whiteboard-template": "Whiteboard-Template",
     "hub-templates": "Vom Host dieser Community ausgewählte Vorlagen",
     "load-platform-templates": "Oder klicken Sie hier, um durch alle Plattformvorlagen zu browsen",
     "platform-templates": "Plattformvorlagen",
@@ -709,9 +707,9 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "hat $tveröffentlicht (common.callout)",
-        "canvas-created": "hat $t(common.canvas) zu '{{parentDisplayName}} ' hinzugefügt",
-        "card-comment-created": "kommentierte '{{cardDisplayName}}'",
-        "card-created": "hat eine {{cardType}} Karte zu '{{calloutDisplayName}} ' hinzugefügt",
+        "whiteboard-created": "hat $t(common.whiteboard) zu '{{parentDisplayName}} ' hinzugefügt",
+        "post-comment-created": "kommentierte '{{postDisplayName}}'",
+        "post-created": "hat eine {{postType}} Karte zu '{{calloutDisplayName}} ' hinzugefügt",
         "discussion-comment-created": "kommentierte '{{calloutDisplayName}}'",
         "member-joined": "neues Mitglied ist {{journeyType}} '{{journeyDisplayName}} ' beigetreten",
         "challenge-created": "hat eine neue $terstellt (common.challenge)",
@@ -720,9 +718,9 @@
       },
       "activity-description": {
         "callout-published": "displayName",
-        "canvas-created": "displayName",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
+        "whiteboard-created": "displayName",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "displayName",
@@ -738,7 +736,7 @@
       "headline": "Alkemio wächst! Insgesamt ist die Plattform jetzt Gastgeber:"
     },
     "context-section": {
-      "create-card": "Karte erfolgreich erstellt",
+      "create-post": "Karte erfolgreich erstellt",
       "give-feedback": "Feedback geben"
     },
     "callout-publish": {
@@ -748,34 +746,34 @@
       "title": "Neuen Callout erstellen",
       "titleWithType": "Erschaffe %{type}",
       "callout-type-label": "Callout Typ",
-      "card-type-label": "Kartenlabel",
+      "post-type-label": "Kartenlabel",
       "custom-template": "Eigene Vorlage",
       "info-step": {
         "title": "Details",
         "description": "Beschreibung",
         "type-comments": "Comments",
         "type-comments-help": "Wählen Sie \"Kommentare\", wenn Sie möchten, dass Personen in einem einfachen Textformat antworten, wie ein Messageboard.",
-        "type-cards": "Karten",
-        "type-cards-help": "Wählen Sie \"Karten\", wenn Sie möchten, dass Personen im Kartenformat antworten.",
-        "type-canvases": "Whiteboards",
-        "type-canvases-help": "Wählen Sie »Whiteboards«, wenn jemand auf einem visuellen Whiteboard antworten soll und es ihnen erlaubt Text zu zeichnen und zu verwenden.",
+        "type-posts": "Karten",
+        "type-posts-help": "Wählen Sie \"Karten\", wenn Sie möchten, dass Personen im Kartenformat antworten.",
+        "type-whiteboards": "Whiteboards",
+        "type-whiteboards-help": "Wählen Sie »Whiteboards«, wenn jemand auf einem visuellen Whiteboard antworten soll und es ihnen erlaubt Text zu zeichnen und zu verwenden.",
         "unique-title-validation-text": "Dieser Titel wird bereits für $tverwendet (common.callout)"
       },
       "template-step": {
         "title": "Vorlagen",
         "no-templates": "Keine Vorlagen verfügbar",
-        "card-template-label": "Standardtext",
-        "card-template-text": "Fügen Sie Standardtext zu den Beiträgen hinzu, zum Beispiel Fragen, die Sie gerne beantworten möchten.",
-        "card-template-default-description": "Standard Beschreibung",
+        "post-template-label": "Standardtext",
+        "post-template-text": "Fügen Sie Standardtext zu den Beiträgen hinzu, zum Beispiel Fragen, die Sie gerne beantworten möchten.",
+        "post-template-default-description": "Standard Beschreibung",
         "whiteboard-template-label": "Vorlage:",
         "whiteboard-empty-template": "Leere Vorlage",
         "whiteboard-reset-template": "Leere Vorlage",
-        "no-card-template-selected": "Bitte wähle eine Vorlage aus",
-        "no-canvas-template-selected": "Bitte wähle eine Vorlage aus"
+        "no-post-template-selected": "Bitte wähle eine Vorlage aus",
+        "no-whiteboard-template-selected": "Bitte wähle eine Vorlage aus"
       },
       "create-step": {
         "title": "Erstellen",
-        "card-template-label": "Wähle eine Vorlage"
+        "post-template-label": "Wähle eine Vorlage"
       },
       "publish-dialog": {
         "text": "Sie sind dabei, {{calloutDisplayName}}zu veröffentlichen.\nMöchten Sie, dass Mitglieder dieser Community eine Benachrichtigung erhalten?",
@@ -788,12 +786,12 @@
     "calloutTypeSelect": {
       "title": "Was möchten Sie tun?",
       "label": {
-        "COMMENTS": "Posten",
-        "CARD": "Tags für Einträge",
-        "CANVAS": "Whiteboard leeren"
+        "POST": "Posten",
+        "POST_COLLECTION": "Tags für Einträge",
+        "WHITEBOARD_COLLECTION": "Whiteboard leeren"
       }
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Senden Sie Ihre Antwort an {{calloutDisplayName}}",
       "type-step": {
         "title": "Der Typ des zusätzlichen Kontexts, der hinzugefügt werden soll.",
@@ -1171,8 +1169,8 @@
   "navigation": {
     "admin": {
       "opportunity": {
-        "create": "Verkaufs-Chance erstellen",
-        "edit": "Verkaufs-Chance erstellen"
+        "create": "Möglichkeit erstellen",
+        "edit": "Möglichkeit erstellen"
       },
       "challenge": {
         "create": "Herausforderung erstellen",
@@ -1210,7 +1208,7 @@
         "discussions": {
           "description": "Hier kannst du Diskussionen rund um diese {{entity}} lesen und daran teilnehmen."
         },
-        "canvases": {
+        "whiteboards": {
           "description": "Whiteboards können als digitale Leinwand angesehen werden. Hier können Sie ein Whiteboard für diese {{entity}} erstellen und die von den anderen erstellten finden."
         },
         "profile": {
@@ -1237,7 +1235,7 @@
     },
     "contribute": {
       "initial-text": "Hier kannst du **mit deiner Community zusammenarbeiten**. Ideen und Einsichten gemeinsam teilen",
-      "no-cards": "Keine Karte gefunden"
+      "no-posts": "Keine Karte gefunden"
     },
     "admin": {
       "generic": {
@@ -1262,8 +1260,8 @@
           },
           "templates": {
             "description": "Hier können Sie Vorlagen für {{entity}} erstellen und bearbeiten.",
-            "aspect-templates": "Kartenvorlagen",
-            "canvas-templates": "Whiteboard-Template",
+            "post-templates": "Kartenvorlagen",
+            "whiteboard-templates": "Whiteboard-Template",
             "innovation-templates": "Innovationsflussvorlage",
             "delete-confirmation": "Sind Sie sicher, dass Sie {{template}} aus dem Hub löschen möchten? Sie können auch die Informationen dieser Vorlage bearbeiten.",
             "import": {
@@ -1382,7 +1380,7 @@
       "title": "Feedback zu diesem Community-Kontext geben",
       "success": "Feedback gesendet"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Geben Sie hier Ihren Kommentar ein"
@@ -1455,10 +1453,10 @@
           "all": "Alle",
           "hub": "Hubs",
           "challenge": "Herausforderungen",
-          "opportunity": "Sonderangebot",
+          "opportunity": "Möglichkeit",
           "user": "Benutzer",
           "organization": "Organisationen",
-          "card": "Karten",
+          "post": "Karten",
           "whiteboard": "Whiteboards (bald verfügbar)",
           "callout": "Anrufe (bald verfügbar)"
         }
@@ -1611,12 +1609,12 @@
       }
     },
     "opportunity": {
-      "title": "Verkaufschance",
+      "title": "Möglichkeit",
       "sections": {
         "dashboard": {
           "statistics": {
-            "title": "Opportunity-Statistiken",
-            "help-text": "Opportunity-Statistiken"
+            "title": "Möglichkeit-Statistiken",
+            "help-text": "Möglichkeit-Statistiken"
           },
           "projects": {
             "title": "Projekte",
@@ -1661,11 +1659,11 @@
         "no-data": "Keine Updates verfügbar"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Whiteboards in diesem {{blockName}}",
       "subheader": "Erstellen Sie Ihre individuelle Visualisierung und teilen Sie sie mit anderen.",
-      "add-canvas": "Whiteboard leeren",
-      "no-canvases": "Es wurden noch keine Whiteboards erstellt. Seien Sie der erste, der eins hinzufügt.",
+      "add-whiteboard": "Whiteboard leeren",
+      "no-whiteboards": "Es wurden noch keine Whiteboards erstellt. Seien Sie der erste, der eins hinzufügt.",
       "locked-by": "{{user}} bearbeitet gerade dieses Whiteboard",
       "state": {
         "checkedout": "Jemand anderes bearbeitet gerade dieses Whiteboard"
@@ -1900,14 +1898,14 @@
   "dashboard-community-section": {
     "title": "Gemeinschaft"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Neue Karte",
     "edit": "Begrüßungskarte Bearbeiten",
     "type": {
       "title": "Kartenlabel",
       "help-text": "Welche Daten möchten Sie ändern?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Kartenstandort",
       "label": "Beitrag zum Callout",
       "reminder": "Wenn Sie die Karte zu einem anderen Callout verschieben, wird sie vom aktuellen Callout verschwinden. Dies könnte es für Personen, einschließlich der Person, die diese Karte erstellt hat, schwierig machen, sie zurückzuholen. Beachte, dass du nur Karten innerhalb des gleichen Hubs, der Herausforderung oder der Chance verschieben kannst.",

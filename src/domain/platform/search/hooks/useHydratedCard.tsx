@@ -1,5 +1,5 @@
 import {
-  SearchResultCardFragment,
+  SearchResultPostFragment,
   SearchResultChallengeFragment,
   SearchResultHubFragment,
   SearchResultOpportunityFragment,
@@ -9,7 +9,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import React from 'react';
 import {
-  buildAspectUrl,
+  buildPostUrl,
   buildCalloutUrl,
   buildChallengeUrl,
   buildHubUrl,
@@ -23,7 +23,7 @@ import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user/hooks/useUserContext';
 import { SearchResultMetaType, SearchResultT } from '../SearchView';
-import { SearchContributionCardCard } from '../../../shared/components/search-cards/SearchContributionCardCard';
+import { SearchContributionCardCard } from '../../../shared/components/search-cards/SearchContributionPostCard';
 import { OpportunityIcon } from '../../../challenge/opportunity/icon/OpportunityIcon';
 import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
 import { HubIcon } from '../../../challenge/hub/icon/HubIcon';
@@ -231,7 +231,7 @@ const useHydrateOpportunityCard = (
   );
 };
 
-const getContributionParentInformation = (data: SearchResultT<SearchResultCardFragment>) => {
+const getContributionParentInformation = (data: SearchResultT<SearchResultPostFragment>) => {
   if (data.opportunity?.nameID && data.challenge?.nameID) {
     return {
       icon: OpportunityIcon,
@@ -256,13 +256,13 @@ const getContributionParentInformation = (data: SearchResultT<SearchResultCardFr
   }
 };
 
-const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> | undefined) => {
-  if (!data?.card) {
+const _hydrateContributionPost = (data: SearchResultT<SearchResultPostFragment> | undefined) => {
+  if (!data?.post) {
     return null;
   }
 
-  const card = data.card;
-  const url = buildAspectUrl(data.callout.nameID, card.nameID, {
+  const card = data.post;
+  const url = buildPostUrl(data.callout.nameID, card.nameID, {
     hubNameId: data.hub.nameID,
     challengeNameId: data.challenge?.nameID,
     opportunityNameId: data.opportunity?.nameID,
@@ -276,7 +276,7 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
       description={card.profile.description}
       tags={card.profile.tagset?.tags}
       createdDate={card.createdDate}
-      commentsCount={card.comments?.commentsCount}
+      commentsCount={card.comments?.messagesCount}
       matchedTerms={data.terms}
       url={url}
       parentSegment={
@@ -332,7 +332,7 @@ export const useHydrateCard = (result: SearchResultMetaType | undefined): UseHyd
     _hydrateOrganizationCard(result as SearchResultT<SearchResultOrganizationFragment>, userRoles);
 
   // Contribution cards:
-  const hydrateContributionCard = () => _hydrateContributionCard(result as SearchResultT<SearchResultCardFragment>);
+  const hydrateContributionCard = () => _hydrateContributionPost(result as SearchResultT<SearchResultPostFragment>);
 
   // Journey cards:
   const hydrateHubCard = () => _hydrateHubCard(result as SearchResultT<SearchResultHubFragment>, userRoles);

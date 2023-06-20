@@ -7,7 +7,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockTitle } from '../../../../core/ui/typography';
-import AspectDashboardView from '../../../collaboration/aspect/views/AspectDashboardView';
+import PostDashboardView from '../../../collaboration/post/views/PostDashboardView';
 import CalendarEventDetailContainer from '../CalendarEventDetailContainer';
 import EventCardHeader from './EventCardHeader';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
@@ -38,11 +38,11 @@ const CalendarEventDetail = ({
 
   return (
     <CalendarEventDetailContainer hubNameId={hubNameId} eventId={eventId}>
-      {({ event, messages, commentsId, createdDate, ...rest }) => {
+      {({ event, messages, createdDate, ...rest }) => {
         // createdDate is read here to remove it from the rest object and not show it
         // Also displayName is passed as a space because we are already showing the event
         //   title in the bannerOverlays
-        // TODO: Instead of reusing Aspect views as is, put something in common - Redesign this view
+        // TODO: Instead of reusing Post views as is, put something in common - Redesign this view
         return (
           <>
             <DialogHeader
@@ -68,7 +68,7 @@ const CalendarEventDetail = ({
               <BlockTitle>{t('common.events')}</BlockTitle>
             </DialogHeader>
             <DialogContent>
-              <AspectDashboardView
+              <PostDashboardView
                 mode="messages"
                 displayName="&nbsp;"
                 description={event?.profile.description}
@@ -76,8 +76,7 @@ const CalendarEventDetail = ({
                 tags={event?.profile.tagset?.tags}
                 references={event?.profile.references}
                 messages={messages}
-                commentId={event?.comments?.id}
-                aspectUrl=""
+                postUrl=""
                 bannerOverlayOverride={<EventCardHeader event={event} />}
                 {...rest}
               />

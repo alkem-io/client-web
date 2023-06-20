@@ -19,17 +19,17 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
+import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { useCanvasesCount } from '../../../collaboration/canvas/utils/canvasesCount';
+import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
 import {
-  getAspectsFromPublishedCallouts,
-  getCanvasesFromPublishedCallouts,
+  getPostsFromPublishedCallouts,
+  getWhiteboardsFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
 import {
-  AspectFragmentWithCallout,
-  CanvasFragmentWithCallout,
+  PostFragmentWithCallout,
+  WhiteboardFragmentWithCallout,
 } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
@@ -41,11 +41,11 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   hubVisibility: HubVisibility;
   challenge?: ChallengeProfileFragment;
   opportunitiesCount: number | undefined;
-  aspects: AspectFragmentWithCallout[];
-  aspectsCount: number | undefined;
+  posts: PostFragmentWithCallout[];
+  postsCount: number | undefined;
   references: Reference[] | undefined;
-  canvases: CanvasFragmentWithCallout[];
-  canvasesCount: number | undefined;
+  whiteboards: WhiteboardFragmentWithCallout[];
+  whiteboardsCount: number | undefined;
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -120,11 +120,14 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const opportunitiesCount = useMemo(() => getMetricCount(metrics, MetricType.Opportunity), [metrics]);
 
-  const aspects = getAspectsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
-  const aspectsCount = useAspectsCount(_challenge?.hub.challenge.metrics);
+  const posts = getPostsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
+  const postsCount = usePostsCount(_challenge?.hub.challenge.metrics);
 
-  const canvases = getCanvasesFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
-  const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.metrics);
+  const whiteboards = getWhiteboardsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(
+    0,
+    2
+  );
+  const whiteboardsCount = useWhiteboardsCount(_challenge?.hub.challenge.metrics);
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
   const memberUsersCount = membersCount - (_challenge?.hub.challenge.community?.memberOrganizations?.length ?? 0);
@@ -161,10 +164,10 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           hubVisibility: hub.visibility,
           challenge: _challenge?.hub.challenge,
           opportunitiesCount,
-          aspects,
-          aspectsCount,
-          canvases,
-          canvasesCount,
+          posts,
+          postsCount,
+          whiteboards,
+          whiteboardsCount,
           permissions,
           isAuthenticated,
           references,

@@ -35,22 +35,22 @@ query Callouts(
   }
 }
 
-query HubCalloutAspectsSubscription($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query HubCalloutPostsSubscription($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     collaboration {
       id
       callouts(IDs: [$calloutId]) {
         id
-        aspects {
-          ...ContributeTabAspect
+        posts {
+          ...ContributeTabPost
         }
       }
     }
   }
 }
 
-query ChallengeCalloutAspectsSubscription(
+query ChallengeCalloutPostsSubscription(
   $hubNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID!
   $calloutId: UUID_NAMEID!
@@ -63,8 +63,8 @@ query ChallengeCalloutAspectsSubscription(
         id
         callouts(IDs: [$calloutId]) {
           id
-          aspects {
-            ...ContributeTabAspect
+          posts {
+            ...ContributeTabPost
           }
         }
       }
@@ -72,7 +72,7 @@ query ChallengeCalloutAspectsSubscription(
   }
 }
 
-query OpportunityCalloutAspectsSubscription(
+query OpportunityCalloutPostsSubscription(
   $hubNameId: UUID_NAMEID!
   $opportunityNameId: UUID_NAMEID!
   $calloutId: UUID_NAMEID!
@@ -85,8 +85,8 @@ query OpportunityCalloutAspectsSubscription(
         id
         callouts(IDs: [$calloutId]) {
           id
-          aspects {
-            ...ContributeTabAspect
+          posts {
+            ...ContributeTabPost
           }
         }
       }
@@ -165,8 +165,8 @@ fragment Callout on Callout {
   state
   sortOrder
   activity
-  canvases {
-    ...CanvasDetails
+  whiteboards {
+    ...WhiteboardDetails
   }
   comments {
     ...CommentsWithMessages

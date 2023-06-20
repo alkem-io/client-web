@@ -29,14 +29,6 @@ fragment HubDetails on Hub {
     id
     anonymousReadAccess
   }
-  host {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-  }
   context {
     ...ContextDetails
   }

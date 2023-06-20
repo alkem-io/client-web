@@ -1,5 +1,5 @@
-mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
-  createAspectOnCallout(aspectData: $aspectData) {
+mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
+  createPostOnCallout(postData: $postData) {
     id
     nameID
     type
@@ -19,6 +19,6 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
   }
 }
 
-mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
-  removeComment(messageData: $messageData)
+mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
+  removeMessageOnRoom(messageData: $messageData)
 }

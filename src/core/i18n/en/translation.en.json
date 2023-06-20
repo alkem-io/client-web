@@ -25,7 +25,8 @@
   "fields": {
     "displayName": "Title",
     "startTime": "Start Time",
-    "endTime": "End Time"
+    "endTime": "End Time",
+    "name": "Name"
   },
   "calendar": {
     "add-event": "Add event",
@@ -60,6 +61,7 @@
     "publish": "Publish",
     "unpublish": "Unpublish",
     "save-draft": "Save as draft",
+    "archive": "Archive",
     "save": "Save",
     "back": "Back",
     "next": "Next",
@@ -102,6 +104,7 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
+    "reply": "Reply",
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
@@ -136,6 +139,10 @@
         "linkedin": "LinkedIn",
         "microsoft": "Microsoft"
       }
+    },
+    "signUp": {
+      "signUpEmail": "Sign up with E-Mail",
+      "alreadyHaveAccount": "Already have an account?"
     }
   },
   "common": {
@@ -153,11 +160,12 @@
     "tags": "Tags",
     "administration": "Administration",
     "add": "Add",
+    "added": "Added",
     "remove": "Remove",
     "callout": "Callout",
     "callouts": "Callouts",
-    "canvas": "Whiteboard",
-    "canvases": "Whiteboards",
+    "whiteboard": "Whiteboard",
+    "whiteboards": "Whiteboards",
     "calendar": "Calendar",
     "comment": "Comment",
     "comments": "Comments",
@@ -180,6 +188,9 @@
     "forum": "Forum",
     "email": "Email",
     "state": "State",
+    "post": "Post",
+    "posts": "Posts",
+    "status": "Status",
     "aspect": "Card",
     "aspects": "Cards",
     "host": "Host",
@@ -200,6 +211,7 @@
     "interest": "Interest",
     "interests": "Interests",
     "project": "Project",
+    "role": "Role",
     "agreements": "Agreements",
     "templates": "Templates",
     "template": "Template",
@@ -223,8 +235,6 @@
     "member": "Member",
     "members": "Members",
     "empty-string": "",
-    "post": "Post",
-    "posts": "Posts",
     "discussion": "Discussion",
     "discussions": "Discussions",
     "disassociate": "Disassociate",
@@ -234,6 +244,7 @@
     "community": "Community",
     "people": "People",
     "settings": "Settings",
+    "hub-settings": "$t(common.settings)",
     "search": "Search...",
     "storage": "Storage",
     "reference": "Reference",
@@ -405,35 +416,61 @@
     }
   },
   "community": {
-    "leading-users": "Leading Users",
-    "member-users": "Member Users",
+    "memberUsers": "Member Users ({{count}})",
     "leading-organizations": "Leading Organizations",
-    "member-organizations": "Member Organizations",
+    "memberOrganizations": "Member Organizations ({{count}})",
+    "pendingApplications": "Pending applications & invitations",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
+    "addMember": "Add member",
+    "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
     "application-form": {
       "title": "Application Form",
-      "subtitle": "This section allows you to modify the questions for users wanting to join the Space. <br /><b>Please note</b> that these questions will only be shown when the switch \"Allow applications to this Space\" is turned <b>on</b>, and \"Allow any registered user to join this Space\" is switched <b>off</b>. These can be set in the <b>Membership</b> block above.",
+      "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
       "required-question": "Required question",
       "move-up": "Move question one position up",
       "move-down": "Move question one position down",
       "delete-question": "Delete question",
       "updated-successfully": "Application form updated successfully."
+    },
+    "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
+    "applicationStatus": {
+      "applicationReceived": "Application Received",
+      "applicationApproved": "Application Approved",
+      "applicationRejected": "Application Rejected",
+      "applicationArchived": "Application Archived"
+    },
+    "confirmDeleteApplication": {
+      "title": "Deleting application from {{user}}",
+      "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+    },
+    "memberSettings": {
+      "title": "Member Settings",
+      "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the Community. ",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors.",
+      "maxLeadsWarning": "Note that there is a specific <b>maximum number of leads</b> for the communities. If the maximum number if reached, this option will be disabled for others.",
+      "removeMember": {
+        "sectionTitle": "Remove member",
+        "remove": "Click here to remove this user from this Space. Be careful, this action cannot be undone.",
+        "dialogTitle": "Are you sure you want to remove this member?",
+        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Space and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
+      }
     }
   },
   "callout": {
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
-    "closed": "This Callout is closed. You can still comment on the individual cards.",
+    "closed": "This Callout is closed. You can still comment on the individual Posts.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All cards, whiteboards and messages under the Callout will also be deleted.",
+    "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
+    "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
     "link-collection": {
       "add-link": "Add link to {{title}}",
       "edit-link": "Edit {{title}}",
@@ -621,20 +658,20 @@
       "atLeastOne": "At least one {{item}} must be selected."
     }
   },
-  "aspect-templates": {
-    "template-library": "Template Library: Cards",
-    "aspect-template": "Card template",
-    "default-description": "Default Card content",
+  "post-templates": {
+    "template-library": "Template Library: Posts",
+    "post-template": "Post template",
+    "default-description": "Default Post content",
     "banner-narrow": "Banner narrow"
   },
-  "canvas-templates": {
+  "whiteboard-templates": {
     "template-library": "Template Library: Whiteboards",
     "filter-placeholder": "Search Templates...",
-    "canvas-template": "Whiteboard template",
+    "whiteboard-template": "Whiteboard template",
     "hub-templates": "Templates selected by the host of this community",
     "load-platform-templates": "Or click here to browse through all platform templates",
     "platform-templates": "Platform Templates",
-    "error-importing": "Error importing Canvas Template",
+    "error-importing": "Error importing Whiteboard Template",
     "edit-template-button": "Edit Template",
     "edit-dialog-title": "Edit Whiteboard Template"
   },
@@ -744,9 +781,9 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "published a new $t(common.callout)",
-        "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on '{{cardDisplayName}}'",
-        "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
+        "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
+        "post-comment-created": "commented on '{{postDisplayName}}'",
+        "post-created": "added a {{postType}} Post to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
@@ -755,9 +792,9 @@
       },
       "activity-description": {
         "callout-published": "{{displayName}}",
-        "canvas-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
+        "whiteboard-created": "{{displayName}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -773,7 +810,7 @@
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },
     "context-section": {
-      "create-card": "Successfully created the Card",
+      "create-post": "Successfully created the Post",
       "give-feedback": "Give feedback"
     },
     "callout-publish": {
@@ -783,17 +820,17 @@
       "title": "What do you want to ask your community?",
       "titleWithType": "Create {{type}}",
       "callout-type-label": "Callout type",
-      "card-type-label": "Card label",
+      "post-type-label": "Post label",
       "custom-template": "Custom Template",
       "info-step": {
         "title": "Details",
         "description": "Description",
         "type-comments": "Comments",
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard.",
-        "type-cards": "Cards",
-        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
-        "type-canvases": "Whiteboards",
-        "type-canvases-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
+        "type-posts": "Posts",
+        "type-posts-help": "Select Posts when you want people to answer in a card format.",
+        "type-whiteboards": "Whiteboards",
+        "type-whiteboards-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "whiteboard": {
@@ -803,18 +840,18 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Default text:",
-        "card-template-text": "Add default text to the posts, for example questions that you like people to answer.",
-        "card-template-default-description": "Default description",
+        "post-template-label": "Default text:",
+        "post-template-text": "Add default text to the posts, for example questions that you like people to answer.",
+        "post-template-default-description": "Default description",
         "whiteboard-template-label": "Template:",
         "whiteboard-empty-template": "Empty Template",
         "whiteboard-reset-template": "Reset Empty Template",
-        "no-card-template-selected": "Please select a card template",
-        "no-canvas-template-selected": "Please select a whiteboard template"
+        "no-post-template-selected": "Please select a Post template",
+        "no-whiteboard-template-selected": "Please select a whiteboard template"
       },
       "create-step": {
         "title": "Create",
-        "card-template-label": "Choose Card template"
+        "post-template-label": "Choose Post template"
       },
       "publish-dialog": {
         "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
@@ -827,29 +864,29 @@
     "calloutTypeSelect": {
       "title": "What would you like to add?",
       "label": {
-        "COMMENTS": "Post",
-        "CARD": "Call for Posts",
-        "CANVAS": "Call for Whiteboards",
+        "POST": "Post",
+        "POST_COLLECTION": "Call for Posts",
+        "WHITEBOARD_COLLECTION": "Call for Whiteboards",
         "LINK_COLLECTION": "Collection of Links",
-        "SINGLE_WHITEBOARD": "Whiteboard"
+        "WHITEBOARD": "Whiteboard"
       }
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "Card label",
-        "type-help-text-short": "Please choose the Card label that best matches the context you wish to share."
+        "label": "Post label",
+        "type-help-text-short": "Please choose the Post label that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
         "description": "Please share the details",
-        "description-placeholder": "A description for this Card",
-        "tags-help-text": "Add free form tags to help quickly convey the key information about the Card. Good tags also help make the Card easier to find in searches.",
-        "name-help-text": "A descriptive name for this Card.",
+        "description-placeholder": "A description for this Post",
+        "tags-help-text": "Add free form tags to help quickly convey the key information about the Post. Good tags also help make the Post easier to find in searches.",
+        "name-help-text": "A descriptive name for this Post.",
         "name-id-help-text": "Name ID help text",
-        "unique-name-validation-text": "${path} is already used in another Card"
+        "unique-name-validation-text": "${path} is already used in another Post"
       },
       "create-step": {
         "title": "Create",
@@ -857,12 +894,12 @@
         "name": "Name",
         "description": "Description",
         "links": "Relevant Links",
-        "explanation": "By completing this step the Card will be created and you will have the option to add visuals."
+        "explanation": "By completing this step the Post will be created and you will have the option to add visuals."
       },
       "visuals-step": {
         "title": "Visuals",
-        "headline": "Congratulations, you have now successfully created an Card!",
-        "explanation": "To further personalize your Card, please consider adding visuals such as a Banner to the card.",
+        "headline": "Congratulations, you have now successfully created an Post!",
+        "explanation": "To further personalize your Post, please consider adding visuals such as a Banner to the Post.",
         "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding attachments and a Banner for the Dashboard card."
       }
     },
@@ -1151,9 +1188,8 @@
       "delete-discussion": "Delete discussion?",
       "delete-comment": "Delete comment?"
     },
-    "comment": {
-      "posted": "{{name}} on {{- date}}",
-      "reply": "Replay to this comment"
+    "message": {
+      "root": "started the discussion"
     },
     "post-comment": {
       "fields": {
@@ -1267,8 +1303,8 @@
         "discussions": {
           "description": "Here you can read and participate in discussions around this {{entity}}."
         },
-        "canvases": {
-          "description": "Whiteboards can be seen as digital canvases. Here you can create a whiteboard for this {{entity}} as well as find ones created by the others."
+        "whiteboards": {
+          "description": "Whiteboards can be seen as digital whiteboards. Here you can create a whiteboard for this {{entity}} as well as find ones created by the others."
         },
         "profile": {
           "description": ""
@@ -1294,12 +1330,12 @@
     },
     "contribute": {
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
-      "no-cards": "No Card found"
+      "no-posts": "No Posts found"
     },
     "innovationLibrary": {
       "shortName": "Library",
       "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use.",
+      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "Innovation Packs"
@@ -1348,6 +1384,9 @@
           "my-profile": {
             "description": "Here you can edit your profile details."
           },
+          "hub-settings": {
+            "description": ""
+          },
           "membership": {
             "description": "Here you can see the membership information."
           },
@@ -1364,12 +1403,10 @@
             "description": "Here you can see the document storage for this {{entity}}.",
             "title": "Documents",
             "grid": {
-              "title": "Title",
               "mimeType": "Type",
               "size": "Size",
               "uploadedBy": "Uploaded by",
-              "uploadedAt": "Uploaded at",
-              "location": "Location"
+              "uploadedAt": "Uploaded at"
             },
             "delete": {
               "title": "Delete this document?",
@@ -1437,6 +1474,27 @@
         "notifications": {
           "hub-created": "Space created successfuly.",
           "hub-removed": "Space '{{name}}' removed successfully."
+        },
+        "settings": {
+          "savedSuccessfully": "Settings saved successfully",
+          "visibility": {
+            "title": "Visibility",
+            "public": "<b>Public:</b> this hub and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
+            "private": "<b>Private:</b> this hub is visible for everyone on the platform, but the content is only visible for members."
+          },
+          "membership": {
+            "title": "Membership",
+            "noApplicationRequired": "<b>No Application required:</b> all Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
+            "applicationRequired": "<b>Application required:</b> if people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
+            "invitationOnly": "<b>Invitation only:</b> users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
+            "trustedApplicants": "Trusted applicants",
+            "hostOrganizationJoin": "<b>Host organization:</b> allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited."
+          },
+          "memberActions": {
+            "title": "Member Actions",
+            "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
+            "createChallenges": "<b>Create Challenges</b>: allow members to create Challenges in this Space. If you deactivate this, you can still create Challenges yourself and add other people as an admin inside the Challenge."
+          }
         }
       },
       "opportunity": {
@@ -1472,7 +1530,7 @@
       "title": "Give feedback on this community context",
       "success": "Feedback submitted"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Type your comment here"
@@ -1548,7 +1606,7 @@
           "opportunity": "Opportunities",
           "user": "Users",
           "organization": "Organizations",
-          "card": "Cards",
+          "post": "Posts",
           "whiteboard": "Whiteboards (available soon)",
           "callout": "Callouts (available soon)"
         }
@@ -1751,11 +1809,11 @@
         "no-data": "No updates available"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Whiteboards in this {{blockName}}",
       "subheader": "Create your custom visualization and share it with others.",
-      "add-canvas": "Create whiteboard",
-      "no-canvases": "No whiteboards have been created yet. Be the first to add one.",
+      "add-whiteboard": "Create whiteboard",
+      "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "state": {
         "checkedout": "Someone else is currently editing this Whiteboard"
@@ -1844,7 +1902,7 @@
     "verification-success": {
       "header": "Thank you for verifying your email address!",
       "subheader": "Your profile is now fully activated on the platform. Enjoy!",
-      "message": "Please do consider filling out all aspects of your profile. It helps with both applying to join communities and with others being able to connect with you."
+      "message": "Please do consider filling out all posts of your profile. It helps with both applying to join communities and with others being able to connect with you."
     },
     "recovery": {
       "header": "Password recovery",
@@ -1964,6 +2022,20 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, click here to contact the Alkemio team."
+    },
+    "fields": {
+      "ID": "ID",
+      "Password": "Password",
+      "E-Mail": "E-Mail",
+      "Email": "$t(kratos.fields.E-Mail)",
+      "First Name": "First Name",
+      "Last Name": "Last Name",
+      "Sign in": "Sign in",
+      "Sign up": "Sign up",
+      "Submit": "Submit",
+      "Verify code": "Verify code",
+      "Resend code": "Resend code",
+      "Save": "Save"
     }
   },
   "apollo": {
@@ -1990,19 +2062,19 @@
   "dashboard-community-section": {
     "title": "Community"
   },
-  "aspect-edit": {
-    "new": "New Card",
-    "edit": "Edit Card",
+  "post-edit": {
+    "new": "New Post",
+    "edit": "Edit Post",
     "type": {
-      "title": "Card label",
+      "title": "Post label",
       "help-text": "What type of information do you want to share?"
     },
-    "cardLocation": {
-      "title": "Card location",
+    "postLocation": {
+      "title": "Post location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the card’s location. Moving the card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move cards within the same Space, Challenge or Opportunity.",
-      "success": "Successfully moved card to the new Callout.",
-      "error": "Something went wrong when moving the card, please try again."
+      "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
+      "success": "Successfully moved Post to the new Callout.",
+      "error": "Something went wrong when moving the Post, please try again."
     }
   },
   "innovation-edit": {

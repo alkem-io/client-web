@@ -1,5 +1,0 @@
-mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
-  sendMessageOnCallout(data: $data) {
-    ...MessageDetails
-  }
-}

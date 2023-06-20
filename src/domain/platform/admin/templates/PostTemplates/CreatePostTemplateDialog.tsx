@@ -24,7 +24,7 @@ const CreatePostTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplat
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('aspect-templates.aspect-template') })}
+        {t('common.create-new-entity', { entity: t('post-templates.post-template') })}
       </DialogHeader>
       <PostTemplateForm
         initialValues={values}

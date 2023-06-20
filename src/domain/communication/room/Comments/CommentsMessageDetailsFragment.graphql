@@ -1,0 +1,43 @@
+fragment MessageDetails on Message {
+  id
+  message
+  timestamp
+  reactions {
+    ...ReactionDetails
+  }
+  threadID
+  sender {
+    id
+    nameID
+    firstName
+    lastName
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagsets {
+        id
+        name
+        tags
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+}
+
+fragment ReactionDetails on Reaction {
+  id
+  emoji
+  sender {
+    id
+    firstName
+    lastName
+  }
+}

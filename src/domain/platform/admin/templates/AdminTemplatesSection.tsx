@@ -18,7 +18,7 @@ import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { WhiteboardPreviewImage } from '../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface Template extends Identifiable {
   profile: ProfileInfoWithVisualFragment;
@@ -79,7 +79,7 @@ type AdminTemplatesSectionProps<
   templates: T[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (aspect: T) => LinkWithState;
+  buildTemplateLink: (post: T) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;

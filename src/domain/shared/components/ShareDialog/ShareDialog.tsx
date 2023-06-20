@@ -19,7 +19,7 @@ export interface ShareDialogProps extends ShareComponentProps {
     | 'organization'
     | 'callout'
     | 'card'
-    | 'canvas'
+    | 'whiteboard'
     | 'discussion'
     | 'event'
     | 'innovationPack';

@@ -8,7 +8,7 @@ export const VERY_LONG_TEXT_LENGTH = 16392;
 export const UUID_LENGTH = 36;
 export const NAMEID_LENGTH = 25;
 export const MESSAGEID_LENGTH = 44;
-export const CANVAS_VALUE_LENGTH = 8388608;
+export const WHITEBOARD_VALUE_LENGTH = 8388608;
 export const LIFECYCLE_DEFINITION_LENGTH = 8388608;
 
 export type TextFieldMaxLength = typeof MID_TEXT_LENGTH | typeof LONG_TEXT_LENGTH | typeof VERY_LONG_TEXT_LENGTH;

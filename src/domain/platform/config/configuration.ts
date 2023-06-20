@@ -14,6 +14,7 @@ export interface Configuration {
     impact: string;
     foundation: string;
     opensource: string;
+    inspiration: string;
     releases: string;
     help: string;
     community: string;
@@ -36,7 +37,7 @@ export interface Configuration {
   };
 }
 
-export interface AspectTemplate {
+export interface PostTemplate {
   type: string;
   defaultDescription: string;
   typeDescription: string;

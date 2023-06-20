@@ -24,7 +24,7 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
     profile {
       id
       displayName
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         id
         uri
       }
@@ -45,14 +45,14 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   ... on ActivityLogEntryCalloutPublished {
     ...ActivityLogCalloutPublished
   }
-  ... on ActivityLogEntryCalloutCardCreated {
+  ... on ActivityLogEntryCalloutPostCreated {
     ...ActivityLogCalloutCardCreated
   }
-  ... on ActivityLogEntryCalloutCardComment {
+  ... on ActivityLogEntryCalloutPostComment {
     ...ActivityLogCalloutCardComment
   }
-  ... on ActivityLogEntryCalloutCanvasCreated {
-    ...ActivityLogCalloutCanvasCreated
+  ... on ActivityLogEntryCalloutWhiteboardCreated {
+    ...ActivityLogCalloutWhiteboardCreated
   }
   ... on ActivityLogEntryCalloutDiscussionComment {
     ...ActivityLogCalloutDiscussionComment

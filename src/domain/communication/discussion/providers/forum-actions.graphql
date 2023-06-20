@@ -4,18 +4,10 @@ mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
   }
 }
 
-mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
-  sendMessageToDiscussion(messageData: $input) {
-    ...MessageDetails
-  }
-}
-
 mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
   deleteDiscussion(deleteData: $deleteData) {
     id
   }
 }
 
-mutation deleteComment($messageData: DiscussionRemoveMessageInput!) {
-  removeMessageFromDiscussion(messageData: $messageData)
-}
+

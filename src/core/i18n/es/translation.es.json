@@ -111,8 +111,8 @@
     "remove": "Eliminar",
     "callout": "Callout",
     "callouts": "Callouts",
-    "canvas": "Pizarra",
-    "canvases": "Pizarras",
+    "whiteboard": "Pizarra",
+    "whiteboards": "Pizarras",
     "comment": "Comentario",
     "comments": "Comentarios",
     "contributions": "Contribuciones",
@@ -129,8 +129,8 @@
     "filterby": "Filtrar por...",
     "email": "Email",
     "state": "Estado",
-    "aspect": "Tarjeta",
-    "aspects": "Tarjetas",
+    "post": "Tarjeta",
+    "posts": "Tarjetas",
     "host": "Anfitrión",
     "lead": "Líder",
     "hub": "Hub",
@@ -394,7 +394,7 @@
     "contributions_plural": "{{count}} Contribuciones",
     "draftNotice": "BORRADOR - Este Callout solo es visible para administradores.",
     "delete-confirm-title": "¿Borrar Callout?",
-    "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de este Callout serán borrados.",
+    "delete-confirm-text": "Todos los postos, pizarras y mensajes de este Callout serán borrados.",
     "state-permission": "Aceptar nuevas respuestas",
     "permission-helptext": "Utilice el interruptor de abajo para cerrar este callout y hacer espacio para nuevas entradas."
   },
@@ -407,7 +407,7 @@
     "url": "URL",
     "copy": "Copiar",
     "copied": "¡Copiado!",
-    "canvas-checkedout": "Por favor, primero haz clic en 'Guardar & Terminar de editar'"
+    "whiteboard-checkedout": "Por favor, primero haz clic en 'Guardar & Terminar de editar'"
   },
   "context": {
     "hub": {
@@ -521,13 +521,13 @@
       "nonBlank": "{{field}} no debe consistir solo en espacios en blanco"
     }
   },
-  "aspect-templates": {
-    "aspect-template": "Plantilla de tarjeta",
+  "post-templates": {
+    "post-template": "Plantilla de tarjeta",
     "default-description": "Descripción de la tarjeta por defecto",
     "banner-narrow": "Banner estrecho"
   },
-  "canvas-templates": {
-    "canvas-template": "Plantilla de pizarra"
+  "whiteboard-templates": {
+    "whiteboard-template": "Plantilla de pizarra"
   },
   "innovation-templates": {
     "innovation-template": "Plantilla de Innovation Flow",
@@ -568,9 +568,9 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "ha publicado un nuevo $t(common.callout)",
-        "canvas-created": "ha añadido un $t(common.canvas) a '{{parentDisplayName}}'",
-        "card-comment-created": "comentarios{{cardDisplayName}}",
-        "card-created": "añadida una tarjeta {{cardType}} a '{{calloutDisplayName}}'",
+        "whiteboard-created": "ha añadido un $t(common.whiteboard) a '{{parentDisplayName}}'",
+        "post-comment-created": "comentarios{{postDisplayName}}",
+        "post-created": "añadida una tarjeta {{postType}} a '{{calloutDisplayName}}'",
         "discussion-comment-created": "comentó sobre '{{calloutDisplayName}}'",
         "member-joined": "nuevo miembro se unió al {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "creó un nuevo $t(common.challenge)",
@@ -579,9 +579,9 @@
       },
       "activity-description": {
         "callout-published": "Hola, {{displayName}}",
-        "canvas-created": "Hola, {{displayName}}",
-        "card-comment-created": "comentario",
-        "card-created": "descripción de la tarjeta",
+        "whiteboard-created": "Hola, {{displayName}}",
+        "post-comment-created": "comentario",
+        "post-created": "descripción de la tarjeta",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "nombre del usuario",
         "challenge-created": "{{displayName}}",
@@ -596,39 +596,39 @@
       "headline": "¡Alkemio esta creciendo! En total, la plataforma acoge ahora:"
     },
     "context-section": {
-      "create-card": "Tarjeta creada con éxito",
+      "create-post": "Tarjeta creada con éxito",
       "give-feedback": "Dar feedback"
     },
     "callout-creation": {
       "title": "Crear Callout",
       "callout-type-label": "Tipo de Callout",
-      "card-type-label": "Tipo de tarjeta",
+      "post-type-label": "Tipo de tarjeta",
       "info-step": {
         "title": "Detalles",
         "description": "Descripción",
         "type-comments": "Comentarios",
         "type-comments-help": "Selecciona ‘Comentarios’ cuando quieras que la gente responda en formato de texto simple, como un panel de anuncios",
-        "type-cards": "Tarjetas",
-        "type-cards-help": "Selecciona ‘Tarjetas’ cuando quieras que la gente responda en un formato de Tarjeta.",
-        "type-canvases": "Pizarras",
-        "type-canvases-help": "Selecciona ‘Pizarras’ cuando quieras que la gente responda en una pizarra visual y permitirles dibujar y utilizar texto.",
+        "type-posts": "Tarjetas",
+        "type-posts-help": "Selecciona ‘Tarjetas’ cuando quieras que la gente responda en un formato de Tarjeta.",
+        "type-whiteboards": "Pizarras",
+        "type-whiteboards-help": "Selecciona ‘Pizarras’ cuando quieras que la gente responda en una pizarra visual y permitirles dibujar y utilizar texto.",
         "unique-title-validation-text": "Este título ya está en uso$t(common.callout)"
       },
       "template-step": {
         "title": "Plantillas",
         "no-templates": "Plantillas no disponibles",
-        "card-template-label": "Plantillas de tarjetas",
-        "no-card-template-selected": "Por favor selecciona una plantilla de tarjeta"
+        "post-template-label": "Plantillas de tarjetas",
+        "no-post-template-selected": "Por favor selecciona una plantilla de tarjeta"
       },
       "create-step": {
         "title": "Crear",
-        "card-template-label": "Elije una plantilla para la nueva Tarjeta"
+        "post-template-label": "Elije una plantilla para la nueva Tarjeta"
       }
     },
     "callout-edit": {
       "type-edit-help-text": "Esto sólo afectará a las nuevas entradas, pero las tarjetas enviadas no serán cambiadas"
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Envía tu respuesta a {{calloutDisplayName}}",
       "type-step": {
         "title": "El tipo de contexto adicional a añadir.",
@@ -1028,7 +1028,7 @@
         "discussions": {
           "description": "Aquí puedes leer y participar en los debates en torno a {{entity}}."
         },
-        "canvases": {
+        "whiteboards": {
           "description": "Las pizarras pueden entenderse como un lienzo virtual. Aquí puedes crear una pizarra para {{entity}} así como encontrar las creadas por los demás."
         },
         "profile": {
@@ -1047,7 +1047,7 @@
     },
     "contribute": {
       "initial-text": "Aquí puedes **relacionarte con tu comunidad**. Compartiendo ideas e informaciones. Creando impacto juntos",
-      "no-cards": "No se ha encontrado ninguna Tarjeta"
+      "no-posts": "No se ha encontrado ninguna Tarjeta"
     },
     "admin": {
       "generic": {
@@ -1069,8 +1069,8 @@
           },
           "templates": {
             "description": "Aquí puedes crear y editar plantillas para {{entity}}.",
-            "aspect-templates": "Plantillas de Tarjetas",
-            "canvas-templates": "Plantillas de Pizarras",
+            "post-templates": "Plantillas de Tarjetas",
+            "whiteboard-templates": "Plantillas de Pizarras",
             "innovation-templates": "Plantillas de Innovation Flows",
             "delete-confirmation": "¿Estás seguro de que quieres borrar {{template}} de este Hub? También puedes editar esta plantilla si lo deseas.",
             "import": {
@@ -1180,7 +1180,7 @@
       "title": "Envía tus comentarios en esta comunidad",
       "success": "Enviado"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Comentario..."
@@ -1424,11 +1424,11 @@
         "no-data": "No hay actualizaciones aún"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Pizarras en {{blockName}}",
       "subheader": "Crea tu propia visualización y compártela con otros.",
-      "add-canvas": "Crear Pizarra",
-      "no-canvases": "No hay pizarras aún, sé el primero en crear una.",
+      "add-whiteboard": "Crear Pizarra",
+      "no-whiteboards": "No hay pizarras aún, sé el primero en crear una.",
       "state": {
         "available": "Puedes trabajar en esta pizarra",
         "checkedout": "Alguien está trabajando en esta pizarra",
@@ -1641,14 +1641,14 @@
   "dashboard-community-section": {
     "title": "Comunidad"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Nueva Tarjeta",
     "edit": "Editar Tarjeta",
     "type": {
       "title": "Tipo de Tarjeta",
       "help-text": "¿Qué tipo de información quieres compartir?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Ubicación de la tarjeta",
       "label": "Contribuyendo a Callout",
       "reminder": "Tenga cuidado al cambiar la ubicación de la tarjeta. Si se mueve la tarjeta a otro Callout esto desaparecerá del actual Callout. Esto podría complicar las cosas quando las personas, incluida la persona que creó esta tarjeta, intentarán recuperarla. Ten en cuenta que sólo puedes mover tarjetas dentro del mismo Hub, Desafío y Oportunidad.",

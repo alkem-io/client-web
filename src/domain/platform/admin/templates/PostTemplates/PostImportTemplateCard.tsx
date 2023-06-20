@@ -1,11 +1,11 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
-import PostTemplateCard from '../../../../collaboration/aspect/PostTemplateCard/PostTemplateCard';
+import PostTemplateCard from '../../../../collaboration/post/PostTemplateCard/PostTemplateCard';
 
-interface AspectImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
+interface PostImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
-const AspectImportTemplateCard = ({ template, onClick }: AspectImportTemplateCardProps) => {
+const PostImportTemplateCard = ({ template, onClick }: PostImportTemplateCardProps) => {
   return (
     <PostTemplateCard
       template={{
@@ -14,7 +14,7 @@ const AspectImportTemplateCard = ({ template, onClick }: AspectImportTemplateCar
         tags: template.profile.tagset?.tags,
         provider: {
           displayName: template.provider?.profile.displayName,
-          avatarUri: template.provider?.profile.visual?.uri,
+          avatarUri: template.provider?.profile.avatar?.uri,
         },
         innovationPack: {
           id: template.innovationPackId,
@@ -26,4 +26,4 @@ const AspectImportTemplateCard = ({ template, onClick }: AspectImportTemplateCar
   );
 };
 
-export default AspectImportTemplateCard;
+export default PostImportTemplateCard;

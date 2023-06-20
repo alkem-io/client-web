@@ -10,7 +10,6 @@ import AboutPage from '../../domain/platform/TopLevelPages/About';
 import { Error404 } from '../pages/Errors/Error404';
 import ContributorsPage from '../../domain/community/contributor/ContributorsPage';
 import { AdminRoute } from '../../domain/platform/admin/routing/AdminRoute';
-import { MessagesRoute } from '../../domain/communication/messages/routing/MessagesRoute';
 import OrganizationRoute from '../../domain/community/contributor/organization/routing/OrganizationRoute';
 import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
 import { Restricted } from './Restricted';
@@ -21,8 +20,7 @@ import UserRoute from '../../domain/community/contributor/user/routing/UserRoute
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
 import { ChallengeExplorerPage } from '../../domain/platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing/IdentityRoute';
-import { INSPIRATION_ROUTE, ROUTE_HOME } from '../../domain/platform/routes/constants';
-import InspirationPage from '../help/pages/InspirationPage';
+import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
 import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
@@ -175,18 +173,6 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="/messages"
-          element={
-            <NonIdentity>
-              <WithApmTransaction path="/messages">
-                <NoIdentityRedirect>
-                  <MessagesRoute />
-                </NoIdentityRedirect>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
           path="/about"
           element={
             <NonIdentity>
@@ -212,16 +198,6 @@ export const TopLevelRoutes: FC = () => {
             <WithApmTransaction path="/restricted">
               <Restricted />
             </WithApmTransaction>
-          }
-        />
-        <Route
-          path={INSPIRATION_ROUTE}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={INSPIRATION_ROUTE}>
-                <InspirationPage />
-              </WithApmTransaction>
-            </NonIdentity>
           }
         />
         <Route

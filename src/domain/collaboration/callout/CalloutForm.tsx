@@ -3,7 +3,7 @@ import { Formik, FormikConfig } from 'formik';
 import { CalloutState, CalloutType, Tagset } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { MID_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
@@ -18,7 +18,7 @@ import { ProfileReferenceSegment } from '../../platform/admin/components/Common/
 import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
-import EmptyWhiteboard from '../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import EmptyWhiteboard from '../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
 import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
@@ -159,17 +159,17 @@ const CalloutForm: FC<CalloutFormProps> = ({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator.concat(uniqueNameValidator),
-    description: MarkdownValidator(MID_TEXT_LENGTH),
+    description: MarkdownValidator(LONG_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     postTemplateData: yup.object().when('type', {
-      is: CalloutType.Card,
+      is: CalloutType.Post,
       then: yup.object().shape({
         defaultDescription: yup.string().required(t('common.field-required')),
       }),
     }),
     whiteboardTemplateData: yup.object().when('type', {
-      is: CalloutType.Canvas,
+      is: CalloutType.Whiteboard,
       then: yup.object().shape({
         profile: yup.object().shape({
           displayName: yup.string(),
@@ -178,7 +178,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       }),
     }),
     whiteboard: yup.object().when('type', {
-      is: CalloutType.SingleWhiteboard,
+      is: CalloutType.Whiteboard,
       then: yup.object().shape({
         value: yup.string().required(),
       }),
@@ -216,11 +216,11 @@ const CalloutForm: FC<CalloutFormProps> = ({
     references: calloutType !== CalloutType.LinkCollection,
     linkCollectionAdd: calloutType === CalloutType.LinkCollection,
     tags: true,
-    postTemplate: calloutType === CalloutType.Card,
-    whiteboardTemplate: calloutType === CalloutType.Canvas,
-    newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.SingleWhiteboard,
+    postTemplate: calloutType === CalloutType.Post,
+    whiteboardTemplate: calloutType === CalloutType.Whiteboard,
+    newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.Whiteboard,
     groupChange: editMode && Boolean(canChangeCalloutGroup),
-    whiteboard: calloutType === CalloutType.SingleWhiteboard,
+    whiteboard: calloutType === CalloutType.Whiteboard,
   };
 
   return (
@@ -241,7 +241,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               name="description"
               title={t('components.callout-creation.info-step.description')}
               rows={7}
-              maxLength={MID_TEXT_LENGTH}
+              maxLength={LONG_TEXT_LENGTH}
               collaborationRoomId={editMode ? callout.id : undefined}
               withCounter
             />
@@ -260,7 +260,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <TagsetSegment
                 tagsets={tagsets}
                 title={t('common.tags')}
-                helpText={t('components.aspect-creation.info-step.tags-help-text')}
+                helpText={t('components.post-creation.info-step.tags-help-text')}
               />
             )}
             {!editMode && formConfiguration.linkCollectionAdd && (
