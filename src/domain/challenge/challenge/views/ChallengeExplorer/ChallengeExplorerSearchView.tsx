@@ -10,7 +10,7 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { Text } from '../../../../../core/ui/typography/components';
 import ChallengeCard from '../../ChallengeCard/ChallengeCard';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 
 export type ChallengeExplorerGroupByType = 'hub';
@@ -52,8 +52,8 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                     }
                   />
                   <Text>{values[0].hubTagline}</Text>
-                  <ScrollableCardsLayout maxHeight={gutters(40)} items={values} cards={false}>
-                    {challenge => (
+                  <ScrollableCardsLayoutContainer maxHeight={gutters(40)}>
+                    {values.map(challenge => (
                       <ChallengeCard
                         challengeId={challenge.id}
                         challengeNameId={challenge.nameID}
@@ -68,8 +68,8 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                         hubVisibility={challenge.hubVisibility}
                         hideJoin
                       />
-                    )}
-                  </ScrollableCardsLayout>
+                    ))}
+                  </ScrollableCardsLayoutContainer>
                 </PageContentBlock>
               ))}
             </Gutters>
