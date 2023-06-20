@@ -1008,6 +1008,7 @@ export type CommunityJoinInput = {
 
 export enum CommunityMembershipStatus {
   ApplicationPending = 'APPLICATION_PENDING',
+  InvitationPending = 'INVITATION_PENDING',
   Member = 'MEMBER',
   NotMember = 'NOT_MEMBER',
 }
@@ -3773,14 +3774,6 @@ export type RoomMessageReactionEventSubscriptionResult = {
   type: MutationType;
 };
 
-export type RoomMessageReceived = {
-  __typename?: 'RoomMessageReceived';
-  /** The message that has been sent. */
-  message: Message;
-  /** The identifier for the Room on which the message was sent. */
-  roomID: Scalars['String'];
-};
-
 export type RoomRemoveMessageInput = {
   /** The message id that should be removed */
   messageID: Scalars['MessageID'];
@@ -4026,8 +4019,6 @@ export type Subscription = {
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
   roomEvents: RoomEventSubscriptionResult;
-  /** Receive new Room messages */
-  roomMessageReceived: RoomMessageReceived;
   /** Receive updated content of a whiteboard */
   whiteboardContentUpdated: WhiteboardContentUpdated;
 };
@@ -4053,10 +4044,6 @@ export type SubscriptionOpportunityCreatedArgs = {
 };
 
 export type SubscriptionRoomEventsArgs = {
-  roomID: Scalars['UUID'];
-};
-
-export type SubscriptionRoomMessageReceivedArgs = {
   roomID: Scalars['UUID'];
 };
 
@@ -18141,6 +18128,17 @@ export type CommunityUpdatesQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type PlatformUpdatesRoomQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformUpdatesRoomQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    communication: { __typename?: 'Communication'; id: string; updates: { __typename?: 'Room'; id: string } };
   };
 };
 

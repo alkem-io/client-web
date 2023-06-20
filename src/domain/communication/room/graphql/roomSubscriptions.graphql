@@ -1,4 +1,3 @@
-# todo remove
 subscription roomEvents($roomID: UUID!) {
   roomEvents(roomID: $roomID) {
     roomID
