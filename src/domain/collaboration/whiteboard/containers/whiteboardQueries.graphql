@@ -1,0 +1,260 @@
+fragment WhiteboardProfile on Profile {
+  id
+  displayName
+  description
+  visual(type: CARD) {
+    ...VisualFull
+  }
+  preview: visual(type: BANNER) {
+    ...VisualFull
+  }
+  tagset {
+    id
+    tags
+  }
+}
+
+fragment WhiteboardDetails on Whiteboard {
+  id
+  nameID
+  createdDate
+  profile {
+    ...WhiteboardProfile
+  }
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
+  checkout {
+    ...CheckoutDetails
+  }
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
+
+fragment WhiteboardSummary on Whiteboard {
+  id
+  nameID
+  createdDate
+  profile {
+    id
+    displayName
+  }
+}
+
+fragment WhiteboardValue on Whiteboard {
+  id
+  value
+}
+
+fragment CheckoutDetails on WhiteboardCheckout {
+  id
+  lockedBy
+  status
+  lifecycle {
+    id
+    nextEvents
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+query whiteboardTemplates($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplates {
+        ...CreateWhiteboardWhiteboardTemplate
+      }
+    }
+  }
+}
+
+fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
+  id
+  profile {
+    id
+    displayName
+    description
+  }
+  value
+}
+
+fragment CalloutWithWhiteboard on Collaboration {
+  id
+  callouts(IDs: [$calloutId]) {
+    id
+    nameID
+    type
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+    whiteboards(IDs: [$whiteboardId]) {
+      ...WhiteboardDetails
+    }
+  }
+}
+
+fragment CollaborationWithWhiteboardDetails on Collaboration {
+  id
+  callouts {
+    id
+    nameID
+    type
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+    whiteboards {
+      ...WhiteboardDetails
+    }
+  }
+}
+
+query hubWhiteboardFromCallout($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    collaboration {
+      ...CalloutWithWhiteboard
+    }
+  }
+}
+
+query hubWhiteboards($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    collaboration {
+      ...CollaborationWithWhiteboardDetails
+    }
+  }
+}
+
+query whiteboardWithValue($whiteboardId: UUID!) {
+  whiteboard(ID: $whiteboardId) {
+    ...WhiteboardDetails
+    ...WhiteboardValue
+  }
+}
+
+query challengeWhiteboardFromCallout(
+  $hubId: UUID_NAMEID!
+  $challengeId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+  $whiteboardId: UUID_NAMEID!
+) {
+  hub(ID: $hubId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      collaboration {
+        ...CalloutWithWhiteboard
+      }
+    }
+  }
+}
+
+query opportunityWhiteboardFromCallout(
+  $hubId: UUID_NAMEID!
+  $opportunityId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+  $whiteboardId: UUID_NAMEID!
+) {
+  hub(ID: $hubId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      collaboration {
+        ...CalloutWithWhiteboard
+      }
+    }
+  }
+}
+
+query hubTemplateWhiteboardValues($hubId: UUID_NAMEID!, $whiteboardId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $whiteboardId) {
+        id
+        profile {
+          ...WhiteboardProfile
+        }
+        value
+      }
+    }
+  }
+}
+
+query platformTemplateWhiteboardValues($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        templates {
+          id
+          whiteboardTemplate(ID: $whiteboardId) {
+            id
+            profile {
+              ...WhiteboardProfile
+            }
+            value
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation createWhiteboardOnCallout($input: CreateWhiteboardOnCalloutInput!) {
+  createWhiteboardOnCallout(whiteboardData: $input) {
+    ...WhiteboardDetails
+  }
+}
+
+mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
+  deleteWhiteboard(whiteboardData: $input) {
+    id
+  }
+}
+
+mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
+  updateWhiteboard(whiteboardData: $input) {
+    id
+    value
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
+  eventOnWhiteboardCheckout(whiteboardCheckoutEventData: $input) {
+    ...CheckoutDetails
+  }
+}
+
+subscription whiteboardContentUpdated($whiteboardIDs: [UUID!]!) {
+  whiteboardContentUpdated(whiteboardIDs: $whiteboardIDs) {
+    whiteboardID
+    value
+  }
+}

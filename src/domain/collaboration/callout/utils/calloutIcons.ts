@@ -8,11 +8,11 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 
 const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
-  [CalloutType.Card]: LibraryBooksIcon,
-  [CalloutType.Canvas]: FilterNoneIcon,
-  [CalloutType.Comments]: NotesIcon,
+  [CalloutType.PostCollection]: LibraryBooksIcon,
+  [CalloutType.WhiteboardCollection]: FilterNoneIcon,
+  [CalloutType.Post]: NotesIcon,
   [CalloutType.LinkCollection]: AttachFileIcon,
-  [CalloutType.SingleWhiteboard]: DrawOutlinedIcon,
+  [CalloutType.Whiteboard]: DrawOutlinedIcon,
 };
 
 export default calloutIcons;

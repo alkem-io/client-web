@@ -37,7 +37,7 @@ export interface Configuration {
   };
 }
 
-export interface AspectTemplate {
+export interface PostTemplate {
   type: string;
   defaultDescription: string;
   typeDescription: string;

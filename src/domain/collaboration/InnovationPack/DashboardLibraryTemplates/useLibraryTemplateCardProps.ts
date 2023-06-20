@@ -4,8 +4,8 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
 import { compact, sortBy } from 'lodash';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
-import { postTemplateMapper } from '../../aspect/PostTemplateCard/PostTemplate';
-import { whiteboardTemplateMapper } from '../../canvas/WhiteboardTemplateCard/WhiteboardTemplate';
+import { postTemplateMapper } from '../../post/PostTemplateCard/PostTemplate';
+import { whiteboardTemplateMapper } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
 import { innovationFlowTemplateMapper } from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplate';
 
 const useLibraryTemplateCardProps = (

@@ -45,7 +45,7 @@ const MessagesThread = ({
           reply={
             canPostMessages && (
               <PostMessageToCommentsForm
-                placeholder={t('pages.aspect.dashboard.comment.placeholder')}
+                placeholder={t('pages.post.dashboard.comment.placeholder')}
                 onPostComment={(messageText: string) =>
                   message &&
                   onReply({

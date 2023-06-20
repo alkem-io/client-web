@@ -1,8 +1,8 @@
 import { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import { Identifiable } from '../../../shared/types/Identifiable';
-import PostTemplateCard, { PostTemplate } from '../../aspect/PostTemplateCard/PostTemplateCard';
-import { WhiteboardTemplate } from '../../canvas/WhiteboardTemplateCard/WhiteboardTemplate';
-import WhiteboardTemplateCard from '../../canvas/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import PostTemplateCard, { PostTemplate } from '../../post/PostTemplateCard/PostTemplateCard';
+import { WhiteboardTemplate } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
+import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
 import { InnovationFlowTemplate } from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplate';
 import InnovationFlowTemplateCard from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';

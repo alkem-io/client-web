@@ -5,12 +5,12 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { BlockTitle } from '../../../../core/ui/typography';
 import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
-import { PostTemplate } from '../../aspect/PostTemplateCard/PostTemplate';
-import PostTemplateCard from '../../aspect/PostTemplateCard/PostTemplateCard';
-import PostTemplatePreview from '../../aspect/PostTemplatesLibrary/PostTemplatePreview';
-import { WhiteboardTemplate } from '../../canvas/WhiteboardTemplateCard/WhiteboardTemplate';
-import WhiteboardTemplateCard from '../../canvas/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import WhiteboardTemplatePreview from '../../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
+import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
+import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
+import PostTemplatePreview from '../../post/PostTemplatesLibrary/PostTemplatePreview';
+import { WhiteboardTemplate } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
+import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import WhiteboardTemplatePreview from '../../whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
 import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
 } from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';

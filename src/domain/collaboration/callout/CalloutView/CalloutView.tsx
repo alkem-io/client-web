@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import AspectCallout from '../aspect/AspectCallout';
-import CanvasCallout from '../canvas/CanvasCallout';
+import PostCallout from '../post/PostCallout';
+import WhiteboardCallout from '../whiteboard/WhiteboardCallout';
 import CommentsCallout from '../comments/CommentsCallout';
 import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
@@ -16,29 +16,24 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(({ callout, ...
   const canCreate = (privilege: AuthorizationPrivilege) => callout.authorization?.myPrivileges?.includes(privilege);
 
   switch (callout.type) {
-    case CalloutType.Card:
+    case CalloutType.PostCollection:
       return (
-        <AspectCallout
+        <PostCallout ref={ref} callout={callout} canCreate={canCreate(AuthorizationPrivilege.CreatePost)} {...props} />
+      );
+    case CalloutType.WhiteboardCollection:
+      return (
+        <WhiteboardCallout
           ref={ref}
           callout={callout}
-          canCreate={canCreate(AuthorizationPrivilege.CreateAspect)}
+          canCreate={canCreate(AuthorizationPrivilege.CreateWhiteboard)}
           {...props}
         />
       );
-    case CalloutType.Canvas:
-      return (
-        <CanvasCallout
-          ref={ref}
-          callout={callout}
-          canCreate={canCreate(AuthorizationPrivilege.CreateCanvas)}
-          {...props}
-        />
-      );
-    case CalloutType.Comments:
+    case CalloutType.Post:
       return <CommentsCallout ref={ref} callout={callout} {...props} />;
     case CalloutType.LinkCollection:
       return <LinkCollectionCallout ref={ref} callout={callout} {...props} />;
-    case CalloutType.SingleWhiteboard:
+    case CalloutType.Whiteboard:
       return <SingleWhiteboardCallout ref={ref} callout={callout} {...props} />;
     default:
       throw new Error(`Unexpected Callout type "${callout['type']}"`);

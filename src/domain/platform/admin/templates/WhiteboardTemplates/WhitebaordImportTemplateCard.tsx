@@ -1,7 +1,7 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
-import { CanvasIcon } from '../../../../collaboration/canvas/icon/CanvasIcon';
+import { WhiteboardIcon } from '../../../../collaboration/whiteboard/icon/WhiteboardIcon';
 import InnovationPackIcon from '../../../../collaboration/InnovationPack/InnovationPackIcon';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
@@ -11,12 +11,12 @@ import CardImage from '../../../../../core/ui/card/CardImage';
 import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
 import { Caption } from '../../../../../core/ui/typography';
 
-interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
+interface WhiteboardImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
-const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCardProps) => {
+const WhiteboardImportTemplateCard = ({ template, onClick }: WhiteboardImportTemplateCardProps) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template.profile.displayName} iconComponent={CanvasIcon}>
+      <CardHeader title={template.profile.displayName} iconComponent={WhiteboardIcon}>
         <CardHeaderCaption noWrap logoUrl={template.provider?.profile.avatar?.uri}>
           {template.provider?.profile.displayName}
         </CardHeaderCaption>
@@ -24,7 +24,7 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
       <CardImage
         src={getVisualBannerNarrow(template.profile.visual)}
         alt={template.profile.displayName}
-        defaultImage={<CanvasIcon />}
+        defaultImage={<WhiteboardIcon />}
       />
       <CardSegmentCaption icon={<InnovationPackIcon />}>
         <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>
@@ -33,4 +33,4 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
   );
 };
 
-export default CanvasImportTemplateCard;
+export default WhiteboardImportTemplateCard;

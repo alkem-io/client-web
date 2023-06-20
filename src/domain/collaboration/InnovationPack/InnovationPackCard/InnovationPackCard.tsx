@@ -8,8 +8,8 @@ import CardFooter from '../../../../core/ui/card/CardFooter';
 import InnovationPackIcon from '../InnovationPackIcon';
 import CardFooterBadge from '../../../../core/ui/card/CardFooterBadge';
 import { Box } from '@mui/material';
-import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
-import { AspectIcon } from '../../aspect/icon/AspectIcon';
+import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import { PostIcon } from '../../post/icon/PostIcon';
 import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
 import CardFooterCountWithBadge from '../../../../core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -48,8 +48,8 @@ const InnovationPackCard = ({
       </CardDetails>
       <CardFooter flexDirection="column" alignItems="stretch" height="auto">
         <Box display="flex" gap={gutters()} height={gutters(2)} alignItems="center" justifyContent="end">
-          <CardFooterCountWithBadge iconComponent={CanvasIcon}>{whiteboardTemplatesCount}</CardFooterCountWithBadge>
-          <CardFooterCountWithBadge iconComponent={AspectIcon}>{postTemplatesCount}</CardFooterCountWithBadge>
+          <CardFooterCountWithBadge iconComponent={WhiteboardIcon}>{whiteboardTemplatesCount}</CardFooterCountWithBadge>
+          <CardFooterCountWithBadge iconComponent={PostIcon}>{postTemplatesCount}</CardFooterCountWithBadge>
           <CardFooterCountWithBadge
             icon={
               // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done

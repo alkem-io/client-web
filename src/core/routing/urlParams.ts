@@ -13,7 +13,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   role?: AuthorizationCredential;
   discussionNameId?: string;
   calloutNameId?: string;
-  aspectNameId?: string;
+  postNameId?: string;
   whiteboardNameId?: string;
   innovationTemplateId?: string;
   calendarEventNameId?: string;
