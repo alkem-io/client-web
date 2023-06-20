@@ -2,9 +2,10 @@ import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../../community/contributor/user';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
-import { useRoomMessageReceivedSubscription } from '../../../core/apollo/generated/apollo-hooks';
+import { useRoomEventsSubscription } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { logger } from '../../../services/logging/winston/logger';
+import { MutationType } from '../../../core/apollo/generated/graphql-schema';
 
 const useCommunityUpdatesNotifier = () => {
   const { isFeatureEnabled } = useConfig();
@@ -26,7 +27,7 @@ const useCommunityUpdatesSubscriber = (shouldSkip: boolean) => {
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
-  useRoomMessageReceivedSubscription({
+  useRoomEventsSubscription({
     shouldResubscribe: true,
     skip: shouldSkip,
     onSubscriptionData: options => {
@@ -35,16 +36,20 @@ const useCommunityUpdatesSubscriber = (shouldSkip: boolean) => {
         return;
       }
 
-      const subData = options.subscriptionData.data?.roomMessageReceived;
+      const subData = options.subscriptionData.data?.roomEvents;
       if (!subData) return;
 
-      const senderId = subData.message.sender?.id;
+      const { message } = subData;
 
-      if (senderId === userId) {
-        return;
+      if (message && message.type === MutationType.Create) {
+        const senderId = message.data.sender?.id;
+
+        if (senderId === userId) {
+          return;
+        }
+
+        notify('You just received an update');
       }
-
-      notify('You just received an update');
     },
   });
 };

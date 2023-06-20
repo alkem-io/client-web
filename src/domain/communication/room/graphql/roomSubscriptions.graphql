@@ -1,9 +1,25 @@
-subscription roomMessageReceived($roomID: UUID!) {
-  roomMessageReceived(roomID: $roomID) {
+# todo remove
+subscription roomEvents($roomID: UUID!) {
+  roomEvents(roomID: $roomID) {
     roomID
     message {
-      ...MessageDetails
+      type
+      data {
+        ...MessageDetails
+      }
     }
+    reaction {
+      type
+      messageID
+      data {
+        id
+        emoji
+        timestamp
+        sender {
+          id
+        }
+      }
+    }
+
   }
 }
-

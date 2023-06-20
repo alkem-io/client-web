@@ -14221,12 +14221,27 @@ export type RemoveMessageOnRoomMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveMessageOnRoomMutation,
   SchemaTypes.RemoveMessageOnRoomMutationVariables
 >;
-export const RoomMessageReceivedDocument = gql`
-  subscription roomMessageReceived($roomID: UUID!) {
-    roomMessageReceived(roomID: $roomID) {
+export const RoomEventsDocument = gql`
+  subscription roomEvents($roomID: UUID!) {
+    roomEvents(roomID: $roomID) {
       roomID
       message {
-        ...MessageDetails
+        type
+        data {
+          ...MessageDetails
+        }
+      }
+      reaction {
+        type
+        messageID
+        data {
+          id
+          emoji
+          timestamp
+          sender {
+            id
+          }
+        }
       }
     }
   }
@@ -14234,37 +14249,36 @@ export const RoomMessageReceivedDocument = gql`
 `;
 
 /**
- * __useRoomMessageReceivedSubscription__
+ * __useRoomEventsSubscription__
  *
- * To run a query within a React component, call `useRoomMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useRoomMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRoomEventsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRoomEventsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useRoomMessageReceivedSubscription({
+ * const { data, loading, error } = useRoomEventsSubscription({
  *   variables: {
  *      roomID: // value for 'roomID'
  *   },
  * });
  */
-export function useRoomMessageReceivedSubscription(
+export function useRoomEventsSubscription(
   baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.RoomMessageReceivedSubscription,
-    SchemaTypes.RoomMessageReceivedSubscriptionVariables
+    SchemaTypes.RoomEventsSubscription,
+    SchemaTypes.RoomEventsSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.RoomMessageReceivedSubscription,
-    SchemaTypes.RoomMessageReceivedSubscriptionVariables
-  >(RoomMessageReceivedDocument, options);
+  return Apollo.useSubscription<SchemaTypes.RoomEventsSubscription, SchemaTypes.RoomEventsSubscriptionVariables>(
+    RoomEventsDocument,
+    options
+  );
 }
 
-export type RoomMessageReceivedSubscriptionHookResult = ReturnType<typeof useRoomMessageReceivedSubscription>;
-export type RoomMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.RoomMessageReceivedSubscription>;
+export type RoomEventsSubscriptionHookResult = ReturnType<typeof useRoomEventsSubscription>;
+export type RoomEventsSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.RoomEventsSubscription>;
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubId) {
