@@ -22,12 +22,12 @@ export interface OpportunityCardsContainerProps
     OpportunityCardsContainerActions,
     OpportunityCardsContainerState
   > {
-  hubNameId: string;
+  spaceNameId: string;
   challengeNameId: string;
 }
 
 export const OpportunityCardsContainer: FC<OpportunityCardsContainerProps> = ({
-  hubNameId,
+  spaceNameId,
   challengeNameId,
   children,
 }) => {
@@ -37,19 +37,19 @@ export const OpportunityCardsContainer: FC<OpportunityCardsContainerProps> = ({
     subscribeToMore,
   } = useOpportunityCardsQuery({
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       challengeId: challengeNameId,
     },
     errorPolicy: 'all',
   });
 
-  useOpportunityCreatedSubscription(_challenge, data => data?.hub?.challenge, subscribeToMore);
+  useOpportunityCreatedSubscription(_challenge, data => data?.space?.challenge, subscribeToMore);
 
   return (
     <>
       {children(
         {
-          opportunities: _challenge?.hub.challenge.opportunities ?? [],
+          opportunities: _challenge?.space.challenge.opportunities ?? [],
         },
         { loading },
         {}

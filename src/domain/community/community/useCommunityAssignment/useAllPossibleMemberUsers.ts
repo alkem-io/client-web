@@ -2,7 +2,7 @@ import { UserDisplayNameFragment } from '../../../../core/apollo/generated/graph
 import useUsersSearch, { UseUsersSearchResult } from '../useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 import { useAvailableUsersQuery, useCommunityMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import useLocalSearch from '../../../shared/utils/useLocalSearch';
 
 export interface UseAllPossibleMemberUsersProvided {
@@ -49,7 +49,7 @@ const useAllPossibleMemberUsers = (
     getPageInfo: data => data?.usersPaginated.pageInfo,
   });
 
-  const { hubId, loading: loadingHub } = useHub();
+  const { spaceId, loading: loadingSpace } = useSpace();
 
   const {
     data: _parentCommunityMembers,
@@ -58,19 +58,19 @@ const useAllPossibleMemberUsers = (
   } = useCommunityMembersQuery({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
-    skip: !hubId || !parentCommunityId,
+    skip: !spaceId || !parentCommunityId,
     variables: {
-      hubId,
+      spaceId,
       communityId: parentCommunityId!, // presence checked by skip condition
     },
   });
 
   const { data: filteredParentCommunityMembers, setSearchTerm: setParentCommunityMembersSearchTerm } = useLocalSearch({
-    data: _parentCommunityMembers?.hub.community?.memberUsers,
+    data: _parentCommunityMembers?.space.community?.memberUsers,
     isMatch: (user, searchTerm) => user.profile.displayName.toLowerCase().includes(searchTerm.toLowerCase()),
   });
 
-  const isLoading = loadingUsers || loadingHub || loadingParentCommunityMembers;
+  const isLoading = loadingUsers || loadingSpace || loadingParentCommunityMembers;
   const hasError = !!(userError || parentCommunityMembersError);
   const allPossibleMemberUsers = filteredParentCommunityMembers || usersQueryData?.usersPaginated.users;
 

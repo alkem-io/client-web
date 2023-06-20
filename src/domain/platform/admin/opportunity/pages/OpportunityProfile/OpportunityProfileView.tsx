@@ -31,10 +31,10 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
 
   const { challengeId } = useChallenge();
 
-  const { hubNameId = '', opportunityNameId = '', challengeNameId = '' } = useUrlParams();
+  const { spaceNameId = '', opportunityNameId = '', challengeNameId = '' } = useUrlParams();
 
   const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchOpportunitiesQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
     onCompleted: data => {
       onSuccess('Successfully created');
@@ -43,16 +43,16 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
   });
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
+    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
     skip: mode === FormMode.create,
   });
 
-  const opportunity = opportunityProfile?.hub?.opportunity;
+  const opportunity = opportunityProfile?.space?.opportunity;
   const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
 
   const isLoading = isCreating || isUpdating;

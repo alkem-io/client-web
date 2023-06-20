@@ -1,5 +1,5 @@
-mutation removeUserAsGlobalHubsAdmin($input: RemoveGlobalHubsAdminInput!) {
-  removeUserAsGlobalHubsAdmin(membershipData: $input) {
+mutation removeUserAsGlobalSpacesAdmin($input: RemoveGlobalSpacesAdminInput!) {
+  removeUserAsGlobalSpacesAdmin(membershipData: $input) {
     id
     profile {
       id

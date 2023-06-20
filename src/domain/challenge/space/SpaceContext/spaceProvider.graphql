@@ -1,0 +1,42 @@
+query spaceProvider($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    ...SpaceInfo
+  }
+}
+
+fragment SpaceInfo on Space {
+  ...SpaceDetails
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  context {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  visibility
+}
+
+query spaceHost($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    host {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+}

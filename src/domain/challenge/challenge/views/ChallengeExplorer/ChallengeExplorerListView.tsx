@@ -2,11 +2,11 @@ import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
-import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl } from '../../../../../common/utils/urlBuilders';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
 import {
   SimpleChallenge,
-  simpleChallengeHubDataGetter,
+  simpleChallengeSpaceDataGetter,
   simpleChallengeTagsValueGetter,
   simpleChallengeValueGetter,
 } from '../../../../platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerContainer';
@@ -21,30 +21,30 @@ export interface ChallengeExplorerListViewProps {
   headerText: string;
   headerCounter?: number;
   challenges: SimpleChallenge[];
-  enableFilterByHub?: boolean;
+  enableFilterBySpace?: boolean;
 }
 
 const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   headerText,
   headerCounter,
   challenges,
-  enableFilterByHub = false,
+  enableFilterBySpace = false,
 }) => {
   const { t } = useTranslation();
 
   return (
     <PageContentBlock>
       <CheckboxesFilter
-        caption={t('pages.challenge-explorer.other.filter-by-hub')}
-        enable={enableFilterByHub}
+        caption={t('pages.challenge-explorer.other.filter-by-space')}
+        enable={enableFilterBySpace}
         items={challenges}
-        filterableDataGetter={simpleChallengeHubDataGetter}
+        filterableDataGetter={simpleChallengeSpaceDataGetter}
       >
-        {(filterMenu, filteredByHubChallenges) => (
+        {(filterMenu, filteredBySpaceChallenges) => (
           <>
             <PageContentBlockHeader title={withOptionalCount(headerText, headerCounter)} actions={filterMenu} />
             <CardFilter
-              data={filteredByHubChallenges}
+              data={filteredBySpaceChallenges}
               valueGetter={simpleChallengeValueGetter}
               tagsValueGetter={simpleChallengeTagsValueGetter}
               keepOpen={false}
@@ -64,10 +64,10 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                           tags={challenge.tags}
                           tagline={challenge.tagline}
                           vision={challenge.vision}
-                          journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                          hubDisplayName={challenge.hubDisplayName}
-                          hubUri={buildHubUrl(challenge.hubNameId)}
-                          hubVisibility={challenge.hubVisibility}
+                          journeyUri={buildChallengeUrl(challenge.spaceNameId, challenge.nameID)}
+                          spaceDisplayName={challenge.spaceDisplayName}
+                          spaceUri={buildSpaceUrl(challenge.spaceNameId)}
+                          spaceVisibility={challenge.spaceVisibility}
                           hideJoin
                         />
                       )

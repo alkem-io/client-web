@@ -27,11 +27,11 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { hubNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId, opportunityNameId } = useUrlParams();
 
   const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
     useCallouts({
-      hubNameId,
+      spaceNameId,
       opportunityNameId,
       calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
     });
@@ -62,7 +62,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                   journeyTypeName="opportunity"
                 />
               }
-              hubNameId={entities.hubNameId}
+              spaceNameId={entities.spaceNameId}
               challengeNameId={entities.challengeNameId}
               opportunityNameId={entities.opportunity?.nameID}
               communityId={entities.opportunity?.community?.id}
@@ -85,7 +85,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                 groupedCallouts[CalloutsGroup.HomeTop] && (
                   <CalloutsGroupView
                     callouts={groupedCallouts[CalloutsGroup.HomeTop]}
-                    hubId={hubNameId!}
+                    spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}
                     journeyTypeName="opportunity"
@@ -103,7 +103,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              hubId={entities.hubId}
+              spaceId={entities.spaceId}
               communityId={entities.opportunity?.community?.id}
             />
             <ContributorsDialog

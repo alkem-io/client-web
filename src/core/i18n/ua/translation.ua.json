@@ -133,8 +133,8 @@
     "posts": "Аспекти",
     "host": "Host",
     "lead": "Lead",
-    "hub": "Центр",
-    "hubs": "Центри",
+    "space": "Центр",
+    "spaces": "Центри",
     "challenge": "Випробування",
     "challenges": "Випробування",
     "contributors": "Контрибʼютори",
@@ -214,7 +214,7 @@
       "not-verified": ""
     },
     "enums": {
-      "hub-visibility": {
+      "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
         "DEMO": "Demo"
@@ -231,7 +231,7 @@
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Hubs",
+          "name": "Global Admin Spaces",
           "order": 1,
           "hidden": false
         },
@@ -410,25 +410,25 @@
     "whiteboard-checkedout": "Please click 'Save & Stop Editing' first"
   },
   "context": {
-    "hub": {
+    "space": {
       "tagline": {
         "title": "Tagline",
-        "description": "Explain in one sentence what this Hub is about.",
+        "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
       "background": {
         "title": "Background",
-        "description": "Give a brief overview of the need for this Hub and how it came about.",
+        "description": "Give a brief overview of the need for this Space and how it came about.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "What will this Hub change? How will people and organizations be affected?",
+        "description": "What will this Space change? How will people and organizations be affected?",
         "placeholder": ""
       },
       "vision": {
         "title": "Vision",
-        "description": "What is the frame of reference for this Hub?",
+        "description": "What is the frame of reference for this Space?",
         "placeholder": ""
       },
       "who": {
@@ -704,11 +704,11 @@
       "parent-pending": "Основна заява обробляється",
       "dialog-apply-parent": {
         "title": "Бажаєш доєднатись до основного Центру?",
-        "body": "Щоб приєднатись до <strong title='Challenge name'>'{{challengeName}}'</strong>, спочатку ви повинні приєднатись Центру: <strong title='Hub name'>'{{hubName}}'</strong>. Будь ласка, додайте Випробування, яке ви баєжаєте доєднати до форми заяви."
+        "body": "Щоб приєднатись до <strong title='Challenge name'>'{{challengeName}}'</strong>, спочатку ви повинні приєднатись Центру: <strong title='Space name'>'{{spaceName}}'</strong>. Будь ласка, додайте Випробування, яке ви баєжаєте доєднати до форми заяви."
       },
       "dialog-parent-app-pending": {
         "title": "Основна заява обробляється!",
-        "body": "Щоб приєднатись до <strong title='Challenge name'>'{{challengeName}}'</strong>, спочатку ви повинні приєднатись Центру: <strong title='Hub name'>'{{hubName}}'</strong>. Для <strong title='Hub name'>'{{hubName}}'</strong> вже обробляється заява, ви також можете створити паралельну заяву для <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "Щоб приєднатись до <strong title='Challenge name'>'{{challengeName}}'</strong>, спочатку ви повинні приєднатись Центру: <strong title='Space name'>'{{spaceName}}'</strong>. Для <strong title='Space name'>'{{spaceName}}'</strong> вже обробляється заява, ви також можете створити паралельну заяву для <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Приєднатись до Спільноти",
@@ -751,7 +751,7 @@
       "file-size-error": "File size exceeds the {{limit}}MB limit",
       "file-upload-success": "File uploaded successfully"
     },
-    "editHubForm": {
+    "editSpaceForm": {
       "host": {
         "title": "Ведучий",
         "select": "Оберіть ведучого"
@@ -1072,10 +1072,10 @@
             "post-templates": "Card Templates",
             "whiteboard-templates": "Whiteboard Templates",
             "innovation-templates": "Innovation Flow Templates",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
+            "delete-confirmation": "Are you sure you want to delete {{template}} from the space? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "subtitle": "Find templates to use in your space, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
               "no-templates": "Couldn't find any Template of this type",
               "imported-successfully-notification": "Template imported successfully"
             }
@@ -1136,26 +1136,26 @@
           "challenge-updated": "Challenge updated successfully."
         }
       },
-      "hub": {
+      "space": {
         "sections": {
           "challenges": {
-            "description": "Here you can edit challenges for this hub."
+            "description": "Here you can edit challenges for this space."
           }
         },
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.hub) authorization preferences"
+            "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
           }
         },
         "community": {
           "preferences": {
             "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.hub) membership preferences"
+            "subtitle": "This section allows you to modify the $t(common.space) membership preferences"
           }
         },
         "notifications": {
-          "hub-created": "Hub created successfuly.",
-          "hub-removed": "Hub '{{name}}' removed successfully."
+          "space-created": "Space created successfuly.",
+          "space-removed": "Space '{{name}}' removed successfully."
         }
       },
       "opportunity": {
@@ -1242,20 +1242,20 @@
       },
       "side-note": {
         "title": "The Alkemio Structure",
-        "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
+        "description": "At Alkemio, all Challenges are part of a Space. Each Space has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
       "my-search": {
         "title": "Explore other Challenges visible to you",
-        "subtitle": "Challenges in public Hubs are visible to everyone. Challenges in private Hubs are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
+        "subtitle": "Challenges in public Spaces are visible to everyone. Challenges in private Spaces are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
       },
       "my": {
         "title": "My Challenges",
         "subtitle": "В цій секції вказані Випробування, до яких ви належите."
       },
       "other": {
-        "title": "Other Challenges within My Hubs",
-        "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
-        "filter-by-hub": "Filter by My Hub"
+        "title": "Other Challenges within My Spaces",
+        "subtitle": "Here you'll find the other challenges hosted by the spaces that you are member of.",
+        "filter-by-space": "Filter by My Space"
       }
     },
     "lead-organization": {
@@ -1266,7 +1266,7 @@
     },
     "activity": {
       "title": "{{blockName}} Активність",
-      "hubs": "Центр Випробувань",
+      "spaces": "Центр Випробувань",
       "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
@@ -1291,14 +1291,14 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
-        "hub": {
+        "space": {
           "header": "Дізнайтесть про Центри Випробувань!",
           "subheader": "",
-          "body": "Each Hub is a community with a dedicated space to connect, collaborate and innovate on your Challenges. Explore membership options.",
-          "body1": "Visibility: Public Hubs are fully visible to everyone. For private Hubs, the content is only available after becoming a member."
+          "body": "Each Space is a community with a dedicated space to connect, collaborate and innovate on your Challenges. Explore membership options.",
+          "body1": "Visibility: Public Spaces are fully visible to everyone. For private Spaces, the content is only available after becoming a member."
         },
-        "my-hubs": {
-          "header": "My Hubs ({{myHubsCount}})"
+        "my-spaces": {
+          "header": "My Spaces ({{mySpacesCount}})"
         },
         "organizations": {
           "header": "Організації",
@@ -1308,11 +1308,11 @@
           "title": "See who is driving Challenges on Alkemio"
         },
         "footer": {
-          "headline": "У цьому розділі показано центри, членом яких ви є. Докладніше про Alkemio? Відвідайте наш веб-сайт, зв’яжіться з нами або подивіться на наше сховище Github",
+          "headline": "У цьому розділі показано центри, членом яких ви є. Докладніше про Alkemio? Відвідайте наш веб-сайт, зв’яжіться з нами або подивіться на наше сховище github",
           "links": {
             "foundation": "Алхімічний фонд",
             "contact-form": "Контактний формуляр",
-            "github": "GitHub"
+            "github": "github"
           }
         }
       }
@@ -1325,10 +1325,10 @@
         "help": "Статус перевірки: містить інформацію про те чи ця Організація була формально перевірена"
       }
     },
-    "hub": {
+    "space": {
       "title": "Центр",
-      "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
-      "demo-hub": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
+      "archived-space-notice": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
+      "demo-space": "This is a Demo Space. <alkemio>Click here to collaborate in active Spaces</alkemio>.",
       "application": {
         "title": "Заява на приєднання {{entity}} \"{{name}}\"",
         "subheader": "Будь ласка, дайте відповідь на питання нижче, які будуть надіслані до відповідної структури, разом із вашим профілем.",
@@ -1411,7 +1411,7 @@
       "member-organizations": {
         "no-data": "No organization is contributing at this time"
       },
-      "hub-host": {
+      "space-host": {
         "title": "Сприяючі Організації",
         "help-text": "Ця Організація сприяє даному Центру."
       },
@@ -1460,7 +1460,7 @@
         "no-templates": "Поки немає шаблонів. Станьте першим, хто дадасть.",
         "how-to": "Для створення шаблону, створіть нове полотно, або використайте існуюче і збережіть його, як шаблон."
       },
-      "hub": {
+      "space": {
         "templatesHeader": "Шаблони в цьому Центрі",
         "templatesSubheader": "Шаблони цього Центру можуть бути використані у всіх Випробуваннях, або Можливостях цього Центру."
       },
@@ -1651,7 +1651,7 @@
     "postLocation": {
       "title": "Card location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
+      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved card to the new Callout.",
       "error": "Something went wrong when moving the card, please try again."
     }

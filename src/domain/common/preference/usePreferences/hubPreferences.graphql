@@ -1,5 +1,5 @@
-query hubPreferences($hubNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query spacePreferences($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     preferences {
       id

@@ -31,7 +31,7 @@ const PostCallout = forwardRef<HTMLDivElement, PostCalloutProps>(
     {
       callout,
       canCreate = false,
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
       contributionsCount,
@@ -53,7 +53,7 @@ const PostCallout = forwardRef<HTMLDivElement, PostCalloutProps>(
     });
 
     const { subscriptionEnabled, posts, loading } = usePostCreatedOnCalloutSubscription({
-      hubNameId,
+      spaceNameId,
       calloutId: callout.id,
       challengeNameId,
       opportunityNameId,
@@ -146,7 +146,7 @@ const PostCallout = forwardRef<HTMLDivElement, PostCalloutProps>(
     const navigateToPost = (post: PostCardPost) => {
       navigate(
         buildPostUrl(callout.nameID, post.nameID, {
-          hubNameId: hubNameId!,
+          spaceNameId: spaceNameId!,
           challengeNameId,
           opportunityNameId,
         })
@@ -165,7 +165,7 @@ const PostCallout = forwardRef<HTMLDivElement, PostCalloutProps>(
           <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
             <ScrollableCardsLayout
               items={loading || !inView ? [undefined, undefined] : posts ?? []}
-              deps={[hubNameId, challengeNameId, opportunityNameId]}
+              deps={[spaceNameId, challengeNameId, opportunityNameId]}
               createButton={!isMobile && createButton}
               maxHeight={gutters(22)}
             >
@@ -182,7 +182,7 @@ const PostCallout = forwardRef<HTMLDivElement, PostCalloutProps>(
           onCreate={onCreate}
           postNames={postNames}
           calloutDisplayName={callout.profile.displayName}
-          hubNameId={hubNameId!}
+          spaceNameId={spaceNameId!}
           challengeNameId={challengeNameId}
           opportunityNameId={opportunityNameId}
           calloutId={callout.id}

@@ -12,7 +12,7 @@ export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
   onClose: () => void;
   entityTypeName:
-    | 'hub'
+    | 'space'
     | 'challenge'
     | 'opportunity'
     | 'user'

@@ -31,7 +31,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
   (
     {
       callout,
-      hubNameId,
+      spaceNameId,
       loading,
       challengeNameId,
       opportunityNameId,
@@ -57,7 +57,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
     const navigateToWhiteboard = (whiteboard: WhiteboardCardWhiteboard) => {
       navigate(
         buildWhiteboardUrl(whiteboard.calloutNameId, whiteboard.nameID, {
-          hubNameId: hubNameId!,
+          spaceNameId: spaceNameId!,
           challengeNameId,
           opportunityNameId,
         })
@@ -85,7 +85,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
             {showCards && (
               <ScrollableCardsLayout
                 items={loading ? [undefined, undefined] : callout.whiteboards}
-                deps={[hubNameId, challengeNameId, opportunityNameId]}
+                deps={[spaceNameId, challengeNameId, opportunityNameId]}
                 createButton={!isMobile && createButton}
                 maxHeight={gutters(22)}
               >

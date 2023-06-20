@@ -1,5 +1,5 @@
-query HubPost($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query SpacePost($spaceNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     collaboration {
       ...PostDashboardData
@@ -8,12 +8,12 @@ query HubPost($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameI
 }
 
 query ChallengePost(
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID!
   $postNameId: UUID_NAMEID!
   $calloutNameId: UUID_NAMEID!
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
@@ -25,12 +25,12 @@ query ChallengePost(
 }
 
 query OpportunityPost(
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $opportunityNameId: UUID_NAMEID!
   $postNameId: UUID_NAMEID!
   $calloutNameId: UUID_NAMEID!
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id

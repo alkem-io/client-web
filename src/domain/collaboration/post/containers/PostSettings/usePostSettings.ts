@@ -5,7 +5,7 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import {
   useChallengePostSettingsQuery,
   useDeletePostMutation,
-  useHubPostSettingsQuery,
+  useSpacePostSettingsQuery,
   useOpportunityPostSettingsQuery,
   useUpdatePostMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -49,7 +49,7 @@ export interface PostSettingsContainerState {
 }
 
 export interface PostSettingsContainerProps {
-  hubNameId: string;
+  spaceNameId: string;
   challengeNameId?: string;
   opportunityNameId?: string;
   postNameId: string;
@@ -61,17 +61,17 @@ const usePostSettings: ContainerHook<
   PostSettingsContainerEntities,
   PostSettingsContainerActions,
   PostSettingsContainerState
-> = ({ hubNameId, postNameId, challengeNameId, opportunityNameId, calloutNameId }) => {
+> = ({ spaceNameId, postNameId, challengeNameId, opportunityNameId, calloutNameId }) => {
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
-  const isPostDefined = postNameId && hubNameId;
+  const isPostDefined = postNameId && spaceNameId;
 
   const {
-    data: hubData,
-    loading: hubLoading,
-    error: hubError,
-  } = useHubPostSettingsQuery({
-    variables: { hubNameId, postNameId, calloutNameId },
+    data: spaceData,
+    loading: spaceLoading,
+    error: spaceError,
+  } = useSpacePostSettingsQuery({
+    variables: { spaceNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
   });
 
@@ -80,7 +80,7 @@ const usePostSettings: ContainerHook<
     loading: challengeLoading,
     error: challengeError,
   } = useChallengePostSettingsQuery({
-    variables: { hubNameId, challengeNameId: challengeNameId ?? '', postNameId, calloutNameId },
+    variables: { spaceNameId, challengeNameId: challengeNameId ?? '', postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
   });
 
@@ -89,14 +89,14 @@ const usePostSettings: ContainerHook<
     loading: opportunityLoading,
     error: opportunityError,
   } = useOpportunityPostSettingsQuery({
-    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '', postNameId, calloutNameId },
+    variables: { spaceNameId, opportunityNameId: opportunityNameId ?? '', postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !opportunityNameId,
   });
 
   const collaborationCallouts =
-    hubData?.hub?.collaboration?.callouts ??
-    challengeData?.hub?.challenge?.collaboration?.callouts ??
-    opportunityData?.hub?.opportunity?.collaboration?.callouts;
+    spaceData?.space?.collaboration?.callouts ??
+    challengeData?.space?.challenge?.collaboration?.callouts ??
+    opportunityData?.space?.opportunity?.collaboration?.callouts;
 
   // TODO fetch calloutID for the Post for building a reliable link between entities
   const parentCallout = getCardCallout(collaborationCallouts, postNameId);
@@ -104,8 +104,8 @@ const usePostSettings: ContainerHook<
 
   const post = parentCallout?.posts?.find(x => x.nameID === postNameId);
   console.log(parentCallout);
-  const loading = hubLoading || challengeLoading || opportunityLoading;
-  const error = hubError ?? challengeError ?? opportunityError;
+  const loading = spaceLoading || challengeLoading || opportunityLoading;
+  const error = spaceError ?? challengeError ?? opportunityError;
 
   const [updatePost, { loading: updating, error: updateError }] = useUpdatePostMutation({
     onCompleted: () => notify('Post updated successfully', 'success'),

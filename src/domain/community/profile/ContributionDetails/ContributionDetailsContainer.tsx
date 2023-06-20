@@ -2,13 +2,13 @@ import React, { FC, useCallback, useMemo } from 'react';
 import {
   refetchRolesUserQuery,
   useChallengeContributionDetailsQuery,
-  useHubContributionDetailsQuery,
+  useSpaceContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
   useRemoveUserAsCommunityMemberMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { ContributionItem } from '../../contributor/contribution';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
@@ -48,23 +48,23 @@ export interface ContributionDetails {
   journeyUri: string;
   communityId?: string;
   tagline: string;
-  isDemoHub?: boolean;
+  isDemoSpace?: boolean;
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
-  const { hubId, challengeId, opportunityId } = entities;
+  const { spaceId, challengeId, opportunityId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
-  const { data: hubData, loading: hubLoading } = useHubContributionDetailsQuery({
+  const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
     variables: {
-      hubId: hubId,
+      spaceId: spaceId,
     },
     skip: Boolean(challengeId) || Boolean(opportunityId),
   });
 
   const { data: challengeData, loading: challengeLoading } = useChallengeContributionDetailsQuery({
     variables: {
-      hubId: hubId,
+      spaceId: spaceId,
       challengeId: challengeId || '',
     },
     skip: !challengeId || Boolean(opportunityId),
@@ -72,7 +72,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
   const { data: opportunityData, loading: opportunityLoading } = useOpportunityContributionDetailsQuery({
     variables: {
-      hubId: hubId,
+      spaceId: spaceId,
       opportunityId: opportunityId || '',
     },
     skip: !opportunityId,
@@ -81,49 +81,49 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
   const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
 
   const details = useMemo<ContributionDetails | undefined>(() => {
-    if (hubData) {
+    if (spaceData) {
       return {
-        displayName: hubData.hub.profile.displayName,
-        journeyTypeName: 'hub',
-        banner: getVisualByType(VisualName.BANNERNARROW, hubData.hub.profile.visuals),
-        tags: hubData.hub.profile.tagset?.tags ?? [],
-        journeyUri: buildHubUrl(hubData.hub.nameID),
-        communityId: hubData.hub.community?.id,
-        tagline: hubData.hub.profile.tagline ?? '',
-        hubVisibility: hubData.hub.visibility,
+        displayName: spaceData.space.profile.displayName,
+        journeyTypeName: 'space',
+        banner: getVisualByType(VisualName.BANNERNARROW, spaceData.space.profile.visuals),
+        tags: spaceData.space.profile.tagset?.tags ?? [],
+        journeyUri: buildSpaceUrl(spaceData.space.nameID),
+        communityId: spaceData.space.community?.id,
+        tagline: spaceData.space.profile.tagline ?? '',
+        spaceVisibility: spaceData.space.visibility,
       };
     }
 
     if (challengeData) {
       return {
-        displayName: challengeData.hub.challenge.profile.displayName,
+        displayName: challengeData.space.challenge.profile.displayName,
         journeyTypeName: 'challenge',
-        banner: getVisualByType(VisualName.BANNERNARROW, challengeData.hub.challenge.profile.visuals),
-        tags: challengeData.hub.challenge.profile.tagset?.tags ?? [],
-        journeyUri: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
-        communityId: challengeData.hub.challenge.community?.id,
-        tagline: challengeData.hub.challenge.profile.tagline ?? '',
-        hubVisibility: challengeData.hub.visibility,
+        banner: getVisualByType(VisualName.BANNERNARROW, challengeData.space.challenge.profile.visuals),
+        tags: challengeData.space.challenge.profile.tagset?.tags ?? [],
+        journeyUri: buildChallengeUrl(challengeData.space.nameID, challengeData.space.challenge.nameID),
+        communityId: challengeData.space.challenge.community?.id,
+        tagline: challengeData.space.challenge.profile.tagline ?? '',
+        spaceVisibility: challengeData.space.visibility,
       };
     }
 
     if (opportunityData) {
       return {
-        displayName: opportunityData.hub.opportunity.profile.displayName,
+        displayName: opportunityData.space.opportunity.profile.displayName,
         journeyTypeName: 'opportunity',
-        banner: getVisualByType(VisualName.BANNERNARROW, opportunityData.hub.opportunity.profile.visuals),
-        tags: opportunityData.hub.opportunity.profile.tagset?.tags ?? [],
+        banner: getVisualByType(VisualName.BANNERNARROW, opportunityData.space.opportunity.profile.visuals),
+        tags: opportunityData.space.opportunity.profile.tagset?.tags ?? [],
         journeyUri: buildOpportunityUrl(
-          opportunityData.hub.nameID,
-          opportunityData.hub.opportunity.parentNameID || '',
-          opportunityData.hub.opportunity.nameID
+          opportunityData.space.nameID,
+          opportunityData.space.opportunity.parentNameID || '',
+          opportunityData.space.opportunity.nameID
         ),
-        communityId: opportunityData.hub.opportunity.community?.id,
-        tagline: opportunityData.hub.opportunity.profile.tagline ?? '',
-        hubVisibility: opportunityData.hub.visibility,
+        communityId: opportunityData.space.opportunity.community?.id,
+        tagline: opportunityData.space.opportunity.profile.tagline ?? '',
+        spaceVisibility: opportunityData.space.visibility,
       };
     }
-  }, [hubData, challengeData, opportunityData]);
+  }, [spaceData, challengeData, opportunityData]);
 
   const handleLeaveCommunity = useCallback(async () => {
     if (details?.communityId && userId)
@@ -142,7 +142,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       {children(
         { details },
         {
-          loading: hubLoading || challengeLoading || opportunityLoading,
+          loading: spaceLoading || challengeLoading || opportunityLoading,
           isLeavingCommunity,
         },
         { leaveCommunity: handleLeaveCommunity }

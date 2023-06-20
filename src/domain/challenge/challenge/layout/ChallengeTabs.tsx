@@ -12,9 +12,9 @@ export interface ChallengeTabsProps extends EntityTabsProps {}
 const ChallengeTabs: FC<ChallengeTabsProps> = props => {
   const { t } = useTranslation();
 
-  const { hubNameId, challengeNameId, permissions } = useChallenge();
-  const rootUrl = buildChallengeUrl(hubNameId, challengeNameId);
-  const settingsUrl = buildAdminChallengeUrl(hubNameId, challengeNameId);
+  const { spaceNameId, challengeNameId, permissions } = useChallenge();
+  const rootUrl = buildChallengeUrl(spaceNameId, challengeNameId);
+  const settingsUrl = buildAdminChallengeUrl(spaceNameId, challengeNameId);
 
   return (
     <JourneyPageTabs

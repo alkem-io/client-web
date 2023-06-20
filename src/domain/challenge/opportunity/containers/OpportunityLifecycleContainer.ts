@@ -16,22 +16,22 @@ interface OpportunityLifecycleContainerProvided {
 }
 
 type OpportunityLifecycleContainerProps = ComponentOrChildrenFn<OpportunityLifecycleContainerProvided> & {
-  hubNameId: string;
+  spaceNameId: string;
   opportunityNameId: string;
 };
 
 const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
-  hubNameId,
+  spaceNameId,
   opportunityNameId,
   ...rendered
 }) => {
   const { data, loading } = useOpportunityLifecycleQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
+    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
 
-  const lifecycle = data?.hub.opportunity?.lifecycle;
+  const lifecycle = data?.space.opportunity?.lifecycle;
 
   const [updateOpportunityLifecycle] = useEventOnOpportunityMutation({});
 

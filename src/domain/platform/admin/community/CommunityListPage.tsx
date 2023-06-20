@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { Loading } from '../../../../common/components/core';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import { useDeleteUserGroup } from '../components/Group/useDeleteUserGroup';
 import { useCommunityGroupsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
@@ -15,26 +15,26 @@ interface CommunityGroupListPageProps {
 
 export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ communityId }) => {
   const { t } = useTranslation();
-  const { hubId, loading: loadingHub } = useHub();
+  const { spaceId, loading: loadingSpace } = useSpace();
 
   const { data, loading } = useCommunityGroupsQuery({
     variables: {
-      hubId,
+      spaceId,
       communityId,
     },
-    skip: !hubId,
+    skip: !spaceId,
   });
 
   const { handleDelete } = useDeleteUserGroup();
 
-  const community = data?.hub.community;
+  const community = data?.space.community;
   const groupsList = useMemo(
     () => community?.groups?.map(u => ({ id: u.id, value: u.name, url: `groups/${u.id}` })) || [],
     [community?.groups]
   );
   const onDelete = useCallback((item: SearchableListItem) => handleDelete(item.id), [handleDelete]);
 
-  if (loading || loadingHub) {
+  if (loading || loadingSpace) {
     return <Loading />;
   }
 

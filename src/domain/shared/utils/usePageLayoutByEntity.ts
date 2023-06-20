@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import HubPageLayout from '../../challenge/hub/layout/HubPageLayout';
+import SpacePageLayout from '../../challenge/space/layout/SpacePageLayout';
 import ChallengePageLayout from '../../challenge/challenge/layout/ChallengePageLayout';
 import OpportunityPageLayout from '../../challenge/opportunity/layout/OpportunityPageLayout';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
@@ -7,8 +7,8 @@ import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 const usePageLayoutByEntity = (entityTypeName: EntityTypeName) =>
   useMemo(() => {
     switch (entityTypeName) {
-      case 'hub':
-        return HubPageLayout;
+      case 'space':
+        return SpacePageLayout;
       case 'challenge':
         return ChallengePageLayout;
       case 'opportunity':

@@ -1,0 +1,18 @@
+query spaceMembers($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    community {
+      id
+      memberUsers {
+        id
+        profile {
+          id
+          displayName
+        }
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+}

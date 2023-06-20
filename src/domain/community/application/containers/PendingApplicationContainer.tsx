@@ -1,13 +1,13 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useApplicationByHubLazyQuery,
+  useApplicationBySpaceLazyQuery,
   useChallengeNameIdQuery,
-  useHubNameIdQuery,
+  useSpaceNameIdQuery,
   useOpportunityNameIdQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Application } from '../../../../core/apollo/generated/graphql-schema';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import getApplicationTypeTranslationKey from '../../../../common/utils/application/getApplicationTypeTranslation';
 import { ApplicationWithType } from '../../../../common/utils/application/getApplicationWithType';
 
@@ -41,7 +41,7 @@ export interface PendingApplicationContainerProps {
 
 const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ entities, children }) => {
   const { t } = useTranslation();
-  const { type, hubID, challengeID = '', opportunityID = '' } = entities.application;
+  const { type, spaceID, challengeID = '', opportunityID = '' } = entities.application;
 
   const [applicationDetails, setApplicationDetails] = useState<ApplicationDialogDetails>();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
@@ -49,54 +49,54 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
   let url = '';
 
   const { data: _opportunityNameId, loading: loadingOpportunity } = useOpportunityNameIdQuery({
-    variables: { hubId: hubID, opportunityId: opportunityID },
+    variables: { spaceId: spaceID, opportunityId: opportunityID },
     skip: !opportunityID,
   });
   if (opportunityID) {
-    const hubNameId = _opportunityNameId?.hub.nameID || '';
-    const challengeNameId = _opportunityNameId?.hub.opportunity.parentNameID || '';
-    const opportunityNameId = _opportunityNameId?.hub.opportunity.nameID || '';
-    url = buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
+    const spaceNameId = _opportunityNameId?.space.nameID || '';
+    const challengeNameId = _opportunityNameId?.space.opportunity.parentNameID || '';
+    const opportunityNameId = _opportunityNameId?.space.opportunity.nameID || '';
+    url = buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId);
   }
 
   const { data: _challengeNameId, loading: loadingChallenge } = useChallengeNameIdQuery({
-    variables: { hubId: hubID, challengeId: challengeID },
+    variables: { spaceId: spaceID, challengeId: challengeID },
     skip: !challengeID,
   });
   if (challengeID && !opportunityID) {
-    const hubNameId = _challengeNameId?.hub.nameID || '';
-    const challengeNameId = _challengeNameId?.hub.challenge.nameID || '';
-    url = buildChallengeUrl(hubNameId, challengeNameId);
+    const spaceNameId = _challengeNameId?.space.nameID || '';
+    const challengeNameId = _challengeNameId?.space.challenge.nameID || '';
+    url = buildChallengeUrl(spaceNameId, challengeNameId);
   }
 
-  const { data: _hubNameId, loading: loadingHub } = useHubNameIdQuery({
-    variables: { hubId: hubID },
-    skip: !!(hubID && (challengeID || opportunityID)),
+  const { data: _spaceNameId, loading: loadingSpace } = useSpaceNameIdQuery({
+    variables: { spaceId: spaceID },
+    skip: !!(spaceID && (challengeID || opportunityID)),
   });
-  if (hubID && !challengeID && !opportunityID) {
-    const hubNameId = _hubNameId?.hub.nameID || '';
-    url = buildHubUrl(hubNameId);
+  if (spaceID && !challengeID && !opportunityID) {
+    const spaceNameId = _spaceNameId?.space.nameID || '';
+    url = buildSpaceUrl(spaceNameId);
   }
 
-  const [applicationByHub, { loading: loadingDialog }] = useApplicationByHubLazyQuery({
+  const [applicationBySpace, { loading: loadingDialog }] = useApplicationBySpaceLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
-    onCompleted: ({ hub }) =>
+    onCompleted: ({ space }) =>
       setApplicationDetails({
-        questions: hub.application.questions,
-        createdDate: hub.application.createdDate,
-        updatedDate: hub.application.updatedDate,
+        questions: space.application.questions,
+        createdDate: space.application.createdDate,
+        updatedDate: space.application.updatedDate,
       }),
   });
 
   const handleDialogOpen = useCallback(
     (application: ApplicationWithType) => {
-      applicationByHub({
-        variables: { hubId: application.hubID, appId: application.id },
+      applicationBySpace({
+        variables: { spaceId: application.spaceID, appId: application.id },
       });
       setIsDialogOpened(true);
     },
-    [applicationByHub]
+    [applicationBySpace]
   );
 
   const handleDialogClose = () => {
@@ -113,7 +113,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
         { url, typeName, applicationDetails: applicationDetails },
         { handleDialogOpen, handleDialogClose },
         {
-          loading: loadingHub || loadingChallenge || loadingOpportunity,
+          loading: loadingSpace || loadingChallenge || loadingOpportunity,
           loadingDialog,
           isDialogOpened,
         }

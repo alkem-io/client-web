@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
 import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import ChallengeCommunicationsPage from '../../../../challenge/challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
@@ -15,7 +15,7 @@ import ChallengeInnovationFlowPage from '../../../../challenge/challenge/pages/I
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 export const ChallengeRoute: FC = () => {
-  const { hubId, communityId: hubCommunityId } = useHub();
+  const { spaceId, communityId: spaceCommunityId } = useSpace();
   const { challenge, challengeId, challengeNameId } = useChallenge();
   const communityId = challenge?.community?.id;
 
@@ -23,7 +23,7 @@ export const ChallengeRoute: FC = () => {
     <StorageConfigContextProvider
       locationType="journey"
       journeyTypeName="challenge"
-      hubNameId={hubId}
+      spaceNameId={spaceId}
       challengeNameId={challengeNameId}
     >
       <Routes>
@@ -33,12 +33,14 @@ export const ChallengeRoute: FC = () => {
           <Route path="context" element={<ChallengeContextPage />} />
           <Route
             path="communications"
-            element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={hubCommunityId} />}
+            element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={spaceCommunityId} />}
           />
           <Route path="community" element={<ChallengeCommunityAdminPage />} />
           <Route
             path="community/groups/*"
-            element={<CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={hubCommunityId} />}
+            element={
+              <CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={spaceCommunityId} />
+            }
           />
           <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
           <Route path="opportunities/*" element={<OpportunitiesRoute />} />

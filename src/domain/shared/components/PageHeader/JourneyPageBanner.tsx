@@ -9,8 +9,8 @@ import { Caption, PageTitle, Tagline } from '../../../../core/ui/typography';
 import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '../../../../core/ui/grid/constants';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
@@ -69,29 +69,29 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
     <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
   );
   const { platform } = useConfig();
-  const { visibility: hubVisibility } = useHub();
+  const { visibility: spaceVisibility } = useSpace();
 
-  if (hubVisibility === HubVisibility.Active) return null;
+  if (spaceVisibility === SpaceVisibility.Active) return null;
   if (journeyTypeName === 'admin') return null;
 
   let message: ReactNode = undefined;
 
   switch (journeyTypeName) {
-    case 'hub': {
-      if (hubVisibility === HubVisibility.Archived) {
-        message = tLinks('pages.generic.archived-notice.archived-hub', {
+    case 'space': {
+      if (spaceVisibility === SpaceVisibility.Archived) {
+        message = tLinks('pages.generic.archived-notice.archived-space', {
           contact: { href: platform?.feedback, target: '_blank' },
         });
       }
-      if (hubVisibility === HubVisibility.Demo) {
-        message = tLinks('pages.generic.demo-notice.demo-hub', {
+      if (spaceVisibility === SpaceVisibility.Demo) {
+        message = tLinks('pages.generic.demo-notice.demo-space', {
           alkemio: { href: ALKEMIO_DOMAIN, target: '_blank' },
         });
       }
       break;
     }
     default: {
-      if (hubVisibility === HubVisibility.Archived) {
+      if (spaceVisibility === SpaceVisibility.Archived) {
         message = tLinks(
           'pages.generic.archived-notice.archived-journey',
           {
@@ -100,7 +100,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
           { journey: t(`common.${journeyTypeName}` as const) }
         );
       }
-      if (hubVisibility === HubVisibility.Demo) {
+      if (spaceVisibility === SpaceVisibility.Demo) {
         message = tLinks(
           'pages.generic.demo-notice.demo-journey',
           {
@@ -146,7 +146,7 @@ export interface JourneyPageBannerProps {
 }
 
 /**
- * This is the common top banner for Hubs/Challenges/Opportunities, and in general anything else except the home.
+ * This is the common top banner for Spaces/Challenges/Opportunities, and in general anything else except the home.
  * For Users/Organizations see ProfileBanner
  */
 const JourneyPageBanner: FC<JourneyPageBannerProps> = ({

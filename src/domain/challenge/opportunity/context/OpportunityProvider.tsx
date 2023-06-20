@@ -17,8 +17,8 @@ export interface OpportunityContextProps {
   communityId: string;
   challengeId: string;
   challengeNameId: string;
-  hubId: string;
-  hubNameId: string;
+  spaceId: string;
+  spaceNameId: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
   displayName: string;
@@ -31,8 +31,8 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   communityId: '',
   challengeId: '',
   challengeNameId: '',
-  hubId: '',
-  hubNameId: '',
+  spaceId: '',
+  spaceNameId: '',
   permissions: {
     viewerCanUpdate: false,
     communityReadAccess: false,
@@ -44,13 +44,13 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
 interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
-  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const { data, loading } = useOpportunityProviderQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
+    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
   });
-  const hubId = data?.hub?.id || '';
-  const opportunity = data?.hub?.opportunity;
+  const spaceId = data?.space?.id || '';
+  const opportunity = data?.space?.opportunity;
   const opportunityId = opportunity?.id || '';
   const communityId = opportunity?.community?.id ?? '';
   // using the challenge provider
@@ -73,8 +73,8 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
       value={{
         opportunity,
         displayName,
-        hubId,
-        hubNameId,
+        spaceId,
+        spaceNameId,
         challengeId,
         challengeNameId,
         opportunityId,

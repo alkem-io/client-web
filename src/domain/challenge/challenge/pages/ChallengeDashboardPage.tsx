@@ -32,11 +32,11 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const { t } = useTranslation();
 
-  const { hubNameId, challengeNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId } = useUrlParams();
 
   const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
     useCallouts({
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
     });
@@ -62,7 +62,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   }
                 />
               }
-              hubNameId={entities.hubNameId}
+              spaceNameId={entities.spaceNameId}
               challengeNameId={entities.challenge?.nameID}
               communityId={entities.challenge?.community?.id}
               childEntities={entities.challenge?.opportunities ?? undefined}
@@ -90,10 +90,10 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   innovationFlowState={opportunity.lifecycle?.state}
                   tags={opportunity.profile.tagset?.tags!}
                   banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
-                  journeyUri={buildOpportunityUrl(entities.hubNameId, entities.challenge!.nameID, opportunity.nameID)}
+                  journeyUri={buildOpportunityUrl(entities.spaceNameId, entities.challenge!.nameID, opportunity.nameID)}
                   challengeDisplayName={entities.challenge?.profile.displayName!}
-                  challengeUri={buildChallengeUrl(entities.hubNameId, entities.challenge!.nameID)}
-                  hubVisibility={entities.hubVisibility}
+                  challengeUri={buildChallengeUrl(entities.spaceNameId, entities.challenge!.nameID)}
+                  spaceVisibility={entities.spaceVisibility}
                 />
               )}
               journeyTypeName="challenge"
@@ -102,7 +102,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 groupedCallouts[CalloutsGroup.HomeTop] && (
                   <CalloutsGroupView
                     callouts={groupedCallouts[CalloutsGroup.HomeTop]}
-                    hubId={hubNameId!}
+                    spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}
                     journeyTypeName="challenge"
@@ -120,7 +120,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              hubId={entities.hubId}
+              spaceId={entities.spaceId}
               communityId={entities.challenge?.community?.id}
             />
             <ContributorsDialog

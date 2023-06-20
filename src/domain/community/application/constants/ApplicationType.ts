@@ -1,5 +1,5 @@
 export enum ApplicationTypeEnum {
-  hub,
+  space,
   challenge,
   opportunity,
 }

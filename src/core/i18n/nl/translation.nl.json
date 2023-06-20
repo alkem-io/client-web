@@ -181,8 +181,8 @@
     "posts": "Kaarten",
     "host": "Host",
     "lead": "Lead",
-    "hub": "Space",
-    "hubs": "Spaces",
+    "space": "Space",
+    "spaces": "Spaces",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "all-entities": "Alle {{entityType}} ({{count}})",
@@ -271,7 +271,7 @@
       "not-verified": ""
     },
     "enums": {
-      "hub-visibility": {
+      "space-visibility": {
         "ACTIVE": "Actief",
         "ARCHIVED": "Gearchiveerd",
         "DEMO": "Demo"
@@ -479,7 +479,7 @@
     }
   },
   "context": {
-    "hub": {
+    "space": {
       "tagline": {
         "title": "Tagline",
         "description": "Leg in één zin uit waar deze Space over gaat.",
@@ -601,7 +601,7 @@
     "template-library": "Template bibliotheek: Whiteboards",
     "filter-placeholder": "Templates zoeken...",
     "whiteboard-template": "Whiteboard template",
-    "hub-templates": "Templates geselecteerd door de host van deze community",
+    "space-templates": "Templates geselecteerd door de host van deze community",
     "load-platform-templates": "Of klik hier om door alle platformtemplates te bladeren",
     "platform-templates": "Platform templates",
     "error-importing": "Fout bij importeren Whiteboard Template",
@@ -871,11 +871,11 @@
       "extendedMessage": "{{join}} onze Community en start met impact maken!",
       "dialog-apply-parent": {
         "title": "Wil je lid worden van de bovenliggende Space?",
-        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Space. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Hub."
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Space."
       },
       "dialog-parent-app-pending": {
         "title": "Bovenliggende aanmelding loopt!",
-        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Space. Er loopt al een aanmelding voor die <strong title='Hub name'>'{{hubName}}'</strong>, dus je kan ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Er loopt al een aanmelding voor die <strong title='Space name'>'{{spaceName}}'</strong>, dus je kan ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Word lid van de community",
@@ -918,7 +918,7 @@
       "file-size-error": "Bestandsgrootte overschrijdt de limiet van {{limit}}MB",
       "file-upload-success": "Bestand succesvol geüpload"
     },
-    "editHubForm": {
+    "editSpaceForm": {
       "host": {
         "title": "Organisator",
         "select": "Select een organisator"
@@ -1227,11 +1227,11 @@
         }
       },
       "archived-notice": {
-        "archived-hub": "Deze Space is momenteel gearchiveerd. Wil je de Space weer in leven brengen? <contact>Klik hier</contact> om contact te zoeken.",
+        "archived-space": "Deze Space is momenteel gearchiveerd. Wil je de Space weer in leven brengen? <contact>Klik hier</contact> om contact te zoeken.",
         "archived-journey": "Deze {{journey}} staat onder een gearchiveerde Space. Geïnteresseerd om het terug te brengen naar het leven? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
       },
       "demo-notice": {
-        "demo-hub": "Dit is een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces.",
+        "demo-space": "Dit is een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces.",
         "demo-journey": "Deze {{journey}} ligt binnen een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces."
       }
     },
@@ -1330,7 +1330,7 @@
           "challenge-updated": "Challenge succesvol aangepast."
         }
       },
-      "hub": {
+      "space": {
         "sections": {
           "challenges": {
             "description": "Hier kan je de Challenges voor deze Space aanpassen."
@@ -1338,18 +1338,18 @@
         },
         "authorization": {
           "preferences": {
-            "subtitle": "Hier kan je de $t(common.hub) authorisatie voorkeuren aanpassen"
+            "subtitle": "Hier kan je de $t(common.space) authorisatie voorkeuren aanpassen"
           }
         },
         "community": {
           "preferences": {
             "title": "Lidmaatschap",
-            "subtitle": "In deze sectie kan je de $t(common.hub) lidmaatschap-voorkeuren aanpassen"
+            "subtitle": "In deze sectie kan je de $t(common.space) lidmaatschap-voorkeuren aanpassen"
           }
         },
         "notifications": {
-          "hub-created": "Space succesvol aangemaakt.",
-          "hub-removed": "'{{name}}' Space succesvol verwijderd."
+          "space-created": "Space succesvol aangemaakt.",
+          "space-removed": "'{{name}}' Space succesvol verwijderd."
         }
       },
       "opportunity": {
@@ -1453,7 +1453,7 @@
         },
         "key": {
           "all": "Alles",
-          "hub": "Spaces",
+          "space": "Spaces",
           "challenge": "Challenges",
           "opportunity": "Opportunities",
           "user": "Gebruikers",
@@ -1463,7 +1463,7 @@
           "callout": "Oproepen (binnenkort beschikbaar)"
         }
       },
-      "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunities)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
       "search": {
@@ -1488,7 +1488,7 @@
       "other": {
         "title": "Andere Challenges binnen mijn Spaces",
         "subtitle": "Hier vind je de andere Challenges die vallen onder de Spaces waarvan je lid bent.",
-        "filter-by-hub": "Filter op mijn Space"
+        "filter-by-space": "Filter op mijn Space"
       }
     },
     "lead-organization": {
@@ -1499,7 +1499,7 @@
     },
     "activity": {
       "title": "{{blockName}} Activiteit",
-      "hubs": "Challenges Spaces",
+      "spaces": "Challenges Spaces",
       "innovation-flow-info": "Klik om de Innovatie Flow te weergeven"
     },
     "home": {
@@ -1524,14 +1524,14 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
-        "hub": {
+        "space": {
           "header": "Verken de Challenge Spaces!",
           "subheader": "",
           "body": "In iedere Space werkt de community samen aan een aantal gedefinieerde uitdagingen. Het is een plek om te verbinden, samen te werken en te innoveren.",
           "body1": "Individuele gebruikers kunnen zich aansluiten bij één of meerdere Spaces. Deze Spaces kunnen zowel openbaar als privé zijn."
         },
-        "my-hubs": {
-          "header": "Mijn Spaces ({{myHubsCount}})"
+        "my-spaces": {
+          "header": "Mijn Spaces ({{mySpacesCount}})"
         },
         "organizations": {
           "header": "Organisaties",
@@ -1541,11 +1541,11 @@
           "title": "Zie wie er aan Challenges op Alkemio werkt"
         },
         "footer": {
-          "headline": "Meer weten over Alkemio? Bezoek onze website, neem contact met ons op of neem een kijkje op onze Github repository",
+          "headline": "Meer weten over Alkemio? Bezoek onze website, neem contact met ons op of neem een kijkje op onze github repository",
           "links": {
             "foundation": "Stichting Alkemio",
             "contact-form": "Contactformulier",
-            "github": "GitHub"
+            "github": "github"
           }
         }
       }
@@ -1558,7 +1558,7 @@
         "help": "Verificatie status: is de identiteit en informatie over de Organisatie formeel geverifieerd"
       }
     },
-    "hub": {
+    "space": {
       "title": "Space",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
@@ -1648,7 +1648,7 @@
       "member-organizations": {
         "no-data": "Er is op dit moment geen organisatie die bijdraagt"
       },
-      "hub-host": {
+      "space-host": {
         "title": "Beherende organisatie",
         "help-text": "Laat verschillende organisaties zien, inclusief de rol die je hebt"
       },
@@ -1696,7 +1696,7 @@
         "no-templates": "Er zijn hier nog geen templates gedefinieerd. Wees de eerste die er een toevoegt.",
         "how-to": "Om een whiteboard te creeëren moet je een nieuw whiteboard aanmaken of een bestaande selecteren en die als template opslaan."
       },
-      "hub": {
+      "space": {
         "templatesHeader": "Templates gedefinieerd in deze Space",
         "templatesSubheader": "De templates gedefinieerd in deze Space kunnen in elke Challenge en Opportunity die binnen deze Space vallen gebruikt worden."
       },
@@ -1940,7 +1940,7 @@
     "more": "...plus {{count}} meer",
     "sign-in": "Log in om de gebruikers die aan deze organisatie zijn gekoppeld te zien."
   },
-  "hubs-filter": {
+  "spaces-filter": {
     "current-filter": "Selecteer een van de thema's die jij interessant vindt! Huidig filter: ",
     "show-all": "Alles weergeven",
     "other": "Anders",
@@ -1972,7 +1972,7 @@
       }
     ]
   },
-  "hubSearch": {
+  "spaceSearch": {
     "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
   },
   "visuals-alt-text": {

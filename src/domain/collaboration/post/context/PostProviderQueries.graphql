@@ -1,5 +1,5 @@
-query HubPostProvider($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query SpacePostProvider($spaceNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     collaboration {
       ...PostProviderData
@@ -7,8 +7,13 @@ query HubPostProvider($hubNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $call
   }
 }
 
-query ChallengePostProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query ChallengePostProvider(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+  $postNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
@@ -19,8 +24,13 @@ query ChallengePostProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAM
   }
 }
 
-query OpportunityPostProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query OpportunityPostProvider(
+  $spaceNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+  $postNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
@@ -56,16 +66,14 @@ fragment PostProvided on Post {
 }
 
 fragment CalloutPostInfo on Collaboration {
- 			id
-      callouts
-      {
-        id
-        nameID
-        type
-        posts
-        {
-          id
-          nameID
-        }
-      }
+  id
+  callouts {
+    id
+    nameID
+    type
+    posts {
+      id
+      nameID
+    }
+  }
 }

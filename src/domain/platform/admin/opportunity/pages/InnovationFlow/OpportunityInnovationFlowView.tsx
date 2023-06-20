@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
   refetchOpportunityLifecycleQuery,
-  useHubInnovationFlowTemplatesQuery,
+  useSpaceInnovationFlowTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityInnovationFlowMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
@@ -14,26 +14,26 @@ import { InnovationFlowType } from '../../../../../../core/apollo/generated/grap
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const OpportunityInnovationFlowView: FC = () => {
-  const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { spaceNameId = '', opportunityNameId = '' } = useUrlParams();
 
-  const { data: hubInnovationFlowTemplates } = useHubInnovationFlowTemplatesQuery({
-    variables: { hubId: hubNameId },
+  const { data: spaceInnovationFlowTemplates } = useSpaceInnovationFlowTemplatesQuery({
+    variables: { spaceId: spaceNameId },
   });
-  const innovationFlowTemplates = hubInnovationFlowTemplates?.hub?.templates?.innovationFlowTemplates;
+  const innovationFlowTemplates = spaceInnovationFlowTemplates?.space?.templates?.innovationFlowTemplates;
   const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
     template => template.type === InnovationFlowType.Opportunity
   );
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
-    skip: !hubNameId || !opportunityNameId,
+    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
+    skip: !spaceNameId || !opportunityNameId,
   });
 
-  const opportunity = opportunityProfile?.hub?.opportunity;
+  const opportunity = opportunityProfile?.space?.opportunity;
   const opportunityId = opportunity?.id;
 
   const [updateOpportunityInnovationFlow] = useUpdateOpportunityInnovationFlowMutation({
-    refetchQueries: [refetchOpportunityLifecycleQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [refetchOpportunityLifecycleQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
 
@@ -54,7 +54,7 @@ const OpportunityInnovationFlowView: FC = () => {
 
   return (
     <Grid container spacing={2}>
-      <OpportunityLifecycleContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
+      <OpportunityLifecycleContainer spaceNameId={spaceNameId} opportunityNameId={opportunityNameId}>
         {({ loading, ...provided }) => {
           if (loading || !opportunityId) {
             return <Loading text="Loading" />;

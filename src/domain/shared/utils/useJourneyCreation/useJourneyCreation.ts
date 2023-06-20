@@ -6,13 +6,13 @@ import {
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 
 interface ChallengeCreationInput {
-  hubID: string;
+  spaceID: string;
   displayName: string;
   tagline: string;
   background: string;
@@ -29,7 +29,7 @@ interface OpportunityCreationInput {
 }
 
 export const useJourneyCreation = () => {
-  const { hubId } = useHub();
+  const { spaceId } = useSpace();
   const { challengeId } = useChallenge();
   const { isFeatureEnabled } = useConfig();
 
@@ -43,17 +43,17 @@ export const useJourneyCreation = () => {
 
       const { createChallenge } = data;
 
-      const hubRefId = cache.identify({
-        __typename: 'Hub',
-        id: hubId,
+      const spaceRefId = cache.identify({
+        __typename: 'Space',
+        id: spaceId,
       });
 
-      if (!hubRefId) {
+      if (!spaceRefId) {
         return;
       }
 
       cache.modify({
-        id: hubRefId,
+        id: spaceRefId,
         fields: {
           challenges(existingChallenges = []) {
             const newChallengeRef = cache.writeFragment({
@@ -108,7 +108,7 @@ export const useJourneyCreation = () => {
       const { data } = await createChallengeLazy({
         variables: {
           input: {
-            hubID: value.hubID,
+            spaceID: value.spaceID,
             context: {
               vision: value.vision,
             },

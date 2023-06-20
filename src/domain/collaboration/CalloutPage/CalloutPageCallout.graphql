@@ -1,15 +1,15 @@
 query CalloutPageCallout(
   $calloutNameId: UUID_NAMEID!
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $includeHub: Boolean = false
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
-    collaboration @include(if: $includeHub) {
+    collaboration @include(if: $includeSpace) {
       id
       callouts(IDs: [$calloutNameId]) {
         ...Callout

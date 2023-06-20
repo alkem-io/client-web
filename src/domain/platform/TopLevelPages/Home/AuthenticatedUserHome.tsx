@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Box } from '@mui/material';
-import MyHubsSection from '../../../challenge/hub/MyHubs/MyHubsSection';
+import MySpacesSection from '../../../challenge/space/MySpaces/MySpacesSection';
 import { UserContextValue } from '../../../community/contributor/user/providers/UserProvider/UserProvider';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { PageTitle } from '../../../../core/ui/typography';
@@ -15,7 +15,7 @@ const AuthenticatedUserHome = forwardRef<HTMLDivElement, AuthenticatedUserHomePr
   return (
     <Box ref={ref} display="flex" flexDirection="column" gap={gutters()} flexGrow={1}>
       <PageTitle>{t('pages.home.sections.welcome.welcome-back', { username: user.user?.user.firstName })}</PageTitle>
-      <MyHubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
+      <MySpacesSection userSpaceRoles={user.userSpaceRoles} loading={user.loading} />
     </Box>
   );
 });

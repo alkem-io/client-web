@@ -2,7 +2,7 @@ import nameof from '../../common/utils/name-of';
 import { AuthorizationCredential } from '../apollo/generated/graphql-schema';
 
 export default interface UrlParams extends Record<string, string | undefined> {
-  hubNameId?: string;
+  spaceNameId?: string;
   challengeNameId?: string;
   opportunityNameId?: string;
   organizationNameId?: string;

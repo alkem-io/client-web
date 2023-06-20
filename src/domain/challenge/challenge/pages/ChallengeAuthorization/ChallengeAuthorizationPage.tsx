@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 import { PreferenceTypes } from '../../../../common/preference/preference-types';
-import { useHub } from '../../../hub/HubContext/useHub';
+import { useSpace } from '../../../space/SpaceContext/useSpace';
 import { useChallenge } from '../../hooks/useChallenge';
 import { usePreferences } from '../../../../common/preference/usePreferences';
 import {
@@ -25,7 +25,7 @@ import {
 const authorizationCredential = AuthorizationCredential.ChallengeAdmin;
 const selectedGroups = ['Authorization', 'Privileges'];
 
-const querySelector = (query: ChallengePreferencesQuery) => query.hub.challenge.preferences;
+const querySelector = (query: ChallengePreferencesQuery) => query.space.challenge.preferences;
 
 interface ChallengeAuthorizationPageProps extends SettingsPageProps {
   resourceId: string | undefined;
@@ -33,11 +33,11 @@ interface ChallengeAuthorizationPageProps extends SettingsPageProps {
 
 const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ resourceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { hubNameId } = useHub();
+  const { spaceNameId } = useSpace();
   const { challengeNameId, challengeId } = useChallenge();
 
   // todo: how can these two be extracted in a util
-  const queryVariables: ChallengePreferencesQueryVariables = { hubNameId, challengeNameId };
+  const queryVariables: ChallengePreferencesQueryVariables = { spaceNameId, challengeNameId };
   const mutationVariables = (
     queryVariables: ChallengePreferencesQueryVariables,
     type: PreferenceTypes,

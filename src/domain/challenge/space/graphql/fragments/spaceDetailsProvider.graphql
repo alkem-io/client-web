@@ -1,0 +1,32 @@
+fragment SpaceDetailsProvider on Space {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    tagline
+    visuals {
+      ...VisualUri
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  metrics {
+    name
+    value
+  }
+  community {
+    id
+  }
+  context {
+    ...ContextDetailsProvider
+  }
+  visibility
+}

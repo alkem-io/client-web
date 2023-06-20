@@ -12,7 +12,7 @@ import { JourneyFormValues } from '../../../shared/components/JorneyCreationDial
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
 import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
-import { useHub } from '../../hub/HubContext/useHub';
+import { useSpace } from '../../space/SpaceContext/useSpace';
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
@@ -27,7 +27,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { hubNameId, visibility } = useHub();
+  const { spaceNameId, visibility } = useSpace();
   const { challengeId, challengeNameId, permissions } = useChallenge();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -50,21 +50,21 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
       // delay the navigation so all other processes related to updating the cache
       // and closing all subscriptions are completed
-      setTimeout(() => navigate(buildOpportunityUrl(hubNameId, challengeNameId, result.nameID)), 100);
+      setTimeout(() => navigate(buildOpportunityUrl(spaceNameId, challengeNameId, result.nameID)), 100);
     },
-    [navigate, createOpportunity, hubNameId, challengeId, challengeNameId]
+    [navigate, createOpportunity, spaceNameId, challengeId, challengeNameId]
   );
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
-      <OpportunityCardsContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
+      <OpportunityCardsContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
         {(entities, state) => (
           <ChildJourneyView
-            hubNameId={hubNameId}
+            spaceNameId={spaceNameId}
             childEntities={entities.opportunities ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
             childEntityReadAccess
-            getChildEntityUrl={entity => buildOpportunityUrl(hubNameId, challengeNameId, entity.nameID)}
+            getChildEntityUrl={entity => buildOpportunityUrl(spaceNameId, challengeNameId, entity.nameID)}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
             journeyTypeName="challenge"
@@ -77,8 +77,8 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 innovationFlowState={opportunity.lifecycle?.state}
                 tags={opportunity.profile.tagset?.tags!}
                 banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
-                journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID)}
-                hubVisibility={visibility}
+                journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}
+                spaceVisibility={visibility}
               />
             )}
             childEntityCreateAccess={permissions.canCreateOpportunity}

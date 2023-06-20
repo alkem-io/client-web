@@ -1,5 +1,5 @@
-query hubApplication($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query spaceApplication($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     profile {
       id

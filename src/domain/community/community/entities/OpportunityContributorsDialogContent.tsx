@@ -9,16 +9,16 @@ import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 
 const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { hubId, opportunityId } = useOpportunity();
+  const { spaceId, opportunityId } = useOpportunity();
 
   const { loading, memberUsers, memberOrganizations } = useCommunityContributors(
     useOpportunityCommunityContributorsQuery,
     data => {
-      const { memberUsers, memberOrganizations } = data?.hub.opportunity.community || {};
+      const { memberUsers, memberOrganizations } = data?.space.opportunity.community || {};
       return { memberUsers, memberOrganizations };
     },
     {
-      hubId,
+      spaceId,
       opportunityId,
     },
     !dialogOpen

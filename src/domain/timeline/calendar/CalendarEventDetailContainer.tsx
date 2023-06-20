@@ -19,7 +19,7 @@ import usePostMessageMutations from '../../communication/room/Comments/usePostMe
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
 interface EventIds {
-  hubNameId: string;
+  spaceNameId: string;
   eventId: string | undefined;
 }
 
@@ -46,7 +46,7 @@ export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<Event
 
 // TODO: VERY BASED ON domain/collaboration/post/containers/PostDashboardContainer/PostDashboardContainer.tsx
 // Maybe put common logic together
-const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ hubNameId, eventId, ...rendered }) => {
+const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ spaceNameId, eventId, ...rendered }) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
@@ -56,16 +56,16 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
     error,
     subscribeToMore: subscribeToMessages,
   } = useCalendarEventDetailsQuery({
-    variables: { hubId: hubNameId, eventId: eventId! },
-    skip: !hubNameId || !eventId,
+    variables: { spaceId: spaceNameId, eventId: eventId! },
+    skip: !spaceNameId || !eventId,
     fetchPolicy: 'cache-and-network',
   });
   const loading = !eventId || loadingEvent;
-  const event = data?.hub.timeline?.calendar.event;
+  const event = data?.space.timeline?.calendar.event;
 
   const eventCommentsSubscription = useCalendarEventCommentsMessageReceivedSubscription(
     data,
-    eventData => eventData?.hub?.timeline?.calendar.event,
+    eventData => eventData?.space?.timeline?.calendar.event,
     subscribeToMessages
   );
 

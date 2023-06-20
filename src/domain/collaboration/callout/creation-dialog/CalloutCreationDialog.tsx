@@ -16,7 +16,7 @@ import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import {
-  useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
+  useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery,
   useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -95,7 +95,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   group,
 }) => {
   const { t } = useTranslation();
-  const { hubNameId } = useUrlParams();
+  const { spaceNameId } = useUrlParams();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
@@ -108,7 +108,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     }
   }, [open]);
 
-  const [fetchWhiteboardValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -160,7 +160,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, templates, hubNameId, fetchWhiteboardValueFromHub, fetchWhiteboardValueFromLibrary]);
+  }, [callout, onSaveAsDraft, templates, spaceNameId, fetchWhiteboardValueFromSpace, fetchWhiteboardValueFromLibrary]);
 
   const handleClose = useCallback(() => {
     onClose?.();

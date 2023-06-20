@@ -3,7 +3,7 @@ import {
   CalloutFragmentDoc,
   useChallengeCollaborationIdQuery,
   useCreateCalloutMutation,
-  useHubCollaborationIdQuery,
+  useSpaceCollaborationIdQuery,
   useOpportunityCollaborationIdQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
@@ -39,33 +39,33 @@ export interface CalloutCreationUtils {
 }
 
 export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
 
-  const { data: hubData } = useHubCollaborationIdQuery({
-    variables: { hubId: hubNameId! },
-    skip: !hubNameId || !!challengeNameId || !!opportunityNameId,
+  const { data: spaceData } = useSpaceCollaborationIdQuery({
+    variables: { spaceId: spaceNameId! },
+    skip: !spaceNameId || !!challengeNameId || !!opportunityNameId,
   });
   const { data: challengeData } = useChallengeCollaborationIdQuery({
     variables: {
-      hubId: hubNameId!,
+      spaceId: spaceNameId!,
       challengeId: challengeNameId!,
     },
-    skip: !hubNameId || !challengeNameId || !!opportunityNameId,
+    skip: !spaceNameId || !challengeNameId || !!opportunityNameId,
   });
   const { data: opportunityData } = useOpportunityCollaborationIdQuery({
     variables: {
-      hubId: hubNameId!,
+      spaceId: spaceNameId!,
       opportunityId: opportunityNameId!,
     },
-    skip: !hubNameId || !opportunityNameId,
+    skip: !spaceNameId || !opportunityNameId,
   });
 
   const collaborationID: string | undefined = (
-    hubData?.hub ??
-    challengeData?.hub?.challenge ??
-    opportunityData?.hub?.opportunity
+    spaceData?.space ??
+    challengeData?.space?.challenge ??
+    opportunityData?.space?.opportunity
   )?.collaboration?.id;
 
   const [createCallout] = useCreateCalloutMutation({

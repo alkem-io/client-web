@@ -1,0 +1,5 @@
+query spaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
+  spaces(filter: { visibilities: $visibilities }) {
+    ...SpaceDetailsProvider
+  }
+}

@@ -5,7 +5,7 @@ import {
 import useMemberOrganizationAssignment from './useMemberOrganizationAssignment';
 
 interface Options {
-  hubId: string | undefined;
+  spaceId: string | undefined;
   challengeId: string | undefined;
 }
 
@@ -16,8 +16,8 @@ const useChallengeMemberOrganizationAssignment = (options: Options) =>
       const { data } = useChallengeCommunityMembersQuery({ variables, skip });
 
       return {
-        communityId: data?.hub.challenge?.community?.id,
-        existingMembers: data?.hub.challenge?.community?.memberOrganizations,
+        communityId: data?.space.challenge?.community?.id,
+        existingMembers: data?.space.challenge?.community?.memberOrganizations,
       };
     },
     refetchQueries: [refetchChallengeCommunityMembersQuery],

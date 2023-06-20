@@ -109,7 +109,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
       field: 'isFacilitating',
       headerName: t('common.authorization'),
       renderHeader: () => <>{t('common.authorization')}</>,
-      renderCell: ({ row }: RenderParams) => <>{row.isFacilitating ? t('pages.community.hub-host.title') : ''}</>,
+      renderCell: ({ row }: RenderParams) => <>{row.isFacilitating ? t('pages.community.space-host.title') : ''}</>,
       width: 200,
     },
   ];

@@ -58,10 +58,10 @@ const CalloutsView = ({
   blockProps,
   disableMarginal,
 }: CalloutsViewProps) => {
-  const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
-  if (!hubNameId) {
-    throw new Error('Must be within a Hub');
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space');
   }
 
   const { t } = useTranslation();
@@ -98,7 +98,7 @@ const CalloutsView = ({
 
   const handleExpand = (callout: TypedCallout) => {
     const uri = buildCalloutUrl(callout.nameID, {
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
     });
@@ -129,7 +129,7 @@ const CalloutsView = ({
           };
 
           const calloutUri = buildCalloutUrl(callout.nameID, {
-            hubNameId,
+            spaceNameId,
             challengeNameId,
             opportunityNameId,
           });
@@ -141,7 +141,7 @@ const CalloutsView = ({
               callout={callout}
               calloutNames={calloutNames}
               contributionsCount={callout.activity}
-              hubNameId={hubNameId}
+              spaceNameId={spaceNameId}
               challengeNameId={challengeNameId}
               opportunityNameId={opportunityNameId}
               journeyTypeName={journeyTypeName}

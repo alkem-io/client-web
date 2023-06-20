@@ -5,8 +5,8 @@ query search($searchData: SearchInput!) {
       score
       terms
       type
-      ... on SearchResultHub {
-        ...SearchResultHub
+      ... on SearchResultSpace {
+        ...SearchResultSpace
       }
       ... on SearchResultChallenge {
         ...SearchResultChallenge
@@ -70,7 +70,7 @@ fragment SearchResultPost on SearchResultPost {
 }
 
 fragment PostParent on SearchResultPost {
-  hub {
+  space {
     id
     nameID
     profile {
@@ -166,8 +166,8 @@ fragment SearchResultPostProfile on Profile {
   }
 }
 
-fragment SearchResultHub on SearchResultHub {
-  hub {
+fragment SearchResultSpace on SearchResultSpace {
+  space {
     id
     nameID
     profile {
@@ -212,7 +212,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
         ...VisualUri
       }
     }
-    hubID
+    spaceID
     context {
       id
 
@@ -223,7 +223,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
       anonymousReadAccess
     }
   }
-  hub {
+  space {
     id
     nameID
     profile {
@@ -278,7 +278,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       anonymousReadAccess
     }
   }
-  hub {
+  space {
     id
     nameID
     profile {
@@ -291,7 +291,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
 
 query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
   rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
-    hubs {
+    spaces {
       id
       roles
       challenges {

@@ -1,4 +1,4 @@
 export default interface CardProps {
   id: string;
-  hubID?: string;
+  spaceID?: string;
 }

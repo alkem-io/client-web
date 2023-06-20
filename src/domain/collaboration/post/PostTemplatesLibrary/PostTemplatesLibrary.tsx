@@ -2,7 +2,7 @@ import { compact } from 'lodash';
 import { ComponentType, FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useHubPostTemplatesLibraryLazyQuery,
+  useSpacePostTemplatesLibraryLazyQuery,
   usePlatformPostTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -29,26 +29,26 @@ const applyFilter = (filter: string[], templates: PostTemplate[] | undefined) =>
 
 const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate }) => {
   const { t } = useTranslation();
-  const { hubNameId } = useUrlParams();
+  const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
 
-  // Hub Templates:
-  const [fetchTemplatesFromHub, { data: hubData, loading: loadingTemplatesFromHub }] =
-    useHubPostTemplatesLibraryLazyQuery({
+  // Space Templates:
+  const [fetchTemplatesFromSpace, { data: spaceData, loading: loadingTemplatesFromSpace }] =
+    useSpacePostTemplatesLibraryLazyQuery({
       variables: {
-        hubId: hubNameId!,
+        spaceId: spaceNameId!,
       },
     });
 
-  const templatesFromHub = useMemo(
+  const templatesFromSpace = useMemo(
     () =>
       applyFilter(
         filter,
-        hubData?.hub.templates?.postTemplates.map<PostTemplate>(template =>
-          postTemplateMapper(template, hubData?.hub.host?.profile)
+        spaceData?.space.templates?.postTemplates.map<PostTemplate>(template =>
+          postTemplateMapper(template, spaceData?.space.host?.profile)
         )
       ),
-    [hubData, filter]
+    [spaceData, filter]
   );
 
   // Platform Templates:
@@ -83,12 +83,12 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
       templatePreviewComponent={PostTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}
-      fetchHubTemplatesOnLoad={Boolean(hubNameId)}
-      fetchTemplatesFromHub={fetchTemplatesFromHub}
-      templatesFromHub={templatesFromHub}
-      loadingTemplatesFromHub={loadingTemplatesFromHub}
-      loadingTemplateValueFromHub={false}
-      fetchTemplateFromHubValue={template => getPostTemplateValue(template)}
+      fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
+      fetchTemplatesFromSpace={fetchTemplatesFromSpace}
+      templatesFromSpace={templatesFromSpace}
+      loadingTemplatesFromSpace={loadingTemplatesFromSpace}
+      loadingTemplateValueFromSpace={false}
+      fetchTemplateFromSpaceValue={template => getPostTemplateValue(template)}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}

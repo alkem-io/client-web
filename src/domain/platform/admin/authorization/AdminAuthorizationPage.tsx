@@ -17,8 +17,8 @@ const buttons = [
     url: `authorization/global-community/${AuthorizationCredential.GlobalAdminCommunity}`,
   },
   {
-    description: 'Global Hubs Admins',
-    url: `authorization/global-hubs/${AuthorizationCredential.GlobalAdminHubs}`,
+    description: 'Global Spaces Admins',
+    url: `authorization/global-spaces/${AuthorizationCredential.GlobalAdminSpaces}`,
   },
 ];
 

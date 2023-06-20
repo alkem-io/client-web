@@ -10,7 +10,7 @@ import {
 import {
   Community,
   CommunityUpdatesQuery,
-  Hub,
+  Space,
   Message,
   RoomMessageReceivedSubscription,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -22,7 +22,7 @@ import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUse
 export interface CommunityUpdatesContainerProps {
   entities: {
     communityId?: Community['id'];
-    hubId?: Hub['id'];
+    spaceId?: Space['id'];
   };
   children: (
     entities: CommunityUpdatesEntities,
@@ -52,16 +52,16 @@ const EMPTY = [];
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const { isFeatureEnabled } = useConfig();
-  const { communityId, hubId } = entities;
-  const { data, loading } = useCommunityUpdatesData(hubId, communityId);
+  const { communityId, spaceId } = entities;
+  const { data, loading } = useCommunityUpdatesData(spaceId, communityId);
 
-  const updatesId = data?.hub.community?.communication?.updates?.id || '';
+  const updatesId = data?.space.community?.communication?.updates?.id || '';
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendMessageToRoomMutation({
     refetchQueries:
-      isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !hubId || !communityId
+      isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !spaceId || !communityId
         ? []
-        : [refetchCommunityUpdatesQuery({ hubId, communityId })],
+        : [refetchCommunityUpdatesQuery({ spaceId, communityId })],
   });
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
@@ -80,18 +80,18 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     async messageId => {
       const update = await removeUpdate({
         variables: { messageData: { messageID: messageId, roomID: updatesId } },
-        refetchQueries: hubId && communityId ? [refetchCommunityUpdatesQuery({ hubId, communityId })] : [],
+        refetchQueries: spaceId && communityId ? [refetchCommunityUpdatesQuery({ spaceId, communityId })] : [],
       });
       return update.data?.removeMessageOnRoom;
     },
-    [communityId, updatesId, hubId, removeUpdate]
+    [communityId, updatesId, spaceId, removeUpdate]
   );
 
   const onLoadMore = () => {
     throw new Error('Not implemented');
   };
 
-  const messages = (data?.hub.community?.communication?.updates?.messages as Message[]) || EMPTY;
+  const messages = (data?.space.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
   const authors: Author[] = [];
   for (const message of messages) {
@@ -115,7 +115,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 };
 
 const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
-  NonNullable<NonNullable<CommunityUpdatesQuery['hub']['community']>['communication']>['updates'],
+  NonNullable<NonNullable<CommunityUpdatesQuery['space']['community']>['communication']>['updates'],
   RoomMessageReceivedSubscription
 >({
   subscriptionDocument: RoomMessageReceivedDocument,
@@ -127,18 +127,18 @@ const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEn
   },
 });
 
-const useCommunityUpdatesData = (hubNameId?: string, communityId?: string) => {
+const useCommunityUpdatesData = (spaceNameId?: string, communityId?: string) => {
   const { data, loading, subscribeToMore } = useCommunityUpdatesQuery({
     variables: {
-      hubId: hubNameId!,
+      spaceId: spaceNameId!,
       communityId: communityId!,
     },
-    skip: !hubNameId || !communityId,
+    skip: !spaceNameId || !communityId,
   });
 
   useCommunicationUpdateMessageReceivedSubscription(
     data,
-    parent => parent?.hub?.community?.communication?.updates,
+    parent => parent?.space?.community?.communication?.updates,
     subscribeToMore
   );
 

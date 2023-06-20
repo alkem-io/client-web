@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useChallengePostProviderQuery,
-  useHubPostProviderQuery,
+  useSpacePostProviderQuery,
   useOpportunityPostProviderQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
@@ -31,24 +31,24 @@ const PostContext = React.createContext<PostContextProps>({
 
 const PostProvider: FC = ({ children }) => {
   const {
-    hubNameId = '',
+    spaceNameId = '',
     challengeNameId = '',
     opportunityNameId = '',
     postNameId = '',
     calloutNameId = '',
   } = useUrlParams();
 
-  const isPostDefined = postNameId && hubNameId;
+  const isPostDefined = postNameId && spaceNameId;
 
   const {
-    data: hubData,
-    loading: hubLoading,
-    error: hubError,
-  } = useHubPostProviderQuery({
-    variables: { hubNameId, postNameId, calloutNameId },
+    data: spaceData,
+    loading: spaceLoading,
+    error: spaceError,
+  } = useSpacePostProviderQuery({
+    variables: { spaceNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
   });
-  const hubPost = getCardCallout(hubData?.hub?.collaboration?.callouts, postNameId)?.posts?.find(
+  const spacePost = getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(
     x => x.nameID === postNameId
   );
   const {
@@ -56,29 +56,30 @@ const PostProvider: FC = ({ children }) => {
     loading: challengeLoading,
     error: challengeError,
   } = useChallengePostProviderQuery({
-    variables: { hubNameId, challengeNameId, postNameId, calloutNameId },
+    variables: { spaceNameId, challengeNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
   });
-  const challengePost = getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts, postNameId)?.posts?.find(
-    x => x.nameID === postNameId
-  );
+  const challengePost = getCardCallout(
+    challengeData?.space?.challenge?.collaboration?.callouts,
+    postNameId
+  )?.posts?.find(x => x.nameID === postNameId);
 
   const {
     data: opportunityData,
     loading: opportunityLoading,
     error: opportunityError,
   } = useOpportunityPostProviderQuery({
-    variables: { hubNameId, opportunityNameId, postNameId, calloutNameId },
+    variables: { spaceNameId, opportunityNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !opportunityNameId,
   });
   const opportunityPost = getCardCallout(
-    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    opportunityData?.space?.opportunity?.collaboration?.callouts,
     postNameId
   )?.posts?.find(x => x.nameID === postNameId);
 
-  const post = hubPost ?? challengePost ?? opportunityPost;
-  const loading = hubLoading || challengeLoading || opportunityLoading;
-  const error = hubError ?? challengeError ?? opportunityError;
+  const post = spacePost ?? challengePost ?? opportunityPost;
+  const loading = spaceLoading || challengeLoading || opportunityLoading;
+  const error = spaceError ?? challengeError ?? opportunityError;
 
   const myPrivileges = post?.authorization?.myPrivileges;
   const permissions: PostPermissions = {

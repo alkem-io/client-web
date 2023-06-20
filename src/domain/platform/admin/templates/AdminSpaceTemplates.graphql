@@ -1,0 +1,76 @@
+query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      postTemplates {
+        ...AdminPostTemplate
+      }
+      whiteboardTemplates {
+        ...AdminWhiteboardTemplate
+      }
+      innovationFlowTemplates {
+        ...AdminInnovationFlowTemplate
+      }
+    }
+  }
+}
+
+fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
+  id
+  definition
+  type
+  profile {
+    ...ProfileInfoWithVisual
+  }
+}
+
+fragment AdminPostTemplate on PostTemplate {
+  id
+  defaultDescription
+  type
+  profile {
+    ...ProfileInfoWithVisual
+  }
+}
+
+fragment AdminWhiteboardTemplate on WhiteboardTemplate {
+  id
+  profile {
+    ...ProfileInfoWithVisual
+  }
+}
+
+fragment AdminWhiteboardTemplateValue on WhiteboardTemplate {
+  id
+  value
+}
+
+fragment ProfileInfoWithVisual on Profile {
+  id
+  displayName
+  description
+  tagset {
+    id
+    tags
+  }
+  visual(type: CARD) {
+    ...VisualFull
+  }
+}
+
+query SpaceTemplatesAdminWhiteboardTemplateWithValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $whiteboardTemplateId) {
+        ...AdminWhiteboardTemplateValue
+      }
+    }
+  }
+}

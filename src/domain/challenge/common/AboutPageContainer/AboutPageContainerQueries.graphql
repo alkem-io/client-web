@@ -22,16 +22,16 @@ fragment MetricsItem on NVP {
 }
 #
 query AboutPageNonMembers(
-  $hubNameId: UUID_NAMEID!
-  $includeHub: Boolean = false
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       nameID
       profile {
         id
@@ -141,8 +141,8 @@ query AboutPageNonMembers(
 }
 #
 query AboutPageMembers(
-  $hubNameId: UUID_NAMEID!
-  $includeHub: Boolean = false
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
   $communityReadAccess: Boolean!
@@ -150,9 +150,9 @@ query AboutPageMembers(
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       community @include(if: $communityReadAccess) {
         ...EntityDashboardCommunity
       }

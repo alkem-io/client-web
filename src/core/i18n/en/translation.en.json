@@ -32,7 +32,7 @@
     "add-event": "Add event",
     "edit-event": "Edit event",
     "delete-event": "Delete event",
-    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the hub?",
+    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the space?",
     "event": {
       "type": "Type of Event",
       "multiple-days": "{{days}} days",
@@ -195,8 +195,8 @@
     "aspects": "Cards",
     "host": "Host",
     "lead": "Lead",
-    "hub": "Space",
-    "hubs": "Spaces",
+    "space": "Space",
+    "spaces": "Spaces",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "all-entities": "All {{entityType}} ({{count}})",
@@ -244,7 +244,7 @@
     "community": "Community",
     "people": "People",
     "settings": "Settings",
-    "hub-settings": "$t(common.settings)",
+    "space-settings": "$t(common.settings)",
     "search": "Search...",
     "storage": "Storage",
     "reference": "Reference",
@@ -286,7 +286,7 @@
       "not-verified": ""
     },
     "enums": {
-      "hub-visibility": {
+      "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
         "DEMO": "Demo"
@@ -298,7 +298,7 @@
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Hubs",
+          "name": "Global Admin Spaces",
           "order": 1,
           "hidden": false
         },
@@ -546,7 +546,7 @@
     }
   },
   "context": {
-    "hub": {
+    "space": {
       "tagline": {
         "title": "Tagline",
         "description": "Explain in one sentence what this Space is about.",
@@ -668,7 +668,7 @@
     "template-library": "Template Library: Whiteboards",
     "filter-placeholder": "Search Templates...",
     "whiteboard-template": "Whiteboard template",
-    "hub-templates": "Templates selected by the host of this community",
+    "space-templates": "Templates selected by the host of this community",
     "load-platform-templates": "Or click here to browse through all platform templates",
     "platform-templates": "Platform Templates",
     "error-importing": "Error importing Whiteboard Template",
@@ -949,11 +949,11 @@
       "extendedMessage": "{{join}} our Community and start making change!",
       "dialog-apply-parent": {
         "title": "Want to join the parent Space?",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> Space first. Please add the challenge you want to join in the Spaces' application form."
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the challenge you want to join in the Spaces' application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> Space first. There is already an application pending for that <strong title='Hub name'>'{{hubName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Join community",
@@ -995,7 +995,7 @@
       "file-size-error": "File size exceeds the {{limit}}MB limit",
       "file-upload-success": "File uploaded successfully"
     },
-    "editHubForm": {
+    "editSpaceForm": {
       "host": {
         "title": "Host",
         "select": "Select a host"
@@ -1273,14 +1273,14 @@
     "copyright": "© 2023 Alkemio Foundation"
   },
   "innovationHub": {
-    "selectedSpaces": "{{hub}} Spaces",
-    "foreignJourney": "This {{journey}} is not in the selection of {{hub}}. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
-    "outsideOfHub": {
-      "forum": "This is the general Alkemio Forum, outside of the <strong>{{hub}}</strong> space. You are very much invited to explore and contribute!",
-      "challenges": "Here you can find all Challenges that are hosted on Alkemio, also the ones that are not selected by <strong>{{hub}}. Enjoy exploring!</strong>",
-      "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Hubs that are not selected by <strong>{{hub}}. Enjoy connecting!</strong>"
+    "selectedSpaces": "{{space}} Spaces",
+    "foreignJourney": "This {{journey}} is not in the selection of {{space}}. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
+    "outsideOfSpace": {
+      "forum": "This is the general Alkemio Forum, outside of the <strong>{{space}}</strong> space. You are very much invited to explore and contribute!",
+      "challenges": "Here you can find all Challenges that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
+      "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Spaces that are not selected by <strong>{{space}}. Enjoy connecting!</strong>"
     },
-    "goToMainPage": "Interested in collaborating in other Hubs? Click here to see them all on the universal Alkemio homepage."
+    "goToMainPage": "Interested in collaborating in other Spaces? Click here to see them all on the universal Alkemio homepage."
   },
   "pages": {
     "generic": {
@@ -1320,11 +1320,11 @@
         }
       },
       "archived-notice": {
-        "archived-hub": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
+        "archived-space": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
         "archived-journey": "This {{journey}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
       },
       "demo-notice": {
-        "demo-hub": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
+        "demo-space": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
         "demo-journey": "This {{journey}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
       }
     },
@@ -1384,7 +1384,7 @@
           "my-profile": {
             "description": "Here you can edit your profile details."
           },
-          "hub-settings": {
+          "space-settings": {
             "description": ""
           },
           "membership": {
@@ -1454,7 +1454,7 @@
           "challenge-updated": "Challenge updated successfully."
         }
       },
-      "hub": {
+      "space": {
         "sections": {
           "challenges": {
             "description": "Here you can edit challenges for this Space."
@@ -1462,25 +1462,25 @@
         },
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.hub) authorization preferences"
+            "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
           }
         },
         "community": {
           "preferences": {
             "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.hub) membership preferences"
+            "subtitle": "This section allows you to modify the $t(common.space) membership preferences"
           }
         },
         "notifications": {
-          "hub-created": "Space created successfuly.",
-          "hub-removed": "Space '{{name}}' removed successfully."
+          "space-created": "Space created successfuly.",
+          "space-removed": "Space '{{name}}' removed successfully."
         },
         "settings": {
           "savedSuccessfully": "Settings saved successfully",
           "visibility": {
             "title": "Visibility",
-            "public": "<b>Public:</b> this hub and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> this hub is visible for everyone on the platform, but the content is only visible for members."
+            "public": "<b>Public:</b> this space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
+            "private": "<b>Private:</b> this space is visible for everyone on the platform, but the content is only visible for members."
           },
           "membership": {
             "title": "Membership",
@@ -1522,7 +1522,7 @@
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
       },
-      "hubs": {
+      "spaces": {
         "updateVisibility": "Update Visibility"
       }
     },
@@ -1601,7 +1601,7 @@
         },
         "key": {
           "all": "All",
-          "hub": "Spaces",
+          "space": "Spaces",
           "challenge": "Challenges",
           "opportunity": "Opportunities",
           "user": "Users",
@@ -1611,7 +1611,7 @@
           "callout": "Callouts (available soon)"
         }
       },
-      "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunities)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
       "search": {
@@ -1636,7 +1636,7 @@
       "other": {
         "title": "Other Challenges within My Spaces",
         "subtitle": "Here you'll find the other challenges hosted by the Spaces that you are member of.",
-        "filter-by-hub": "Filter by My Spaces"
+        "filter-by-space": "Filter by My Spaces"
       }
     },
     "lead-organization": {
@@ -1647,7 +1647,7 @@
     },
     "activity": {
       "title": "{{blockName}} Activity",
-      "hubs": "Challenge Spaces",
+      "spaces": "Challenge Spaces",
       "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
@@ -1672,14 +1672,14 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
-        "hub": {
+        "space": {
           "header": "Explore the Challenge Spaces!",
           "subheader": "",
           "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
           "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
         },
-        "my-hubs": {
-          "header": "My Spaces ({{myHubsCount}})"
+        "my-spaces": {
+          "header": "My Spaces ({{mySpacesCount}})"
         },
         "organizations": {
           "header": "Organizations",
@@ -1689,11 +1689,11 @@
           "title": "See who is driving Challenges on Alkemio"
         },
         "footer": {
-          "headline": "More about Alkemio? Visit our website, contact us or take a look at our Github repository",
+          "headline": "More about Alkemio? Visit our website, contact us or take a look at our github repository",
           "links": {
             "foundation": "Alkemio Foundation",
             "contact-form": "Contact Form",
-            "github": "GitHub"
+            "github": "github"
           }
         }
       }
@@ -1706,7 +1706,7 @@
         "help": "Verification status: has the identity and information about this Organization been formally verified"
       }
     },
-    "hub": {
+    "space": {
       "title": "Space",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",
@@ -1796,7 +1796,7 @@
       "member-organizations": {
         "no-data": "No organization is contributing at this time"
       },
-      "hub-host": {
+      "space-host": {
         "title": "Facilitating organization",
         "help-text": "The Organization that is facilitating this Space."
       },
@@ -1844,7 +1844,7 @@
         "no-templates": "There are no templates defined here yet. Be the first to add one.",
         "how-to": "To create a template create a new whiteboard or use an existing one and save it as a template."
       },
-      "hub": {
+      "space": {
         "templatesHeader": "Templates defined in this Space",
         "templatesSubheader": "The templates defined in this Space can be used in every Challenge and Opportunity that this Space hosts."
       },
@@ -2102,7 +2102,7 @@
     "more": "...plus {{count}} more",
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
-  "hubs-filter": {
+  "spaces-filter": {
     "current-filter": "Choose the topics you care most about! Current filter: ",
     "show-all": "Show All",
     "other": "Other",
@@ -2134,7 +2134,7 @@
       }
     ]
   },
-  "hubSearch": {
+  "spaceSearch": {
     "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
   },
   "visuals-alt-text": {

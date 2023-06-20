@@ -1,9 +1,9 @@
 import {
   useChallengeCalloutPostsSubscriptionQuery,
-  useHubCalloutPostsSubscriptionQuery,
+  useSpaceCalloutPostsSubscriptionQuery,
   useOpportunityCalloutPostsSubscriptionQuery,
   usePrivilegesOnChallengeCollaborationQuery,
-  usePrivilegesOnHubCollaborationQuery,
+  usePrivilegesOnSpaceCollaborationQuery,
   usePrivilegesOnOpportunityCollaborationQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import {
@@ -20,7 +20,7 @@ export interface PostsData {
 }
 
 interface UsePostDataHookProps {
-  hubNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
   challengeNameId?: Scalars['UUID_NAMEID'];
   opportunityNameId?: Scalars['UUID_NAMEID'];
@@ -28,33 +28,33 @@ interface UsePostDataHookProps {
 }
 
 export const usePostCreatedOnCalloutSubscription = ({
-  hubNameId,
+  spaceNameId,
   calloutId,
   challengeNameId = undefined,
   opportunityNameId = undefined,
   skip = false,
 }: UsePostDataHookProps): PostsData => {
-  const { data: hubCollaborationData } = usePrivilegesOnHubCollaborationQuery({
-    variables: { hubNameId },
+  const { data: spaceCollaborationData } = usePrivilegesOnSpaceCollaborationQuery({
+    variables: { spaceNameId },
     skip: !!(challengeNameId || opportunityNameId),
   });
-  const hubCollaboration = hubCollaborationData?.hub?.collaboration;
-  const hubCollaborationPrivileges = hubCollaboration?.authorization?.myPrivileges;
-  const canReadHubCollaboration = hubCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
+  const spaceCollaboration = spaceCollaborationData?.space?.collaboration;
+  const spaceCollaborationPrivileges = spaceCollaboration?.authorization?.myPrivileges;
+  const canReadSpaceCollaboration = spaceCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
   const {
-    data: hubPostData,
-    subscribeToMore: subscribeToHub,
-    loading: hubPostDataLoading,
-  } = useHubCalloutPostsSubscriptionQuery({
-    variables: { hubNameId, calloutId },
-    skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId) || skip,
+    data: spacePostData,
+    subscribeToMore: subscribeToSpace,
+    loading: spacePostDataLoading,
+  } = useSpaceCalloutPostsSubscriptionQuery({
+    variables: { spaceNameId, calloutId },
+    skip: !canReadSpaceCollaboration || !!(challengeNameId || opportunityNameId) || skip,
   });
 
   const { data: challengeCollaborationData } = usePrivilegesOnChallengeCollaborationQuery({
-    variables: { hubNameId, challengeNameId: challengeNameId! },
+    variables: { spaceNameId, challengeNameId: challengeNameId! },
     skip: !challengeNameId || !!opportunityNameId,
   });
-  const challengeCollaboration = challengeCollaborationData?.hub?.challenge?.collaboration;
+  const challengeCollaboration = challengeCollaborationData?.space?.challenge?.collaboration;
   const challengeCollaborationPrivileges = challengeCollaboration?.authorization?.myPrivileges;
   const canReadChallengeCollaboration = challengeCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
@@ -63,15 +63,15 @@ export const usePostCreatedOnCalloutSubscription = ({
     subscribeToMore: subscribeToChallenges,
     loading: challengePostDataLoading,
   } = useChallengeCalloutPostsSubscriptionQuery({
-    variables: { hubNameId, calloutId, challengeNameId: challengeNameId! },
+    variables: { spaceNameId, calloutId, challengeNameId: challengeNameId! },
     skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId || skip,
   });
 
   const { data: opportunityCollaborationData } = usePrivilegesOnOpportunityCollaborationQuery({
-    variables: { hubNameId, opportunityNameId: opportunityNameId! },
+    variables: { spaceNameId, opportunityNameId: opportunityNameId! },
     skip: !opportunityNameId,
   });
-  const opportunityCollaboration = opportunityCollaborationData?.hub?.opportunity?.collaboration;
+  const opportunityCollaboration = opportunityCollaborationData?.space?.opportunity?.collaboration;
   const opportunityCollaborationPrivileges = opportunityCollaboration?.authorization?.myPrivileges;
   const canReadOpportunityCollaboration = opportunityCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
@@ -80,40 +80,40 @@ export const usePostCreatedOnCalloutSubscription = ({
     subscribeToMore: subscribeToOpportunity,
     loading: opportunityPostDataLoading,
   } = useOpportunityCalloutPostsSubscriptionQuery({
-    variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId! },
+    variables: { spaceNameId, calloutId, opportunityNameId: opportunityNameId! },
     skip: !canReadOpportunityCollaboration || !opportunityNameId || skip,
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
   });
 
-  const hubPostSubscription = useCalloutPostCreatedSubscription(
-    hubPostData,
-    hubData => hubData?.hub?.collaboration?.callouts?.find(x => x.id === calloutId),
-    subscribeToHub
+  const spacePostSubscription = useCalloutPostCreatedSubscription(
+    spacePostData,
+    spaceData => spaceData?.space?.collaboration?.callouts?.find(x => x.id === calloutId),
+    subscribeToSpace
   );
   const challengePostSubscription = useCalloutPostCreatedSubscription(
     challengePostData,
-    challengeData => challengeData?.hub?.challenge?.collaboration?.callouts?.find(x => x.id === calloutId),
+    challengeData => challengeData?.space?.challenge?.collaboration?.callouts?.find(x => x.id === calloutId),
     subscribeToChallenges
   );
   const opportunityPostSubscription = useCalloutPostCreatedSubscription(
     opportunityPostData,
-    opportunityData => opportunityData?.hub?.opportunity?.collaboration?.callouts?.find(x => x.id === calloutId),
+    opportunityData => opportunityData?.space?.opportunity?.collaboration?.callouts?.find(x => x.id === calloutId),
     subscribeToOpportunity
   );
 
   const isSubscriptionEnabled =
-    hubPostSubscription.enabled || challengePostSubscription.enabled || opportunityPostSubscription.enabled;
+    spacePostSubscription.enabled || challengePostSubscription.enabled || opportunityPostSubscription.enabled;
 
   const callout = (
-    opportunityPostData?.hub.opportunity ??
-    challengePostData?.hub.challenge ??
-    hubPostData?.hub
+    opportunityPostData?.space.opportunity ??
+    challengePostData?.space.challenge ??
+    spacePostData?.space
   )?.collaboration?.callouts?.find(callout => callout.id === calloutId);
 
   return {
     posts: callout?.posts,
-    loading: hubPostDataLoading || challengePostDataLoading || opportunityPostDataLoading,
+    loading: spacePostDataLoading || challengePostDataLoading || opportunityPostDataLoading,
     subscriptionEnabled: isSubscriptionEnabled,
   };
 };

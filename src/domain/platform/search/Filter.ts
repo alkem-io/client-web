@@ -14,13 +14,13 @@ export interface FilterConfig {
 export const journeyFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['hub', 'opportunity', 'challenge'],
+    value: ['space', 'opportunity', 'challenge'],
     typename: 'all',
   },
-  hub: {
-    title: 'pages.search.filter.key.hub',
-    value: ['hub'],
-    typename: 'hub',
+  space: {
+    title: 'pages.search.filter.key.space',
+    value: ['space'],
+    typename: 'space',
   },
   challenge: {
     title: 'pages.search.filter.key.challenge',

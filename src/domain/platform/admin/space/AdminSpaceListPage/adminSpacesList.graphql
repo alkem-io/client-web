@@ -1,0 +1,20 @@
+query adminSpacesList {
+  spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
+    ...AdminSpace
+    visibility
+  }
+}
+
+fragment AdminSpace on Space {
+  id
+  nameID
+  visibility
+  profile {
+    id
+    displayName
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}

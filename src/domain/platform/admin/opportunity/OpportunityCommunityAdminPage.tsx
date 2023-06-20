@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import OpportunitySettingsLayout from './OpportunitySettingsLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
@@ -23,35 +23,35 @@ import EditCommunityMembersSection from '../community/views/EditCommunityMembers
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 
 const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { hubNameId } = useHub();
+  const { spaceNameId } = useSpace();
   const { opportunity } = useOpportunity();
 
   const communityId = opportunity?.community?.id;
 
   const leadingOrganizationsProps = useOpportunityLeadOrganizationAssignment({
-    hubId: hubNameId,
+    spaceId: spaceNameId,
     opportunityId: opportunity?.nameID,
   });
 
   const memberOrganizationsProps = useOpportunityMemberOrganizationAssignment({
-    hubId: hubNameId,
+    spaceId: spaceNameId,
     opportunityId: opportunity?.nameID,
   });
 
   const memberUsersProps = useCommunityUserAssignment({
     memberType: 'member',
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       opportunityId: opportunity?.nameID,
     },
     existingUsersOptions: {
       useQuery: useOpportunityCommunityMembersQuery,
-      readCommunity: data => data?.hub.opportunity.community,
+      readCommunity: data => data?.space.opportunity.community,
       refetchQuery: refetchOpportunityCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useOpportunityAvailableMemberUsersLazyQuery,
-      readUsers: data => data.hub.opportunity.community?.availableMemberUsers,
+      readUsers: data => data.space.opportunity.community?.availableMemberUsers,
       refetchQuery: refetchOpportunityAvailableMemberUsersQuery,
     },
   });
@@ -59,17 +59,17 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '.
   const leadUsersProps = useCommunityUserAssignment({
     memberType: 'lead',
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       opportunityId: opportunity?.nameID,
     },
     existingUsersOptions: {
       useQuery: useOpportunityCommunityMembersQuery,
-      readCommunity: data => data?.hub.opportunity.community,
+      readCommunity: data => data?.space.opportunity.community,
       refetchQuery: refetchOpportunityCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useOpportunityAvailableLeadUsersLazyQuery,
-      readUsers: data => data.hub.opportunity.community?.availableLeadUsers,
+      readUsers: data => data.space.opportunity.community?.availableLeadUsers,
       refetchQuery: refetchOpportunityAvailableLeadUsersQuery,
     },
   });

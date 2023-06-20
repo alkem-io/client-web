@@ -162,7 +162,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           locationType="callout"
           calloutId={callout.id}
           journeyTypeName={calloutLayoutProps.journeyTypeName}
-          hubNameId={calloutLayoutProps.hubNameId}
+          spaceNameId={calloutLayoutProps.spaceNameId}
           challengeNameId={calloutLayoutProps.challengeNameId}
           opportunityNameId={calloutLayoutProps.opportunityNameId}
         >

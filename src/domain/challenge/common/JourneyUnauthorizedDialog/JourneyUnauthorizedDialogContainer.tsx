@@ -32,10 +32,10 @@ interface JourneyUnauthorizedDialogContainerProps {
 
 const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: JourneyUnauthorizedDialogContainerProps) => {
   // TODO move to Page components, pass from there
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  if (!hubNameId) {
-    throw new Error('Must be within a Hub route.');
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space route.');
   }
 
   const {
@@ -44,19 +44,19 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     error: privilegesError,
   } = useJourneyPrivilegesQuery({
     variables: {
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
-      includeHub: journeyTypeName === 'hub',
+      includeSpace: journeyTypeName === 'space',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
   });
 
   const { authorization } =
-    journeyPrivilegesQueryData?.hub.opportunity ??
-    journeyPrivilegesQueryData?.hub.challenge ??
-    journeyPrivilegesQueryData?.hub ??
+    journeyPrivilegesQueryData?.space.opportunity ??
+    journeyPrivilegesQueryData?.space.challenge ??
+    journeyPrivilegesQueryData?.space ??
     {};
 
   const isAuthorized = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
@@ -69,10 +69,10 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     error: journeyCommunityPrivilegesError,
   } = useJourneyCommunityPrivilegesQuery({
     variables: {
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
-      includeHub: journeyTypeName === 'hub',
+      includeSpace: journeyTypeName === 'space',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
@@ -80,19 +80,19 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
   });
 
   const { authorization: communityAuthorization } =
-    journeyCommunityPrivilegesQueryData?.hub.opportunity?.community ??
-    journeyCommunityPrivilegesQueryData?.hub.challenge?.community ??
-    journeyCommunityPrivilegesQueryData?.hub.community ??
+    journeyCommunityPrivilegesQueryData?.space.opportunity?.community ??
+    journeyCommunityPrivilegesQueryData?.space.challenge?.community ??
+    journeyCommunityPrivilegesQueryData?.space.community ??
     {};
 
   const communityReadAccess = communityAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const { data: journeyDataQueryData, error: journeyDataError } = useJourneyDataQuery({
     variables: {
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
-      includeHub: journeyTypeName === 'hub',
+      includeSpace: journeyTypeName === 'space',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
       includeCommunity: communityReadAccess,
@@ -104,7 +104,10 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
   });
 
   const { profile, context, metrics, community } =
-    journeyDataQueryData?.hub.opportunity ?? journeyDataQueryData?.hub.challenge ?? journeyDataQueryData?.hub ?? {};
+    journeyDataQueryData?.space.opportunity ??
+    journeyDataQueryData?.space.challenge ??
+    journeyDataQueryData?.space ??
+    {};
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(
@@ -122,7 +125,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
   );
 
   const hostOrganizations = useMemo(
-    () => journeyDataQueryData?.hub.host && [journeyDataQueryData?.hub.host],
+    () => journeyDataQueryData?.space.host && [journeyDataQueryData?.space.host],
     [journeyDataQueryData]
   );
 
@@ -137,7 +140,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     impact: context?.impact,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
-    leadOrganizations: journeyTypeName === 'hub' ? hostOrganizations : community?.leadOrganizations,
+    leadOrganizations: journeyTypeName === 'space' ? hostOrganizations : community?.leadOrganizations,
     leadUsers: community?.leadUsers,
     loading: privilegesLoading,
     error: privilegesError ?? journeyCommunityPrivilegesError ?? journeyDataError,

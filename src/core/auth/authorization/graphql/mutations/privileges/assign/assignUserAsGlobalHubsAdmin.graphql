@@ -1,5 +1,5 @@
-mutation assignUserAsGlobalHubsAdmin($input: AssignGlobalHubsAdminInput!) {
-  assignUserAsGlobalHubsAdmin(membershipData: $input) {
+mutation assignUserAsGlobalSpacesAdmin($input: AssignGlobalSpacesAdminInput!) {
+  assignUserAsGlobalSpacesAdmin(membershipData: $input) {
     id
     profile {
       id

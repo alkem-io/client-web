@@ -181,8 +181,8 @@
     "posts": "Cartes",
     "host": "Hôte",
     "lead": "Chapeau",
-    "hub": "Hub",
-    "hubs": "Hubs",
+    "space": "Space",
+    "spaces": "Spaces",
     "challenge": "Défi",
     "challenges": "Défis",
     "all-entities": "Tous les {{entityType}} ({{count}})",
@@ -271,7 +271,7 @@
       "not-verified": ""
     },
     "enums": {
-      "hub-visibility": {
+      "space-visibility": {
         "ACTIVE": "Actif",
         "ARCHIVED": "Archivé",
         "DEMO": "Démo"
@@ -283,7 +283,7 @@
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "Administrateur global des Hubs",
+          "name": "Administrateur global des Spaces",
           "order": 1,
           "hidden": false
         },
@@ -298,17 +298,17 @@
           "hidden": true
         },
         "HUB_ADMIN": {
-          "name": "Admin du Hub",
+          "name": "Admin du Space",
           "order": 3,
           "hidden": false
         },
         "HUB_HOST": {
-          "name": "Hôte du Hub",
+          "name": "Hôte du Space",
           "order": 4,
           "hidden": true
         },
         "HUB_MEMBER": {
-          "name": "Membre du Hub",
+          "name": "Membre du Space",
           "order": 5,
           "hidden": true
         },
@@ -406,7 +406,7 @@
     "members-count": "Membres ({{count}})",
     "application-form": {
       "title": "Formulaire d'application",
-      "subtitle": "Cette section vous permet de modifier les questions pour les utilisateurs désireux de rejoindre le Hub. <br /><b>Veuillez noter que</b> ces questions ne seront affichées que lorsque l'interrupteur \"Autoriser les applications à ce hub\" est activé <b></b>, et \"Autoriser tout utilisateur enregistré à rejoindre ce Hub\" est désactivé <b></b>. Celles-ci peuvent être définies dans le bloc <b>Adhésion</b> ci-dessus.",
+      "subtitle": "Cette section vous permet de modifier les questions pour les utilisateurs désireux de rejoindre le Space. <br /><b>Veuillez noter que</b> ces questions ne seront affichées que lorsque l'interrupteur \"Autoriser les applications à ce space\" est activé <b></b>, et \"Autoriser tout utilisateur enregistré à rejoindre ce Space\" est désactivé <b></b>. Celles-ci peuvent être définies dans le bloc <b>Adhésion</b> ci-dessus.",
       "required-question": "Question obligatoire",
       "move-up": "Déplacer la question vers le haut",
       "move-down": "Déplacer la question d'une position vers le bas",
@@ -479,25 +479,25 @@
     }
   },
   "context": {
-    "hub": {
+    "space": {
       "tagline": {
         "title": "Titre d'appel",
-        "description": "Expliquez en une phrase de quoi ce Hub s'agit.",
+        "description": "Expliquez en une phrase de quoi ce Space s'agit.",
         "placeholder": ""
       },
       "background": {
         "title": "Fond",
-        "description": "Donnez un bref aperçu de la nécessité de ce Hub et comment il s'est produit.",
+        "description": "Donnez un bref aperçu de la nécessité de ce Space et comment il s'est produit.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "Que va changer ce Hub ? Comment les personnes et les organisations seront-elles affectées ?",
+        "description": "Que va changer ce Space ? Comment les personnes et les organisations seront-elles affectées ?",
         "placeholder": ""
       },
       "vision": {
         "title": "En quoi consiste cette communauté?",
-        "description": "Quel est le cadre de référence de ce Hub ?",
+        "description": "Quel est le cadre de référence de ce Space ?",
         "placeholder": ""
       },
       "who": {
@@ -601,7 +601,7 @@
     "template-library": "Librairie de modèles: Tableaux blancs",
     "filter-placeholder": "Rechercher un modèle...",
     "whiteboard-template": "Modèle de tableau blanc",
-    "hub-templates": "Modèles sélectionnés par l'hôte de cette communauté",
+    "space-templates": "Modèles sélectionnés par l'hôte de cette communauté",
     "load-platform-templates": "Ou cliquez ici pour parcourir tous les modèles de plateforme",
     "platform-templates": "Modèles de plateforme",
     "error-importing": "Erreur lors de l'importation du modèle Whiteboard",
@@ -870,12 +870,12 @@
       "applyTo": "Appliquer à",
       "extendedMessage": "{{join}} notre communauté et commencez à faire des changements!",
       "dialog-apply-parent": {
-        "title": "Vous voulez joindre le hub parent?",
-        "body": "Pour rejoindre le hub <strong title='Challenge name'>'{{challengeName}}'</strong> vous devez d'abord rejoindre <strong title='Hub name'>'{{hubName}}'</strong> . Veuillez ajouter le défi que vous souhaitez rejoindre dans le formulaire de demande du hub."
+        "title": "Vous voulez joindre le space parent?",
+        "body": "Pour rejoindre le space <strong title='Challenge name'>'{{challengeName}}'</strong> vous devez d'abord rejoindre <strong title='Space name'>'{{spaceName}}'</strong> . Veuillez ajouter le défi que vous souhaitez rejoindre dans le formulaire de demande du space."
       },
       "dialog-parent-app-pending": {
         "title": "Demande de tutorat en cours!",
-        "body": "Pour rejoindre le hub <strong title='Challenge name'>'{{challengeName}}'</strong> vous devez d'abord rejoindre <strong title='Hub name'>'{{hubName}}'</strong> . Il y a déjà une demande en attente pour ce <strong title='Hub name'>'{{hubName}}'</strong>, pour que vous puissiez également soumettre une demande parallèle pour <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "Pour rejoindre le space <strong title='Challenge name'>'{{challengeName}}'</strong> vous devez d'abord rejoindre <strong title='Space name'>'{{spaceName}}'</strong> . Il y a déjà une demande en attente pour ce <strong title='Space name'>'{{spaceName}}'</strong>, pour que vous puissiez également soumettre une demande parallèle pour <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Joindre la communauté",
@@ -918,12 +918,12 @@
       "file-size-error": "La taille du fichier dépasse la limite de {{limit}}Mo",
       "file-upload-success": "Le fichier a été téléchargé avec succès"
     },
-    "editHubForm": {
+    "editSpaceForm": {
       "host": {
         "title": "Hôte",
         "select": "Sélectionnez un hôte"
       },
-      "read-access": "Autoriser l'accès en lecture pour les membres non-hub aux challenges"
+      "read-access": "Autoriser l'accès en lecture pour les membres non-space aux challenges"
     },
     "nameSegment": {
       "name": "Nom",
@@ -1083,7 +1083,7 @@
     },
     "contributions": {
       "title": "Contributions",
-      "help": "Les Hubs et les Défis auxquels cette organisation contribue"
+      "help": "Les Spaces et les Défis auxquels cette organisation contribue"
     },
     "discussions-list": {
       "name": "Discussions - {{community}}",
@@ -1227,12 +1227,12 @@
         }
       },
       "archived-notice": {
-        "archived-hub": "Ce Hub est actuellement archivé. Vous voulez le ramener à la vie ? <contact>Cliquez ici</contact> pour contacter Alkemio.",
-        "archived-journey": "Cet {{journey}} est sous un Hub actuellement archivé. Vous voulez le ramener à la vie ? <contact>Cliquez ici</contact> pour contacter Alkemio."
+        "archived-space": "Ce Space est actuellement archivé. Vous voulez le ramener à la vie ? <contact>Cliquez ici</contact> pour contacter Alkemio.",
+        "archived-journey": "Cet {{journey}} est sous un Space actuellement archivé. Vous voulez le ramener à la vie ? <contact>Cliquez ici</contact> pour contacter Alkemio."
       },
       "demo-notice": {
-        "demo-hub": "Ceci est un Hub de démonstration. <alkemio>Cliquez ici</alkemio> pour collaborer dans les Hubs actifs.",
-        "demo-journey": "Ceci {{journey}} est dans un Hub de démonstration. <alkemio>Cliquez ici</alkemio> pour collaborer dans des Hubs actifs."
+        "demo-space": "Ceci est un Space de démonstration. <alkemio>Cliquez ici</alkemio> pour collaborer dans les Spaces actifs.",
+        "demo-journey": "Ceci {{journey}} est dans un Space de démonstration. <alkemio>Cliquez ici</alkemio> pour collaborer dans des Spaces actifs."
       }
     },
     "contribute": {
@@ -1265,12 +1265,12 @@
             "post-templates": "Modèles de cartes",
             "whiteboard-templates": "Modèles de tableaux blancs",
             "innovation-templates": "Modèles de flux d'innovation",
-            "delete-confirmation": "Êtes-vous sûr de vouloir supprimer {{template}} du hub ? Vous pouvez également modifier les informations de ce modèle.",
+            "delete-confirmation": "Êtes-vous sûr de vouloir supprimer {{template}} du space ? Vous pouvez également modifier les informations de ce modèle.",
             "import": {
               "title": "Librairie de modèles: {{templateType}}",
-              "subtitle": "Trouvez des modèles à utiliser dans votre hub, défi ou opportunité. Sélectionnez le modèle et cliquez sur « sélectionner» pour l'ajouter à votre jeu de modèles.",
+              "subtitle": "Trouvez des modèles à utiliser dans votre space, défi ou opportunité. Sélectionnez le modèle et cliquez sur « sélectionner» pour l'ajouter à votre jeu de modèles.",
               "callout-template-import-subtitle": "Trouver un modèle à utiliser lorsque vous contribuez à votre $t(common.callout)",
-              "no-templates": "Aucun modèle de Hub trouvé, trouver d'autres modèles de plateforme ci-dessous",
+              "no-templates": "Aucun modèle de Space trouvé, trouver d'autres modèles de plateforme ci-dessous",
               "imported-successfully-notification": "Modèle importé avec succès"
             }
           },
@@ -1330,7 +1330,7 @@
           "challenge-updated": "Le challenge a été modifié avec succès."
         }
       },
-      "hub": {
+      "space": {
         "sections": {
           "challenges": {
             "description": "Ici, vous pouvez modifier le profil pour cette {}."
@@ -1338,18 +1338,18 @@
         },
         "authorization": {
           "preferences": {
-            "subtitle": "Cette section vous permet de modifier les préférences d'autorisation $t(common.hub)"
+            "subtitle": "Cette section vous permet de modifier les préférences d'autorisation $t(common.space)"
           }
         },
         "community": {
           "preferences": {
             "title": "Appartenance",
-            "subtitle": "Cette section vous permet de modifier les préférences d'autorisation $t(common.hub)"
+            "subtitle": "Cette section vous permet de modifier les préférences d'autorisation $t(common.space)"
           }
         },
         "notifications": {
-          "hub-created": "Hub créé avec succès.",
-          "hub-removed": "Hub '{{name}}' supprimé avec succès."
+          "space-created": "Space créé avec succès.",
+          "space-removed": "Space '{{name}}' supprimé avec succès."
         }
       },
       "opportunity": {
@@ -1453,7 +1453,7 @@
         },
         "key": {
           "all": "Tout",
-          "hub": "Hubs",
+          "space": "Spaces",
           "challenge": "Défis",
           "opportunity": "Opportunités",
           "user": "Utilisateurs",
@@ -1463,32 +1463,32 @@
           "callout": "Callouts (bientôt disponible)"
         }
       },
-      "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunties)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunties)"
     },
     "challenge-explorer": {
       "search": {
         "title": "Explorez les défis publics",
-        "subtitle": "Entrez vos termes de recherche (par exemple 'innovation') ci-dessous pour trouver les défis correspondants. Veuillez noter que sur Alkemio, il y a des centres de défis publics et privés. Vous trouverez ici tous les défis des pôles publics. Les défis des hubs privés sont visibles lorsque vous êtes connecté et un membre de ce hub particulier.",
+        "subtitle": "Entrez vos termes de recherche (par exemple 'innovation') ci-dessous pour trouver les défis correspondants. Veuillez noter que sur Alkemio, il y a des centres de défis publics et privés. Vous trouverez ici tous les défis des pôles publics. Les défis des spaces privés sont visibles lorsque vous êtes connecté et un membre de ce space particulier.",
         "placeholder": "Recherche...",
         "default-search-term": "Innovation",
         "no-results": "Aucun résultat ne correspond à votre recherche."
       },
       "side-note": {
         "title": "La Structure d' Alkemio",
-        "description": "À Alkemio, tous les défis font partie d'un Hub. Chaque Hub a son cadre de référence spécifique, dans lequel les défis sont utilisés pour comprendre les problèmes qui se posent."
+        "description": "À Alkemio, tous les défis font partie d'un Space. Chaque Space a son cadre de référence spécifique, dans lequel les défis sont utilisés pour comprendre les problèmes qui se posent."
       },
       "my-search": {
         "title": "Explorez d'autres défis visibles pour vous",
-        "subtitle": "Les défis dans les Hubs publics sont visibles à tout le monde. Les défis dans les Hubs privés ne sont visibles que pour les membres. Entrez vos termes de recherche (par exemple « innovation») ci-dessous pour trouver des défis correspondants. "
+        "subtitle": "Les défis dans les Spaces publics sont visibles à tout le monde. Les défis dans les Spaces privés ne sont visibles que pour les membres. Entrez vos termes de recherche (par exemple « innovation») ci-dessous pour trouver des défis correspondants. "
       },
       "my": {
         "title": "Mes défis",
         "subtitle": "Ici, vous trouverez les défis auxquels vous contribuez."
       },
       "other": {
-        "title": "Autres défis dans Mes Hubs",
-        "subtitle": "Ici vous trouverez les autres défis hébergés par les hubs dont vous êtes membre.",
-        "filter-by-hub": "Filtrer par Mon Hub"
+        "title": "Autres défis dans Mes Spaces",
+        "subtitle": "Ici vous trouverez les autres défis hébergés par les spaces dont vous êtes membre.",
+        "filter-by-space": "Filtrer par Mon Space"
       }
     },
     "lead-organization": {
@@ -1499,7 +1499,7 @@
     },
     "activity": {
       "title": "{{blockName}} Activité",
-      "hubs": "Hubs de Défi",
+      "spaces": "Spaces de Défi",
       "innovation-flow-info": "Cliquez pour voire le Flux d'Innovation"
     },
     "home": {
@@ -1524,14 +1524,14 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
-        "hub": {
-          "header": "Explorez les Hubs de Défi!",
+        "space": {
+          "header": "Explorez les Spaces de Défi!",
           "subheader": "",
-          "body": "Chaque Hub est une communauté avec un espace dédié pour les défis partagés. Pour connecter, collaborer et innover ensemble.",
-          "body1": "Pour les utilisateurs, les hubs sont libres de se joindre. Explorez les options d'adhésion, y compris pour les hubs publics et privés."
+          "body": "Chaque Space est une communauté avec un espace dédié pour les défis partagés. Pour connecter, collaborer et innover ensemble.",
+          "body1": "Pour les utilisateurs, les spaces sont libres de se joindre. Explorez les options d'adhésion, y compris pour les spaces publics et privés."
         },
-        "my-hubs": {
-          "header": "Mes hubs ({{myHubsCount}})"
+        "my-spaces": {
+          "header": "Mes spaces ({{mySpacesCount}})"
         },
         "organizations": {
           "header": "Organisations",
@@ -1541,11 +1541,11 @@
           "title": "Voyez qui est en train de conduire des défis sur Alkemio"
         },
         "footer": {
-          "headline": "En savoir plus sur Alkemio? Visitez notre site web, contactez-nous ou jetez un œil à notre dépôt Github",
+          "headline": "En savoir plus sur Alkemio? Visitez notre site web, contactez-nous ou jetez un œil à notre dépôt github",
           "links": {
             "foundation": "La Fondation Alkemio",
             "contact-form": "Formulaire de contact",
-            "github": "Github"
+            "github": "github"
           }
         }
       }
@@ -1558,8 +1558,8 @@
         "help": "Statut de vérification : a l'identité et les informations sur cette organisation ont été formellement vérifiées"
       }
     },
-    "hub": {
-      "title": "Hub",
+    "space": {
+      "title": "Space",
       "application": {
         "title": "Demande pour rejoindre {{entity}} \"{{name}}\"",
         "subheader": "Veuillez remplir les questions ci-dessous, lesquelles seront envoyées à la partie concernée avec votre profil.",
@@ -1571,7 +1571,7 @@
       "sections": {
         "dashboard": {
           "organization": "Facilitateur d'organisation",
-          "activity": "Statistiques de l'Hub",
+          "activity": "Statistiques de l'Space",
           "community": "Communauté"
         },
         "challenges": {
@@ -1579,7 +1579,7 @@
           "subheader": "Il n'y a pas de frontière finale",
           "body": "",
           "no-data": "Aucun collectionable disponible pour ce niveau",
-          "description": "Ici, vous pouvez explorer les défis hébergés dans ce Hub. Filtrez par mots clés pour montrer seulement les sujets qui vous intéressent. "
+          "description": "Ici, vous pouvez explorer les défis hébergés dans ce Space. Filtrez par mots clés pour montrer seulement les sujets qui vous intéressent. "
         },
         "contribute": {
           "header": "Contribuer"
@@ -1648,9 +1648,9 @@
       "member-organizations": {
         "no-data": "Aucune organisation ne contribue en ce moment"
       },
-      "hub-host": {
+      "space-host": {
         "title": "Facilitateur d'organisation",
-        "help-text": "L'Organisation qui est en train de faciliter ce Hub."
+        "help-text": "L'Organisation qui est en train de faciliter ce Space."
       },
       "members": {
         "help-text": "Montre les membres de cette communauté, y compris le rôle qu'ils ont",
@@ -1696,9 +1696,9 @@
         "no-templates": "Il n'y a aucun post dans ce forum, soyez le premier à en ajouter un.",
         "how-to": "Pour créer un modèle, créez un nouveau tableau blanc ou utilisez un modèle existant et enregistrez-le en tant que modèle."
       },
-      "hub": {
+      "space": {
         "templatesHeader": "Modèles définis dans Alkemio",
-        "templatesSubheader": "Les modèles définis dans ce hub peuvent être utilisés dans chaque défi et opportunité que ce hub héberge."
+        "templatesSubheader": "Les modèles définis dans ce space peuvent être utilisés dans chaque défi et opportunité que ce space héberge."
       },
       "challenge": {
         "templatesHeader": "Modèles définis dans Alkemio",
@@ -1910,7 +1910,7 @@
     "postLocation": {
       "title": "Lieu de la carte",
       "label": "Contribuer à Callout",
-      "reminder": "Soyez prudent en changeant la position de la carte. Le déplacement de la carte vers une autre carte le fera disparaître du rappel actuel. Cela pourrait rendre difficile pour les personnes, y compris la personne qui a créé cette carte, de le récupérer. Notez que vous ne pouvez déplacer des cartes que dans le même Hub, Challenge ou Opportunité.",
+      "reminder": "Soyez prudent en changeant la position de la carte. Le déplacement de la carte vers une autre carte le fera disparaître du rappel actuel. Cela pourrait rendre difficile pour les personnes, y compris la personne qui a créé cette carte, de le récupérer. Notez que vous ne pouvez déplacer des cartes que dans le même Space, Challenge ou Opportunité.",
       "success": "Carte transférée avec succès vers le nouvel Callout.",
       "error": "Quelque chose s'est mal passé lors du déplacement de la carte, veuillez réessayer."
     }
@@ -1940,7 +1940,7 @@
     "more": "...plus {{count}} autres",
     "sign-in": "Veuillez vous connecter pour voir les utilisateurs qui sont associés à cette organisation."
   },
-  "hubs-filter": {
+  "spaces-filter": {
     "current-filter": "Choisissez les sujets qui vous intéressent le plus ! Filtre actuel : ",
     "show-all": "Tout afficher",
     "other": "Autre",
@@ -1972,8 +1972,8 @@
       }
     ]
   },
-  "hubSearch": {
-    "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunties)"
+  "spaceSearch": {
+    "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunties)"
   },
   "visuals-alt-text": {
     "banner": {

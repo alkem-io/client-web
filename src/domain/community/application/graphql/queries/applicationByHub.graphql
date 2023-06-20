@@ -1,5 +1,5 @@
-query applicationByHub($hubId: UUID_NAMEID!, $appId: UUID!) {
-  hub(ID: $hubId) {
+query applicationBySpace($spaceId: UUID_NAMEID!, $appId: UUID!) {
+  space(ID: $spaceId) {
     id
     application(ID: $appId) {
       id

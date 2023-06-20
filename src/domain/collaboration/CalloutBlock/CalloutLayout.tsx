@@ -20,7 +20,7 @@ import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
 import { CalloutLayoutEvents, CalloutSortProps } from '../callout/CalloutViewTypes';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { Ribbon } from '../../../core/ui/card/Ribbon';
 import Authorship from '../../../core/ui/authorship/Authorship';
@@ -101,17 +101,17 @@ const CalloutLayout = ({
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  if (!hubNameId) {
-    throw new Error('Must be within a Hub');
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space');
   }
 
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
-  const getTemplates = () => fetchTemplates({ variables: { hubId: hubNameId! } });
+  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery();
+  const getTemplates = () => fetchTemplates({ variables: { spaceId: spaceNameId! } });
 
-  const postTemplates = templatesData?.hub.templates?.postTemplates ?? [];
-  const whiteboardTemplates = templatesData?.hub.templates?.whiteboardTemplates ?? [];
+  const postTemplates = templatesData?.space.templates?.postTemplates ?? [];
+  const whiteboardTemplates = templatesData?.space.templates?.whiteboardTemplates ?? [];
   const templates = { postTemplates, whiteboardTemplates };
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
@@ -163,7 +163,7 @@ const CalloutLayout = ({
     return null;
   }
 
-  // TODO: For now callout moving is only enabled for hubs.
+  // TODO: For now callout moving is only enabled for spaces.
   // In the future check this in a cleaner way, maybe there is a privilege for this...
   // or just remove all canChangeCalloutGroup properties
   const canChangeCalloutGroup = !Boolean(challengeNameId) && !Boolean(opportunityNameId);
@@ -297,7 +297,7 @@ const CalloutLayout = ({
       <StorageConfigContextProvider
         locationType="callout"
         journeyTypeName={journeyTypeName}
-        {...{ hubNameId, challengeNameId, opportunityNameId }}
+        {...{ spaceNameId, challengeNameId, opportunityNameId }}
         calloutId={callout.nameID}
       >
         <CalloutEditDialog

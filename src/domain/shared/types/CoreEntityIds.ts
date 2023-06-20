@@ -5,22 +5,22 @@ type Required<SourceType extends {}, Props extends keyof SourceType> = {
 };
 
 export interface CoreEntityIdTypes {
-  hubNameId: string;
+  spaceNameId: string;
   challengeNameId?: string;
   opportunityNameId?: string;
 }
 
 export type OptionalCoreEntityIds = Partial<CoreEntityIdTypes>;
 
-export type HubIdHolder = Required<CoreEntityIdTypes, 'hubNameId'>;
-export type ChallengeIdHolder = Required<CoreEntityIdTypes, 'hubNameId' | 'challengeNameId'>;
-export type OpportunityIdHolder = Required<CoreEntityIdTypes, 'hubNameId' | 'opportunityNameId'>;
+export type SpaceIdHolder = Required<CoreEntityIdTypes, 'spaceNameId'>;
+export type ChallengeIdHolder = Required<CoreEntityIdTypes, 'spaceNameId' | 'challengeNameId'>;
+export type OpportunityIdHolder = Required<CoreEntityIdTypes, 'spaceNameId' | 'opportunityNameId'>;
 export type ChallengeOpportunityIdsHolder = Required<
   CoreEntityIdTypes,
-  'hubNameId' | 'challengeNameId' | 'opportunityNameId'
+  'spaceNameId' | 'challengeNameId' | 'opportunityNameId'
 >;
 
-export const isHubId = (ids: OptionalCoreEntityIds): ids is HubIdHolder =>
+export const isSpaceId = (ids: OptionalCoreEntityIds): ids is SpaceIdHolder =>
   typeof ids.challengeNameId === 'undefined' && typeof ids.opportunityNameId === 'undefined';
 export const isChallengeId = (ids: OptionalCoreEntityIds): ids is ChallengeIdHolder =>
   typeof ids.challengeNameId === 'string' && typeof ids.opportunityNameId === 'undefined';

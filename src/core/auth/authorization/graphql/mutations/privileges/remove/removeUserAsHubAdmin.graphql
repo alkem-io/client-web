@@ -1,5 +1,5 @@
-mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
-  removeUserAsHubAdmin(membershipData: $input) {
+mutation removeUserAsSpaceAdmin($input: RemoveSpaceAdminInput!) {
+  removeUserAsSpaceAdmin(membershipData: $input) {
     id
     profile {
       id

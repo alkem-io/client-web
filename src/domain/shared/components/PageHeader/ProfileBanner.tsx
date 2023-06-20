@@ -133,7 +133,7 @@ export interface ProfileBannerProps {
 
 /**
  * This is the common top banner for Users/Organizations or new things with a Profile.
- * For Hubs/Challenges/Opportunities and anything else see PageBanner
+ * For Spaces/Challenges/Opportunities and anything else see PageBanner
  */
 const ProfileBanner: FC<ProfileBannerProps> = ({
   title,

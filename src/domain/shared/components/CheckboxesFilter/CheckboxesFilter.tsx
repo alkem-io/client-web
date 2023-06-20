@@ -4,7 +4,7 @@ import { Identifiable } from '../../types/Identifiable';
 import { uniqBy } from 'lodash';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 
-// Like for example a hub: { id, displayName }
+// Like for example a space: { id, displayName }
 type FilterableValue = {
   displayName: string;
 } & Identifiable;
@@ -35,7 +35,7 @@ const CheckboxesFilter = <T extends Identifiable>({
     setButtonElement(null);
   };
 
-  // Get all the posible filter values, like for example all the hubs:
+  // Get all the posible filter values, like for example all the spaces:
   const values = uniqBy(items.map(getValue), item => item.id);
 
   const [filterStatus, setFilterStatus] = useState<FilterableValueStatus[]>(

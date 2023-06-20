@@ -120,25 +120,25 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
   return (
     <PageContent>
       <PageContentBlock>
-        {error && <ErrorBlock blockName={t('pages.hub.application.errorBlockName')} />}
-        {loading && <Loading text={t('pages.hub.application.loading')} />}
+        {error && <ErrorBlock blockName={t('pages.space.application.errorBlockName')} />}
+        {loading && <Loading text={t('pages.space.application.loading')} />}
         {!loading && !hasApplied && (
-          <PageTitle>{t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
+          <PageTitle>{t('pages.space.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
         )}
         {!loading &&
           !hasApplied &&
           (description ? (
             <WrapperMarkdown>{description}</WrapperMarkdown>
           ) : (
-            <BlockTitle> {t('pages.hub.application.subheader')}</BlockTitle>
+            <BlockTitle> {t('pages.space.application.subheader')}</BlockTitle>
           ))}
         {hasApplied ? (
           <div className={styles.thankYouDiv}>
             <BlockTitle>
-              {t('pages.hub.application.finish')}
+              {t('pages.space.application.finish')}
               {communityName}
             </BlockTitle>
-            <WrapperButton as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
+            <WrapperButton as={Link} to={backUrl} text={t('pages.space.application.backButton')} />
           </div>
         ) : (
           <>

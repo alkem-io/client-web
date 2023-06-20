@@ -11,10 +11,10 @@ import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
 
 export const OpportunityRoute: FC = () => {
-  const { hubNameId } = useHub();
+  const { spaceNameId } = useSpace();
   const { challenge } = useChallenge();
   const { opportunity } = useOpportunity();
 
@@ -22,7 +22,7 @@ export const OpportunityRoute: FC = () => {
     <StorageConfigContextProvider
       locationType="journey"
       journeyTypeName="opportunity"
-      hubNameId={hubNameId}
+      spaceNameId={spaceNameId}
       challengeNameId={challenge?.nameID}
       opportunityNameId={opportunity?.nameID}
     >

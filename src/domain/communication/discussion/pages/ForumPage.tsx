@@ -114,7 +114,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const loading = loadingDiscussions || loadingUser;
 
-  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfHub.forum' });
+  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
 
   return (
     <TopLevelDesktopLayout heading={ribbon}>

@@ -8,7 +8,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select/Select';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHub } from '../../../../../domain/challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../../../domain/challenge/space/SpaceContext/useSpace';
 import {
   refetchOpportunityRelationsQuery,
   useCreateRelationMutation,
@@ -36,12 +36,12 @@ interface P {
 const InterestModal: FC<P> = ({ onHide, show, opportunityId, collaborationId }) => {
   const { t } = useTranslation();
   const styles = useStyles();
-  const { hubNameId } = useHub();
+  const { spaceNameId } = useSpace();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
-    refetchQueries: [refetchOpportunityRelationsQuery({ hubId: hubNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityRelationsQuery({ spaceId: spaceNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const [description, setDescription] = useState<string>('');

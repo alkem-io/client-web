@@ -5,7 +5,7 @@ export enum MetricType {
   Associate = 'associates',
   User = 'users',
   Organization = 'organizations',
-  Hub = 'hubs',
+  Space = 'spaces',
   Challenge = 'challenges',
   Relation = 'relations',
   Post = 'posts',

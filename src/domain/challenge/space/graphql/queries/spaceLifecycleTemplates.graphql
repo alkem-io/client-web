@@ -1,0 +1,17 @@
+query spaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      innovationFlowTemplates {
+        definition
+        id
+        type
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+}

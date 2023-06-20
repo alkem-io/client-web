@@ -30,7 +30,7 @@ export const paletteOptions: PaletteOptions = {
     contrastText: '#1D384A',
     light: '#DEEFF6',
   },
-  hub: {
+  space: {
     main: '#1D384A',
   },
   challenge: {
@@ -49,7 +49,7 @@ declare module '@mui/material/styles/createPalette' {
     neutralMedium: PaletteColorOptions;
     neutralLight: PaletteColorOptions;
     highlight: PaletteColorOptions;
-    hub: PaletteColorOptions;
+    space: PaletteColorOptions;
     challenge: PaletteColorOptions;
     opportunity: PaletteColorOptions;
   }
@@ -60,7 +60,7 @@ declare module '@mui/material/styles/createPalette' {
     neutralMedium: PaletteColor;
     neutralLight: PaletteColor;
     highlight: PaletteColor;
-    hub: PaletteColor;
+    space: PaletteColor;
     challenge: PaletteColor;
     opportunity: PaletteColor;
   }

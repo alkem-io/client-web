@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { groupBy, sortBy, times } from 'lodash';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { useHubDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -45,13 +45,16 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const [isCalendarView, setCalendarView] = useState(false);
 
-  const { data, loading } = useHubDashboardCalendarEventsQuery({
-    variables: { hubId: journeyLocation?.hubNameId! },
-    skip: !journeyLocation || !journeyLocation.hubNameId,
+  const { data, loading } = useSpaceDashboardCalendarEventsQuery({
+    variables: { spaceId: journeyLocation?.spaceNameId! },
+    skip: !journeyLocation || !journeyLocation.spaceNameId,
   });
 
   // TODO: Move this to serverside
-  const allEvents = useMemo(() => sortBy(data?.hub.timeline?.calendar.events ?? [], event => event.startDate), [data]);
+  const allEvents = useMemo(
+    () => sortBy(data?.space.timeline?.calendar.events ?? [], event => event.startDate),
+    [data]
+  );
   const events = useMemo(() => {
     const eventGroups = groupBy(allEvents, event =>
       dayjs(event.startDate).isBefore(dayjs().startOf('day')) ? 'past' : 'future'
