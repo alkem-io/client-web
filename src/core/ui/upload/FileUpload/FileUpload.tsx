@@ -47,17 +47,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
       },
     });
   };
-  /*
-  //TODO: Add the message
 
-  const tLinks = TranslateWithElements(<Link target="_blank" />);
-  const { platform } = useConfig();
-  {
-    tLinks('components.file-upload.confirm-dialog.confirm-text', {
-      aup: { href: platform?.aup },
-    });
-  }
-  */
   return (
     <UploadButton
       icon={loading ? <CircularProgress size={20} /> : <AttachFileIcon />}
