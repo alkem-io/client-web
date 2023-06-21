@@ -1,8 +1,8 @@
 import React, { FC, useCallback } from 'react';
 import { useConfig } from '../../../platform/config/useConfig';
 import {
-  RoomMessageReceivedDocument,
   refetchCommunityUpdatesQuery,
+  RoomEventsDocument,
   useCommunityUpdatesQuery,
   useRemoveMessageOnRoomMutation,
   useSendMessageToRoomMutation,
@@ -12,7 +12,7 @@ import {
   CommunityUpdatesQuery,
   Hub,
   Message,
-  RoomMessageReceivedSubscription,
+  RoomEventsSubscription,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
@@ -116,13 +116,15 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
 const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
   NonNullable<NonNullable<CommunityUpdatesQuery['hub']['community']>['communication']>['updates'],
-  RoomMessageReceivedSubscription
+  RoomEventsSubscription
 >({
-  subscriptionDocument: RoomMessageReceivedDocument,
+  subscriptionDocument: RoomEventsDocument,
   updateSubEntity: (updates, subscriptionData) => {
-    if (updates?.id === subscriptionData.roomMessageReceived.roomID) {
-      const { message } = subscriptionData.roomMessageReceived;
-      updates?.messages?.push(message);
+    if (updates?.id === subscriptionData.roomEvents.roomID) {
+      if (subscriptionData.roomEvents?.message) {
+        const { data } = subscriptionData.roomEvents?.message;
+        updates?.messages?.push(data);
+      }
     }
   },
 });

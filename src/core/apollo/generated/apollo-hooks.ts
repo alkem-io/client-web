@@ -14226,12 +14226,27 @@ export type RemoveMessageOnRoomMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveMessageOnRoomMutation,
   SchemaTypes.RemoveMessageOnRoomMutationVariables
 >;
-export const RoomMessageReceivedDocument = gql`
-  subscription roomMessageReceived($roomID: UUID!) {
-    roomMessageReceived(roomID: $roomID) {
+export const RoomEventsDocument = gql`
+  subscription roomEvents($roomID: UUID!) {
+    roomEvents(roomID: $roomID) {
       roomID
       message {
-        ...MessageDetails
+        type
+        data {
+          ...MessageDetails
+        }
+      }
+      reaction {
+        type
+        messageID
+        data {
+          id
+          emoji
+          timestamp
+          sender {
+            id
+          }
+        }
       }
     }
   }
@@ -14239,37 +14254,36 @@ export const RoomMessageReceivedDocument = gql`
 `;
 
 /**
- * __useRoomMessageReceivedSubscription__
+ * __useRoomEventsSubscription__
  *
- * To run a query within a React component, call `useRoomMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useRoomMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRoomEventsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRoomEventsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useRoomMessageReceivedSubscription({
+ * const { data, loading, error } = useRoomEventsSubscription({
  *   variables: {
  *      roomID: // value for 'roomID'
  *   },
  * });
  */
-export function useRoomMessageReceivedSubscription(
+export function useRoomEventsSubscription(
   baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.RoomMessageReceivedSubscription,
-    SchemaTypes.RoomMessageReceivedSubscriptionVariables
+    SchemaTypes.RoomEventsSubscription,
+    SchemaTypes.RoomEventsSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.RoomMessageReceivedSubscription,
-    SchemaTypes.RoomMessageReceivedSubscriptionVariables
-  >(RoomMessageReceivedDocument, options);
+  return Apollo.useSubscription<SchemaTypes.RoomEventsSubscription, SchemaTypes.RoomEventsSubscriptionVariables>(
+    RoomEventsDocument,
+    options
+  );
 }
 
-export type RoomMessageReceivedSubscriptionHookResult = ReturnType<typeof useRoomMessageReceivedSubscription>;
-export type RoomMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.RoomMessageReceivedSubscription>;
+export type RoomEventsSubscriptionHookResult = ReturnType<typeof useRoomEventsSubscription>;
+export type RoomEventsSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.RoomEventsSubscription>;
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubId) {
@@ -14342,6 +14356,71 @@ export type CommunityUpdatesQueryResult = Apollo.QueryResult<
 >;
 export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpdatesQueryVariables) {
   return { query: CommunityUpdatesDocument, variables: variables };
+}
+
+export const PlatformUpdatesRoomDocument = gql`
+  query platformUpdatesRoom {
+    platform {
+      id
+      communication {
+        id
+        updates {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformUpdatesRoomQuery__
+ *
+ * To run a query within a React component, call `usePlatformUpdatesRoomQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformUpdatesRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformUpdatesRoomQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformUpdatesRoomQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformUpdatesRoomQuery,
+    SchemaTypes.PlatformUpdatesRoomQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformUpdatesRoomQuery, SchemaTypes.PlatformUpdatesRoomQueryVariables>(
+    PlatformUpdatesRoomDocument,
+    options
+  );
+}
+
+export function usePlatformUpdatesRoomLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformUpdatesRoomQuery,
+    SchemaTypes.PlatformUpdatesRoomQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformUpdatesRoomQuery, SchemaTypes.PlatformUpdatesRoomQueryVariables>(
+    PlatformUpdatesRoomDocument,
+    options
+  );
+}
+
+export type PlatformUpdatesRoomQueryHookResult = ReturnType<typeof usePlatformUpdatesRoomQuery>;
+export type PlatformUpdatesRoomLazyQueryHookResult = ReturnType<typeof usePlatformUpdatesRoomLazyQuery>;
+export type PlatformUpdatesRoomQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformUpdatesRoomQuery,
+  SchemaTypes.PlatformUpdatesRoomQueryVariables
+>;
+export function refetchPlatformUpdatesRoomQuery(variables?: SchemaTypes.PlatformUpdatesRoomQueryVariables) {
+  return { query: PlatformUpdatesRoomDocument, variables: variables };
 }
 
 export const CommunityUserPrivilegesDocument = gql`
