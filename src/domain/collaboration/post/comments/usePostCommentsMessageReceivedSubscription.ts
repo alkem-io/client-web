@@ -13,7 +13,7 @@ const usePostCommentsMessageReceivedSubscription = createUseSubscriptionToSubEnt
   RoomEventsSubscriptionVariables
 >({
   subscriptionDocument: RoomEventsDocument,
-  getSubscriptionVariables: aspect => ({ roomID: aspect.comments.id }),
+  getSubscriptionVariables: post => ({ roomID: post.comments.id }),
   updateSubEntity: (post, subscriptionData) => {
     const { message } = subscriptionData.roomEvents;
 
