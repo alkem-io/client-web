@@ -14,11 +14,11 @@ const usePostCommentsMessageReceivedSubscription = createUseSubscriptionToSubEnt
 >({
   subscriptionDocument: RoomEventsDocument,
   getSubscriptionVariables: aspect => ({ roomID: aspect.comments.id }),
-  updateSubEntity: (aspect, subscriptionData) => {
+  updateSubEntity: (post, subscriptionData) => {
     const { message } = subscriptionData.roomEvents;
 
     if (message && message.type === MutationType.Create) {
-      aspect?.comments?.messages?.push(message.data);
+      post?.comments?.messages?.push(message.data);
     }
   },
 });
