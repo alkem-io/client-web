@@ -1,18 +1,12 @@
-import 'react-image-crop/dist/ReactCrop.css';
-import React, { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { CircularProgress } from '@mui/material';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import 'react-image-crop/dist/ReactCrop.css';
 import UploadButton from '../../../../common/components/core/UploadButton';
-import { useConfig } from '../../../../domain/platform/config/useConfig';
-import { useNotification } from '../../notifications/useNotification';
-import { useUploadFileMutation } from '../../../apollo/generated/apollo-hooks';
-import { TranslateWithElements } from '../../../../domain/shared/i18n/TranslateWithElements';
-import { Actions } from '../../actions/Actions';
-import DialogHeader from '../../dialog/DialogHeader';
-import { BlockTitle } from '../../typography';
-import { gutters } from '../../grid/utils';
 import { StorageConfig } from '../../../../domain/platform/storage/StorageBucket/useStorageConfig';
+import { useUploadFileMutation } from '../../../apollo/generated/apollo-hooks';
+import { useNotification } from '../../notifications/useNotification';
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
@@ -24,13 +18,7 @@ const bytesInMegabyte = Math.pow(1024, 2);
 
 const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageConfig }) => {
   const { t } = useTranslation();
-  const tLinks = TranslateWithElements(<Link target="_blank" />);
-  const { platform } = useConfig();
   const notify = useNotification();
-
-  const [dialogOpened, setDialogOpened] = useState(false);
-  const [confirmation, setConfirmation] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File>();
 
   const acceptedFileTypes = storageConfig.allowedMimeTypes.join(',');
   const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
@@ -42,7 +30,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
     },
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (selectedFile: File) => {
     if (!selectedFile) return;
 
     if (storageConfig.maxFileSize && selectedFile.size > storageConfig.maxFileSize) {
@@ -58,53 +46,20 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
         },
       },
     });
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setConfirmation(false);
-    setDialogOpened(false);
-  };
-
-  const handleCheckboxToggle = oldValue => {
-    setConfirmation(!oldValue);
   };
 
   return (
-    <>
-      <UploadButton
-        icon={<AttachFileIcon />}
-        accept={acceptedFileTypes}
-        onChange={e => {
-          const file = e && e.target && e.target.files && e.target.files[0];
-          if (file) {
-            setSelectedFile(file);
-            setDialogOpened(true);
-          }
-        }}
-      />
-      <Dialog open={dialogOpened} maxWidth="xs" aria-labelledby="confirm-file-upload">
-        <DialogHeader onClose={handleClose}>
-          <BlockTitle>{t('components.file-upload.confirm-dialog.title')}</BlockTitle>
-        </DialogHeader>
-        <DialogContent sx={{ paddingX: 2 }}>
-          {tLinks('components.file-upload.confirm-dialog.confirm-text', {
-            aup: { href: platform?.aup },
-          })}
-          <FormControlLabel
-            sx={{ marginTop: gutters() }}
-            control={<Checkbox checked={confirmation} onChange={() => handleCheckboxToggle(confirmation)} />}
-            label={t('components.file-upload.confirm-dialog.checkbox-label')}
-          />
-        </DialogContent>
-        <Actions padding={gutters()} justifyContent="end">
-          {handleClose && <Button onClick={handleClose}>{t('buttons.cancel')}</Button>}
-          <Button variant="contained" onClick={handleSubmit} disabled={loading || !confirmation}>
-            {t('buttons.confirm')}
-          </Button>
-        </Actions>
-      </Dialog>
-    </>
+    <UploadButton
+      icon={loading ? <CircularProgress size={20} /> : <AttachFileIcon />}
+      disabled={loading}
+      accept={acceptedFileTypes}
+      onChange={e => {
+        const file = e && e.target && e.target.files && e.target.files[0];
+        if (file) {
+          handleSubmit(file);
+        }
+      }}
+    />
   );
 };
 
