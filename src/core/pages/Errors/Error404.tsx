@@ -1,14 +1,17 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import WrapperButton from '../../../common/components/core/WrapperButton';
 import Section from '../../../common/components/core/Section';
 import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import { useUpdateNavigation } from '../../routing/useNavigation';
+import { log404NotFound } from '../../../services/logging/sentry/log';
 
 const paths = { currentPaths: [] };
 
 export const Error404: FC = () => {
+  useEffect(() => log404NotFound());
+
   useUpdateNavigation(paths);
   const { t } = useTranslation();
   return (
