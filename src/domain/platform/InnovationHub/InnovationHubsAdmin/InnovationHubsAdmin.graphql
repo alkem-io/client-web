@@ -48,9 +48,18 @@ query AdminInnovationHub($innovationHubId: UUID_NAMEID!) {
       spaceListFilter {
         id
         nameID
+        visibility
         profile {
           id
           displayName
+        }
+        host {
+          id
+          nameID
+          profile {
+            id
+            displayName
+          }
         }
       }
       spaceVisibilityFilter

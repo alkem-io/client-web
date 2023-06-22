@@ -20355,9 +20355,18 @@ export const AdminInnovationHubDocument = gql`
         spaceListFilter {
           id
           nameID
+          visibility
           profile {
             id
             displayName
+          }
+          host {
+            id
+            nameID
+            profile {
+              id
+              displayName
+            }
           }
         }
         spaceVisibilityFilter

@@ -21745,7 +21745,16 @@ export type AdminInnovationHubQuery = {
                 __typename?: 'Space';
                 id: string;
                 nameID: string;
+                visibility: SpaceVisibility;
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
+                host?:
+                  | {
+                      __typename?: 'Organization';
+                      id: string;
+                      nameID: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
               }>
             | undefined;
         }
