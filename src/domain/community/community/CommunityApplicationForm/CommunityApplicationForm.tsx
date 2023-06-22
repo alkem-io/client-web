@@ -20,7 +20,7 @@ import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownV
 import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface CommunityApplicationFormProps {
-  hubId: string;
+  spaceId: string;
   challengeId?: string;
   disabled?: boolean;
 }
@@ -46,36 +46,36 @@ const newQuestion = (currentQuestions: FormValues['questions']) => ({
   sortOrder: (max(currentQuestions.map(q => q.sortOrder)) ?? 0) + 1,
 });
 
-const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ hubId, challengeId, disabled }) => {
+const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ spaceId, challengeId, disabled }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const isHub = !Boolean(challengeId);
+  const isSpace = !Boolean(challengeId);
 
   const { data: rawData, loading: loadingQuestions } = useCommunityApplicationFormQuery({
     variables: {
-      hubId,
+      spaceId,
       challengeId: challengeId,
-      isHub: isHub,
-      isChallenge: !isHub,
+      isSpace: isSpace,
+      isChallenge: !isSpace,
     },
-    skip: !hubId && !challengeId,
+    skip: !spaceId && !challengeId,
   });
 
   const data = useMemo(
     () => ({
-      communityId: isHub ? rawData?.hub.community?.id : rawData?.hub.challenge?.community?.id,
-      description: isHub
-        ? rawData?.hub.community?.applicationForm?.description
-        : rawData?.hub.challenge?.community?.applicationForm?.description,
+      communityId: isSpace ? rawData?.space.community?.id : rawData?.space.challenge?.community?.id,
+      description: isSpace
+        ? rawData?.space.community?.applicationForm?.description
+        : rawData?.space.challenge?.community?.applicationForm?.description,
       questions: sortBy(
-        isHub
-          ? rawData?.hub.community?.applicationForm?.questions
-          : rawData?.hub.challenge?.community?.applicationForm?.questions,
+        isSpace
+          ? rawData?.space.community?.applicationForm?.questions
+          : rawData?.space.challenge?.community?.applicationForm?.questions,
         q => q.sortOrder
       ),
     }),
-    [isHub, rawData]
+    [isSpace, rawData]
   );
 
   const [updateQuestions, { loading: submittingQuestions }] = useUpdateCommunityApplicationQuestionsMutation();
@@ -107,10 +107,10 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ hubId, ch
       awaitRefetchQueries: true,
       refetchQueries: [
         refetchCommunityApplicationFormQuery({
-          hubId,
+          spaceId,
           challengeId: challengeId,
-          isHub: isHub,
-          isChallenge: !isHub,
+          isSpace: isSpace,
+          isChallenge: !isSpace,
         }),
       ],
     });

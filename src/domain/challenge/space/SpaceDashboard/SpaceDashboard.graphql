@@ -1,0 +1,103 @@
+query spacePage($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    ...SpacePage
+  }
+}
+
+query SpaceDashboardReferences($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      id
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
+}
+
+fragment SpacePage on Space {
+  id
+  nameID
+  visibility
+  metrics {
+    id
+    name
+    value
+  }
+  authorization {
+    id
+    anonymousReadAccess
+    myPrivileges
+  }
+  host {
+    ...AssociatedOrganizationDetails
+    profile {
+      ...SpaceWelcomeBlockContributorProfile
+    }
+  }
+  profile {
+    id
+    displayName
+    description
+    tagline
+    visuals {
+      ...VisualUri
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+  context {
+    id
+    vision
+    who
+    impact
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+  collaboration {
+    ...DashboardTopCallouts
+  }
+  community {
+    ...EntityDashboardCommunity
+    leadUsers {
+      profile {
+        ...SpaceWelcomeBlockContributorProfile
+      }
+    }
+  }
+  challenges(limit: 3, shuffle: true) {
+    ...ChallengeCard
+  }
+  timeline {
+    id
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+}
+
+fragment SpaceWelcomeBlockContributorProfile on Profile {
+  id
+  displayName
+  location {
+    id
+    city
+    country
+  }
+  tagsets {
+    id
+    tags
+  }
+}

@@ -1,8 +1,0 @@
-query hubGroup($hubId: UUID_NAMEID!, $groupId: UUID!) {
-  hub(ID: $hubId) {
-    id
-    group(ID: $groupId) {
-      ...GroupInfo
-    }
-  }
-}

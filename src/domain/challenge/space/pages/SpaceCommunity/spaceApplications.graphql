@@ -1,0 +1,44 @@
+query spaceApplications($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    community {
+      id
+      applications {
+        ...ApplicationInfo
+      }
+    }
+  }
+}
+
+fragment ApplicationInfo on Application {
+  id
+  createdDate
+  updatedDate
+  lifecycle {
+    id
+    state
+    nextEvents
+  }
+  user {
+    id
+    nameID
+    email
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+  questions {
+    id
+    name
+    value
+  }
+}

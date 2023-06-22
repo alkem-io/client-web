@@ -3,8 +3,8 @@ import TranslationKey from '../../../types/TranslationKey';
 
 const getApplicationTypeKey = (type: ApplicationTypeEnum): TranslationKey => {
   switch (type) {
-    case ApplicationTypeEnum.hub:
-      return 'common.hub';
+    case ApplicationTypeEnum.space:
+      return 'common.space';
     case ApplicationTypeEnum.challenge:
       return 'common.challenge';
     case ApplicationTypeEnum.opportunity:

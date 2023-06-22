@@ -1,5 +1,5 @@
-query TemplatesForCalloutCreation($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query TemplatesForCalloutCreation($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id
@@ -19,8 +19,8 @@ query TemplatesForCalloutCreation($hubId: UUID_NAMEID!) {
   }
 }
 
-query PostTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query PostTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id
@@ -34,8 +34,8 @@ query PostTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
   }
 }
 
-query WhiteboardTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query WhiteboardTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id
@@ -54,8 +54,8 @@ fragment ProfileDisplayName on Profile {
   displayName
 }
 
-query PostTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
-  hub(ID: $hubId) {
+query PostTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id
@@ -76,8 +76,8 @@ query PostTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
   }
 }
 
-query WhiteboardTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
-  hub(ID: $hubId) {
+query WhiteboardTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id

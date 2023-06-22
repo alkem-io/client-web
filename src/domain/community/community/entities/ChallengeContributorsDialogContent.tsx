@@ -9,17 +9,17 @@ import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 
 const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { challenge, hubId } = useChallenge();
+  const { challenge, spaceId } = useChallenge();
   const challengeId = challenge?.id;
 
   const { loading, memberUsers, memberOrganizations } = useCommunityContributors(
     useChallengeCommunityContributorsQuery,
     data => {
-      const { memberUsers, memberOrganizations } = data?.hub.challenge.community || {};
+      const { memberUsers, memberOrganizations } = data?.space.challenge.community || {};
       return { memberUsers, memberOrganizations };
     },
     {
-      hubId,
+      spaceId,
       challengeId,
     },
     !dialogOpen

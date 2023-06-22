@@ -1,16 +1,15 @@
 query JourneyData(
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $includeHub: Boolean = false
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
   $includeCommunity: Boolean = false
-)
-{
-  hub(ID: $hubNameId) {
+) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       profile {
         ...ProfileJourneyData
       }

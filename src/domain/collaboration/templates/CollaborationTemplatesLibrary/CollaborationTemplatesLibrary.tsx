@@ -28,12 +28,12 @@ export interface CollaborationTemplatesLibraryProps<
   onFilterChange: (terms: string[]) => void;
 
   // Data
-  fetchHubTemplatesOnLoad?: boolean;
-  fetchTemplatesFromHub?: () => void;
-  templatesFromHub?: Template[];
-  loadingTemplatesFromHub?: boolean;
-  loadingTemplateValueFromHub?: boolean;
-  fetchTemplateFromHubValue?: (template: Template) => Promise<TemplateWithValue | undefined>;
+  fetchSpaceTemplatesOnLoad?: boolean;
+  fetchTemplatesFromSpace?: () => void;
+  templatesFromSpace?: Template[];
+  loadingTemplatesFromSpace?: boolean;
+  loadingTemplateValueFromSpace?: boolean;
+  fetchTemplateFromSpaceValue?: (template: Template) => Promise<TemplateWithValue | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
   templatesFromPlatform?: Template[];
@@ -49,12 +49,12 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
   templatePreviewComponent,
   filter = [],
   onFilterChange,
-  fetchHubTemplatesOnLoad,
-  fetchTemplatesFromHub,
-  templatesFromHub,
-  loadingTemplatesFromHub,
-  loadingTemplateValueFromHub,
-  fetchTemplateFromHubValue,
+  fetchSpaceTemplatesOnLoad,
+  fetchTemplatesFromSpace,
+  templatesFromSpace,
+  loadingTemplatesFromSpace,
+  loadingTemplateValueFromSpace,
+  fetchTemplateFromSpaceValue,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
   loadingTemplatesFromPlatform,
@@ -72,23 +72,23 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
   // Show gallery or show preview of this template:
   const [previewTemplate, setPreviewTemplate] = useState<TemplateWithValue>();
 
-  // Load Hub Templates by default:
+  // Load Space Templates by default:
   useEffect(() => {
-    if (fetchTemplatesFromHub && fetchHubTemplatesOnLoad) {
-      fetchTemplatesFromHub();
+    if (fetchTemplatesFromSpace && fetchSpaceTemplatesOnLoad) {
+      fetchTemplatesFromSpace();
     }
-  }, [fetchTemplatesFromHub, fetchHubTemplatesOnLoad]);
+  }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
 
-  const handlePreviewTemplateHub = async (template: Template) => {
-    setPreviewTemplate(await fetchTemplateFromHubValue?.(template));
+  const handlePreviewTemplateSpace = async (template: Template) => {
+    setPreviewTemplate(await fetchTemplateFromSpaceValue?.(template));
   };
 
-  // Load Platform Templates if no hubName is provided:
+  // Load Platform Templates if no spaceName is provided:
   useEffect(() => {
-    if (fetchTemplatesFromPlatform && !fetchHubTemplatesOnLoad) {
+    if (fetchTemplatesFromPlatform && !fetchSpaceTemplatesOnLoad) {
       fetchTemplatesFromPlatform();
     }
-  }, [fetchTemplatesFromPlatform, fetchHubTemplatesOnLoad]);
+  }, [fetchTemplatesFromPlatform, fetchSpaceTemplatesOnLoad]);
 
   const handlePreviewTemplatePlatform = async (template: Template) => {
     setPreviewTemplate(await fetchTemplateFromPlatformValue?.(template));
@@ -106,11 +106,11 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
   };
 
   const loading =
-    loadingTemplatesFromHub ||
+    loadingTemplatesFromSpace ||
     loadingTemplatesFromPlatform ||
-    loadingTemplateValueFromHub ||
+    loadingTemplateValueFromSpace ||
     loadingTemplateValueFromPlatform;
-  const loadingPreview = loadingTemplateValueFromHub || loadingTemplateValueFromPlatform;
+  const loadingPreview = loadingTemplateValueFromSpace || loadingTemplateValueFromPlatform;
 
   return (
     <>
@@ -142,14 +142,14 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
         <DialogContent>
           {!previewTemplate && !loadingPreview ? (
             <Gutters>
-              {templatesFromHub && (
+              {templatesFromSpace && (
                 <>
-                  <BlockTitle>{t('whiteboard-templates.hub-templates')}</BlockTitle>
+                  <BlockTitle>{t('whiteboard-templates.space-templates')}</BlockTitle>
                   <CollaborationTemplatesLibraryGallery
-                    templates={templatesFromHub}
+                    templates={templatesFromSpace}
                     templateCardComponent={templateCardComponent}
-                    onPreviewTemplate={template => handlePreviewTemplateHub(template)}
-                    loading={loadingTemplatesFromHub}
+                    onPreviewTemplate={template => handlePreviewTemplateSpace(template)}
+                    loading={loadingTemplatesFromSpace}
                   />
                 </>
               )}

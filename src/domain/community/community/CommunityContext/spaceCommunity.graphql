@@ -1,0 +1,9 @@
+query spaceCommunity($spaceId: UUID_NAMEID!, $includeDetails: Boolean = false) {
+  space(ID: $spaceId) {
+    id
+    community {
+      id
+      ...CommunityDetails @include(if: $includeDetails)
+    }
+  }
+}

@@ -56,11 +56,11 @@ export interface AboutPageContainerProps
 
 const AboutPageContainer: FC<AboutPageContainerProps> = ({
   children,
-  hubNameId,
+  spaceNameId,
   challengeNameId,
   opportunityNameId,
 }) => {
-  const includeHub = !(challengeNameId || opportunityNameId);
+  const includeSpace = !(challengeNameId || opportunityNameId);
   const includeChallenge = !!challengeNameId;
   const includeOpportunity = !!opportunityNameId;
 
@@ -70,26 +70,26 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     error: nonMembersDataError,
   } = useAboutPageNonMembersQuery({
     variables: {
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
-      includeHub,
+      includeSpace,
       includeChallenge,
       includeOpportunity,
     },
   });
   const nonMemberContext =
-    nonMembersData?.hub?.opportunity?.context ??
-    nonMembersData?.hub?.challenge?.context ??
-    nonMembersData?.hub?.context;
+    nonMembersData?.space?.opportunity?.context ??
+    nonMembersData?.space?.challenge?.context ??
+    nonMembersData?.space?.context;
   const nonMemberProfile =
-    nonMembersData?.hub?.opportunity?.profile ??
-    nonMembersData?.hub?.challenge?.profile ??
-    nonMembersData?.hub?.profile;
+    nonMembersData?.space?.opportunity?.profile ??
+    nonMembersData?.space?.challenge?.profile ??
+    nonMembersData?.space?.profile;
   const nonMemberCommunity =
-    nonMembersData?.hub?.opportunity?.community ??
-    nonMembersData?.hub?.challenge?.community ??
-    nonMembersData?.hub?.community;
+    nonMembersData?.space?.opportunity?.community ??
+    nonMembersData?.space?.challenge?.community ??
+    nonMembersData?.space?.community;
 
   const referencesReadAccess =
     nonMemberContext?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
@@ -102,10 +102,10 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     error: membersDataError,
   } = useAboutPageMembersQuery({
     variables: {
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
-      includeHub,
+      includeSpace,
       includeChallenge,
       includeOpportunity,
       referencesReadAccess,
@@ -115,16 +115,17 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   });
 
   const memberProfile =
-    membersData?.hub?.opportunity?.profile ?? membersData?.hub?.challenge?.profile ?? membersData?.hub?.profile;
+    membersData?.space?.opportunity?.profile ?? membersData?.space?.challenge?.profile ?? membersData?.space?.profile;
 
   const context = nonMemberContext;
 
-  const nonMemberJourney = nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge ?? nonMembersData?.hub;
-  const memberJourney = membersData?.hub?.opportunity ?? membersData?.hub?.challenge ?? membersData?.hub;
+  const nonMemberJourney =
+    nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge ?? nonMembersData?.space;
+  const memberJourney = membersData?.space?.opportunity ?? membersData?.space?.challenge ?? membersData?.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
-  const lifecycle = (nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge)?.lifecycle;
-  const hostOrganization = nonMembersData?.hub?.host;
+  const lifecycle = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.lifecycle;
+  const hostOrganization = nonMembersData?.space?.host;
   const community = {
     ...nonMemberJourney?.community,
     ...memberJourney?.community,
@@ -140,7 +141,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const canCreateCommunityContextReview =
-    nonMembersData?.hub?.challenge?.authorization?.myPrivileges?.includes(
+    nonMembersData?.space?.challenge?.authorization?.myPrivileges?.includes(
       AuthorizationPrivilege.CommunityContextReview
     ) ?? false;
 

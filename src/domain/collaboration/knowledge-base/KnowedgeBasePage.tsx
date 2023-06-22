@@ -15,9 +15,9 @@ import useCallouts, { TypedCallout } from '../callout/useCallouts/useCallouts';
 import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
 import { useCalloutCreationWithPreviewImages } from '../callout/creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import { useHub } from '../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../challenge/space/SpaceContext/useSpace';
 import {
-  useCalloutFormTemplatesFromHubLazyQuery,
+  useCalloutFormTemplatesFromSpaceLazyQuery,
   useUpdateCalloutVisibilityMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
@@ -33,10 +33,10 @@ interface KnowledgeBasePageProps {
 
 const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWithChildren<KnowledgeBasePageProps>) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  if (!hubNameId) {
-    throw new Error('Must be within a Hub');
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space');
   }
 
   const {
@@ -49,7 +49,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     onCalloutsSortOrderUpdate,
     refetchCallout,
   } = useCallouts({
-    hubNameId,
+    spaceNameId,
     challengeNameId,
     opportunityNameId,
     calloutGroups: [CalloutsGroup.KnowledgeBase],
@@ -69,14 +69,14 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     isCreating,
   } = useCalloutCreationWithPreviewImages();
 
-  const { hubId } = useHub();
+  const { spaceId } = useSpace();
 
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery({
-    variables: { hubId },
+  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery({
+    variables: { spaceId },
   });
 
-  const postTemplates = templatesData?.hub.templates?.postTemplates ?? [];
-  const whiteboardTemplates = templatesData?.hub.templates?.whiteboardTemplates ?? [];
+  const postTemplates = templatesData?.space.templates?.postTemplates ?? [];
+  const whiteboardTemplates = templatesData?.space.templates?.whiteboardTemplates ?? [];
   const templates = { postTemplates, whiteboardTemplates };
 
   const handleCreate = () => {
@@ -114,7 +114,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                     title: buildCalloutTitle(callout),
                     icon: <CalloutIcon />,
                     uri: buildCalloutUrl(callout.nameID, {
-                      hubNameId,
+                      spaceNameId,
                       challengeNameId,
                       opportunityNameId,
                     }),
@@ -132,7 +132,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
           <PageContentColumn columns={8}>
             <CalloutsGroupView
               callouts={groupedCallouts[CalloutsGroup.KnowledgeBase]}
-              hubId={hubNameId!}
+              spaceId={spaceNameId!}
               canCreateCallout={canCreateCallout}
               loading={loading}
               journeyTypeName={journeyTypeName}

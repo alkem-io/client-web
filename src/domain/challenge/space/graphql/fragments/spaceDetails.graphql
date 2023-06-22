@@ -1,0 +1,35 @@
+fragment SpaceDetails on Space {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+    tagline
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    visuals {
+      ...VisualFull
+    }
+    location {
+      ...fullLocation
+    }
+  }
+
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  context {
+    ...ContextDetails
+  }
+}

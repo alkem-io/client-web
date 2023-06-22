@@ -1,0 +1,15 @@
+query BannerInnovationHub($subdomain: String) {
+  platform {
+    id
+    innovationHub(subdomain: $subdomain) {
+      id
+      profile {
+        id
+        displayName
+      }
+      spaceListFilter {
+        id
+      }
+    }
+  }
+}

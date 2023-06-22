@@ -4,19 +4,19 @@ import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import PageContentRibbon from '../../../../core/ui/content/PageContentRibbon';
 
 interface UseInnovationHubJourneyBannerRibbonOptions {
-  hubId: string;
+  spaceId: string;
   journeyTypeName: JourneyTypeName;
 }
 
 const useInnovationHubJourneyBannerRibbon = ({
-  hubId,
+  spaceId,
   journeyTypeName,
 }: UseInnovationHubJourneyBannerRibbonOptions) => {
   const { data: innovationHubData } = useBannerInnovationHubQuery();
 
   const { innovationHub } = innovationHubData?.platform ?? {};
 
-  const isForeignJourney = innovationHub ? !innovationHub.hubListFilter?.some(({ id }) => id === hubId) : false;
+  const isForeignJourney = innovationHub ? !innovationHub.spaceListFilter?.some(({ id }) => id === spaceId) : false;
 
   const { t } = useTranslation();
 
@@ -31,7 +31,7 @@ const useInnovationHubJourneyBannerRibbon = ({
         i18nKey="innovationHub.foreignJourney"
         values={{
           journey: t(`common.${journeyTypeName}` as const),
-          hub: innovationHub?.profile?.displayName,
+          space: innovationHub?.profile?.displayName,
         }}
         components={{ strong: <strong /> }}
       />

@@ -29,28 +29,28 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeNameId = '', hubNameId = '' } = useUrlParams();
+  const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
       onSuccess('Successfully created');
       navigateToEdit(data.createChallenge.nameID);
     },
-    refetchQueries: [refetchChallengesWithCommunityQuery({ hubId: hubNameId })],
+    refetchQueries: [refetchChallengesWithCommunityQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     skip: mode === FormMode.create,
   });
-  const challenge = challengeProfile?.hub?.challenge;
+  const challenge = challengeProfile?.space?.challenge;
   const challengeId = useMemo(() => challenge?.id || '', [challenge]);
 
   const isLoading = isCreating || isUpdating;
@@ -69,7 +69,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
                 tagline,
                 location: formatDatabaseLocation(values.location),
               },
-              hubID: hubNameId,
+              spaceID: spaceNameId,
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: '',
             },

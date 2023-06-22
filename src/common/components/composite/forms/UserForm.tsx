@@ -126,7 +126,7 @@ export const UserForm: FC<UserProps> = ({
     avatar: yup.string(),
     linkedin: yup.string().url('Linkedin url must be a valid URL'),
     twitter: yup.string().url('Twitter url must be a valid URL'),
-    github: yup.string().url('Github url must be a valid URL'),
+    github: yup.string().url('github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(LONG_TEXT_LENGTH),

@@ -1,5 +1,5 @@
-query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
-  hub(ID: $hubId) {
+query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
+  space(ID: $spaceId) {
     id
     timeline {
       id
@@ -26,8 +26,8 @@ fragment CalendarEventInfo on CalendarEvent {
   }
 }
 
-query hubCalendarEvents($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     timeline {
       id
@@ -45,8 +45,8 @@ query hubCalendarEvents($hubId: UUID_NAMEID!) {
   }
 }
 
-query calendarEventDetails($hubId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query calendarEventDetails($spaceId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     timeline {
       id

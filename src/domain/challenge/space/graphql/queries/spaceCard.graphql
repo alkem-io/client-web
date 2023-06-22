@@ -1,0 +1,5 @@
+query spaceCard($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    ...SpaceDetailsProvider
+  }
+}

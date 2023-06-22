@@ -1,0 +1,14 @@
+query spaceHostReferences($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    host {
+      profile {
+        id
+        references {
+          name
+          uri
+        }
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@ import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import JourneyCardDescription from '../../../../challenge/common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
-import { HubVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import CardRibbon from '../../../../../core/ui/card/CardRibbon';
 
 export interface SearchBaseJourneyCardProps
@@ -20,7 +20,7 @@ export interface SearchBaseJourneyCardProps
   displayName: string;
   vision: string;
   parentSegment?: ReactNode;
-  hubVisibility?: HubVisibility;
+  spaceVisibility?: SpaceVisibility;
 }
 
 const SearchBaseJourneyCard = ({
@@ -29,13 +29,13 @@ const SearchBaseJourneyCard = ({
   displayName,
   vision,
   parentSegment,
-  hubVisibility,
+  spaceVisibility,
   ...props
 }: SearchBaseJourneyCardProps) => {
   const { t } = useTranslation();
   const ribbon =
-    hubVisibility && hubVisibility !== HubVisibility.Active ? (
-      <CardRibbon text={t(`common.enums.hub-visibility.${hubVisibility}` as const)} />
+    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 
   return (

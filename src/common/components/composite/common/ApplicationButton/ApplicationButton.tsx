@@ -19,7 +19,7 @@ export interface ApplicationButtonProps {
   applyUrl?: string;
   parentApplyUrl?: string;
   joinParentUrl?: string;
-  hubName?: string;
+  spaceName?: string;
   challengeName?: string;
   canJoinCommunity?: boolean;
   canApplyToCommunity?: boolean;
@@ -42,7 +42,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       joinParentUrl,
       isMember = false,
       isParentMember = false,
-      hubName,
+      spaceName,
       challengeName,
       canJoinCommunity,
       canApplyToCommunity,
@@ -84,7 +84,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
     /***
    * {@link https://github.com/alkem-io/alkemio/blob/develop/docs/community-membership.md#client-logic Client logic @alkem-io/alkemio/docs/community-membership.md}
-   ### Hub Logic
+   ### Space Logic
    <p>
      <ol>
        <li>Authenticated = n ==> "Login to Continue"</li>
@@ -254,7 +254,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             open={isApplyDialogOpen}
             onClose={handleClose}
             dialogVariant={dialogVariant}
-            hubName={hubName}
+            spaceName={spaceName}
             challengeName={challengeName}
             parentApplicationState={parentApplicationState}
             applyUrl={applyUrl}

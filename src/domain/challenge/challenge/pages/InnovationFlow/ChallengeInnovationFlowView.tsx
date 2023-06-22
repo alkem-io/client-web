@@ -4,7 +4,7 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchChallengeLifecycleQuery,
   useChallengeProfileInfoQuery,
-  useHubInnovationFlowTemplatesQuery,
+  useSpaceInnovationFlowTemplatesQuery,
   useUpdateChallengeInnovationFlowMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../common/components/core/Loading/Loading';
@@ -14,25 +14,25 @@ import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql
 import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const ChallengeInnovationFlowView: FC = () => {
-  const { challengeNameId = '', hubNameId = '' } = useUrlParams();
+  const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
 
-  const { data: hubInnovationFlowTemplates } = useHubInnovationFlowTemplatesQuery({
-    variables: { hubId: hubNameId },
+  const { data: spaceInnovationFlowTemplates } = useSpaceInnovationFlowTemplatesQuery({
+    variables: { spaceId: spaceNameId },
   });
-  const innovationFlowTemplates = hubInnovationFlowTemplates?.hub?.templates?.innovationFlowTemplates;
+  const innovationFlowTemplates = spaceInnovationFlowTemplates?.space?.templates?.innovationFlowTemplates;
   const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
     template => template.type === InnovationFlowType.Challenge
   );
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
-    skip: !hubNameId || !challengeNameId,
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
+    skip: !spaceNameId || !challengeNameId,
   });
-  const challenge = challengeProfile?.hub?.challenge;
+  const challenge = challengeProfile?.space?.challenge;
   const challengeId = challenge?.id;
 
   const [updateChallengeInnovationFlow] = useUpdateChallengeInnovationFlowMutation({
-    refetchQueries: [refetchChallengeLifecycleQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeLifecycleQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
@@ -53,7 +53,7 @@ const ChallengeInnovationFlowView: FC = () => {
 
   return (
     <Grid container spacing={2}>
-      <ChallengeLifecycleContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
+      <ChallengeLifecycleContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
         {({ loading, ...provided }) => {
           if (loading || !challengeId) {
             return <Loading text="Loading" />;

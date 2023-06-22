@@ -4,19 +4,19 @@ import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCallo
 import AddContentButton from '../../../../core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
 import {
-  useCalloutFormTemplatesFromHubLazyQuery,
+  useCalloutFormTemplatesFromSpaceLazyQuery,
   useUpdateCalloutVisibilityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
-  hubId: string;
+  spaceId: string;
   canCreateCallout: boolean;
   group: string;
 }
 
 const CalloutsGroupView = ({
-  hubId,
+  spaceId,
   calloutNames,
   canCreateCallout,
   group,
@@ -30,11 +30,11 @@ const CalloutsGroupView = ({
     isCreating,
   } = useCalloutCreationWithPreviewImages();
 
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
-  const getTemplates = () => fetchTemplates({ variables: { hubId: hubId } });
+  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery();
+  const getTemplates = () => fetchTemplates({ variables: { spaceId: spaceId } });
 
-  const postTemplates = templatesData?.hub.templates?.postTemplates ?? [];
-  const whiteboardTemplates = templatesData?.hub.templates?.whiteboardTemplates ?? [];
+  const postTemplates = templatesData?.space.templates?.postTemplates ?? [];
+  const whiteboardTemplates = templatesData?.space.templates?.whiteboardTemplates ?? [];
   const templates = { postTemplates, whiteboardTemplates };
 
   const handleCreate = () => {

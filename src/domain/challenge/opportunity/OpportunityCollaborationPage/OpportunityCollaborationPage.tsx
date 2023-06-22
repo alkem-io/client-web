@@ -18,16 +18,18 @@ const renderPage = (calloutGroup: string | undefined) => {
 };
 
 const OpportunityCollaborationPage = (props: CollaborationPageProps) => {
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  if (!hubNameId || !challengeNameId || !opportunityNameId) {
+  if (!spaceNameId || !challengeNameId || !opportunityNameId) {
     throw new Error('Must be within an Opportunity');
   }
 
   const getPageRoute = (calloutGroup: string | undefined) => {
     switch (calloutGroup) {
       default:
-        return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}/${EntityPageSection.Contribute}`;
+        return `${buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}/${
+          EntityPageSection.Contribute
+        }`;
     }
   };
 

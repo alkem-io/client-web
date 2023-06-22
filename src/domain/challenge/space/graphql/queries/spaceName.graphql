@@ -1,0 +1,5 @@
+query spaceName($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    ...SpaceName
+  }
+}

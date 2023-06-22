@@ -43,7 +43,7 @@ export interface ChildJourneyViewProps<ChildEntity extends NameableEntity> exten
 }
 
 const ChildJourneyView = <ChildEntity extends NameableEntity>({
-  hubNameId,
+  spaceNameId,
   journeyTypeName,
   childEntities = [],
   childEntitiesIcon,
@@ -115,7 +115,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                   })}
                 >
                   {filteredEntities => (
-                    <CardsLayout items={filteredEntities} deps={[hubNameId]} disablePadding>
+                    <CardsLayout items={filteredEntities} deps={[spaceNameId]} disablePadding>
                       {renderChildEntityCard}
                     </CardsLayout>
                   )}

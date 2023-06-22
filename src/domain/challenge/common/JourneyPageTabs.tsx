@@ -71,7 +71,7 @@ interface ShareCapableNavigator extends Navigator {
   canShare(data?: ShareData | undefined): boolean;
 }
 
-// TODO make configurable, render within HubPageTabs
+// TODO make configurable, render within SpacePageTabs
 const JourneyPageTabs: FC<EntityPageTabsProps> = ({
   currentTab,
   showSettings,
@@ -102,7 +102,7 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
   const navigationBackgroundColor = getEntityColor(theme, entityTypeName);
   const navigationForegroundColor =
     /*
-    entityTypeName === 'opportunity' ? theme.palette.hub.main : */ theme.palette.common.white;
+    entityTypeName === 'opportunity' ? theme.palette.space.main : */ theme.palette.common.white;
 
   const shareDialog = shareUrl && (
     <ShareDialog

@@ -2,10 +2,10 @@ import { TabDefinition } from '../EntitySettingsLayout/EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
+import { SpaceIcon } from '../../../../challenge/space/icon/SpaceIcon';
 
 export enum AdminSection {
-  Hub = 'hubs',
+  Space = 'spaces',
   User = 'users',
   Organization = 'organizations',
   InnovationPacks = 'innovation-packs',
@@ -14,9 +14,9 @@ export enum AdminSection {
 
 export const adminTabs: TabDefinition<AdminSection>[] = [
   {
-    section: AdminSection.Hub,
-    route: '/admin/hubs',
-    icon: HubIcon,
+    section: AdminSection.Space,
+    route: '/admin/spaces',
+    icon: SpaceIcon,
   },
   {
     section: AdminSection.User,

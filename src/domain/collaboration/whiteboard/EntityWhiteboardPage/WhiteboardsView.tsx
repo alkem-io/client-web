@@ -16,7 +16,7 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
   whiteboardNameId,
   parentUrl,
   calloutNameId,
-  hubNameId,
+  spaceNameId,
   challengeNameId,
   opportunityNameId,
   ...props
@@ -25,7 +25,7 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
   const backToWhiteboards = () => backToExplore();
 
   const whiteboardShareUrl = buildWhiteboardUrl(calloutNameId, whiteboardNameId, {
-    hubNameId,
+    spaceNameId,
     challengeNameId,
     opportunityNameId,
   });
@@ -34,7 +34,7 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
     <WhiteboardProvider
       whiteboardNameId={whiteboardNameId}
       calloutNameId={calloutNameId}
-      hubNameId={hubNameId}
+      spaceNameId={spaceNameId}
       challengeNameId={challengeNameId}
       opportunityNameId={opportunityNameId}
     >

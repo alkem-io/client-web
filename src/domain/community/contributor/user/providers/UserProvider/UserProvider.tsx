@@ -15,7 +15,7 @@ import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
-  userHubRoles: UserRolesInEntity[] | undefined;
+  userSpaceRoles: UserRolesInEntity[] | undefined;
   loading: boolean;
   loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar but f.e. roles information is not guaranteed yet.
   verified: boolean;
@@ -24,7 +24,7 @@ export interface UserContextValue {
 
 const UserContext = React.createContext<UserContextValue>({
   user: undefined,
-  userHubRoles: undefined,
+  userSpaceRoles: undefined,
   loading: true,
   loadingMe: true,
   verified: false,
@@ -80,7 +80,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const providedValue = useMemo<UserContextValue>(
     () => ({
       user: wrappedMe,
-      userHubRoles: rolesData?.rolesUser.hubs,
+      userSpaceRoles: rolesData?.rolesUser.spaces,
       loading,
       loadingMe: loadingMeAndParentQueries,
       verified,

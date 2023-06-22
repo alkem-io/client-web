@@ -62,9 +62,9 @@ The repo is also set up to generate a Docker image.
   - Argument can be the following: ARG_GRAPHQL_ENDPOINT
 - To run a container based on the image: `docker container run -p 80:80 alkemio/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
 
-## Pushing code the dockerhub
+## Pushing code the dockerspace
 
-We have automated the creation and deployment of containers to docker hub via a github action. To automaticly trigger the build up to dockerhub the following steps should be taken:
+We have automated the creation and deployment of containers to docker space via a github action. To automaticly trigger the build up to dockerspace the following steps should be taken:
 
 - Ensure that the code that you would like to create the container from is pushed / merged into the `develop` branch.
 - Create a github release and tag it with the appropriate version number ie. `v0.1.3`

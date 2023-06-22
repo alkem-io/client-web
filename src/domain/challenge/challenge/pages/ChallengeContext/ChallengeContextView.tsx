@@ -16,19 +16,19 @@ const ChallengeContextView: FC = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeNameId = '', hubNameId = '' } = useUrlParams();
+  const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile, loading } = useChallengeProfileInfoQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     skip: false,
   });
-  const challenge = challengeProfile?.hub?.challenge;
+  const challenge = challengeProfile?.space?.challenge;
   const challengeId = challenge?.id || '';
 
   const onSubmit = async (values: ContextFormValues) => {

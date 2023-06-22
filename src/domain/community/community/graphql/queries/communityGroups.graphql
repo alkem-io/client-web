@@ -1,5 +1,5 @@
-query communityGroups($hubId: UUID_NAMEID!, $communityId: UUID!) {
-  hub(ID: $hubId) {
+query communityGroups($spaceId: UUID_NAMEID!, $communityId: UUID!) {
+  space(ID: $spaceId) {
     id
     community(ID: $communityId) {
       id

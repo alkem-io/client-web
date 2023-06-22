@@ -14,7 +14,7 @@ export const ChallengeExplorerPage: FC<ChallengeExplorerPageProps> = () => {
   useUpdateNavigation({ currentPaths });
   const [searchTerms, setSearchTerms] = useState<string[]>([t('pages.challenge-explorer.search.default-search-term')]);
 
-  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfHub.challenges' });
+  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.challenges' });
 
   return (
     <TopLevelDesktopLayout heading={ribbon}>

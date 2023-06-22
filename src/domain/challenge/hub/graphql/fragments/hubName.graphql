@@ -1,8 +1,0 @@
-fragment HubName on Hub {
-  id
-  nameID
-  profile {
-    id
-    displayName
-  }
-}

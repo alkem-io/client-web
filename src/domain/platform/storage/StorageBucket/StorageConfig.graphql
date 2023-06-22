@@ -1,14 +1,14 @@
 query JourneyStorageConfig(
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $includeHub: Boolean = false
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       profile {
         ...ProfileStorageConfig
       }
@@ -30,16 +30,16 @@ query JourneyStorageConfig(
 
 query CalloutStorageConfig(
   $calloutId: UUID_NAMEID!
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $includeHub: Boolean = false
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       collaboration {
         ...CalloutOnCollaborationWithStorageConfig
       }
@@ -62,16 +62,16 @@ query CalloutStorageConfig(
 query CalloutPostStorageConfig(
   $postId: UUID_NAMEID!
   $calloutId: UUID_NAMEID!
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $includeHub: Boolean = false
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       collaboration {
         ...PostInCalloutOnCollaborationWithStorageConfig
       }

@@ -9,7 +9,7 @@ import SwapColors from '../palette/SwapColors';
 import LinkNoUnderline from '../../../domain/shared/components/LinkNoUnderline';
 import { useTranslation } from 'react-i18next';
 
-interface HubWelcomeSectionContributorProps {
+interface SpaceWelcomeSectionContributorProps {
   profile: {
     displayName: string;
     visual?: {
@@ -22,7 +22,7 @@ interface HubWelcomeSectionContributorProps {
   onContact?: () => void;
 }
 
-const ContributorCardHorizontal = ({ url, profile, onContact }: HubWelcomeSectionContributorProps) => {
+const ContributorCardHorizontal = ({ url, profile, onContact }: SpaceWelcomeSectionContributorProps) => {
   const { t } = useTranslation();
 
   const tags = profile.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : [];

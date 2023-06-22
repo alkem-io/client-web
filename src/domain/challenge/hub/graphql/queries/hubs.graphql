@@ -1,5 +1,0 @@
-query hubs($visibilities: [HubVisibility!] = [ACTIVE]) {
-  hubs(filter: { visibilities: $visibilities }) {
-    ...HubDetailsProvider
-  }
-}

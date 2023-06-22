@@ -3,13 +3,13 @@ import CommunityUpdatesDashboardSection from './CommunityUpdatesDashboardSection
 import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 
 export interface CommunityUpdatesProps {
-  hubId?: string;
+  spaceId?: string;
   communityId?: string;
 }
 
-const CommunityUpdates = ({ hubId, communityId }: CommunityUpdatesProps) => {
+const CommunityUpdates = ({ spaceId, communityId }: CommunityUpdatesProps) => {
   return (
-    <CommunityUpdatesContainer entities={{ hubId, communityId }}>
+    <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
       {({ messages, authors }, actions, loading) => (
         <CommunityUpdatesDashboardSection
           messages={messages}

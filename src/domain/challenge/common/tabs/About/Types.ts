@@ -22,7 +22,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   impact: string | undefined;
   who: string | undefined;
   communityReadAccess: boolean;
-  hubNameId: string | undefined;
+  spaceNameId: string | undefined;
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];

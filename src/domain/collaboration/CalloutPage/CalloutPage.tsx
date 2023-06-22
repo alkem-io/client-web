@@ -31,12 +31,12 @@ export interface LocationStateCachedCallout {
 }
 
 const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
-  const { calloutNameId, hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { calloutNameId, spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
-  if (!hubNameId) {
-    throw new Error('Must be within a Hub');
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space');
   }
 
   if (!calloutNameId) {
@@ -46,10 +46,10 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
   const { data: calloutData, refetch: retechCalloutData } = useCalloutPageCalloutQuery({
     variables: {
       calloutNameId,
-      hubNameId,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
-      includeHub: journeyTypeName === 'hub',
+      includeSpace: journeyTypeName === 'space',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
@@ -60,9 +60,9 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const [callout] =
     (
-      calloutData?.hub.opportunity?.collaboration ??
-      calloutData?.hub.challenge?.collaboration ??
-      calloutData?.hub.collaboration
+      calloutData?.space.opportunity?.collaboration ??
+      calloutData?.space.challenge?.collaboration ??
+      calloutData?.space.collaboration
     )?.callouts ?? [];
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
@@ -101,7 +101,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
   };
 
   const calloutUri = buildCalloutUrl(typedCallout.nameID, {
-    hubNameId,
+    spaceNameId,
     challengeNameId,
     opportunityNameId,
   });
@@ -112,7 +112,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
           callout={typedCallout}
-          hubNameId={hubNameId}
+          spaceNameId={spaceNameId}
           challengeNameId={challengeNameId}
           opportunityNameId={opportunityNameId}
           journeyTypeName={journeyTypeName}

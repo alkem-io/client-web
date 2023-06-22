@@ -15,7 +15,7 @@ export enum SettingsSection {
   Opportunities = 'opportunities',
   Templates = 'templates',
   Storage = 'storage',
-  HubSettings = 'hub-settings',
+  SpaceSettings = 'space-settings',
   MyProfile = 'my-profile',
   Membership = 'membership',
   Organizations = 'organizations',

@@ -10,7 +10,7 @@ const SearchResultPostChooser = ({
   result: SearchResultMetaType | undefined;
 }): React.ReactElement | null => {
   const {
-    hydrateHubCard,
+    hydrateSpaceCard,
     hydrateChallengeCard,
     hydrateOpportunityCard,
     hydrateUserCard,
@@ -28,8 +28,8 @@ const SearchResultPostChooser = ({
   }
 
   switch (result.type) {
-    case SearchResultType.Hub:
-      return hydrateHubCard();
+    case SearchResultType.Space:
+      return hydrateSpaceCard();
     case SearchResultType.Challenge:
       return hydrateChallengeCard();
     case SearchResultType.Opportunity:

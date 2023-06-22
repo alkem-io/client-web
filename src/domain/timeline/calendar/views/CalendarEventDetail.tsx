@@ -14,7 +14,7 @@ import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { buildEventUrl } from '../../../../common/utils/urlBuilders';
 
 interface CalendarEventDetailProps {
-  hubNameId: string;
+  spaceNameId: string;
   eventId: string | undefined;
   onClose: DialogHeaderProps['onClose'];
   canEdit?: boolean;
@@ -25,7 +25,7 @@ interface CalendarEventDetailProps {
 }
 
 const CalendarEventDetail = ({
-  hubNameId,
+  spaceNameId,
   eventId,
   onClose,
   canEdit = false,
@@ -37,7 +37,7 @@ const CalendarEventDetail = ({
   const { t } = useTranslation();
 
   return (
-    <CalendarEventDetailContainer hubNameId={hubNameId} eventId={eventId}>
+    <CalendarEventDetailContainer spaceNameId={spaceNameId} eventId={eventId}>
       {({ event, messages, createdDate, ...rest }) => {
         // createdDate is read here to remove it from the rest object and not show it
         // Also displayName is passed as a space because we are already showing the event
@@ -57,7 +57,7 @@ const CalendarEventDetail = ({
                   {event && (
                     <ShareButton
                       url={buildEventUrl(event.nameID, {
-                        hubNameId: hubNameId,
+                        spaceNameId: spaceNameId,
                       })}
                       entityTypeName="event"
                     />

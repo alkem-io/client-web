@@ -15,7 +15,7 @@ import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 import EntityPageLayout from '../../../../challenge/common/EntityPageLayout/EntityPageLayout';
 
-type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization' | 'user';
+type EntityTypeName = 'space' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
 type EntitySettingsLayoutProps = {
   pageBannerComponent: ComponentType;

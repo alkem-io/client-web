@@ -52,7 +52,7 @@ These following ones were very promising but couldn't convert certain text forma
 - [draftjs-to-markdown](https://www.npmjs.com/package/draftjs-to-markdown) This is the package that is shown by the Editor's author, but it [doesn't support reverse conversion](https://github.com/jpuri/draftjs-to-markdown/issues/41).
 - [markdown-draft-js](https://www.npmjs.com/package/markdown-draft-js)
   - There was a very promising fork [@beincomm/markdown-draft-js](https://www.npmjs.com/package/@beincomm/markdown-draft-js), but was discarded because it didn't support images directly.
-  - markdown-draft-js has some good messages in the GitHub issues with solutions to certain problems that are not addressed in their main branch, it worked quite well integrated in our codebase but the chosen converter works well out of the box.
+  - markdown-draft-js has some good messages in the github issues with solutions to certain problems that are not addressed in their main branch, it worked quite well integrated in our codebase but the chosen converter works well out of the box.
 - [draft-js-export-markdown](https://www.npmjs.com/package/draft-js-export-markdown)/[draft-js-import-markdown](https://www.npmjs.com/package/draft-js-import-markdown) Failed with weird errors trying to import even small markdowns
 
 ## Emoticons
@@ -125,7 +125,7 @@ Features supported by the selected component but hidden/not used because of Mark
 ## MaxLength
 
 The maxLength, and text length in general, can be problematic because everything the user types is translated into Markdown, which may not be the same length due to Markdown formatting tokens.
-But it is a common problem with all of these editors, none of the mentioned here have a maxLength implementation, only tricks in their GitHub issues forums.
+But it is a common problem with all of these editors, none of the mentioned here have a maxLength implementation, only tricks in their github issues forums.
 We are calculating the resulting markdown for each keystroke and for each action (pasting/changing styles/... can increase the size in more than 1 character at a time), but it is not trivial to prevent actions and loading a previous state causes the component to reset.
 
 ## Install

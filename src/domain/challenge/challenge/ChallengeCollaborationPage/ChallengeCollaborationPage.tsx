@@ -18,16 +18,16 @@ const renderPage = (calloutGroup: string | undefined) => {
 };
 
 const ChallengeCollaborationPage = (props: CollaborationPageProps) => {
-  const { hubNameId, challengeNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId } = useUrlParams();
 
-  if (!hubNameId || !challengeNameId) {
+  if (!spaceNameId || !challengeNameId) {
     throw new Error('Must be within a Challenge');
   }
 
   const getPageRoute = (calloutGroup: string | undefined) => {
     switch (calloutGroup) {
       default:
-        return `${buildChallengeUrl(hubNameId, challengeNameId)}/${EntityPageSection.Contribute}`;
+        return `${buildChallengeUrl(spaceNameId, challengeNameId)}/${EntityPageSection.Contribute}`;
     }
   };
 

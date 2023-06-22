@@ -1,6 +1,6 @@
 query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
   rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
-    hubs {
+    spaces {
       id
       roles
       challenges {
@@ -24,14 +24,14 @@ query ChallengeExplorerSearch($searchData: SearchInput!) {
   }
 }
 
-query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
-  hubs(IDs: $hubIDs) {
+query ChallengeExplorerData($spaceIDs: [UUID!], $challengeIDs: [UUID!]) {
+  spaces(IDs: $spaceIDs) {
     id
     nameID
     profile {
-        id
-        tagline
-        displayName
+      id
+      tagline
+      displayName
     }
     visibility
     challenges(IDs: $challengeIDs) {
@@ -54,7 +54,6 @@ query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
         id
         vision
       }
-
     }
   }
 }

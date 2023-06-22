@@ -7,7 +7,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useChallengePostQuery,
-  useHubPostQuery,
+  useSpacePostQuery,
   useOpportunityPostQuery,
   useRemoveMessageOnRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -26,7 +26,7 @@ import usePostMessageMutations from '../../../../communication/room/Comments/use
 
 interface EntityIds {
   postNameId: Scalars['UUID_NAMEID'];
-  hubNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID_NAMEID'];
   challengeNameId?: Scalars['UUID_NAMEID'];
   opportunityNameId?: Scalars['UUID_NAMEID'];
   calloutNameId: Scalars['UUID_NAMEID'];
@@ -54,7 +54,7 @@ interface Provided {
 export type PostDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
 const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
-  hubNameId,
+  spaceNameId,
   postNameId,
   challengeNameId,
   opportunityNameId,
@@ -64,19 +64,19 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
-  const isPostDefined = postNameId && hubNameId;
+  const isPostDefined = postNameId && spaceNameId;
 
   const {
-    data: hubData,
-    loading: hubLoading,
-    error: hubError,
-    subscribeToMore: subscribeToHub,
-  } = useHubPostQuery({
-    variables: { hubNameId, postNameId, calloutNameId },
+    data: spaceData,
+    loading: spaceLoading,
+    error: spaceError,
+    subscribeToMore: subscribeToSpace,
+  } = useSpacePostQuery({
+    variables: { spaceNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
     fetchPolicy: 'cache-and-network',
   });
-  const hubPost = getCardCallout(hubData?.hub?.collaboration?.callouts, postNameId)?.posts?.find(
+  const spacePost = getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(
     x => x.nameID === postNameId
   );
 
@@ -86,13 +86,14 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     error: challengeError,
     subscribeToMore: subscribeToChallenge,
   } = useChallengePostQuery({
-    variables: { hubNameId, challengeNameId: challengeNameId!, postNameId, calloutNameId },
+    variables: { spaceNameId, challengeNameId: challengeNameId!, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
     fetchPolicy: 'cache-and-network',
   });
-  const challengePost = getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts, postNameId)?.posts?.find(
-    x => x.nameID === postNameId
-  );
+  const challengePost = getCardCallout(
+    challengeData?.space?.challenge?.collaboration?.callouts,
+    postNameId
+  )?.posts?.find(x => x.nameID === postNameId);
 
   const {
     data: opportunityData,
@@ -100,29 +101,29 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     error: opportunityError,
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityPostQuery({
-    variables: { hubNameId, opportunityNameId: opportunityNameId!, postNameId, calloutNameId },
+    variables: { spaceNameId, opportunityNameId: opportunityNameId!, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !opportunityNameId,
     fetchPolicy: 'cache-and-network',
   });
   const opportunityPost = getCardCallout(
-    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    opportunityData?.space?.opportunity?.collaboration?.callouts,
     postNameId
   )?.posts?.find(x => x.nameID === postNameId);
 
-  const post = hubPost ?? challengePost ?? opportunityPost;
-  const loading = hubLoading || challengeLoading || opportunityLoading;
-  const error = hubError ?? challengeError ?? opportunityError;
+  const post = spacePost ?? challengePost ?? opportunityPost;
+  const loading = spaceLoading || challengeLoading || opportunityLoading;
+  const error = spaceError ?? challengeError ?? opportunityError;
 
-  const hubCommentsSubscription = usePostCommentsMessageReceivedSubscription(
-    hubData,
-    hubData =>
-      getCardCallout(hubData?.hub?.collaboration?.callouts, postNameId)?.posts?.find(x => x.nameID === postNameId),
-    subscribeToHub
+  const spaceCommentsSubscription = usePostCommentsMessageReceivedSubscription(
+    spaceData,
+    spaceData =>
+      getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(x => x.nameID === postNameId),
+    subscribeToSpace
   );
   const challengeCommentsSubscription = usePostCommentsMessageReceivedSubscription(
     challengeData,
     challengeData =>
-      getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts, postNameId)?.posts?.find(
+      getCardCallout(challengeData?.space?.challenge?.collaboration?.callouts, postNameId)?.posts?.find(
         x => x.nameID === postNameId
       ),
     subscribeToChallenge
@@ -130,14 +131,14 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   const opportunityCommentsSubscription = usePostCommentsMessageReceivedSubscription(
     opportunityData,
     opportunityData =>
-      getCardCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts, postNameId)?.posts?.find(
+      getCardCallout(opportunityData?.space?.opportunity?.collaboration?.callouts, postNameId)?.posts?.find(
         x => x.nameID === postNameId
       ),
     subscribeToOpportunity
   );
 
   const isSubscribedToMessages = [
-    hubCommentsSubscription,
+    spaceCommentsSubscription,
     challengeCommentsSubscription,
     opportunityCommentsSubscription,
   ].some(subscription => subscription.enabled);
@@ -193,7 +194,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   });
 
   const postUrl = buildPostUrl(calloutNameId, postNameId, {
-    hubNameId,
+    spaceNameId,
     challengeNameId,
     opportunityNameId,
   });

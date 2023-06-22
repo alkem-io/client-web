@@ -16,22 +16,22 @@ interface ChallengeLifecycleContainerProvided {
 }
 
 type ChallengeLifecycleContainerProps = ComponentOrChildrenFn<ChallengeLifecycleContainerProvided> & {
-  hubNameId: string;
+  spaceNameId: string;
   challengeNameId: string;
 };
 
 const ChallengeLifecycleContainer: FC<ChallengeLifecycleContainerProps> = ({
-  hubNameId,
+  spaceNameId,
   challengeNameId,
   ...rendered
 }) => {
   const { data, loading } = useChallengeLifecycleQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
 
-  const lifecycle = data?.hub.challenge?.lifecycle;
+  const lifecycle = data?.space.challenge?.lifecycle;
 
   const [updateChallengeLifecycle] = useEventOnChallengeMutation({});
 

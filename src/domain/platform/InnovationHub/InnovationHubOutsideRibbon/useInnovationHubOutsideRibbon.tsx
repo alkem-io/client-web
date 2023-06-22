@@ -24,7 +24,7 @@ const useInnovationHubOutsideRibbon = ({ label }: UseInnovationHubOutsideRibbonO
         t={t}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         i18nKey={label as any}
-        values={{ hub: innovationHub?.profile?.displayName }}
+        values={{ space: innovationHub?.profile?.displayName }}
         components={{ strong: <strong /> }}
       />
     </PageContentRibbon>

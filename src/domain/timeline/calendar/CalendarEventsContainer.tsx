@@ -1,10 +1,10 @@
 import React, { FC, useCallback } from 'react';
 import {
-  refetchHubCalendarEventsQuery,
-  refetchHubDashboardCalendarEventsQuery,
+  refetchSpaceCalendarEventsQuery,
+  refetchSpaceDashboardCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
-  useHubCalendarEventsQuery,
+  useSpaceCalendarEventsQuery,
   useUpdateCalendarEventMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import {
@@ -23,7 +23,7 @@ export interface CalendarEventFormData
 }
 
 export interface CalendarEventsContainerProps {
-  hubId: string;
+  spaceId: string;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -59,27 +59,27 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children }) => {
-  const { data, loading } = useHubCalendarEventsQuery({
-    variables: { hubId: hubId! },
-    skip: !hubId,
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spaceId, children }) => {
+  const { data, loading } = useSpaceCalendarEventsQuery({
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
   });
 
   const privileges = {
-    canCreateEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(
+    canCreateEvents: (data?.space.timeline?.calendar.authorization?.myPrivileges ?? []).some(
       p => p === AuthorizationPrivilege.Create
     ),
-    canEditEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(
+    canEditEvents: (data?.space.timeline?.calendar.authorization?.myPrivileges ?? []).some(
       p => p === AuthorizationPrivilege.Update
     ),
-    canDeleteEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(
+    canDeleteEvents: (data?.space.timeline?.calendar.authorization?.myPrivileges ?? []).some(
       p => p === AuthorizationPrivilege.Delete
     ),
   };
 
-  const events = data?.hub.timeline?.calendar.events ?? [];
+  const events = data?.space.timeline?.calendar.events ?? [];
 
-  const calendarId = data?.hub.timeline?.calendar.id;
+  const calendarId = data?.space.timeline?.calendar.id;
 
   const [createCalendarEvent, { loading: creatingCalendarEvent }] = useCreateCalendarEventMutation();
 
@@ -105,11 +105,14 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             },
           },
         },
-        refetchQueries: [refetchHubCalendarEventsQuery({ hubId }), refetchHubDashboardCalendarEventsQuery({ hubId })],
+        refetchQueries: [
+          refetchSpaceCalendarEventsQuery({ spaceId }),
+          refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
+        ],
         awaitRefetchQueries: true,
       }).then(result => result.data?.createEventOnCalendar?.nameID);
     },
-    [createCalendarEvent, hubId, calendarId]
+    [createCalendarEvent, spaceId, calendarId]
   );
 
   const updateEvent = useCallback(
@@ -136,11 +139,14 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             },
           },
         },
-        refetchQueries: [refetchHubCalendarEventsQuery({ hubId }), refetchHubDashboardCalendarEventsQuery({ hubId })],
+        refetchQueries: [
+          refetchSpaceCalendarEventsQuery({ spaceId }),
+          refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
+        ],
         awaitRefetchQueries: true,
       }).then(result => result.data?.updateCalendarEvent?.nameID);
     },
-    [updateCalendarEvent, hubId]
+    [updateCalendarEvent, spaceId]
   );
 
   const deleteEvent = useCallback(
@@ -151,11 +157,14 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             ID: eventId,
           },
         },
-        refetchQueries: [refetchHubCalendarEventsQuery({ hubId }), refetchHubDashboardCalendarEventsQuery({ hubId })],
+        refetchQueries: [
+          refetchSpaceCalendarEventsQuery({ spaceId }),
+          refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
+        ],
         awaitRefetchQueries: true,
       }).then(result => result.data?.deleteCalendarEvent?.nameID);
     },
-    [deleteCalendarEvent, hubId]
+    [deleteCalendarEvent, spaceId]
   );
 
   return (

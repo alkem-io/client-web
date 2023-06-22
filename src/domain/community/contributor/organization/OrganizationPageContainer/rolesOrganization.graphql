@@ -1,9 +1,7 @@
-
-
 query rolesOrganization($input: UUID_NAMEID!) {
-  rolesOrganization(rolesData: { organizationID: $input, filter: {visibilities: [ACTIVE, DEMO]} }) {
+  rolesOrganization(rolesData: { organizationID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
-    hubs {
+    spaces {
       nameID
       id
       roles

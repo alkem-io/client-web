@@ -9,7 +9,7 @@ export interface PreApplicationDialogProps {
   open: boolean;
   onClose: () => void;
   dialogVariant: 'dialog-parent-app-pending' | 'dialog-apply-parent';
-  hubName?: string;
+  spaceName?: string;
   challengeName?: string;
   parentApplicationState?: string;
   applyUrl?: string;
@@ -20,7 +20,7 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
   open,
   onClose,
   dialogVariant,
-  hubName,
+  spaceName,
   challengeName,
   parentApplicationState,
   applyUrl,
@@ -33,7 +33,7 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
       <DialogContent dividers>
         <Trans
           i18nKey={`components.application-button.${dialogVariant}.body` as const}
-          values={{ hubName, challengeName }}
+          values={{ spaceName, challengeName }}
           components={{
             strong: <strong />,
           }}

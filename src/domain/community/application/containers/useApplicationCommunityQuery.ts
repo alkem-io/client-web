@@ -3,14 +3,14 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useChallengeApplicationQuery,
   useChallengeApplicationTemplateQuery,
-  useHubApplicationQuery,
-  useHubApplicationTemplateQuery,
+  useSpaceApplicationQuery,
+  useSpaceApplicationTemplateQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
-import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl } from '../../../../common/utils/urlBuilders';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
-  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
 
   const {
     data: challengeData,
@@ -18,7 +18,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     error: challengeCommunityError,
   } = useChallengeApplicationQuery({
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       challengeId: challengeNameId,
     },
     errorPolicy: 'all',
@@ -32,58 +32,59 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   } = useChallengeApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.challenge,
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       challengeId: challengeNameId,
     },
   });
 
   const {
-    data: hubData,
-    loading: isHubCommunityLoading,
-    error: hubCommunityError,
-  } = useHubApplicationQuery({
+    data: spaceData,
+    loading: isSpaceCommunityLoading,
+    error: spaceCommunityError,
+  } = useSpaceApplicationQuery({
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
     },
     errorPolicy: 'all',
-    skip: type !== ApplicationTypeEnum.hub,
+    skip: type !== ApplicationTypeEnum.space,
   });
 
   const {
-    data: hubTemplateData,
-    loading: isHubTemplateLoading,
-    error: hubTemplateError,
-  } = useHubApplicationTemplateQuery({
-    skip: type !== ApplicationTypeEnum.hub,
+    data: spaceTemplateData,
+    loading: isSpaceTemplateLoading,
+    error: spaceTemplateError,
+  } = useSpaceApplicationTemplateQuery({
+    skip: type !== ApplicationTypeEnum.space,
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
     },
   });
 
   const result = useMemo(() => {
-    if (type === ApplicationTypeEnum.hub) {
+    if (type === ApplicationTypeEnum.space) {
       return {
-        communityId: hubData?.hub.community?.id || '',
-        displayName: hubData?.hub.profile.displayName || '',
-        description: hubTemplateData?.hub.community?.applicationForm?.description,
-        questions: hubTemplateData?.hub.community?.applicationForm?.questions || [],
-        backUrl: buildHubUrl(hubNameId),
+        communityId: spaceData?.space.community?.id || '',
+        displayName: spaceData?.space.profile.displayName || '',
+        description: spaceTemplateData?.space.community?.applicationForm?.description,
+        questions: spaceTemplateData?.space.community?.applicationForm?.questions || [],
+        backUrl: buildSpaceUrl(spaceNameId),
       };
     }
     if (type === ApplicationTypeEnum.challenge) {
       return {
-        communityId: challengeData?.hub.challenge.community?.id || '',
-        displayName: challengeData?.hub.challenge.profile.displayName || '',
-        description: challengeTemplateData?.hub.challenge.community?.applicationForm?.description,
-        questions: challengeTemplateData?.hub.challenge.community?.applicationForm?.questions || [],
-        backUrl: buildChallengeUrl(hubNameId, challengeNameId),
+        communityId: challengeData?.space.challenge.community?.id || '',
+        displayName: challengeData?.space.challenge.profile.displayName || '',
+        description: challengeTemplateData?.space.challenge.community?.applicationForm?.description,
+        questions: challengeTemplateData?.space.challenge.community?.applicationForm?.questions || [],
+        backUrl: buildChallengeUrl(spaceNameId, challengeNameId),
       };
     }
-  }, [type, challengeData, challengeTemplateData, hubData, hubTemplateData, challengeNameId, hubNameId]);
+  }, [type, challengeData, challengeTemplateData, spaceData, spaceTemplateData, challengeNameId, spaceNameId]);
 
   return {
     data: result,
-    error: challengeCommunityError || challengeTemplateError || hubCommunityError || hubTemplateError,
-    loading: isChallengeCommunityLoading || isChallengeTemplateLoading || isHubCommunityLoading || isHubTemplateLoading,
+    error: challengeCommunityError || challengeTemplateError || spaceCommunityError || spaceTemplateError,
+    loading:
+      isChallengeCommunityLoading || isChallengeTemplateLoading || isSpaceCommunityLoading || isSpaceTemplateLoading,
   };
 };

@@ -24,7 +24,7 @@ const useHomePageContributors = () => {
     variables: {
       limit: HALF_MAX_ITEMS_TO_SHOW,
       shuffle: true,
-      filterCredentials: [AuthorizationCredential.HubHost, AuthorizationCredential.ChallengeLead],
+      filterCredentials: [AuthorizationCredential.SpaceHost, AuthorizationCredential.ChallengeLead],
     },
     skip: loadingUserContext || !isAuthenticated,
   });
@@ -33,7 +33,7 @@ const useHomePageContributors = () => {
     variables: {
       limit: organizationsCountLimit,
       shuffle: true,
-      filterCredentials: [AuthorizationCredential.HubHost, AuthorizationCredential.ChallengeLead],
+      filterCredentials: [AuthorizationCredential.SpaceHost, AuthorizationCredential.ChallengeLead],
     },
     skip: loadingUserContext,
   });

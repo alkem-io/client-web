@@ -47,7 +47,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   loading?: boolean;
   error?: ApolloError;
   communityReadAccess: boolean;
-  hubNameId: string | undefined;
+  spaceNameId: string | undefined;
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];
@@ -96,7 +96,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
-  hubNameId,
+  spaceNameId,
   communityId,
   references,
   metricsItems,
@@ -105,9 +105,11 @@ export const AboutSection: FC<AboutSectionProps> = ({
   const { t } = useTranslation();
   const [dialogSectionName, setDialogSectionName] = useState<JourneyContextField>();
 
-  const isHub = journeyTypeName === 'hub';
-  const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
-  const usersHeader = isHub ? 'community.host' : 'community.leads';
+  const isSpace = journeyTypeName === 'space';
+  const organizationsHeader = isSpace
+    ? 'pages.space.sections.dashboard.organization'
+    : 'community.leading-organizations';
+  const usersHeader = isSpace ? 'community.host' : 'community.leads';
 
   const {
     challengeId,
@@ -171,7 +173,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
           )}
           {!communityReadAccess && (
             <PageContentBlock halfWidth>
-              <PageContentBlockHeader title={t('pages.hub.sections.dashboard.activity')} />
+              <PageContentBlockHeader title={t('pages.space.sections.dashboard.activity')} />
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
@@ -205,14 +207,14 @@ export const AboutSection: FC<AboutSectionProps> = ({
             />
             <FixedHeightBlockContent>{who}</FixedHeightBlockContent>
           </FixedHeightContentBlock>
-          {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
+          {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
           <PageContentBlock halfWidth>
             <PageContentBlockHeader title={t('common.references')} />
             <References references={references} noItemsView={t('common.no-references')} />
           </PageContentBlock>
           {communityReadAccess && (
             <PageContentBlock halfWidth>
-              <PageContentBlockHeader title={t('pages.hub.sections.dashboard.activity')} />
+              <PageContentBlockHeader title={t('pages.space.sections.dashboard.activity')} />
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}

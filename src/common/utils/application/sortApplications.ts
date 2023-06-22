@@ -4,14 +4,14 @@ import { APPLICATION_STATE_NEW } from '../../../domain/community/application/con
 
 const sortApplications = (a: ApplicationWithType, b: ApplicationWithType) => {
   if (
-    (a.type === ApplicationTypeEnum.hub && b.type !== ApplicationTypeEnum.hub) ||
+    (a.type === ApplicationTypeEnum.space && b.type !== ApplicationTypeEnum.space) ||
     (a.type === ApplicationTypeEnum.challenge && b.type === ApplicationTypeEnum.opportunity)
   ) {
     return -1;
   }
 
   if (
-    (b.type === ApplicationTypeEnum.hub && a.type !== ApplicationTypeEnum.hub) ||
+    (b.type === ApplicationTypeEnum.space && a.type !== ApplicationTypeEnum.space) ||
     (b.type === ApplicationTypeEnum.challenge && a.type === ApplicationTypeEnum.opportunity)
   ) {
     return 1;

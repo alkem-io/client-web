@@ -16,8 +16,8 @@ interface ChallengeContextProps {
   challengeId: string;
   challengeNameId: string;
   communityId: string;
-  hubId: string;
-  hubNameId: string;
+  spaceId: string;
+  spaceNameId: string;
   loading: boolean;
   permissions: ChallengePermissions;
   profile: ChallengeInfoFragment['profile'];
@@ -28,8 +28,8 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   challengeId: '',
   challengeNameId: '',
   communityId: '',
-  hubId: '',
-  hubNameId: '',
+  spaceId: '',
+  spaceNameId: '',
   permissions: {
     canUpdate: false,
     canCreate: false,
@@ -48,14 +48,14 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
   const { data, loading } = useChallengeInfoQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
-    skip: !hubNameId || !challengeNameId,
+    skip: !spaceNameId || !challengeNameId,
   });
-  const hubId = data?.hub?.id || '';
-  const challenge = data?.hub?.challenge;
+  const spaceId = data?.space?.id || '';
+  const challenge = data?.space?.challenge;
   const challengeId = challenge?.id || '';
   const communityId = challenge?.community?.id ?? '';
 
@@ -98,8 +98,8 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         challengeId,
         challengeNameId,
         communityId,
-        hubId,
-        hubNameId,
+        spaceId,
+        spaceNameId,
         permissions,
         profile,
         loading,

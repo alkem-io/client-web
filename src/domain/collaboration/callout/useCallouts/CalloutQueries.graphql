@@ -1,6 +1,6 @@
 query Callouts(
-  $hubNameId: UUID_NAMEID!
-  $includeHub: Boolean = false
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
   $challengeNameId: UUID_NAMEID = "mockid"
@@ -8,9 +8,9 @@ query Callouts(
   $calloutGroups: [String!]
   $calloutIds: [UUID_NAMEID!]
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       nameID
       collaboration {
         ...CollaborationWithCallouts
@@ -35,8 +35,8 @@ query Callouts(
   }
 }
 
-query HubCalloutPostsSubscription($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query SpaceCalloutPostsSubscription($spaceNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     collaboration {
       id
@@ -51,11 +51,11 @@ query HubCalloutPostsSubscription($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAM
 }
 
 query ChallengeCalloutPostsSubscription(
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID!
   $calloutId: UUID_NAMEID!
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
@@ -73,11 +73,11 @@ query ChallengeCalloutPostsSubscription(
 }
 
 query OpportunityCalloutPostsSubscription(
-  $hubNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
   $opportunityNameId: UUID_NAMEID!
   $calloutId: UUID_NAMEID!
 ) {
-  hub(ID: $hubNameId) {
+  space(ID: $spaceNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
@@ -101,8 +101,8 @@ fragment PrivilegesOnCollaboration on Collaboration {
     myPrivileges
   }
 }
-query PrivilegesOnHubCollaboration($hubNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query PrivilegesOnSpaceCollaboration($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     collaboration {
       ...PrivilegesOnCollaboration
@@ -110,8 +110,8 @@ query PrivilegesOnHubCollaboration($hubNameId: UUID_NAMEID!) {
   }
 }
 
-query PrivilegesOnChallengeCollaboration($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query PrivilegesOnChallengeCollaboration($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
@@ -122,8 +122,8 @@ query PrivilegesOnChallengeCollaboration($hubNameId: UUID_NAMEID!, $challengeNam
   }
 }
 
-query PrivilegesOnOpportunityCollaboration($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query PrivilegesOnOpportunityCollaboration($spaceNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id

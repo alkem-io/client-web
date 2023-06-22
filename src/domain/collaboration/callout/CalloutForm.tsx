@@ -163,13 +163,13 @@ const CalloutForm: FC<CalloutFormProps> = ({
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     postTemplateData: yup.object().when('type', {
-      is: CalloutType.Post,
+      is: CalloutType.PostCollection,
       then: yup.object().shape({
         defaultDescription: yup.string().required(t('common.field-required')),
       }),
     }),
     whiteboardTemplateData: yup.object().when('type', {
-      is: CalloutType.Whiteboard,
+      is: CalloutType.WhiteboardCollection,
       then: yup.object().shape({
         profile: yup.object().shape({
           displayName: yup.string(),
@@ -216,8 +216,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
     references: calloutType !== CalloutType.LinkCollection,
     linkCollectionAdd: calloutType === CalloutType.LinkCollection,
     tags: true,
-    postTemplate: calloutType === CalloutType.Post,
-    whiteboardTemplate: calloutType === CalloutType.Whiteboard,
+    postTemplate: calloutType === CalloutType.PostCollection,
+    whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
     newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.Whiteboard,
     groupChange: editMode && Boolean(canChangeCalloutGroup),
     whiteboard: calloutType === CalloutType.Whiteboard,

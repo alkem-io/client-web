@@ -2,7 +2,7 @@ import { ApplicationTypeEnum } from '../../../domain/community/application/const
 import TranslationKey from '../../../types/TranslationKey';
 
 const applicationTypeTranslationKeyDict: Record<ApplicationTypeEnum, TranslationKey> = {
-  [ApplicationTypeEnum.hub]: 'common.hub',
+  [ApplicationTypeEnum.space]: 'common.space',
   [ApplicationTypeEnum.challenge]: 'common.challenge',
   [ApplicationTypeEnum.opportunity]: 'common.opportunity',
 } as const;

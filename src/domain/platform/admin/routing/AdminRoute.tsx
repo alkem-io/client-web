@@ -6,7 +6,7 @@ import NonAdminRedirect from '../../../../core/routing/NonAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
-import { HubsRoute } from '../hub/routing/HubsRoute';
+import { SpacesRoute } from '../space/routing/SpacesRoute';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '../templates/InnovationPacks/admin/AdminInnovationPackRoutes';
 
@@ -19,8 +19,8 @@ export const AdminRoute: FC = () => {
     <NoIdentityRedirect>
       <NonAdminRedirect>
         <Routes>
-          <Route index element={<Navigate to="hubs" replace />} />
-          <Route path="hubs/*" element={<HubsRoute paths={currentPaths} />} />
+          <Route index element={<Navigate to="spaces" replace />} />
+          <Route path="spaces/*" element={<SpacesRoute paths={currentPaths} />} />
           <Route path="users/*" element={<UsersRoute />} />
           <Route path="authorization/*" element={<GlobalAuthorizationRoute />} />
           <Route path="organizations/*" element={<AdminOrganizationsRoutes />} />

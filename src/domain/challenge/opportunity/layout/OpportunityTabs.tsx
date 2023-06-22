@@ -7,9 +7,9 @@ import JourneyPageTabs from '../../common/JourneyPageTabs';
 export interface OpportunityTabsProps extends EntityTabsProps {}
 
 const OpportunityTabs: FC<OpportunityTabsProps> = props => {
-  const { hubNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
-  const rootUrl = buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
-  const settingsUrl = buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
+  const { spaceNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
+  const rootUrl = buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId);
+  const settingsUrl = buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId);
 
   return (
     <JourneyPageTabs
