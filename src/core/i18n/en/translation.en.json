@@ -273,6 +273,7 @@
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
     "innovation-packs": "Innovation Packs",
+    "innovation-hubs": "Innovation Hubs",
     "innovationPack": "Innovation Pack",
     "more": "More",
     "url": "URL",
@@ -1333,10 +1334,12 @@
       "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
-        "headerTitle": "Innovation Packs"
+        "headerTitle": "$t(common.innovation-packs)",
+        "dialogTitle": "$t(common.innovation-packs)"
       },
       "libraryTemplates": {
-        "headerTitle": "Browse through all available materials"
+        "headerTitle": "Browse through all available materials",
+        "dialogTitle": "All materials"
       }
     },
     "innovationPack": {
@@ -1515,6 +1518,14 @@
         },
         "back-button": "All innovation packs",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
+        "saved-successfully": "Saved Successfully"
+      },
+      "innovation-hubs": {
+        "fields": {
+          "host": "Host Organization",
+          "subdomain": "Subdomain"
+        },
+        "back-button": "All innovation packs",
         "saved-successfully": "Saved Successfully"
       },
       "spaces": {
