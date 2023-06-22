@@ -9,7 +9,7 @@ import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCac
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import useSubscribeOnCommentCallout from '../useSubscribeOnCommentCallout';
+import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '../../../communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '../../../communication/room/Comments/useMessages';
 
@@ -50,7 +50,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
     });
 
-    const isSubscribedToComments = useSubscribeOnCommentCallout(commentsId);
+    const isSubscribedToComments = useSubscribeOnRoomEvents(commentsId);
 
     const handleDeleteMessage = (commentsId: string, messageId: string) =>
       deleteMessage({
