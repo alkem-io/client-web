@@ -785,7 +785,7 @@
         "post-comment-created": "commented on '{{postDisplayName}}'",
         "post-created": "added a {{postType}} Post to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
+        "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)",
         "update-sent": "shared a new $t(common.update)"
