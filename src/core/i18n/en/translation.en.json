@@ -783,7 +783,7 @@
         "callout-published": "published a new $t(common.callout)",
         "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
         "post-comment-created": "commented on '{{postDisplayName}}'",
-        "post-created": "added a {{postType}} Post to '{{calloutDisplayName}}'",
+        "post-created": "added a Post to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
