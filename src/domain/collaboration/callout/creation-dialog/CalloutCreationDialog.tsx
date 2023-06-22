@@ -149,8 +149,9 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       tags: callout.tags,
       type: callout.type!,
       state: callout.state!,
-      postTemplate: callout.type === CalloutType.Post ? callout.postTemplateData : undefined,
-      whiteboardTemplate: callout.type === CalloutType.Whiteboard ? callout.whiteboardTemplateData : undefined,
+      postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
+      whiteboardTemplate:
+        callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
       group,
       whiteboard: callout.whiteboard,
     };
