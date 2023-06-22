@@ -45,7 +45,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
+        {t('common.edit-entity', { entity: t('post-templates.post-template') })}
       </DialogHeader>
       <PostTemplateForm
         initialValues={values}

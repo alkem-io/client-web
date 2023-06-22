@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, BoxProps, styled } from '@mui/material';
+import { Box, BoxProps, styled, Link as MuiLink } from '@mui/material';
 import { ReactComponent as LogoImage } from './logo-preview.svg';
 import { env } from '../../../../../types/env';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
+import { useInnovationHubQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export interface LogoComponentProps extends BoxProps {
   url?: string;
@@ -26,3 +27,16 @@ const LogoComponent = ({ url = DEFAULT_URL, ...rest }: LogoComponentProps) => {
 };
 
 export default LogoComponent;
+
+export const AlkemioLogoComponent = (props: BoxProps) => {
+  const { data } = useInnovationHubQuery();
+  const isInHub = !!data?.platform.innovationHub;
+
+  return (
+    <Box {...props}>
+      <MuiLink target={isInHub ? '_blank' : undefined} href={DEFAULT_URL}>
+        <Logo />
+      </MuiLink>
+    </Box>
+  );
+};

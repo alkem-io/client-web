@@ -14,7 +14,7 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 import ChallengeCard from '../../ChallengeCard/ChallengeCard';
-import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import { gutters } from '../../../../../core/ui/grid/utils';
 
 export interface ChallengeExplorerListViewProps {
@@ -53,26 +53,24 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                 filteredChallenges.length === 0 ? (
                   <Box>{t('pages.challenge-explorer.search.no-results')}</Box>
                 ) : (
-                  <ScrollableCardsLayout items={filteredChallenges} maxHeight={gutters(30)} cards={false}>
-                    {challenge =>
-                      challenge && (
-                        <ChallengeCard
-                          challengeId={challenge.id}
-                          challengeNameId={challenge.nameID}
-                          banner={challenge.banner}
-                          displayName={challenge.displayName}
-                          tags={challenge.tags}
-                          tagline={challenge.tagline}
-                          vision={challenge.vision}
-                          journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                          hubDisplayName={challenge.hubDisplayName}
-                          hubUri={buildHubUrl(challenge.hubNameId)}
-                          hubVisibility={challenge.hubVisibility}
-                          hideJoin
-                        />
-                      )
-                    }
-                  </ScrollableCardsLayout>
+                  <ScrollableCardsLayoutContainer maxHeight={gutters(30)}>
+                    {filteredChallenges.map(challenge => (
+                      <ChallengeCard
+                        challengeId={challenge.id}
+                        challengeNameId={challenge.nameID}
+                        banner={challenge.banner}
+                        displayName={challenge.displayName}
+                        tags={challenge.tags}
+                        tagline={challenge.tagline}
+                        vision={challenge.vision}
+                        journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                        hubDisplayName={challenge.hubDisplayName}
+                        hubUri={buildHubUrl(challenge.hubNameId)}
+                        hubVisibility={challenge.hubVisibility}
+                        hideJoin
+                      />
+                    ))}
+                  </ScrollableCardsLayoutContainer>
                 )
               }
             </CardFilter>

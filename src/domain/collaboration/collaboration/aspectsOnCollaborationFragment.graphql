@@ -1,6 +1,0 @@
-fragment AspectsOnCallout on Callout {
-  id
-  aspects {
-    ...ContributeTabAspect
-  }
-}

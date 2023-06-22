@@ -26,7 +26,7 @@ interface AdminInnovationTemplatesSectionProps {
   templates: AdminInnovationFlowTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (aspect: AdminInnovationFlowTemplateFragment) => LinkWithState;
+  buildTemplateLink: (post: AdminInnovationFlowTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;

@@ -9,7 +9,7 @@ import { Formik } from 'formik';
 import { HubVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikAutocomplete from '../../../../../common/components/composite/forms/FormikAutocomplete';
 import { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
-import { useUpdateHubVisibilityMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUpdateHubPlatformSettingsMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
 
@@ -34,7 +34,7 @@ const HubListItem = ({ hubId, visibility, ...props }: HubListItemProps) => {
     visibility,
   };
 
-  const [updateHubVisibility, { loading }] = useUpdateHubVisibilityMutation();
+  const [updateHubVisibility, { loading }] = useUpdateHubPlatformSettingsMutation();
 
   const handleSubmit = async ({ visibility }: Partial<HubVisibilityHolder>) => {
     if (!visibility) {

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardField';
-import { useUploadWhiteboardVisuals } from '../../../canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { useUploadWhiteboardVisuals } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { CalloutCreationType, CalloutCreationUtils, useCalloutCreation } from './useCalloutCreation';
 import { CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
 
@@ -36,16 +36,16 @@ export const useCalloutCreationWithPreviewImages = (initialOpened = false): Call
 
       const result = await parentHook.handleCreateCallout(cleanCallout);
 
-      // The PreviewImages (like the ones generated for SingleCanvas callouts
+      // The PreviewImages (like the ones generated for SingleWhiteboard callouts
       // are sent from here to the server after the callout creation
       if (result && previewImages) {
-        const canvas = result?.canvases?.[0];
-        if (canvas && canvas.profile) {
+        const whiteboard = result?.whiteboards?.[0];
+        if (whiteboard && whiteboard.profile) {
           await uploadVisuals(
             previewImages,
             {
-              cardVisualId: canvas.profile.visual?.id,
-              previewVisualId: canvas.profile.preview?.id,
+              cardVisualId: whiteboard.profile.visual?.id,
+              previewVisualId: whiteboard.profile.preview?.id,
             },
             result.nameID
           );

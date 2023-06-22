@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import FormikWhiteboardPreview from '../../../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { CreateProfileInput } from '../../../../../core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewImage } from '../../../canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface CalloutWhiteboardFieldProps {
   name: string;
@@ -29,7 +29,7 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
   const handleChange = (newValue: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
       profileData: {
-        displayName: t('common.canvas'),
+        displayName: t('common.whiteboard'),
       },
       value: newValue,
       previewImages,

@@ -5,9 +5,9 @@ import { Caption, CardText } from '../../../../../core/ui/typography/components'
 import { Box, Button } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
-import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
-import WhiteboardTemplatesLibrary from '../../../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
-import { WhiteboardTemplateWithValue } from '../../../canvas/WhiteboardTemplateCard/WhiteboardTemplate';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
+import WhiteboardTemplatesLibrary from '../../../whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
+import { WhiteboardTemplateWithValue } from '../../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { gutters } from '../../../../../core/ui/grid/utils';
 
@@ -66,7 +66,7 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
         canEdit
         onChangeValue={handleChange}
         maxHeight={gutters(12)}
-        dialogProps={{ title: t('canvas-templates.edit-template-button') }}
+        dialogProps={{ title: t('whiteboard-templates.edit-template-button') }}
       />
     </>
   );

@@ -5,7 +5,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
-import CanvasPreview from '../../../canvas/CanvasPreview/CanvasPreview';
+import WhiteboardPreview from '../../../whiteboard/WhiteboardPreview/WhiteboardPreview';
 import { CalloutTemplateProps } from './CalloutTemplateProps';
 import { TemplateListWithPreview } from './TemplateListWithPreview';
 
@@ -17,7 +17,7 @@ const CalloutWhiteboardTemplate: FC<CalloutWhiteboardTemplateProps> = ({ callout
   const { data: hubWhiteboardTemplates, loading: whiteboardTemplatesLoading } =
     useWhiteboardTemplatesOnCalloutCreationQuery({
       variables: { hubId },
-      skip: callout.type !== CalloutType.Canvas,
+      skip: callout.type !== CalloutType.Whiteboard,
     });
   const whiteboardTemplates =
     hubWhiteboardTemplates?.hub?.templates?.whiteboardTemplates?.map(x => ({
@@ -27,7 +27,7 @@ const CalloutWhiteboardTemplate: FC<CalloutWhiteboardTemplateProps> = ({ callout
 
   const { data: whiteboardTemplateData, loading: whiteboardTemplateValueLoading } = useWhiteboardTemplateValueQuery({
     variables: { hubId, id: callout.templateId! },
-    skip: callout.type !== CalloutType.Canvas || !callout.templateId,
+    skip: callout.type !== CalloutType.Whiteboard || !callout.templateId,
   });
   const value = whiteboardTemplateData?.hub?.templates?.whiteboardTemplate?.value ?? '';
 
@@ -37,7 +37,7 @@ const CalloutWhiteboardTemplate: FC<CalloutWhiteboardTemplateProps> = ({ callout
       loading={whiteboardTemplatesLoading}
       selectedTemplateId={callout?.templateId}
       onSelection={onChange}
-      templatePreviewComponent={<CanvasPreview value={value} loading={whiteboardTemplateValueLoading} />}
+      templatePreviewComponent={<WhiteboardPreview value={value} loading={whiteboardTemplateValueLoading} />}
     />
   );
 };

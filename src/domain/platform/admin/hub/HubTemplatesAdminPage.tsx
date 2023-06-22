@@ -18,7 +18,7 @@ import AdminWhiteboardTemplatesSection from '../templates/WhiteboardTemplates/Ad
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
   routePrefix: string;
-  aspectTemplatesRoutePath: string;
+  postTemplatesRoutePath: string;
   whiteboardTemplatesRoutePath: string;
   innovationTemplatesRoutePath: string;
   edit?: boolean;
@@ -27,12 +27,12 @@ interface HubTemplatesAdminPageProps extends SettingsPageProps {
 const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   hubId,
   routePrefix,
-  aspectTemplatesRoutePath,
+  postTemplatesRoutePath,
   whiteboardTemplatesRoutePath,
   innovationTemplatesRoutePath,
   edit = false,
 }) => {
-  const { aspectTemplateId, whiteboardTemplateId, innovationTemplateId } = useParams();
+  const { postTemplateId, whiteboardTemplateId, innovationTemplateId } = useParams();
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
@@ -53,7 +53,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   } = hubTemplatesData?.hub.templates ?? {};
   const canImportTemplates = templateSetAuth?.myPrivileges?.includes(AuthorizationPrivilege.Create) ?? false;
 
-  const aspectInnovationPacks = useMemo(() => {
+  const postInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
     return innovationPacks?.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.postTemplates.length > 0)
@@ -63,7 +63,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
       }));
   }, [innovationPacks]);
 
-  const canvasInnovationPacks = useMemo(() => {
+  const whiteboardInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
     return innovationPacks?.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.whiteboardTemplates.length > 0)
@@ -87,16 +87,16 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
       <Gutters>
         <AdminPostTemplatesSection
-          templateId={aspectTemplateId}
+          templateId={postTemplateId}
           templatesSetId={templatesSetID}
           templates={postTemplates}
           onCloseTemplateDialog={backFromTemplateDialog}
           refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
-          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${postTemplatesRoutePath}/${id}`)}
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
           loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={aspectInnovationPacks}
+          innovationPacks={postInnovationPacks}
           canImportTemplates={canImportTemplates}
         />
         <AdminWhiteboardTemplatesSection
@@ -110,7 +110,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
           whiteboardTemplatesLocation="hub"
           loadInnovationPacks={loadInnovationPacks}
           loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={canvasInnovationPacks}
+          innovationPacks={whiteboardInnovationPacks}
           canImportTemplates={canImportTemplates}
         />
         <AdminInnovationTemplatesSection

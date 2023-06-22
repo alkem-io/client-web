@@ -1,0 +1,16 @@
+query WhiteboardLockedByDetails($ids: [UUID!]!) {
+  usersById(IDs: $ids) {
+    ...LockedByDetails
+  }
+}
+
+fragment LockedByDetails on User {
+  id
+  profile {
+    id
+    displayName
+    visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+}

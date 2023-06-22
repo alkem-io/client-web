@@ -11,12 +11,12 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
   fontWeight: 'bold',
 }));
 
-interface AspectInnovationViewProps {
+interface PostInnovationViewProps {
   template: AdminInnovationFlowTemplateFragment;
-  // TODO: Add getTemplateValue here and apply the same lazyQuery aproach it's done on Canvases if we don't want to load the full IF definition in the index query
+  // TODO: Add getTemplateValue here and apply the same lazyQuery aproach it's done on Whiteboards if we don't want to load the full IF definition in the index query
 }
 
-const InnovationTemplateView = ({ template }: AspectInnovationViewProps) => {
+const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
   const { t } = useTranslation();
 
   const {

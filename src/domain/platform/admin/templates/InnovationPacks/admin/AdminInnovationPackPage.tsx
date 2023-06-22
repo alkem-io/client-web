@@ -24,8 +24,8 @@ import PageContent from '../../../../../../core/ui/content/PageContent';
 import PageContentBlockSeamless from '../../../../../../core/ui/content/PageContentBlockSeamless';
 
 export enum RoutePaths {
-  aspectTemplatesRoutePath = 'aspect-templates',
-  whiteboardTemplatesRoutePath = 'canvas-templates',
+  postTemplatesRoutePath = 'post-templates',
+  whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
 }
 
@@ -36,7 +36,7 @@ interface AdminInnovationPackPageProps {
 const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplates }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { innovationPackNameId, aspectNameId, whiteboardNameId, innovationTemplateId } = useUrlParams();
+  const { innovationPackNameId, postNameId, whiteboardNameId, innovationTemplateId } = useUrlParams();
 
   if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');
@@ -125,13 +125,13 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
             />
             <PageContentBlockSeamless disablePadding>
               <AdminPostTemplatesSection
-                templateId={aspectNameId}
+                templateId={postNameId}
                 templatesSetId={templatesSetID}
                 templates={postTemplates}
                 onCloseTemplateDialog={backFromTemplateDialog}
                 refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
                 buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.aspectTemplatesRoutePath}/${id}`)
+                  buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
                 }
                 edit={editTemplates}
                 loadInnovationPacks={() => {}}

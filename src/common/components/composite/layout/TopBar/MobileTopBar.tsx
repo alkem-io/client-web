@@ -1,7 +1,7 @@
 import { Box, ClickAwayListener, Collapse, useTheme } from '@mui/material';
 import { Link, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import React, { FC, useCallback, useState } from 'react';
-import LogoComponent from './LogoComponent';
+import { AlkemioLogoComponent } from './LogoComponent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
@@ -66,7 +66,7 @@ const MobileTopBar = () => {
         <HamburgerDropdown anchorEl={anchorEl} open={isMenuOpen} onOpen={openMenu} onClose={closeMenu} />
       )}
 
-      {isSearchOpen ? <LogoSmall /> : <LogoComponent height={theme => theme.spacing(4)} />}
+      {isSearchOpen ? <LogoSmall /> : <AlkemioLogoComponent height={theme => theme.spacing(4)} />}
 
       {isSearchOpen && (
         <ClickAwayListener onClickAway={closeSearch}>

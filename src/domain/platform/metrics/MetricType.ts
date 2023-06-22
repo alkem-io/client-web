@@ -8,6 +8,6 @@ export enum MetricType {
   Hub = 'hubs',
   Challenge = 'challenges',
   Relation = 'relations',
-  Aspect = 'aspects',
-  Canvas = 'canvases',
+  Post = 'posts',
+  Whiteboard = 'whiteboards',
 }

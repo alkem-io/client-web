@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
+import WhiteboardWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/WhiteboardWhiteboard';
 import {
   AdminWhiteboardTemplateFragment,
   AdminWhiteboardTemplateValueFragment,
@@ -35,7 +35,7 @@ const WhiteboardTemplatePreview = ({
     getTemplateValue(template);
   }, [getTemplateValue, template]);
 
-  const canvasFromTemplate = useMemo(() => {
+  const whiteboardFromTemplate = useMemo(() => {
     return {
       id: '__template',
       value: templateValue?.value ?? '',
@@ -57,9 +57,9 @@ const WhiteboardTemplatePreview = ({
       </Box>
       <Box height={theme => theme.spacing(40)}>
         {templateValue?.value && (
-          <CanvasWhiteboard
+          <WhiteboardWhiteboard
             entities={{
-              canvas: canvasFromTemplate,
+              whiteboard: whiteboardFromTemplate,
             }}
             actions={{}}
             options={{

@@ -154,8 +154,8 @@
     "remove": "Retirer",
     "callout": "Appel",
     "callouts": "Appel",
-    "canvas": "Tableau blanc",
-    "canvases": "Tableaux blancs",
+    "whiteboard": "Tableau blanc",
+    "whiteboards": "Tableaux blancs",
     "calendar": "Calendrier",
     "comment": "Commentaire",
     "comments": "Commentaires",
@@ -177,8 +177,8 @@
     "forum": "Forum",
     "email": "Email",
     "state": "État",
-    "aspect": "Carte",
-    "aspects": "Cartes",
+    "post": "Carte",
+    "posts": "Cartes",
     "host": "Hôte",
     "lead": "Chapeau",
     "hub": "Hub",
@@ -591,20 +591,20 @@
       "atLeastOne": "Au moins un {{item}} doit être sélectionné."
     }
   },
-  "aspect-templates": {
+  "post-templates": {
     "template-library": "Librairie de Modèles: Cartes",
-    "aspect-template": "Modèles de cartes",
+    "post-template": "Modèles de cartes",
     "default-description": "Contenu par défaut",
     "banner-narrow": "Bannière étroite"
   },
-  "canvas-templates": {
+  "whiteboard-templates": {
     "template-library": "Librairie de modèles: Tableaux blancs",
     "filter-placeholder": "Rechercher un modèle...",
-    "canvas-template": "Modèle de tableau blanc",
+    "whiteboard-template": "Modèle de tableau blanc",
     "hub-templates": "Modèles sélectionnés par l'hôte de cette communauté",
     "load-platform-templates": "Ou cliquez ici pour parcourir tous les modèles de plateforme",
     "platform-templates": "Modèles de plateforme",
-    "error-importing": "Erreur lors de l'importation du modèle Canvas",
+    "error-importing": "Erreur lors de l'importation du modèle Whiteboard",
     "edit-template-button": "Éditer le modèle",
     "edit-dialog-title": "Editer le modèle de tableau blanc"
   },
@@ -709,9 +709,9 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "a publié un nouveau $t(common.callout)",
-        "canvas-created": "a ajouté un $t(common.canvas) à '{{parentDisplayName}}'",
-        "card-comment-created": "a commenté '{{cardDisplayName}}'",
-        "card-created": "a ajouté une carte {{cardType}} à '{{calloutDisplayName}}'",
+        "whiteboard-created": "a ajouté un $t(common.whiteboard) à '{{parentDisplayName}}'",
+        "post-comment-created": "a commenté '{{postDisplayName}}'",
+        "post-created": "a ajouté une carte {{postType}} à '{{calloutDisplayName}}'",
         "discussion-comment-created": "a commenté '{{calloutDisplayName}}'",
         "member-joined": "nouveau membre a rejoint le {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "a créé un nouveau $t(common.challenge)",
@@ -720,9 +720,9 @@
       },
       "activity-description": {
         "callout-published": "{{displayName}}",
-        "canvas-created": "{{displayName}}",
-        "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
+        "whiteboard-created": "{{displayName}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -738,7 +738,7 @@
       "headline": "Alkemio grandit ! Au total, la plateforme héberge maintenant :"
     },
     "context-section": {
-      "create-card": "Réussie de la création de la redirection",
+      "create-post": "Réussie de la création de la redirection",
       "give-feedback": "Donner votre avis"
     },
     "callout-publish": {
@@ -748,34 +748,34 @@
       "title": "Créer un nouveau rappel",
       "titleWithType": "Créer {{type}}",
       "callout-type-label": "Type de Callout",
-      "card-type-label": "Étiquette de la carte",
+      "post-type-label": "Étiquette de la carte",
       "custom-template": "Modèle personnalisé",
       "info-step": {
         "title": "Détails",
         "description": "Description",
         "type-comments": "Commentaires",
         "type-comments-help": "Sélectionnez « Commentaires» lorsque vous voulez que les gens répondent dans un format texte simple, comme un babillard.",
-        "type-cards": "Cartes",
-        "type-cards-help": "Sélectionnez « Cartes» lorsque vous voulez que les gens répondent dans un format de carte.",
-        "type-canvases": "Tableaux blancs",
-        "type-canvases-help": "Sélectionnez 'Tableau blanc' lorsque vous voulez que les gens répondent sur un tableau blanc, ce qui leur permet de dessiner et d'utiliser du texte.",
+        "type-posts": "Cartes",
+        "type-posts-help": "Sélectionnez « Cartes» lorsque vous voulez que les gens répondent dans un format de carte.",
+        "type-whiteboards": "Tableaux blancs",
+        "type-whiteboards-help": "Sélectionnez 'Tableau blanc' lorsque vous voulez que les gens répondent sur un tableau blanc, ce qui leur permet de dessiner et d'utiliser du texte.",
         "unique-title-validation-text": "Ce titre est déjà utilisé pour un autre $t(common.callout)"
       },
       "template-step": {
         "title": "Modèles",
         "no-templates": "Aucun modèle disponible",
-        "card-template-label": "Texte par défaut:",
-        "card-template-text": "Ajoutez du texte par défaut aux messages, par exemple des questions auxquelles vous aimeriez que les gens répondent.",
-        "card-template-default-description": "Description par défaut",
+        "post-template-label": "Texte par défaut:",
+        "post-template-text": "Ajoutez du texte par défaut aux messages, par exemple des questions auxquelles vous aimeriez que les gens répondent.",
+        "post-template-default-description": "Description par défaut",
         "whiteboard-template-label": "Modèle:",
         "whiteboard-empty-template": "Modèle vide",
         "whiteboard-reset-template": "Réinitialiser le modèle vide",
-        "no-card-template-selected": "Veuillez sélectionner un modèle de carte",
-        "no-canvas-template-selected": "Veuillez sélectionner un modèle de tableau blanc"
+        "no-post-template-selected": "Veuillez sélectionner un modèle de carte",
+        "no-whiteboard-template-selected": "Veuillez sélectionner un modèle de tableau blanc"
       },
       "create-step": {
         "title": "Créer",
-        "card-template-label": "Choisir un fichier modèle"
+        "post-template-label": "Choisir un fichier modèle"
       },
       "publish-dialog": {
         "text": "Vous êtes sur le point de publier {{calloutDisplayName}}.\nVoulez-vous que les membres de cette communauté reçoivent une notification ?",
@@ -788,12 +788,12 @@
     "calloutTypeSelect": {
       "title": "Que voudriez-vous ajouter ?",
       "label": {
-        "COMMENTS": "Publication",
-        "CARD": "Appel aux publications",
-        "CANVAS": "Appel pour tableaux blancs"
+        "POST": "Publication",
+        "POST_COLLECTION": "Appel aux publications",
+        "WHITEBOARD_COLLECTION": "Appel pour tableaux blancs"
       }
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Soumettre votre réponse à {{calloutDisplayName}}",
       "type-step": {
         "title": "Le type de contexte additionnel à ajouter.",
@@ -1210,7 +1210,7 @@
         "discussions": {
           "description": "Ici vous pouvez lire et participer aux discussions autour de ce {{entity}}."
         },
-        "canvases": {
+        "whiteboards": {
           "description": "Les tableaux blancs peuvent être vus comme des toiles numériques. Ici, vous pouvez créer un tableau blanc pour ce {{entity}} ainsi que trouver celles créées par les autres."
         },
         "profile": {
@@ -1237,7 +1237,7 @@
     },
     "contribute": {
       "initial-text": "Ici, vous pouvez **vous engager auprès de votre communauté**. Partagez des idées et des idées. Faites des impacts ensemble",
-      "no-cards": "Aucune carte trouvée"
+      "no-posts": "Aucune carte trouvée"
     },
     "admin": {
       "generic": {
@@ -1262,8 +1262,8 @@
           },
           "templates": {
             "description": "Ici, vous pouvez créer et modifier des modèles pour cette {{entity}}.",
-            "aspect-templates": "Modèles de cartes",
-            "canvas-templates": "Modèles de tableaux blancs",
+            "post-templates": "Modèles de cartes",
+            "whiteboard-templates": "Modèles de tableaux blancs",
             "innovation-templates": "Modèles de flux d'innovation",
             "delete-confirmation": "Êtes-vous sûr de vouloir supprimer {{template}} du hub ? Vous pouvez également modifier les informations de ce modèle.",
             "import": {
@@ -1382,7 +1382,7 @@
       "title": "Donner des commentaires sur le contexte de cette communauté",
       "success": "Rapport envoyé"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Tapez votre commentaire ici"
@@ -1661,11 +1661,11 @@
         "no-data": "Aucune mise à jour disponible"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Tableaux blancs dans ce {{blockName}}",
       "subheader": "Créez votre visualisation personnalisée et partagez-la avec d'autres.",
-      "add-canvas": "Créer un tableau blanc",
-      "no-canvases": "Aucun tableau blanc n'a encore été créé. Soyez le premier à en ajouter un.",
+      "add-whiteboard": "Créer un tableau blanc",
+      "no-whiteboards": "Aucun tableau blanc n'a encore été créé. Soyez le premier à en ajouter un.",
       "locked-by": "{{user}} est en train de modifier ce tableau blanc",
       "state": {
         "checkedout": "{{user}} est en train de modifier ce tableau blanc"
@@ -1754,7 +1754,7 @@
     "verification-success": {
       "header": "Merci d'avoir vérifié votre adresse e-mail !",
       "subheader": "Votre profil est maintenant entièrement activé sur la plateforme. Profitez-en !",
-      "message": "Veuillez envisager de remplir tous les aspects de votre profil. Il aide à la fois à postuler pour rejoindre les communautés et avec d'autres personnes en mesure de communiquer avec vous."
+      "message": "Veuillez envisager de remplir tous les posts de votre profil. Il aide à la fois à postuler pour rejoindre les communautés et avec d'autres personnes en mesure de communiquer avec vous."
     },
     "recovery": {
       "header": "Récupération du mot de passe",
@@ -1900,14 +1900,14 @@
   "dashboard-community-section": {
     "title": "Communauté"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Nouvelle fiche",
     "edit": "Modifier la carte",
     "type": {
       "title": "Étiquette de la carte",
       "help-text": "Quel type d'informations voulez-vous partager?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Lieu de la carte",
       "label": "Contribuer à Callout",
       "reminder": "Soyez prudent en changeant la position de la carte. Le déplacement de la carte vers une autre carte le fera disparaître du rappel actuel. Cela pourrait rendre difficile pour les personnes, y compris la personne qui a créé cette carte, de le récupérer. Notez que vous ne pouvez déplacer des cartes que dans le même Hub, Challenge ou Opportunité.",

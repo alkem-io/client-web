@@ -1,0 +1,10 @@
+mutation MovePostToCallout($postId: UUID!, $calloutId: UUID!) {
+  movePostToCallout(movePostData: { postID: $postId, calloutID: $calloutId }) {
+    id
+    nameID
+    callout {
+      id
+      nameID
+    }
+  }
+}

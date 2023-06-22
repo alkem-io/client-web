@@ -108,11 +108,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     }
   }, [open]);
 
-  const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
-  const [fetchCanvasValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -149,8 +149,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       tags: callout.tags,
       type: callout.type!,
       state: callout.state!,
-      postTemplate: callout.type === CalloutType.Card ? callout.postTemplateData : undefined,
-      whiteboardTemplate: callout.type === CalloutType.Canvas ? callout.whiteboardTemplateData : undefined,
+      postTemplate: callout.type === CalloutType.Post ? callout.postTemplateData : undefined,
+      whiteboardTemplate: callout.type === CalloutType.Whiteboard ? callout.whiteboardTemplateData : undefined,
       group,
       whiteboard: callout.whiteboard,
     };
@@ -160,7 +160,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValueFromHub, fetchCanvasValueFromLibrary]);
+  }, [callout, onSaveAsDraft, templates, hubNameId, fetchWhiteboardValueFromHub, fetchWhiteboardValueFromLibrary]);
 
   const handleClose = useCallback(() => {
     onClose?.();

@@ -20,7 +20,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
-import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -75,10 +75,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     group: callout.group,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
-  const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
-  const [fetchCanvasValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -103,7 +103,15 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       group: newCallout.group,
     });
     setLoading(false);
-  }, [callout, fetchCanvasValueFromHub, newCallout, hubNameId, onCalloutEdit, templates, fetchCanvasValueFromLibrary]);
+  }, [
+    callout,
+    fetchWhiteboardValueFromHub,
+    newCallout,
+    hubNameId,
+    onCalloutEdit,
+    templates,
+    fetchWhiteboardValueFromLibrary,
+  ]);
 
   const handleDelete = useCallback(async () => {
     setLoading(true);

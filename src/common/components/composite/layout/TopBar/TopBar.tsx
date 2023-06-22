@@ -6,7 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useGlobalState } from '../../../../../core/state/useGlobalState';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 import HideOnScroll from '../HideOnScroll';
-import LogoComponent from './LogoComponent';
+import { AlkemioLogoComponent } from './LogoComponent';
 import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
 import MobileTopBar, { MobileTopBarHeightGutters } from './MobileTopBar';
@@ -86,7 +86,7 @@ const DesktopTopBar = () => {
       alignItems="center"
       justifyContent="space-between"
     >
-      <LogoComponent height={gutters(2.5)} />
+      <AlkemioLogoComponent height={gutters(2.5)} />
       <SearchBarGroup
         sx={{
           display: { xs: 'none', md: 'flex' },

@@ -21,7 +21,12 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
         <VisualUpload
           visual={banner}
-          altText={t('pages.visual-edit.banner.description', { alternativeText: banner?.alternativeText })}
+          altText={t('pages.visual-edit.banner.description', {
+            alternativeText: banner?.alternativeText,
+            interpolation: {
+              escapeValue: false,
+            },
+          })}
         />
         <Box paddingLeft={2}>
           <BlockSectionTitle>{t('pages.visual-edit.banner.title')}</BlockSectionTitle>
@@ -30,7 +35,12 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
           </BlockSectionTitle>
           {banner?.alternativeText && (
             <BlockSectionTitle>
-              {t('pages.visual-edit.banner.description', { alternativeText: banner?.alternativeText })}
+              {t('pages.visual-edit.banner.description', {
+                alternativeText: banner?.alternativeText,
+                interpolation: {
+                  escapeValue: false,
+                },
+              })}
             </BlockSectionTitle>
           )}
         </Box>
@@ -38,7 +48,12 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
         <VisualUpload
           visual={bannerNarrow}
-          altText={t('pages.visual-edit.banner-narrow.description', { alternativeText: bannerNarrow?.alternativeText })}
+          altText={t('pages.visual-edit.banner-narrow.description', {
+            alternativeText: bannerNarrow?.alternativeText,
+            interpolation: {
+              escapeValue: false,
+            },
+          })}
         />
         <Box paddingLeft={2}>
           <BlockSectionTitle>{t('pages.visual-edit.banner-narrow.title')}</BlockSectionTitle>
@@ -50,7 +65,12 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
           </BlockSectionTitle>
           {bannerNarrow?.alternativeText && (
             <BlockSectionTitle>
-              {t('pages.visual-edit.banner-narrow.description', { alternativeText: bannerNarrow?.alternativeText })}
+              {t('pages.visual-edit.banner-narrow.description', {
+                alternativeText: bannerNarrow?.alternativeText,
+                interpolation: {
+                  escapeValue: false,
+                },
+              })}
             </BlockSectionTitle>
           )}
         </Box>

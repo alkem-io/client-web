@@ -5,15 +5,15 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import ImageWithCaption from '../../../shared/components/ImageWithCaption';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { CanvasCardCanvas } from '../canvas/types';
-import { CanvasProvider } from '../../canvas/containers/CanvasProvider';
-import CanvasesManagementViewWrapper from '../../canvas/CanvasesManagement/CanvasesManagementViewWrapper';
+import { WhiteboardCardWhiteboard } from '../whiteboard/types';
+import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
+import WhiteboardsManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsManagementViewWrapper';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
-import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
+import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
-    canvases: CanvasCardCanvas[];
+    whiteboards: WhiteboardCardWhiteboard[];
     whiteboardTemplate: WhiteboardTemplate;
   };
 }
@@ -43,10 +43,10 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
       setIsWhiteboardDialogOpen(false);
     };
 
-    if (!callout.canvases || callout.canvases.length < 1) {
+    if (!callout.whiteboards || callout.whiteboards.length < 1) {
       return null;
     }
-    const firstCanvas = callout.canvases[0];
+    const firstWhiteboard = callout.whiteboards[0];
 
     return (
       <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
@@ -61,27 +61,27 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
         >
           <ImageWithCaption
             caption={t('callout.singleWhiteboard.clickToSee')}
-            src={firstCanvas.profile.preview?.uri}
+            src={firstWhiteboard.profile.preview?.uri}
             alt={callout.profile.displayName}
-            defaultImage={<CanvasIcon />}
+            defaultImage={<WhiteboardIcon />}
             onClick={() => setIsWhiteboardDialogOpen(true)}
           />
           {isWhiteboardDialogOpen && (
-            <CanvasProvider
+            <WhiteboardProvider
               {...{
                 hubNameId,
                 challengeNameId,
                 opportunityNameId,
                 calloutNameId: callout.nameID,
-                whiteboardNameId: firstCanvas.id,
+                whiteboardNameId: firstWhiteboard.id,
               }}
             >
               {(entities, state) => (
-                <CanvasesManagementViewWrapper
-                  canvasNameId={firstCanvas.id}
-                  backToCanvases={handleCloseWhiteboardDialog}
+                <WhiteboardsManagementViewWrapper
+                  whiteboardNameId={firstWhiteboard.id}
+                  backToWhiteboards={handleCloseWhiteboardDialog}
                   journeyTypeName={journeyTypeName}
-                  canvasShareUrl={buildCalloutUrl(callout.nameID, {
+                  whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
                     hubNameId,
                     challengeNameId,
                     opportunityNameId,
@@ -92,7 +92,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                   {...state}
                 />
               )}
-            </CanvasProvider>
+            </WhiteboardProvider>
           )}
         </CalloutLayout>
       </PageContentBlock>

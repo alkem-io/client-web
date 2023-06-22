@@ -30,20 +30,20 @@ export const QRCode: FC<QRCodeProps> = ({ qrCodeJwt, qrCodeImg, className }) => 
   useEffect(() => {
     const container = containerRef.current;
 
-    async function loadCanvas() {
+    async function loadWhiteboard() {
       if (container && qrCodeJwt && typeof height !== 'undefined' && typeof width !== 'undefined') {
-        const canvas = await qrcode.toCanvas(qrCodeJwt);
+        const whiteboard = await qrcode.toCanvas(qrCodeJwt);
         const size = Math.min(height, width);
-        canvas.style.height = `${size}px`;
-        canvas.style.width = `${size}px`;
-        container.append(canvas);
+        whiteboard.style.height = `${size}px`;
+        whiteboard.style.width = `${size}px`;
+        container.append(whiteboard);
       } else if (container && qrCodeImg && typeof height !== 'undefined' && typeof width !== 'undefined') {
         const size = Math.min(height, width);
         container.innerHTML = `<img src ='${qrCodeImg}' alt='qr code' height='${size}px' width =  '${size}px' />`;
       }
     }
 
-    loadCanvas();
+    loadWhiteboard();
 
     return () => {
       if (container) {

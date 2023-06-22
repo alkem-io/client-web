@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
@@ -8,7 +8,12 @@ import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
 import AuthActionButton from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { _AUTH_REGISTER_PATH, _AUTH_LOGIN_PATH } from '../constants/authentication.constants';
+import {
+  _AUTH_REGISTER_PATH,
+  _AUTH_LOGIN_PATH,
+  PARAM_NAME_RETURN_URL,
+  STORAGE_KEY_RETURN_URL,
+} from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
@@ -22,6 +27,7 @@ import { UiContainer } from '@ory/kratos-client';
 import { KRATOS_INPUT_NAME_CSRF, KRATOS_TRAIT_NAME_ACCEPTED_TERMS } from '../components/Kratos/constants';
 import { isInputNode } from '../components/Kratos/helpers';
 import { useStoreSignUpReturnUrl } from '../utils/SignUpReturnUrl';
+import { useQueryParams } from '../../../routing/useQueryParams';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);
@@ -66,6 +72,14 @@ const SignUp = () => {
   const signIn = () => {
     navigate(_AUTH_LOGIN_PATH);
   };
+
+  const params = useQueryParams();
+  const returnUrl = params.get(PARAM_NAME_RETURN_URL);
+  useEffect(() => {
+    if (returnUrl) {
+      sessionStorage.setItem(STORAGE_KEY_RETURN_URL, returnUrl);
+    }
+  }, [returnUrl]);
 
   useStoreSignUpReturnUrl();
 

@@ -7,7 +7,7 @@ import DiscussionView from '../views/DiscussionView';
 import {
   refetchPlatformDiscussionQuery,
   refetchPlatformDiscussionsQuery,
-  RoomMessageReceivedDocument,
+  RoomEventsDocument,
   useDeleteDiscussionMutation,
   usePlatformDiscussionQuery,
   useRemoveMessageOnRoomMutation,
@@ -25,20 +25,25 @@ import { useNavigate } from 'react-router-dom';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
   DiscussionDetailsFragment,
-  RoomMessageReceivedSubscription,
-  RoomMessageReceivedSubscriptionVariables,
+  MutationType,
+  RoomEventsSubscription,
+  RoomEventsSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 import usePostMessageMutations from '../../room/Comments/usePostMessageMutations';
 
 const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
   DiscussionDetailsFragment,
-  RoomMessageReceivedSubscription,
-  RoomMessageReceivedSubscriptionVariables
+  RoomEventsSubscription,
+  RoomEventsSubscriptionVariables
 >({
-  subscriptionDocument: RoomMessageReceivedDocument,
+  subscriptionDocument: RoomEventsDocument,
   getSubscriptionVariables: discussion => ({ roomID: discussion.comments.id }),
   updateSubEntity: (discussion, subscriptionData) => {
-    discussion?.comments.messages.push(subscriptionData.roomMessageReceived.message);
+    const { message } = subscriptionData.roomEvents;
+
+    if (message && message.type === MutationType.Create) {
+      discussion?.comments.messages.push(message.data);
+    }
   },
 });
 

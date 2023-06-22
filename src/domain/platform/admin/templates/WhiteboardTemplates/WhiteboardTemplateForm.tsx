@@ -6,7 +6,7 @@ import TemplateFormRows from '../TemplateFormRows';
 import TemplateForm from '../TemplateForm';
 import FormikWhiteboardPreview from './FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
-import { WhiteboardPreviewImage } from '../../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface WhiteboardTemplateFormValues {
   displayName: string;
@@ -55,7 +55,7 @@ const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, load
           previewImagesName="previewImages"
           canEdit
           loading={loading}
-          dialogProps={{ title: t('canvas-templates.edit-dialog-title') }}
+          dialogProps={{ title: t('whiteboard-templates.edit-dialog-title') }}
         />
       </TemplateFormRows>
     </TemplateForm>

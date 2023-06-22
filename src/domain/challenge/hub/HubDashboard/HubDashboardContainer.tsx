@@ -20,8 +20,8 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
-import { useCanvasesCount } from '../../../collaboration/canvas/utils/canvasesCount';
+import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
+import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 
@@ -41,8 +41,8 @@ export interface HubContainerEntities {
   challenges: ChallengeCardFragment[];
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
-  aspectsCount: number | undefined;
-  canvasesCount: number | undefined;
+  postsCount: number | undefined;
+  whiteboardsCount: number | undefined;
   references: Reference[] | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
@@ -113,8 +113,8 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
-  const aspectsCount = useAspectsCount(_hub?.hub.metrics);
-  const canvasesCount = useCanvasesCount(_hub?.hub.metrics);
+  const postsCount = usePostsCount(_hub?.hub.metrics);
+  const whiteboardsCount = useWhiteboardsCount(_hub?.hub.metrics);
 
   const references = referencesData?.hub?.profile.references;
 
@@ -151,8 +151,8 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
           isAuthenticated,
           isMember,
           challenges,
-          aspectsCount,
-          canvasesCount,
+          postsCount,
+          whiteboardsCount,
           references,
           activities,
           activityLoading,

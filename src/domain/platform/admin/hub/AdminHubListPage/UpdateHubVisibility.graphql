@@ -1,6 +1,0 @@
-mutation UpdateHubVisibility($hubId: String!, $visibility: HubVisibility!) {
-  updateHubVisibility(visibilityData: { hubID: $hubId, visibility: $visibility }) {
-    id
-    visibility
-  }
-}

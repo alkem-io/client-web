@@ -1,5 +1,0 @@
-mutation deleteAspect($input: DeleteAspectInput!) {
-  deleteAspect(deleteData: $input) {
-    id
-  }
-}

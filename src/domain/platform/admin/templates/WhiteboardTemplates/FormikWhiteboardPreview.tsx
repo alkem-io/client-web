@@ -1,14 +1,14 @@
 import { Box, BoxProps, Button, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
 import React, { FC, MouseEventHandler, useMemo, useState } from 'react';
-import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
-import CanvasDialog from '../../../../collaboration/canvas/CanvasDialog/CanvasDialog';
+import WhiteboardWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/WhiteboardWhiteboard';
+import WhiteboardDialog from '../../../../collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
-import { WhiteboardPreviewImage } from '../../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
-  name: string; // Formik fieldName of the Canvas value
+  name: string; // Formik fieldName of the Whiteboard value
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
   canEdit: boolean;
   onChangeValue?: (value: string, previewImages?: WhiteboardPreviewImage[]) => void;
@@ -35,7 +35,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   ...containerProps
 }) => {
   const { t } = useTranslation();
-  const [field, , helpers] = useField<string>(name); // Canvas value JSON string
+  const [field, , helpers] = useField<string>(name); // Whiteboard value JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -45,10 +45,10 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
     helpers.setTouched(true);
   };
 
-  const canvasFromTemplate = useMemo(() => {
+  const whiteboardFromTemplate = useMemo(() => {
     return {
       id: '__template',
-      // Needed to pass yup validation of CanvasDialog
+      // Needed to pass yup validation of WhiteboardDialog
       profile: { id: '__templateProfile', displayName: '__template' },
       value: field.value,
     };
@@ -66,9 +66,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
     >
       {!loading ? (
         <>
-          <CanvasWhiteboard
+          <WhiteboardWhiteboard
             entities={{
-              canvas: canvasFromTemplate,
+              whiteboard: whiteboardFromTemplate,
             }}
             actions={{}}
             options={{
@@ -87,21 +87,21 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   {t('buttons.edit')}
                 </Button>
               </EditTemplateButtonContainer>
-              <CanvasDialog
+              <WhiteboardDialog
                 entities={{
-                  canvas: canvasFromTemplate,
+                  whiteboard: whiteboardFromTemplate,
                   lockedBy: undefined,
                 }}
                 actions={{
                   onCancel: () => setEditDialogOpen(false),
                   onCheckin: undefined,
                   onCheckout: undefined,
-                  onUpdate: (canvas, previewImages) => {
-                    helpers.setValue(canvas.value);
+                  onUpdate: (whiteboard, previewImages) => {
+                    helpers.setValue(whiteboard.value);
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);
                     }
-                    onChangeValue?.(canvas.value, previewImages);
+                    onChangeValue?.(whiteboard.value, previewImages);
                     setEditDialogOpen(false);
                   },
                   onDelete: undefined,

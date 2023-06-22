@@ -7,7 +7,7 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
@@ -33,7 +33,7 @@ const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhite
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
+        {t('common.create-new-entity', { entity: t('whiteboard-templates.whiteboard-template') })}
       </DialogHeader>
 
       <WhiteboardTemplateForm

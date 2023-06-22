@@ -1,0 +1,64 @@
+import React, { useCallback } from 'react';
+import { Skeleton } from '@mui/material';
+import { PostIcon } from '../../post/icon/PostIcon';
+import ContributeCard from '../../../../core/ui/card/ContributeCard';
+import CardHeader from '../../../../core/ui/card/CardHeader';
+import CardDetails from '../../../../core/ui/card/CardDetails';
+import CardDescription from '../../../../core/ui/card/CardDescription';
+import CardTags from '../../../../core/ui/card/CardTags';
+import CardFooter from '../../../../core/ui/card/CardFooter';
+import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
+import MessageCounter from '../../../../core/ui/card/MessageCounter';
+import { ContributeTabPostFragment, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
+import { gutters } from '../../../../core/ui/grid/utils';
+
+type NeededFields = 'id' | 'nameID' | 'profile' | 'type';
+
+export type PostCardPost = Pick<ContributeTabPostFragment, NeededFields> & {
+  bannerNarrow?: VisualUriFragment;
+  createdBy?: { profile: { displayName: string } };
+  comments?: { commentsCount?: number };
+  createdDate: string | Date; // Apollo says Date while actually it's a string
+};
+
+interface PostCardProps {
+  post: PostCardPost | undefined;
+  onClick: (post: PostCardPost) => void;
+}
+
+const PostCard = ({ post, onClick }: PostCardProps) => {
+  const handleClick = useCallback(() => post && onClick(post), [onClick, post]);
+
+  if (!post) {
+    return (
+      <ContributeCard>
+        <CardHeader title={<Skeleton />} iconComponent={PostIcon}>
+          <Skeleton />
+        </CardHeader>
+        <Skeleton sx={{ height: gutters(8), marginX: gutters() }} />
+        <CardFooter>
+          <Skeleton width="100%" />
+        </CardFooter>
+      </ContributeCard>
+    );
+  }
+
+  return (
+    <ContributeCard onClick={handleClick}>
+      <CardHeader title={post.profile.displayName} iconComponent={PostIcon}>
+        <CardHeaderCaption noWrap>{post.createdBy?.profile.displayName}</CardHeaderCaption>
+      </CardHeader>
+      <CardDetails>
+        <CardDescription>{post.profile.description!}</CardDescription>
+        <CardTags tags={post.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+      </CardDetails>
+      <CardFooter>
+        {post.createdDate && <CardFooterDate date={post.createdDate} />}
+        <MessageCounter commentsCount={post.comments?.commentsCount} />
+      </CardFooter>
+    </ContributeCard>
+  );
+};
+
+export default PostCard;

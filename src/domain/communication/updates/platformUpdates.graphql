@@ -1,0 +1,11 @@
+query platformUpdatesRoom{
+  platform {
+    id
+    communication {
+      id
+      updates {
+        id
+      }
+    }
+  }
+}

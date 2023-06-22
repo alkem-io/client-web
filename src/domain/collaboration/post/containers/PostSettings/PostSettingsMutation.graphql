@@ -1,0 +1,22 @@
+mutation updatePost($input: UpdatePostInput!) {
+  updatePost(postData: $input) {
+    id
+    type
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        name
+        tags
+      }
+      references {
+        id
+        name
+        description
+        uri
+      }
+    }
+  }
+}

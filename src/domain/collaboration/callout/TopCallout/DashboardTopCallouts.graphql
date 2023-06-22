@@ -15,11 +15,11 @@ fragment DashboardTopCallout on Callout {
   }
   type
   visibility
-  aspects(limit: 2, shuffle: true) {
-    ...AspectCard
+  posts(limit: 2, shuffle: true) {
+    ...PostCard
   }
-  canvases(limit: 2, shuffle: true) {
-    ...CanvasDetails
+  whiteboards(limit: 2, shuffle: true) {
+    ...WhiteboardDetails
   }
   activity
 }
