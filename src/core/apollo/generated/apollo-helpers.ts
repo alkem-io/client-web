@@ -378,6 +378,11 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
+export type ApplicationTemplateFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  questions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
   providers?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -908,6 +913,17 @@ export type GeoFieldPolicy = {
 export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
 export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type HubAspectTemplateKeySpecifier = (
+  | 'defaultDescription'
+  | 'type'
+  | 'typeDescription'
+  | HubAspectTemplateKeySpecifier
+)[];
+export type HubAspectTemplateFieldPolicy = {
+  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ISearchResultsKeySpecifier = (
   | 'contributionResults'
@@ -2533,6 +2549,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
   };
+  ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
+    fields?: ApplicationTemplateFieldPolicy;
+  };
   AuthenticationConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AuthenticationConfigKeySpecifier | (() => undefined | AuthenticationConfigKeySpecifier);
     fields?: AuthenticationConfigFieldPolicy;
@@ -2716,6 +2736,10 @@ export type StrictTypedTypePolicies = {
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);
     fields?: GroupableFieldPolicy;
+  };
+  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
+    fields?: HubAspectTemplateFieldPolicy;
   };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);

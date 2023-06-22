@@ -1,0 +1,74 @@
+query AdminInnovationHubsList {
+  platform {
+    id
+    innovationHubs {
+      id
+      nameID
+      subdomain
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+}
+
+mutation deleteInnovationHub($innovationHubId: UUID!) {
+  deleteInnovationHub(deleteData: { ID: $innovationHubId }) {
+    id
+  }
+}
+
+fragment InnovationHubProfile on Profile {
+  id
+  displayName
+  description
+  tagline
+  tagset {
+    id
+    name
+    tags
+  }
+  visual(type: BANNER) {
+    ...VisualFull
+  }
+}
+
+query AdminInnovationHub($innovationHubId: UUID_NAMEID!) {
+  platform {
+    id
+    innovationHub(id: $innovationHubId) {
+      id
+      nameID
+      subdomain
+
+      profile {
+        ...InnovationHubProfile
+      }
+      spaceListFilter {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+      }
+      spaceVisibilityFilter
+      type
+    }
+  }
+}
+
+mutation createInnovationHub($hubData: CreateInnovationHubInput!) {
+  createInnovationHub(createData: $hubData) {
+    id
+    nameID
+  }
+}
+
+mutation updateInnovationHub($hubData: UpdateInnovationHubInput!) {
+  updateInnovationHub(updateData: $hubData) {
+    id
+    nameID
+  }
+}
