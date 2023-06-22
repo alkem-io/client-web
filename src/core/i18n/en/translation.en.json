@@ -205,7 +205,7 @@
     "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
-    "communications": "Updates",
+    "communications": "Updates from the leads",
     "applications": "Applications",
     "introduction": "Introduction",
     "interest": "Interest",
@@ -222,8 +222,8 @@
     "user": "User",
     "users": "Users",
     "update": "Update",
-    "updates": "News",
-    "no-updates": "No updates",
+    "updates": "Updates from the leads",
+    "no-updates": "No updates from the leads",
     "no-tags": "No tags available",
     "no-references": "No references available",
     "field-required": "This field is required",
@@ -1767,7 +1767,7 @@
           }
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
+          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared by the leads."
         },
         "apply": "Interested in collaboration?",
         "agreements": {
@@ -1800,7 +1800,7 @@
         "no-data": "No members available"
       },
       "updates": {
-        "title": "Updates ({{count}})",
+        "title": "Updates from the leads ({{count}})",
         "no-data": "No updates available"
       }
     },
@@ -2045,9 +2045,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "News ({{count}})",
-    "dialog-title": "All News",
-    "no-data": "No news available."
+    "title": "Updates from the leads ({{count}})",
+    "dialog-title": "All updates from the leads",
+    "no-data": "No updates available."
   },
   "dashboard-discussions-section": {
     "title": "Discussions ({{count}})",
