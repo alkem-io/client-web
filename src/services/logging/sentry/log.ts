@@ -38,6 +38,7 @@ export const info = (message: string, severity: typeof debugLevel | typeof infoL
 export const log404NotFound = () => {
   Sentry.withScope(scope => {
     scope.setLevel(errorLevel);
-    Sentry.captureEvent({ message: `404: ${document.location.href}` });
+    const message = `404: '${document.location.href}'` + (document.referrer ? ` Referrer: '${document.referrer}'` : '');
+    Sentry.captureEvent({ message });
   });
 };
