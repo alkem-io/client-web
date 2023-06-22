@@ -13,7 +13,7 @@ import {
   useCreateInnovationHubMutation,
   useOrganizationsListQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { InnovationHubType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { InnovationHubType } from '../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
@@ -49,7 +49,6 @@ const AdminNewInnovationHubPage = () => {
           },
           type: InnovationHubType.List,
           spaceListFilter: [],
-          spaceVisibilityFilter: SpaceVisibility.Active,
         },
       },
       refetchQueries: [refetchAdminInnovationHubsListQuery()],
