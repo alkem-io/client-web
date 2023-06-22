@@ -35,7 +35,6 @@ const AdminNewInnovationHubPage = () => {
   const [createInnovationHub, { loading: creating }] = useCreateInnovationHubMutation();
 
   const handleSubmit = async (formData: InnovationHubFormValues) => {
-    console.log('handleSubmit new', formData);
     const { data } = await createInnovationHub({
       variables: {
         hubData: {
