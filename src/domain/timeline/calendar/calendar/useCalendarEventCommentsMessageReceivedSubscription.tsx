@@ -1,21 +1,25 @@
 import {
   CalendarEventDetailsFragment,
-  RoomMessageReceivedSubscription,
-  RoomMessageReceivedSubscriptionVariables,
+  MutationType,
+  RoomEventsSubscription,
+  RoomEventsSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
-import { RoomMessageReceivedDocument } from '../../../../core/apollo/generated/apollo-hooks';
+import { RoomEventsDocument } from '../../../../core/apollo/generated/apollo-hooks';
 
 const useCalendarEventCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntityHook<
   CalendarEventDetailsFragment,
-  RoomMessageReceivedSubscription,
-  RoomMessageReceivedSubscriptionVariables
+  RoomEventsSubscription,
+  RoomEventsSubscriptionVariables
 >({
-  subscriptionDocument: RoomMessageReceivedDocument,
+  subscriptionDocument: RoomEventsDocument,
   getSubscriptionVariables: calendarEvent => ({ roomID: calendarEvent.comments.id }),
   updateSubEntity: (calendarEvent, subscriptionData) => {
-    const message = subscriptionData.roomMessageReceived.message;
-    calendarEvent?.comments?.messages?.push(message);
+    const { message } = subscriptionData.roomEvents;
+
+    if (message && message.type === MutationType.Create) {
+      calendarEvent?.comments?.messages?.push(message.data);
+    }
   },
 });
 

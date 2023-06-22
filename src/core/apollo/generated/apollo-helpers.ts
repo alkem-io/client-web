@@ -1962,11 +1962,6 @@ export type RoomMessageReactionEventSubscriptionResultFieldPolicy = {
   messageID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RoomMessageReceivedKeySpecifier = ('message' | 'roomID' | RoomMessageReceivedKeySpecifier)[];
-export type RoomMessageReceivedFieldPolicy = {
-  message?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SearchResultKeySpecifier = ('id' | 'score' | 'terms' | 'type' | SearchResultKeySpecifier)[];
 export type SearchResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2188,7 +2183,6 @@ export type SubscriptionKeySpecifier = (
   | 'opportunityCreated'
   | 'profileVerifiedCredential'
   | 'roomEvents'
-  | 'roomMessageReceived'
   | 'whiteboardContentUpdated'
   | SubscriptionKeySpecifier
 )[];
@@ -2200,7 +2194,6 @@ export type SubscriptionFieldPolicy = {
   opportunityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = ('authorization' | 'id' | 'name' | 'tags' | TagsetKeySpecifier)[];
@@ -2934,10 +2927,6 @@ export type StrictTypedTypePolicies = {
       | RoomMessageReactionEventSubscriptionResultKeySpecifier
       | (() => undefined | RoomMessageReactionEventSubscriptionResultKeySpecifier);
     fields?: RoomMessageReactionEventSubscriptionResultFieldPolicy;
-  };
-  RoomMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RoomMessageReceivedKeySpecifier | (() => undefined | RoomMessageReceivedKeySpecifier);
-    fields?: RoomMessageReceivedFieldPolicy;
   };
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);

@@ -3672,14 +3672,6 @@ export type RoomMessageReactionEventSubscriptionResult = {
   type: MutationType;
 };
 
-export type RoomMessageReceived = {
-  __typename?: 'RoomMessageReceived';
-  /** The message that has been sent. */
-  message: Message;
-  /** The identifier for the Room on which the message was sent. */
-  roomID: Scalars['String'];
-};
-
 export type RoomRemoveMessageInput = {
   /** The message id that should be removed */
   messageID: Scalars['MessageID'];
@@ -4027,8 +4019,6 @@ export type Subscription = {
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
   roomEvents: RoomEventSubscriptionResult;
-  /** Receive new Room messages */
-  roomMessageReceived: RoomMessageReceived;
   /** Receive updated content of a whiteboard */
   whiteboardContentUpdated: WhiteboardContentUpdated;
 };
@@ -4054,10 +4044,6 @@ export type SubscriptionOpportunityCreatedArgs = {
 };
 
 export type SubscriptionRoomEventsArgs = {
-  roomID: Scalars['UUID'];
-};
-
-export type SubscriptionRoomMessageReceivedArgs = {
   roomID: Scalars['UUID'];
 };
 
@@ -18020,45 +18006,67 @@ export type RemoveMessageOnRoomMutationVariables = Exact<{
 
 export type RemoveMessageOnRoomMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
-export type RoomMessageReceivedSubscriptionVariables = Exact<{
+export type RoomEventsSubscriptionVariables = Exact<{
   roomID: Scalars['UUID'];
 }>;
 
-export type RoomMessageReceivedSubscription = {
+export type RoomEventsSubscription = {
   __typename?: 'Subscription';
-  roomMessageReceived: {
-    __typename?: 'RoomMessageReceived';
+  roomEvents: {
+    __typename?: 'RoomEventSubscriptionResult';
     roomID: string;
-    message: {
-      __typename?: 'Message';
-      id: string;
-      message: string;
-      timestamp: number;
-      threadID?: string | undefined;
-      reactions: Array<{
-        __typename?: 'Reaction';
-        id: string;
-        emoji: string;
-        sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
-      }>;
-      sender?:
-        | {
-            __typename?: 'User';
+    message?:
+      | {
+          __typename?: 'RoomMessageEventSubscriptionResult';
+          type: MutationType;
+          data: {
+            __typename?: 'Message';
             id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
+            message: string;
+            timestamp: number;
+            threadID?: string | undefined;
+            reactions: Array<{
+              __typename?: 'Reaction';
               id: string;
-              displayName: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          }
-        | undefined;
-    };
+              emoji: string;
+              sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+            }>;
+            sender?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  firstName: string;
+                  lastName: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    tagsets?:
+                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                      | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | undefined;
+          };
+        }
+      | undefined;
+    reaction?:
+      | {
+          __typename?: 'RoomMessageReactionEventSubscriptionResult';
+          type: MutationType;
+          messageID?: string | undefined;
+          data: {
+            __typename?: 'Reaction';
+            id: string;
+            emoji: string;
+            timestamp: number;
+            sender?: { __typename?: 'User'; id: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -18124,6 +18132,17 @@ export type CommunityUpdatesQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type PlatformUpdatesRoomQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformUpdatesRoomQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    communication: { __typename?: 'Communication'; id: string; updates: { __typename?: 'Room'; id: string } };
   };
 };
 
