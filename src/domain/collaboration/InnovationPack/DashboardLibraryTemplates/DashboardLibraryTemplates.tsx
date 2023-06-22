@@ -3,7 +3,6 @@ import { LibraryTemplateCardProps } from './LibraryTemplateCard';
 import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
 import TemplatePreviewDialog, { TemplatePreview } from '../TemplatePreviewDialog/TemplatePreviewDialog';
@@ -12,6 +11,7 @@ import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfile
 
 interface DashboardLibraryTemplatesProps {
   headerTitle: ReactNode;
+  dialogTitle: ReactNode;
   templates: LibraryTemplateCardProps[] | undefined;
 }
 
@@ -27,7 +27,7 @@ const templatesValueGetter = (template: LibraryTemplateCardProps): ValueType => 
 
 const MAX_TEMPLATES_WHEN_NOT_EXPANDED = 10;
 
-const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryTemplatesProps) => {
+const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: DashboardLibraryTemplatesProps) => {
   const [filter, onFilterChange] = useState<LibraryTemplatesFilter>({
     templateTypes: [],
     searchTerms: [],
@@ -57,8 +57,6 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
     );
   }, [templates, filter]);
 
-  const { t } = useTranslation();
-
   return (
     <>
       <LibraryTemplatesView
@@ -76,7 +74,7 @@ const DashboardLibraryTemplates = ({ headerTitle, templates }: DashboardLibraryT
       <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
         <LibraryTemplatesView
           filter={filter}
-          headerTitle={t('common.innovation-packs')}
+          headerTitle={dialogTitle}
           templates={filteredLibraryTemplates}
           onFilterChange={onFilterChange}
           expanded={isDialogOpen}
