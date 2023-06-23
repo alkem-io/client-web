@@ -37,13 +37,13 @@ export const journeyFilterConfig: FilterConfig = {
 export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['card'], // , 'whiteboard', 'callout'], // TODO: Enable 'whiteboard' and 'callout' when server is ready
+    value: ['post'], // , 'whiteboard', 'callout'], // TODO: Enable 'whiteboard' and 'callout' when server is ready
     typename: 'all',
   },
   post: {
     title: 'pages.search.filter.key.post',
-    value: ['card'],
-    typename: 'card',
+    value: ['post'],
+    typename: 'post',
   },
   whiteboard: {
     title: 'pages.search.filter.key.whiteboard',
