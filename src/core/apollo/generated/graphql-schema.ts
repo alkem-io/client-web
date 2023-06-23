@@ -410,6 +410,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type AssignChallengeAdminInput = {
   challengeID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -1686,6 +1694,16 @@ export type GrantAuthorizationCredentialInput = {
 export type Groupable = {
   /** The groups contained by this entity. */
   groups?: Maybe<Array<UserGroup>>;
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type ISearchResults = {
@@ -21632,6 +21650,136 @@ export type HomePageSpacesQuery = {
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   }>;
+};
+
+export type AdminInnovationHubsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminInnovationHubsListQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHubs: Array<{
+      __typename?: 'InnovationHub';
+      id: string;
+      nameID: string;
+      subdomain: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+    }>;
+  };
+};
+
+export type DeleteInnovationHubMutationVariables = Exact<{
+  innovationHubId: Scalars['UUID'];
+}>;
+
+export type DeleteInnovationHubMutation = {
+  __typename?: 'Mutation';
+  deleteInnovationHub: { __typename?: 'InnovationHub'; id: string };
+};
+
+export type InnovationHubProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  description?: string | undefined;
+  tagline: string;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  visual?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
+    | undefined;
+};
+
+export type AdminInnovationHubQueryVariables = Exact<{
+  innovationHubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AdminInnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          subdomain: string;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
+          type: InnovationHubType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagline: string;
+            tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+          spaceListFilter?:
+            | Array<{
+                __typename?: 'Space';
+                id: string;
+                nameID: string;
+                visibility: SpaceVisibility;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                host?:
+                  | {
+                      __typename?: 'Organization';
+                      id: string;
+                      nameID: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateInnovationHubMutationVariables = Exact<{
+  hubData: CreateInnovationHubInput;
+}>;
+
+export type CreateInnovationHubMutation = {
+  __typename?: 'Mutation';
+  createInnovationHub: { __typename?: 'InnovationHub'; id: string; nameID: string };
+};
+
+export type UpdateInnovationHubMutationVariables = Exact<{
+  hubData: UpdateInnovationHubInput;
+}>;
+
+export type UpdateInnovationHubMutation = {
+  __typename?: 'Mutation';
+  updateInnovationHub: { __typename?: 'InnovationHub'; id: string; nameID: string };
 };
 
 export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;

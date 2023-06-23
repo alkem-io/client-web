@@ -9,6 +9,7 @@ import { UsersRoute } from '../user/routing/UsersRoute';
 import { SpacesRoute } from '../space/routing/SpacesRoute';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '../templates/InnovationPacks/admin/AdminInnovationPackRoutes';
+import AdminInnovationHubsRoutes from '../../InnovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -25,6 +26,7 @@ export const AdminRoute: FC = () => {
           <Route path="authorization/*" element={<GlobalAuthorizationRoute />} />
           <Route path="organizations/*" element={<AdminOrganizationsRoutes />} />
           <Route path="innovation-packs/*" element={<AdminInnovationPacksRoutes />} />
+          <Route path="innovation-hubs/*" element={<AdminInnovationHubsRoutes />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </NonAdminRedirect>

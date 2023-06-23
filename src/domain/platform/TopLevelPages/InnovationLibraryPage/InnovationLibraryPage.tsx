@@ -35,10 +35,12 @@ const InnovationLibraryPage = () => {
       <PageContentColumn columns={12}>
         <DashboardInnovationPacks
           headerTitle={t('pages.innovationLibrary.innovationPacks.headerTitle')}
+          dialogTitle={t('pages.innovationLibrary.innovationPacks.dialogTitle')}
           innovationPacks={innovationPacks}
         />
         <DashboardLibraryTemplates
           headerTitle={t('pages.innovationLibrary.libraryTemplates.headerTitle')}
+          dialogTitle={t('pages.innovationLibrary.libraryTemplates.dialogTitle')}
           templates={templates}
         />
       </PageContentColumn>
