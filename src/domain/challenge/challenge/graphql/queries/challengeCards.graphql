@@ -1,5 +1,5 @@
-query challengeCards($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query challengeCards($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     challenges {
       ...ChallengeCard

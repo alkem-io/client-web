@@ -110,15 +110,15 @@ const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
  * If you need Callouts without a group, don't specify calloutGroups at all.
  */
 const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
-  const includeHub = !params.challengeNameId && !params.opportunityNameId;
+  const includeSpace = !params.challengeNameId && !params.opportunityNameId;
   const includeChallenge = !!params.challengeNameId;
   const includeOpportunity = !!params.opportunityNameId;
 
   const variables = {
-    hubNameId: params.hubNameId!,
+    spaceNameId: params.spaceNameId!,
     challengeNameId: params.challengeNameId,
     opportunityNameId: params.opportunityNameId,
-    includeHub,
+    includeSpace,
     includeChallenge,
     includeOpportunity,
     calloutGroups: params.calloutGroups,
@@ -131,7 +131,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
-    skip: !params.hubNameId,
+    skip: !params.spaceNameId,
   });
 
   const [getCallouts] = useCalloutsLazyQuery({
@@ -148,7 +148,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     });
   };
 
-  const collaboration = (calloutsData?.hub.opportunity ?? calloutsData?.hub.challenge ?? calloutsData?.hub)
+  const collaboration = (calloutsData?.space.opportunity ?? calloutsData?.space.challenge ?? calloutsData?.space)
     ?.collaboration;
 
   const canCreateCallout =

@@ -63,7 +63,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
 
 const JourneyDashboardView = <ChildEntity extends Identifiable>({
   vision = '',
-  hubNameId,
+  spaceNameId,
   challengeNameId,
   opportunityNameId,
   communityId = '',
@@ -101,21 +101,21 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   };
 
   const journeyLocation: JourneyLocation | undefined =
-    typeof hubNameId === 'undefined'
+    typeof spaceNameId === 'undefined'
       ? undefined
       : {
-          hubNameId,
+          spaceNameId,
           challengeNameId,
           opportunityNameId,
         };
 
   const showActivities = activities || activityLoading;
 
-  const isHub = journeyTypeName === 'hub';
-  const leadOrganizationsHeader = isHub
-    ? 'pages.hub.sections.dashboard.organization'
+  const isSpace = journeyTypeName === 'space';
+  const leadOrganizationsHeader = isSpace
+    ? 'pages.space.sections.dashboard.organization'
     : 'community.leading-organizations';
-  const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
+  const leadUsersHeader = isSpace ? 'community.host' : 'community.leads';
 
   const hasTopCallouts = (topCallouts ?? []).length > 0;
   const messageReceivers = useMemo(
@@ -166,7 +166,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           {/* TODO figure out the URL for references */}
           <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
         </PageContentBlock>
-        {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
+        {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
         {communityReadAccess && (
           <EntityDashboardContributorsSection
             memberUsers={memberUsers}
@@ -228,7 +228,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
         {entityReadAccess && renderChildEntityCard && childEntityTitle && (
           <PageContentBlock>
             <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
-            <ScrollableCardsLayout items={childEntities} deps={[hubNameId]}>
+            <ScrollableCardsLayout items={childEntities} deps={[spaceNameId]}>
               {renderChildEntityCard}
             </ScrollableCardsLayout>
             <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />

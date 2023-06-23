@@ -71,8 +71,8 @@ fragment CheckoutDetails on WhiteboardCheckout {
   }
 }
 
-query whiteboardTemplates($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query whiteboardTemplates($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id
@@ -127,8 +127,8 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
   }
 }
 
-query hubWhiteboardFromCallout($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query spaceWhiteboardFromCallout($spaceId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     collaboration {
       ...CalloutWithWhiteboard
@@ -136,8 +136,8 @@ query hubWhiteboardFromCallout($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $
   }
 }
 
-query hubWhiteboards($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query spaceWhiteboards($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     collaboration {
       ...CollaborationWithWhiteboardDetails
@@ -153,12 +153,12 @@ query whiteboardWithValue($whiteboardId: UUID!) {
 }
 
 query challengeWhiteboardFromCallout(
-  $hubId: UUID_NAMEID!
+  $spaceId: UUID_NAMEID!
   $challengeId: UUID_NAMEID!
   $calloutId: UUID_NAMEID!
   $whiteboardId: UUID_NAMEID!
 ) {
-  hub(ID: $hubId) {
+  space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
       id
@@ -170,12 +170,12 @@ query challengeWhiteboardFromCallout(
 }
 
 query opportunityWhiteboardFromCallout(
-  $hubId: UUID_NAMEID!
+  $spaceId: UUID_NAMEID!
   $opportunityId: UUID_NAMEID!
   $calloutId: UUID_NAMEID!
   $whiteboardId: UUID_NAMEID!
 ) {
-  hub(ID: $hubId) {
+  space(ID: $spaceId) {
     id
     opportunity(ID: $opportunityId) {
       id
@@ -186,8 +186,8 @@ query opportunityWhiteboardFromCallout(
   }
 }
 
-query hubTemplateWhiteboardValues($hubId: UUID_NAMEID!, $whiteboardId: UUID!) {
-  hub(ID: $hubId) {
+query spaceTemplateWhiteboardValues($spaceId: UUID_NAMEID!, $whiteboardId: UUID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id

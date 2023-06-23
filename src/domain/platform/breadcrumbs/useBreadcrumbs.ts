@@ -1,12 +1,12 @@
 import { ComponentType, useMemo } from 'react';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl, buildOpportunityUrl } from '../../../common/utils/urlBuilders';
 import {
   useChallengeNameQuery,
-  useHubNameQuery,
+  useSpaceNameQuery,
   useOpportunityNameQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { HubIcon } from '../../challenge/hub/icon/HubIcon';
+import { SpaceIcon } from '../../challenge/space/icon/SpaceIcon';
 import { ChallengeIcon } from '../../challenge/challenge/icon/ChallengeIcon';
 import { EntityTypeName } from '../constants/EntityTypeName';
 
@@ -18,63 +18,63 @@ export interface BreadcrumbsItem {
 }
 
 export const useBreadcrumbs = () => {
-  const { hubNameId, challengeNameId, opportunityNameId, postNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId, postNameId } = useUrlParams();
 
   const showOpportunity = false; // TODO: Never show opportunity for now.
 
-  const { data: _hub, loading: loadingHub } = useHubNameQuery({
+  const { data: _space, loading: loadingSpace } = useSpaceNameQuery({
     variables: {
-      hubId: hubNameId!,
+      spaceId: spaceNameId!,
     },
-    skip: !hubNameId,
+    skip: !spaceNameId,
   });
 
   const { data: _challenge, loading: loadingChallenge } = useChallengeNameQuery({
     variables: {
-      hubId: _hub?.hub.id || '',
+      spaceId: _space?.space.id || '',
       challengeId: challengeNameId!,
     },
-    skip: !_hub?.hub.id || !challengeNameId,
+    skip: !_space?.space.id || !challengeNameId,
   });
 
   const { data: _opportunity, loading: loadingOpportunity } = useOpportunityNameQuery({
     variables: {
-      hubId: _hub?.hub.id || '',
+      spaceId: _space?.space.id || '',
       opportunityId: opportunityNameId!,
     },
-    skip: !_hub?.hub.id || !opportunityNameId || !showOpportunity,
+    skip: !_space?.space.id || !opportunityNameId || !showOpportunity,
   });
 
   const loading =
-    (hubNameId && loadingHub) || (challengeNameId && loadingChallenge) || (showOpportunity && loadingOpportunity);
+    (spaceNameId && loadingSpace) || (challengeNameId && loadingChallenge) || (showOpportunity && loadingOpportunity);
 
   const breadcrumbs = useMemo(() => {
     const items: BreadcrumbsItem[] = [];
     if (!loading) {
-      // Hub breadcrumb - if we are watching a challenge or an post
-      if (hubNameId && (challengeNameId || postNameId)) {
+      // Space breadcrumb - if we are watching a challenge or an post
+      if (spaceNameId && (challengeNameId || postNameId)) {
         items.push({
-          title: _hub?.hub.profile.displayName || '',
-          icon: HubIcon,
-          url: buildHubUrl(hubNameId),
-          entity: 'hub',
+          title: _space?.space.profile.displayName || '',
+          icon: SpaceIcon,
+          url: buildSpaceUrl(spaceNameId),
+          entity: 'space',
         });
       }
       // Challenge breadcrumb - if we are watching an opportunity or an post in a challenge
-      if (hubNameId && challengeNameId && (opportunityNameId || postNameId)) {
+      if (spaceNameId && challengeNameId && (opportunityNameId || postNameId)) {
         items.push({
-          title: _challenge?.hub.challenge.profile.displayName || '',
+          title: _challenge?.space.challenge.profile.displayName || '',
           icon: ChallengeIcon,
-          url: buildChallengeUrl(hubNameId, challengeNameId),
+          url: buildChallengeUrl(spaceNameId, challengeNameId),
           entity: 'challenge',
         });
       }
       // Opportunity breadcrumb - if we are inside an opportunity and showOpportunity is true
-      if (hubNameId && challengeNameId && opportunityNameId && showOpportunity) {
+      if (spaceNameId && challengeNameId && opportunityNameId && showOpportunity) {
         items.push({
-          title: _opportunity?.hub.opportunity.profile.displayName || '',
+          title: _opportunity?.space.opportunity.profile.displayName || '',
           icon: ChallengeIcon, // TODO: We'll need an opportunity Icon if we want to show opportunity breadcrumb
-          url: buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId),
+          url: buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId),
           entity: 'opportunity',
         });
       }
@@ -82,14 +82,14 @@ export const useBreadcrumbs = () => {
     return items;
   }, [
     loading,
-    hubNameId,
+    spaceNameId,
     challengeNameId,
     opportunityNameId,
     showOpportunity,
     postNameId,
-    _challenge?.hub.challenge.profile.displayName,
-    _hub?.hub.profile.displayName,
-    _opportunity?.hub.opportunity.profile.displayName,
+    _challenge?.space.challenge.profile.displayName,
+    _space?.space.profile.displayName,
+    _opportunity?.space.opportunity.profile.displayName,
   ]);
 
   return {

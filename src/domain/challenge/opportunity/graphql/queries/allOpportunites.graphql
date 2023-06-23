@@ -1,5 +1,5 @@
-query allOpportunities($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query allOpportunities($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     opportunities {
       id

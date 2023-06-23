@@ -1,5 +1,5 @@
 export interface ContributionItem {
-  hubId: string;
+  spaceId: string;
   challengeId?: string;
   opportunityId?: string;
 }

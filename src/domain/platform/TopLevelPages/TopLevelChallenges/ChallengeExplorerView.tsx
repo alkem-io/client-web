@@ -25,7 +25,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
   loadingSearch,
 }) => {
   const { t } = useTranslation();
-  const [groupBy] = useState<ChallengeExplorerGroupByType>('hub');
+  const [groupBy] = useState<ChallengeExplorerGroupByType>('space');
 
   if (loading) return null;
 
@@ -48,24 +48,24 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
             />
           </Grid>
         )}
-        {/* PRIVATE: Other challenges within my hubs */}
+        {/* PRIVATE: Other challenges within my spaces */}
         {otherChallenges && otherChallenges.length > 0 && (
           <Grid item xs={12}>
             <ChallengeExplorerListView
               headerText={t('pages.challenge-explorer.other.title')}
               headerCounter={otherChallenges.length}
               challenges={otherChallenges}
-              enableFilterByHub
+              enableFilterBySpace
             />
           </Grid>
         )}
-        {/* PRIVATE: Header for the public hubs if user is logged in */}
+        {/* PRIVATE: Header for the public spaces if user is logged in */}
         {isAuthenticated && (
           <Grid item xs={12}>
             <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} isAuthenticated />
           </Grid>
         )}
-        {/* PUBLIC: Search challenges in public hubs/hubs that the user has access to: */}
+        {/* PUBLIC: Search challenges in public spaces/spaces that the user has access to: */}
         <Grid item xs={12}>
           <ChallengeExplorerSearchView
             challenges={searchResults}

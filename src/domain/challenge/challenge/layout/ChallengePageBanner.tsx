@@ -6,12 +6,12 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../platform/InnovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 
 const ChallengePageBanner: FC = () => {
-  const { challenge, loading, hubId } = useChallenge();
+  const { challenge, loading, spaceId } = useChallenge();
   const visual = getVisualByType(VisualName.BANNER, challenge?.profile?.visuals);
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
-    hubId,
-    journeyTypeName: 'hub',
+    spaceId,
+    journeyTypeName: 'space',
   });
 
   return (

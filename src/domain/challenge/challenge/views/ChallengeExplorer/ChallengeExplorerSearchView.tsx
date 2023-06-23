@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
-import { HubIcon } from '../../../hub/icon/HubIcon';
+import { SpaceIcon } from '../../../space/icon/SpaceIcon';
 import { SimpleChallengeWithSearchTerms } from '../../../../platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerContainer';
-import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl } from '../../../../../common/utils/urlBuilders';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -10,10 +10,10 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { Text } from '../../../../../core/ui/typography/components';
 import ChallengeCard from '../../ChallengeCard/ChallengeCard';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 
-export type ChallengeExplorerGroupByType = 'hub';
+export type ChallengeExplorerGroupByType = 'space';
 
 export interface ChallengeExplorerSearchViewProps {
   challenges: SimpleChallengeWithSearchTerms[] | undefined;
@@ -47,13 +47,13 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                   <PageContentBlockHeader
                     title={
                       <>
-                        <HubIcon sx={{ verticalAlign: 'bottom' }} /> {values[0].hubDisplayName}
+                        <SpaceIcon sx={{ verticalAlign: 'bottom' }} /> {values[0].spaceDisplayName}
                       </>
                     }
                   />
-                  <Text>{values[0].hubTagline}</Text>
-                  <ScrollableCardsLayout maxHeight={gutters(40)} items={values} cards={false}>
-                    {challenge => (
+                  <Text>{values[0].spaceTagline}</Text>
+                  <ScrollableCardsLayoutContainer maxHeight={gutters(40)}>
+                    {values.map(challenge => (
                       <ChallengeCard
                         challengeId={challenge.id}
                         challengeNameId={challenge.nameID}
@@ -62,14 +62,14 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                         tags={challenge.tags}
                         tagline={challenge.tagline}
                         vision={challenge.vision}
-                        journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                        hubDisplayName={challenge.hubDisplayName}
-                        hubUri={buildHubUrl(challenge.hubNameId)}
-                        hubVisibility={challenge.hubVisibility}
+                        journeyUri={buildChallengeUrl(challenge.spaceNameId, challenge.nameID)}
+                        spaceDisplayName={challenge.spaceDisplayName}
+                        spaceUri={buildSpaceUrl(challenge.spaceNameId)}
+                        spaceVisibility={challenge.spaceVisibility}
                         hideJoin
                       />
-                    )}
-                  </ScrollableCardsLayout>
+                    ))}
+                  </ScrollableCardsLayoutContainer>
                 </PageContentBlock>
               ))}
             </Gutters>
@@ -88,8 +88,8 @@ export default ChallengeExplorerSearchView;
 
 const getGroupKey = (groupBy: ChallengeExplorerGroupByType): keyof SimpleChallengeWithSearchTerms | undefined => {
   switch (groupBy) {
-    case 'hub':
-      return 'hubId';
+    case 'space':
+      return 'spaceId';
     default:
       return undefined;
   }

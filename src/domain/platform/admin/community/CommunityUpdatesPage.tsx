@@ -2,21 +2,21 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import { WithCommunity } from '../components/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import { CommunityUpdatesView } from '../../../community/community/views/CommunityUpdates/CommunityUpdatesView';
 
 interface CommunityUpdatesPageProps extends WithCommunity {}
 
 export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ communityId }) => {
-  const { hubId } = useHub();
+  const { spaceId } = useSpace();
 
-  if (!communityId || !hubId) {
+  if (!communityId || !spaceId) {
     return <Container maxWidth="xl">No community</Container>;
   }
 
   return (
     <Container maxWidth="xl">
-      <CommunityUpdatesContainer entities={{ hubId, communityId }}>
+      <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
         {({ messages, authors }, actions, loading) => (
           <CommunityUpdatesView
             entities={{ messages, authors }}

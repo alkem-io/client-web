@@ -4,7 +4,7 @@ import {
   useWhiteboardTemplateValueQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
-import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
 import WhiteboardPreview from '../../../whiteboard/WhiteboardPreview/WhiteboardPreview';
 import { CalloutTemplateProps } from './CalloutTemplateProps';
 import { TemplateListWithPreview } from './TemplateListWithPreview';
@@ -12,24 +12,24 @@ import { TemplateListWithPreview } from './TemplateListWithPreview';
 export interface CalloutWhiteboardTemplateProps extends CalloutTemplateProps {}
 
 const CalloutWhiteboardTemplate: FC<CalloutWhiteboardTemplateProps> = ({ callout, onChange }) => {
-  const { hubId } = useHub();
+  const { spaceId } = useSpace();
 
-  const { data: hubWhiteboardTemplates, loading: whiteboardTemplatesLoading } =
+  const { data: spaceWhiteboardTemplates, loading: whiteboardTemplatesLoading } =
     useWhiteboardTemplatesOnCalloutCreationQuery({
-      variables: { hubId },
+      variables: { spaceId },
       skip: callout.type !== CalloutType.Whiteboard,
     });
   const whiteboardTemplates =
-    hubWhiteboardTemplates?.hub?.templates?.whiteboardTemplates?.map(x => ({
+    spaceWhiteboardTemplates?.space?.templates?.whiteboardTemplates?.map(x => ({
       id: x.id,
       title: x.profile.displayName,
     })) ?? [];
 
   const { data: whiteboardTemplateData, loading: whiteboardTemplateValueLoading } = useWhiteboardTemplateValueQuery({
-    variables: { hubId, id: callout.templateId! },
+    variables: { spaceId, id: callout.templateId! },
     skip: callout.type !== CalloutType.Whiteboard || !callout.templateId,
   });
-  const value = whiteboardTemplateData?.hub?.templates?.whiteboardTemplate?.value ?? '';
+  const value = whiteboardTemplateData?.space?.templates?.whiteboardTemplate?.value ?? '';
 
   return (
     <TemplateListWithPreview

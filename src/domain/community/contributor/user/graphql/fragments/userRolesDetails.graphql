@@ -1,8 +1,8 @@
 fragment UserRolesDetails on ContributorRoles {
-  hubs {
+  spaces {
     id
     nameID
-    hubID
+    spaceID
     displayName
     roles
     visibility
@@ -40,7 +40,7 @@ fragment UserRolesDetails on ContributorRoles {
     communityID
     displayName
     state
-    hubID
+    spaceID
     challengeID
     opportunityID
   }

@@ -4,7 +4,7 @@ import { WithCommunity } from '../../components/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Community/CreateCommunityGroup';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../../core/routing/urlParams';
-import { HubGroupRoute } from '../../hub/routing/HubGroupRoute';
+import { SpaceGroupRoute } from '../../space/routing/SpaceGroupRoute';
 
 interface CommunityGroupsAdminRoutesProps extends WithCommunity {}
 
@@ -12,7 +12,7 @@ const CommunityGroupsAdminRoutes: FC<CommunityGroupsAdminRoutesProps> = ({ commu
   return (
     <Routes>
       <Route path="new" element={<CreateCommunityGroup communityId={communityId} />} />
-      <Route path={`:${nameOfUrl.groupId}/*`} element={<HubGroupRoute parentCommunityId={parentCommunityId} />} />
+      <Route path={`:${nameOfUrl.groupId}/*`} element={<SpaceGroupRoute parentCommunityId={parentCommunityId} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

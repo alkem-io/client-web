@@ -3,7 +3,7 @@ import TranslationKey from '../../../types/TranslationKey';
 
 const getJourneyChildrenTranslationKey = (type: JourneyTypeName): TranslationKey => {
   switch (type) {
-    case 'hub':
+    case 'space':
       return 'common.challenges';
     case 'challenge':
       return 'common.opportunities';

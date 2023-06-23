@@ -10,12 +10,12 @@ export interface PostSharePageProps {
 }
 
 const PostSharePage: FC<PostSharePageProps> = ({ onClose }) => {
-  const { hubNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
 
   return (
     <PostLayout currentSection={PostDialogSection.Share} onClose={onClose}>
       <PostDashboardContainer
-        hubNameId={hubNameId}
+        spaceNameId={spaceNameId}
         postNameId={postNameId}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}

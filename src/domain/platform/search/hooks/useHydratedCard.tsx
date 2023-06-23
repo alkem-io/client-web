@@ -1,7 +1,7 @@
 import {
   SearchResultPostFragment,
   SearchResultChallengeFragment,
-  SearchResultHubFragment,
+  SearchResultSpaceFragment,
   SearchResultOpportunityFragment,
   SearchResultOrganizationFragment,
   SearchResultUserFragment,
@@ -12,12 +12,12 @@ import {
   buildPostUrl,
   buildCalloutUrl,
   buildChallengeUrl,
-  buildHubUrl,
+  buildSpaceUrl,
   buildOpportunityUrl,
   buildOrganizationUrl,
   buildUserProfileUrl,
 } from '../../../../common/utils/urlBuilders';
-import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
+import { SearchChallengeCard, SearchSpaceCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
 import { RoleType } from '../../../community/contributor/user/constants/RoleType';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -26,11 +26,11 @@ import { SearchResultMetaType, SearchResultT } from '../SearchView';
 import { SearchContributionCardCard } from '../../../shared/components/search-cards/SearchContributionPostCard';
 import { OpportunityIcon } from '../../../challenge/opportunity/icon/OpportunityIcon';
 import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
-import { HubIcon } from '../../../challenge/hub/icon/HubIcon';
+import { SpaceIcon } from '../../../challenge/space/icon/SpaceIcon';
 import ContributingUserCard from '../../../community/contributor/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '../../../../core/ui/card/CardContent';
 import ContributingOrganizationCard from '../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '../../../challenge/common/HubChildJourneyCard/CardParentJourneySegment';
+import CardParentJourneySegment from '../../../challenge/common/SpaceChildJourneyCard/CardParentJourneySegment';
 import { CalloutIcon } from '../../../collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
@@ -92,29 +92,29 @@ const _hydrateOrganizationCard = (
   );
 };
 
-const _hydrateHubCard = (
-  data: SearchResultT<SearchResultHubFragment>,
+const _hydrateSpaceCard = (
+  data: SearchResultT<SearchResultSpaceFragment>,
   userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
 ) => {
-  if (!data?.hub) {
+  if (!data?.space) {
     return null;
   }
-  const hub = data.hub;
-  const tagline = hub.profile?.tagline || '';
-  const name = hub.profile.displayName;
-  const url = buildHubUrl(hub.nameID);
+  const space = data.space;
+  const tagline = space.profile?.tagline || '';
+  const name = space.profile.displayName;
+  const url = buildSpaceUrl(space.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
-  const vision = hub.context?.vision || '';
+  const vision = space.context?.vision || '';
 
-  const hubRoles = userRoles?.hubs.find(x => x.id === data.id);
+  const spaceRoles = userRoles?.spaces.find(x => x.id === data.id);
   const isMember =
-    hubRoles?.roles.find(x => x === RoleType.Lead) ||
-    hubRoles?.roles.find(x => x === RoleType.Host) ||
-    hubRoles?.roles.find(x => x === RoleType.Member);
+    spaceRoles?.roles.find(x => x === RoleType.Lead) ||
+    spaceRoles?.roles.find(x => x === RoleType.Host) ||
+    spaceRoles?.roles.find(x => x === RoleType.Member);
 
   return (
-    <SearchHubCard
-      banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
+    <SearchSpaceCard
+      banner={getVisualByType(VisualName.BANNERNARROW, space.profile.visuals)}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -122,8 +122,8 @@ const _hydrateHubCard = (
       tags={tags}
       matchedTerms
       vision={vision}
-      locked={!hub.authorization?.anonymousReadAccess}
-      hubVisibility={hub.visibility}
+      locked={!space.authorization?.anonymousReadAccess}
+      spaceVisibility={space.visibility}
     />
   );
 };
@@ -132,24 +132,24 @@ const useHydrateChallengeCard = (
   data: SearchResultT<SearchResultChallengeFragment> | undefined,
   userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
 ) => {
-  if (!data?.challenge || !data?.hub) {
+  if (!data?.challenge || !data?.space) {
     return null;
   }
   const challenge = data.challenge;
-  const containingHub = data.hub;
+  const containingSpace = data.space;
   const tagline = challenge.profile.tagline || '';
   const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
-  const hubId = containingHub.id;
-  const hubNameId = containingHub.nameID;
-  const hubDisplayName = containingHub.profile.displayName;
+  const spaceId = containingSpace.id;
+  const spaceNameId = containingSpace.nameID;
+  const spaceDisplayName = containingSpace.profile.displayName;
   const vision = challenge.context?.vision || '';
 
   const nameID = challenge.nameID;
 
-  const url = buildChallengeUrl(hubNameId, nameID);
+  const url = buildChallengeUrl(spaceNameId, nameID);
 
-  const challengeRoles = userRoles?.hubs.find(x => x.id === hubId)?.challenges.find(x => x.id === data?.id);
+  const challengeRoles = userRoles?.spaces.find(x => x.id === spaceId)?.challenges.find(x => x.id === data?.id);
 
   const isMember =
     challengeRoles?.roles.find(x => x === RoleType.Lead) || challengeRoles?.roles.find(x => x === RoleType.Member);
@@ -167,14 +167,14 @@ const useHydrateChallengeCard = (
       locked={!challenge.authorization?.anonymousReadAccess}
       parentSegment={
         <CardParentJourneySegment
-          iconComponent={HubIcon}
-          parentJourneyUri={buildHubUrl(hubNameId)}
-          locked={!containingHub.authorization?.anonymousReadAccess}
+          iconComponent={SpaceIcon}
+          parentJourneyUri={buildSpaceUrl(spaceNameId)}
+          locked={!containingSpace.authorization?.anonymousReadAccess}
         >
-          {hubDisplayName}
+          {spaceDisplayName}
         </CardParentJourneySegment>
       }
-      hubVisibility={containingHub.visibility}
+      spaceVisibility={containingSpace.visibility}
     />
   );
 };
@@ -188,20 +188,20 @@ const useHydrateOpportunityCard = (
   }
   const opportunity = data.opportunity;
   const containingChallenge = data.challenge;
-  const containingHub = data.hub;
+  const containingSpace = data.space;
   const tagline = opportunity.profile.tagline || '';
   const name = opportunity.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
   const challengeDisplayName = containingChallenge.profile.displayName;
-  const hubId = containingHub.id;
-  const hubNameID = containingHub.nameID;
+  const spaceId = containingSpace.id;
+  const spaceNameID = containingSpace.nameID;
   const nameID = opportunity.nameID;
   const vision = opportunity.context?.vision ?? '';
 
-  const url = buildOpportunityUrl(hubNameID, challengeNameId, nameID);
+  const url = buildOpportunityUrl(spaceNameID, challengeNameId, nameID);
 
-  const opportunityRoles = userRoles?.hubs.find(x => x.id === hubId)?.opportunities.find(x => x.id === data?.id);
+  const opportunityRoles = userRoles?.spaces.find(x => x.id === spaceId)?.opportunities.find(x => x.id === data?.id);
 
   const isMember =
     opportunityRoles?.roles.find(x => x === RoleType.Lead) || opportunityRoles?.roles.find(x => x === RoleType.Member);
@@ -220,13 +220,13 @@ const useHydrateOpportunityCard = (
       parentSegment={
         <CardParentJourneySegment
           iconComponent={ChallengeIcon}
-          parentJourneyUri={buildChallengeUrl(hubNameID, challengeNameId)}
+          parentJourneyUri={buildChallengeUrl(spaceNameID, challengeNameId)}
           locked={!containingChallenge.authorization?.anonymousReadAccess}
         >
           {challengeDisplayName}
         </CardParentJourneySegment>
       }
-      hubVisibility={containingHub.visibility}
+      spaceVisibility={containingSpace.visibility}
     />
   );
 };
@@ -237,21 +237,21 @@ const getContributionParentInformation = (data: SearchResultT<SearchResultPostFr
       icon: OpportunityIcon,
       displayName: data.opportunity?.profile.displayName,
       locked: !data.opportunity?.authorization?.anonymousReadAccess,
-      url: buildOpportunityUrl(data.hub.nameID, data.challenge?.nameID, data.opportunity?.nameID),
+      url: buildOpportunityUrl(data.space.nameID, data.challenge?.nameID, data.opportunity?.nameID),
     };
   } else if (data.challenge?.nameID) {
     return {
       icon: ChallengeIcon,
       displayName: data.challenge?.profile.displayName,
       locked: !data.challenge?.authorization?.anonymousReadAccess,
-      url: buildChallengeUrl(data.hub.nameID, data.challenge?.nameID),
+      url: buildChallengeUrl(data.space.nameID, data.challenge?.nameID),
     };
   } else {
     return {
-      icon: HubIcon,
-      displayName: data.hub.profile.displayName,
-      locked: !data.hub?.authorization?.anonymousReadAccess,
-      url: buildHubUrl(data.hub.nameID),
+      icon: SpaceIcon,
+      displayName: data.space.profile.displayName,
+      locked: !data.space?.authorization?.anonymousReadAccess,
+      url: buildSpaceUrl(data.space.nameID),
     };
   }
 };
@@ -263,7 +263,7 @@ const _hydrateContributionPost = (data: SearchResultT<SearchResultPostFragment> 
 
   const card = data.post;
   const url = buildPostUrl(data.callout.nameID, card.nameID, {
-    hubNameId: data.hub.nameID,
+    spaceNameId: data.space.nameID,
     challengeNameId: data.challenge?.nameID,
     opportunityNameId: data.opportunity?.nameID,
   });
@@ -284,7 +284,7 @@ const _hydrateContributionPost = (data: SearchResultT<SearchResultPostFragment> 
           <CardParentJourneySegment
             iconComponent={CalloutIcon}
             parentJourneyUri={buildCalloutUrl(data.callout.nameID, {
-              hubNameId: data.hub.nameID,
+              spaceNameId: data.space.nameID,
               challengeNameId: data.challenge?.nameID,
               opportunityNameId: data.opportunity?.nameID,
             })}
@@ -308,7 +308,7 @@ interface UseHydrateCardProvided {
   hydrateUserCard: HydratedCardGetter;
   hydrateOrganizationCard: HydratedCardGetter;
   hydrateContributionCard: HydratedCardGetter;
-  hydrateHubCard: HydratedCardGetter;
+  hydrateSpaceCard: HydratedCardGetter;
   hydrateChallengeCard: HydratedCardGetter;
   hydrateOpportunityCard: HydratedCardGetter;
 }
@@ -335,7 +335,7 @@ export const useHydrateCard = (result: SearchResultMetaType | undefined): UseHyd
   const hydrateContributionCard = () => _hydrateContributionPost(result as SearchResultT<SearchResultPostFragment>);
 
   // Journey cards:
-  const hydrateHubCard = () => _hydrateHubCard(result as SearchResultT<SearchResultHubFragment>, userRoles);
+  const hydrateSpaceCard = () => _hydrateSpaceCard(result as SearchResultT<SearchResultSpaceFragment>, userRoles);
 
   const hydrateChallengeCardResult = useHydrateChallengeCard(
     result as SearchResultT<SearchResultChallengeFragment>,
@@ -350,7 +350,7 @@ export const useHydrateCard = (result: SearchResultMetaType | undefined): UseHyd
   const hydrateOpportunityCard = () => hydrateOpportunityCardResult;
 
   return {
-    hydrateHubCard,
+    hydrateSpaceCard,
     hydrateChallengeCard,
     hydrateContributionCard,
     hydrateOpportunityCard,

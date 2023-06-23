@@ -28,11 +28,11 @@ export const HIGHLIGHT_PARAM_NAME = 'highlight';
 
 export interface CalendarDialogProps {
   open: boolean;
-  hubNameId: string | undefined;
+  spaceNameId: string | undefined;
   onClose: () => void;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({ open, spaceNameId, onClose }) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useUrlParams();
   const navigate = useNavigate();
@@ -85,9 +85,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
     >
-      {!hubNameId && <Skeleton variant="rectangular" />}
-      {hubNameId && (
-        <CalendarEventsContainer hubId={hubNameId}>
+      {!spaceNameId && <Skeleton variant="rectangular" />}
+      {spaceNameId && (
+        <CalendarEventsContainer spaceId={spaceNameId}>
           {(
             { events, privileges },
             { createEvent, updateEvent, deleteEvent },
@@ -159,7 +159,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
               };
 
               return (
-                <CalendarEventDetailContainer hubNameId={hubNameId} eventId={event.id}>
+                <CalendarEventDetailContainer spaceNameId={spaceNameId} eventId={event.id}>
                   {({ event: eventDetail }) => (
                     <CalendarEventForm
                       dialogTitle={t('calendar.edit-event')}
@@ -196,7 +196,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                 const event = events.find(event => event.nameID === calendarEventNameId);
                 return (
                   <CalendarEventDetail
-                    hubNameId={hubNameId}
+                    spaceNameId={spaceNameId}
                     eventId={event?.id}
                     onClose={onClose}
                     canEdit={privileges.canEditEvents}

@@ -8,7 +8,7 @@ import {
   SearchResult,
   SearchResultPostFragment,
   SearchResultChallengeFragment,
-  SearchResultHubFragment,
+  SearchResultSpaceFragment,
   SearchResultOpportunityFragment,
   SearchResultOrganizationFragment,
   SearchResultType,
@@ -35,19 +35,19 @@ export type SearchResultMetaType = SearchResultT<
   | SearchResultUserFragment
   | SearchResultOrganizationFragment
   | SearchResultPostFragment
-  | SearchResultHubFragment
+  | SearchResultSpaceFragment
   | SearchResultChallengeFragment
   | SearchResultOpportunityFragment
 >;
 
 interface SearchViewProps {
   searchRoute: string;
-  hubId?: string;
+  spaceId?: string;
   journeyFilterConfig: FilterConfig;
   journeyFilterTitle: ReactNode;
 }
 
-const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, hubId }: SearchViewProps) => {
+const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spaceId }: SearchViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
@@ -102,7 +102,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, hubI
         terms: termsFromUrl,
         tagsetNames,
         typesFilter: filters,
-        searchInHubFilter: hubId,
+        searchInSpaceFilter: spaceId,
       },
     },
     fetchPolicy: 'no-cache',
@@ -115,7 +115,9 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, hubI
     () => [
       results?.filter(
         ({ type }) =>
-          type === SearchResultType.Hub || type === SearchResultType.Challenge || type === SearchResultType.Opportunity
+          type === SearchResultType.Space ||
+          type === SearchResultType.Challenge ||
+          type === SearchResultType.Opportunity
       ),
       results?.filter(
         ({ type }) =>

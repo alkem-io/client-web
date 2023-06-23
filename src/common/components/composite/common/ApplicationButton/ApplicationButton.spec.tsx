@@ -133,7 +133,7 @@ describe('ApplicationButton component', () => {
       onJoin: () => void 0,
       isMember: false,
       canApplyToCommunity: true,
-      applyUrl: 'hub1/apply',
+      applyUrl: 'space1/apply',
     };
 
     render(
@@ -148,7 +148,7 @@ describe('ApplicationButton component', () => {
     expect(button).toBeInTheDocument();
     expect(button).toBeEnabled();
     expect(button).toHaveTextContent('Apply');
-    expect(button['href']).toContain('hub1/apply');
+    expect(button['href']).toContain('space1/apply');
   });
 
   test('isParentMember & CANT apply & CANT join', () => {

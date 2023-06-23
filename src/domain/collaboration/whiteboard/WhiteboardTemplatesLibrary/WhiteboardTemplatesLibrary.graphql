@@ -1,5 +1,5 @@
-query HubWhiteboardTemplatesLibrary($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query SpaceWhiteboardTemplatesLibrary($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id
@@ -17,8 +17,8 @@ query HubWhiteboardTemplatesLibrary($hubId: UUID_NAMEID!) {
   }
 }
 
-query HubWhiteboardTemplateValue($hubId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-  hub(ID: $hubId) {
+query SpaceWhiteboardTemplateValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id

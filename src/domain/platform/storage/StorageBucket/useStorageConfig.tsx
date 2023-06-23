@@ -67,9 +67,9 @@ export interface StorageConfigProvided {
 }
 
 const requiredIds: Record<JourneyTypeName, (keyof JourneyLocation)[]> = {
-  hub: ['hubNameId'],
-  challenge: ['hubNameId', 'challengeNameId'],
-  opportunity: ['hubNameId', 'opportunityNameId'],
+  space: ['spaceNameId'],
+  challenge: ['spaceNameId', 'challengeNameId'],
+  opportunity: ['spaceNameId', 'opportunityNameId'],
 };
 
 const isEveryJourneyIdPresent = (journeyLocation: JourneyLocation, journeyTypeName: JourneyTypeName | undefined) => {
@@ -82,10 +82,10 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
   const journeyOptions = options as UseStorageConfigOptionsJourney;
   const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
     variables: {
-      hubNameId: journeyOptions.hubNameId,
+      spaceNameId: journeyOptions.spaceNameId,
       challengeNameId: journeyOptions.challengeNameId,
       opportunityNameId: journeyOptions.opportunityNameId,
-      includeHub: journeyTypeName === 'hub',
+      includeSpace: journeyTypeName === 'space',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
@@ -96,10 +96,10 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
   const { data: calloutStorageConfigData } = useCalloutStorageConfigQuery({
     variables: {
       calloutId: calloutOptions.calloutId,
-      hubNameId: calloutOptions.hubNameId,
+      spaceNameId: calloutOptions.spaceNameId,
       challengeNameId: calloutOptions.challengeNameId,
       opportunityNameId: calloutOptions.opportunityNameId,
-      includeHub: journeyTypeName === 'hub',
+      includeSpace: journeyTypeName === 'space',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
@@ -111,10 +111,10 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     variables: {
       postId: postOptions.postId!, // ensured by skip
       calloutId: postOptions.calloutId,
-      hubNameId: postOptions.hubNameId,
+      spaceNameId: postOptions.spaceNameId,
       challengeNameId: postOptions.challengeNameId,
       opportunityNameId: postOptions.opportunityNameId,
-      includeHub: journeyTypeName === 'hub',
+      includeSpace: journeyTypeName === 'space',
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
@@ -144,22 +144,22 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
   });
 
   const journey =
-    journeyStorageConfigData?.hub.opportunity ??
-    journeyStorageConfigData?.hub.challenge ??
-    journeyStorageConfigData?.hub;
+    journeyStorageConfigData?.space.opportunity ??
+    journeyStorageConfigData?.space.challenge ??
+    journeyStorageConfigData?.space;
 
   const [callout] =
     (
-      calloutStorageConfigData?.hub.opportunity?.collaboration ??
-      calloutStorageConfigData?.hub.challenge?.collaboration ??
-      calloutStorageConfigData?.hub.collaboration
+      calloutStorageConfigData?.space.opportunity?.collaboration ??
+      calloutStorageConfigData?.space.challenge?.collaboration ??
+      calloutStorageConfigData?.space.collaboration
     )?.callouts ?? [];
 
   const [post] =
     (
-      postStorageConfigData?.hub.opportunity?.collaboration ??
-      postStorageConfigData?.hub.challenge?.collaboration ??
-      postStorageConfigData?.hub.collaboration
+      postStorageConfigData?.space.opportunity?.collaboration ??
+      postStorageConfigData?.space.challenge?.collaboration ??
+      postStorageConfigData?.space.collaboration
     )?.callouts?.[0]?.posts ?? [];
 
   const { profile } =

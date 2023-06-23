@@ -14,7 +14,7 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.opportunity-created');
   const url = buildOpportunityUrl(
-    props.journeyLocation.hubNameId,
+    props.journeyLocation.spaceNameId,
     props.journeyLocation.challengeNameId!,
     props.opportunity.nameID!
   );

@@ -1,6 +1,0 @@
-mutation deleteHub($input: DeleteHubInput!) {
-  deleteHub(deleteData: $input) {
-    id
-    nameID
-  }
-}

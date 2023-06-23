@@ -1,12 +1,12 @@
 query CommunityApplicationForm(
-  $hubId: UUID_NAMEID!
+  $spaceId: UUID_NAMEID!
   $challengeId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
-  $isHub: Boolean = false
+  $isSpace: Boolean = false
   $isChallenge: Boolean = false
 ) {
-  hub(ID: $hubId) {
+  space(ID: $spaceId) {
     id
-    ... on Hub @include(if: $isHub) {
+    ... on Space @include(if: $isSpace) {
       community {
         id
         applicationForm {
@@ -14,7 +14,7 @@ query CommunityApplicationForm(
         }
       }
     }
-    ... on Hub @include(if: $isChallenge) {
+    ... on Space @include(if: $isChallenge) {
       challenge(ID: $challengeId) {
         community {
           id

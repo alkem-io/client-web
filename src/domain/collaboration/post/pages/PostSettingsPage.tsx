@@ -31,7 +31,7 @@ export interface PostSettingsPageProps {
 
 const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose }) => {
   const { t } = useTranslation();
-  const { hubNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
   const navigate = useNavigate();
 
@@ -54,7 +54,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const { entities, state, actions } = usePostSettings({
     postNameId,
-    hubNameId,
+    spaceNameId,
     challengeNameId,
     opportunityNameId,
     calloutNameId,
@@ -76,7 +76,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== entities.parentCallout?.id;
 
   const { callouts, refetchCallouts } = useCallouts({
-    hubNameId,
+    spaceNameId,
     challengeNameId,
     opportunityNameId,
   });
@@ -128,7 +128,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       const targetCalloutNameId = data!.movePostToCallout.callout!.nameID;
       const postNameId = data!.movePostToCallout.nameID;
       const postURL = buildPostUrl(targetCalloutNameId, postNameId, {
-        hubNameId,
+        spaceNameId,
         challengeNameId,
         opportunityNameId,
       });
@@ -144,7 +144,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
         postId={postNameId}
         calloutId={calloutNameId}
         journeyTypeName={journeyTypeName}
-        hubNameId={hubNameId}
+        spaceNameId={spaceNameId}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
       >

@@ -9,18 +9,18 @@ import {
 import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
-import { HubVisibility, SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility, SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { SearchResultT } from '../../search/SearchView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export type SimpleChallenge = {
   id: string;
   nameID: string;
-  hubId: string;
-  hubNameId: string;
-  hubDisplayName: string;
-  hubTagline: string;
-  hubVisibility: HubVisibility;
+  spaceId: string;
+  spaceNameId: string;
+  spaceDisplayName: string;
+  spaceTagline: string;
+  spaceVisibility: SpaceVisibility;
   displayName: string;
   tagline: string;
   banner?: {
@@ -36,15 +36,15 @@ export type SimpleChallengeWithSearchTerms = SimpleChallenge & { matchedTerms: s
 
 export const simpleChallengeValueGetter = (c: SimpleChallenge): ValueType => ({
   id: c.id,
-  values: [c.displayName, c.tagline, c.hubDisplayName, ...c.tags],
+  values: [c.displayName, c.tagline, c.spaceDisplayName, ...c.tags],
 });
 
 export const simpleChallengeTagsValueGetter = (c: SimpleChallenge): string[] => c.tags;
 
-export const simpleChallengeHubDataGetter = (c: SimpleChallenge) => ({
-  id: c.hubId,
-  nameId: c.hubNameId,
-  displayName: c.hubDisplayName,
+export const simpleChallengeSpaceDataGetter = (c: SimpleChallenge) => ({
+  id: c.spaceId,
+  nameId: c.spaceNameId,
+  displayName: c.spaceDisplayName,
 });
 
 export interface ChallengeExplorerContainerEntities {
@@ -87,32 +87,34 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     skip: !isAuthenticated || !userMetadata?.user?.id,
   });
 
-  const hubIDs = userChallenges?.rolesUser.hubs.map(hub => hub.id) || [];
-  const myChallengesIDs = userChallenges?.rolesUser.hubs.flatMap(hub => hub.challenges.map(challenge => challenge.id));
+  const spaceIDs = userChallenges?.rolesUser.spaces.map(space => space.id) || [];
+  const myChallengesIDs = userChallenges?.rolesUser.spaces.flatMap(space =>
+    space.challenges.map(challenge => challenge.id)
+  );
   const challengeRoles =
-    userChallenges?.rolesUser.hubs.flatMap(hub =>
-      hub.challenges.map(challenge => ({ id: challenge.id, roles: challenge.roles }))
+    userChallenges?.rolesUser.spaces.flatMap(space =>
+      space.challenges.map(challenge => ({ id: challenge.id, roles: challenge.roles }))
     ) || [];
 
   const { data: challengeData, loading: loadingChallengeData } = useChallengeExplorerDataQuery({
     variables: {
-      hubIDs,
+      spaceIDs,
     },
-    skip: !hubIDs?.length,
+    skip: !spaceIDs?.length,
   });
 
-  // With both the userChallenges loaded from the roles query and the challengeData loaded from a hubs query
+  // With both the userChallenges loaded from the roles query and the challengeData loaded from a spaces query
   // build the output data arrays:
-  const allChallengesInMyHubs: SimpleChallenge[] | undefined = challengeData?.hubs?.flatMap(
-    hub =>
-      hub.challenges?.map<SimpleChallenge>(ch => ({
+  const allChallengesInMySpaces: SimpleChallenge[] | undefined = challengeData?.spaces?.flatMap(
+    space =>
+      space.challenges?.map<SimpleChallenge>(ch => ({
         id: ch.id,
         nameID: ch.nameID,
-        hubId: hub.id,
-        hubNameId: hub.nameID,
-        hubDisplayName: hub.profile.displayName,
-        hubVisibility: hub.visibility,
-        hubTagline: hub.profile.tagline || '',
+        spaceId: space.id,
+        spaceNameId: space.nameID,
+        spaceDisplayName: space.profile.displayName,
+        spaceVisibility: space.visibility,
+        spaceTagline: space.profile.tagline || '',
         displayName: ch.profile.displayName,
         banner: getVisualByType(VisualName.BANNERNARROW, ch.profile.visuals),
         tagline: ch.profile.tagline || '',
@@ -122,8 +124,8 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
       })) || []
   );
 
-  const myChallenges = allChallengesInMyHubs?.filter(ch => myChallengesIDs?.includes(ch.id));
-  const otherChallenges = allChallengesInMyHubs?.filter(ch => !myChallengesIDs?.includes(ch.id));
+  const myChallenges = allChallengesInMySpaces?.filter(ch => myChallengesIDs?.includes(ch.id));
+  const otherChallenges = allChallengesInMySpaces?.filter(ch => !myChallengesIDs?.includes(ch.id));
 
   // PUBLIC: Search for challenges
   const { data: rawSearchResults, loading: loadingSearchResults } = useChallengeExplorerSearchQuery({
@@ -142,15 +144,15 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     rawSearchResults?.search?.journeyResults.flatMap(result => {
       const entry = result as SearchResultT<SearchResultChallengeFragment>;
       const ch = entry.challenge;
-      const hub = entry.hub;
+      const space = entry.space;
       return {
         id: ch.id,
         nameID: ch.nameID,
-        hubId: hub.id,
-        hubNameId: hub.nameID,
-        hubDisplayName: hub.profile.displayName,
-        hubTagline: hub.profile.tagline || '',
-        hubVisibility: hub.visibility,
+        spaceId: space.id,
+        spaceNameId: space.nameID,
+        spaceDisplayName: space.profile.displayName,
+        spaceTagline: space.profile.tagline || '',
+        spaceVisibility: space.visibility,
         displayName: ch.profile.displayName,
         banner: getVisualByType(VisualName.BANNERNARROW, ch.profile.visuals),
         tagline: ch.profile.tagline || '',

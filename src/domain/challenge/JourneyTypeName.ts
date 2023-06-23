@@ -1,1 +1,1 @@
-export type JourneyTypeName = 'hub' | 'challenge' | 'opportunity';
+export type JourneyTypeName = 'space' | 'challenge' | 'opportunity';

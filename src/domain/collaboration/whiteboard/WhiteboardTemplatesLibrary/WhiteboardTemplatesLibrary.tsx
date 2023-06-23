@@ -2,8 +2,8 @@ import { compact } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useHubWhiteboardTemplateValueLazyQuery,
-  useHubWhiteboardTemplatesLibraryLazyQuery,
+  useSpaceWhiteboardTemplateValueLazyQuery,
+  useSpaceWhiteboardTemplatesLibraryLazyQuery,
   usePlatformWhiteboardTemplateValueLazyQuery,
   usePlatformWhiteboardTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -34,41 +34,42 @@ const applyFilter = (filter: string[], templates: WhiteboardTemplate[] | undefin
 
 const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSelectTemplate }) => {
   const { t } = useTranslation();
-  const { hubNameId } = useUrlParams();
+  const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
 
-  // Hub Templates:
-  const [fetchTemplatesFromHub, { data: hubData, loading: loadingTemplatesFromHub }] =
-    useHubWhiteboardTemplatesLibraryLazyQuery({
+  // Space Templates:
+  const [fetchTemplatesFromSpace, { data: spaceData, loading: loadingTemplatesFromSpace }] =
+    useSpaceWhiteboardTemplatesLibraryLazyQuery({
       variables: {
-        hubId: hubNameId!,
+        spaceId: spaceNameId!,
       },
     });
 
-  const [fetchTemplateValueHub, { loading: loadingTemplateValueFromHub }] = useHubWhiteboardTemplateValueLazyQuery();
+  const [fetchTemplateValueSpace, { loading: loadingTemplateValueFromSpace }] =
+    useSpaceWhiteboardTemplateValueLazyQuery();
 
-  const templatesFromHub = useMemo(
+  const templatesFromSpace = useMemo(
     () =>
       applyFilter(
         filter,
-        hubData?.hub.templates?.whiteboardTemplates.map<WhiteboardTemplate>(template =>
-          whiteboardTemplateMapper(template, hubData?.hub.host?.profile)
+        spaceData?.space.templates?.whiteboardTemplates.map<WhiteboardTemplate>(template =>
+          whiteboardTemplateMapper(template, spaceData?.space.host?.profile)
         )
       ),
-    [hubData, filter]
+    [spaceData, filter]
   );
 
-  const fetchTemplateFromHubValue = async (template: WhiteboardTemplate) => {
-    const { data } = await fetchTemplateValueHub({
+  const fetchTemplateFromSpaceValue = async (template: WhiteboardTemplate) => {
+    const { data } = await fetchTemplateValueSpace({
       variables: {
-        hubId: hubNameId!,
+        spaceId: spaceNameId!,
         whiteboardTemplateId: template.id,
       },
     });
-    const templateValue = data?.hub.templates?.whiteboardTemplate;
+    const templateValue = data?.space.templates?.whiteboardTemplate;
     if (templateValue) {
       return {
-        ...whiteboardTemplateMapper(templateValue, hubData?.hub.host?.profile),
+        ...whiteboardTemplateMapper(templateValue, spaceData?.space.host?.profile),
         value: templateValue.value,
       };
     }
@@ -121,12 +122,12 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
       templatePreviewComponent={WhiteboardTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}
-      fetchHubTemplatesOnLoad={Boolean(hubNameId)}
-      fetchTemplatesFromHub={fetchTemplatesFromHub}
-      templatesFromHub={templatesFromHub}
-      loadingTemplatesFromHub={loadingTemplatesFromHub}
-      loadingTemplateValueFromHub={loadingTemplateValueFromHub}
-      fetchTemplateFromHubValue={fetchTemplateFromHubValue}
+      fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
+      fetchTemplatesFromSpace={fetchTemplatesFromSpace}
+      templatesFromSpace={templatesFromSpace}
+      loadingTemplatesFromSpace={loadingTemplatesFromSpace}
+      loadingTemplateValueFromSpace={loadingTemplateValueFromSpace}
+      fetchTemplateFromSpaceValue={fetchTemplateFromSpaceValue}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}

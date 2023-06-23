@@ -1,23 +1,25 @@
 import React, { ReactNode } from 'react';
-import HubChildJourneyCard, { HubChildJourneyCardProps } from '../../common/HubChildJourneyCard/HubChildJourneyCard';
+import SpaceChildJourneyCard, {
+  SpaceChildJourneyCardProps,
+} from '../../common/SpaceChildJourneyCard/SpaceChildJourneyCard';
 import { ChallengeIcon } from '../icon/ChallengeIcon';
-import CardParentJourneySegment from '../../common/HubChildJourneyCard/CardParentJourneySegment';
-import { HubIcon } from '../../hub/icon/HubIcon';
+import CardParentJourneySegment from '../../common/SpaceChildJourneyCard/CardParentJourneySegment';
+import { SpaceIcon } from '../../space/icon/SpaceIcon';
 import { useUserContext } from '../../../community/contributor/user';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
 import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';
-import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
 import { useTranslation } from 'react-i18next';
 
 interface ChallengeCardProps
-  extends Omit<HubChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
+  extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
   challengeId?: string;
   challengeNameId?: string;
-  hubUri?: string;
-  hubDisplayName?: ReactNode;
-  hubVisibility?: HubVisibility;
+  spaceUri?: string;
+  spaceDisplayName?: ReactNode;
+  spaceVisibility?: SpaceVisibility;
   innovationFlowState?: string;
   private?: boolean;
   privateParent?: boolean;
@@ -27,9 +29,9 @@ interface ChallengeCardProps
 const ChallengeCard = ({
   challengeId,
   challengeNameId,
-  hubDisplayName,
-  hubUri,
-  hubVisibility,
+  spaceDisplayName,
+  spaceUri,
+  spaceVisibility,
   hideJoin = false,
   ...props
 }: ChallengeCardProps) => {
@@ -38,19 +40,19 @@ const ChallengeCard = ({
 
   const isMember = challengeId ? user?.ofChallenge(challengeId) : undefined;
   const ribbon =
-    hubVisibility && hubVisibility !== HubVisibility.Active ? (
-      <CardRibbon text={t(`common.enums.hub-visibility.${hubVisibility}` as const)} />
+    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 
   return (
-    <HubChildJourneyCard
+    <SpaceChildJourneyCard
       iconComponent={ChallengeIcon}
       member={isMember}
       parentSegment={
-        hubUri &&
-        hubDisplayName && (
-          <CardParentJourneySegment iconComponent={HubIcon} parentJourneyUri={hubUri}>
-            {hubDisplayName}
+        spaceUri &&
+        spaceDisplayName && (
+          <CardParentJourneySegment iconComponent={SpaceIcon} parentJourneyUri={spaceUri}>
+            {spaceDisplayName}
           </CardParentJourneySegment>
         )
       }

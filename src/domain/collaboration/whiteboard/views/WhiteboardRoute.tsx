@@ -10,7 +10,7 @@ export interface WhiteboardRouteProps {
 }
 
 const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyTypeName }) => {
-  const { calloutNameId, whiteboardNameId, hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { calloutNameId, whiteboardNameId, spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   if (!calloutNameId) {
     throw new Error('Must be within a Callout');
@@ -20,8 +20,8 @@ const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyType
     throw new Error('Must be within a Whiteboard.');
   }
 
-  if (!hubNameId) {
-    throw new Error('Must be within a Hub.');
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space.');
   }
 
   return (
@@ -32,7 +32,7 @@ const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyType
           <WhiteboardsView
             whiteboardNameId={whiteboardNameId}
             calloutNameId={calloutNameId}
-            hubNameId={hubNameId}
+            spaceNameId={spaceNameId}
             challengeNameId={challengeNameId}
             opportunityNameId={opportunityNameId}
             parentUrl={parentPagePath}

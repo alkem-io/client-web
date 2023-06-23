@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import {
   useCreateWhiteboardTemplateMutation,
   useDeleteWhiteboardTemplateMutation,
-  useHubTemplatesAdminWhiteboardTemplateWithValueLazyQuery,
+  useSpaceTemplatesAdminWhiteboardTemplateWithValueLazyQuery,
   useInnovationPackWhiteboardTemplateWithValueLazyQuery,
   useUpdateWhiteboardTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -29,7 +29,7 @@ import {
 import { CreateWhiteboardTemplateMutation } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface AdminWhiteboardTemplatesSectionProps {
-  whiteboardTemplatesLocation: 'hub' | 'platform';
+  whiteboardTemplatesLocation: 'space' | 'platform';
   templateId: string | undefined;
   templatesSetId: string | undefined;
   templates: AdminWhiteboardTemplateFragment[] | undefined;
@@ -48,11 +48,11 @@ const AdminWhiteboardTemplatesSection = ({
   ...props
 }: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
-  const { hubNameId, innovationPackNameId } = useUrlParams();
+  const { spaceNameId, innovationPackNameId } = useUrlParams();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
 
-  const [fetchWhiteboardTemplateFromHubValue, { data: dataFromHub }] =
-    useHubTemplatesAdminWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardTemplateFromSpaceValue, { data: dataFromSpace }] =
+    useSpaceTemplatesAdminWhiteboardTemplateWithValueLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
 
@@ -63,27 +63,29 @@ const AdminWhiteboardTemplatesSection = ({
 
   const getTemplateValue = useCallback(
     (template: AdminWhiteboardTemplateFragment) => {
-      if (whiteboardTemplatesLocation === 'hub' && hubNameId) {
-        fetchWhiteboardTemplateFromHubValue({ variables: { hubId: hubNameId, whiteboardTemplateId: template.id } });
+      if (whiteboardTemplatesLocation === 'space' && spaceNameId) {
+        fetchWhiteboardTemplateFromSpaceValue({
+          variables: { spaceId: spaceNameId, whiteboardTemplateId: template.id },
+        });
       } else if (whiteboardTemplatesLocation === 'platform' && innovationPackNameId) {
         fetchWhiteboardTemplateFromPlatformValue({
           variables: { innovationPackId: innovationPackNameId, whiteboardTemplateId: template.id },
         });
       }
     },
-    [hubNameId, innovationPackNameId, fetchWhiteboardTemplateFromHubValue, fetchWhiteboardTemplateFromPlatformValue]
+    [spaceNameId, innovationPackNameId, fetchWhiteboardTemplateFromSpaceValue, fetchWhiteboardTemplateFromPlatformValue]
   );
 
   const getWhiteboardValue = () => {
     switch (whiteboardTemplatesLocation) {
-      case 'hub':
-        return dataFromHub?.hub.templates?.whiteboardTemplate;
+      case 'space':
+        return dataFromSpace?.space.templates?.whiteboardTemplate;
       case 'platform':
         return dataFromPlatform?.platform.library.innovationPack?.templates?.whiteboardTemplate;
     }
   };
 
-  // Importing only makes sense on hub templates, not on platform templates:
+  // Importing only makes sense on space templates, not on platform templates:
   const [fetchInnovationPackWhiteboardValue, { data: importedWhiteboardValue }] =
     useInnovationPackWhiteboardTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 

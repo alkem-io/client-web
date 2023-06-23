@@ -3,7 +3,7 @@ import ChallengeSettingsLayout from './ChallengeSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import useChallengeApplications from './providers/useChallengeApplications';
@@ -30,7 +30,7 @@ import { Text } from '../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 
 const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { hubId } = useHub();
+  const { spaceId } = useSpace();
   const { challenge, challengeId } = useChallenge();
   const { t } = useTranslation();
 
@@ -39,29 +39,29 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../
   const { applications, loading: isLoadingApplications } = useChallengeApplications();
 
   const leadingOrganizationsProps = useChallengeLeadOrganizationAssignment({
-    hubId,
+    spaceId,
     challengeId,
   });
 
   const memberOrganizationsProps = useChallengeMemberOrganizationAssignment({
-    hubId,
+    spaceId,
     challengeId,
   });
 
   const memberUsersProps = useCommunityUserAssignment({
     memberType: 'member',
     variables: {
-      hubId,
+      spaceId,
       challengeId,
     },
     existingUsersOptions: {
       useQuery: useChallengeCommunityMembersQuery,
-      readCommunity: data => data?.hub.challenge.community,
+      readCommunity: data => data?.space.challenge.community,
       refetchQuery: refetchChallengeCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useChallengeAvailableMemberUsersLazyQuery,
-      readUsers: data => data.hub.challenge.community?.availableMemberUsers,
+      readUsers: data => data.space.challenge.community?.availableMemberUsers,
       refetchQuery: refetchChallengeAvailableMemberUsersQuery,
     },
   });
@@ -69,17 +69,17 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../
   const leadUsersProps = useCommunityUserAssignment({
     memberType: 'lead',
     variables: {
-      hubId,
+      spaceId,
       challengeId,
     },
     existingUsersOptions: {
       useQuery: useChallengeCommunityMembersQuery,
-      readCommunity: data => data?.hub.challenge.community,
+      readCommunity: data => data?.space.challenge.community,
       refetchQuery: refetchChallengeCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useChallengeAvailableLeadUsersLazyQuery,
-      readUsers: data => data.hub.challenge.community?.availableLeadUsers,
+      readUsers: data => data.space.challenge.community?.availableLeadUsers,
       refetchQuery: refetchChallengeAvailableLeadUsersQuery,
     },
   });
@@ -98,7 +98,7 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../
         </EditCommunityMembersSection>
         {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
         {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
-        <ChallengeCommunityAdminMembershipPreferencesSection hubId={hubId} challengeId={challengeId} />
+        <ChallengeCommunityAdminMembershipPreferencesSection spaceId={spaceId} challengeId={challengeId} />
 
         <DashboardGenericSection
           headerText={t('community.application-form.title')}
@@ -108,7 +108,7 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../
             </Text>
           }
         >
-          <CommunityApplicationForm hubId={hubId} challengeId={challengeId} />
+          <CommunityApplicationForm spaceId={spaceId} challengeId={challengeId} />
         </DashboardGenericSection>
       </Gutters>
     </ChallengeSettingsLayout>

@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useUserContext } from '../../../community/contributor/user';
-import { useHub } from '../../hub/HubContext/useHub';
+import { useSpace } from '../../space/SpaceContext/useSpace';
 import { useChallenge } from '../hooks/useChallenge';
 import {
   useChallengeDashboardReferencesQuery,
@@ -14,7 +14,7 @@ import {
   AuthorizationPrivilege,
   ChallengeProfileFragment,
   DashboardTopCalloutFragment,
-  HubVisibility,
+  SpaceVisibility,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
@@ -35,10 +35,10 @@ import { ActivityLogResultType } from '../../../shared/components/ActivityLog/Ac
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
-  hubId: string;
-  hubNameId: string;
-  hubDisplayName: string;
-  hubVisibility: HubVisibility;
+  spaceId: string;
+  spaceNameId: string;
+  spaceDisplayName: string;
+  spaceVisibility: SpaceVisibility;
   challenge?: ChallengeProfileFragment;
   opportunitiesCount: number | undefined;
   posts: PostFragmentWithCallout[];
@@ -74,26 +74,26 @@ const NO_PRIVILEGES = [];
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { user, isAuthenticated } = useUserContext();
-  const { loading: loadingHubContext, ...hub } = useHub();
-  const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
+  const { loading: loadingSpaceContext, ...space } = useSpace();
+  const { spaceId, spaceNameId, challengeId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       challengeId: challengeNameId,
     },
   });
 
-  const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
+  const collaborationID = _challenge?.space?.challenge?.collaboration?.id;
 
-  const challengePrivileges = _challenge?.hub?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const challengePrivileges = _challenge?.space?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
   const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
-    communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
+    communityReadAccess: (_challenge?.space?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
     challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
@@ -104,40 +104,40 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     skipCondition: !permissions.challengeReadAccess || !permissions.readUsers,
   });
 
-  const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(
+  const canReadReferences = _challenge?.space?.challenge?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
 
   const { data: referenceData } = useChallengeDashboardReferencesQuery({
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       challengeId: challengeNameId,
     },
     skip: !canReadReferences,
   });
 
-  const { metrics = [] } = _challenge?.hub.challenge || {};
+  const { metrics = [] } = _challenge?.space.challenge || {};
 
   const opportunitiesCount = useMemo(() => getMetricCount(metrics, MetricType.Opportunity), [metrics]);
 
-  const posts = getPostsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
-  const postsCount = usePostsCount(_challenge?.hub.challenge.metrics);
+  const posts = getPostsFromPublishedCallouts(_challenge?.space.challenge.collaboration?.callouts).slice(0, 2);
+  const postsCount = usePostsCount(_challenge?.space.challenge.metrics);
 
-  const whiteboards = getWhiteboardsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(
+  const whiteboards = getWhiteboardsFromPublishedCallouts(_challenge?.space.challenge.collaboration?.callouts).slice(
     0,
     2
   );
-  const whiteboardsCount = useWhiteboardsCount(_challenge?.hub.challenge.metrics);
+  const whiteboardsCount = useWhiteboardsCount(_challenge?.space.challenge.metrics);
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (_challenge?.hub.challenge.community?.memberOrganizations?.length ?? 0);
-  const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community, { memberUsersCount });
+  const memberUsersCount = membersCount - (_challenge?.space.challenge.community?.memberOrganizations?.length ?? 0);
+  const contributors = useCommunityMembersAsCardProps(_challenge?.space.challenge.community, { memberUsersCount });
 
-  const references = referenceData?.hub?.challenge?.profile.references;
+  const references = referenceData?.space?.challenge?.profile.references;
 
-  const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
+  const topCallouts = _challenge?.space.challenge.collaboration?.callouts?.slice(0, 3);
 
-  const communityId = _challenge?.hub.challenge.community?.id ?? '';
+  const communityId = _challenge?.space.challenge.community?.id ?? '';
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(
@@ -158,11 +158,11 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     <>
       {children(
         {
-          hubId,
-          hubNameId,
-          hubDisplayName: hub.profile.displayName,
-          hubVisibility: hub.visibility,
-          challenge: _challenge?.hub.challenge,
+          spaceId,
+          spaceNameId,
+          spaceDisplayName: space.profile.displayName,
+          spaceVisibility: space.visibility,
+          challenge: _challenge?.space.challenge,
           opportunitiesCount,
           posts,
           postsCount,
@@ -177,7 +177,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
-        { loading: loading || loadingProfile || loadingHubContext, activityLoading },
+        { loading: loading || loadingProfile || loadingSpaceContext, activityLoading },
         {}
       )}
     </>

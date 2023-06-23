@@ -36,8 +36,8 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
-  hubId: string;
-  hubNameId: string;
+  spaceId: string;
+  spaceNameId: string;
   challengeNameId: string;
   opportunity: OpportunityPageFragment | undefined;
   permissions: {
@@ -101,7 +101,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   // TODO don't use context, fetch all the data with a query
-  const { hubId, hubNameId, challengeNameId, opportunityNameId } = useOpportunity();
+  const { spaceId, spaceNameId, challengeNameId, opportunityNameId } = useOpportunity();
 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
@@ -113,11 +113,11 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     loading: loadingOpportunity,
     error: errorOpportunity,
   } = useOpportunityPageQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
+    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
   });
 
-  const opportunity = query?.hub.opportunity;
+  const opportunity = query?.space.opportunity;
   const collaborationID = opportunity?.collaboration?.id;
   const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -199,11 +199,11 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     <>
       {children(
         {
-          hubId,
-          hubNameId,
+          spaceId,
+          spaceNameId,
           challengeNameId,
           opportunity,
-          url: opportunity && buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
+          url: opportunity && buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID),
           meme,
           links,
           permissions: {

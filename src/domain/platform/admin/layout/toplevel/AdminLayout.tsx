@@ -19,7 +19,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
       heading={
         <>
           <JourneyPageBanner title={t('common.administration')} journeyTypeName="admin" />
-          <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Hub}>
+          <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Space}>
             {adminTabs.map(tab => {
               return (
                 <HeaderNavigationTab

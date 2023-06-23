@@ -1,12 +1,12 @@
-query hubNameId($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query spaceNameId($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     nameID
   }
 }
 
-query challengeNameId($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query challengeNameId($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     nameID
     challenge(ID: $challengeId) {
@@ -16,8 +16,8 @@ query challengeNameId($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   }
 }
 
-query opportunityNameId($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query opportunityNameId($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     nameID
     opportunity(ID: $opportunityId) {

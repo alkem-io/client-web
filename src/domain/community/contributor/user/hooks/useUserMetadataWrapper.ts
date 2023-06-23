@@ -15,7 +15,7 @@ export interface UserPermissions {
   canUpdate: boolean;
   canDelete: boolean;
   canReadUsers: boolean;
-  canCreateHub: boolean;
+  canCreateSpace: boolean;
   canCreateOrganization: boolean;
   isPlatformAdmin: boolean; // has any GLOBAL admin privilege
   isAdmin: boolean; // has any admin privilege
@@ -25,7 +25,7 @@ export interface UserMetadata {
   user: User;
   // hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
   ofChallenge: (id: string) => boolean;
-  ofHub: (id: string) => boolean;
+  ofSpace: (id: string) => boolean;
   ofOpportunity: (id: string) => boolean;
   groups: string[];
   organizations: string[];
@@ -44,24 +44,24 @@ const getDisplayName = (i: { displayName: string }) => i.displayName;
 const getContributions = (membershipData?: UserRolesDetailsFragment) => {
   if (!membershipData) return [];
 
-  const hubs = membershipData.hubs.map<ContributionItem>(e => ({
-    hubId: e.hubID,
+  const spaces = membershipData.spaces.map<ContributionItem>(e => ({
+    spaceId: e.spaceID,
   }));
 
-  const challenges = membershipData.hubs.flatMap<ContributionItem>(e =>
+  const challenges = membershipData.spaces.flatMap<ContributionItem>(e =>
     e.challenges.map(c => ({
-      hubId: e.nameID,
+      spaceId: e.nameID,
       challengeId: c.nameID,
     }))
   );
 
-  const opportunities = membershipData.hubs.flatMap<ContributionItem>(e =>
+  const opportunities = membershipData.spaces.flatMap<ContributionItem>(e =>
     e.opportunities.map(o => ({
-      hubId: e.nameID,
+      spaceId: e.nameID,
       opportunityId: o.nameID,
     }))
   );
-  return [...hubs, ...challenges, ...opportunities];
+  return [...spaces, ...challenges, ...opportunities];
 };
 
 const getPendingApplications = (membershipData?: UserRolesDetailsFragment) => {
@@ -69,7 +69,7 @@ const getPendingApplications = (membershipData?: UserRolesDetailsFragment) => {
 
   return (
     membershipData.applications?.map<ContributionItem>(a => ({
-      hubId: a.hubID,
+      spaceId: a.spaceID,
       challengeId: a.challengeID,
       opportunityId: a.opportunityID,
     })) || []
@@ -85,9 +85,9 @@ export const toUserMetadata = (
     return;
   }
 
-  const hubMemberships = membershipData?.hubs.map(({ challenges, opportunities, ...hub }) => hub) ?? [];
-  const challengeMemberships = membershipData?.hubs.flatMap(e => e.challenges) ?? [];
-  const opportunityMemberships = membershipData?.hubs.flatMap(e => e.opportunities) ?? [];
+  const spaceMemberships = membershipData?.spaces.map(({ challenges, opportunities, ...space }) => space) ?? [];
+  const challengeMemberships = membershipData?.spaces.flatMap(e => e.challenges) ?? [];
+  const opportunityMemberships = membershipData?.spaces.flatMap(e => e.opportunities) ?? [];
 
   const IsJourneyMember = (memberships: { id: string; roles: string[] }[]) => (journeyId: string) => {
     return memberships.some(({ id, roles }) => {
@@ -99,7 +99,7 @@ export const toUserMetadata = (
   const opportunityDisplayNames = opportunityMemberships.map(getDisplayName);
   const organizationDisplayNames = membershipData?.organizations.map(getDisplayName) ?? [];
   const organizationNameIDs = membershipData?.organizations.map(o => o.nameID) ?? [];
-  const groups = membershipData?.hubs.flatMap(e => e.userGroups.map(getDisplayName)) || [];
+  const groups = membershipData?.spaces.flatMap(e => e.userGroups.map(getDisplayName)) || [];
 
   const myPrivileges = platformLevelAuthorization?.myPrivileges ?? [];
   const permissions: UserPermissions = {
@@ -108,7 +108,7 @@ export const toUserMetadata = (
     canGrant: myPrivileges.includes(AuthorizationPrivilege.Grant),
     canDelete: myPrivileges.includes(AuthorizationPrivilege.Delete),
     canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
-    canCreateHub: myPrivileges.includes(AuthorizationPrivilege.CreateHub),
+    canCreateSpace: myPrivileges.includes(AuthorizationPrivilege.CreateSpace),
     canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
     canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
     isPlatformAdmin: myPrivileges.includes(AuthorizationPrivilege.PlatformAdmin),
@@ -118,7 +118,7 @@ export const toUserMetadata = (
   return {
     user,
     ofChallenge: IsJourneyMember(challengeMemberships),
-    ofHub: IsJourneyMember(hubMemberships),
+    ofSpace: IsJourneyMember(spaceMemberships),
     ofOpportunity: IsJourneyMember(opportunityMemberships),
     groups,
     challenges: challengeDisplayNames,

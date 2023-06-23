@@ -1,0 +1,10 @@
+mutation UpdateSpacePlatformSettings($spaceId: String!, $visibility: SpaceVisibility!) {
+  updateSpacePlatformSettings(updateData: { spaceID: $spaceId, visibility: $visibility }) {
+    id
+    visibility
+    nameID
+    host {
+      id
+    }
+  }
+}

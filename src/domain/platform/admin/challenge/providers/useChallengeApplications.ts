@@ -4,16 +4,16 @@ import { useChallengeApplicationsQuery } from '../../../../../core/apollo/genera
 const EMPTY = [];
 
 const useChallengeApplications = () => {
-  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
 
   const { data, loading } = useChallengeApplicationsQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
 
-  const applications = data?.hub?.challenge?.community?.applications ?? EMPTY;
+  const applications = data?.space?.challenge?.community?.applications ?? EMPTY;
 
   return {
     applications,

@@ -1,9 +1,0 @@
-query hubGroupsList($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    groups {
-      id
-      name
-    }
-  }
-}

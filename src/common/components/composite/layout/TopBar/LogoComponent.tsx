@@ -30,11 +30,11 @@ export default LogoComponent;
 
 export const AlkemioLogoComponent = (props: BoxProps) => {
   const { data } = useInnovationHubQuery();
-  const isInHub = !!data?.platform.innovationHub;
+  const isInSpace = !!data?.platform.innovationHub;
 
   return (
     <Box {...props}>
-      <MuiLink target={isInHub ? '_blank' : undefined} href={DEFAULT_URL}>
+      <MuiLink target={isInSpace ? '_blank' : undefined} href={DEFAULT_URL}>
         <Logo />
       </MuiLink>
     </Box>

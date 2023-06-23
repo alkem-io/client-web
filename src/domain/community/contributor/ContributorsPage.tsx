@@ -32,7 +32,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
     onSearchHandlerDebounced(e.target.value);
   };
 
-  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfHub.contributors' });
+  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.contributors' });
 
   return (
     <TopLevelDesktopLayout heading={ribbon}>

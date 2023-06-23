@@ -1,5 +1,5 @@
-query challengePreferences($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
+query challengePreferences($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     challenge(ID: $challengeNameId) {
       id

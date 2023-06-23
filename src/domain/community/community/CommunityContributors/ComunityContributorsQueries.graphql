@@ -1,5 +1,5 @@
-query HubCommunityContributors($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     host {
       ...OrganizationCard
@@ -19,8 +19,8 @@ query HubCommunityContributors($hubId: UUID_NAMEID!) {
   }
 }
 
-query ChallengeCommunityContributors($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query ChallengeCommunityContributors($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
       id
@@ -32,8 +32,8 @@ query ChallengeCommunityContributors($hubId: UUID_NAMEID!, $challengeId: UUID_NA
   }
 }
 
-query OpportunityCommunityContributors($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query OpportunityCommunityContributors($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     opportunity(ID: $opportunityId) {
       id

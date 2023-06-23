@@ -15,7 +15,7 @@ import {
   WhiteboardTemplateCardFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
-  useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
+  useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery,
   useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
@@ -46,7 +46,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   templates,
 }) => {
   const { t } = useTranslation();
-  const { hubNameId } = useUrlParams();
+  const { spaceNameId } = useUrlParams();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
@@ -74,7 +74,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     group: callout.group,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
-  const [fetchWhiteboardValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
   const [fetchWhiteboardValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
@@ -104,9 +104,9 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     setLoading(false);
   }, [
     callout,
-    fetchWhiteboardValueFromHub,
+    fetchWhiteboardValueFromSpace,
     newCallout,
-    hubNameId,
+    spaceNameId,
     onCalloutEdit,
     templates,
     fetchWhiteboardValueFromLibrary,

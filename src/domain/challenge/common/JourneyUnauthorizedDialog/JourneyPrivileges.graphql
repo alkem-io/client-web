@@ -1,15 +1,14 @@
 query JourneyPrivileges(
-  $hubNameId: UUID_NAMEID!
-  $includeHub: Boolean = false
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
   $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-)
-{
-  hub(ID: $hubNameId) {
+) {
+  space(ID: $spaceNameId) {
     id
-    ... on Hub @include(if: $includeHub) {
+    ... on Space @include(if: $includeSpace) {
       authorization {
         id
         myPrivileges

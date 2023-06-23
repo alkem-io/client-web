@@ -21,7 +21,7 @@ import {
 import ActivityView from '../../../platform/metrics/views/MetricsView';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
 import useMetricsItems from '../../../platform/metrics/utils/useMetricsItems';
-import HubMetrics from '../../hub/Metrics/HubMetrics';
+import SpaceMetrics from '../../space/Metrics/SpaceMetrics';
 import ChallengeMetrics from '../../challenge/utils/useChallengeMetricsItems';
 import OpportunityMetrics from '../../opportunity/utils/useOpportunityMetricsItems';
 import { Theme } from '@mui/material/styles';
@@ -56,8 +56,8 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
 
 const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
   switch (journeyTypeName) {
-    case 'hub':
-      return HubMetrics;
+    case 'space':
+      return SpaceMetrics;
     case 'challenge':
       return ChallengeMetrics;
     case 'opportunity':
@@ -90,11 +90,11 @@ const JourneyAboutDialog = ({
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
-  const isHub = journeyTypeName === 'hub';
-  const leadOrganizationsHeader = isHub
-    ? 'pages.hub.sections.dashboard.organization'
+  const isSpace = journeyTypeName === 'space';
+  const leadOrganizationsHeader = isSpace
+    ? 'pages.space.sections.dashboard.organization'
     : 'community.leading-organizations';
-  const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
+  const leadUsersHeader = isSpace ? 'community.host' : 'community.leads';
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
 
@@ -166,7 +166,7 @@ const JourneyAboutDialog = ({
             )}
             {background && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t('context.hub.background.title')} />
+                <PageContentBlockHeader title={t('context.space.background.title')} />
                 <WrapperMarkdown>{background}</WrapperMarkdown>
               </PageContentBlock>
             )}
@@ -175,18 +175,18 @@ const JourneyAboutDialog = ({
             <PageContentBlockSeamless disablePadding order={1}>
               {impact && (
                 <PageContentBlock>
-                  <PageContentBlockHeader title={t('context.hub.impact.title')} />
+                  <PageContentBlockHeader title={t('context.space.impact.title')} />
                   <WrapperMarkdown>{impact}</WrapperMarkdown>
                 </PageContentBlock>
               )}
               {who && (
                 <PageContentBlock>
-                  <PageContentBlockHeader title={t('context.hub.who.title')} />
+                  <PageContentBlockHeader title={t('context.space.who.title')} />
                   <WrapperMarkdown>{who}</WrapperMarkdown>
                 </PageContentBlock>
               )}
               <PageContentBlock>
-                <PageContentBlockHeader title={t('pages.hub.sections.dashboard.activity')} />
+                <PageContentBlockHeader title={t('pages.space.sections.dashboard.activity')} />
                 <ActivityView activity={metricsItems} loading={loading} />
               </PageContentBlock>
             </PageContentBlockSeamless>

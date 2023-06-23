@@ -12,10 +12,10 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import { useHomePageSpacesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
-import HubCard from '../../../challenge/hub/HubCard/HubCard';
+import SpaceCard from '../../../challenge/space/SpaceCard/SpaceCard';
 import getMetricCount from '../../metrics/utils/getMetricCount';
 import { MetricType } from '../../metrics/MetricType';
-import { buildHubUrl } from '../../../../common/utils/urlBuilders';
+import { buildSpaceUrl } from '../../../../common/utils/urlBuilders';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../routes/constants';
@@ -40,9 +40,9 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
     },
   });
 
-  const allSpaces = spacesData?.hubs;
+  const allSpaces = spacesData?.spaces;
 
-  const userSpaces = spacesData?.hubs.filter(isMember);
+  const userSpaces = spacesData?.spaces.filter(isMember);
 
   const { platform } = useConfig();
 
@@ -63,19 +63,19 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           <WrapperMarkdown>{innovationHub.description ?? ''}</WrapperMarkdown>
         </PageContentBlock>
         <PageContentBlock>
-          <PageContentBlockHeader title={t('innovationHub.selectedSpaces', { hub: innovationHub.displayName })} />
+          <PageContentBlockHeader title={t('innovationHub.selectedSpaces', { space: innovationHub.displayName })} />
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
-              <HubCard
+              <SpaceCard
                 banner={space.profile?.banner}
                 displayName={space.profile?.displayName!}
                 vision={space.context?.vision!}
                 membersCount={getMetricCount(space.metrics, MetricType.Member)}
                 tagline={space.profile?.tagline!}
                 tags={space.profile?.tagset?.tags ?? []}
-                journeyUri={buildHubUrl(space.nameID)}
+                journeyUri={buildSpaceUrl(space.nameID)}
                 member={isMember(space)}
-                hubVisibility={space.visibility}
+                spaceVisibility={space.visibility}
               />
             ))}
           </ScrollableCardsLayoutContainer>
@@ -83,19 +83,19 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
         {userSpaces && userSpaces.length > 0 && (
           <PageContentBlock>
             <PageContentBlockHeader
-              title={t('pages.home.sections.my-hubs.header', { myHubsCount: userSpaces.length })}
+              title={t('pages.home.sections.my-spaces.header', { mySpacesCount: userSpaces.length })}
             />
             <ScrollableCardsLayoutContainer orientation="horizontal" cards>
               {userSpaces.map(space => (
-                <HubCard
+                <SpaceCard
                   banner={space.profile?.banner}
                   displayName={space.profile?.displayName!}
                   vision={space.context?.vision!}
                   membersCount={getMetricCount(space.metrics, MetricType.Member)}
                   tagline={space.profile?.tagline!}
                   tags={space.profile?.tagset?.tags ?? []}
-                  journeyUri={buildHubUrl(space.nameID)}
-                  hubVisibility={space.visibility}
+                  journeyUri={buildSpaceUrl(space.nameID)}
+                  spaceVisibility={space.visibility}
                 />
               ))}
             </ScrollableCardsLayoutContainer>

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 import App from '../../common/components/composite/layout/App/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
-import { HubContextProvider } from '../../domain/challenge/hub/HubContext/HubContext';
+import { SpaceContextProvider } from '../../domain/challenge/space/SpaceContext/SpaceContext';
 import { OrganizationProvider } from '../../domain/community/contributor/organization/context/OrganizationProvider';
 import HomePage from '../../domain/platform/TopLevelPages/Home/HomePage';
 import AboutPage from '../../domain/platform/TopLevelPages/About';
@@ -17,7 +17,7 @@ import NoIdentityRedirect from './NoIdentityRedirect';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
-import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
+import { SpaceRoute } from '../../domain/challenge/space/routing/SpaceRoute';
 import { ChallengeExplorerPage } from '../../domain/platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing/IdentityRoute';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
@@ -57,15 +57,15 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path={`:${nameOfUrl.hubNameId}/*`}
+          path={`:${nameOfUrl.spaceNameId}/*`}
           element={
             <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.hubNameId}/*`}>
-                <HubContextProvider>
+              <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
+                <SpaceContextProvider>
                   <CommunityContextProvider>
-                    <HubRoute paths={paths} />
+                    <SpaceRoute paths={paths} />
                   </CommunityContextProvider>
-                </HubContextProvider>
+                </SpaceContextProvider>
               </WithApmTransaction>
             </NonIdentity>
           }

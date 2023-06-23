@@ -147,24 +147,24 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
-    const hubsHosting = orgRolesData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+    const spacesHosting = orgRolesData?.rolesOrganization?.spaces?.filter(h => h.roles?.includes(RoleType.Host)) || [];
 
-    const hubContributions = hubsHosting.map<ContributionItem>(x => ({
-      hubId: x.id,
+    const spaceContributions = spacesHosting.map<ContributionItem>(x => ({
+      spaceId: x.id,
     }));
 
-    // Loop over hubs, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
+    // Loop over spaces, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
     const challengeContributions =
-      orgRolesData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
+      orgRolesData?.rolesOrganization?.spaces.flatMap<ContributionItem>(h =>
         h.challenges
           .filter(c => c.roles?.includes(RoleType.Lead))
           .map<ContributionItem>(c => ({
-            hubId: h.id,
+            spaceId: h.id,
             challengeId: c.id,
           }))
       ) || [];
 
-    return [...hubContributions, ...challengeContributions];
+    return [...spaceContributions, ...challengeContributions];
   }, [orgRolesData]);
 
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();

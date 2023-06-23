@@ -4,7 +4,7 @@ import PageContentBlock from '../../core/ui/content/PageContentBlock';
 import { GUTTER_MUI } from '../../core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
 import PageContentBlockGrid from '../../core/ui/content/PageContentBlockGrid';
-import HubCard from '../../domain/challenge/hub/HubCard/HubCard';
+import SpaceCard from '../../domain/challenge/space/SpaceCard/SpaceCard';
 import ChallengeCard from '../../domain/challenge/challenge/ChallengeCard/ChallengeCard';
 import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
 import OpportunityCard from '../../domain/challenge/opportunity/OpportunityCard/OpportunityCard';
@@ -27,32 +27,32 @@ const JourneyCardsDemo = () => {
         </PageContentColumn>
         <PageContentColumn columns={8}>
           <PageContentBlock>
-            <PageContentBlockHeader title="Hub Cards" />
+            <PageContentBlockHeader title="Space Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <HubCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Hub Card"
-                tags={['hub', 'card']}
+                displayName="Space Card"
+                tags={['space', 'card']}
                 membersCount={20}
                 journeyUri=""
               />
-              <HubCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Hub Card"
-                tags={['hub', 'card']}
+                displayName="Space Card"
+                tags={['space', 'card']}
                 membersCount={20}
                 journeyUri=""
               />
-              <HubCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Hub Card"
-                tags={['hub', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
+                displayName="Space Card"
+                tags={['space', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 membersCount={20}
                 journeyUri=""
               />
@@ -69,8 +69,8 @@ const JourneyCardsDemo = () => {
                 tags={['challenge', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
-                hubDisplayName="Parent Hub"
-                hubUri=""
+                spaceDisplayName="Parent Space"
+                spaceUri=""
               />
               <ChallengeCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
@@ -80,8 +80,8 @@ const JourneyCardsDemo = () => {
                 tags={['challenge', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
-                hubDisplayName="Parent Hub"
-                hubUri=""
+                spaceDisplayName="Parent Space"
+                spaceUri=""
               />
               <ChallengeCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
@@ -102,8 +102,8 @@ const JourneyCardsDemo = () => {
                 ]}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
-                hubDisplayName="Parent Hub"
-                hubUri=""
+                spaceDisplayName="Parent Space"
+                spaceUri=""
               />
             </PageContentBlockGrid>
           </PageContentBlock>

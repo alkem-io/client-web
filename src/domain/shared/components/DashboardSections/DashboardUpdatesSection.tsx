@@ -14,11 +14,11 @@ export interface DashboardUpdatesSectionProps {
   entities: CommunityUpdatesContainerProps['entities'];
 }
 
-const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: { hubId, communityId } }) => {
+const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: { spaceId, communityId } }) => {
   const { t } = useTranslation();
 
   return (
-    <CommunityUpdatesContainer entities={{ hubId, communityId }}>
+    <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);

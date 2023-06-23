@@ -1,6 +1,0 @@
-mutation updatePreferenceOnHub($preferenceData: UpdateHubPreferenceInput!) {
-  updatePreferenceOnHub(preferenceData: $preferenceData) {
-    id
-    value
-  }
-}

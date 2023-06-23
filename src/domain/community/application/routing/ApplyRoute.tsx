@@ -7,12 +7,12 @@ import ApplyPage from '../pages/ApplyPage';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import { EntityPageLayoutHolder } from '../../../challenge/common/EntityPageLayout';
 import { ChallengePageLayoutProps } from '../../../challenge/challenge/layout/ChallengePageLayout';
-import { HubPageLayoutProps } from '../../../challenge/hub/layout/HubPageLayout';
+import { SpacePageLayoutProps } from '../../../challenge/space/layout/SpacePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface Props extends PageProps {
   type: ApplicationTypeEnum;
-  journeyPageLayoutComponent: ComponentType<HubPageLayoutProps | ChallengePageLayoutProps>;
+  journeyPageLayoutComponent: ComponentType<SpacePageLayoutProps | ChallengePageLayoutProps>;
 }
 
 const ApplyRoute: FC<Props> = ({ paths, journeyPageLayoutComponent: JourneyPageLayout, type }) => {

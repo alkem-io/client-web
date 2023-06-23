@@ -20,8 +20,8 @@ export interface ContributionViewProps {
   cards?: PageContentBlockGridProps['cards'];
 }
 
-const getContributionItemKey = ({ hubId, challengeId, opportunityId }: ContributionItem) =>
-  [hubId, challengeId, opportunityId].filter(id => id).join('/');
+const getContributionItemKey = ({ spaceId, challengeId, opportunityId }: ContributionItem) =>
+  [spaceId, challengeId, opportunityId].filter(id => id).join('/');
 
 const SkeletonItem = () => (
   <Grid item>

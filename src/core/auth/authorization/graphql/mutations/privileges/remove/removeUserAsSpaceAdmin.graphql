@@ -1,0 +1,9 @@
+mutation removeUserAsSpaceAdmin($input: RemoveSpaceAdminInput!) {
+  removeUserAsSpaceAdmin(membershipData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

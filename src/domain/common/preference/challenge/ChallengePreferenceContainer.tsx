@@ -26,23 +26,23 @@ export interface ChallengePreferenceContainerProps
     ChallengePreferenceContainerActions,
     ChallengePreferenceContainerState
   > {
-  hubId: string;
+  spaceId: string;
   challengeId: string;
 }
 
 const excludedPreferences = [PreferenceType.MembershipFeedbackOnChallengeContext];
 
-const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ children, hubId, challengeId }) => {
+const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ children, spaceId, challengeId }) => {
   const { data, loading, error } = useChallengePreferencesQuery({
-    variables: { hubNameId: hubId, challengeNameId: challengeId },
+    variables: { spaceNameId: spaceId, challengeNameId: challengeId },
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
-    skip: !hubId,
+    skip: !spaceId,
   });
 
   const [updatePreference] = useUpdatePreferenceOnChallengeMutation({});
 
-  const preferences = (data?.hub?.challenge?.preferences ?? []).filter(
+  const preferences = (data?.space?.challenge?.preferences ?? []).filter(
     p => !excludedPreferences.includes(p.definition.type)
   );
 

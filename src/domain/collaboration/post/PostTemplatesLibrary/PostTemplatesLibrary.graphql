@@ -1,5 +1,5 @@
-query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query SpacePostTemplatesLibrary($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     templates {
       id

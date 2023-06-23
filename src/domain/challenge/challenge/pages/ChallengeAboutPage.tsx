@@ -6,11 +6,11 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ChallengeAboutView } from '../views/ChallengeAboutView';
 
 const ChallengeAboutPage: FC = () => {
-  const { hubNameId, profile, challengeNameId, communityId } = useChallenge();
+  const { spaceNameId, profile, challengeNameId, communityId } = useChallenge();
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.About}>
-      <AboutPageContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
+      <AboutPageContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
         {({ context, tagset, permissions, ...rest }, state) => (
           <ChallengeAboutView
             name={profile?.displayName}
@@ -21,7 +21,7 @@ const ChallengeAboutPage: FC = () => {
             background={profile?.description}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
-            hubNameId={hubNameId}
+            spaceNameId={spaceNameId}
             communityId={communityId}
             {...rest}
             {...state}

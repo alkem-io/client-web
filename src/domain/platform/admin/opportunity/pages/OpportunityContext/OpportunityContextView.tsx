@@ -16,20 +16,20 @@ const OpportunityContextView: FC = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { spaceNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: opportunityProfile, loading } = useOpportunityProfileInfoQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
+    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
     skip: false,
   });
 
-  const opportunity = opportunityProfile?.hub?.opportunity;
+  const opportunity = opportunityProfile?.space?.opportunity;
   const opportunityId = useMemo(() => opportunity?.id, [opportunity]);
 
   const onSubmit = async (values: ContextFormValues) => {

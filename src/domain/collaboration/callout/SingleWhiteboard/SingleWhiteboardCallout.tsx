@@ -22,7 +22,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
   (
     {
       callout,
-      hubNameId,
+      spaceNameId,
       loading,
       challengeNameId,
       opportunityNameId,
@@ -69,7 +69,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           {isWhiteboardDialogOpen && (
             <WhiteboardProvider
               {...{
-                hubNameId,
+                spaceNameId,
                 challengeNameId,
                 opportunityNameId,
                 calloutNameId: callout.nameID,
@@ -82,7 +82,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                   backToWhiteboards={handleCloseWhiteboardDialog}
                   journeyTypeName={journeyTypeName}
                   whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
-                    hubNameId,
+                    spaceNameId,
                     challengeNameId,
                     opportunityNameId,
                   })}
