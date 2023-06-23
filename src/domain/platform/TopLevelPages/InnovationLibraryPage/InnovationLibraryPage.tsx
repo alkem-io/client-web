@@ -11,7 +11,7 @@ import useLibraryTemplateCardProps from '../../../collaboration/InnovationPack/D
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
-import { INNOVATION_LIBRARY_HELP } from '../../../../common/constants';
+import { useConfig } from '../../config/useConfig';
 
 const InnovationLibraryPage = () => {
   const { data: innovationLibraryData } = useInnovationLibraryQuery();
@@ -20,9 +20,10 @@ const InnovationLibraryPage = () => {
   const templates = useLibraryTemplateCardProps(innovationLibraryData?.platform.library.innovationPacks);
 
   const { t } = useTranslation();
+  const { platform } = useConfig();
   const tLinks = TranslateWithElements(<Link underline="always" target="_blank" rel="noopener noreferrer" />);
   const subtitleText = tLinks('pages.innovationLibrary.subtitle', {
-    click: { href: INNOVATION_LIBRARY_HELP, target: '_blank' },
+    click: { href: platform?.innovationLibrary, target: '_blank' },
   });
 
   return (
