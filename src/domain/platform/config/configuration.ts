@@ -15,6 +15,7 @@ export interface Configuration {
     foundation: string;
     opensource: string;
     inspiration: string;
+    innovationLibrary: string;
     releases: string;
     help: string;
     community: string;

@@ -33,6 +33,7 @@ fragment Configuration on Config {
     foundation
     opensource
     inspiration
+    innovationLibrary
     releases
     help
     community

@@ -2742,6 +2742,7 @@ export const ConfigurationFragmentDoc = gql`
       foundation
       opensource
       inspiration
+      innovationLibrary
       releases
       help
       community

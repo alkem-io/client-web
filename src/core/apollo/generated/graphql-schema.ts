@@ -3031,6 +3031,8 @@ export type PlatformLocations = {
   help: Scalars['String'];
   /** URL for the link Impact in the HomePage of the application */
   impact: Scalars['String'];
+  /** URL to a page about the innovation library */
+  innovationLibrary: Scalars['String'];
   /** URL to a page about the collaboration tools */
   inspiration: Scalars['String'];
   /** URL where new users can get onboarding help */
@@ -23577,6 +23579,7 @@ export type ConfigurationQuery = {
       foundation: string;
       opensource: string;
       inspiration: string;
+      innovationLibrary: string;
       releases: string;
       help: string;
       community: string;
@@ -23618,6 +23621,7 @@ export type ConfigurationFragment = {
     foundation: string;
     opensource: string;
     inspiration: string;
+    innovationLibrary: string;
     releases: string;
     help: string;
     community: string;
