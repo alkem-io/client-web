@@ -205,7 +205,7 @@
     "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
-    "communications": "Updates",
+    "communications": "Updates from the leads",
     "applications": "Applications",
     "introduction": "Introduction",
     "interest": "Interest",
@@ -222,8 +222,8 @@
     "user": "User",
     "users": "Users",
     "update": "Update",
-    "updates": "News",
-    "no-updates": "No updates",
+    "updates": "Updates from the leads",
+    "no-updates": "No updates from the leads",
     "no-tags": "No tags available",
     "no-references": "No references available",
     "field-required": "This field is required",
@@ -786,9 +786,9 @@
         "callout-published": "published a new $t(common.callout)",
         "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
         "post-comment-created": "commented on '{{postDisplayName}}'",
-        "post-created": "added a {{postType}} Post to '{{calloutDisplayName}}'",
+        "post-created": "added a Post to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
+        "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)",
         "update-sent": "shared a new $t(common.update)"
@@ -1782,7 +1782,7 @@
           }
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
+          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared by the leads."
         },
         "apply": "Interested in collaboration?",
         "agreements": {
@@ -1815,7 +1815,7 @@
         "no-data": "No members available"
       },
       "updates": {
-        "title": "Updates ({{count}})",
+        "title": "Updates from the leads ({{count}})",
         "no-data": "No updates available"
       }
     },
@@ -2031,7 +2031,7 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, click here to contact the Alkemio team."
+      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io."
     },
     "fields": {
       "ID": "ID",
@@ -2060,9 +2060,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "News ({{count}})",
-    "dialog-title": "All News",
-    "no-data": "No news available."
+    "title": "Updates from the leads ({{count}})",
+    "dialog-title": "All updates from the leads",
+    "no-data": "No updates available."
   },
   "dashboard-discussions-section": {
     "title": "Discussions ({{count}})",
