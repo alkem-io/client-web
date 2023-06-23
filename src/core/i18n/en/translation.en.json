@@ -265,6 +265,7 @@
     "show-subject": "Show: ",
     "show-all": "Show all",
     "title": "Title",
+    "visibility": "Visibility",
     "warning": "Warning",
     "welcome": "Welcome",
     "preview": "Preview",
@@ -273,6 +274,8 @@
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
     "innovation-packs": "Innovation Packs",
+    "innovation-hub": "Innovation Hub",
+    "innovation-hubs": "Innovation Hubs",
     "innovationPack": "Innovation Pack",
     "more": "More",
     "url": "URL",
@@ -1275,7 +1278,8 @@
       "challenges": "Here you can find all Challenges that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
       "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Spaces that are not selected by <strong>{{space}}. Enjoy connecting!</strong>"
     },
-    "goToMainPage": "Interested in collaborating in other Spaces? Click here to see them all on the universal Alkemio homepage."
+    "goToMainPage": "Interested in collaborating in other Spaces? Click here to see them all on the universal Alkemio homepage.",
+    "remove": "Remove from hub"
   },
   "pages": {
     "generic": {
@@ -1333,10 +1337,12 @@
       "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
-        "headerTitle": "Innovation Packs"
+        "headerTitle": "$t(common.innovation-packs)",
+        "dialogTitle": "$t(common.innovation-packs)"
       },
       "libraryTemplates": {
-        "headerTitle": "Browse through all available materials"
+        "headerTitle": "Browse through all available materials",
+        "dialogTitle": "All materials"
       }
     },
     "innovationPack": {
@@ -1513,9 +1519,18 @@
         "fields": {
           "provider": "Provider organization"
         },
-        "back-button": "All innovation packs",
+        "back-button": "All $t(common.innovation-packs)",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
+      },
+      "innovationHubs": {
+        "fields": {
+          "host": "Host Organization",
+          "subdomain": "Subdomain"
+        },
+        "saveForMoreDetails": "Save the new $t(common.innovation-hub) to edit the rest of the details",
+        "back": "All $t(common.innovation-hubs)",
+        "saved": "Saved Successfully"
       },
       "spaces": {
         "updateVisibility": "Update Visibility"

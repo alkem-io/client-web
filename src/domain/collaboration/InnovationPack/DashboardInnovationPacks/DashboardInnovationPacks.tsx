@@ -4,10 +4,10 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import InnovationPacksView from './InnovationPacksView';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { useTranslation } from 'react-i18next';
 
 interface DashboardInnovationPacksProps {
   headerTitle: ReactNode;
+  dialogTitle: ReactNode;
   innovationPacks: (Identifiable & InnovationPackCardProps)[] | undefined;
 }
 
@@ -18,7 +18,7 @@ const innovationPackValueGetter = (innovationPack: Identifiable & InnovationPack
 
 const MAX_PACKS_WHEN_NOT_EXPANDED = 10;
 
-const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInnovationPacksProps) => {
+const DashboardInnovationPacks = ({ headerTitle, dialogTitle, innovationPacks }: DashboardInnovationPacksProps) => {
   const [filter, onFilterChange] = useState<string[]>([]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -27,8 +27,6 @@ const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInn
     () => filterFn(innovationPacks ?? [], filter, innovationPackValueGetter),
     [innovationPacks, filter]
   );
-
-  const { t } = useTranslation();
 
   return (
     <>
@@ -44,7 +42,7 @@ const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInn
       <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
         <InnovationPacksView
           filter={filter}
-          headerTitle={t('common.innovation-packs')}
+          headerTitle={dialogTitle}
           innovationPacks={filteredInnovationPacks}
           onFilterChange={onFilterChange}
           expanded={isDialogOpen}
