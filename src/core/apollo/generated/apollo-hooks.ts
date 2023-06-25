@@ -252,16 +252,16 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
 export const EntityDashboardCommunityFragmentDoc = gql`
   fragment EntityDashboardCommunity on Community {
     id
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...DashboardLeadUser
     }
     memberUsers(limit: 8) {
       ...DashboardContributingUser
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
     }
-    memberOrganizations {
+    memberOrganizations: organizationsInRole(role: MEMBER) {
       ...DashboardContributingOrganization
     }
     authorization {
@@ -513,10 +513,10 @@ export const ContextJourneyDataFragmentDoc = gql`
 export const JourneyCommunityFragmentDoc = gql`
   fragment JourneyCommunity on Community {
     id
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...DashboardLeadUser
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
     }
     authorization {
@@ -663,16 +663,16 @@ export const NewOpportunityFragmentDoc = gql`
 export const CommunityPageCommunityFragmentDoc = gql`
   fragment CommunityPageCommunity on Community {
     id
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...DashboardLeadUser
     }
     memberUsers {
       ...DashboardContributingUser
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
     }
-    memberOrganizations {
+    memberOrganizations: organizationsInRole(role: MEMBER) {
       ...DashboardContributingOrganization
     }
   }
@@ -849,7 +849,7 @@ export const SpacePageFragmentDoc = gql`
     }
     community {
       ...EntityDashboardCommunity
-      leadUsers {
+      leadUsers: usersInRole(role: LEAD) {
         profile {
           ...SpaceWelcomeBlockContributorProfile
         }
@@ -1873,16 +1873,16 @@ export const OrganizationCardFragmentDoc = gql`
 `;
 export const CommunityMembersFragmentDoc = gql`
   fragment CommunityMembers on Community {
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...UserCard
     }
     memberUsers {
       ...UserCard
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...OrganizationCard
     }
-    memberOrganizations {
+    memberOrganizations: organizationsInRole(role: MEMBER) {
       ...OrganizationCard
     }
   }
@@ -15256,13 +15256,13 @@ export const SpaceCommunityContributorsDocument = gql`
       }
       community {
         id
-        leadUsers {
+        leadUsers: usersInRole(role: LEAD) {
           ...UserCard
         }
         memberUsers {
           ...UserCard
         }
-        memberOrganizations {
+        memberOrganizations: organizationsInRole(role: MEMBER) {
           ...OrganizationCard
         }
       }
@@ -16154,13 +16154,13 @@ export const ChallengeCommunityMembersDocument = gql`
           memberUsers {
             ...CommunityMemberUser
           }
-          leadUsers {
+          leadUsers: usersInRole(role: LEAD) {
             ...CommunityMemberUser
           }
-          memberOrganizations {
+          memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationDetails
           }
-          leadOrganizations {
+          leadOrganizations: organizationsInRole(role: LEAD) {
             ...OrganizationDetails
           }
         }
@@ -16942,13 +16942,13 @@ export const OpportunityCommunityMembersDocument = gql`
           memberUsers {
             ...CommunityMemberUser
           }
-          leadUsers {
+          leadUsers: usersInRole(role: LEAD) {
             ...CommunityMemberUser
           }
-          memberOrganizations {
+          memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationDetails
           }
-          leadOrganizations {
+          leadOrganizations: organizationsInRole(role: LEAD) {
             ...OrganizationDetails
           }
         }
@@ -17023,13 +17023,13 @@ export const SpaceCommunityMembersDocument = gql`
         memberUsers {
           ...CommunityMemberUser
         }
-        leadUsers {
+        leadUsers: usersInRole(role: LEAD) {
           ...CommunityMemberUser
         }
-        memberOrganizations {
+        memberOrganizations: organizationsInRole(role: MEMBER) {
           ...OrganizationDetails
         }
-        leadOrganizations {
+        leadOrganizations: organizationsInRole(role: LEAD) {
           ...OrganizationDetails
         }
         policy {

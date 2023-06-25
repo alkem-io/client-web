@@ -673,12 +673,11 @@ export type CommunityKeySpecifier = (
   | 'groups'
   | 'id'
   | 'invitations'
-  | 'leadOrganizations'
-  | 'leadUsers'
-  | 'memberOrganizations'
   | 'memberUsers'
   | 'myMembershipStatus'
+  | 'organizationsInRole'
   | 'policy'
+  | 'usersInRole'
   | CommunityKeySpecifier
 )[];
 export type CommunityFieldPolicy = {
@@ -692,12 +691,11 @@ export type CommunityFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
-  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
-  leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {

@@ -75,10 +75,10 @@ fragment ContextJourneyData on Context {
 
 fragment JourneyCommunity on Community {
   id
-  leadUsers {
+  leadUsers: usersInRole(role: LEAD) {
     ...DashboardLeadUser
   }
-  leadOrganizations {
+  leadOrganizations: organizationsInRole(role: LEAD) {
     ...AssociatedOrganizationDetails
   }
   authorization {

@@ -944,18 +944,16 @@ export type Community = Groupable & {
   id: Scalars['UUID'];
   /** Invitations for this community. */
   invitations?: Maybe<Array<Invitation>>;
-  /** All Organizations that are leads in this Community. */
-  leadOrganizations?: Maybe<Array<Organization>>;
-  /** All users that are leads in this Community. */
-  leadUsers?: Maybe<Array<User>>;
-  /** All Organizations that are contributing to this Community. */
-  memberOrganizations?: Maybe<Array<Organization>>;
   /** All users that are contributing to this Community. */
   memberUsers?: Maybe<Array<User>>;
   /** The membership status of the currently logged in user. */
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
+  /** All Organizations that have the specified Role in this Community. */
+  organizationsInRole?: Maybe<Array<Organization>>;
   /** The policy that defines the roles for this Community. */
   policy?: Maybe<CommunityPolicy>;
+  /** All users that have the specified Role in this Community. */
+  usersInRole?: Maybe<Array<User>>;
 };
 
 export type CommunityAvailableLeadUsersArgs = {
@@ -976,6 +974,14 @@ export type CommunityAvailableMemberUsersArgs = {
 
 export type CommunityMemberUsersArgs = {
   limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type CommunityOrganizationsInRoleArgs = {
+  role: CommunityRole;
+};
+
+export type CommunityUsersInRoleArgs = {
+  role: CommunityRole;
 };
 
 export type CommunityApplyInput = {
