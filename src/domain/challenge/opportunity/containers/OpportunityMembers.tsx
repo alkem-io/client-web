@@ -8,6 +8,7 @@ import {
 import {
   AuthorizationCredential,
   Community,
+  CommunityRole,
   Opportunity,
   UserDisplayNameFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -26,7 +27,7 @@ export type AuthorizationCredentials =
 export interface OpportunityMembersProps {
   entities: {
     opportunityId: Opportunity['id'];
-    communityId?: Community['id'];
+    communityId?: Community['id']; // TODO: this should not be optional to carry out the role assignments
     credential: AuthorizationCredentials;
   };
   children: (
@@ -69,8 +70,9 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
       grantAdmin({
         variables: {
           input: {
-            opportunityID: entities.opportunityId,
+            communityID: communityId || '', // TODO
             userID: memberId,
+            role: CommunityRole.Admin,
           },
         },
         refetchQueries: [
@@ -90,7 +92,8 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
         variables: {
           input: {
             userID: memberId,
-            opportunityID: entities.opportunityId,
+            communityID: communityId || '', // TODO
+            role: CommunityRole.Admin,
           },
         },
         refetchQueries: [

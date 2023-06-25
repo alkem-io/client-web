@@ -17,7 +17,11 @@ import {
   useRemoveUserAsSpaceAdminMutation,
   useUsersWithCredentialsQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential, AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationCredential,
+  AuthorizationPrivilege,
+  CommunityRole,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityUsers';
 
@@ -259,7 +263,8 @@ const useSpaceCommunityContext = (spaceId: string) => {
         variables: {
           input: {
             userID: memberId,
-            spaceID: spaceId,
+            communityID: communityId || '',
+            role: CommunityRole.Admin,
           },
         },
       });
@@ -268,7 +273,8 @@ const useSpaceCommunityContext = (spaceId: string) => {
         variables: {
           input: {
             userID: memberId,
-            spaceID: spaceId,
+            communityID: communityId || '',
+            role: CommunityRole.Admin,
           },
         },
       });

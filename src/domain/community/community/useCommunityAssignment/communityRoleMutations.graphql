@@ -46,3 +46,40 @@ mutation removeOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_
     id
   }
 }
+
+mutation assignUserAsSpaceAdmin($input: AssignCommunityRoleToUserInput!) {
+  assignCommunityRoleToUser(roleData: $input) {
+    id
+  }
+}
+
+mutation removeUserAsSpaceAdmin($input: RemoveCommunityRoleFromUserInput!) {
+  removeCommunityRoleFromUser(roleData: $input) {
+    id
+  }
+}
+
+mutation assignUserAsChallengeAdmin($input: AssignCommunityRoleToUserInput!) {
+  assignCommunityRoleToUser(roleData: $input) {
+    id
+  }
+}
+
+mutation removeUserAsChallengeAdmin($input: RemoveCommunityRoleFromUserInput!) {
+  removeCommunityRoleFromUser(roleData: $input) {
+    id
+
+  }
+}
+
+mutation assignUserAsOpportunityAdmin($input: AssignCommunityRoleToUserInput!) {
+  assignCommunityRoleToUser(roleData: $input) {
+    id
+  }
+}
+
+mutation removeUserAsOpportunityAdmin($input: RemoveCommunityRoleFromUserInput!) {
+  removeCommunityRoleFromUser(roleData: $input) {
+    id
+  }
+}
