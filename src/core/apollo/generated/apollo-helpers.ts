@@ -378,11 +378,6 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
-export type ApplicationTemplateFieldPolicy = {
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-  questions?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
   providers?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -712,6 +707,7 @@ export type CommunityPolicyFieldPolicy = {
 };
 export type CommunityRolePolicyKeySpecifier = (
   | 'credential'
+  | 'enabled'
   | 'maxOrg'
   | 'maxUser'
   | 'minOrg'
@@ -721,6 +717,7 @@ export type CommunityRolePolicyKeySpecifier = (
 )[];
 export type CommunityRolePolicyFieldPolicy = {
   credential?: FieldPolicy<any> | FieldReadFunction<any>;
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   maxOrg?: FieldPolicy<any> | FieldReadFunction<any>;
   maxUser?: FieldPolicy<any> | FieldReadFunction<any>;
   minOrg?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -913,17 +910,6 @@ export type GeoFieldPolicy = {
 export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
 export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type HubAspectTemplateKeySpecifier = (
-  | 'defaultDescription'
-  | 'type'
-  | 'typeDescription'
-  | HubAspectTemplateKeySpecifier
-)[];
-export type HubAspectTemplateFieldPolicy = {
-  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ISearchResultsKeySpecifier = (
   | 'contributionResults'
@@ -1119,11 +1105,9 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'adminStorageMigrateIpfsUrls'
   | 'applyForCommunityMembership'
-  | 'assignOrganizationAsCommunityLead'
-  | 'assignOrganizationAsCommunityMember'
+  | 'assignCommunityRoleToOrganization'
+  | 'assignCommunityRoleToUser'
   | 'assignUserAsChallengeAdmin'
-  | 'assignUserAsCommunityLead'
-  | 'assignUserAsCommunityMember'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
   | 'assignUserAsGlobalSpacesAdmin'
@@ -1206,13 +1190,11 @@ export type MutationKeySpecifier = (
   | 'joinCommunity'
   | 'messageUser'
   | 'movePostToCallout'
+  | 'removeCommunityRoleFromOrganization'
+  | 'removeCommunityRoleFromUser'
   | 'removeMessageOnRoom'
-  | 'removeOrganizationAsCommunityLead'
-  | 'removeOrganizationAsCommunityMember'
   | 'removeReactionToMessageInRoom'
   | 'removeUserAsChallengeAdmin'
-  | 'removeUserAsCommunityLead'
-  | 'removeUserAsCommunityMember'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
   | 'removeUserAsGlobalSpacesAdmin'
@@ -1272,11 +1254,9 @@ export type MutationFieldPolicy = {
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminStorageMigrateIpfsUrls?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalSpacesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1359,13 +1339,11 @@ export type MutationFieldPolicy = {
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   movePostToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalSpacesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2551,10 +2529,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
   };
-  ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
-    fields?: ApplicationTemplateFieldPolicy;
-  };
   AuthenticationConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AuthenticationConfigKeySpecifier | (() => undefined | AuthenticationConfigKeySpecifier);
     fields?: AuthenticationConfigFieldPolicy;
@@ -2738,10 +2712,6 @@ export type StrictTypedTypePolicies = {
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);
     fields?: GroupableFieldPolicy;
-  };
-  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
-    fields?: HubAspectTemplateFieldPolicy;
   };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);

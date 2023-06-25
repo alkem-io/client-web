@@ -16542,7 +16542,7 @@ export function refetchChallengeCommunityMembersQuery(variables: SchemaTypes.Cha
 
 export const AssignUserAsCommunityMemberDocument = gql`
   mutation assignUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    assignUserAsCommunityMember(membershipData: { communityID: $communityId, userID: $memberId }) {
+    assignCommunityRoleToUser(roleData: { communityID: $communityId, userID: $memberId, role: MEMBER }) {
       id
       displayName
     }
@@ -16593,7 +16593,7 @@ export type AssignUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOpti
 >;
 export const AssignUserAsCommunityLeadDocument = gql`
   mutation assignUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    assignUserAsCommunityLead(leadershipData: { communityID: $communityId, userID: $memberId }) {
+    assignCommunityRoleToUser(roleData: { communityID: $communityId, userID: $memberId, role: LEAD }) {
       id
     }
   }
@@ -16643,7 +16643,7 @@ export type AssignUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOption
 >;
 export const RemoveUserAsCommunityMemberDocument = gql`
   mutation removeUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    removeUserAsCommunityMember(membershipData: { communityID: $communityId, userID: $memberId }) {
+    removeCommunityRoleFromUser(roleData: { communityID: $communityId, userID: $memberId, role: MEMBER }) {
       id
     }
   }
@@ -16693,7 +16693,7 @@ export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOpti
 >;
 export const RemoveUserAsCommunityLeadDocument = gql`
   mutation removeUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    removeUserAsCommunityLead(leadershipData: { communityID: $communityId, userID: $memberId }) {
+    removeCommunityRoleFromUser(roleData: { communityID: $communityId, userID: $memberId, role: LEAD }) {
       id
     }
   }
@@ -16743,7 +16743,9 @@ export type RemoveUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOption
 >;
 export const AssignOrganizationAsCommunityMemberDocument = gql`
   mutation assignOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    assignOrganizationAsCommunityMember(membershipData: { communityID: $communityId, organizationID: $memberId }) {
+    assignCommunityRoleToOrganization(
+      roleData: { communityID: $communityId, organizationID: $memberId, role: MEMBER }
+    ) {
       id
     }
   }
@@ -16795,7 +16797,7 @@ export type AssignOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMuta
 >;
 export const AssignOrganizationAsCommunityLeadDocument = gql`
   mutation assignOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    assignOrganizationAsCommunityLead(leadershipData: { communityID: $communityId, organizationID: $memberId }) {
+    assignCommunityRoleToOrganization(roleData: { communityID: $communityId, organizationID: $memberId, role: LEAD }) {
       id
     }
   }
@@ -16847,7 +16849,9 @@ export type AssignOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutati
 >;
 export const RemoveOrganizationAsCommunityMemberDocument = gql`
   mutation removeOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    removeOrganizationAsCommunityMember(membershipData: { communityID: $communityId, organizationID: $memberId }) {
+    removeCommunityRoleFromOrganization(
+      roleData: { communityID: $communityId, organizationID: $memberId, role: MEMBER }
+    ) {
       id
     }
   }
@@ -16899,7 +16903,9 @@ export type RemoveOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMuta
 >;
 export const RemoveOrganizationAsCommunityLeadDocument = gql`
   mutation removeOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    removeOrganizationAsCommunityLead(leadershipData: { communityID: $communityId, organizationID: $memberId }) {
+    removeCommunityRoleFromOrganization(
+      roleData: { communityID: $communityId, organizationID: $memberId, role: LEAD }
+    ) {
       id
     }
   }

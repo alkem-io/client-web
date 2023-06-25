@@ -410,36 +410,20 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type AssignChallengeAdminInput = {
   challengeID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignCommunityLeadOrganizationInput = {
+export type AssignCommunityOrganizationRoleInput = {
   communityID: Scalars['UUID'];
   organizationID: Scalars['UUID_NAMEID'];
+  role: CommunityRole;
 };
 
-export type AssignCommunityLeadUserInput = {
+export type AssignCommunityUserRoleInput = {
   communityID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignCommunityMemberOrganizationInput = {
-  communityID: Scalars['UUID'];
-  organizationID: Scalars['UUID_NAMEID'];
-};
-
-export type AssignCommunityMemberUserInput = {
-  communityID: Scalars['UUID'];
+  role: CommunityRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -524,6 +508,7 @@ export type Authorization = {
 
 export enum AuthorizationCredential {
   ChallengeAdmin = 'CHALLENGE_ADMIN',
+  ChallengeHost = 'CHALLENGE_HOST',
   ChallengeLead = 'CHALLENGE_LEAD',
   ChallengeMember = 'CHALLENGE_MEMBER',
   GlobalAdmin = 'GLOBAL_ADMIN',
@@ -532,6 +517,7 @@ export enum AuthorizationCredential {
   GlobalRegistered = 'GLOBAL_REGISTERED',
   InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
   OpportunityAdmin = 'OPPORTUNITY_ADMIN',
+  OpportunityHost = 'OPPORTUNITY_HOST',
   OpportunityLead = 'OPPORTUNITY_LEAD',
   OpportunityMember = 'OPPORTUNITY_MEMBER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
@@ -539,6 +525,7 @@ export enum AuthorizationCredential {
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceHost = 'SPACE_HOST',
+  SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
@@ -964,8 +951,8 @@ export type Community = Groupable & {
   availableMemberUsers?: Maybe<PaginatedUsers>;
   /** The Communications for this Community. */
   communication?: Maybe<Communication>;
-  /** The name of the Community */
-  displayName: Scalars['String'];
+  /** The displayName for this Community. */
+  displayName?: Maybe<Scalars['String']>;
   /** Groups of users related to a Community. */
   groups?: Maybe<Array<UserGroup>>;
   /** The ID of the entity */
@@ -1032,10 +1019,19 @@ export type CommunityPolicy = {
   member: CommunityRolePolicy;
 };
 
+export enum CommunityRole {
+  Admin = 'ADMIN',
+  Host = 'HOST',
+  Lead = 'LEAD',
+  Member = 'MEMBER',
+}
+
 export type CommunityRolePolicy = {
   __typename?: 'CommunityRolePolicy';
   /** The CredentialDefinition that is associated with this role */
   credential: CredentialDefinition;
+  /** Is this role enabled for this Community */
+  enabled: Scalars['Boolean'];
   /** Maximum number of Organizations in this role */
   maxOrg: Scalars['Float'];
   /** Maximum number of Users in this role */
@@ -1696,16 +1692,6 @@ export type Groupable = {
   groups?: Maybe<Array<UserGroup>>;
 };
 
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
-};
-
 export type ISearchResults = {
   __typename?: 'ISearchResults';
   /** The search results for contributions (Posts, Whiteboards etc). */
@@ -1930,16 +1916,12 @@ export type Mutation = {
   adminStorageMigrateIpfsUrls: Scalars['Boolean'];
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
-  /** Assigns an Organization as a Lead of the specified Community. */
-  assignOrganizationAsCommunityLead: Community;
-  /** Assigns an Organization as a member of the specified Community. */
-  assignOrganizationAsCommunityMember: Community;
+  /** Assigns an Organization a Role in the specified Community. */
+  assignCommunityRoleToOrganization: Community;
+  /** Assigns a User to a role in the specified Community. */
+  assignCommunityRoleToUser: Community;
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
-  /** Assigns a User as a lead of the specified Community. */
-  assignUserAsCommunityLead: Community;
-  /** Assigns a User as a member of the specified Community. */
-  assignUserAsCommunityMember: Community;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
@@ -2104,20 +2086,16 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Moves the specified Post to another Callout. */
   movePostToCallout: Post;
+  /** Removes an Organization from a Role in the specified Community. */
+  removeCommunityRoleFromOrganization: Community;
+  /** Removes a User from a Role in the specified Community. */
+  removeCommunityRoleFromUser: Community;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
-  /** Removes an Organization as a Lead of the specified Community. */
-  removeOrganizationAsCommunityLead: Community;
-  /** Removes an Organization as a member of the specified Community. */
-  removeOrganizationAsCommunityMember: Community;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
-  /** Removes a User as a Lead of the specified Community. */
-  removeUserAsCommunityLead: Community;
-  /** Removes a User as a member of the specified Community. */
-  removeUserAsCommunityMember: Community;
   /** Removes a User from being a Global Admin. */
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
@@ -2240,24 +2218,16 @@ export type MutationApplyForCommunityMembershipArgs = {
   applicationData: CommunityApplyInput;
 };
 
-export type MutationAssignOrganizationAsCommunityLeadArgs = {
-  leadershipData: AssignCommunityLeadOrganizationInput;
+export type MutationAssignCommunityRoleToOrganizationArgs = {
+  roleData: AssignCommunityOrganizationRoleInput;
 };
 
-export type MutationAssignOrganizationAsCommunityMemberArgs = {
-  membershipData: AssignCommunityMemberOrganizationInput;
+export type MutationAssignCommunityRoleToUserArgs = {
+  roleData: AssignCommunityUserRoleInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
   membershipData: AssignChallengeAdminInput;
-};
-
-export type MutationAssignUserAsCommunityLeadArgs = {
-  leadershipData: AssignCommunityLeadUserInput;
-};
-
-export type MutationAssignUserAsCommunityMemberArgs = {
-  membershipData: AssignCommunityMemberUserInput;
 };
 
 export type MutationAssignUserAsGlobalAdminArgs = {
@@ -2572,16 +2542,16 @@ export type MutationMovePostToCalloutArgs = {
   movePostData: MovePostInput;
 };
 
+export type MutationRemoveCommunityRoleFromOrganizationArgs = {
+  roleData: RemoveCommunityOrganizationRoleInput;
+};
+
+export type MutationRemoveCommunityRoleFromUserArgs = {
+  roleData: RemoveCommunityUserRoleInput;
+};
+
 export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
-};
-
-export type MutationRemoveOrganizationAsCommunityLeadArgs = {
-  leadershipData: RemoveCommunityLeadOrganizationInput;
-};
-
-export type MutationRemoveOrganizationAsCommunityMemberArgs = {
-  membershipData: RemoveCommunityMemberOrganizationInput;
 };
 
 export type MutationRemoveReactionToMessageInRoomArgs = {
@@ -2590,14 +2560,6 @@ export type MutationRemoveReactionToMessageInRoomArgs = {
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
   membershipData: RemoveChallengeAdminInput;
-};
-
-export type MutationRemoveUserAsCommunityLeadArgs = {
-  leadershipData: RemoveCommunityLeadUserInput;
-};
-
-export type MutationRemoveUserAsCommunityMemberArgs = {
-  membershipData: RemoveCommunityMemberUserInput;
 };
 
 export type MutationRemoveUserAsGlobalAdminArgs = {
@@ -3493,23 +3455,15 @@ export type RemoveChallengeAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveCommunityLeadOrganizationInput = {
+export type RemoveCommunityOrganizationRoleInput = {
   communityID: Scalars['UUID'];
   organizationID: Scalars['UUID_NAMEID'];
+  role: CommunityRole;
 };
 
-export type RemoveCommunityLeadUserInput = {
+export type RemoveCommunityUserRoleInput = {
   communityID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveCommunityMemberOrganizationInput = {
-  communityID: Scalars['UUID'];
-  organizationID: Scalars['UUID_NAMEID'];
-};
-
-export type RemoveCommunityMemberUserInput = {
-  communityID: Scalars['UUID'];
+  role: CommunityRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -11520,7 +11474,7 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          community: { __typename?: 'Community'; id: string; displayName: string };
+          community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
           user: {
             __typename?: 'User';
             id: string;
@@ -11842,7 +11796,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  community: { __typename?: 'Community'; id: string; displayName: string };
+  community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
   user: {
     __typename?: 'User';
     id: string;
@@ -12176,7 +12130,7 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        community: { __typename?: 'Community'; id: string; displayName: string };
+        community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
         user: {
           __typename?: 'User';
           id: string;
@@ -12259,7 +12213,7 @@ export type ActivityLogOnCollaborationQuery = {
 export type ActivityLogMemberJoinedFragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   communityType: string;
-  community: { __typename?: 'Community'; id: string; displayName: string };
+  community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
   user: {
     __typename?: 'User';
     id: string;
@@ -18105,7 +18059,7 @@ export type CommunityUpdatesQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          displayName: string;
+          displayName?: string | undefined;
           communication?:
             | {
                 __typename?: 'Communication';
@@ -18343,7 +18297,7 @@ export type SpaceApplicationQuery = {
     __typename?: 'Space';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
-    community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+    community?: { __typename?: 'Community'; id: string; displayName?: string | undefined } | undefined;
   };
 };
 
@@ -18449,7 +18403,7 @@ export type ChallengeCommunityQuery = {
         | {
             __typename?: 'Community';
             id: string;
-            displayName: string;
+            displayName?: string | undefined;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
@@ -18473,7 +18427,7 @@ export type ChallengeCommunityQuery = {
 export type CommunityDetailsFragment = {
   __typename?: 'Community';
   id: string;
-  displayName: string;
+  displayName?: string | undefined;
   myMembershipStatus?: CommunityMembershipStatus | undefined;
   communication?:
     | {
@@ -18504,7 +18458,7 @@ export type OpportunityCommunityQuery = {
         | {
             __typename?: 'Community';
             id: string;
-            displayName: string;
+            displayName?: string | undefined;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
@@ -18539,7 +18493,7 @@ export type SpaceCommunityQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          displayName: string;
+          displayName?: string | undefined;
           myMembershipStatus?: CommunityMembershipStatus | undefined;
           communication?:
             | {
@@ -19107,23 +19061,23 @@ export type AllCommunitiesQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
-    community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+    community?: { __typename?: 'Community'; id: string; displayName?: string | undefined } | undefined;
     challenges?:
       | Array<{
           __typename?: 'Challenge';
-          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+          community?: { __typename?: 'Community'; id: string; displayName?: string | undefined } | undefined;
         }>
       | undefined;
     opportunities?:
       | Array<{
           __typename?: 'Opportunity';
-          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+          community?: { __typename?: 'Community'; id: string; displayName?: string | undefined } | undefined;
         }>
       | undefined;
   };
 };
 
-export type AllCommunityDetailsFragment = { __typename?: 'Community'; id: string; displayName: string };
+export type AllCommunityDetailsFragment = { __typename?: 'Community'; id: string; displayName?: string | undefined };
 
 export type ChallengesWithCommunityQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
@@ -19140,7 +19094,7 @@ export type ChallengesWithCommunityQuery = {
           id: string;
           nameID: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
-          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+          community?: { __typename?: 'Community'; id: string; displayName?: string | undefined } | undefined;
         }>
       | undefined;
   };
@@ -19160,7 +19114,7 @@ export type CommunityGroupsQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          displayName: string;
+          displayName?: string | undefined;
           groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
         }
       | undefined;
@@ -19430,7 +19384,7 @@ export type AssignUserAsCommunityMemberMutationVariables = Exact<{
 
 export type AssignUserAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  assignUserAsCommunityMember: { __typename?: 'Community'; id: string; displayName: string };
+  assignCommunityRoleToUser: { __typename?: 'Community'; id: string; displayName?: string | undefined };
 };
 
 export type AssignUserAsCommunityLeadMutationVariables = Exact<{
@@ -19440,7 +19394,7 @@ export type AssignUserAsCommunityLeadMutationVariables = Exact<{
 
 export type AssignUserAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  assignUserAsCommunityLead: { __typename?: 'Community'; id: string };
+  assignCommunityRoleToUser: { __typename?: 'Community'; id: string };
 };
 
 export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
@@ -19450,7 +19404,7 @@ export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
 
 export type RemoveUserAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  removeUserAsCommunityMember: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromUser: { __typename?: 'Community'; id: string };
 };
 
 export type RemoveUserAsCommunityLeadMutationVariables = Exact<{
@@ -19460,7 +19414,7 @@ export type RemoveUserAsCommunityLeadMutationVariables = Exact<{
 
 export type RemoveUserAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  removeUserAsCommunityLead: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromUser: { __typename?: 'Community'; id: string };
 };
 
 export type AssignOrganizationAsCommunityMemberMutationVariables = Exact<{
@@ -19470,7 +19424,7 @@ export type AssignOrganizationAsCommunityMemberMutationVariables = Exact<{
 
 export type AssignOrganizationAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  assignOrganizationAsCommunityMember: { __typename?: 'Community'; id: string };
+  assignCommunityRoleToOrganization: { __typename?: 'Community'; id: string };
 };
 
 export type AssignOrganizationAsCommunityLeadMutationVariables = Exact<{
@@ -19480,7 +19434,7 @@ export type AssignOrganizationAsCommunityLeadMutationVariables = Exact<{
 
 export type AssignOrganizationAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  assignOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+  assignCommunityRoleToOrganization: { __typename?: 'Community'; id: string };
 };
 
 export type RemoveOrganizationAsCommunityMemberMutationVariables = Exact<{
@@ -19490,7 +19444,7 @@ export type RemoveOrganizationAsCommunityMemberMutationVariables = Exact<{
 
 export type RemoveOrganizationAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  removeOrganizationAsCommunityMember: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromOrganization: { __typename?: 'Community'; id: string };
 };
 
 export type RemoveOrganizationAsCommunityLeadMutationVariables = Exact<{
@@ -19500,7 +19454,7 @@ export type RemoveOrganizationAsCommunityLeadMutationVariables = Exact<{
 
 export type RemoveOrganizationAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  removeOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromOrganization: { __typename?: 'Community'; id: string };
 };
 
 export type OpportunityCommunityMembersQueryVariables = Exact<{
