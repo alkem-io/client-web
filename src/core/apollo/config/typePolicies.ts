@@ -39,6 +39,13 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
+  Message: {
+    fields: {
+      reactions: {
+        merge: (existing, incoming) => incoming,
+      },
+    },
+  },
   Query: {
     fields: {
       usersPaginated: paginationFieldPolicy(['filter'], 'User'),
