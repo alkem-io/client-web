@@ -8,6 +8,7 @@ import {
 } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { MutationType } from '../../../core/apollo/generated/graphql-schema';
+import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 
 const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) => {
   const handleError = useApolloErrorHandler();
@@ -32,12 +33,12 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
         return;
       }
 
-      const cacheRoomId = client.cache.identify({
+      const roomRefId = client.cache.identify({
         id: roomID,
         __typename: 'Room',
       });
 
-      if (!cacheRoomId) {
+      if (!roomRefId) {
         return;
       }
 
@@ -51,7 +52,7 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
         switch (type) {
           case MutationType.Create: {
             client.cache.modify({
-              id: cacheRoomId,
+              id: roomRefId,
               fields: {
                 messages(existingMessages = []) {
                   const newMessage = client.cache.writeFragment({
@@ -63,6 +64,22 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
                 },
               },
             });
+            break;
+          }
+          case MutationType.Delete: {
+            const messageRefId = client.cache.identify({
+              id: data.id,
+              __typename: 'Message',
+            });
+            client.cache.modify({
+              id: roomRefId,
+              fields: {
+                messages(existingMessages = []) {
+                  return existingMessages.filter(message => message.__ref !== messageRefId);
+                },
+              },
+            });
+            evictFromCache(client.cache, data.id, 'Message');
             break;
           }
         }
