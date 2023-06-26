@@ -10,7 +10,7 @@ query HomePageSpaces($includeMembershipStatus: Boolean!) {
         id
         tags
       }
-      banner: visual(type: BANNER) {
+      cardBanner: visual(type: CARD) {
         id
         uri
         alternativeText

@@ -20154,7 +20154,7 @@ export const HomePageSpacesDocument = gql`
           id
           tags
         }
-        banner: visual(type: BANNER) {
+        cardBanner: visual(type: CARD) {
           id
           uri
           alternativeText
