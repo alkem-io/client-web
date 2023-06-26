@@ -67,7 +67,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
               <SpaceCard
-                banner={space.profile?.banner}
+                banner={space.profile?.cardBanner}
                 displayName={space.profile?.displayName!}
                 vision={space.context?.vision!}
                 membersCount={getMetricCount(space.metrics, MetricType.Member)}
@@ -88,7 +88,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
             <ScrollableCardsLayoutContainer orientation="horizontal" cards>
               {userSpaces.map(space => (
                 <SpaceCard
-                  banner={space.profile?.banner}
+                  banner={space.profile?.cardBanner}
                   displayName={space.profile?.displayName!}
                   vision={space.context?.vision!}
                   membersCount={getMetricCount(space.metrics, MetricType.Member)}
