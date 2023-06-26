@@ -42,7 +42,7 @@ export const typePolicies: TypedTypePolicies = {
   Message: {
     fields: {
       reactions: {
-        merge: (existing, incoming) => incoming,
+        merge: false,
       },
     },
   },
