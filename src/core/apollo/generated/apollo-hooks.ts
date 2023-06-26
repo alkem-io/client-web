@@ -3323,58 +3323,6 @@ export type AssignUserAsGlobalSpacesAdminMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.AssignUserAsGlobalSpacesAdminMutation,
   SchemaTypes.AssignUserAsGlobalSpacesAdminMutationVariables
 >;
-export const AssignUserAsSpaceAdminDocument = gql`
-  mutation assignUserAsSpaceAdmin($input: AssignSpaceAdminInput!) {
-    assignUserAsSpaceAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsSpaceAdminMutation,
-  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
->;
-
-/**
- * __useAssignUserAsSpaceAdminMutation__
- *
- * To run a mutation, you first call `useAssignUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsSpaceAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsSpaceAdminMutation, { data, loading, error }] = useAssignUserAsSpaceAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserAsSpaceAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsSpaceAdminMutation,
-    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsSpaceAdminMutation,
-    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
-  >(AssignUserAsSpaceAdminDocument, options);
-}
-
-export type AssignUserAsSpaceAdminMutationHookResult = ReturnType<typeof useAssignUserAsSpaceAdminMutation>;
-export type AssignUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsSpaceAdminMutation>;
-export type AssignUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsSpaceAdminMutation,
-  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
->;
 export const AssignUserAsOrganizationOwnerDocument = gql`
   mutation assignUserAsOrganizationOwner($input: AssignOrganizationOwnerInput!) {
     assignUserAsOrganizationOwner(membershipData: $input) {
@@ -3429,6 +3377,58 @@ export type AssignUserAsOrganizationOwnerMutationResult =
 export type AssignUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsOrganizationOwnerMutation,
   SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
+>;
+export const AssignUserAsSpaceAdminDocument = gql`
+  mutation assignUserAsSpaceAdmin($input: AssignSpaceAdminInput!) {
+    assignUserAsSpaceAdmin(membershipData: $input) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type AssignUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsSpaceAdminMutation,
+  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
+>;
+
+/**
+ * __useAssignUserAsSpaceAdminMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsSpaceAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsSpaceAdminMutation, { data, loading, error }] = useAssignUserAsSpaceAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsSpaceAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsSpaceAdminMutation,
+    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsSpaceAdminMutation,
+    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
+  >(AssignUserAsSpaceAdminDocument, options);
+}
+
+export type AssignUserAsSpaceAdminMutationHookResult = ReturnType<typeof useAssignUserAsSpaceAdminMutation>;
+export type AssignUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsSpaceAdminMutation>;
+export type AssignUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsSpaceAdminMutation,
+  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
 >;
 export const RemoveUserAsChallengeAdminDocument = gql`
   mutation removeUserAsChallengeAdmin($input: RemoveChallengeAdminInput!) {
@@ -3645,58 +3645,6 @@ export type RemoveUserAsGlobalSpacesAdminMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.RemoveUserAsGlobalSpacesAdminMutation,
   SchemaTypes.RemoveUserAsGlobalSpacesAdminMutationVariables
 >;
-export const RemoveUserAsSpaceAdminDocument = gql`
-  mutation removeUserAsSpaceAdmin($input: RemoveSpaceAdminInput!) {
-    removeUserAsSpaceAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsSpaceAdminMutation,
-  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsSpaceAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsSpaceAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsSpaceAdminMutation, { data, loading, error }] = useRemoveUserAsSpaceAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsSpaceAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsSpaceAdminMutation,
-    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsSpaceAdminMutation,
-    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
-  >(RemoveUserAsSpaceAdminDocument, options);
-}
-
-export type RemoveUserAsSpaceAdminMutationHookResult = ReturnType<typeof useRemoveUserAsSpaceAdminMutation>;
-export type RemoveUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsSpaceAdminMutation>;
-export type RemoveUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsSpaceAdminMutation,
-  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
->;
 export const RemoveUserAsOrganizationOwnerDocument = gql`
   mutation removeUserAsOrganizationOwner($input: RemoveOrganizationOwnerInput!) {
     removeUserAsOrganizationOwner(membershipData: $input) {
@@ -3751,6 +3699,58 @@ export type RemoveUserAsOrganizationOwnerMutationResult =
 export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
+>;
+export const RemoveUserAsSpaceAdminDocument = gql`
+  mutation removeUserAsSpaceAdmin($input: RemoveSpaceAdminInput!) {
+    removeUserAsSpaceAdmin(membershipData: $input) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type RemoveUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsSpaceAdminMutation,
+  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsSpaceAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsSpaceAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsSpaceAdminMutation, { data, loading, error }] = useRemoveUserAsSpaceAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsSpaceAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsSpaceAdminMutation,
+    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsSpaceAdminMutation,
+    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
+  >(RemoveUserAsSpaceAdminDocument, options);
+}
+
+export type RemoveUserAsSpaceAdminMutationHookResult = ReturnType<typeof useRemoveUserAsSpaceAdminMutation>;
+export type RemoveUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsSpaceAdminMutation>;
+export type RemoveUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsSpaceAdminMutation,
+  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
 >;
 export const UploadFileDocument = gql`
   mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
@@ -14311,17 +14311,13 @@ export const RoomEventsDocument = gql`
         type
         messageID
         data {
-          id
-          emoji
-          timestamp
-          sender {
-            id
-          }
+          ...ReactionDetails
         }
       }
     }
   }
   ${MessageDetailsFragmentDoc}
+  ${ReactionDetailsFragmentDoc}
 `;
 
 /**
@@ -14962,71 +14958,6 @@ export function refetchChallengeApplicationQuery(variables: SchemaTypes.Challeng
   return { query: ChallengeApplicationDocument, variables: variables };
 }
 
-export const SpaceApplicationDocument = gql`
-  query spaceApplication($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      profile {
-        id
-        displayName
-      }
-      community {
-        id
-        displayName
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceApplicationQuery__
- *
- * To run a query within a React component, call `useSpaceApplicationQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceApplicationQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceApplicationQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
-    SpaceApplicationDocument,
-    options
-  );
-}
-
-export function useSpaceApplicationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceApplicationQuery,
-    SchemaTypes.SpaceApplicationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
-    SpaceApplicationDocument,
-    options
-  );
-}
-
-export type SpaceApplicationQueryHookResult = ReturnType<typeof useSpaceApplicationQuery>;
-export type SpaceApplicationLazyQueryHookResult = ReturnType<typeof useSpaceApplicationLazyQuery>;
-export type SpaceApplicationQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceApplicationQuery,
-  SchemaTypes.SpaceApplicationQueryVariables
->;
-export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplicationQueryVariables) {
-  return { query: SpaceApplicationDocument, variables: variables };
-}
-
 export const SpaceNameIdDocument = gql`
   query spaceNameId($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -15204,6 +15135,71 @@ export type OpportunityNameIdQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityNameIdQuery(variables: SchemaTypes.OpportunityNameIdQueryVariables) {
   return { query: OpportunityNameIdDocument, variables: variables };
+}
+
+export const SpaceApplicationDocument = gql`
+  query spaceApplication($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      community {
+        id
+        displayName
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceApplicationQuery__
+ *
+ * To run a query within a React component, call `useSpaceApplicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceApplicationQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceApplicationQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
+    SpaceApplicationDocument,
+    options
+  );
+}
+
+export function useSpaceApplicationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceApplicationQuery,
+    SchemaTypes.SpaceApplicationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
+    SpaceApplicationDocument,
+    options
+  );
+}
+
+export type SpaceApplicationQueryHookResult = ReturnType<typeof useSpaceApplicationQuery>;
+export type SpaceApplicationLazyQueryHookResult = ReturnType<typeof useSpaceApplicationLazyQuery>;
+export type SpaceApplicationQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceApplicationQuery,
+  SchemaTypes.SpaceApplicationQueryVariables
+>;
+export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplicationQueryVariables) {
+  return { query: SpaceApplicationDocument, variables: variables };
 }
 
 export const CommunityApplicationFormDocument = gql`
@@ -15415,66 +15411,6 @@ export function refetchChallengeCommunityQuery(variables: SchemaTypes.ChallengeC
   return { query: ChallengeCommunityDocument, variables: variables };
 }
 
-export const SpaceCommunityDocument = gql`
-  query spaceCommunity($spaceId: UUID_NAMEID!, $includeDetails: Boolean = false) {
-    space(ID: $spaceId) {
-      id
-      community {
-        id
-        ...CommunityDetails @include(if: $includeDetails)
-      }
-    }
-  }
-  ${CommunityDetailsFragmentDoc}
-`;
-
-/**
- * __useSpaceCommunityQuery__
- *
- * To run a query within a React component, call `useSpaceCommunityQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceCommunityQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      includeDetails: // value for 'includeDetails'
- *   },
- * });
- */
-export function useSpaceCommunityQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>(
-    SpaceCommunityDocument,
-    options
-  );
-}
-
-export function useSpaceCommunityLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>(
-    SpaceCommunityDocument,
-    options
-  );
-}
-
-export type SpaceCommunityQueryHookResult = ReturnType<typeof useSpaceCommunityQuery>;
-export type SpaceCommunityLazyQueryHookResult = ReturnType<typeof useSpaceCommunityLazyQuery>;
-export type SpaceCommunityQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCommunityQuery,
-  SchemaTypes.SpaceCommunityQueryVariables
->;
-export function refetchSpaceCommunityQuery(variables: SchemaTypes.SpaceCommunityQueryVariables) {
-  return { query: SpaceCommunityDocument, variables: variables };
-}
-
 export const OpportunityCommunityDocument = gql`
   query opportunityCommunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     space(ID: $spaceId) {
@@ -15543,6 +15479,66 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityCommunityQuery(variables: SchemaTypes.OpportunityCommunityQueryVariables) {
   return { query: OpportunityCommunityDocument, variables: variables };
+}
+
+export const SpaceCommunityDocument = gql`
+  query spaceCommunity($spaceId: UUID_NAMEID!, $includeDetails: Boolean = false) {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        ...CommunityDetails @include(if: $includeDetails)
+      }
+    }
+  }
+  ${CommunityDetailsFragmentDoc}
+`;
+
+/**
+ * __useSpaceCommunityQuery__
+ *
+ * To run a query within a React component, call `useSpaceCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCommunityQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      includeDetails: // value for 'includeDetails'
+ *   },
+ * });
+ */
+export function useSpaceCommunityQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>(
+    SpaceCommunityDocument,
+    options
+  );
+}
+
+export function useSpaceCommunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>(
+    SpaceCommunityDocument,
+    options
+  );
+}
+
+export type SpaceCommunityQueryHookResult = ReturnType<typeof useSpaceCommunityQuery>;
+export type SpaceCommunityLazyQueryHookResult = ReturnType<typeof useSpaceCommunityLazyQuery>;
+export type SpaceCommunityQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCommunityQuery,
+  SchemaTypes.SpaceCommunityQueryVariables
+>;
+export function refetchSpaceCommunityQuery(variables: SchemaTypes.SpaceCommunityQueryVariables) {
+  return { query: SpaceCommunityDocument, variables: variables };
 }
 
 export const SpaceCommunityContributorsDocument = gql`
@@ -16522,94 +16518,6 @@ export function refetchChallengeCommunityMembersQuery(variables: SchemaTypes.Cha
   return { query: ChallengeCommunityMembersDocument, variables: variables };
 }
 
-export const SpaceCommunityMembersDocument = gql`
-  query spaceCommunityMembers($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      community {
-        id
-        memberUsers {
-          ...CommunityMemberUser
-        }
-        leadUsers {
-          ...CommunityMemberUser
-        }
-        memberOrganizations {
-          ...OrganizationDetails
-        }
-        leadOrganizations {
-          ...OrganizationDetails
-        }
-        policy {
-          ...CommunityPolicy
-        }
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-      host {
-        ...OrganizationDetails
-      }
-    }
-  }
-  ${CommunityMemberUserFragmentDoc}
-  ${OrganizationDetailsFragmentDoc}
-  ${CommunityPolicyFragmentDoc}
-`;
-
-/**
- * __useSpaceCommunityMembersQuery__
- *
- * To run a query within a React component, call `useSpaceCommunityMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCommunityMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceCommunityMembersQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceCommunityMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceCommunityMembersQuery,
-    SchemaTypes.SpaceCommunityMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceCommunityMembersQuery, SchemaTypes.SpaceCommunityMembersQueryVariables>(
-    SpaceCommunityMembersDocument,
-    options
-  );
-}
-
-export function useSpaceCommunityMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceCommunityMembersQuery,
-    SchemaTypes.SpaceCommunityMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityMembersQuery, SchemaTypes.SpaceCommunityMembersQueryVariables>(
-    SpaceCommunityMembersDocument,
-    options
-  );
-}
-
-export type SpaceCommunityMembersQueryHookResult = ReturnType<typeof useSpaceCommunityMembersQuery>;
-export type SpaceCommunityMembersLazyQueryHookResult = ReturnType<typeof useSpaceCommunityMembersLazyQuery>;
-export type SpaceCommunityMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCommunityMembersQuery,
-  SchemaTypes.SpaceCommunityMembersQueryVariables
->;
-export function refetchSpaceCommunityMembersQuery(variables: SchemaTypes.SpaceCommunityMembersQueryVariables) {
-  return { query: SpaceCommunityMembersDocument, variables: variables };
-}
-
 export const AssignUserAsCommunityMemberDocument = gql`
   mutation assignUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
     assignUserAsCommunityMember(membershipData: { communityID: $communityId, userID: $memberId }) {
@@ -17100,6 +17008,94 @@ export function refetchOpportunityCommunityMembersQuery(
   variables: SchemaTypes.OpportunityCommunityMembersQueryVariables
 ) {
   return { query: OpportunityCommunityMembersDocument, variables: variables };
+}
+
+export const SpaceCommunityMembersDocument = gql`
+  query spaceCommunityMembers($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        memberUsers {
+          ...CommunityMemberUser
+        }
+        leadUsers {
+          ...CommunityMemberUser
+        }
+        memberOrganizations {
+          ...OrganizationDetails
+        }
+        leadOrganizations {
+          ...OrganizationDetails
+        }
+        policy {
+          ...CommunityPolicy
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      host {
+        ...OrganizationDetails
+      }
+    }
+  }
+  ${CommunityMemberUserFragmentDoc}
+  ${OrganizationDetailsFragmentDoc}
+  ${CommunityPolicyFragmentDoc}
+`;
+
+/**
+ * __useSpaceCommunityMembersQuery__
+ *
+ * To run a query within a React component, call `useSpaceCommunityMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCommunityMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCommunityMembersQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceCommunityMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceCommunityMembersQuery,
+    SchemaTypes.SpaceCommunityMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceCommunityMembersQuery, SchemaTypes.SpaceCommunityMembersQueryVariables>(
+    SpaceCommunityMembersDocument,
+    options
+  );
+}
+
+export function useSpaceCommunityMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCommunityMembersQuery,
+    SchemaTypes.SpaceCommunityMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityMembersQuery, SchemaTypes.SpaceCommunityMembersQueryVariables>(
+    SpaceCommunityMembersDocument,
+    options
+  );
+}
+
+export type SpaceCommunityMembersQueryHookResult = ReturnType<typeof useSpaceCommunityMembersQuery>;
+export type SpaceCommunityMembersLazyQueryHookResult = ReturnType<typeof useSpaceCommunityMembersLazyQuery>;
+export type SpaceCommunityMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCommunityMembersQuery,
+  SchemaTypes.SpaceCommunityMembersQueryVariables
+>;
+export function refetchSpaceCommunityMembersQuery(variables: SchemaTypes.SpaceCommunityMembersQueryVariables) {
+  return { query: SpaceCommunityMembersDocument, variables: variables };
 }
 
 export const ContributorsPageOrganizationsDocument = gql`

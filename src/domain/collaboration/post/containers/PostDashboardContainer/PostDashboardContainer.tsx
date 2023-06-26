@@ -18,11 +18,12 @@ import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../../../common/utils/containers/ComponentOrChildrenFn';
-import usePostCommentsMessageReceivedSubscription from '../../comments/usePostCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getPostCallout';
 import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
 import { buildAuthorFromUser } from '../../../../../common/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
+import useSubscribeOnRoomEvents from '../../../callout/useSubscribeOnRoomEvents';
+import { compact } from 'lodash';
 
 interface EntityIds {
   postNameId: Scalars['UUID_NAMEID'];
@@ -70,7 +71,6 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     data: spaceData,
     loading: spaceLoading,
     error: spaceError,
-    subscribeToMore: subscribeToSpace,
   } = useSpacePostQuery({
     variables: { spaceNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
@@ -84,7 +84,6 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     data: challengeData,
     loading: challengeLoading,
     error: challengeError,
-    subscribeToMore: subscribeToChallenge,
   } = useChallengePostQuery({
     variables: { spaceNameId, challengeNameId: challengeNameId!, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
@@ -99,7 +98,6 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     data: opportunityData,
     loading: opportunityLoading,
     error: opportunityError,
-    subscribeToMore: subscribeToOpportunity,
   } = useOpportunityPostQuery({
     variables: { spaceNameId, opportunityNameId: opportunityNameId!, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !opportunityNameId,
@@ -114,41 +112,24 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 
-  const spaceCommentsSubscription = usePostCommentsMessageReceivedSubscription(
-    spaceData,
-    spaceData =>
-      getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(x => x.nameID === postNameId),
-    subscribeToSpace
-  );
-  const challengeCommentsSubscription = usePostCommentsMessageReceivedSubscription(
-    challengeData,
-    challengeData =>
-      getCardCallout(challengeData?.space?.challenge?.collaboration?.callouts, postNameId)?.posts?.find(
-        x => x.nameID === postNameId
-      ),
-    subscribeToChallenge
-  );
-  const opportunityCommentsSubscription = usePostCommentsMessageReceivedSubscription(
-    opportunityData,
-    opportunityData =>
-      getCardCallout(opportunityData?.space?.opportunity?.collaboration?.callouts, postNameId)?.posts?.find(
-        x => x.nameID === postNameId
-      ),
-    subscribeToOpportunity
-  );
+  const roomId = compact([
+    getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(x => x.nameID === postNameId)
+      ?.comments.id,
+    getCardCallout(challengeData?.space?.challenge?.collaboration?.callouts, postNameId)?.posts?.find(
+      x => x.nameID === postNameId
+    )?.comments.id,
+    getCardCallout(opportunityData?.space?.opportunity?.collaboration?.callouts, postNameId)?.posts?.find(
+      x => x.nameID === postNameId
+    )?.comments.id,
+  ])[0];
 
-  const isSubscribedToMessages = [
-    spaceCommentsSubscription,
-    challengeCommentsSubscription,
-    opportunityCommentsSubscription,
-  ].some(subscription => subscription.enabled);
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
 
   const creator = post?.createdBy;
   const creatorAvatar = creator?.profile.visual?.uri;
   const creatorName = creator?.profile.displayName;
   const createdDate = post?.createdDate.toString();
 
-  const roomId = post?.comments?.id;
   const _messages = useMemo(() => post?.comments?.messages ?? [], [post?.comments?.messages]);
   const messages = useMemo<Message[]>(
     () =>
