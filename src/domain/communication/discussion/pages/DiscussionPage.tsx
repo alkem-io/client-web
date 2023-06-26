@@ -7,7 +7,6 @@ import DiscussionView from '../views/DiscussionView';
 import {
   refetchPlatformDiscussionQuery,
   refetchPlatformDiscussionsQuery,
-  RoomEventsDocument,
   useDeleteDiscussionMutation,
   usePlatformDiscussionQuery,
   useRemoveMessageOnRoomMutation,
@@ -22,30 +21,8 @@ import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDeskt
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
 import { useNavigate } from 'react-router-dom';
-import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
-import {
-  DiscussionDetailsFragment,
-  MutationType,
-  RoomEventsSubscription,
-  RoomEventsSubscriptionVariables,
-} from '../../../../core/apollo/generated/graphql-schema';
 import usePostMessageMutations from '../../room/Comments/usePostMessageMutations';
-
-const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
-  DiscussionDetailsFragment,
-  RoomEventsSubscription,
-  RoomEventsSubscriptionVariables
->({
-  subscriptionDocument: RoomEventsDocument,
-  getSubscriptionVariables: discussion => ({ roomID: discussion.comments.id }),
-  updateSubEntity: (discussion, subscriptionData) => {
-    const { message } = subscriptionData.roomEvents;
-
-    if (message && message.type === MutationType.Create) {
-      discussion?.comments.messages.push(message.data);
-    }
-  },
-});
+import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
 
 interface DiscussionPageProps {}
 
@@ -55,22 +32,14 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const navigate = useNavigate();
   const { user } = useUserContext();
 
-  const {
-    data,
-    loading: loadingDiscussion,
-    subscribeToMore,
-  } = usePlatformDiscussionQuery({
+  const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {
       discussionId: discussionNameId!,
     },
     skip: !discussionNameId,
   });
 
-  const { enabled: isSubscribedToMessages } = useDiscussionMessagesSubscription(
-    data,
-    data => data?.platform.communication.discussion,
-    subscribeToMore
-  );
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.communication.discussion?.comments.id);
 
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(

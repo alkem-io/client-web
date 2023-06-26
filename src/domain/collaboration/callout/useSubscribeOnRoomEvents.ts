@@ -1,21 +1,26 @@
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../../community/contributor/user';
-import { MessageDetailsFragmentDoc, useRoomEventsSubscription } from '../../../core/apollo/generated/apollo-hooks';
+import {
+  MessageDetailsFragmentDoc,
+  ReactionDetailsFragmentDoc,
+  useRoomEventsSubscription,
+} from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { MutationType } from '../../../core/apollo/generated/graphql-schema';
+import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 
-const useSubscribeOnRoomEvents = (roomID: string, skip?: boolean) => {
+const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
   const { isAuthenticated } = useUserContext();
 
-  const enabled = areSubscriptionsEnabled && isAuthenticated && !skip;
+  const enabled = !!roomID && areSubscriptionsEnabled && isAuthenticated && !skip;
 
   useRoomEventsSubscription({
     shouldResubscribe: true,
-    variables: { roomID },
+    variables: { roomID: roomID! }, // Ensured by skip
     skip: !enabled,
     onSubscriptionData: ({ subscriptionData, client }) => {
       if (subscriptionData.error) {
@@ -28,18 +33,17 @@ const useSubscribeOnRoomEvents = (roomID: string, skip?: boolean) => {
         return;
       }
 
-      const cacheRoomId = client.cache.identify({
+      const roomRefId = client.cache.identify({
         id: roomID,
         __typename: 'Room',
       });
 
-      if (!cacheRoomId) {
+      if (!roomRefId) {
         return;
       }
 
-      // todo: handle reactions
       const {
-        roomEvents: { message },
+        roomEvents: { message, reaction },
       } = data;
 
       if (message) {
@@ -48,7 +52,7 @@ const useSubscribeOnRoomEvents = (roomID: string, skip?: boolean) => {
         switch (type) {
           case MutationType.Create: {
             client.cache.modify({
-              id: cacheRoomId,
+              id: roomRefId,
               fields: {
                 messages(existingMessages = []) {
                   const newMessage = client.cache.writeFragment({
@@ -60,6 +64,73 @@ const useSubscribeOnRoomEvents = (roomID: string, skip?: boolean) => {
                 },
               },
             });
+            break;
+          }
+          case MutationType.Delete: {
+            const messageRefId = client.cache.identify({
+              id: data.id,
+              __typename: 'Message',
+            });
+            client.cache.modify({
+              id: roomRefId,
+              fields: {
+                messages(existingMessages = []) {
+                  return existingMessages.filter(message => message.__ref !== messageRefId);
+                },
+              },
+            });
+            evictFromCache(client.cache, data.id, 'Message');
+            break;
+          }
+        }
+      }
+      if (reaction) {
+        const { messageID, data, type } = reaction;
+        switch (type) {
+          case MutationType.Create: {
+            const messageRefId = client.cache.identify({
+              id: messageID,
+              __typename: 'Message',
+            });
+            client.cache.modify({
+              id: messageRefId,
+              fields: {
+                reactions(existingReactions = []) {
+                  const newReactionRef = client.cache.writeFragment({
+                    data,
+                    fragment: ReactionDetailsFragmentDoc,
+                    fragmentName: 'ReactionDetails',
+                  });
+                  return [...existingReactions, newReactionRef];
+                },
+              },
+            });
+            break;
+          }
+          case MutationType.Delete: {
+            const reactionRefId = client.cache.identify({
+              id: data.id,
+              __typename: 'Reaction',
+            });
+            // Do not modify cache objects directly!
+            // We only do this to find the parent messageId of this deleted reaction:
+            const cacheObjects = client.cache.extract();
+            const [messageRefId] = Object.keys(cacheObjects).filter(
+              key =>
+                cacheObjects[key].__typename === 'Message' &&
+                cacheObjects[key].reactions?.some(reactionRef => reactionRef.__ref === reactionRefId)
+            );
+            if (messageRefId) {
+              // Message found in cache, remove the reaction:
+              client.cache.modify({
+                id: messageRefId,
+                fields: {
+                  reactions(existingReactions = []) {
+                    return existingReactions.filter(reaction => reaction.__ref !== reactionRefId);
+                  },
+                },
+              });
+            }
             break;
           }
         }

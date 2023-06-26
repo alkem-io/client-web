@@ -14329,17 +14329,13 @@ export const RoomEventsDocument = gql`
         type
         messageID
         data {
-          id
-          emoji
-          timestamp
-          sender {
-            id
-          }
+          ...ReactionDetails
         }
       }
     }
   }
   ${MessageDetailsFragmentDoc}
+  ${ReactionDetailsFragmentDoc}
 `;
 
 /**

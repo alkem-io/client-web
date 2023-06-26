@@ -18083,8 +18083,7 @@ export type RoomEventsSubscription = {
             __typename?: 'Reaction';
             id: string;
             emoji: string;
-            timestamp: number;
-            sender?: { __typename?: 'User'; id: string } | undefined;
+            sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
           };
         }
       | undefined;
