@@ -23,7 +23,7 @@ const InnovationLibraryPage = () => {
   const { platform } = useConfig();
   const tLinks = TranslateWithElements(<Link underline="always" target="_blank" rel="noopener noreferrer" />);
   const subtitleText = tLinks('pages.innovationLibrary.subtitle', {
-    click: { href: platform?.support, target: '_blank' },
+    click: { href: platform?.innovationLibrary, target: '_blank' },
   });
 
   return (
@@ -35,10 +35,12 @@ const InnovationLibraryPage = () => {
       <PageContentColumn columns={12}>
         <DashboardInnovationPacks
           headerTitle={t('pages.innovationLibrary.innovationPacks.headerTitle')}
+          dialogTitle={t('pages.innovationLibrary.innovationPacks.dialogTitle')}
           innovationPacks={innovationPacks}
         />
         <DashboardLibraryTemplates
           headerTitle={t('pages.innovationLibrary.libraryTemplates.headerTitle')}
+          dialogTitle={t('pages.innovationLibrary.libraryTemplates.dialogTitle')}
           templates={templates}
         />
       </PageContentColumn>

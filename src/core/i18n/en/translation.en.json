@@ -205,7 +205,7 @@
     "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
-    "communications": "Updates",
+    "communications": "Updates from the leads",
     "applications": "Applications",
     "introduction": "Introduction",
     "interest": "Interest",
@@ -222,8 +222,8 @@
     "user": "User",
     "users": "Users",
     "update": "Update",
-    "updates": "News",
-    "no-updates": "No updates",
+    "updates": "Updates from the leads",
+    "no-updates": "No updates from the leads",
     "no-tags": "No tags available",
     "no-references": "No references available",
     "field-required": "This field is required",
@@ -265,6 +265,7 @@
     "show-subject": "Show: ",
     "show-all": "Show all",
     "title": "Title",
+    "visibility": "Visibility",
     "warning": "Warning",
     "welcome": "Welcome",
     "preview": "Preview",
@@ -273,6 +274,8 @@
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
     "innovation-packs": "Innovation Packs",
+    "innovation-hub": "Innovation Hub",
+    "innovation-hubs": "Innovation Hubs",
     "innovationPack": "Innovation Pack",
     "more": "More",
     "url": "URL",
@@ -783,9 +786,9 @@
         "callout-published": "published a new $t(common.callout)",
         "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
         "post-comment-created": "commented on '{{postDisplayName}}'",
-        "post-created": "added a {{postType}} Post to '{{calloutDisplayName}}'",
+        "post-created": "added a Post to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
+        "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)",
         "update-sent": "shared a new $t(common.update)"
@@ -1275,7 +1278,8 @@
       "challenges": "Here you can find all Challenges that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
       "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Spaces that are not selected by <strong>{{space}}. Enjoy connecting!</strong>"
     },
-    "goToMainPage": "Interested in collaborating in other Spaces? Click here to see them all on the universal Alkemio homepage."
+    "goToMainPage": "Interested in collaborating in other Spaces? Click here to see them all on the universal Alkemio homepage.",
+    "remove": "Remove from hub"
   },
   "pages": {
     "generic": {
@@ -1333,10 +1337,12 @@
       "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
-        "headerTitle": "Innovation Packs"
+        "headerTitle": "$t(common.innovation-packs)",
+        "dialogTitle": "$t(common.innovation-packs)"
       },
       "libraryTemplates": {
-        "headerTitle": "Browse through all available materials"
+        "headerTitle": "Browse through all available materials",
+        "dialogTitle": "All materials"
       }
     },
     "innovationPack": {
@@ -1513,9 +1519,18 @@
         "fields": {
           "provider": "Provider organization"
         },
-        "back-button": "All innovation packs",
+        "back-button": "All $t(common.innovation-packs)",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
+      },
+      "innovationHubs": {
+        "fields": {
+          "host": "Host Organization",
+          "subdomain": "Subdomain"
+        },
+        "saveForMoreDetails": "Save the new $t(common.innovation-hub) to edit the rest of the details",
+        "back": "All $t(common.innovation-hubs)",
+        "saved": "Saved Successfully"
       },
       "spaces": {
         "updateVisibility": "Update Visibility"
@@ -1767,7 +1782,7 @@
           }
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
+          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared by the leads."
         },
         "apply": "Interested in collaboration?",
         "agreements": {
@@ -1800,7 +1815,7 @@
         "no-data": "No members available"
       },
       "updates": {
-        "title": "Updates ({{count}})",
+        "title": "Updates from the leads ({{count}})",
         "no-data": "No updates available"
       }
     },
@@ -2016,7 +2031,7 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, click here to contact the Alkemio team."
+      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io."
     },
     "fields": {
       "ID": "ID",
@@ -2045,9 +2060,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "News ({{count}})",
-    "dialog-title": "All News",
-    "no-data": "No news available."
+    "title": "Updates from the leads ({{count}})",
+    "dialog-title": "All updates from the leads",
+    "no-data": "No updates available."
   },
   "dashboard-discussions-section": {
     "title": "Discussions ({{count}})",

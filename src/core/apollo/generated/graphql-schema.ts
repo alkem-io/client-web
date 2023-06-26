@@ -3031,6 +3031,8 @@ export type PlatformLocations = {
   help: Scalars['String'];
   /** URL for the link Impact in the HomePage of the application */
   impact: Scalars['String'];
+  /** URL to a page about the innovation library */
+  innovationLibrary: Scalars['String'];
   /** URL to a page about the collaboration tools */
   inspiration: Scalars['String'];
   /** URL where new users can get onboarding help */
@@ -21649,6 +21651,136 @@ export type HomePageSpacesQuery = {
   }>;
 };
 
+export type AdminInnovationHubsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminInnovationHubsListQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHubs: Array<{
+      __typename?: 'InnovationHub';
+      id: string;
+      nameID: string;
+      subdomain: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+    }>;
+  };
+};
+
+export type DeleteInnovationHubMutationVariables = Exact<{
+  innovationHubId: Scalars['UUID'];
+}>;
+
+export type DeleteInnovationHubMutation = {
+  __typename?: 'Mutation';
+  deleteInnovationHub: { __typename?: 'InnovationHub'; id: string };
+};
+
+export type InnovationHubProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  description?: string | undefined;
+  tagline: string;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  visual?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
+    | undefined;
+};
+
+export type AdminInnovationHubQueryVariables = Exact<{
+  innovationHubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AdminInnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          subdomain: string;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
+          type: InnovationHubType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagline: string;
+            tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+          spaceListFilter?:
+            | Array<{
+                __typename?: 'Space';
+                id: string;
+                nameID: string;
+                visibility: SpaceVisibility;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                host?:
+                  | {
+                      __typename?: 'Organization';
+                      id: string;
+                      nameID: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateInnovationHubMutationVariables = Exact<{
+  hubData: CreateInnovationHubInput;
+}>;
+
+export type CreateInnovationHubMutation = {
+  __typename?: 'Mutation';
+  createInnovationHub: { __typename?: 'InnovationHub'; id: string; nameID: string };
+};
+
+export type UpdateInnovationHubMutationVariables = Exact<{
+  hubData: UpdateInnovationHubInput;
+}>;
+
+export type UpdateInnovationHubMutation = {
+  __typename?: 'Mutation';
+  updateInnovationHub: { __typename?: 'InnovationHub'; id: string; nameID: string };
+};
+
 export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationLibraryQuery = {
@@ -23446,6 +23578,7 @@ export type ConfigurationQuery = {
       foundation: string;
       opensource: string;
       inspiration: string;
+      innovationLibrary: string;
       releases: string;
       help: string;
       community: string;
@@ -23487,6 +23620,7 @@ export type ConfigurationFragment = {
     foundation: string;
     opensource: string;
     inspiration: string;
+    innovationLibrary: string;
     releases: string;
     help: string;
     community: string;
