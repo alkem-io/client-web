@@ -26,6 +26,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import useInnovationHubOutsideRibbon from '../../../platform/InnovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -117,56 +118,58 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
 
   return (
-    <TopLevelDesktopLayout heading={ribbon}>
-      {!loading && !isAuthenticated ? (
-        <ImageBackdrop
-          src={FORUM_GRAYED_OUT_IMAGE}
-          backdropMessage={'login'}
-          blockName={'all-contributing-users'}
-          imageSx={{ filter: 'blur(2px)' }}
-          messageSx={theme => ({
-            [theme.breakpoints.up('sm')]: {
-              fontWeight: 'bold',
-            },
-            [theme.breakpoints.up('lg')]: {
-              marginTop: theme.spacing(10),
-              marginBottom: theme.spacing(-10),
-            },
-          })}
-        />
-      ) : (
-        <DiscussionsLayout
-          canCreateDiscussion={!loading && canCreateDiscussion}
-          categorySelector={
-            <CategorySelector
-              categories={categories}
-              onSelect={setCategorySelected}
-              value={categorySelected}
-              showLabels={!mediumScreen}
-            />
-          }
-        >
-          <DiscussionListView
-            entities={{
-              discussions,
-            }}
-            state={{
-              loading: loading,
-            }}
-            actions={{}}
-            options={{}}
+    <StorageConfigContextProvider locationType="platform">
+      <TopLevelDesktopLayout heading={ribbon}>
+        {!loading && !isAuthenticated ? (
+          <ImageBackdrop
+            src={FORUM_GRAYED_OUT_IMAGE}
+            backdropMessage={'login'}
+            blockName={'all-contributing-users'}
+            imageSx={{ filter: 'blur(2px)' }}
+            messageSx={theme => ({
+              [theme.breakpoints.up('sm')]: {
+                fontWeight: 'bold',
+              },
+              [theme.breakpoints.up('lg')]: {
+                marginTop: theme.spacing(10),
+                marginBottom: theme.spacing(-10),
+              },
+            })}
           />
-          {!loading && communicationId && (
-            <NewDiscussionDialog
-              communicationId={communicationId}
-              categories={validCategories}
-              open={dialog === 'new'}
-              onClose={() => navigate('/forum')}
+        ) : (
+          <DiscussionsLayout
+            canCreateDiscussion={!loading && canCreateDiscussion}
+            categorySelector={
+              <CategorySelector
+                categories={categories}
+                onSelect={setCategorySelected}
+                value={categorySelected}
+                showLabels={!mediumScreen}
+              />
+            }
+          >
+            <DiscussionListView
+              entities={{
+                discussions,
+              }}
+              state={{
+                loading: loading,
+              }}
+              actions={{}}
+              options={{}}
             />
-          )}
-        </DiscussionsLayout>
-      )}
-    </TopLevelDesktopLayout>
+            {!loading && communicationId && (
+              <NewDiscussionDialog
+                communicationId={communicationId}
+                categories={validCategories}
+                open={dialog === 'new'}
+                onClose={() => navigate('/forum')}
+              />
+            )}
+          </DiscussionsLayout>
+        )}
+      </TopLevelDesktopLayout>
+    </StorageConfigContextProvider>
   );
 };
 
