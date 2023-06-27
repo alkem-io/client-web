@@ -28,15 +28,15 @@ export const IdentityRoute: FC = () => {
   const identityOrigin =
     process.env.NODE_ENV === 'development' ? undefined : config.authentication?.providers[0].config.issuer;
 
-  const isIdentityOrigin = window.location.origin === identityOrigin;
+  const isOnIdentityOrigin = window.location.origin === identityOrigin;
 
   useLayoutEffect(() => {
-    if (identityOrigin && !isIdentityOrigin) {
+    if (identityOrigin && !isOnIdentityOrigin) {
       const { pathname, search } = window.location;
 
       window.location.replace(`${identityOrigin}${pathname}${search}`);
     }
-  }, [isIdentityOrigin]);
+  }, [isOnIdentityOrigin]);
 
   useLayoutEffect(() => {
     loginNavigationService.send(HIDE_LOGIN_NAVIGATION);
@@ -45,7 +45,7 @@ export const IdentityRoute: FC = () => {
     };
   }, [loginNavigationService]);
 
-  if (config.loading || (identityOrigin && !isIdentityOrigin)) {
+  if (config.loading || (identityOrigin && !isOnIdentityOrigin)) {
     return <Loading />;
   }
 
