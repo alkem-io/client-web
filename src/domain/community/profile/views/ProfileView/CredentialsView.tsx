@@ -5,8 +5,8 @@ import { CredentialCard } from '../../../../../common/components/composite/commo
 import ProfileCard, {
   ProfileCardProps,
 } from '../../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../../../shared/layout/CardsLayout/CardsLayout';
-import UserCredentialsContainer from '../../../../../containers/user/UserCredentialsContainer';
+import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/CardsLayout/CardsLayout';
+import UserCredentialsContainer from '../../../../platform/VerifiedCredentials/UserCredentialsContainer';
 
 export interface CredentialsViewProps extends ProfileCardProps {
   userID: string;
@@ -81,4 +81,5 @@ export const CredentialsView: FC<CredentialsViewProps> = ({ userID, loading, ...
     </UserCredentialsContainer>
   );
 };
+
 export default CredentialsView;

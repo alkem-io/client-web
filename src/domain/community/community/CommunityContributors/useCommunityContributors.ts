@@ -4,7 +4,7 @@ import { PossiblyUndefinedProps } from '../../../shared/types/PossiblyUndefinedP
 import somePropsNotDefined from '../../../shared/utils/somePropsNotDefined';
 import { useMemo } from 'react';
 
-type EntityIds = { hubId: string } & ({} | { challengeId: string } | { opportunityId: string });
+type EntityIds = { spaceId: string } & ({} | { challengeId: string } | { opportunityId: string });
 
 type Provided<ProvidedContributors> = ProvidedContributors & {
   loading: boolean;

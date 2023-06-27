@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../../hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
 export const ApplicationDetailsPage: FC = () => {
   const { applicationId } = useUrlParams();
@@ -10,4 +10,5 @@ export const ApplicationDetailsPage: FC = () => {
     </>
   );
 };
+
 export default ApplicationDetailsPage;

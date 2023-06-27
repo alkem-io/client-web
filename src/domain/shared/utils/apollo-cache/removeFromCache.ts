@@ -7,7 +7,7 @@ import { ApolloCache, FetchResult } from '@apollo/client';
  * @param cache
  * @param mutationResult
  */
-function removeFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, mutationResult: FetchResult<T>): void {
+function removeFromCache<T = { [key: string]: unknown }>(cache: ApolloCache<T>, mutationResult: FetchResult<T>): void {
   const data = mutationResult.data;
   if (data) {
     const mutationResultKey = Object.keys(data).filter(x => x !== '__typename');
@@ -34,6 +34,7 @@ function removeFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, muta
     evictFromCache(cache, id, __typename);
   }
 }
+
 export default removeFromCache;
 
 /***
@@ -42,7 +43,7 @@ export default removeFromCache;
  * @param id
  * @param typeName
  */
-export function evictFromCache<T = { [key: string]: any }>(cache: ApolloCache<T>, id: string, typeName: string) {
+export function evictFromCache<T = { [key: string]: unknown }>(cache: ApolloCache<T>, id: string, typeName: string) {
   const normalizedId = cache.identify({ id: id, __typename: typeName });
 
   if (!normalizedId) {

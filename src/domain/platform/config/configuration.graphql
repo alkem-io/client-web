@@ -1,0 +1,60 @@
+query configuration {
+  configuration {
+    ...Configuration
+  }
+}
+
+fragment Configuration on Config {
+  authentication {
+    providers {
+      name
+      label
+      icon
+      enabled
+      config {
+        __typename
+        ... on OryConfig {
+          kratosPublicBaseURL
+          issuer
+        }
+      }
+    }
+  }
+  platform {
+    environment
+    domain
+    about
+    feedback
+    privacy
+    security
+    support
+    terms
+    impact
+    foundation
+    opensource
+    inspiration
+    innovationLibrary
+    releases
+    help
+    community
+    newuser
+    tips
+    aup
+    featureFlags {
+      enabled
+      name
+    }
+  }
+  sentry {
+    enabled
+    endpoint
+    submitPII
+  }
+  apm {
+    rumEnabled
+    endpoint
+  }
+  geo {
+    endpoint
+  }
+}

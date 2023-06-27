@@ -6,16 +6,16 @@ import {
   useMeQuery,
   usePlatformLevelAuthorizationQuery,
   useRolesUserQuery,
-} from '../../../../../../hooks/generated/graphql';
-import { ErrorPage } from '../../../../../../pages';
-import { User } from '../../../../../../models/graphql-schema';
+} from '../../../../../../core/apollo/generated/apollo-hooks';
+import { ErrorPage } from '../../../../../../core/pages/Errors/ErrorPage';
+import { User } from '../../../../../../core/apollo/generated/graphql-schema';
 import { UserRolesInEntity } from './UserRolesInEntity';
 import { useAuthenticationContext } from '../../../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { UserMetadata, useUserMetadataWrapper } from '../../hooks/useUserMetadataWrapper';
+import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
-  userHubRoles: UserRolesInEntity[] | undefined;
+  userSpaceRoles: UserRolesInEntity[] | undefined;
   loading: boolean;
   loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar but f.e. roles information is not guaranteed yet.
   verified: boolean;
@@ -24,7 +24,7 @@ export interface UserContextValue {
 
 const UserContext = React.createContext<UserContextValue>({
   user: undefined,
-  userHubRoles: undefined,
+  userSpaceRoles: undefined,
   loading: true,
   loadingMe: true,
   verified: false,
@@ -32,9 +32,9 @@ const UserContext = React.createContext<UserContextValue>({
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
-  const wrapper = useUserMetadataWrapper();
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
   const { data: meHasProfileData, loading: loadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
+  // TODO "me" query fetches too much beyond user name
   const { data: meData, loading: loadingMe } = useMeQuery({
     skip: !meHasProfileData?.meHasProfile,
   });
@@ -42,9 +42,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const { data: rolesData, loading: loadingRolesData } = useRolesUserQuery({
     skip: !meData?.me.id,
     variables: {
-      input: {
-        userID: meData?.me.id!,
-      },
+      input: meData?.me.id!,
     },
   });
 
@@ -74,14 +72,15 @@ const UserProvider: FC<{}> = ({ children }) => {
   const loadingMeAndParentQueries = loadingAuthentication || loadingMeHasProfile || loadingMe;
 
   const wrappedMe = useMemo(
-    () => (meData?.me ? wrapper(meData.me as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined),
-    [meData, rolesData, wrapper, platformLevelAuthorization]
+    () =>
+      meData?.me ? toUserMetadata(meData.me as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined,
+    [meData, rolesData, platformLevelAuthorization]
   );
 
   const providedValue = useMemo<UserContextValue>(
     () => ({
       user: wrappedMe,
-      userHubRoles: rolesData?.rolesUser.hubs,
+      userSpaceRoles: rolesData?.rolesUser.spaces,
       loading,
       loadingMe: loadingMeAndParentQueries,
       verified,

@@ -1,39 +1,46 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import { formatTimeElapsed } from '../../../utils/formatTimeElapsed';
 import AuthorAvatar from '../../AuthorAvatar/AuthorAvatar';
 import { Author } from '../../AuthorAvatar/models/author';
-import { ClampedTypography } from '../../ClampedTypography';
-import { Link } from 'react-router-dom';
+import { Caption } from '../../../../../core/ui/typography';
+import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
+
+const PARENT_NAME_MAX_LENGTH = 20;
 
 export interface ActivityBaseViewProps {
   author: Author | undefined;
   createdDate: Date | string;
   action: string;
-  description: string;
   url?: string;
   loading?: boolean;
-}
-
-export interface NameableEntity {
-  id: string;
-  nameID: string;
-  displayName: string;
+  activityOriginJourneyIcon?: ReactNode;
+  parentDisplayName: string;
 }
 
 export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   author,
   createdDate,
   action,
-  description,
+  children,
   url,
   loading,
+  activityOriginJourneyIcon,
+  parentDisplayName,
 }) => {
   const { t } = useTranslation();
   const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
+
+  const truncatedParentName =
+    parentDisplayName.length > PARENT_NAME_MAX_LENGTH
+      ? parentDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('...')
+      : parentDisplayName;
+
+  const parentDetails = activityOriginJourneyIcon
+    ? t('components.activity-log-view.parent-details', { displayName: truncatedParentName })
+    : undefined;
 
   const title = useMemo(
     () => (
@@ -44,27 +51,27 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
         ) : (
           author?.displayName ?? t('common.user')
         )}{' '}
-        {action}
+        {action} {activityOriginJourneyIcon}
+        {parentDetails}
       </>
     ),
-    [formattedTime, author?.displayName, action, author?.url, t]
+    [formattedTime, author?.displayName, action, author?.url, t, activityOriginJourneyIcon, parentDetails]
   );
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {loading ? (
-        <Skeleton>
-          <AuthorAvatar author={undefined} />
-        </Skeleton>
-      ) : (
-        <AuthorAvatar author={author} />
-      )}
-      <Box sx={theme => ({ marginLeft: theme.spacing(2), flexGrow: 1 })}>
-        <Typography variant="caption">{loading ? <Skeleton width="60%" /> : title}</Typography>
-        <ClampedTypography clamp={2}>
-          {loading ? <Skeleton /> : url ? <Link to={url}>{description}</Link> : description}
-        </ClampedTypography>
-      </Box>
-    </Box>
+    <BadgeCardView
+      visual={
+        loading ? (
+          <Skeleton>
+            <AuthorAvatar author={undefined} />
+          </Skeleton>
+        ) : (
+          <AuthorAvatar author={author} />
+        )
+      }
+    >
+      <Caption>{loading ? <Skeleton width="60%" /> : title}</Caption>
+      {loading ? <Skeleton /> : url ? <Link to={url}>{children}</Link> : children}
+    </BadgeCardView>
   );
 };

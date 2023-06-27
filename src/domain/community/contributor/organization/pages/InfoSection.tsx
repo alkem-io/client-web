@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import LinkIcon from '@mui/icons-material/Link';
 import EmailIcon from '@mui/icons-material/MailOutline';
-import { OrganizationInfoFragment } from '../../../../../models/graphql-schema';
+import { OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { OrganizationVerifiedState } from '../OrganizationVerifiedState';
 import { Loading } from '../../../../../common/components/core';
 import TagContainer from '../../../../../common/components/core/TagContainer';
@@ -22,7 +22,7 @@ const InfoSection: FC<Props> = ({ organization }) => {
   }
 
   const { contactEmail, website, verification, profile } = organization;
-  const tags = profile?.tagsets?.flatMap(x => x.tags) || [];
+  const tags = profile.tagsets?.flatMap(x => x.tags) || [];
 
   return (
     <Grid container spacing={1}>
@@ -61,4 +61,5 @@ const InfoSection: FC<Props> = ({ organization }) => {
     </Grid>
   );
 };
+
 export default InfoSection;

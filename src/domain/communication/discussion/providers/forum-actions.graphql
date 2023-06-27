@@ -1,0 +1,13 @@
+mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+  createDiscussion(createData: $input) {
+    ...DiscussionDetails
+  }
+}
+
+mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
+  deleteDiscussion(deleteData: $deleteData) {
+    id
+  }
+}
+
+

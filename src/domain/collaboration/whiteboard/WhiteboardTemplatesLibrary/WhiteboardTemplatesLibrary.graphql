@@ -1,0 +1,79 @@
+query SpaceWhiteboardTemplatesLibrary($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      whiteboardTemplates {
+        ...WhiteboardTemplateCard
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query SpaceWhiteboardTemplateValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $whiteboardTemplateId) {
+        ...WhiteboardTemplateCard
+        value
+      }
+    }
+  }
+}
+
+query PlatformWhiteboardTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        provider {
+          id
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
+        }
+      }
+    }
+  }
+}
+
+query PlatformWhiteboardTemplateValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        ...InnovationPackWithProvider
+        templates {
+          id
+          whiteboardTemplate(ID: $whiteboardTemplateId) {
+            ...WhiteboardTemplateCard
+            value
+          }
+        }
+      }
+    }
+  }
+}

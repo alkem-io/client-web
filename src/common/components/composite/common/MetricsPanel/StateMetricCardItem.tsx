@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { makeStyles } from '@mui/styles';
-import { Lifecycle, Maybe } from '../../../../../models/graphql-schema';
+import { Lifecycle, Maybe } from '../../../../../core/apollo/generated/graphql-schema';
 import WrapperTypography from '../../../core/WrapperTypography';
 import InnovationFlowVisualizer from '../../../../../domain/platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
@@ -79,7 +79,7 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
       <Grid container item justifyContent={'space-between'} alignItems={'center'}>
         <Grid item className={styles.item}>
           <WrapperTypography>State</WrapperTypography>
-          <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
+          <Tooltip title={t('pages.activity.innovation-flow-info') || ''} arrow placement="top" id="lifecycle-graph">
             <IconButton color="primary" onClick={() => setModalVisible(true)} size="large">
               <InfoIcon />
             </IconButton>

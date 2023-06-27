@@ -1,0 +1,18 @@
+subscription roomEvents($roomID: UUID!) {
+  roomEvents(roomID: $roomID) {
+    roomID
+    message {
+      type
+      data {
+        ...MessageDetails
+      }
+    }
+    reaction {
+      type
+      messageID
+      data {
+        ...ReactionDetails
+      }
+    }
+  }
+}

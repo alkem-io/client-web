@@ -1,10 +1,10 @@
 fragment OrganizationDetails on Organization {
   id
-  displayName
   nameID
   profile {
     id
-    avatar {
+    displayName
+    avatar: visual(type: AVATAR) {
       ...VisualUri
     }
     description

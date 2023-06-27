@@ -1,0 +1,47 @@
+query SpacePostTemplatesLibrary($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      postTemplates {
+        ...PostTemplateCard
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query PlatformPostTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        provider {
+          id
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          postTemplates {
+            ...PostTemplateCard
+          }
+        }
+      }
+    }
+  }
+}

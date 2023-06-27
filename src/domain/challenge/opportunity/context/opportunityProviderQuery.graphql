@@ -1,5 +1,5 @@
-query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query opportunityProvider($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     nameID
     opportunity(ID: $opportunityId) {
@@ -11,26 +11,35 @@ query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
 fragment OpportunityProvider on Opportunity {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+    description
+    tagline
+    visuals {
+      ...VisualFull
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+    location {
+      id
+      country
+      city
+    }
+  }
   authorization {
     id
     myPrivileges
   }
   context {
     id
-    tagline
     authorization {
       id
       myPrivileges
       anonymousReadAccess
-    }
-    visuals {
-      ...VisualFull
-    }
-    location {
-      id
-      country
-      city
     }
   }
   community {

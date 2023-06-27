@@ -5,14 +5,20 @@ import { UserCard } from '../../../../common/components/composite/common/cards';
 import React from 'react';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { useTranslation } from 'react-i18next';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
 export interface ContributingUsersProps {
   loading?: boolean;
-  users: SearchableUserCardProps[] | undefined;
+  users: (Identifiable & SearchableUserCardProps)[] | undefined;
 }
 
 const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) => {
   const { t } = useTranslation();
+
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
 
   if (loading) {
     return (
@@ -35,21 +41,33 @@ const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) =
   }
 
   return (
-    <Grid container spacing={3} columns={{ xs: 1, md: 2 }}>
-      {users.map(user => (
-        <Grid key={user.id} item xs={1}>
-          <UserCard
-            displayName={user.displayName}
-            tags={user.tags}
-            avatarSrc={user.avatarSrc}
-            roleName={user.roleName}
-            country={user.country}
-            city={user.city}
-            url={user.url}
-          />
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <Grid container spacing={3} columns={{ xs: 1, md: 2 }}>
+        {users.map(user => (
+          <Grid key={user.id} item xs={1}>
+            <UserCard
+              displayName={user.displayName}
+              tags={user.tags}
+              avatarSrc={user.avatarSrc}
+              roleName={user.roleName}
+              country={user.country}
+              city={user.city}
+              url={user.url}
+              onContact={() =>
+                sendMessage('user', {
+                  id: user.id,
+                  displayName: user.displayName,
+                  avatarUri: user.avatarSrc,
+                  city: user.city,
+                  country: user.country,
+                })
+              }
+            />
+          </Grid>
+        ))}
+      </Grid>
+      {directMessageDialog}
+    </>
   );
 };
 

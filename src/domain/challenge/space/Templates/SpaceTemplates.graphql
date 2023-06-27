@@ -1,0 +1,98 @@
+query SpaceTemplates($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    ...SpaceTemplates
+  }
+}
+
+query CalloutFormTemplatesFromSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      postTemplates {
+        ...PostTemplateCard
+      }
+      whiteboardTemplates {
+        ...WhiteboardTemplateCard
+      }
+    }
+  }
+}
+
+query PostTemplatesFromSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      postTemplates {
+        ...PostTemplateCard
+      }
+    }
+  }
+}
+
+query WhiteboardTemplatesFromSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      whiteboardTemplates {
+        ...WhiteboardTemplateCard
+      }
+    }
+  }
+}
+
+query InnovationFlowTemplatesFromSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      innovationFlowTemplates {
+        ...InnovationFlowTemplate
+      }
+    }
+  }
+}
+
+query SpaceTemplatesWhiteboardTemplateWithValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $whiteboardTemplateId) {
+        ...WhiteboardTemplateWithValue
+      }
+    }
+  }
+}
+
+fragment SpaceTemplates on Space {
+  templates {
+    id
+    postTemplates {
+      ...PostTemplateCard
+    }
+    whiteboardTemplates {
+      ...WhiteboardTemplateCard
+    }
+    innovationFlowTemplates {
+      ...InnovationFlowTemplate
+    }
+  }
+}
+
+fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
+  ...WhiteboardTemplateCard
+  value
+}
+
+fragment InnovationFlowTemplate on InnovationFlowTemplate {
+  id
+  definition
+  type
+  profile {
+    ...TemplateCardProfileInfo
+  }
+}

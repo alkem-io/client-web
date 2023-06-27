@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import React, { ElementType, FC } from 'react';
 import * as yup from 'yup';
-import { Context } from '../../../models/graphql-schema';
+import { Context, Profile } from '../../../core/apollo/generated/graphql-schema';
 import { ContextSegmentProps, contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 
 export interface ContextFormValues {
@@ -13,6 +13,7 @@ export interface ContextFormValues {
 
 interface ContextFormProps {
   context?: Context;
+  profile?: Profile;
   onSubmit: (formData: ContextFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextSegment: ElementType<ContextSegmentProps>;
@@ -21,13 +22,14 @@ interface ContextFormProps {
 
 export const ContextForm: FC<ContextFormProps> = ({
   context,
+  profile,
   onSubmit,
   wireSubmit,
   loading,
   contextSegment: ContextSegment,
 }) => {
   const initialValues: ContextFormValues = {
-    background: context?.background || '',
+    background: profile?.description || '',
     impact: context?.impact || '',
     vision: context?.vision || '',
     who: context?.who || '',

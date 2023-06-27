@@ -1,5 +1,0 @@
-query configuration {
-  configuration {
-    ...Configuration
-  }
-}

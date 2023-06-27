@@ -1,21 +1,21 @@
 import React, { FC, useCallback, useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
 import { Link, useTheme } from '@mui/material';
 import UpdatesContainer from './Components/UpdatesContainer';
-import TextContainer from './Components/TextContainer';
 import CloseButton from './Components/CloseButton';
-import { useTranslation } from 'react-i18next';
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../config/useConfig';
+import { Caption } from '../../../../core/ui/typography';
+import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
+import CelebrationIcon from '@mui/icons-material/Celebration';
 
 interface ReleaseNotificationData {
   prevClientVersion: string;
 }
+
 const PlatformUpdates: FC = () => {
   const clientVersion = process.env.REACT_APP_VERSION || '';
   const theme = useTheme();
   const { platform } = useConfig();
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);
-  const { t } = useTranslation();
 
   const handleCloseNotification = useCallback(() => {
     const updatedReleaseNotificationData: ReleaseNotificationData = {
@@ -26,31 +26,28 @@ const PlatformUpdates: FC = () => {
     localStorage.setItem('releaseNotification', JSON.stringify(updatedReleaseNotificationData));
   }, [setIsNotificationVisible, clientVersion]);
 
+  const tLinks = TranslateWithElements(
+    <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
+  );
+
   return (
     <>
       {isNotificationVisible && (
         <UpdatesContainer>
-          <TextContainer>
-            {t('notifications.release-updates.text')}{' '}
-            <Link
-              href={platform?.releases || ''}
-              underline="always"
-              target="_blank"
-              rel="noopener noreferrer"
-              color={theme.palette.background.default}
-            >
-              {t('notifications.release-updates.link')}
-            </Link>
-            ...
-          </TextContainer>
+          <Caption flexGrow={1} textAlign="center">
+            <CelebrationIcon fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: theme.spacing(0.5) }} />
+            {tLinks('notifications.release-updates.text', {
+              clickhere: {
+                href: platform?.releases ?? '',
+              },
+            })}
+          </Caption>
           <CloseButton
             sx={{
               color: theme.palette.background.default,
             }}
             onClick={handleCloseNotification}
-          >
-            <CloseIcon />
-          </CloseButton>
+          />
         </UpdatesContainer>
       )}
     </>

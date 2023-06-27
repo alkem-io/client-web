@@ -1,0 +1,79 @@
+query SpacePostProvider($spaceNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    collaboration {
+      ...PostProviderData
+    }
+  }
+}
+
+query ChallengePostProvider(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+  $postNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        ...PostProviderData
+      }
+    }
+  }
+}
+
+query OpportunityPostProvider(
+  $spaceNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+  $postNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        ...PostProviderData
+      }
+    }
+  }
+}
+
+fragment PostProviderData on Collaboration {
+  id
+  callouts(IDs: [$calloutNameId]) {
+    id
+    type
+    posts(IDs: [$postNameId]) {
+      ...PostProvided
+    }
+  }
+}
+
+fragment PostProvided on Post {
+  id
+  nameID
+  profile {
+    id
+    displayName
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+fragment CalloutPostInfo on Collaboration {
+  id
+  callouts {
+    id
+    nameID
+    type
+    posts {
+      id
+      nameID
+    }
+  }
+}

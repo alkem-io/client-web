@@ -1,11 +1,10 @@
 <p align="center">
   <a href="https://alkemio.foundation/" target="blank"><img src="https://alkemio.foundation/uploads/logos/alkemio-logo.svg" width="400" alt="Alkemio Logo" /></a>
 </p>
-<p align="center"><i>Enabling society to collaborate. Building a better future, together.</i></p>
+<p align="center"><i>Empowering society. The platform to succeed in working on challenges, together.</i></p>
 
 [![Build & Deploy to Dev](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml/badge.svg)](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml)
 [![Coverage Status](https://coveralls.io/repos/github/alkem-io/client-web/badge.svg?branch=develop)](https://coveralls.io/github/alkem-io/client-web?branch=develop)
-[![BCH compliance](https://bettercodehub.com/edge/badge/alkem-io/client-web?branch=develop)](https://bettercodehub.com/)
 [![Crowdin](https://badges.crowdin.net/alkemio/localized.svg)](https://crowdin.com/project/alkemio)
 
 # Alkemio Web Client
@@ -14,11 +13,9 @@ Welcome to the Alkemio web client - allowing you to browse the contents of the A
 
 This client is based on React, and is intended to showcase how clients in general can interact with the domain model exposed by the [Alkemio server](../server).
 
-While this client is a fully self-contained single page application, it also has a set of React components that can be used by other React applications for working with the Alkemio server.
-
 ## Configuration
 
-All further configuration is obtained from the server configuration graphql schema.
+Beyond the bootstrap configuration to point to the Alkemio server, all further configuration is obtained from the server configuration graphql schema.
 
 ## Launching the client
 
@@ -65,9 +62,9 @@ The repo is also set up to generate a Docker image.
   - Argument can be the following: ARG_GRAPHQL_ENDPOINT
 - To run a container based on the image: `docker container run -p 80:80 alkemio/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
 
-## Pushing code the dockerhub
+## Pushing code the dockerspace
 
-We have automated the creation and deployment of containers to docker hub via a github action. To automaticly trigger the build up to dockerhub the following steps should be taken:
+We have automated the creation and deployment of containers to docker space via a github action. To automaticly trigger the build up to dockerspace the following steps should be taken:
 
 - Ensure that the code that you would like to create the container from is pushed / merged into the `develop` branch.
 - Create a github release and tag it with the appropriate version number ie. `v0.1.3`

@@ -3,29 +3,35 @@ import CreateInnovationTemplateDialog from './CreateInnovationTemplateDialog';
 import EditInnovationTemplateDialog from './EditInnovationTemplateDialog';
 import React from 'react';
 import {
-  useCreateInnovationTemplateMutation,
-  useDeleteInnovationTemplateMutation,
-  useUpdateInnovationTemplateMutation,
-} from '../../../../../hooks/generated/graphql';
+  useCreateInnovationFlowTemplateMutation,
+  useDeleteInnovationFlowTemplateMutation,
+  useUpdateInnovationFlowTemplateMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { InnovationTemplateFormSubmittedValues } from './InnovationTemplateForm';
-import { AdminLifecycleTemplateFragment, UpdateInnovationTemplateMutation } from '../../../../../models/graphql-schema';
+import {
+  AdminInnovationFlowTemplateFragment,
+  UpdateInnovationFlowTemplateMutation,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import InnovationTemplateView from './InnovationTemplateView';
 import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import InnovationImportTemplateCard from './InnovationImportTemplateCard';
 
 interface AdminInnovationTemplatesSectionProps {
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: AdminLifecycleTemplateFragment[] | undefined;
+  templates: AdminInnovationFlowTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (aspect: AdminLifecycleTemplateFragment) => LinkWithState;
+  buildTemplateLink: (post: AdminInnovationFlowTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
-  innovationPacks: InnovationPack[];
+  loadingInnovationPacks?: boolean;
+  innovationPacks: InnovationPack<AdminInnovationFlowTemplateFragment>[];
+  canImportTemplates: boolean;
 }
 
 const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionProps) => {
@@ -34,19 +40,23 @@ const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionP
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('pages.admin.generic.sections.templates.innovation-templates')}
+      headerText={t('common.enums.templateTypes.InnovationFlowTemplate')}
+      importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
+        templateType: t('common.innovation-flows'),
+      })}
       templateCardComponent={InnovationTemplateCard}
+      templateImportCardComponent={InnovationImportTemplateCard}
       templatePreviewComponent={InnovationTemplateView}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}
-      useCreateTemplateMutation={useCreateInnovationTemplateMutation}
+      useCreateTemplateMutation={useCreateInnovationFlowTemplateMutation}
       useUpdateTemplateMutation={
-        useUpdateInnovationTemplateMutation as MutationHook<
+        useUpdateInnovationFlowTemplateMutation as MutationHook<
           Partial<InnovationTemplateFormSubmittedValues> & { templateId: string },
-          UpdateInnovationTemplateMutation
+          UpdateInnovationFlowTemplateMutation
         >
       }
-      useDeleteTemplateMutation={useDeleteInnovationTemplateMutation}
+      useDeleteTemplateMutation={useDeleteInnovationFlowTemplateMutation}
     />
   );
 };

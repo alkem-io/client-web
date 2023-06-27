@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../../models/container';
+import { ContainerChildProps } from '../../../../core/container/container';
 import {
   useContributorsPageUsersQuery,
   useContributorsPageOrganizationsQuery,
-} from '../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useUserContext } from '../user';
 import {
   ContributorsPageUsersQuery,
   ContributorsPageUsersQueryVariables,
@@ -13,7 +13,7 @@ import {
   ContributorsPageOrganizationsQuery,
   ContributorsPageOrganizationsQueryVariables,
   OrganizationContributorFragment,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 
 export interface PaginatedResult<T> {
@@ -50,14 +50,12 @@ export interface ContributorsSearchContainerProps
 
 const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ searchTerms, pageSize, children }) => {
   const { isAuthenticated } = useUserContext();
-  const handleError = useApolloErrorHandler();
 
   const usersQueryResult = usePaginatedQuery<ContributorsPageUsersQuery, ContributorsPageUsersQueryVariables>({
     useQuery: useContributorsPageUsersQuery,
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
-      onError: handleError,
       skip: !isAuthenticated,
     },
     variables: {
@@ -113,4 +111,5 @@ const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ sea
   const error = users.error || organizations.error;
   return <>{children({ users, organizations }, { loading, error }, {})}</>;
 };
+
 export default ContributorsSearchContainer;

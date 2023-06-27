@@ -1,5 +1,5 @@
-query opportunityRelations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query opportunityRelations($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     opportunity(ID: $opportunityId) {
       collaboration {
@@ -13,7 +13,6 @@ query opportunityRelations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
           type
         }
       }
-
     }
   }
 }

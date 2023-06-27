@@ -1,0 +1,219 @@
+query Callouts(
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeNameId: UUID_NAMEID = "mockid"
+  $opportunityNameId: UUID_NAMEID = "mockid"
+  $calloutGroups: [String!]
+  $calloutIds: [UUID_NAMEID!]
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      nameID
+      collaboration {
+        ...CollaborationWithCallouts
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      nameID
+      ... on Challenge @skip(if: $includeOpportunity) {
+        collaboration {
+          ...CollaborationWithCallouts
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      nameID
+      collaboration {
+        ...CollaborationWithCallouts
+      }
+    }
+  }
+}
+
+query SpaceCalloutPostsSubscription($spaceNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    collaboration {
+      id
+      callouts(IDs: [$calloutId]) {
+        id
+        posts {
+          ...ContributeTabPost
+        }
+      }
+    }
+  }
+}
+
+query ChallengeCalloutPostsSubscription(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutId]) {
+          id
+          posts {
+            ...ContributeTabPost
+          }
+        }
+      }
+    }
+  }
+}
+
+query OpportunityCalloutPostsSubscription(
+  $spaceNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutId]) {
+          id
+          posts {
+            ...ContributeTabPost
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment PrivilegesOnCollaboration on Collaboration {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+}
+query PrivilegesOnSpaceCollaboration($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    collaboration {
+      ...PrivilegesOnCollaboration
+    }
+  }
+}
+
+query PrivilegesOnChallengeCollaboration($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        ...PrivilegesOnCollaboration
+      }
+    }
+  }
+}
+
+query PrivilegesOnOpportunityCollaboration($spaceNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        ...PrivilegesOnCollaboration
+      }
+    }
+  }
+}
+
+fragment CollaborationWithCallouts on Collaboration {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  callouts(groups: $calloutGroups, IDs: $calloutIds) {
+    ...Callout
+  }
+}
+
+fragment Callout on Callout {
+  id
+  nameID
+  type
+  group
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      id
+      tags
+    }
+    references {
+      ...ReferenceDetails
+    }
+  }
+  state
+  sortOrder
+  activity
+  whiteboards {
+    ...WhiteboardDetails
+  }
+  comments {
+    ...CommentsWithMessages
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  visibility
+  ...CalloutPostTemplate
+  ...CalloutWhiteboardTemplate
+}
+
+fragment CalloutPostTemplate on Callout {
+  postTemplate {
+    id
+    type
+    defaultDescription
+    profile {
+      tagset {
+        id
+        tags
+      }
+      visual(type: CARD) {
+        id
+        uri
+      }
+    }
+  }
+}
+
+fragment CalloutWhiteboardTemplate on Callout {
+  whiteboardTemplate {
+    id
+    value
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        tags
+      }
+      visual(type: CARD) {
+        id
+        uri
+      }
+    }
+  }
+}

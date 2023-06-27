@@ -1,11 +1,11 @@
-query challengeApplication($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query challengeApplication($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
       id
-      displayName
-      context {
-        ...ContextDetails
+      profile {
+        id
+        displayName
       }
       community {
         id

@@ -1,0 +1,9 @@
+fragment fullLocation on Location {
+  id
+  country
+  city
+  addressLine1
+  addressLine2
+  stateOrProvince
+  postalCode
+}

@@ -1,36 +1,34 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
-import { useChallenge } from '../../../../hooks';
+import { useChallenge } from '../hooks/useChallenge';
 import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../../common/utils/urlBuilders';
-import { EntityTabsProps } from '../../../shared/layout/PageLayout/EntityPageLayout';
+import { EntityTabsProps } from '../../common/EntityPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
+import JourneyPageTabs from '../../common/JourneyPageTabs';
+import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 
 export interface ChallengeTabsProps extends EntityTabsProps {}
 
 const ChallengeTabs: FC<ChallengeTabsProps> = props => {
   const { t } = useTranslation();
 
-  const { hubNameId, challengeNameId, permissions } = useChallenge();
-  const rootUrl = buildChallengeUrl(hubNameId, challengeNameId);
-  const settingsUrl = buildAdminChallengeUrl(hubNameId, challengeNameId);
+  const { spaceNameId, challengeNameId, permissions } = useChallenge();
+  const rootUrl = buildChallengeUrl(spaceNameId, challengeNameId);
+  const settingsUrl = buildAdminChallengeUrl(spaceNameId, challengeNameId);
 
   return (
-    <EntityPageTabs
+    <JourneyPageTabs
       {...props}
       entityTypeName="challenge"
       showSettings={permissions.canUpdate}
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
       shareUrl={rootUrl}
-      subEntityTab={
-        <HeaderNavigationTab
-          label={t('common.opportunities')}
-          value={EntityPageSection.Opportunities}
-          to={`${rootUrl}/${EntityPageSection.Opportunities}`}
-        />
-      }
+      subEntityTab={{
+        label: t('common.opportunities'),
+        section: EntityPageSection.Opportunities,
+        icon: <OpportunityIcon />,
+      }}
     />
   );
 };

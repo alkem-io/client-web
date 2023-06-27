@@ -1,0 +1,79 @@
+query challengePage($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
+      ...ChallengeProfile
+    }
+  }
+}
+
+fragment ChallengeProfile on Challenge {
+  id
+  nameID
+  metrics {
+    id
+    name
+    value
+  }
+  profile {
+    id
+    tagline
+    displayName
+    visuals {
+      ...VisualFull
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  lifecycle {
+    id
+    machineDef
+    state
+    nextEvents
+    stateIsFinal
+  }
+  context {
+    id
+    vision
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+  }
+  collaboration {
+    ...DashboardTopCallouts
+  }
+  community {
+    ...EntityDashboardCommunity
+  }
+
+  opportunities {
+    ...OpportunityCard
+  }
+}
+
+query ChallengeDashboardReferences($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        id
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+}

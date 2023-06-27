@@ -1,0 +1,9 @@
+query spaceActivity($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    metrics {
+      name
+      value
+    }
+  }
+}

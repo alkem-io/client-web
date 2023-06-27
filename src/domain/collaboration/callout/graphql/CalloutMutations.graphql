@@ -1,24 +1,24 @@
-mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
-  createAspectOnCallout(aspectData: $aspectData) {
+mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
+  createPostOnCallout(postData: $postData) {
     id
     nameID
-    displayName
-    description
     type
-    tagset {
+    profile {
       id
-      name
-      tags
-    }
-    banner {
-      ...VisualUri
-    }
-    bannerNarrow {
-      ...VisualUri
+      displayName
+      description
+      tagset {
+        id
+        name
+        tags
+      }
+      visual(type: CARD) {
+        ...VisualUri
+      }
     }
   }
 }
 
-mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
-  removeComment(messageData: $messageData)
+mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
+  removeMessageOnRoom(messageData: $messageData)
 }

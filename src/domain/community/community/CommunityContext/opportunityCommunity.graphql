@@ -1,10 +1,11 @@
-query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query opportunityCommunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $includeDetails: Boolean = false) {
+  space(ID: $spaceId) {
     id
     opportunity(ID: $opportunityId) {
       id
       community {
-        ...CommunityDetails
+        id
+        ...CommunityDetails @include(if: $includeDetails)
       }
     }
   }

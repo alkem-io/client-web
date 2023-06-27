@@ -1,12 +1,12 @@
 import { Box, ClickAwayListener, Collapse, useTheme } from '@mui/material';
 import { Link, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import React, { FC, useCallback, useState } from 'react';
-import LogoComponent from './LogoComponent';
+import { AlkemioLogoComponent } from './LogoComponent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../../../../domain/community/contributor/user';
+import { useUserContext } from '../../../../../domain/community/contributor/user/hooks/useUserContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -15,12 +15,14 @@ import { buildLoginUrl, buildUserProfileUrl } from '../../../../utils/urlBuilder
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Divider from '@mui/material/Divider';
-import { ChallengeIcon } from '../../../../icons/ChallengeIcon';
+import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
-import { HELP_ROUTE, SEARCH_ROUTE } from '../../../../../models/constants';
+import InnovationLibraryIcon from '../../../../../domain/platform/TopLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import { SEARCH_ROUTE } from '../../../../../domain/platform/routes/constants';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LanguageIcon from '@mui/icons-material/Language';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -28,6 +30,11 @@ import { supportedLngs } from '../../../../../core/i18n/config';
 import ListItemText from '@mui/material/ListItemText';
 import SearchBar from './SearchBar';
 import { ReactComponent as LogoSmallImage } from './alkemio-logo-small.svg';
+import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
+import HelpDialog from '../../../../../core/help/dialog/HelpDialog';
+import { gutters } from '../../../../../core/ui/grid/utils';
+
+export const MobileTopBarHeightGutters = 3;
 
 const MobileTopBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -48,12 +55,18 @@ const MobileTopBar = () => {
   const navigate = useNavigate();
 
   return (
-    <Box height={theme => theme.spacing(7)} display="flex" gap={2} alignItems="center" justifyContent="space-between">
+    <Box
+      height={gutters(MobileTopBarHeightGutters)}
+      display="flex"
+      gap={2}
+      alignItems="center"
+      justifyContent="space-between"
+    >
       {!isSearchOpen && (
         <HamburgerDropdown anchorEl={anchorEl} open={isMenuOpen} onOpen={openMenu} onClose={closeMenu} />
       )}
 
-      {isSearchOpen ? <LogoSmall /> : <LogoComponent height={theme => theme.spacing(4)} />}
+      {isSearchOpen ? <LogoSmall /> : <AlkemioLogoComponent height={theme => theme.spacing(4)} />}
 
       {isSearchOpen && (
         <ClickAwayListener onClickAway={closeSearch}>
@@ -72,7 +85,7 @@ const LogoSmall = () => {
   const theme = useTheme();
 
   return (
-    <Box component={Link} mx={1} to="/">
+    <Box component={Link} mx={1} to={ROUTE_HOME}>
       <LogoSmallImage width={theme.spacing(6)} />
     </Box>
   );
@@ -90,6 +103,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
 
   const { pathname } = useLocation();
   const { isAuthenticated, user: userMetadata } = useUserContext();
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const user = userMetadata?.user;
   const isAdmin = userMetadata?.permissions.isAdmin;
 
@@ -138,11 +152,17 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
-              {t('authentication.sign-in')}
+              {t('topbar.sign-in')}
             </MenuItem>
             <Divider />
           </>
         )}
+        <MenuItem component={RouterLink} to="/innovation-library">
+          <ListItemIcon>
+            <InnovationLibraryIcon />
+          </ListItemIcon>
+          {t('pages.innovationLibrary.shortName')}
+        </MenuItem>
         <MenuItem component={RouterLink} to="/challenges">
           <ListItemIcon>
             <ChallengeIcon />
@@ -154,6 +174,12 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             <GroupOutlinedIcon />
           </ListItemIcon>
           {t('common.contributors')}
+        </MenuItem>
+        <MenuItem component={RouterLink} to="/forum">
+          <ListItemIcon>
+            <ForumOutlinedIcon />
+          </ListItemIcon>
+          {t('common.forum')}
         </MenuItem>
         {user && (
           <MenuItem component={RouterLink} to={buildUserProfileUrl(user.nameID)}>
@@ -180,7 +206,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             {t('authentication.sign-out')}
           </MenuItem>
         )}
-        <MenuItem component={RouterLink} to={HELP_ROUTE}>
+        <MenuItem onClick={() => setHelpDialogOpen(true)}>
           <ListItemIcon>
             <HelpOutlineIcon />
           </ListItemIcon>
@@ -190,7 +216,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
           <ListItemIcon>
             <LanguageIcon />
           </ListItemIcon>
-          {t('common.language')}
+          Language
           <Box sx={{ ml: 1, mt: 0.5, display: 'flex', alignItems: 'center' }}>
             {languageOpen ? <ExpandLess /> : <ExpandMore />}
           </Box>
@@ -203,6 +229,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
           ))}
         </Collapse>
       </Menu>
+      <HelpDialog open={helpDialogOpen} onClose={() => setHelpDialogOpen(false)} />
     </>
   );
 };

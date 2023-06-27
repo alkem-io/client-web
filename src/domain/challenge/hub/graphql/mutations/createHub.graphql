@@ -1,5 +1,0 @@
-mutation createHub($input: CreateHubInput!) {
-  createHub(hubData: $input) {
-    ...HubDetails
-  }
-}

@@ -1,4 +1,4 @@
-import { OrganizationCardFragment, UserCardFragment } from '../../../../models/graphql-schema';
+import { OrganizationCardFragment, UserCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 
 export type ContributorType = 'leading' | 'member';
 

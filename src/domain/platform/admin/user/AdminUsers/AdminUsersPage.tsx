@@ -1,21 +1,20 @@
 import React, { FC } from 'react';
-import AdminLayout from '../../toplevel/AdminLayout';
-import { PageProps } from '../../../../../pages/common';
-import { AdminSection } from '../../toplevel/constants';
-import { useUpdateNavigation } from '../../../../../hooks';
+import AdminLayout from '../../layout/toplevel/AdminLayout';
+import { AdminSection } from '../../layout/toplevel/constants';
 import useUserList from '../../../../community/contributor/user/providers/useUserList';
 import SimpleSearchableList from '../../../../shared/components/SimpleSearchableList';
 import SearchableListLayout from '../../../../shared/components/SearchableListLayout';
+import useRelativeUrls from '../../utils/useRelativeUrls';
 
-const AdminUsersPage: FC<PageProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
-
+const AdminUsersPage: FC = () => {
   const { userList, ...listProps } = useUserList();
+
+  const navigatableUsers = useRelativeUrls(userList);
 
   return (
     <AdminLayout currentTab={AdminSection.User}>
       <SearchableListLayout>
-        <SimpleSearchableList data={userList} {...listProps} />
+        <SimpleSearchableList data={navigatableUsers} {...listProps} />
       </SearchableListLayout>
     </AdminLayout>
   );

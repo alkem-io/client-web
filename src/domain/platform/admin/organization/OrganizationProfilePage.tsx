@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import OrganizationAdminLayout from './OrganizationAdminLayout';
-import { SettingsSection } from '../layout/EntitySettings/constants';
+import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import OrganizationPage from '../components/Organization/OrganizationPage';
-import { EditMode } from '../../../../models/editMode';
-import { SettingsPageProps } from '../layout/EntitySettings/types';
+import { EditMode } from '../../../../core/ui/forms/editMode';
+import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 
-const OrganizationProfilePage: FC<SettingsPageProps> = ({ paths }) => {
+const OrganizationProfilePage: FC<SettingsPageProps> = () => {
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Profile}>
-      <OrganizationPage mode={EditMode.edit} paths={paths} />
+      <OrganizationPage mode={EditMode.edit} />
     </OrganizationAdminLayout>
   );
 };

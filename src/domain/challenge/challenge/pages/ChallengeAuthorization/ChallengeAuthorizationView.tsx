@@ -1,15 +1,14 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
-
 import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
 import { Loading } from '../../../../../common/components/core';
-import { useApolloErrorHandler, useChallenge } from '../../../../../hooks';
+import { useChallenge } from '../../hooks/useChallenge';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,
   useRemoveUserAsChallengeAdminMutation,
-} from '../../../../../hooks/generated/graphql';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ChallengeAuthorizationViewProps {
   credential: AuthorizationCredential;
@@ -17,15 +16,9 @@ interface ChallengeAuthorizationViewProps {
 }
 
 const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ credential, resourceId = '' }) => {
-  const handleError = useApolloErrorHandler();
+  const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({});
 
-  const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({
-    onError: handleError,
-  });
-
-  const [revoke, { loading: removingMember }] = useRemoveUserAsChallengeAdminMutation({
-    onError: handleError,
-  });
+  const [revoke, { loading: removingMember }] = useRemoveUserAsChallengeAdminMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
@@ -82,4 +75,5 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
     </Container>
   );
 };
+
 export default ChallengeAuthorizationView;

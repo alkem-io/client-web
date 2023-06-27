@@ -1,16 +1,19 @@
-import { Button, useTheme } from '@mui/material';
+import { ComponentType } from 'react';
+import { ButtonProps, useTheme } from '@mui/material';
 import { useSelector } from '@xstate/react';
 import { useLocation } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
-import { useGlobalState, useUserContext } from '../../../../../hooks';
+import { useUserContext } from '../../../../../domain/community/contributor/user';
+import { useGlobalState } from '../../../../../core/state/useGlobalState';
 import UserSegment from '../../entities/User/UserSegment';
 import SignInIcon from './SignInIcon';
 
 interface ProfileMenuItemProps {
-  buttonClassName: string;
+  buttonComponent: ComponentType<ButtonProps>;
+  signInButtonComponent: ComponentType<ButtonProps>;
 }
 
-const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
+const ProfileMenuItem = ({ buttonComponent: Button, signInButtonComponent: SignInButton }: ProfileMenuItemProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const theme = useTheme();
   const { pathname } = useLocation();
@@ -26,7 +29,7 @@ const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
   const renderUserProfileSegment = () => {
     if (loadingMe) {
       return (
-        <Button className={buttonClassName}>
+        <Button>
           <Skeleton
             variant="circular"
             width={theme.spacing(3)}
@@ -38,12 +41,12 @@ const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
       );
     }
     if (!isAuthenticated) {
-      return <SignInIcon className={buttonClassName} returnUrl={pathname} />;
+      return <SignInIcon buttonComponent={SignInButton} returnUrl={pathname} />;
     }
     return (
       <>
         {isUserSegmentVisible && user && (
-          <UserSegment userMetadata={user} emailVerified={verified} buttonClassName={buttonClassName} />
+          <UserSegment userMetadata={user} emailVerified={verified} buttonComponent={Button} />
         )}
       </>
     );

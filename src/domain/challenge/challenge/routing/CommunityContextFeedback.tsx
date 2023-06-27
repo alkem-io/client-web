@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { PageProps, Error404 } from '../../../../pages';
+import { PageProps } from '../../../shared/types/PageProps';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
 import CommunityContextFeedbackPage from '../../../community/community/pages/CommunityContextFeedbackPage';
-import RestrictedRoute from '../../../../core/routing/RestrictedRoute';
+import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 
 const CommunityFeedbackRoute: FC<PageProps> = ({ paths }) => {
   return (
@@ -11,9 +12,9 @@ const CommunityFeedbackRoute: FC<PageProps> = ({ paths }) => {
         <Route
           index
           element={
-            <RestrictedRoute>
+            <NoIdentityRedirect>
               <CommunityContextFeedbackPage paths={paths} />
-            </RestrictedRoute>
+            </NoIdentityRedirect>
           }
         />
         <Route path="*" element={<Error404 />} />
@@ -21,4 +22,5 @@ const CommunityFeedbackRoute: FC<PageProps> = ({ paths }) => {
     </Routes>
   );
 };
+
 export default CommunityFeedbackRoute;

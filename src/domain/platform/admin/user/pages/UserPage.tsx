@@ -1,10 +1,8 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PageProps } from '../../../../../pages';
 import UserRemoveModal from '../../components/User/UserRemoveModal';
 import UserForm from '../../../../../common/components/composite/forms/UserForm';
 import { Loading } from '../../../../../common/components/core/Loading/Loading';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../../../../hooks';
 import {
   useCreateTagsetOnProfileMutation,
   useCreateUserMutation,
@@ -12,20 +10,22 @@ import {
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
   useUserQuery,
-} from '../../../../../hooks/generated/graphql';
-import { EditMode } from '../../../../../models/editMode';
-import { CreateUserInput } from '../../../../../models/graphql-schema';
-import { UserModel } from '../../../../../models/User';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
+import { CreateUserInput } from '../../../../../core/apollo/generated/graphql-schema';
+import { UserModel } from '../../../../community/contributor/user/models/User';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { createUserNameID } from '../../../../../common/utils/createUserNameId';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
-interface UserPageProps extends PageProps {
+interface UserPageProps {
   mode: EditMode;
   title?: string;
 }
 
-export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User', paths }) => {
+export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -33,17 +33,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
   const { data, loading } = useUserQuery({ variables: { id: userNameId }, fetchPolicy: 'cache-and-network' });
 
   const user = data?.user as UserModel;
-  const currentPaths = useMemo(
-    () => [...paths, { name: user && user.displayName ? user.displayName : 'new', real: false }],
-    [paths, user]
-  );
-
-  useUpdateNavigation({ currentPaths });
-
-  const handleError = useApolloErrorHandler();
 
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
@@ -63,13 +54,11 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
     onCompleted: () => {
       navigate('/admin/users', { replace: true });
     },
-    onError: handleError,
   });
 
   const isEditMode = mode === EditMode.edit;
 
   const [createUser, { loading: createMutationLoading }] = useCreateUserMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('User saved successfully!', 'success');
     },
@@ -109,8 +98,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
         nameID: createUserNameID(rest.firstName, rest.lastName),
         profileData: {
           description: profile.description,
+          displayName: profile.displayName,
           referencesData: [...profile.references],
-          tagsetsData: [...profile.tagsets],
         },
       };
 
@@ -128,7 +117,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
           variables: {
             input: {
               name: tagset.name,
-              tags: [...tagset.tags],
+              tags: tagset.tags,
               profileID: profileId,
             },
           },
@@ -168,17 +157,18 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
         onSave={handleSave}
         title={title}
         user={user}
-        avatar={data?.user?.profile?.avatar}
+        avatar={data?.user?.profile.visual}
         onDelete={() => setModalOpened(true)}
       />
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}
         onConfirm={handleRemoveUser}
-        name={user?.displayName}
+        name={user?.profile.displayName}
         loading={userRemoveLoading}
       />
     </>
   );
 };
+
 export default UserPage;

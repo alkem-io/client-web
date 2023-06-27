@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
-import { useOpportunityProviderQuery } from '../../../../hooks/generated/graphql';
-import { AuthorizationPrivilege, OpportunityProviderFragment } from '../../../../models/graphql-schema';
-import { useChallenge } from '../../../../hooks';
-import { useUrlParams } from '../../../../hooks';
+import { useOpportunityProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, OpportunityProviderFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useChallenge } from '../../challenge/hooks/useChallenge';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;
@@ -14,45 +14,48 @@ export interface OpportunityContextProps {
   opportunity?: OpportunityProviderFragment;
   opportunityId: string;
   opportunityNameId: string;
+  communityId: string;
   challengeId: string;
   challengeNameId: string;
-  hubId: string;
-  hubNameId: string;
-  displayName: string;
+  spaceId: string;
+  spaceNameId: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
+  displayName: string;
 }
 
 const OpportunityContext = React.createContext<OpportunityContextProps>({
   loading: true,
   opportunityId: '',
   opportunityNameId: '',
+  communityId: '',
   challengeId: '',
   challengeNameId: '',
-  hubId: '',
-  hubNameId: '',
-  displayName: '',
+  spaceId: '',
+  spaceNameId: '',
   permissions: {
     viewerCanUpdate: false,
     communityReadAccess: false,
     contextPrivileges: [],
   },
+  displayName: '',
 });
 
 interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
-  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const { data, loading } = useOpportunityProviderQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
+    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
   });
-  const hubId = data?.hub?.id || '';
-  const opportunity = data?.hub?.opportunity;
+  const spaceId = data?.space?.id || '';
+  const opportunity = data?.space?.opportunity;
   const opportunityId = opportunity?.id || '';
+  const communityId = opportunity?.community?.id ?? '';
   // using the challenge provider
   const { challengeId } = useChallenge();
-  const displayName = opportunity?.displayName || '';
+  const displayName = opportunity?.profile.displayName || '';
 
   const permissions = useMemo<OpportunityViewerPermissions>(
     () => ({
@@ -69,13 +72,14 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     <OpportunityContext.Provider
       value={{
         opportunity,
-        hubId,
-        hubNameId,
+        displayName,
+        spaceId,
+        spaceNameId,
         challengeId,
         challengeNameId,
         opportunityId,
         opportunityNameId,
-        displayName,
+        communityId,
         permissions,
         loading,
       }}

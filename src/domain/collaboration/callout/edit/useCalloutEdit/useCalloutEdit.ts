@@ -3,28 +3,31 @@ import {
   useDeleteCalloutMutation,
   useUpdateCalloutMutation,
   useUpdateCalloutVisibilityMutation,
-} from '../../../../../hooks/generated/graphql';
-import { Callout, CalloutVisibility } from '../../../../../models/graphql-schema';
-import { useApolloErrorHandler } from '../../../../../hooks';
-import { CalloutEditType } from '../CalloutEditType';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
 
 type UseCalloutEditReturnType = {
-  handleVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
+  handleVisibilityChange: (
+    calloutId: Callout['id'],
+    visibility: CalloutVisibility,
+    sendNotification: boolean
+  ) => Promise<void>;
   handleEdit: (callout: CalloutEditType) => Promise<void>;
-  handleDelete: (callout: CalloutEditType) => Promise<void>;
+  handleDelete: (callout: CalloutDeleteType) => Promise<void>;
 };
 
 export const useCalloutEdit = (): UseCalloutEditReturnType => {
-  const handleError = useApolloErrorHandler();
-
-  const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
-  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation({ onError: handleError });
+  const [updateCallout] = useUpdateCalloutMutation();
+  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
 
   const handleVisibilityChange = useCallback(
-    async (calloutId: string, visibility: CalloutVisibility) => {
+    async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
       await updateCalloutVisibility({
-        variables: { calloutData: { calloutID: calloutId, visibility: visibility } },
+        variables: {
+          calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
+        },
       });
     },
     [updateCalloutVisibility]
@@ -35,15 +38,32 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
         variables: {
           calloutData: {
             ID: callout.id,
-            description: callout.description,
-            displayName: callout.displayName,
+            profileData: {
+              description: callout.profile.description,
+              displayName: callout.profile.displayName,
+              references: callout.profile.references?.map(reference => ({
+                ID: reference.id,
+                name: reference.name,
+                description: reference.description,
+                uri: reference.uri,
+              })),
+              tagsets: callout.profile.tagsets?.map(tagset => ({
+                ID: tagset.id || '',
+                name: tagset.name,
+                tags: tagset.tags,
+              })),
+            },
             state: callout.state,
-            cardTemplate: callout.cardTemplate
+            group: callout.group,
+            postTemplate: callout.postTemplate
               ? {
-                  type: callout.cardTemplate.type,
-                  defaultDescription: callout.cardTemplate.defaultDescription,
-                  info: callout.cardTemplate.info,
+                  type: callout.postTemplate.type,
+                  defaultDescription: callout.postTemplate.defaultDescription,
+                  profileData: callout.postTemplate.profile,
                 }
+              : undefined,
+            whiteboardTemplate: callout.whiteboardTemplate
+              ? { value: callout.whiteboardTemplate.value, profileData: callout.whiteboardTemplate.profile }
               : undefined,
           },
         },
@@ -52,11 +72,10 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
     [updateCallout]
   );
   const [deleteCallout] = useDeleteCalloutMutation({
-    onError: handleError,
     update: removeFromCache,
   });
   const handleDelete = useCallback(
-    async (callout: CalloutEditType) => {
+    async (callout: CalloutDeleteType) => {
       await deleteCallout({
         variables: { calloutId: callout.id },
       });

@@ -1,0 +1,84 @@
+query InnovationLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        ...InnovationPackCard
+      }
+    }
+  }
+}
+
+fragment InnovationPackCard on InnovationPack {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      id
+      tags
+    }
+  }
+  templates {
+    ...LibraryTemplates
+  }
+  provider {
+    ...InnovationPackProviderProfileWithAvatar
+  }
+}
+
+fragment LibraryTemplates on TemplatesSet {
+  id
+  postTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    type
+    defaultDescription
+  }
+  whiteboardTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+  }
+  innovationFlowTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    definition
+    type
+  }
+}

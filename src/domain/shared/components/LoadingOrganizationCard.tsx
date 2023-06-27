@@ -1,10 +1,10 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import OrganizationCard from '../../../common/components/composite/common/cards/Organization/OrganizationCard';
+import OrganizationCardHorizontal from '../../community/contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 
 const LoadingOrganizationCard = () => (
   <Grid item xs={4}>
-    <OrganizationCard loading />
+    <OrganizationCardHorizontal loading />
   </Grid>
 );
 

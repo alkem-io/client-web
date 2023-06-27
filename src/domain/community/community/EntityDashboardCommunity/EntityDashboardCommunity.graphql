@@ -3,7 +3,7 @@ fragment EntityDashboardCommunity on Community {
   leadUsers {
     ...DashboardLeadUser
   }
-  memberUsers {
+  memberUsers(limit: 8) {
     ...DashboardContributingUser
   }
   leadOrganizations {

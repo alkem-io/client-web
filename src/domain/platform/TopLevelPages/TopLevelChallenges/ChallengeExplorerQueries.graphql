@@ -1,0 +1,59 @@
+query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    spaces {
+      id
+      roles
+      challenges {
+        id
+        roles
+      }
+    }
+  }
+}
+
+query ChallengeExplorerSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    journeyResults {
+      id
+      type
+      terms
+      ... on SearchResultChallenge {
+        ...SearchResultChallenge
+      }
+    }
+  }
+}
+
+query ChallengeExplorerData($spaceIDs: [UUID!], $challengeIDs: [UUID!]) {
+  spaces(IDs: $spaceIDs) {
+    id
+    nameID
+    profile {
+      id
+      tagline
+      displayName
+    }
+    visibility
+    challenges(IDs: $challengeIDs) {
+      id
+      nameID
+      profile {
+        id
+        tagline
+        displayName
+        description
+        visuals {
+          ...VisualUri
+        }
+        tagset {
+          id
+          tags
+        }
+      }
+      context {
+        id
+        vision
+      }
+    }
+  }
+}

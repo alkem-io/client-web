@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import OpportunitySettingsLayout from './OpportunitySettingsLayout';
-import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../layout/EntitySettings/types';
-import { useHub, useOpportunity } from '../../../../hooks';
+import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
-import CommunityGroupListPage from '../../../../pages/Admin/Community/CommunityListPage';
+import CommunityGroupListPage from '../community/CommunityListPage';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
 import useOpportunityLeadOrganizationAssignment from '../../../community/community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
 import useOpportunityMemberOrganizationAssignment from '../../../community/community/useCommunityAssignment/useOpportunityMemberOrganizationAssignment';
@@ -17,43 +17,41 @@ import {
   useOpportunityAvailableLeadUsersLazyQuery,
   useOpportunityAvailableMemberUsersLazyQuery,
   useOpportunityCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 
-const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'community' });
-
-  const { hubNameId } = useHub();
+const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+  const { spaceNameId } = useSpace();
   const { opportunity } = useOpportunity();
 
   const communityId = opportunity?.community?.id;
 
   const leadingOrganizationsProps = useOpportunityLeadOrganizationAssignment({
-    hubId: hubNameId,
+    spaceId: spaceNameId,
     opportunityId: opportunity?.nameID,
   });
 
   const memberOrganizationsProps = useOpportunityMemberOrganizationAssignment({
-    hubId: hubNameId,
+    spaceId: spaceNameId,
     opportunityId: opportunity?.nameID,
   });
 
   const memberUsersProps = useCommunityUserAssignment({
     memberType: 'member',
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       opportunityId: opportunity?.nameID,
     },
     existingUsersOptions: {
       useQuery: useOpportunityCommunityMembersQuery,
-      readCommunity: data => data?.hub.opportunity.community,
+      readCommunity: data => data?.space.opportunity.community,
       refetchQuery: refetchOpportunityCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useOpportunityAvailableMemberUsersLazyQuery,
-      readUsers: data => data.hub.opportunity.community?.availableMemberUsers,
+      readUsers: data => data.space.opportunity.community?.availableMemberUsers,
       refetchQuery: refetchOpportunityAvailableMemberUsersQuery,
     },
   });
@@ -61,17 +59,17 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
   const leadUsersProps = useCommunityUserAssignment({
     memberType: 'lead',
     variables: {
-      hubId: hubNameId,
+      spaceId: spaceNameId,
       opportunityId: opportunity?.nameID,
     },
     existingUsersOptions: {
       useQuery: useOpportunityCommunityMembersQuery,
-      readCommunity: data => data?.hub.opportunity.community,
+      readCommunity: data => data?.space.opportunity.community,
       refetchQuery: refetchOpportunityCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useOpportunityAvailableLeadUsersLazyQuery,
-      readUsers: data => data.hub.opportunity.community?.availableLeadUsers,
+      readUsers: data => data.space.opportunity.community?.availableLeadUsers,
       refetchQuery: refetchOpportunityAvailableLeadUsersQuery,
     },
   });

@@ -1,0 +1,19 @@
+query communityUserPrivileges($spaceNameId: UUID_NAMEID!, $communityId: UUID!) {
+  space(ID: $spaceNameId) {
+    id
+    spaceCommunity: community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    community(ID: $communityId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

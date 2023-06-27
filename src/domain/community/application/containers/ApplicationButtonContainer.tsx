@@ -1,0 +1,134 @@
+import React, { FC } from 'react';
+import { ApplicationButtonProps } from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
+import { useUserContext } from '../../contributor/user';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import {
+  useCommunityUserPrivilegesQuery,
+  useJoinCommunityMutation,
+  useUserApplicationsQuery,
+  useUserProfileLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../../../core/container/container';
+import { buildChallengeApplyUrl, buildSpaceApplyUrl, buildSpaceUrl } from '../../../../common/utils/urlBuilders';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useCommunityContext } from '../../community/CommunityContext';
+import clearCacheForType from '../../../shared/utils/apollo-cache/clearCacheForType';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+
+interface ApplicationContainerEntities {
+  applicationButtonProps: ApplicationButtonProps;
+}
+interface ApplicationContainerActions {}
+interface ApplicationContainerState {
+  loading: boolean;
+}
+
+export interface ApplicationButtonContainerProps
+  extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
+  challengeId?: string;
+  challengeNameId?: string;
+  challengeName?: string;
+}
+
+export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
+  challengeId,
+  challengeNameId,
+  challengeName,
+  children,
+}) => {
+  const { isAuthenticated } = useAuthenticationContext();
+  const { user } = useUserContext();
+  const userId = user?.user?.id ?? '';
+
+  const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
+
+  const { spaceId, spaceNameId, profile: spaceProfile, refetchSpace } = useSpace();
+
+  const { communityId, myMembershipStatus } = useCommunityContext();
+  const { data: memberShip, loading: membershipLoading } = useUserApplicationsQuery({
+    variables: { input: userId },
+    skip: !userId,
+  });
+
+  const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
+    variables: { spaceNameId, communityId },
+    skip: !communityId,
+  });
+  const hasCommunityParent = _communityPrivileges?.space?.spaceCommunity?.id !== communityId;
+
+  const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
+    update: cache => clearCacheForType(cache, 'Authorization'),
+  });
+
+  // todo: refactor logic or use entity privileges
+  const userApplication = memberShip?.rolesUser.applications?.find(
+    x => x.spaceID === spaceId && (challengeId ? x.challengeID === challengeId : true) && !x.opportunityID
+  );
+
+  // find an application which does not have a challengeID, meaning it's on space level,
+  // but you are at least at challenge level to have a parent application
+  const parentApplication = memberShip?.rolesUser.applications?.find(
+    x => x.spaceID === spaceId && !x.challengeID && !x.opportunityID && challengeId
+  );
+
+  const isMember = myMembershipStatus === CommunityMembershipStatus.Member;
+
+  const applyUrl =
+    challengeId && challengeNameId
+      ? buildChallengeApplyUrl(spaceNameId, challengeNameId)
+      : buildSpaceApplyUrl(spaceNameId);
+  const joinParentUrl = challengeNameId && buildSpaceUrl(spaceNameId);
+
+  const communityPrivileges = _communityPrivileges?.space?.community?.authorization?.myPrivileges ?? [];
+  const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
+  const canApplyToCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
+
+  const parentCommunityPrivileges = hasCommunityParent
+    ? _communityPrivileges?.space?.spaceCommunity?.authorization?.myPrivileges ?? []
+    : [];
+  const canJoinParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
+  const canApplyToParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
+
+  const loading = membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
+
+  const onJoin = async () => {
+    await joinCommunity({
+      variables: { joiningData: { communityID: communityId } },
+    });
+    getUserProfile();
+    refetchSpace();
+  };
+
+  const applicationButtonProps: ApplicationButtonProps = {
+    isAuthenticated,
+    isMember,
+    isParentMember: Boolean(challengeId) && user?.ofSpace(spaceId),
+    applyUrl,
+    parentApplyUrl: buildSpaceApplyUrl(spaceNameId),
+    joinParentUrl,
+    applicationState: userApplication?.state,
+    parentApplicationState: parentApplication?.state,
+    spaceName: spaceProfile.displayName,
+    challengeName,
+    canJoinCommunity,
+    canApplyToCommunity,
+    canJoinParentCommunity,
+    canApplyToParentCommunity,
+    onJoin,
+    loading,
+  };
+
+  return (
+    <>
+      {children(
+        {
+          applicationButtonProps,
+        },
+        { loading },
+        {}
+      )}
+    </>
+  );
+};
+
+export default ApplicationButtonContainer;

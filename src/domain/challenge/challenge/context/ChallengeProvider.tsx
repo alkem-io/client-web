@@ -1,11 +1,12 @@
 import React, { FC, useMemo } from 'react';
-import { useChallengeInfoQuery } from '../../../../hooks/generated/graphql';
-import { AuthorizationPrivilege, ChallengeInfoFragment } from '../../../../models/graphql-schema';
-import { useUrlParams } from '../../../../hooks';
+import { useChallengeInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, ChallengeInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface ChallengePermissions {
   canUpdate: boolean;
   canCreate: boolean;
+  canCreateOpportunity: boolean;
   canReadCommunity: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
@@ -14,41 +15,49 @@ interface ChallengeContextProps {
   challenge?: ChallengeInfoFragment;
   challengeId: string;
   challengeNameId: string;
-  hubId: string;
-  hubNameId: string;
-  displayName: string;
+  communityId: string;
+  spaceId: string;
+  spaceNameId: string;
   loading: boolean;
   permissions: ChallengePermissions;
+  profile: ChallengeInfoFragment['profile'];
 }
 
 const ChallengeContext = React.createContext<ChallengeContextProps>({
   loading: true,
   challengeId: '',
   challengeNameId: '',
-  hubId: '',
-  hubNameId: '',
-  displayName: '',
+  communityId: '',
+  spaceId: '',
+  spaceNameId: '',
   permissions: {
     canUpdate: false,
     canCreate: false,
+    canCreateOpportunity: false,
     canReadCommunity: false,
     contextPrivileges: [],
+  },
+  profile: {
+    id: '',
+    displayName: '',
+    visuals: [],
+    tagline: '',
   },
 });
 
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
+  const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
   const { data, loading } = useChallengeInfoQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
-    skip: !hubNameId || !challengeNameId,
+    skip: !spaceNameId || !challengeNameId,
   });
-  const hubId = data?.hub?.id || '';
-  const challenge = data?.hub?.challenge;
+  const spaceId = data?.space?.id || '';
+  const challenge = data?.space?.challenge;
   const challengeId = challenge?.id || '';
-  const displayName = challenge?.displayName || '';
+  const communityId = challenge?.community?.id ?? '';
 
   const myPrivileges = useMemo(
     () => challenge?.authorization?.myPrivileges ?? [],
@@ -62,11 +71,25 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
     () => ({
       canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
       canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
+      canCreateOpportunity: myPrivileges.includes(AuthorizationPrivilege.CreateOpportunity),
       canReadCommunity,
       contextPrivileges: challenge?.context?.authorization?.myPrivileges ?? [],
     }),
     [myPrivileges, challenge, canReadCommunity]
   );
+
+  const profile = useMemo(() => {
+    return {
+      id: challenge?.profile.id ?? '',
+      displayName: challenge?.profile.displayName || '',
+      description: challenge?.profile.description,
+      tagset: challenge?.profile.tagset,
+      visuals: challenge?.profile.visuals ?? [],
+      tagline: challenge?.profile.tagline || '',
+      references: challenge?.profile.references ?? [],
+      location: challenge?.profile.location,
+    };
+  }, [challenge?.profile]);
 
   return (
     <ChallengeContext.Provider
@@ -74,10 +97,11 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         challenge,
         challengeId,
         challengeNameId,
-        hubId,
-        hubNameId,
+        communityId,
+        spaceId,
+        spaceNameId,
         permissions,
-        displayName,
+        profile,
         loading,
       }}
     >

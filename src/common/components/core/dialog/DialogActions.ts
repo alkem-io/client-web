@@ -1,6 +1,9 @@
 import { styled } from '@mui/material';
 import MuiDialogActions from '@mui/material/DialogActions';
 
+/**
+ * @deprecated
+ */
 const DialogActions = styled(MuiDialogActions)(({ theme }) => ({
   margin: 0,
   paddingTop: theme.spacing(2),

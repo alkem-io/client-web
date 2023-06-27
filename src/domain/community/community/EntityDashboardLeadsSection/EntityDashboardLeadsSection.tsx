@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import OrganizationCard, {
+import OrganizationCardHorizontal, {
   OrganizationCardProps,
-} from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
-import SectionHeader from '../../../shared/components/Section/SectionHeader';
+} from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
-import { useUserContext } from '../../../../hooks';
+import { useUserContext } from '../../contributor/user';
 import { mapToAssociatedOrganization } from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganization';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
-const OrganizationCardTransparent = (props: OrganizationCardProps) => <OrganizationCard {...props} transparent />;
+const OrganizationCardTransparent = (props: OrganizationCardProps) => (
+  <OrganizationCardHorizontal {...props} transparent />
+);
 
 interface EntityDashboardLeadsProps extends EntityDashboardLeads {
   organizationsHeader: string;
@@ -32,7 +32,7 @@ const EntityDashboardLeadsSection = ({
   const { user } = useUserContext();
 
   const leadOrganizationsMapped = useMemo(
-    () => leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
+    () => leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id)),
     [leadOrganizations, t, user?.user]
   );
 
@@ -40,30 +40,26 @@ const EntityDashboardLeadsSection = ({
     return leadUsers?.map(user => ({
       id: user.id,
       userUrl: buildUserProfileUrl(user.nameID),
-      fullName: user.displayName,
-      city: user.profile?.location?.city,
-      country: user.profile?.location?.country,
-      avatarUrl: user.profile?.avatar?.uri,
-      tags: user.profile?.tagsets?.flatMap(({ tags }) => tags),
+      fullName: user.profile.displayName,
+      city: user.profile.location?.city,
+      country: user.profile.location?.country,
+      avatarUrl: user.profile.visual?.uri,
+      tags: user.profile.tagsets?.flatMap(({ tags }) => tags),
     }));
   }, [leadUsers]);
 
   return (
-    <DashboardGenericSection navText={t('buttons.see-more')} navLink={EntityPageSection.About}>
-      <SectionHeader text={organizationsHeader} />
-      <SectionSpacer />
+    <PageContentBlock>
+      <PageContentBlockHeader title={organizationsHeader} />
       <AssociatedOrganizationsView
         organizations={leadOrganizationsMapped}
         organizationCardComponent={OrganizationCardTransparent}
         entityName={t('community.leading-organizations')}
       />
       {!!leadUsersMapped && leadUsersMapped.length > 0 && (
-        <>
-          <SectionSpacer double />
-          <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
-        </>
+        <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
       )}
-    </DashboardGenericSection>
+    </PageContentBlock>
   );
 };
 

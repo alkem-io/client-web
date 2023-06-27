@@ -2,9 +2,8 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { TFunction } from 'i18next';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler } from '../../../../../hooks';
-import { useEventOnApplicationMutation } from '../../../../../hooks/generated/graphql';
-import { ApplicationInfoFragment } from '../../../../../models/graphql-schema';
+import { useEventOnApplicationMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { ApplicationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { ApplicationDialog } from '../../../../community/application/dialogs/ApplicationDialog';
 import { Box } from '@mui/material';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
@@ -19,7 +18,7 @@ interface ApplicationViewmodel {
 const toApplicationViewmodel = (applications: ApplicationInfoFragment[]): ApplicationViewmodel[] =>
   applications.map(x => ({
     id: x.id,
-    username: x.user.displayName,
+    username: x.user.profile.displayName,
     email: x.user.email,
     state: x.lifecycle?.state || '',
   }));
@@ -27,7 +26,9 @@ const toApplicationViewmodel = (applications: ApplicationInfoFragment[]): Applic
 interface ApplicationsAdminViewProps {
   applications: ApplicationInfoFragment[];
 }
-
+/**
+ * @deprecated Use CommunityApplications. Stays for Challenges, but Spaces are already using CommunityApplications
+ */
 export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applications }) => {
   const { t } = useTranslation();
 
@@ -35,11 +36,7 @@ export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applicat
 
   const applicationsVm = useMemo(() => toApplicationViewmodel(applications), [applications]);
 
-  const handleError = useApolloErrorHandler();
-
-  const [updateApplication] = useEventOnApplicationMutation({
-    onError: handleError,
-  });
+  const [updateApplication] = useEventOnApplicationMutation({});
 
   const setNewStateHandler = (appId: string, newState: string) => {
     updateApplication({
@@ -71,11 +68,12 @@ export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applicat
         />
       </Box>
       {appChosen && (
-        <ApplicationDialog app={appChosen} onHide={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
+        <ApplicationDialog app={appChosen} onClose={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
       )}
     </DashboardGenericSection>
   );
 };
+
 export default ApplicationsAdminView;
 
 const getColumnDefinitions = (t: TFunction) =>

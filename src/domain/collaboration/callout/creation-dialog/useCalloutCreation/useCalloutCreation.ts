@@ -3,63 +3,72 @@ import {
   CalloutFragmentDoc,
   useChallengeCollaborationIdQuery,
   useCreateCalloutMutation,
-  useHubCollaborationIdQuery,
+  useSpaceCollaborationIdQuery,
   useOpportunityCollaborationIdQuery,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
-import { CalloutState, CalloutType } from '../../../../../models/graphql-schema';
-import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { CalloutState, CalloutType, CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
+import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
+import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
+import { Reference } from '../../../../common/profile/Profile';
+import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 
-export type CalloutCreationType = {
-  description: string;
-  displayName: string;
-  templateId: string;
+export interface CalloutCreationType {
+  profile: {
+    description: string;
+    displayName: string;
+    referencesData: Reference[];
+  };
+  tags?: string[];
   type: CalloutType;
   state: CalloutState;
-  cardTemplate?: AspectTemplateFormSubmittedValues;
-};
+  postTemplate?: PostTemplateFormSubmittedValues;
+  whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
+  group?: string;
+}
 
-interface CalloutCreationUtils {
+export interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
-  handleCalloutDrafted: (callout: CalloutCreationType) => Promise<void>;
+  handleCreateCallout: (
+    callout: CalloutCreationType
+  ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
   isCreating: boolean;
 }
 
 export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
-  const handleError = useApolloErrorHandler();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
 
-  const { data: hubData } = useHubCollaborationIdQuery({
-    variables: { hubId: hubNameId! },
-    skip: !hubNameId || !!challengeNameId || !!opportunityNameId,
+  const { data: spaceData } = useSpaceCollaborationIdQuery({
+    variables: { spaceId: spaceNameId! },
+    skip: !spaceNameId || !!challengeNameId || !!opportunityNameId,
   });
   const { data: challengeData } = useChallengeCollaborationIdQuery({
     variables: {
-      hubId: hubNameId!,
+      spaceId: spaceNameId!,
       challengeId: challengeNameId!,
     },
-    skip: !hubNameId || !challengeNameId || !!opportunityNameId,
+    skip: !spaceNameId || !challengeNameId || !!opportunityNameId,
   });
   const { data: opportunityData } = useOpportunityCollaborationIdQuery({
     variables: {
-      hubId: hubNameId!,
+      spaceId: spaceNameId!,
       opportunityId: opportunityNameId!,
     },
-    skip: !hubNameId || !opportunityNameId,
+    skip: !spaceNameId || !opportunityNameId,
   });
 
   const collaborationID: string | undefined = (
-    hubData?.hub ??
-    challengeData?.hub?.challenge ??
-    opportunityData?.hub?.opportunity
+    spaceData?.space ??
+    challengeData?.space?.challenge ??
+    opportunityData?.space?.opportunity
   )?.collaboration?.id;
 
   const [createCallout] = useCreateCalloutMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       if (!data || !collaborationID) {
         return;
@@ -96,7 +105,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     setIsCalloutCreationDialogOpen(true);
   }, []);
   const handleCreateCalloutClosed = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
-  const handleCalloutDrafted = useCallback(
+  const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
       if (!collaborationID) {
         return;
@@ -104,15 +113,11 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       setIsCreating(true);
 
-      await createCallout({
+      const result = await createCallout({
         variables: {
           calloutData: {
             collaborationID,
-            description: callout.description,
-            displayName: callout.displayName,
-            type: callout.type,
-            state: callout.state,
-            cardTemplate: callout.cardTemplate,
+            ...callout,
           },
         },
       });
@@ -120,7 +125,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
       setIsCreating(false);
       setIsCalloutCreationDialogOpen(false);
 
-      return;
+      return result.data?.createCalloutOnCollaboration;
     },
     [collaborationID, createCallout]
   );
@@ -129,7 +134,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     isCalloutCreationDialogOpen,
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
-    handleCalloutDrafted,
+    handleCreateCallout,
     isCreating,
   };
 };

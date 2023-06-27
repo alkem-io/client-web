@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormRow from '../../../../shared/layout/FormLayout';
-import FormikInputFieldField from '../../../../../common/components/composite/forms/FormikInputField';
+import FormRow from '../../../../../common/components/FormLayout';
+import FormikInputFieldField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { displayNameValidator, nameIdValidator } from '../../../../../common/utils/validator';
 
 export const nameSegmentSchema = yup.object().shape({
@@ -15,17 +15,27 @@ interface NameSegmentProps {
   required: boolean;
   nameHelpText?: string;
   nameIDHelpText?: string;
+  nameFieldName?: string;
+  nameIdFieldName?: string;
   loading?: boolean;
 }
 
-export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelpText, nameIDHelpText, loading }) => {
+export const NameSegment: FC<NameSegmentProps> = ({
+  disabled,
+  required,
+  nameHelpText,
+  nameIDHelpText,
+  nameFieldName = 'name',
+  nameIdFieldName = 'nameID',
+  loading,
+}) => {
   const { t } = useTranslation();
 
   return (
     <>
       <FormRow>
         <FormikInputFieldField
-          name="name"
+          name={nameFieldName}
           title={t('components.nameSegment.name')}
           required
           helpIconText={nameHelpText}
@@ -34,7 +44,7 @@ export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelp
       </FormRow>
       <FormRow>
         <FormikInputFieldField
-          name="nameID"
+          name={nameIdFieldName}
           title={t('components.nameSegment.nameID.title')}
           placeholder={t('components.nameSegment.nameID.placeholder')}
           disabled={disabled}

@@ -1,6 +1,6 @@
-import { ApplicationForRoleResult } from '../../../models/graphql-schema';
+import { ApplicationForRoleResult } from '../../../core/apollo/generated/graphql-schema';
 import getApplicationWithType, { ApplicationWithType } from './getApplicationWithType';
-import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { ApplicationTypeEnum } from '../../../domain/community/application/constants/ApplicationType';
 
 type TestData = {
   name: string;
@@ -14,20 +14,20 @@ const data = (): TestData[] =>
     // normal case
     {
       name: '3',
-      data: { id: 'app-id', hubID: 'eco' },
-      result: { id: 'app-id', hubID: 'eco', type: ApplicationTypeEnum.hub },
+      data: { id: 'app-id', spaceID: 'eco' },
+      result: { id: 'app-id', spaceID: 'eco', type: ApplicationTypeEnum.space },
     },
     {
       name: '4',
-      data: { id: 'app-id', hubID: 'eco', challengeID: 'chall' },
-      result: { id: 'app-id', hubID: 'eco', challengeID: 'chall', type: ApplicationTypeEnum.challenge },
+      data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall' },
+      result: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', type: ApplicationTypeEnum.challenge },
     },
     {
       name: '5',
-      data: { id: 'app-id', hubID: 'eco', challengeID: 'chall', opportunityID: 'opp' },
+      data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', opportunityID: 'opp' },
       result: {
         id: 'app-id',
-        hubID: 'eco',
+        spaceID: 'eco',
         challengeID: 'chall',
         opportunityID: 'opp',
         type: ApplicationTypeEnum.opportunity,
@@ -38,11 +38,11 @@ const data = (): TestData[] =>
 const exceptionData = (): TestData[] =>
   [
     //edge case
-    { name: '1', data: { id: 'app-id' }, exceptionMsg: "'hubID' parameter expected" },
+    { name: '1', data: { id: 'app-id' }, exceptionMsg: "'spaceID' parameter expected" },
     {
       name: '2',
-      data: { id: 'app-id', hubID: 'eco', opportunityID: 'opp' },
-      exceptionMsg: "'challengeID' parameter expected when 'hubID' and 'opportunityID' are provided",
+      data: { id: 'app-id', spaceID: 'eco', opportunityID: 'opp' },
+      exceptionMsg: "'challengeID' parameter expected when 'spaceID' and 'opportunityID' are provided",
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each;
 

@@ -1,11 +1,11 @@
 import {
   refetchOpportunityCommunityMembersQuery,
   useOpportunityCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useMemberOrganizationAssignment from './useMemberOrganizationAssignment';
 
 interface Options {
-  hubId: string | undefined;
+  spaceId: string | undefined;
   opportunityId: string | undefined;
 }
 
@@ -16,8 +16,8 @@ const useOpportunityMemberOrganizationAssignment = (options: Options) =>
       const { data } = useOpportunityCommunityMembersQuery({ variables, skip });
 
       return {
-        communityId: data?.hub.opportunity?.community?.id,
-        existingMembers: data?.hub.opportunity?.community?.memberOrganizations,
+        communityId: data?.space.opportunity?.community?.id,
+        existingMembers: data?.space.opportunity?.community?.memberOrganizations,
       };
     },
     refetchQueries: [refetchOpportunityCommunityMembersQuery],

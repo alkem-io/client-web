@@ -1,0 +1,157 @@
+query JourneyStorageConfig(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+}
+
+query CalloutStorageConfig(
+  $calloutId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      collaboration {
+        ...CalloutOnCollaborationWithStorageConfig
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      collaboration {
+        ...CalloutOnCollaborationWithStorageConfig
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      collaboration {
+        ...CalloutOnCollaborationWithStorageConfig
+      }
+    }
+  }
+}
+
+query CalloutPostStorageConfig(
+  $postId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      collaboration {
+        ...PostInCalloutOnCollaborationWithStorageConfig
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      collaboration {
+        ...PostInCalloutOnCollaborationWithStorageConfig
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      collaboration {
+        ...PostInCalloutOnCollaborationWithStorageConfig
+      }
+    }
+  }
+}
+
+query UserStorageConfig($userId: UUID_NAMEID_EMAIL!) {
+  user(ID: $userId) {
+    id
+    profile {
+      ...ProfileStorageConfig
+    }
+  }
+}
+
+query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
+  organization(ID: $organizationId) {
+    id
+    profile {
+      ...ProfileStorageConfig
+    }
+  }
+}
+
+query InnovationPackStorageConfig($innovationPackId: UUID_NAMEID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+}
+
+fragment ProfileStorageConfig on Profile {
+  id
+  storageBucket {
+    id
+    allowedMimeTypes
+    maxFileSize
+  }
+}
+
+fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
+  id
+  callouts(IDs: [$calloutId]) {
+    id
+    profile {
+      ...ProfileStorageConfig
+    }
+  }
+}
+
+fragment PostInCalloutOnCollaborationWithStorageConfig on Collaboration {
+  id
+  callouts(IDs: [$calloutId]) {
+    id
+    posts(IDs: [$postId]) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+}

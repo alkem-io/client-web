@@ -1,14 +1,11 @@
 import React, { FC } from 'react';
 import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import ChallengeProfileView from './ChallengeProfileView';
 import FormMode from '../../../../platform/admin/components/FormMode';
 
-const ChallengeProfilePage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'profile' });
-
+const ChallengeProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Profile} tabRoutePrefix={routePrefix}>
       <ChallengeProfileView mode={FormMode.update} />

@@ -1,15 +1,18 @@
 import { useMemo } from 'react';
 import { shuffle } from 'lodash';
-import { useUserContext } from '../../../../hooks';
-import { useContributingUsersQuery, useContributingOrganizationsQuery } from '../../../../hooks/generated/graphql';
-import { COUNTRIES_BY_CODE } from '../../../../models/constants';
+import { useUserContext } from '../../contributor/user';
+import {
+  useContributingUsersQuery,
+  useContributingOrganizationsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualAvatar } from '../../../../common/utils/visuals.utils';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
+import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
-import { AuthorizationCredential } from '../../../../models/graphql-schema';
+import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 
-const MAX_ITEMS_TO_SHOW = 20;
+const MAX_ITEMS_TO_SHOW = 16;
 const HALF_MAX_ITEMS_TO_SHOW = MAX_ITEMS_TO_SHOW / 2; // If logged in, show half users half organizations
 
 const useHomePageContributors = () => {
@@ -21,7 +24,7 @@ const useHomePageContributors = () => {
     variables: {
       limit: HALF_MAX_ITEMS_TO_SHOW,
       shuffle: true,
-      filterCredentials: [AuthorizationCredential.HubHost, AuthorizationCredential.ChallengeLead],
+      filterCredentials: [AuthorizationCredential.SpaceHost, AuthorizationCredential.ChallengeLead],
     },
     skip: loadingUserContext || !isAuthenticated,
   });
@@ -30,30 +33,31 @@ const useHomePageContributors = () => {
     variables: {
       limit: organizationsCountLimit,
       shuffle: true,
-      filterCredentials: [AuthorizationCredential.HubHost, AuthorizationCredential.ChallengeLead],
+      filterCredentials: [AuthorizationCredential.SpaceHost, AuthorizationCredential.ChallengeLead],
     },
     skip: loadingUserContext,
   });
 
-  const contributors: WithId<ContributorCardProps>[] = useMemo(() => {
+  const contributors: WithId<ContributorCardSquareProps>[] = useMemo(() => {
     const users = usersData?.users ?? [];
-    const usersCards = users.map<ContributorCardProps>(user => ({
+    const usersCards = users.map<ContributorCardSquareProps>(user => ({
       id: user.id,
-      avatar: user.profile?.avatar?.uri || '',
-      displayName: user.displayName,
+      avatar: user.profile.visual?.uri || '',
+      displayName: user.profile.displayName,
       url: buildUserProfileUrl(user.nameID),
       tooltip: {
-        tags: user.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
-        city: user.profile?.location?.city,
-        country: COUNTRIES_BY_CODE[user.profile?.location?.country || ''],
+        tags: user.profile.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
+        city: user.profile.location?.city,
+        country: COUNTRIES_BY_CODE[user.profile.location?.country || ''],
       },
+      isContactable: user.isContactable,
     }));
 
     const organizations = organizationsData?.organizations ?? [];
-    const organizationsCards = organizations.map<ContributorCardProps>(org => ({
+    const organizationsCards = organizations.map<ContributorCardSquareProps>(org => ({
       id: org.id,
-      avatar: getVisualAvatar(org?.profile?.avatar) || '',
-      displayName: org.displayName,
+      avatar: getVisualAvatar(org?.profile.visual) || '',
+      displayName: org.profile.displayName,
       url: buildOrganizationUrl(org.nameID),
     }));
 

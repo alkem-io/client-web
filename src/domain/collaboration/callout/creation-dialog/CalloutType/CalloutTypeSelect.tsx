@@ -1,39 +1,58 @@
 import React, { FC } from 'react';
-import { Box, Typography } from '@mui/material';
-import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
-import ModeOutlinedIcon from '@mui/icons-material/ModeOutlined';
 import { useTranslation } from 'react-i18next';
-import { useField } from 'formik';
-import { CalloutType } from '../../../../../models/graphql-schema';
+import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import RadioButtonGroup from '../../../../shared/components/RadioButtons/RadioButtonGroup';
 import RadioButton from '../../../../shared/components/RadioButtons/RadioButton';
+import calloutIcons from '../../utils/calloutIcons';
+import RouterLink from '../../../../../core/ui/link/RouterLink';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Caption } from '../../../../../core/ui/typography';
+import { useConfig } from '../../../../platform/config/useConfig';
 
 interface CalloutTypeSelectProps {
-  name: string;
+  onSelect: (value: CalloutType | undefined) => void;
+  value: CalloutType | undefined;
   disabled?: boolean;
 }
+const availableCalloutTypes = [
+  CalloutType.Post,
+  CalloutType.Whiteboard,
+  CalloutType.LinkCollection,
+  CalloutType.PostCollection,
+  CalloutType.WhiteboardCollection,
+];
 
-export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ name, disabled = false }) => {
-  const [field, , helpers] = useField(name);
+export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
   const { t } = useTranslation();
+  const { platform } = useConfig();
+
+  const handleChange = (value: CalloutType | undefined) => {
+    onSelect(value);
+  };
 
   return (
     <>
-      {/* TODO: Add this color to pallete to match Formik labels */}
-      <Typography sx={{ color: '#00000099' }}>{t('components.callout-creation.callout-type-label')}</Typography>
-      <Box p={1} />
-      <RadioButtonGroup value={field.value} disabled={disabled} onChange={helpers.setValue}>
-        <RadioButton key={CalloutType.Comments} value={CalloutType.Comments} iconComponent={ForumOutlinedIcon}>
-          {t('common.discussion')}
-        </RadioButton>
-        <RadioButton key={CalloutType.Card} value={CalloutType.Card} iconComponent={BallotOutlinedIcon}>
-          {t('common.cards')}
-        </RadioButton>
-        <RadioButton key={CalloutType.Canvas} value={CalloutType.Canvas} iconComponent={ModeOutlinedIcon}>
-          {t('common.canvases')}
-        </RadioButton>
+      <RadioButtonGroup
+        value={value}
+        disabled={disabled}
+        onChange={handleChange}
+        flexWrap="wrap"
+        justifyContent="center"
+      >
+        {availableCalloutTypes.map(calloutType => (
+          <RadioButton key={calloutType} value={calloutType} iconComponent={calloutIcons[calloutType]}>
+            {t(`components.calloutTypeSelect.label.${calloutType}` as const)}
+          </RadioButton>
+        ))}
       </RadioButtonGroup>
+      {platform?.inspiration && (
+        <RouterLink to={platform.inspiration}>
+          <Caption color="primary" textAlign="center">
+            <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: 1 }} />
+            {t('callout.alkemio-link')}
+          </Caption>
+        </RouterLink>
+      )}
     </>
   );
 };

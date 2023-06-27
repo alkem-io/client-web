@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthorizationPrivilege } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface CommunityContextValue {
   communityId: string;
@@ -7,6 +7,7 @@ export interface CommunityContextValue {
   communityName: string;
   communicationPrivileges: AuthorizationPrivilege[];
   loading: boolean;
+  myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
 const CommunityContext = React.createContext<CommunityContextValue>({
@@ -15,6 +16,7 @@ const CommunityContext = React.createContext<CommunityContextValue>({
   communicationId: '',
   communityName: '',
   communicationPrivileges: [],
+  myMembershipStatus: undefined,
 });
 
 const useCommunityContext = () => useContext(CommunityContext);

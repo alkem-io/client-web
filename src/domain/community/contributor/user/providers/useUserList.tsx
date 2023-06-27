@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
 import { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
-import { useDeleteUserMutation, useUserListQuery } from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
+import { useDeleteUserMutation, useUserListQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
-import { UserListQuery, UserListQueryVariables } from '../../../../../models/graphql-schema';
+import { UserListQuery, UserListQueryVariables } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
 
@@ -25,7 +25,6 @@ interface Provided {
 const PAGE_SIZE = 10;
 
 const useUserList = (): Provided => {
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -49,16 +48,15 @@ const useUserList = (): Provided => {
 
   const userList = useMemo(
     () =>
-      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, nameID, displayName, email }) => ({
+      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, nameID, profile, email }) => ({
         id,
-        value: `${displayName} (${email})`,
+        value: `${profile.displayName} (${email})`,
         url: `${nameID}/edit`,
       })),
     [data]
   );
 
   const [deleteUser, { loading: deleting }] = useDeleteUserMutation({
-    onError: handleError,
     update: cache => clearCacheForQuery(cache, 'usersPaginated'),
     onCompleted: () => notify(t('pages.admin.users.notifications.user-removed'), 'success'),
   });

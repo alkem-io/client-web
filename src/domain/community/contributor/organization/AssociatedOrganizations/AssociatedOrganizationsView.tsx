@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 export interface AssociatedOrganizationsViewProps<
   Consumed extends {},
-  Organization extends Consumed & { nameID: string }
+  Organization extends Consumed & { key: string }
 > {
   organizations: Organization[] | undefined;
   dense?: boolean;
@@ -19,7 +19,7 @@ const SkeletonItem = (props: { dense: boolean }) => (
   </Grid>
 );
 
-export const AssociatedOrganizationsView = <Consumed extends {}, Organization extends Consumed & { nameID: string }>({
+export const AssociatedOrganizationsView = <Consumed extends {}, Organization extends Consumed & { key: string }>({
   organizations,
   dense = false,
   loading,
@@ -33,7 +33,7 @@ export const AssociatedOrganizationsView = <Consumed extends {}, Organization ex
       {loading && <SkeletonItem dense />}
       {!loading &&
         organizations?.map(org => (
-          <Grid key={org.nameID} item xs={12} md={dense ? 6 : 12}>
+          <Grid key={org.key} item xs={12} md={dense ? 6 : 12}>
             <OrganizationCardComponent {...org} />
           </Grid>
         ))}

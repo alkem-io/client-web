@@ -11,14 +11,15 @@ import {
 import Dialog from '@mui/material/Dialog';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributionDetailsContainer from '../../../../../containers/ContributionDetails/ContributionDetailsContainer';
-import { ContributionItem } from '../../../../../models/entities/contribution';
-import { AgentBeginVerifiedCredentialOfferOutput } from '../../../../../models/graphql-schema';
+import ContributionDetailsContainer, {
+  ContributionDetails,
+} from '../../../../../domain/community/profile/ContributionDetails/ContributionDetailsContainer';
+import { ContributionItem } from '../../../../../domain/community/contributor/contribution';
+import { AgentBeginVerifiedCredentialOfferOutput } from '../../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import QRCode from '../../../core/QRCode/QRCode';
-import { ContributionCardV2Details } from '../../common/cards';
 
 interface OfferAlkemioCommunityCredentialDialogProps {
   entities: {
@@ -53,7 +54,7 @@ const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialD
 
   const containerRef = useRef(null);
   const [loadingToken, setLoadingToken] = useState(false);
-  const [selectedContribution, setSelectedContribution] = useState<ContributionCardV2Details>();
+  const [selectedContribution, setSelectedContribution] = useState<ContributionDetails>();
   const [token, setToken] = useState<AgentBeginVerifiedCredentialOfferOutput>();
 
   const title = entities.titleId ? t(entities.titleId) : entities.title;
@@ -91,7 +92,7 @@ const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialD
                         onClick={() => setSelectedContribution(details)}
                         selected={details === selectedContribution}
                       >
-                        <ListItemText primary={details?.headerText} secondary={details?.descriptionText} />
+                        <ListItemText primary={details?.displayName} secondary={details?.tagline} />
                       </ListItemButton>
                     )}
                   </ContributionDetailsContainer>
@@ -123,9 +124,9 @@ const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialD
         )}
         <Button
           onClick={async () => {
-            if (selectedContribution && selectedContribution.domain) {
+            if (selectedContribution && selectedContribution.communityId) {
               setLoadingToken(true);
-              const result = await actions.onGenerate(selectedContribution.domain?.communityID);
+              const result = await actions.onGenerate(selectedContribution.communityId);
               setToken(result);
               setLoadingToken(false);
             }

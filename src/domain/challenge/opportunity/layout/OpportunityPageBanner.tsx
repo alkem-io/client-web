@@ -1,17 +1,28 @@
 import React, { FC } from 'react';
-import PageBanner from '../../../shared/components/PageHeader/PageBanner';
-import { useOpportunity } from '../../../../hooks';
-import { getVisualBanner } from '../../../../common/utils/visuals.utils';
+import JourneyPageBanner from '../../../shared/components/PageHeader/JourneyPageBanner';
+import { useOpportunity } from '../hooks/useOpportunity';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import useInnovationHubJourneyBannerRibbon from '../../../platform/InnovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 
 const OpportunityPageBanner: FC = () => {
-  const { opportunity, loading } = useOpportunity();
+  const { opportunity, loading, spaceId } = useOpportunity();
+  const visual = getVisualByType(VisualName.BANNER, opportunity?.profile?.visuals);
+
+  const ribbon = useInnovationHubJourneyBannerRibbon({
+    spaceId,
+    journeyTypeName: 'space',
+  });
 
   return (
-    <PageBanner
-      title={opportunity?.displayName}
-      tagline={opportunity?.context?.tagline}
+    <JourneyPageBanner
+      title={opportunity?.profile.displayName}
+      tagline={opportunity?.profile?.tagline}
       loading={loading}
-      bannerUrl={getVisualBanner(opportunity?.context?.visuals)}
+      bannerUrl={visual?.uri}
+      bannerAltText={visual?.alternativeText}
+      ribbon={ribbon}
+      journeyTypeName="opportunity"
       showBreadcrumbs
     />
   );

@@ -2,17 +2,17 @@ import { useCallback } from 'react';
 import {
   ChallengeCardFragmentDoc,
   OpportunityCardFragmentDoc,
+  refetchMeQuery,
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
-} from '../../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
-import { useConfig } from '../../../../hooks/useConfig';
-import { FEATURE_SUBSCRIPTIONS } from '../../../../models/constants';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useConfig } from '../../../platform/config/useConfig';
+import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 
 interface ChallengeCreationInput {
-  hubID: string;
+  spaceID: string;
   displayName: string;
   tagline: string;
   background: string;
@@ -29,15 +29,13 @@ interface OpportunityCreationInput {
 }
 
 export const useJourneyCreation = () => {
-  const handleError = useApolloErrorHandler();
-  const { hubId } = useHub();
+  const { spaceId } = useSpace();
   const { challengeId } = useChallenge();
   const { isFeatureEnabled } = useConfig();
 
   const subscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
 
   const [createChallengeLazy] = useCreateChallengeMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
         return;
@@ -45,17 +43,17 @@ export const useJourneyCreation = () => {
 
       const { createChallenge } = data;
 
-      const hubRefId = cache.identify({
-        __typename: 'Hub',
-        id: hubId,
+      const spaceRefId = cache.identify({
+        __typename: 'Space',
+        id: spaceId,
       });
 
-      if (!hubRefId) {
+      if (!spaceRefId) {
         return;
       }
 
       cache.modify({
-        id: hubRefId,
+        id: spaceRefId,
         fields: {
           challenges(existingChallenges = []) {
             const newChallengeRef = cache.writeFragment({
@@ -68,9 +66,9 @@ export const useJourneyCreation = () => {
         },
       });
     },
+    refetchQueries: [refetchMeQuery()],
   });
   const [createOpportunityLazy] = useCreateOpportunityMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
         return;
@@ -101,6 +99,7 @@ export const useJourneyCreation = () => {
         },
       });
     },
+    refetchQueries: [refetchMeQuery()],
   });
 
   // add useCallback
@@ -109,12 +108,14 @@ export const useJourneyCreation = () => {
       const { data } = await createChallengeLazy({
         variables: {
           input: {
-            hubID: value.hubID,
-            displayName: value.displayName,
+            spaceID: value.spaceID,
             context: {
-              tagline: value.tagline,
-              background: value.background,
               vision: value.vision,
+            },
+            profileData: {
+              displayName: value.displayName,
+              tagline: value.tagline,
+              description: value.background,
             },
             tags: value.tags,
           },
@@ -124,7 +125,6 @@ export const useJourneyCreation = () => {
             __typename: 'Challenge',
             id: '',
             nameID: '',
-            displayName: value.displayName ?? '',
             metrics: [
               {
                 id: '',
@@ -132,8 +132,9 @@ export const useJourneyCreation = () => {
                 value: '',
               },
             ],
-            context: {
+            profile: {
               id: '',
+              displayName: value.displayName ?? '',
               tagline: value.tagline,
               visuals: [
                 {
@@ -142,11 +143,11 @@ export const useJourneyCreation = () => {
                   name: '',
                 },
               ],
-            },
-            tagset: {
-              id: '-1',
-              name: 'default',
-              tags: value.tags ?? [],
+              tagset: {
+                id: '-1',
+                name: 'default',
+                tags: value.tags ?? [],
+              },
             },
           },
         },
@@ -163,10 +164,12 @@ export const useJourneyCreation = () => {
         variables: {
           input: {
             challengeID: value.challengeID,
-            displayName: value.displayName,
             context: {
-              tagline: value.tagline,
               vision: value.vision,
+            },
+            profileData: {
+              displayName: value.displayName,
+              tagline: value.tagline,
             },
             tags: value.tags,
           },
@@ -176,7 +179,6 @@ export const useJourneyCreation = () => {
             __typename: 'Opportunity',
             id: '',
             nameID: '',
-            displayName: value.displayName ?? '',
             metrics: [
               {
                 id: '',
@@ -186,6 +188,10 @@ export const useJourneyCreation = () => {
             ],
             context: {
               id: '',
+            },
+            profile: {
+              id: '',
+              displayName: value.displayName ?? '',
               tagline: value.tagline,
               visuals: [
                 {
@@ -200,11 +206,11 @@ export const useJourneyCreation = () => {
                   minWidth: 1,
                 },
               ],
-            },
-            tagset: {
-              id: '-1',
-              name: 'default',
-              tags: value.tags ?? [],
+              tagset: {
+                id: '-1',
+                name: 'default',
+                tags: value.tags ?? [],
+              },
             },
           },
         },

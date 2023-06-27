@@ -1,13 +1,11 @@
-import { Box, Breadcrumbs, styled, Typography } from '@mui/material';
+import { Box, BoxProps, Breadcrumbs, styled, Typography, useTheme } from '@mui/material';
 import React, { FC } from 'react';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { useBreadcrumbs } from '../../../../hooks';
+import { useBreadcrumbs } from '../../../platform/breadcrumbs/useBreadcrumbs';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
+import getEntityColor from '../../utils/getEntityColor';
 
 const Root = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  left: 0,
   textAlign: 'left',
   zIndex: 20,
   maxWidth: '45%',
@@ -54,21 +52,36 @@ const Breadcrumb = styled(RouterLink)(({ theme }) => ({
   },
 }));
 
-interface BreadcrumbsViewProps {}
+interface BreadcrumbsViewProps extends BoxProps {}
 
-const BreadcrumbsView: FC<BreadcrumbsViewProps> = () => {
+const BreadcrumbsView: FC<BreadcrumbsViewProps> = props => {
   const { loading, breadcrumbs } = useBreadcrumbs();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
+
+  const theme = useTheme();
 
   return (
     <>
       {!loading && breadcrumbs.length > 0 && (
-        <Root ref={containerReference}>
+        <Root ref={containerReference} {...props}>
           <Breadcrumbs>
-            {breadcrumbs.map((item, i) => {
+            {breadcrumbs.map(item => {
               const Icon = item.icon;
+
+              const breadcrumbBackgroundColor = getEntityColor(theme, item.entity);
+              // const breadcrumbForegroundColor = theme.palette.common.white;
+
               return (
-                <Breadcrumb key={i} to={item.url!}>
+                <Breadcrumb
+                  key={item.entity}
+                  to={item.url!}
+                  sx={{
+                    [theme.breakpoints.down('lg')]: {
+                      backgroundColor: breadcrumbBackgroundColor,
+                      // color: breadcrumbForegroundColor,
+                    },
+                  }}
+                >
                   <Icon />
                   <Typography variant={'button'} ref={element => addAutomaticTooltip(element)}>
                     {item.title}

@@ -1,15 +1,26 @@
-import { Box, BoxProps, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
+import {
+  Box,
+  BoxProps,
+  ButtonProps,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Popover,
+  styled,
+} from '@mui/material';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Person from '@mui/icons-material/Person';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import React, { ElementType, useMemo, useRef, useState } from 'react';
+import React, { ComponentType, ElementType, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
-import WrapperTypography from '../../../core/WrapperTypography';
 import UserAvatar from './UserAvatar';
 import { UserMetadata } from '../../../../../domain/community/contributor/user/hooks/useUserMetadataWrapper';
+import { BlockTitle, Caption } from '../../../../../core/ui/typography';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 const PREFIX = 'UserSegment';
 
@@ -20,25 +31,25 @@ const classes = {
 const PopoverRoot = styled('div')(({ theme }) => ({
   [`& .${classes.userHeader}`]: {
     background: theme.palette.neutralLight.main,
-    padding: theme.spacing(2, 4),
+    padding: theme.spacing(2, 4, 1),
   },
 }));
 
 type UserSegmentProps<El extends ElementType> = BoxProps<El> & {
   userMetadata: UserMetadata;
   emailVerified: boolean;
-  buttonClassName?: string;
+  buttonComponent: ComponentType<ButtonProps>;
 };
 
 const UserSegment = <El extends ElementType>({
   userMetadata,
   emailVerified,
-  buttonClassName,
+  buttonComponent,
   ...userBoxProps
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, roles, permissions } = userMetadata;
+  const { user, permissions } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef<HTMLButtonElement>(null);
 
@@ -46,8 +57,11 @@ const UserSegment = <El extends ElementType>({
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
-    return roles.filter(r => !r.hidden)[0]?.name;
-  }, [emailVerified, roles]);
+    if (isAdmin) {
+      // TODO change role name path
+      return t('common.enums.authorization-credentials.GLOBAL_ADMIN.name');
+    }
+  }, [emailVerified, isAdmin]);
 
   if (!user) {
     return null;
@@ -57,9 +71,9 @@ const UserSegment = <El extends ElementType>({
     <>
       <UserAvatar
         name={user.firstName}
-        src={user.profile?.avatar?.uri}
+        src={user.profile.visual?.uri}
         ref={popoverAnchor}
-        className={buttonClassName}
+        buttonComponent={buttonComponent}
         onClick={() => setDropdownOpen(true)}
         {...userBoxProps}
       />
@@ -79,13 +93,13 @@ const UserSegment = <El extends ElementType>({
         <PopoverRoot>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
             <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
-              <Avatar size={'lg'} src={user.profile?.avatar?.uri} />
-              <Box textAlign={'center'}>
-                <WrapperTypography variant="h3">{user.displayName}</WrapperTypography>
-              </Box>
-              <WrapperTypography variant="h5" color="neutralMedium">
-                {role}
-              </WrapperTypography>
+              <Avatar size={'lg'} src={user.profile.visual?.uri} />
+              <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
+              {role && (
+                <Caption color="neutralMedium.main" paddingBottom={gutters(0.5)}>
+                  {role}
+                </Caption>
+              )}
             </Box>
             <List>
               <ListItemButton
@@ -103,7 +117,7 @@ const UserSegment = <El extends ElementType>({
                 <ListItemButton
                   onClick={() => {
                     setDropdownOpen(false);
-                    navigate('/admin', { replace: true });
+                    navigate('/admin');
                   }}
                 >
                   <ListItemIcon>

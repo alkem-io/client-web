@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import UserProfilePage from '../pages/UserProfilePage';
-import { Error404 } from '../../../../../pages';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import UserSettingsRoute from './UserSettingsRoute';
-import { EntityPageLayoutHolder } from '../../../../shared/layout/PageLayout';
+import { EntityPageLayoutHolder } from '../../../../challenge/common/EntityPageLayout';
 
 export const UserRoute: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -12,11 +12,12 @@ export const UserRoute: FC = () => {
   return (
     <Routes>
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
-        <Route index element={<UserProfilePage paths={currentPaths} />} />
+        <Route index element={<UserProfilePage />} />
       </Route>
       <Route path={'settings/*'} element={<UserSettingsRoute paths={currentPaths} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };
+
 export default UserRoute;

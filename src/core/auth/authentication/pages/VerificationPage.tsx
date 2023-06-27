@@ -1,36 +1,70 @@
-import { Box, Container } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import React, { FC } from 'react';
+import React, { FC, MouseEventHandler, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
+import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
+import KratosForm from '../components/Kratos/KratosForm';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
+import FixedHeightLogo from '../components/FixedHeightLogo';
+import { BlockTitle, PageTitle } from '../../../ui/typography';
+import { SelfServiceVerificationFlow } from '@ory/kratos-client';
+import { useSignUpReturnUrl } from '../utils/SignUpReturnUrl';
+import produce from 'immer';
+import { isAnchorNode, isVerificationContinueLink } from '../components/Kratos/helpers';
+import { UiNodeAnchor } from '../components/Kratos/UiNodeTypes';
 
 interface RegisterPageProps {
   flow?: string;
 }
 
+const hideVerificationMessage = (flow: SelfServiceVerificationFlow | undefined) =>
+  (flow?.state === 'passed_challenge' || flow?.state === 'sent_email') ?? false;
+
 export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
-  const { flow: verificationFlow, loading } = useKratosFlow(FlowTypeName.Verification, flow);
+  const { flow: verificationFlow, loading, error } = useKratosFlow(FlowTypeName.Verification, flow);
 
-  if (loading) return <Loading text={t('kratos.loading-flow')} />;
+  const [returnUrl, cleanUp] = useSignUpReturnUrl();
+
+  const handleFormClick: MouseEventHandler = ({ target }) => {
+    const element = target as HTMLElement;
+    if (element.nodeName === 'A' && element.attributes['href'].value === returnUrl) {
+      cleanUp();
+    }
+  };
+
+  const ui = useMemo(() => {
+    return (
+      verificationFlow?.ui &&
+      produce(verificationFlow.ui, nextUi => {
+        const continueButton = nextUi.nodes.find(node => isAnchorNode(node) && isVerificationContinueLink(node));
+        if (!continueButton) {
+          return;
+        }
+        (continueButton as UiNodeAnchor).attributes.href = returnUrl;
+      })
+    );
+  }, [verificationFlow]);
+
+  if (loading) {
+    return <Loading text={t('kratos.loading-flow')} />;
+  }
+
+  if (error) {
+    return <ErrorDisplay />;
+  }
 
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={2} justifyContent={'center'}>
-        <Grid item sm={4}>
-          <Box marginY={3} textAlign={'center'}>
-            <WrapperTypography variant={'h3'}>{t('pages.verification.header')}</WrapperTypography>
-          </Box>
-          <Box marginY={3} textAlign={'center'}>
-            <WrapperTypography variant={'h5'}>{t('pages.verification.message')}</WrapperTypography>
-          </Box>
-          <KratosUI flow={verificationFlow} />
-        </Grid>
-      </Grid>
-    </Container>
+    <KratosForm ui={ui} onClick={handleFormClick}>
+      <AuthPageContentContainer>
+        <FixedHeightLogo />
+        <PageTitle>{t('pages.verification.header')}</PageTitle>
+        {!hideVerificationMessage(verificationFlow) && <BlockTitle>{t('pages.verification.message')}</BlockTitle>}
+        <KratosUI ui={ui} />
+      </AuthPageContentContainer>
+    </KratosForm>
   );
 };
+
 export default VerificationPage;

@@ -3,27 +3,25 @@ import { useNavigate } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
 import { UserForm } from '../../../../../common/components/composite/forms/UserForm';
 import { Loading } from '../../../../../common/components/core';
-import {
-  useApolloErrorHandler,
-  useNotification,
-  useUpdateNavigation,
-  useUrlParams,
-  useUserContext,
-} from '../../../../../hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useUserContext } from '../hooks/useUserContext';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateUserMutation,
   useUserQuery,
-} from '../../../../../hooks/generated/graphql';
-import { EditMode } from '../../../../../models/editMode';
-import { User } from '../../../../../models/graphql-schema';
-import { UserModel } from '../../../../../models/User';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
+import { UserModel } from '../models/User';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { StorageConfigContextProvider } from '../../../../platform/storage/StorageBucket/StorageConfigContext';
 
 interface EditUserProfilePageProps extends PageProps {}
 
@@ -50,10 +48,8 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
     // there is an issue handling multiple snackbars.
     onError: error => logger.error(error.message),
   });
-  const handleError = useApolloErrorHandler();
 
   const [updateUser] = useUpdateUserMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
@@ -77,7 +73,7 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
         variables: {
           input: {
             name: tagset.name,
-            tags: [...tagset.tags],
+            tags: tagset.tags,
             profileID: profileId,
           },
         },
@@ -96,15 +92,17 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
   };
 
   return (
-    <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
-      <UserForm
-        title={'Profile'}
-        user={{ ...user } as UserModel}
-        avatar={user?.profile?.avatar}
-        editMode={editMode}
-        onSave={handleSave}
-      />
-    </UserSettingsLayout>
+    <StorageConfigContextProvider locationType="user" userId={user.nameID}>
+      <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
+        <UserForm
+          title={'Profile'}
+          user={{ ...user } as UserModel}
+          avatar={user?.profile.visual}
+          editMode={editMode}
+          onSave={handleSave}
+        />
+      </UserSettingsLayout>
+    </StorageConfigContextProvider>
   );
 };
 

@@ -1,19 +1,27 @@
 import React, { FC } from 'react';
-import OrganizationPageContainer from '../../../../../containers/organization/OrganizationPageContainer';
+import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 import ProfileBanner from '../../../../shared/components/PageHeader/ProfileBanner';
+import { useTranslation } from 'react-i18next';
 
 const OrganizationPageBanner: FC = () => {
+  const { t } = useTranslation();
+
   return (
     <OrganizationPageContainer>
-      {({ organization, permissions, socialLinks }, { loading }) => (
+      {({ organization, permissions, socialLinks, handleSendMessage }, { loading }) => (
         <ProfileBanner
-          title={organization?.displayName}
-          tagline={organization?.profile?.description}
-          location={organization?.profile?.location}
+          title={organization?.profile.displayName}
+          tagline={organization?.profile.tagline}
+          location={organization?.profile.location}
           socialLinks={socialLinks}
-          avatarUrl={organization?.profile?.avatar?.uri}
+          avatarUrl={organization?.profile.visual?.uri}
+          avatarAltText={t('visuals-alt-text.avatar.contributor.text', {
+            displayName: organization?.profile.displayName,
+            altText: organization?.profile.visual?.alternativeText,
+          })}
           avatarEditable={permissions.canEdit}
           loading={loading}
+          onSendMessage={handleSendMessage}
         />
       )}
     </OrganizationPageContainer>

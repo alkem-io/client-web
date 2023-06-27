@@ -1,15 +1,14 @@
 import React, { FC } from 'react';
 import ChallengeSettingsLayout from './ChallengeSettingsLayout';
-import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../layout/EntitySettings/types';
+import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
-import { useChallenge, useHub } from '../../../../hooks';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
+import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import useChallengeApplications from './providers/useChallengeApplications';
 import { Loading } from '../../../../common/components/core';
-import CommunityGroupListPage from '../../../../pages/Admin/Community/CommunityListPage';
+import CommunityGroupListPage from '../community/CommunityListPage';
 import ChallengeCommunityAdminMembershipPreferencesSection from './ChallengeCommunityAdminMembershipPreferencesSection';
 import useChallengeLeadOrganizationAssignment from '../../../community/community/useCommunityAssignment/useChallengeLeadOrganizationAssignment';
 import useChallengeMemberOrganizationAssignment from '../../../community/community/useCommunityAssignment/useChallengeMemberOrganizationAssignment';
@@ -20,44 +19,49 @@ import {
   useChallengeAvailableLeadUsersLazyQuery,
   useChallengeAvailableMemberUsersLazyQuery,
   useChallengeCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
+import { Trans, useTranslation } from 'react-i18next';
+import { Text } from '../../../../core/ui/typography';
+import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 
-const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'community' });
-
-  const { hubId } = useHub();
+const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+  const { spaceId } = useSpace();
   const { challenge, challengeId } = useChallenge();
+  const { t } = useTranslation();
+
   const communityId = challenge?.community?.id;
 
   const { applications, loading: isLoadingApplications } = useChallengeApplications();
 
   const leadingOrganizationsProps = useChallengeLeadOrganizationAssignment({
-    hubId,
+    spaceId,
     challengeId,
   });
 
   const memberOrganizationsProps = useChallengeMemberOrganizationAssignment({
-    hubId,
+    spaceId,
     challengeId,
   });
 
   const memberUsersProps = useCommunityUserAssignment({
     memberType: 'member',
     variables: {
-      hubId,
+      spaceId,
       challengeId,
     },
     existingUsersOptions: {
       useQuery: useChallengeCommunityMembersQuery,
-      readCommunity: data => data?.hub.challenge.community,
+      readCommunity: data => data?.space.challenge.community,
       refetchQuery: refetchChallengeCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useChallengeAvailableMemberUsersLazyQuery,
-      readUsers: data => data.hub.challenge.community?.availableMemberUsers,
+      readUsers: data => data.space.challenge.community?.availableMemberUsers,
       refetchQuery: refetchChallengeAvailableMemberUsersQuery,
     },
   });
@@ -65,38 +69,48 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
   const leadUsersProps = useCommunityUserAssignment({
     memberType: 'lead',
     variables: {
-      hubId,
+      spaceId,
       challengeId,
     },
     existingUsersOptions: {
       useQuery: useChallengeCommunityMembersQuery,
-      readCommunity: data => data?.hub.challenge.community,
+      readCommunity: data => data?.space.challenge.community,
       refetchQuery: refetchChallengeCommunityMembersQuery,
     },
     availableUsersOptions: {
       useLazyQuery: useChallengeAvailableLeadUsersLazyQuery,
-      readUsers: data => data.hub.challenge.community?.availableLeadUsers,
+      readUsers: data => data.space.challenge.community?.availableLeadUsers,
       refetchQuery: refetchChallengeAvailableLeadUsersQuery,
     },
   });
 
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
-      <EditCommunityMembersSection memberType="leads">
-        <EditMemberUsersWithPopup {...leadUsersProps} />
-        <EditOrganizationsWithPopup {...leadingOrganizationsProps} />
-      </EditCommunityMembersSection>
-      <SectionSpacer />
-      <EditCommunityMembersSection memberType="members">
-        <EditMemberUsersWithPopup {...memberUsersProps} />
-        <EditOrganizationsWithPopup {...memberOrganizationsProps} />
-      </EditCommunityMembersSection>
-      <SectionSpacer />
-      {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
-      <SectionSpacer />
-      {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
-      <SectionSpacer />
-      <ChallengeCommunityAdminMembershipPreferencesSection hubId={hubId} challengeId={challengeId} />
+      <Gutters>
+        <EditCommunityMembersSection memberType="leads">
+          <EditMemberUsersWithPopup {...leadUsersProps} />
+          <EditOrganizationsWithPopup {...leadingOrganizationsProps} />
+        </EditCommunityMembersSection>
+
+        <EditCommunityMembersSection memberType="members">
+          <EditMemberUsersWithPopup {...memberUsersProps} />
+          <EditOrganizationsWithPopup {...memberOrganizationsProps} />
+        </EditCommunityMembersSection>
+        {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
+        {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
+        <ChallengeCommunityAdminMembershipPreferencesSection spaceId={spaceId} challengeId={challengeId} />
+
+        <DashboardGenericSection
+          headerText={t('community.application-form.title')}
+          subHeaderText={
+            <Text>
+              <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
+            </Text>
+          }
+        >
+          <CommunityApplicationForm spaceId={spaceId} challengeId={challengeId} />
+        </DashboardGenericSection>
+      </Gutters>
     </ChallengeSettingsLayout>
   );
 };

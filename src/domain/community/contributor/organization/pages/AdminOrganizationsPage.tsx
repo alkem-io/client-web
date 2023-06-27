@@ -1,26 +1,23 @@
 import React, { FC } from 'react';
-import AdminLayout from '../../../../platform/admin/toplevel/AdminLayout';
-import { PageProps } from '../../../../../pages/common';
-import { AdminSection } from '../../../../platform/admin/toplevel/constants';
+import AdminLayout from '../../../../platform/admin/layout/toplevel/AdminLayout';
+import { AdminSection } from '../../../../platform/admin/layout/toplevel/constants';
 import useAdminGlobalOrganizationsList from '../../../../platform/admin/organization/GlobalOrganizationsList/useAdminGlobalOrganizationsList';
 import SearchableListLayout from '../../../../shared/components/SearchableListLayout';
 import { useResolvedPath } from 'react-router-dom';
 import SimpleSearchableList from '../../../../shared/components/SimpleSearchableList';
-import { useUpdateNavigation } from '../../../../../hooks';
+import useRelativeUrls from '../../../../platform/admin/utils/useRelativeUrls';
 
-interface AdminOrganizationsPageProps extends PageProps {}
-
-const AdminOrganizationsPage: FC<AdminOrganizationsPageProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
-
+const AdminOrganizationsPage: FC = () => {
   const { organizations, ...listProps } = useAdminGlobalOrganizationsList();
 
   const { pathname: url } = useResolvedPath('.');
 
+  const navigatableOrganizations = useRelativeUrls(organizations);
+
   return (
     <AdminLayout currentTab={AdminSection.Organization}>
       <SearchableListLayout newLink={`${url}/new`}>
-        <SimpleSearchableList data={organizations} {...listProps} />
+        <SimpleSearchableList data={navigatableOrganizations} {...listProps} />
       </SearchableListLayout>
     </AdminLayout>
   );

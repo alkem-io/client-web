@@ -1,14 +1,17 @@
-import Box from '@mui/material/Box';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorsSearchContainer from './ContributorsSearch/ContributorsSearchContainer';
-import { InputAdornment, OutlinedInput, Typography } from '@mui/material';
+import { InputAdornment, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
 import { useUserContext } from './user';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
-import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import TopLevelDesktopLayout from '../../platform/ui/PageLayout/TopLevelDesktopLayout';
+import { PageTitle, Text } from '../../../core/ui/typography';
+import PageContentColumn from '../../../core/ui/content/PageContentColumn';
+import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
+import useInnovationHubOutsideRibbon from '../../platform/InnovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 
 export interface ContributorsPageProps {}
 
@@ -29,34 +32,40 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
     onSearchHandlerDebounced(e.target.value);
   };
 
+  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.contributors' });
+
   return (
-    <Box paddingY={2} marginTop={2}>
-      <Typography variant="h1">{t('pages.contributors.search.title')}</Typography>
-      <Typography>{t('pages.contributors.search.subtitle')}</Typography>
-      <SectionSpacer double />
-      <OutlinedInput
-        value={searchTerms}
-        sx={{ width: '100%' }}
-        placeholder={t('components.searchableList.placeholder')}
-        onChange={onSearchHandler}
-        endAdornment={
-          <InputAdornment position="end">
-            <SearchIcon />
-          </InputAdornment>
-        }
-      />
-      <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
-        {({ users, organizations }) => {
-          return (
-            <ContributorsView
-              usersPaginated={users}
-              showUsers={isAuthenticated}
-              organizationsPaginated={organizations}
-            />
-          );
-        }}
-      </ContributorsSearchContainer>
-    </Box>
+    <TopLevelDesktopLayout heading={ribbon}>
+      <PageContentColumn columns={12}>
+        <PageContentBlockSeamless disablePadding>
+          <PageTitle>{t('pages.contributors.search.title')}</PageTitle>
+          <Text>{t('pages.contributors.search.subtitle')}</Text>
+          <OutlinedInput
+            value={searchTerms}
+            sx={{ width: '100%' }}
+            placeholder={t('components.searchableList.placeholder')}
+            onChange={onSearchHandler}
+            endAdornment={
+              <InputAdornment position="end">
+                <SearchIcon />
+              </InputAdornment>
+            }
+          />
+        </PageContentBlockSeamless>
+        <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
+          {({ users, organizations }) => {
+            return (
+              <ContributorsView
+                usersPaginated={users}
+                showUsers={isAuthenticated}
+                organizationsPaginated={organizations}
+              />
+            );
+          }}
+        </ContributorsSearchContainer>
+      </PageContentColumn>
+    </TopLevelDesktopLayout>
   );
 };
+
 export default ContributorsPage;

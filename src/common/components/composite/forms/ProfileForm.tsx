@@ -1,34 +1,34 @@
-import { Grid } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset } from '../../../../models/graphql-schema';
+import { Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
-import WrapperTypography from '../../core/WrapperTypography';
-import InputField from '../../../../domain/platform/admin/components/Common/InputField';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
-import { JourneyType } from '../../../../domain/challenge/JourneyType';
+import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 export interface ProfileFormValues {
   name: string;
   nameID: string;
   tagline: string;
   location: Partial<Location>;
-  who: string;
   references: Reference[];
   tagsets: Tagset[];
 }
 
-interface Props {
-  context?: Context;
-  journeyType: JourneyType;
+interface ProfileFormProps {
+  profile?: Profile;
+  journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
   tagset?: Tagset;
@@ -38,8 +38,8 @@ interface Props {
   isEdit: boolean;
 }
 
-const ProfileForm: FC<Props> = ({
-  context,
+const ProfileForm: FC<ProfileFormProps> = ({
+  profile,
   journeyType,
   name,
   nameID,
@@ -64,10 +64,9 @@ const ProfileForm: FC<Props> = ({
   const initialValues: ProfileFormValues = {
     name: name || '',
     nameID: nameID || '',
-    tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || EmptyLocation,
-    who: context?.who || '',
-    references: context?.references || [],
+    tagline: profile?.tagline || '',
+    location: formatLocation(profile?.location) || EmptyLocation,
+    references: profile?.references || [],
     tagsets,
   };
 
@@ -98,7 +97,7 @@ const ProfileForm: FC<Props> = ({
         }
 
         return (
-          <>
+          <Gutters>
             <NameSegment disabled={isEdit} required={!isEdit} />
             <LocationSegment
               disabled={!isEdit}
@@ -106,15 +105,17 @@ const ProfileForm: FC<Props> = ({
               cityFieldName="location.city"
               countryFieldName="location.country"
             />
-            <InputField name="tagline" label={t(`context.${journeyType}.tagline.title` as const)} rows={3} />
-            <Grid item xs={12}>
-              <WrapperTypography variant={'h4'} color={'primary'}>
-                {t('components.tagsSegment.title')}
-              </WrapperTypography>
-            </Grid>
+            <FormikInputField
+              name={'tagline'}
+              title={t(`context.${journeyType}.tagline.title` as const)}
+              rows={3}
+              maxLength={SMALL_TEXT_LENGTH}
+              withCounter
+            />
+            <BlockSectionTitle color={'primary'}>{t('components.tagsSegment.title')}</BlockSectionTitle>
             <TagsetSegment tagsets={tagsets} />
-            <ContextReferenceSegment references={references || []} contextId={context?.id} />
-          </>
+            <ContextReferenceSegment references={references || []} profileId={profile?.id} />
+          </Gutters>
         );
       }}
     </Formik>

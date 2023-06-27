@@ -24,11 +24,11 @@ export type MemberOfProps = {
   groups: string[];
   challenges: string[];
   opportunities: string[];
-  hubs: string[];
+  spaces: string[];
   organizations: string[];
 };
 
-const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, hubs, organizations }) => {
+const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, spaces, organizations }) => {
   const { t } = useTranslation();
   const styles = useMemberOfStyles();
 
@@ -49,7 +49,7 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, hubs, 
   return (
     <Box marginY={1}>
       <Card primaryTextProps={{ text: t('pages.user-profile.member-of') }}>
-        {membershipItems(hubs, t('common.hub'))}
+        {membershipItems(spaces, t('common.space'))}
         {membershipItems(groups, t('common.group'))}
         {membershipItems(challenges, t('common.challenge'))}
         {membershipItems(opportunities, t('common.opportunity'))}
@@ -58,4 +58,5 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, hubs, 
     </Box>
   );
 };
+
 export default MemberOf;

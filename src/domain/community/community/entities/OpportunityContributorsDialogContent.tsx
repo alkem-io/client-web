@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useOpportunity } from '../../../../hooks';
-import { useOpportunityCommunityContributorsQuery } from '../../../../hooks/generated/graphql';
+import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
+import { useOpportunityCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
@@ -9,16 +9,16 @@ import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 
 const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { hubId, opportunityId } = useOpportunity();
+  const { spaceId, opportunityId } = useOpportunity();
 
   const { loading, memberUsers, memberOrganizations } = useCommunityContributors(
     useOpportunityCommunityContributorsQuery,
     data => {
-      const { memberUsers, memberOrganizations } = data?.hub.opportunity.community || {};
+      const { memberUsers, memberOrganizations } = data?.space.opportunity.community || {};
       return { memberUsers, memberOrganizations };
     },
     {
-      hubId,
+      spaceId,
       opportunityId,
     },
     !dialogOpen
@@ -27,7 +27,7 @@ const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> =
   return (
     <CommunityContributorsView
       organizations={useOrganizationCardProps(memberOrganizations)}
-      users={useUserCardProps(memberUsers, hubId)}
+      users={useUserCardProps(memberUsers)}
       organizationsCount={memberOrganizations?.length}
       usersCount={memberUsers?.length}
       noOrganizationsView={<NoOrganizations type={'member'} />}
@@ -35,4 +35,5 @@ const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> =
     />
   );
 };
+
 export default OpportunityContributorsDialogContent;

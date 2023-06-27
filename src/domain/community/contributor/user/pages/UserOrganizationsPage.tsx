@@ -2,9 +2,10 @@ import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
-import { useUrlParams, useUpdateNavigation } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import { PageProps } from '../../../../shared/types/PageProps';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserMetadata } from '../hooks/useUserMetadata';
@@ -25,6 +26,7 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
       <Grid container rowSpacing={4}>
         <Grid item xs={12}>
           <AssociatedOrganizationsLazilyFetched
+            enableLeave
             canCreateOrganization={userMetadata?.permissions?.canCreateOrganization}
             organizationNameIDs={userMetadata?.organizationNameIDs || []}
             title={t('pages.user-profile.associated-organizations.title')}
@@ -37,4 +39,5 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
     </UserSettingsLayout>
   );
 };
+
 export default UserOrganizationsPage;

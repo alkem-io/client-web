@@ -1,8 +1,8 @@
 import { Avatar, Box, Grid, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
-import { DEFAULT_BANNER_URL, BANNER_ASPECT_RATIO } from './PageBanner';
-import { Location } from '../../../../models/graphql-schema';
+import { DEFAULT_BANNER_URL } from './JourneyPageBanner';
+import { Location } from '../../../../core/apollo/generated/graphql-schema';
 import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../common/location/LocationView';
 import { formatLocation } from '../../../common/location/LocationUtils';
@@ -10,10 +10,14 @@ import { ContactDetail } from '../ContactDetails/ContactDetails';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
+import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import { CaptionSmall } from '../../../../core/ui/typography/components';
+import PageContent from '../../../../core/ui/content/PageContent';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
-function backgroundBuilder(
+function gradientBuilder(
   angle: number,
   steps: { color: string; opacity: number; position: number }[],
   backgroundImageUrl: string,
@@ -29,10 +33,9 @@ function backgroundBuilder(
 
 // Styled Blocks:
 const Root = styled(Box)(({ theme }) => ({
-  aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.neutralLight.main,
   position: 'relative',
-  background: backgroundBuilder(
+  background: gradientBuilder(
     90,
     [
       { color: theme.palette.neutralLight.main, opacity: 1, position: 0 },
@@ -42,27 +45,19 @@ const Root = styled(Box)(({ theme }) => ({
     DEFAULT_BANNER_URL,
     theme.palette.neutralLight.main
   ),
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
 }));
 
 const ProfileInfo = styled(Box)(({ theme }) => ({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-around',
-  // Icons:
   '& svg': {
     marginRight: theme.spacing(0.5),
   },
 }));
 
-const ProfileInfoWrapper = styled(Grid)(({ theme }) => ({
-  height: '75%',
-  [theme.breakpoints.down('lg')]: {
-    height: '90%',
-  },
-  [theme.breakpoints.only('xs')]: {
-    height: '100%',
-  },
+const ProfileInfoWrapper = styled(Box)(({ theme }) => ({
+  marginTop: gutters(2)(theme),
+  flexGrow: 1,
 }));
 
 const ImageWrapper = styled('div')(({ theme }) => ({
@@ -129,67 +124,105 @@ export interface ProfileBannerProps {
   phone?: string;
   socialLinks?: SocialLinkItem[];
   avatarUrl?: string;
+  avatarAltText?: string;
   avatarEditable?: boolean; // TODO: This will be used in the future to put a button over the avatar to upload a new image if the user has permissions
   loading: boolean;
+  onSendMessage: (text: string) => Promise<void>;
+  isContactable?: boolean;
 }
 
 /**
  * This is the common top banner for Users/Organizations or new things with a Profile.
- * For Hubs/Challenges/Opportunities and anything else see PageBanner
+ * For Spaces/Challenges/Opportunities and anything else see PageBanner
  */
 const ProfileBanner: FC<ProfileBannerProps> = ({
   title,
+  tagline,
   location,
   phone,
   socialLinks,
   avatarUrl,
+  avatarAltText,
   loading: dataLoading = false,
+  onSendMessage,
+  isContactable = true,
 }) => {
   const { t } = useTranslation();
 
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 
   const [imageLoading, setImageLoading] = useState(true);
+  const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
+
+  const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
+  const openMessageUserDialog = () => setIsMessageUserDialogOpen(true);
 
   const imageLoadError = () => {
     setImageLoading(false);
   };
 
+  // Since there's only 1 receiver, and it's used just for the Dialog, it's ok to have id=''
+  const messageReceivers = [
+    { id: '', displayName: title, avatarUri: avatarUrl, city: location?.city, country: location?.country },
+  ];
+
   return (
     <Root ref={containerReference}>
       {!dataLoading && (
         <Grid container spacing={1} sx={{ height: '100%', alignItems: 'center' }}>
-          <Grid item sx={{ aspectRatio: '1/1', height: '100%' }}>
-            <ImageWrapper>
-              {imageLoading && (
-                <Skeleton
-                  variant="rectangular"
-                  animation="wave"
-                  sx={{ height: '100%', width: '100%', position: 'absolute' }}
+          <PageContent background="transparent">
+            <Grid item sx={{ aspectRatio: '1/1', height: '100%' }}>
+              <ImageWrapper>
+                {imageLoading && (
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    sx={{ height: '100%', width: '100%', position: 'absolute' }}
+                  />
+                )}
+                <Image
+                  src={avatarUrl}
+                  alt={avatarAltText}
+                  onLoad={() => setImageLoading(false)}
+                  onError={imageLoadError}
+                >
+                  {title ? title[0] : ''}
+                </Image>
+              </ImageWrapper>
+            </Grid>
+            <ProfileInfoWrapper>
+              <ProfileInfo>
+                <Title>
+                  <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
+                    {title}
+                  </Typography>
+                </Title>
+                {tagline && <CaptionSmall sx={{ maxWidth: '50%' }}>{tagline}</CaptionSmall>}
+                <LocationView location={formatLocation(location)} mode="icon" iconSize={'small'} />
+                <ContactDetail
+                  icon={<LocalPhoneIcon color="primary" fontSize="small" />}
+                  title={t('components.profile.fields.telephone.title')}
+                  value={phone}
                 />
-              )}
-              <Image src={avatarUrl} onLoad={() => setImageLoading(false)} onError={imageLoadError}>
-                {title ? title[0] : ''}
-              </Image>
-            </ImageWrapper>
-          </Grid>
-          <ProfileInfoWrapper item>
-            <ProfileInfo>
-              <Title>
-                <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
-                  {title}
-                </Typography>
-              </Title>
+                <Box>
+                  <SocialLinks
+                    items={socialLinks}
+                    iconSize="medium"
+                    isContactable={isContactable}
+                    onContact={openMessageUserDialog}
+                  />
+                </Box>
+              </ProfileInfo>
+            </ProfileInfoWrapper>
+          </PageContent>
 
-              <LocationView location={formatLocation(location)} mode="icon" iconSize={'small'} />
-              <ContactDetail
-                icon={<LocalPhoneIcon color="primary" fontSize="small" />}
-                title={t('components.profile.fields.telephone.title')}
-                value={phone}
-              />
-              <SocialLinks items={socialLinks} iconSize="medium" />
-            </ProfileInfo>
-          </ProfileInfoWrapper>
+          <DirectMessageDialog
+            title={t('send-message-dialog.direct-message-title')}
+            open={isMessageUserDialogOpen}
+            onClose={closeMessageUserDialog}
+            onSendMessage={onSendMessage}
+            messageReceivers={messageReceivers}
+          />
         </Grid>
       )}
       {dataLoading && <Skeleton variant="rectangular" width="100%" height="100%" />}

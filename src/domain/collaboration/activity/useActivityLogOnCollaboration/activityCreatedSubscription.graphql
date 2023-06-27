@@ -1,0 +1,66 @@
+subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
+  activityCreated(input: $input) {
+    activity {
+      ...ActivityLogOnCollaboration
+    }
+  }
+}
+
+fragment ActivityLogOnCollaboration on ActivityLogEntry {
+  id
+  collaborationID
+  createdDate
+  description
+  type
+  child
+  parentNameID
+  parentDisplayName
+  __typename
+  triggeredBy {
+    id
+    nameID
+    firstName
+    lastName
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+  ... on ActivityLogEntryMemberJoined {
+    ...ActivityLogMemberJoined
+  }
+  ... on ActivityLogEntryCalloutPublished {
+    ...ActivityLogCalloutPublished
+  }
+  ... on ActivityLogEntryCalloutPostCreated {
+    ...ActivityLogCalloutCardCreated
+  }
+  ... on ActivityLogEntryCalloutPostComment {
+    ...ActivityLogCalloutCardComment
+  }
+  ... on ActivityLogEntryCalloutWhiteboardCreated {
+    ...ActivityLogCalloutWhiteboardCreated
+  }
+  ... on ActivityLogEntryCalloutDiscussionComment {
+    ...ActivityLogCalloutDiscussionComment
+  }
+  ... on ActivityLogEntryChallengeCreated {
+    ...ActivityLogChallengeCreated
+  }
+  ... on ActivityLogEntryOpportunityCreated {
+    ...ActivityLogOpportunityCreated
+  }
+}

@@ -3,10 +3,10 @@ import { Box, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '@mui/styles';
-import { User } from '../../../../models/graphql-schema';
+import { User } from '../../../../core/apollo/generated/graphql-schema';
 import Card from '../../../../common/components/core/Card';
 import Edit from '@mui/icons-material/Edit';
-import { COUNTRIES } from '../../../../models/constants';
+import { COUNTRIES } from '../../../common/location/countries.constants';
 import { useTranslation } from 'react-i18next';
 
 interface ContactDetailProps {
@@ -79,17 +79,18 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { email
           </Box>
           <div className={styles.data}>
             <ContactDetail title={t('common.email')} value={email} />
-            <ContactDetail title={t('components.profile.fields.bio.title')} value={profile?.description || ''} />
+            <ContactDetail title={t('components.profile.fields.bio.title')} value={profile.description || ''} />
             <ContactDetail title={t('components.profile.fields.phone.title')} value={phone} />
             <ContactDetail
               title={t('components.profileSegment.location.country.name')}
-              value={COUNTRIES.find(x => x.code === profile?.location?.country)?.name}
+              value={COUNTRIES.find(x => x.code === profile.location?.country)?.name}
             />
-            <ContactDetail title={t('components.profileSegment.location.city.name')} value={profile?.location?.city} />
+            <ContactDetail title={t('components.profileSegment.location.city.name')} value={profile.location?.city} />
           </div>
         </div>
       </Card>
     </>
   );
 };
+
 export default ContactDetails;

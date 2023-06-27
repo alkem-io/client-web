@@ -1,25 +1,20 @@
-import React, { FC, useMemo } from 'react';
-import { Route, Routes, useResolvedPath } from 'react-router-dom';
-
-import { PageProps, Error404 } from '../../../../../pages';
-import { nameOfUrl } from '../../../../../core/routing/url-params';
+import React, { FC } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
+import { nameOfUrl } from '../../../../../core/routing/urlParams';
 import { ChallengeProvider } from '../../../../challenge/challenge/context/ChallengeProvider';
-import ChallengeListPage from '../../../../challenge/hub/pages/HubChallenges/ChallengeListPage';
+import ChallengeListPage from '../../../../challenge/space/pages/SpaceChallenges/ChallengeListPage';
 import { ChallengeRoute } from './ChallengeRoute';
 
-export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('.');
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths, url]);
-
+export const ChallengesRoute: FC = () => {
   return (
     <Routes>
-      <Route index element={<ChallengeListPage paths={currentPaths} routePrefix="../../" />} />
+      <Route index element={<ChallengeListPage routePrefix="../../" />} />
       <Route
         path={`:${nameOfUrl.challengeNameId}/*`}
         element={
           <ChallengeProvider>
-            <ChallengeRoute paths={currentPaths} />
+            <ChallengeRoute />
           </ChallengeProvider>
         }
       />

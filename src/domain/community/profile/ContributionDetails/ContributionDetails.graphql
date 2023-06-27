@@ -1,0 +1,90 @@
+query spaceContributionDetails($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    nameID
+
+    visibility
+    profile {
+      id
+      displayName
+      tagline
+      visuals {
+        ...VisualUri
+      }
+      tagset {
+        id
+        name
+        tags
+      }
+    }
+    context {
+      id
+    }
+    community {
+      id
+    }
+  }
+}
+
+query challengeContributionDetails($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      context {
+        id
+      }
+      community {
+        id
+      }
+    }
+    visibility
+  }
+}
+
+query opportunityContributionDetails($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    nameID
+    opportunity(ID: $opportunityId) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      parentNameID
+      context {
+        id
+      }
+      community {
+        id
+      }
+    }
+    visibility
+  }
+}

@@ -14,7 +14,15 @@
   "actions": {
     "add-entity": "Добави {{entity}}"
   },
+  "languages": {
+    "en": "English",
+    "nl": "Dutch",
+    "es": "Spanish",
+    "bg": "Bulgarian",
+    "ua": "Ukranian"
+  },
   "buttons": {
+    "leave": "Напусни",
     "learn-more": "Научете повече",
     "load-more": "Зареди още",
     "load-count-more": "Зареждане на {{count}} повече",
@@ -30,7 +38,7 @@
     "next": "Напред",
     "edit": "Редактирай",
     "see-more": "Виж още",
-    "see-all": "Виж всички",
+    "see-all": "Още {{subject}}",
     "home": "Начало",
     "take-me-home": "Заведи ме в началото",
     "close": "Затвори",
@@ -58,7 +66,12 @@
     "confirm": "Потвърди",
     "change-template": "Промени шаблона",
     "change": "Промени",
-    "import": "Import..."
+    "library": "Библиотека",
+    "share": "Сподели",
+    "preview": "Преглед",
+    "import": "Import...",
+    "importing": "Импортиране...",
+    "go-to-entity": "Отиди в {{entity}}"
   },
   "tooltips": {
     "click-more-info": "Натисни за повече информация",
@@ -74,9 +87,17 @@
     "register": "Регистрирай се",
     "validation": {
       "fill-fields": "Моля, попълнете задължителните полета!"
+    },
+    "social-login": {
+      "connect": "Впиши се чрез {{provider}}",
+      "providers": {
+        "linkedin": "LinkedIn",
+        "microsoft": "Microsoft"
+      }
     }
   },
   "common": {
+    "or": "Или",
     "permission": "Достъп",
     "permissions": "Достъп",
     "error-generic": "Възникна грешка при зареждането",
@@ -89,10 +110,12 @@
     "add": "Добави",
     "remove": "Премахни",
     "callout": "Призив",
-    "canvas": "Платно",
-    "canvases": "Платна",
+    "callouts": "Callouts",
+    "whiteboard": "Платно",
+    "whiteboards": "Платна",
     "comment": "Коментар",
     "comments": "Коментари",
+    "contributions": "Принос",
     "card": "Карта",
     "cards": "Карти",
     "create": "Създай",
@@ -106,12 +129,12 @@
     "filterby": "Филтрирай по...",
     "email": "Имейл",
     "state": "Състояние",
-    "aspect": "Аспект",
-    "aspects": "Аспекти",
+    "post": "Аспект",
+    "posts": "Аспекти",
     "host": "Домакин",
     "lead": "Лидер",
-    "hub": "Хъб",
-    "hubs": "Хъбове",
+    "space": "Хъб",
+    "spaces": "Хъбове",
     "challenge": "Предизвикателство",
     "challenges": "Предизвикателства",
     "contributors": "Сътрудници",
@@ -133,7 +156,7 @@
     "user": "Потребител",
     "users": "Потребители",
     "update": "Актуализация",
-    "updates": "Актуализации",
+    "updates": "Новини",
     "no-updates": "Няма актуализации",
     "no-tags": "Няма налични етикети",
     "no-references": "Няма налични референции",
@@ -148,6 +171,7 @@
     "empty-string": "",
     "discussion": "Дискусия",
     "discussions": "Дискусии",
+    "disassociate": "Прекъсни",
     "dashboard": "Табло",
     "contribute": "Допринеси",
     "context": "Контекст",
@@ -156,6 +180,8 @@
     "search": "Търсене...",
     "reference": "Референция",
     "references": "Референции",
+    "recommendation": "Препоръка",
+    "recommendations": "Препоръки",
     "notifications": "Известия",
     "credentials": "Данни за самоличност",
     "my-profile": "Моят профил",
@@ -174,8 +200,10 @@
     "preview": "Преглед",
     "help": "Помощ",
     "loading": "Зареждане...",
-    "language": "Език",
     "innovation-flow": "Innovation flow",
+    "innovation-flows": "Innovation Flows",
+    "more": "Още",
+    "url": "URL",
     "genders": {
       "notSpecified": "Неопределено",
       "male": "Мъж",
@@ -186,6 +214,16 @@
       "not-verified": ""
     },
     "enums": {
+      "space-visibility": {
+        "ACTIVE": "Active",
+        "ARCHIVED": "Archived",
+        "DEMO": "Demo"
+      },
+      "callout-state": {
+        "ARCHIVED": "Архивирано",
+        "CLOSED": "Затворено",
+        "OPEN": "Отворено"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Глобален администратор",
@@ -193,7 +231,7 @@
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "Глобален администратор на Hub",
+          "name": "Глобален администратор на Space",
           "order": 1,
           "hidden": false
         },
@@ -263,7 +301,7 @@
           "hidden": false
         },
         "ORGANIZATION_ASSOCIATE": {
-          "name": "Organization Associate",
+          "name": "Сътрудник на организацията",
           "order": 14,
           "hidden": true
         },
@@ -305,22 +343,22 @@
         "cancel": "$t(buttons.cancel)"
       },
       "toolbar": {
-        "blocktype.h1": "Header 1",
-        "blocktype.h2": "Header 2",
-        "blocktype.h3": "Header 3",
-        "blocktype.h4": "Header 4",
-        "blocktype.h5": "Header 5",
-        "blocktype.h6": "Header 6",
-        "blocktype.blockquote": "Blockquote",
-        "blocktype.code": "Code",
-        "blocktype.blocktype": "Block Type",
-        "blocktype.normal": "Normal",
-        "emoji.emoji": "Emoticons",
-        "history.history": "History",
-        "history.undo": "Undo",
-        "history.redo": "Redo",
-        "image.image": "Visuals",
-        "image.fileUpload": "Upload File",
+        "blocktype.h1": "Заглавие 1",
+        "blocktype.h2": "Заглавие 2",
+        "blocktype.h3": "Заглавие 3",
+        "blocktype.h4": "Заглавие 4",
+        "blocktype.h5": "Заглавие 5",
+        "blocktype.h6": "Заглавие 6",
+        "blocktype.blockquote": "Блок с цитат",
+        "blocktype.code": "Код",
+        "blocktype.blocktype": "Тип блок",
+        "blocktype.normal": "Нормален",
+        "emoji.emoji": "Емотикони",
+        "history.history": "История",
+        "history.undo": "Възстанови",
+        "history.redo": "Повтори",
+        "image.image": "Визуализации",
+        "image.fileUpload": "Качване на файл",
         "image.byURL": "Paste URL",
         "image.dropFileText": "Drop the file or click to upload",
         "inline.bold": "Bold",
@@ -348,9 +386,12 @@
     "member-organizations": "Членове Организации",
     "leads": "Водещи",
     "members": "Потребители",
-    "host": "Домакин"
+    "host": "Домакин",
+    "members-count": "Members ({{count}})"
   },
   "callout": {
+    "contributions": "{{count}} Contribution",
+    "contributions_plural": "{{count}} Contributions",
     "draftNotice": "ЧЕРНОВА - Този призив е видим само за администратори.",
     "delete-confirm-title": "Изтрий Призива?",
     "delete-confirm-text": "Всички карти, платна и съобщения под този Призив също ще бъдат изтрити.",
@@ -366,28 +407,28 @@
     "url": "URL",
     "copy": "Копирай",
     "copied": "Копирано!",
-    "canvas-checkedout": "Моля, натисни първо \"Запази & спри промяната\""
+    "whiteboard-checkedout": "Моля, натисни първо \"Запази & спри промяната\""
   },
   "context": {
-    "hub": {
+    "space": {
       "tagline": {
         "title": "Слоган",
-        "description": "Обяснете в едно изречение за какво се отнася този Hub.",
+        "description": "Обяснете в едно изречение за какво се отнася този Space.",
         "placeholder": ""
       },
       "background": {
         "title": "Background",
-        "description": "Give a brief overview of the need for this Hub and how it came about.",
+        "description": "Give a brief overview of the need for this Space and how it came about.",
         "placeholder": ""
       },
       "impact": {
         "title": "Влияние",
-        "description": "Какво ще промени този Hub? Как ще повлияе това на хората и организациите?",
+        "description": "Какво ще промени този Space? Как ще повлияе това на хората и организациите?",
         "placeholder": ""
       },
       "vision": {
         "title": "Vision",
-        "description": "What is the frame of reference for this Hub?",
+        "description": "What is the frame of reference for this Space?",
         "placeholder": ""
       },
       "who": {
@@ -474,98 +515,120 @@
   "forms": {
     "validations": {
       "required": "Това поле е задължително!",
-      "minLength": "{{field}} should be at least {{min}} symbols long",
-      "maxLength": "Exceeded the limit of {{max}} characters",
-      "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
-      "nonBlank": "{{field}} must not consist of just spaces"
+      "minLength": "{{field}} трябва да е поне {{min}} символа",
+      "maxLength": "Привишен лимит от {{max}} символа",
+      "alphaNumeric": "{{field}} може да съдържа единствено малки латински букви, числа и тирета",
+      "nonBlank": "{{field}} не трябва да съдържа само празни символи"
     }
   },
-  "aspect-templates": {
-    "aspect-template": "Card template",
-    "default-description": "Default Card description",
+  "post-templates": {
+    "post-template": "Шаблон на картата",
+    "default-description": "Описание по подразбиране на картата",
     "banner-narrow": "Banner narrow"
   },
-  "canvas-templates": {
-    "canvas-template": "Canvas template"
+  "whiteboard-templates": {
+    "whiteboard-template": "Шаблон на платното"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",
     "definition": {
-      "title": "Definition",
-      "placeholder": "Here you can paste the description from Xstate Visualizer with the various lifecycle states"
+      "title": "Дефиниция",
+      "placeholder": "Тук може да поставите описанието от Xstate Visualizer с различните преходни състояния"
     },
     "type": {
-      "title": "Type"
+      "title": "Тип"
     }
   },
   "components": {
+    "top-callouts": {
+      "title": "Top Callouts"
+    },
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "Напускане на {{organization}}",
+        "text": "Сигурни ли сте, че искате да напуснете? Вероятно няма да виждате съдържанието или да допринасяте, когато вече не сте член."
+      }
+    },
+    "error-display": {
+      "title": "Ooops!",
+      "went-wrong": "Излежда нещо не е наред.",
+      "contact-support-sentence": "Ако проблемът продължава, моля свържете се с отдел поддръжка.",
+      "buttons": {
+        "reload": "Обнови",
+        "take-me-home": "Върни ме към началото",
+        "contact-support": "Отдел поддръжка"
+      }
+    },
     "search-cards": {
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Latest activities"
+      "title": "Последни приноси"
     },
     "activity-log-view": {
       "actions": {
         "callout-published": "публикува нов $t(common.callout)",
-        "canvas-created": "добави нов $t(common.canvas) към '{{parentDisplayName}}'",
-        "card-comment-created": "коментира на $t(common.aspect) '{{cardDisplayName}}'",
-        "card-created": "добави нов $t(common.aspect) към '{{calloutDisplayName}}'",
+        "whiteboard-created": "добави нов $t(common.whiteboard) към '{{parentDisplayName}}'",
+        "post-comment-created": "коментира на '{{postDisplayName}}'",
+        "post-created": "добави {{postType}} Карта към '{{calloutDisplayName}}'",
         "discussion-comment-created": "коментира на '{{calloutDisplayName}}'",
-        "member-joined": "нов член",
+        "member-joined": "нов член се включи в {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "създаде нов $t(common.challenge)",
-        "opportunity-created": "създаде нов $t(common.opportunity)"
+        "opportunity-created": "създаде нов $t(common.opportunity)",
+        "update-sent": "сподели нова $t(common.update)"
       },
       "activity-description": {
-        "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "[name] {{displayName}}",
-        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
-        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "callout-published": "{{displayName}}",
+        "whiteboard-created": "{{displayName}}",
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDescription}}",
         "discussion-comment-created": "{{comment}}",
-        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
-        "opportunity-created": "{{displayName}}"
+        "opportunity-created": "{{displayName}}",
+        "update-sent": "{{update}}"
       }
     },
     "lifecycle-visualizer": {
-      "error": "The definition was not able to be visualized"
+      "error": "Описанието не може да бъде възпроизведено"
     },
     "activity-tooltip": {
-      "headline": "Alkemio is growing! In total, the platform now hosts:"
+      "headline": "Alkemio расте! Общо, платформата в момента съдържа:"
     },
     "context-section": {
-      "create-card": "Аспектът е успешно създаден",
-      "give-feedback": "Give feedback"
+      "create-post": "Аспектът е успешно създаден",
+      "give-feedback": "Напишете отзив"
     },
     "callout-creation": {
-      "title": "Create a new Callout",
+      "title": "Създай нов Callout",
       "callout-type-label": "Callout type",
-      "card-type-label": "Card type",
+      "post-type-label": "Тип карта",
       "info-step": {
-        "title": "Details",
-        "description": "Description",
-        "type-comments": "Comments",
-        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
-        "type-cards": "Cards",
-        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
-        "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
+        "title": "Детайли",
+        "description": "Описание",
+        "type-comments": "Коментари",
+        "type-comments-help": "Изберете \"Коментари\", когато искате хората да отговарят в проста тесктова форма, като форум",
+        "type-posts": "Карти",
+        "type-posts-help": "Изберете \"Карти\", когато искате хората да отговарят във формата на карти.",
+        "type-whiteboards": "Платна",
+        "type-whiteboards-help": "Изберете \"Платна\", когато искате хората да отговарят визуално върху бяла дъска, предоставяйки им да рисуват и да добавят текст. ",
+        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
         "title": "Шаблони",
         "no-templates": "Няма налични шаблони",
-        "card-template-label": "Card Template",
-        "no-card-template-selected": "Please select a card template"
+        "post-template-label": "Card Template",
+        "no-post-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Създай",
-        "card-template-label": "Изберете шаблон на Картата"
+        "post-template-label": "Изберете шаблон на Картата"
       }
     },
     "callout-edit": {
       "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
     },
-    "aspect-creation": {
+    "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "Типа на допълнителния контекст за добавяне.",
@@ -641,11 +704,11 @@
       "parent-pending": "Parent application pending",
       "dialog-apply-parent": {
         "title": "Искаш да се присъединиш към родителския хъб?",
-        "body": "За да се присъединиш към <strong title='Challenge name'>'{{challengeName}}'</strong> трябва да първо да се включиш в  <strong title='Hub name'>'{{hubName}}'</strong> хъба. Моля, добави предизвикателството, към което искаш да се присъединиш към формата за кандидатстване в хъба."
+        "body": "За да се присъединиш към <strong title='Challenge name'>'{{challengeName}}'</strong> трябва да първо да се включиш в  <strong title='Space name'>'{{spaceName}}'</strong> хъба. Моля, добави предизвикателството, към което искаш да се присъединиш към формата за кандидатстване в хъба."
       },
       "dialog-parent-app-pending": {
         "title": "Родителското заявление се разглежда!",
-        "body": "За да се присъединиш към <strong title='Challenge name'>'{{challengeName}}'</strong> трябва да първо да се включиш в <strong title='Hub name'>'{{hubName}}'</strong> хъба. Вече има заявление, което се разглежда за <strong title='Hub name'>'{{hubName}}'</strong>, така че паралелно заявление може да бъде добавено за <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "За да се присъединиш към <strong title='Challenge name'>'{{challengeName}}'</strong> трябва да първо да се включиш в <strong title='Space name'>'{{spaceName}}'</strong> хъба. Вече има заявление, което се разглежда за <strong title='Space name'>'{{spaceName}}'</strong>, така че паралелно заявление може да бъде добавено за <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Join community",
@@ -665,19 +728,30 @@
       "title": "Филтър"
     },
     "backdrop": {
-      "private": "Моля, станете член, за да достъпите {{blockName}}",
+      "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Моля, влезте в профила си, за да видите детайли за  {{blockName}}.",
       "login": "Please log in to see {{blockName}}"
     },
     "referenceSegment": {
       "title": "Референции",
-      "missing-refreneces": "Няма референции",
+      "missing-refereneces": "No references yet",
       "tooltips": {
         "add-reference": "Добави референция",
-        "remove-reference": "Премахни референция"
-      }
+        "remove-reference": "Премахни референция",
+        "remove-recommendation": "Clear recommendation"
+      },
+      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
     },
-    "editHubForm": {
+    "file-upload": {
+      "confirm-dialog": {
+        "title": "Uploading a document",
+        "confirm-text": "Please make sure that this document complies with Alkemio’s content standards. <aup>Click here</aup> to see the Acceptable Usage Policy (section 7).",
+        "checkbox-label": "This document meets Alkemio’s Terms & Conditions "
+      },
+      "file-size-error": "File size exceeds the {{limit}}MB limit",
+      "file-upload-success": "File uploaded successfully"
+    },
+    "editSpaceForm": {
       "host": {
         "title": "Домакин",
         "select": "Избери домакин"
@@ -937,7 +1011,8 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
+          "about": "About this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
@@ -953,19 +1028,26 @@
         "discussions": {
           "description": "Here you can read and participate in discussions around this {{entity}}."
         },
-        "canvases": {
-          "description": "Canvases can be seen as digital whiteboards. Here you can create a canvas for this {{entity}} as well as find ones created by the others."
+        "whiteboards": {
+          "description": "Whiteboards can be seen as digital whiteboards. Here you can create a whiteboard for this {{entity}} as well as find ones created by the others."
         },
         "profile": {
           "description": ""
+        },
+        "subentities": {
+          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
+          "list": "List of {{entities}}",
+          "empty": "No {{entities}} found in this {{parentEntity}}.",
+          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
+        },
+        "recommendations": {
+          "title": "Recommended by the Host"
         }
       }
     },
     "contribute": {
-      "no-cards": "No Card found"
-    },
-    "explore": {
-      "create-callout": "Create new Callout"
+      "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
+      "no-posts": "No Card found"
     },
     "admin": {
       "generic": {
@@ -987,12 +1069,15 @@
           },
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
-            "aspect-templates": "Card Templates",
-            "canvas-templates": "Canvas Templates",
+            "post-templates": "Card Templates",
+            "whiteboard-templates": "Whiteboard Templates",
             "innovation-templates": "Innovation Flow Templates",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
-            "import-innovation-packs": {
-              "title": "Import from an Innovation Pack"
+            "delete-confirmation": "Are you sure you want to delete {{template}} from the space? You can also edit the information of this template.",
+            "import": {
+              "title": "Template Library: {{templateType}}",
+              "subtitle": "Find templates to use in your space, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "no-templates": "Couldn't find any Template of this type",
+              "imported-successfully-notification": "Template imported successfully"
             }
           },
           "my-profile": {
@@ -1026,6 +1111,11 @@
         }
       },
       "challenge": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.challenge) authorization preferences"
+          }
+        },
         "community": {
           "preferences": {
             "title": "Membership",
@@ -1046,26 +1136,26 @@
           "challenge-updated": "Challenge updated successfully."
         }
       },
-      "hub": {
+      "space": {
         "sections": {
           "challenges": {
-            "description": "Here you can edit challenges for this hub."
+            "description": "Here you can edit challenges for this space."
           }
         },
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.hub) authorization preferences"
+            "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
           }
         },
         "community": {
           "preferences": {
             "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.hub) membership preferences"
+            "subtitle": "This section allows you to modify the $t(common.space) membership preferences"
           }
         },
         "notifications": {
-          "hub-created": "Hub created successfuly.",
-          "hub-removed": "Hub '{{name}}' removed successfully."
+          "space-created": "Space created successfuly.",
+          "space-removed": "Space '{{name}}' removed successfully."
         }
       },
       "opportunity": {
@@ -1090,7 +1180,7 @@
       "title": "Give feedback on this community context",
       "success": "Feedback submitted"
     },
-    "aspect": {
+    "post": {
       "dashboard": {
         "comment": {
           "placeholder": "Напишете коментара си тук"
@@ -1117,7 +1207,7 @@
     "contributors": {
       "search": {
         "title": "Разгледай потребителите и организациите, които участват!",
-        "subtitle": "Въведете една или повече думи за търсене. Кликнете върху картите в резултатите от търсенето, за да видите профилите.",
+        "subtitle": "Explore the organizations and users that are contributing to Challenges.",
         "placeholder": "Търсене на хора и организации"
       },
       "organizations": {
@@ -1152,20 +1242,20 @@
       },
       "side-note": {
         "title": "The Alkemio Structure",
-        "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
+        "description": "At Alkemio, all Challenges are part of a Space. Each Space has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
       "my-search": {
-        "title": "Explore other Challenges accessible to you",
-        "subtitle": "On Alkemio, there are both public and private hubs. Here you’ll find all challenges from public Hubs and private Hubs that you are a member of. Enter your search terms (e.g. ‘innovation’) below to find matching challenges. "
+        "title": "Explore other Challenges visible to you",
+        "subtitle": "Challenges in public Spaces are visible to everyone. Challenges in private Spaces are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
       },
       "my": {
-        "title": "Моите предизвикателства",
+        "title": "My Challenges",
         "subtitle": "Този раздел показва предизвикателствата, в които участвате."
       },
       "other": {
-        "title": "Challenges within My Hubs",
-        "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
-        "filter-by-hub": "Filter by My Hub"
+        "title": "Other Challenges within My Spaces",
+        "subtitle": "Here you'll find the other challenges hosted by the spaces that you are member of.",
+        "filter-by-space": "Filter by My Space"
       }
     },
     "lead-organization": {
@@ -1176,8 +1266,8 @@
     },
     "activity": {
       "title": "{{blockName}} Активност",
-      "hubs": "Хъб с предизвикателства",
-      "lifecycle-info": "Цъкни, за да видиш граф с жизнения цикъл"
+      "spaces": "Хъб с предизвикателства",
+      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "sections": {
@@ -1201,15 +1291,14 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
-        "hub": {
+        "space": {
           "header": "Разгледай Хъбовете с Предизвикателства!",
-          "subheader": "Всеки Хъб съдържа едно или повече Предизвикателства и осигурява споделен контекст и общност за Предизвикателствата, които се намират в него. <br> Място за координация и колаборация. Свържи се.",
-          "body": "Членство: Всеки хъб има членове, които допринасят за него. Станете член чрез страницата на хъба.",
-          "body1": "Видимост: Повечето хъбове са публични и следователно напълно видими за всички. Съдържанието на частните хъбове е достъпно само след като станете член на организацията."
+          "subheader": "",
+          "body": "Each Space is a community with a dedicated space to connect, collaborate and innovate on your Challenges. Explore membership options.",
+          "body1": "Visibility: Public Spaces are fully visible to everyone. For private Spaces, the content is only available after becoming a member."
         },
-        "my-hubs": {
-          "header": "Моите Хъбове",
-          "subheader": "В този раздел са показани хъбовете, в които членувате."
+        "my-spaces": {
+          "header": "My Spaces ({{mySpacesCount}})"
         },
         "organizations": {
           "header": "Организации",
@@ -1219,11 +1308,11 @@
           "title": "See who is driving Challenges on Alkemio"
         },
         "footer": {
-          "headline": "Още за Alkemio? Посетете нашия уебсайт, свържете се с нас или разгледайте нашето хранилище в Github",
+          "headline": "Още за Alkemio? Посетете нашия уебсайт, свържете се с нас или разгледайте нашето хранилище в github",
           "links": {
             "foundation": "Фондация Alkemio",
             "contact-form": "Формуляр за контакт",
-            "github": "GitHub"
+            "github": "github"
           }
         }
       }
@@ -1236,11 +1325,10 @@
         "help": "Статус на проверка: съдържа идентичност и информация за това дали тази Организация е официално потвърдена."
       }
     },
-    "hub": {
+    "space": {
       "title": "Хъб",
-      "about-this-hub": "About this Hub",
-      "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
-      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
+      "archived-space-notice": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
+      "demo-space": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
       "application": {
         "title": "Форма за присъединяване {{entity}} \"{{name}}\"",
         "subheader": "Моля, попълнете въпросите долу, които, заедно с вашия профил ще бъдат изпратени към съответната страна.",
@@ -1253,10 +1341,6 @@
         "dashboard": {
           "organization": "Управляваща Организация",
           "activity": "Статистика на Хъбовете",
-          "challenges": {
-            "title": "Предизвикателства",
-            "help-text": "Това показва различните предизвикателства в този хъб, към които може да се допринася."
-          },
           "community": "Общност"
         },
         "challenges": {
@@ -1270,7 +1354,6 @@
     },
     "challenge": {
       "title": "Предизвикателство",
-      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "И още ..."
       },
@@ -1280,24 +1363,18 @@
             "title": "Статистика на Предизвикателството",
             "help-text": "Статистика на Предизвикателството"
           },
-          "opportunities": {
-            "title": "Възожности",
-            "help-text": "Възможности, свързани с това Предизвикателство"
-          },
           "projects": {
             "title": "Проекти",
             "help-text": "Проекти, свързани с това Предизвикателство"
           }
         },
         "opportunities": {
-          "description": "HТук могат да бъдат разгледани Възможностите, които ще помогнат за напредък по Предизвикателството. Те могат да се филтрират по ключови думи, за да видите само тези, от които се интересувате.",
-          "body-missing": "Няма намерени възможности за това предизвикателство"
+          "description": "HТук могат да бъдат разгледани Възможностите, които ще помогнат за напредък по Предизвикателството. Те могат да се филтрират по ключови думи, за да видите само тези, от които се интересувате."
         }
       }
     },
     "opportunity": {
       "title": "Възможност",
-      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -1334,12 +1411,11 @@
       "member-organizations": {
         "no-data": "No organization is contributing at this time"
       },
-      "hub-host": {
+      "space-host": {
         "title": "Управление на организациите",
         "help-text": "Организацията, което управлява този Хъб."
       },
       "members": {
-        "title": "Членове ({{count}})",
         "help-text": "Показва членовете на тази общност, включително ролята, която имат в нея",
         "no-data": "Няма членове"
       },
@@ -1348,11 +1424,11 @@
         "no-data": "Няма налични актуализации"
       }
     },
-    "canvas": {
+    "whiteboard": {
       "header": "Платна в този {{blockName}}",
       "subheader": "Създай своя персонализирана визуализация и я сподели с останалите.",
-      "add-canvas": "Създай платно",
-      "no-canvases": "Все още не са създадени платна. Бъди първият, който ще създаде ново платно.",
+      "add-whiteboard": "Създай платно",
+      "no-whiteboards": "Все още не са създадени платна. Бъди първият, който ще създаде ново платно.",
       "state": {
         "available": "Можеш да работиш по това платно",
         "checkedout": "Някой вече работи по това платно",
@@ -1384,7 +1460,7 @@
         "no-templates": "Все още няма дефинирани шаблони. Можеш да си първия който да добави шаблон.",
         "how-to": "За да създадеш нов шаблон, първо направи ново платно, или използвай съществуващо такова, и после го съхрани като шаблон."
       },
-      "hub": {
+      "space": {
         "templatesHeader": "Шаблони, дефинирани в този хъб",
         "templatesSubheader": "Шаблоните, дефинирани в този хъб, могат да бъдат използвани във всички предизвикателства и възможности, които се намират в него."
       },
@@ -1397,8 +1473,8 @@
       }
     },
     "login": {
-      "title": "Впиши се",
-      "register": "Нямаш акаунт?"
+      "title": "Sign in to Alkemio",
+      "register": "Don’t have an Alkemio account yet? <signup>Click here to sign up.</signup>"
     },
     "about": {
       "title": "Преосмисляне на сътрудничеството",
@@ -1425,21 +1501,30 @@
     },
     "registration": {
       "header": "Създайте акаунт, за да използвате Алкемио",
+      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "terms": "Приемам <terms>Правилата за Ползване </terms> и <privacy>Политиката за Сигурност</privacy>.",
-      "login": "Съществуващ акаунт?"
+      "login": "Съществуващ акаунт?",
+      "reset-password": "Reset password"
+    },
+    "accept-terms": {
+      "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "greeting": "Hi {{user}}, welcome at Alkemio!",
+      "continue": "Continue to the platform",
+      "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registration-success": {
-      "header": "Благодарим, че се присъединихте!",
-      "subheader": "Предоставеният имейл адрес трябва да бъде потвърден от съображения за сигурност. Моля, проверете входящата си кутия и следвайте инструкциите, получени там."
+      "header": "Hi, thank you for signing up!"
     },
     "verification-success": {
       "header": "Благодарим, че потвърдихте имейл адреса си!",
       "subheader": "Профилът ви е напълно активиран. Насладете се!",
-      "message": "Моля, имайте предвид попълването на всички секции от вашия профил[profile](/profile) - помага с кандидатстването в общности, както и за намирането на профила ви от други членове. "
+      "message": "Please do consider filling out all posts of your profile. It helps with both applying to join communities and with others being able to connect with you."
     },
     "recovery": {
-      "header": "Смени парола",
-      "message": "Моля, въведете имейл адреса си по-долу и ще получите линк за смяна на паролата."
+      "header": "Password recovery",
+      "message": {
+        "initial": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+      }
     },
     "verification": {
       "header": "Потвърждение по имейл",
@@ -1447,8 +1532,7 @@
     },
     "verification-required": {
       "header": "Email verification is pending.",
-      "message": "Please check your inbox for an email with instructions.",
-      "link": "(If you have not received an email, click on this link to send again)"
+      "message": "You are nearly there... One last step is to verify your email. <br />Please check your inbox for an email with instructions.<br /><br /><again>If you have not received an email, click on this link to send again</again>."
     },
     "settings": {
       "header": "Потребителски настройки"
@@ -1504,6 +1588,16 @@
         "title": "Администрация на Общността",
         "subtitle": "Този раздел позволява избора на предпочитания относно администрацията на общността"
       }
+    },
+    "help-dialog": {
+      "title": "Looking for help?",
+      "text": "We want to help you successfully use the Alkemio platform, and to do so we want to make the process of using it and interacting easier. This is how you can have an impact on the topics you care about.<br /><br />Click on the icons below to find answers to your questions, contact the Alkemio team for support or just get started!",
+      "icons": {
+        "help-center-faq": "Help Center & FAQ",
+        "community-support-forum": "Contact us!",
+        "new-user": "New user? Start here!"
+      },
+      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     }
   },
   "operations": {
@@ -1524,7 +1618,8 @@
     "messages": {
       "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
       "verification-flow-expired": "Връзката за потвърждение е изтекла. Моля, заявете нова като въведете имейл адреса си още веднъж.",
-      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
+      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
+      "verification-flow-continue": "Return to the platform"
     }
   },
   "apollo": {
@@ -1534,9 +1629,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "Актуализации ({{count}})",
-    "dialog-title": "All Updates",
-    "no-data": "Няма налични актуализации."
+    "title": "News ({{count}})",
+    "dialog-title": "All News",
+    "no-data": "No news available."
   },
   "dashboard-discussions-section": {
     "title": "Дискусии ({{count}})",
@@ -1546,17 +1641,17 @@
   "dashboard-community-section": {
     "title": "Общност"
   },
-  "aspect-edit": {
+  "post-edit": {
     "new": "Нов Аспект",
     "edit": "Редактирай Аспект",
     "type": {
       "title": "Card Type",
       "help-text": "What type of information do you want to share?"
     },
-    "cardLocation": {
+    "postLocation": {
       "title": "Card location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
+      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved card to the new Callout.",
       "error": "Something went wrong when moving the card, please try again."
     }

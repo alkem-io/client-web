@@ -1,0 +1,207 @@
+query activityLogOnCollaboration($queryData: ActivityLogInput!) {
+  activityLogOnCollaboration(queryData: $queryData) {
+    id
+    collaborationID
+    createdDate
+    description
+    type
+    child
+    parentNameID
+    parentDisplayName
+    __typename
+    triggeredBy {
+      id
+      nameID
+      firstName
+      lastName
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutPostCreated {
+      ...ActivityLogCalloutCardCreated
+    }
+    ... on ActivityLogEntryCalloutPostComment {
+      ...ActivityLogCalloutCardComment
+    }
+    ... on ActivityLogEntryCalloutWhiteboardCreated {
+      ...ActivityLogCalloutWhiteboardCreated
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreated
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreated
+    }
+    ... on ActivityLogEntryUpdateSent {
+      ...ActivityLogUpdateSent
+    }
+  }
+}
+
+fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
+  communityType
+  community {
+    id
+    displayName
+  }
+  user {
+    id
+    nameID
+    firstName
+    lastName
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+}
+fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
+  callout {
+    id
+    nameID
+    type
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutPostCreated {
+  callout {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+  post {
+    id
+    nameID
+    type
+    profile {
+      id
+      displayName
+      description
+    }
+  }
+}
+
+fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutPostComment {
+  callout {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+  post {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
+  callout {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+  whiteboard {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
+  challenge {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+    }
+  }
+}
+
+fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
+  opportunity {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+    }
+  }
+}
+
+fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+  callout {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+  updates {
+    id
+    messagesCount
+  }
+  message
+}

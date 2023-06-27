@@ -1,21 +1,21 @@
-import { AdminLifecycleTemplateFragment } from '../../../../../models/graphql-schema';
+import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import InnovationTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
 } from './InnovationTemplateForm';
-import Dialog from '@mui/material/Dialog';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
 
 interface EditInnovationTemplateDialogProps {
   open: boolean;
-  onClose: DialogProps['onClose'];
-  onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
+  onClose: DialogHeaderProps['onClose'];
+  onSubmit: (values: InnovationTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
-  template: AdminLifecycleTemplateFragment | undefined;
+  template: AdminInnovationFlowTemplateFragment | undefined;
 }
 
 const EditInnovationTemplateDialog = ({
@@ -34,23 +34,33 @@ const EditInnovationTemplateDialog = ({
   const values: Partial<InnovationTemplateFormValues> = {
     type: template.type,
     definition: template.definition,
-    title: template.info.title,
-    description: template.info.description,
-    tags: template.info.tagset?.tags,
+    displayName: template.profile.displayName,
+    description: template.profile.description,
+    tags: template.profile.tagset?.tags,
+  };
+
+  const handleSubmit = (values: InnovationTemplateFormSubmittedValues) => {
+    return onSubmit({
+      ...values,
+      tagsetId: template.profile.tagset?.id,
+    });
   };
 
   return (
-    <Dialog
+    <DialogWithGrid
       open={open}
       onClose={onClose}
       PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
+      <DialogHeader onClose={onClose}>
+        {t('common.edit-entity', { entity: t('innovation-templates.innovation-template') })}
+      </DialogHeader>
       <InnovationTemplateForm
-        title={t('common.edit-entity', { entity: t('innovation-templates.innovation-template') })}
         initialValues={values}
-        visual={template.info.visual}
-        onSubmit={onSubmit}
+        visual={template.profile.visual}
+        onSubmit={handleSubmit}
+        editMode
         actions={
           <>
             <DeleteButton onClick={onDelete} />
@@ -58,7 +68,7 @@ const EditInnovationTemplateDialog = ({
           </>
         }
       />
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

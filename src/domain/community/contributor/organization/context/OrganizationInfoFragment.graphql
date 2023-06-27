@@ -1,0 +1,70 @@
+fragment OrganizationInfo on Organization {
+  id
+  nameID
+  contactEmail
+  domain
+  authorization {
+    id
+    myPrivileges
+  }
+  verification {
+    id
+    status
+  }
+  website
+  profile {
+    id
+    displayName
+    description
+    tagline
+    visual(type: AVATAR) {
+      ...VisualUri
+      alternativeText
+    }
+    tagsets {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+    }
+    location {
+      ...fullLocation
+    }
+  }
+  metrics {
+    id
+    name
+    value
+  }
+  associates @include(if: $includeAssociates) {
+    id
+    nameID
+    isContactable
+    profile {
+      id
+      displayName
+      location {
+        country
+        city
+      }
+      visual(type: AVATAR) {
+        ...VisualUri
+        alternativeText
+      }
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+  admins @include(if: $includeAssociates) {
+    id
+  }
+  owners @include(if: $includeAssociates) {
+    id
+  }
+}

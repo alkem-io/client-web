@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
 import TableCell from '@mui/material/TableCell';
 import React, { FC } from 'react';
-import { Member } from '../../../../../models/User';
-import { UserDisplayNameFragment } from '../../../../../models/graphql-schema';
+import { Member } from '../../../../community/contributor/user/models/User';
+import { UserDisplayNameFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { AvailableMembers, EditMembers } from './EditMembers';
 import { Box, Typography } from '@mui/material';
 
@@ -61,7 +61,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
             renderRow={(m, Cell) => (
               <>
                 <TableCell>
-                  <Cell>{m.displayName}</Cell>
+                  <Cell>{m.profile.displayName}</Cell>
                 </TableCell>
                 <TableCell>
                   <Cell>{m.firstName}</Cell>
@@ -71,6 +71,22 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
                 </TableCell>
                 <TableCell>
                   <Cell>{m.email}</Cell>
+                </TableCell>
+              </>
+            )}
+            renderEmptyRow={Cell => (
+              <>
+                <TableCell>
+                  <Cell />
+                </TableCell>
+                <TableCell>
+                  <Cell />
+                </TableCell>
+                <TableCell>
+                  <Cell />
+                </TableCell>
+                <TableCell>
+                  <Cell />
                 </TableCell>
               </>
             )}
@@ -89,7 +105,12 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
             loading={loadingAvailableMembers}
             updating={updating}
             header={<TableCell>Full Name</TableCell>}
-            renderRow={m => <TableCell>{m.displayName}</TableCell>}
+            renderRow={m => <TableCell>{m.profile.displayName}</TableCell>}
+            renderEmptyRow={Cell => (
+              <TableCell>
+                <Cell />
+              </TableCell>
+            )}
           />
         </Grid>
       </Grid>

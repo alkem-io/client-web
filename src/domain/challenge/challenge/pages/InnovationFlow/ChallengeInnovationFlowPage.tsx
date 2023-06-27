@@ -1,13 +1,10 @@
 import React, { FC } from 'react';
 import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import ChallengeInnovationFlowView from './ChallengeInnovationFlowView';
 
-const ChallengeInnovationFlowPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'innovation-flow' });
-
+const ChallengeInnovationFlowPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.InnovationFlow} tabRoutePrefix={routePrefix}>
       <ChallengeInnovationFlowView />

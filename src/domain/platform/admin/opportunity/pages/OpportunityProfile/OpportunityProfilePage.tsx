@@ -1,14 +1,11 @@
 import React, { FC } from 'react';
 import FormMode from '../../../components/FormMode';
-import { useAppendBreadcrumb } from '../../../../../../hooks/usePathUtils';
-import { SettingsSection } from '../../../layout/EntitySettings/constants';
-import { SettingsPageProps } from '../../../layout/EntitySettings/types';
+import { SettingsSection } from '../../../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../layout/EntitySettingsLayout/types';
 import OpportunitySettingsLayout from '../../OpportunitySettingsLayout';
 import OpportunityProfileView from './OpportunityProfileView';
 
-const OpportunityProfilePage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'profile' });
-
+const OpportunityProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (
     <OpportunitySettingsLayout currentTab={SettingsSection.Profile} tabRoutePrefix={routePrefix}>
       <OpportunityProfileView mode={FormMode.update} />

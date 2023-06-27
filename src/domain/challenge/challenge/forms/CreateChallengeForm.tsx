@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Form, Formik } from 'formik';
 import { MessageWithPayload } from '../../../shared/i18n/ValidationMessageTranslation';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
-import { MARKDOWN_TEXT_LENGTH, NORMAL_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH, VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '../../../../common/utils/formik/formik-effect/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -50,24 +51,16 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       .string()
       .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(NORMAL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
     tagline: yup
       .string()
       .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(NORMAL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    background: yup
-      .string()
-      .trim()
-      .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-      .required(validationRequiredString),
-    vision: yup
-      .string()
-      .trim()
-      .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-      .required(validationRequiredString),
+    background: MarkdownValidator(VERY_LONG_TEXT_LENGTH).trim().required(validationRequiredString),
+    vision: MarkdownValidator(VERY_LONG_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
   });
 
@@ -88,7 +81,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             helperText={t('context.challenge.displayName.description')}
             disabled={isSubmitting}
             withCounter
-            maxLength={NORMAL_TEXT_LENGTH}
+            maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />
           <FormikInputField
@@ -97,7 +90,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             helperText={t('context.challenge.tagline.description')}
             disabled={isSubmitting}
             withCounter
-            maxLength={NORMAL_TEXT_LENGTH}
+            maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />
           <MarkdownInput
@@ -107,7 +100,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             helperText={t('context.challenge.background.description')}
             disabled={isSubmitting}
             withCounter
-            maxLength={MARKDOWN_TEXT_LENGTH}
+            maxLength={VERY_LONG_TEXT_LENGTH}
           />
           <SectionSpacer />
           <MarkdownInput
@@ -117,7 +110,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             helperText={t('context.challenge.vision.description')}
             disabled={isSubmitting}
             withCounter
-            maxLength={MARKDOWN_TEXT_LENGTH}
+            maxLength={VERY_LONG_TEXT_LENGTH}
           />
           <SectionSpacer double />
           <TagsetField

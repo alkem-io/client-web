@@ -28,12 +28,17 @@ export const warn = (warning: string) => {
   });
 };
 
-export const info = (
-  message: string, 
-  severity: typeof debugLevel | typeof infoLevel | typeof logLevel = infoLevel
-) => {
+export const info = (message: string, severity: typeof debugLevel | typeof infoLevel | typeof logLevel = infoLevel) => {
   Sentry.withScope(scope => {
     scope.setLevel(severity);
     Sentry.captureMessage(message);
+  });
+};
+
+export const log404NotFound = () => {
+  Sentry.withScope(scope => {
+    scope.setLevel(errorLevel);
+    const message = `404: '${document.location.href}'`;
+    Sentry.captureEvent({ message, extra: { url: document.location.href, referrer: document.referrer } });
   });
 };

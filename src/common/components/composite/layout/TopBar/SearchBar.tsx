@@ -6,11 +6,11 @@ import TextField from '@mui/material/TextField';
 import { Box, BoxProps, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
-import { useQueryParams } from '../../../../../hooks';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../../models/constants';
+import { useQueryParams } from '../../../../../core/routing/useQueryParams';
+import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../../domain/platform/routes/constants';
 
 const MINIMUM_TERM_LENGTH = 2;
-const getSearchTerms = (searchInput: string) => searchInput.split(' ').join(',');
+const getSearchTerms = (searchInput: string) => searchInput.trim();
 
 const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
   const { t } = useTranslation();
@@ -19,7 +19,7 @@ const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
   const query = useQueryParams();
   const getInitialValue = () => {
     const terms = match ? query.get(SEARCH_TERMS_PARAM) : null;
-    return terms ? terms.split(',').join(' ') : '';
+    return terms ? terms.split(',').join(', ') : '';
   };
   const [value, setValue] = useState(getInitialValue);
 

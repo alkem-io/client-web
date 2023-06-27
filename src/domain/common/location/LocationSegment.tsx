@@ -1,16 +1,14 @@
-import { Grid, Typography } from '@mui/material';
 import React, { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CountrySelect from './CountrySelect';
-import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
-import FormRow from '../../shared/layout/FormLayout';
+import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
+import FormRow from '../../../common/components/FormLayout';
 
 interface LocationSegmentProps {
   cols?: number;
   readonly?: boolean;
   disabled?: boolean;
   required?: boolean;
-
   cityFieldName?: string;
   countryFieldName?: string;
 }
@@ -26,9 +24,6 @@ export const LocationSegment: FC<PropsWithChildren<LocationSegmentProps>> = prop
 
   return (
     <>
-      <Grid item xs={12}>
-        <Typography variant="h4">{t('components.profileSegment.location.title')}</Typography>
-      </Grid>
       <FormRow cols={cols}>
         <CountrySelect
           name={countryFieldName}

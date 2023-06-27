@@ -1,0 +1,85 @@
+fragment DiscussionDetails on Discussion {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+  }
+  createdBy
+  timestamp
+  category
+  comments {
+    id
+    messagesCount
+    authorization {
+      myPrivileges
+    }
+    messages {
+      ...MessageDetails
+    }
+  }
+  authorization {
+    myPrivileges
+  }
+}
+
+query platformDiscussions {
+  platform {
+    id
+    communication {
+      id
+      discussionCategories
+      authorization {
+        id
+        myPrivileges
+        anonymousReadAccess
+      }
+      discussions {
+        id
+        nameID
+        profile {
+          id
+          displayName
+          description
+          tagline
+          visual(type: AVATAR) {
+            ...VisualFull
+          }
+        }
+        category
+        timestamp
+        comments {
+          id
+          messagesCount
+          authorization {
+            myPrivileges
+          }
+        }
+        createdBy
+        authorization {
+          id
+          myPrivileges
+          anonymousReadAccess
+        }
+      }
+    }
+  }
+}
+
+query platformDiscussion($discussionId: String!) {
+  platform {
+    id
+    communication {
+      id
+      authorization {
+        id
+        myPrivileges
+        anonymousReadAccess
+      }
+      discussion(ID: $discussionId) {
+        ...DiscussionDetails
+      }
+    }
+  }
+}

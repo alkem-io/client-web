@@ -1,20 +1,21 @@
-import React, { FC, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { STORAGE_KEY_RETURN_URL } from '../../../../models/constants';
+import { FC, useEffect } from 'react';
+import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
+import { useReturnUrl } from '../utils/SignUpReturnUrl';
 
 interface LoginSuccessPageProps {}
 
 export const LoginSuccessPage: FC<LoginSuccessPageProps> = () => {
-  useEffect(
-    () => () => {
-      sessionStorage.removeItem(STORAGE_KEY_RETURN_URL);
-    },
-    []
-  );
+  const returnUrl = useReturnUrl();
+  useEffect(() => {
+    if (returnUrl) {
+      window.location.replace(returnUrl);
+      return () => {
+        sessionStorage.removeItem(STORAGE_KEY_RETURN_URL);
+      };
+    }
+  }, [returnUrl]);
 
-  const redirectUrl = sessionStorage.getItem(STORAGE_KEY_RETURN_URL) ?? '/';
-
-  return <Navigate to={redirectUrl} />;
+  return null;
 };
 
 export default LoginSuccessPage;

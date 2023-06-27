@@ -8,7 +8,7 @@ import {
   OrganizationDetailsFragment,
   RemoveOrganizationAsCommunityLeadMutation,
   RemoveOrganizationAsCommunityMemberMutation,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import { Provided as UseAllPossibleOrganizationsProvided } from './useAllPossibleOrganizations';
 
 export type UseOrganizationAssignmentOptions<OrganizationsQueryVariables extends {}> = Omit<

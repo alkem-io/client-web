@@ -1,26 +1,30 @@
-import { Box, Container, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import Image from '../../../shared/components/Image';
 import { Loading } from '../../../../common/components/core/Loading/Loading';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import { useApplicationCommunityQuery } from '../../../../containers/application/useApplicationCommunityQuery';
-import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../../../hooks';
+import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useUserContext } from '../../contributor/user';
 import {
   refetchUserApplicationsQuery,
   useApplyForCommunityMembershipMutation,
-} from '../../../../hooks/generated/graphql';
-import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
-import { CreateNvpInput } from '../../../../models/graphql-schema';
-import getApplicationTypeKey from '../../../../common/utils/translation/get-application-type-key';
-import { PageProps } from '../../../../pages/common';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
+import getApplicationTypeKey from '../../../../common/utils/translation/getApplicationTypeKey';
+import { PageProps } from '../../../shared/types/PageProps';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { PageTitle, BlockTitle } from '../../../../core/ui/typography';
+import SaveButton from '../../../../core/ui/actions/SaveButton';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {
@@ -54,22 +58,20 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
 
   const { t } = useTranslation();
   const styles = useStyles();
-  const handleError = useApolloErrorHandler();
 
   const { user } = useUserContext();
   const userId = user?.user.id || '';
 
   const { data, loading, error } = useApplicationCommunityQuery(type);
 
-  const { questions = [], communityId = '', displayName: communityName, avatar, tagline, backUrl = '' } = data || {};
+  const { description, questions = [], communityId = '', displayName: communityName, backUrl = '' } = data || {};
 
   const [hasApplied, setHasApplied] = useState(false);
 
   const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
     onCompleted: () => setHasApplied(true),
     // refetch user applications
-    refetchQueries: [refetchUserApplicationsQuery({ input: { userID: userId } })],
-    onError: handleError,
+    refetchQueries: [refetchUserApplicationsQuery({ input: userId })],
   });
 
   const initialValues: Record<string, string> = useMemo(
@@ -116,79 +118,71 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
   const entityNameKey = getApplicationTypeKey(type);
 
   return (
-    <Container maxWidth="xl">
-      {error && <ErrorBlock blockName={t('pages.hub.application.errorBlockName')} />}
-      {loading && <Loading text={t('pages.hub.application.loading')} />}
-      {!loading && !hasApplied && (
-        <Box marginY={4}>
-          <WrapperTypography variant={'h2'}>
-            {t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}
-          </WrapperTypography>
-        </Box>
-      )}
-      {!loading && (
-        <div className={styles.logoDiv}>
-          {avatar && <Image src={avatar} alt="Alkemio" />}
-          {!hasApplied && <span>{tagline}</span>}
-        </div>
-      )}
-      {!loading && !hasApplied && (
-        <Box marginY={5}>
-          <WrapperTypography variant={'h3'}>{t('pages.hub.application.subheader')}</WrapperTypography>
-        </Box>
-      )}
-      {hasApplied ? (
-        <div className={styles.thankYouDiv}>
-          <WrapperTypography variant={'h3'}>
-            {t('pages.hub.application.finish')}
-            {communityName}
-          </WrapperTypography>
-          <WrapperButton as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
-        </div>
-      ) : (
-        <>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            enableReinitialize
-            onSubmit={async values => onSubmit(values)}
-          >
-            {({ handleSubmit }) => {
-              return (
-                <>
-                  <Grid container spacing={2}>
-                    {questions.map((x, i) => (
-                      <Grid item key={i} xs={12}>
-                        <FormikInputField
-                          key={i}
-                          title={x.question}
-                          name={`['${x.question}']`} // Formik can work with nested objects. Avoid nesting when a question contains dot.- https://formik.org/docs/guides/arrays#avoid-nesting
-                          rows={2}
-                          multiline
-                          required={x.required}
-                          autoComplete="on"
-                          autoCapitalize="sentences"
-                          autoCorrect="on"
-                        />
+    <PageContent>
+      <PageContentBlock>
+        {error && <ErrorBlock blockName={t('pages.space.application.errorBlockName')} />}
+        {loading && <Loading text={t('pages.space.application.loading')} />}
+        {!loading && !hasApplied && (
+          <PageTitle>{t('pages.space.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
+        )}
+        {!loading &&
+          !hasApplied &&
+          (description ? (
+            <WrapperMarkdown>{description}</WrapperMarkdown>
+          ) : (
+            <BlockTitle> {t('pages.space.application.subheader')}</BlockTitle>
+          ))}
+        {hasApplied ? (
+          <div className={styles.thankYouDiv}>
+            <BlockTitle>
+              {t('pages.space.application.finish')}
+              {communityName}
+            </BlockTitle>
+            <WrapperButton as={Link} to={backUrl} text={t('pages.space.application.backButton')} />
+          </div>
+        ) : (
+          <>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              enableReinitialize
+              onSubmit={async values => onSubmit(values)}
+            >
+              {({ handleSubmit }) => {
+                return (
+                  <>
+                    <Grid container spacing={2}>
+                      {questions.map((x, i) => (
+                        <Grid item key={i} xs={12}>
+                          <FormikInputField
+                            key={i}
+                            title={x.question}
+                            name={`['${x.question}']`} // Formik can work with nested objects. Avoid nesting when a question contains dot.- https://formik.org/docs/guides/arrays#avoid-nesting
+                            rows={2}
+                            multiline
+                            required={x.required}
+                            autoComplete="on"
+                            autoCapitalize="sentences"
+                            autoCorrect="on"
+                            maxLength={x.maxLength}
+                            withCounter
+                          />
+                        </Grid>
+                      ))}
+                      <Grid item>
+                        <SaveButton type="submit" loading={isCreationLoading} onClick={() => handleSubmit()}>
+                          {t(`buttons.${isCreationLoading ? 'processing' : 'apply'}` as const)}
+                        </SaveButton>
                       </Grid>
-                    ))}
-                    <Grid item>
-                      <WrapperButton
-                        variant="primary"
-                        type="submit"
-                        disabled={isCreationLoading}
-                        onClick={() => handleSubmit()}
-                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}` as const)}
-                      />
                     </Grid>
-                  </Grid>
-                </>
-              );
-            }}
-          </Formik>
-        </>
-      )}
-    </Container>
+                  </>
+                );
+              }}
+            </Formik>
+          </>
+        )}
+      </PageContentBlock>
+    </PageContent>
   );
 };
 

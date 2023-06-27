@@ -1,0 +1,35 @@
+fragment ChallengeCard on Challenge {
+  id
+  nameID
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  metrics {
+    id
+    name
+    value
+  }
+  profile {
+    id
+    tagline
+    displayName
+    description
+    visuals {
+      ...VisualUri
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+  context {
+    id
+    vision
+  }
+  lifecycle {
+    id
+    state
+  }
+}

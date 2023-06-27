@@ -1,28 +1,33 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useApolloErrorHandler, useDeleteUserGroup, useNotification, useUpdateNavigation } from '../../../../../hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useDeleteUserGroup } from './useDeleteUserGroup';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
-} from '../../../../../hooks/generated/graphql';
-import { AuthorizationCredential, User, UserGroup } from '../../../../../models/graphql-schema';
-import { PageProps } from '../../../../../pages';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationCredential,
+  GroupInfoFragment,
+  User,
+  UserGroup,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { logger } from '../../../../../services/logging/winston/logger';
-import GroupForm from './GroupForm';
+import GroupForm from './GroupForm/GroupForm';
 import { getUpdateProfileInput } from '../../../../../common/utils/getUpdateUserInput';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
-import { SettingsSection } from '../../layout/EntitySettings/constants';
-interface GroupPageProps extends PageProps {
-  group?: UserGroup;
+import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
+
+interface GroupPageProps {
+  group?: GroupInfoFragment;
 }
 
-export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
+export const GroupPage: FC<GroupPageProps> = ({ group }) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const success = (message: string) => notify(message, 'success');
-  const handleError = useApolloErrorHandler();
 
   const navigate = useNavigate();
 
@@ -39,12 +44,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
     },
   });
 
-  const groupName = group?.name || '';
-  const currentPaths = useMemo(() => [...paths, { value: '', name: groupName, real: false }], [paths, groupName]);
-
-  useUpdateNavigation({ currentPaths });
   const [updateGroup] = useUpdateGroupMutation({
-    onError: handleError,
     onCompleted: data => success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.name })),
   });
 

@@ -2,12 +2,11 @@ import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import { AUTH_REGISTER_PATH } from '../../../../models/constants';
-import { Box } from '@mui/material';
+import { AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
+import { Box, Button } from '@mui/material';
 import { buildLoginUrl } from '../../../../common/utils/urlBuilders';
 
 interface AuthRequiredPageProps {}
@@ -25,17 +24,16 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
         <WrapperTypography variant={'h2'}>{t('pages.authentication-required.header')}</WrapperTypography>
         <WrapperTypography variant={'h3'}>{t('pages.authentication-required.subheader')}</WrapperTypography>
       </Box>
-      <Box marginTop={4} textAlign={'center'}>
-        <WrapperButton
-          as={Link}
-          to={buildLoginUrl(returnUrl)}
-          variant={'primary'}
-          style={{ marginLeft: 20 }}
-          text={t('authentication.sign-in')}
-        />
-        <WrapperButton as={Link} to={AUTH_REGISTER_PATH} style={{ marginLeft: 20 }} text={t('authentication.sign-up')} />
+      <Box display="flex" marginTop={4} gap={2} justifyContent="center">
+        <Button component={Link} to={buildLoginUrl(returnUrl)} variant="outlined" color="primary">
+          {t('authentication.sign-in')}
+        </Button>
+        <Button component={Link} to={AUTH_SIGN_UP_PATH} variant="outlined">
+          {t('authentication.sign-up')}
+        </Button>
       </Box>
     </AuthenticationLayout>
   );
 };
+
 export default AuthRequiredPage;

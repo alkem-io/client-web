@@ -1,30 +1,30 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import AspectProvider from '../../aspect/context/AspectProvider';
-import AspectRoute from '../../aspect/views/AspectRoute';
-import CanvasRoute from '../../canvas/views/CanvasRoute';
-import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
-import { nameOfUrl } from '../../../../core/routing/url-params';
+import PostProvider from '../../post/context/PostProvider';
+import PostRoute from '../../post/views/PostRoute';
+import WhiteboardRoute from '../../whiteboard/views/WhiteboardRoute';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { nameOfUrl } from '../../../../core/routing/urlParams';
 
 export interface CalloutRouteProps {
   parentPagePath: string;
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
 }
 
-const CalloutRoute: FC<CalloutRouteProps> = ({ parentPagePath, entityTypeName }) => {
+const CalloutRoute: FC<CalloutRouteProps> = ({ parentPagePath, journeyTypeName }) => {
   return (
     <Routes>
       <Route
-        path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+        path={`posts/:${nameOfUrl.postNameId}/*`}
         element={
-          <AspectProvider>
-            <AspectRoute parentPagePath={parentPagePath} />
-          </AspectProvider>
+          <PostProvider>
+            <PostRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />
+          </PostProvider>
         }
       />
       <Route
-        path={`canvases/:${nameOfUrl.canvasNameId}/*`}
-        element={<CanvasRoute parentPagePath={parentPagePath} entityTypeName={entityTypeName} />}
+        path={`whiteboards/:${nameOfUrl.whiteboardNameId}/*`}
+        element={<WhiteboardRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />}
       />
     </Routes>
   );

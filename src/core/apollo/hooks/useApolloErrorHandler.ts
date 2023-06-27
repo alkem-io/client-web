@@ -1,26 +1,39 @@
 import { ApolloError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
-import { Severity } from '../../state/global/notifications/notificationMachine';
+import { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { Severity } from '../../state/global/notifications/notificationMachine';
 import { error as logError } from '../../../services/logging/sentry/log';
-import { useNotification } from '../../../hooks/useNotification';
+import { useNotification } from '../../ui/notifications/useNotification';
 
-enum GraphQLErrorsExtensionCodes {
-  BAD_USER_INPUT = 'BAD_USER_INPUT',
-}
+const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) => {
+  const { message } = error;
+  const code = error.extensions?.code as string;
+  const meta = { code, message };
 
-const tryGetField = (errorMessage: string): string | undefined => {
-  let matches = errorMessage?.match(/property ([\w-]+) has failed/);
-  return matches ? matches[1] : undefined;
+  if (!code) {
+    // if code missing send a generic error text
+    return t('apollo.errors.generic', meta);
+  }
+
+  const key = `apollo.errors.${code}`;
+
+  if (!i18n.exists(key)) {
+    // if the error text is missing for that code
+    // send a generic error text with code
+    return t('apollo.errors.generic-with-code', meta);
+  }
+  // send the error text
+  return t(key, meta);
 };
 
 export const useApolloErrorHandler = (severity: Severity = 'error') => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const notify = useNotification();
 
   const handleNetworkErrors = (error: ApolloError) => {
-    const networkError = error.networkError as any;
-    if (networkError && networkError.result && networkError.result.errors) {
+    const networkError = error.networkError;
+    if (networkError && 'result' in networkError && networkError.result && networkError.result.errors) {
       const error = networkError.result.errors[0] as GraphQLError;
       notify(error.message, severity);
     }
@@ -30,19 +43,10 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     const graphqlErrors = error.graphQLErrors;
 
     graphqlErrors.forEach((error: GraphQLError) => {
-      switch (error.extensions?.code) {
-        case GraphQLErrorsExtensionCodes.BAD_USER_INPUT: {
-          const field = tryGetField(error.message);
-          if (field) {
-            notify(t('apollo.errors.bad-user-input-withfield', { field }), severity);
-          } else {
-            notify(t('apollo.errors.bad-user-input'), severity);
-          }
+      const translation = getTranslationForCode(error, t, i18n);
+      notify(translation, severity);
 
-          logError(error);
-          break;
-        }
-      }
+      logError(error);
     });
   };
 

@@ -1,5 +1,5 @@
-import { ApplicationForRoleResult } from '../../../models/graphql-schema';
-import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { ApplicationForRoleResult } from '../../../core/apollo/generated/graphql-schema';
+import { ApplicationTypeEnum } from '../../../domain/community/application/constants/ApplicationType';
 
 type WithType = { type: ApplicationTypeEnum };
 export type ApplicationWithType = ApplicationForRoleResult & WithType;
@@ -10,22 +10,22 @@ const getApplicationWithType = (application: ApplicationForRoleResult): Applicat
 });
 export default getApplicationWithType;
 
-const getType = ({ hubID, challengeID, opportunityID }: ApplicationForRoleResult): ApplicationTypeEnum | never => {
-  if (hubID && challengeID && opportunityID) {
+const getType = ({ spaceID, challengeID, opportunityID }: ApplicationForRoleResult): ApplicationTypeEnum | never => {
+  if (spaceID && challengeID && opportunityID) {
     return ApplicationTypeEnum.opportunity;
   }
 
-  if (hubID && opportunityID && !challengeID) {
-    throw new TypeError("'challengeID' parameter expected when 'hubID' and 'opportunityID' are provided");
+  if (spaceID && opportunityID && !challengeID) {
+    throw new TypeError("'challengeID' parameter expected when 'spaceID' and 'opportunityID' are provided");
   }
 
-  if (hubID && challengeID) {
+  if (spaceID && challengeID) {
     return ApplicationTypeEnum.challenge;
   }
 
-  if (hubID) {
-    return ApplicationTypeEnum.hub;
+  if (spaceID) {
+    return ApplicationTypeEnum.space;
   }
 
-  throw new TypeError("'hubID' parameter expected");
+  throw new TypeError("'spaceID' parameter expected");
 };

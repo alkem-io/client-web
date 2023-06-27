@@ -1,13 +1,20 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
-import FormRow from '../../../../shared/layout/FormLayout';
+import {
+  ALT_TEXT_LENGTH,
+  LONG_TEXT_LENGTH,
+  MID_TEXT_LENGTH,
+} from '../../../../../core/ui/forms/field-length.constants';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormRow from '../../../../../common/components/FormLayout';
+import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 
 export const profileSegmentSchema = yup.object().shape({
   avatar: yup.string().max(MID_TEXT_LENGTH),
-  description: yup.string().max(LONG_TEXT_LENGTH),
+  description: MarkdownValidator(LONG_TEXT_LENGTH),
+  tagline: yup.string().max(ALT_TEXT_LENGTH),
 });
 
 interface ProfileSegmentProps {
@@ -20,12 +27,27 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
 
   return (
     <>
-      <FormRow cols={1}>
+      <FormRow>
         <FormikInputField
+          name="tagline"
+          title={t('components.profileSegment.tagline.name')}
+          placeholder={t('components.profileSegment.tagline.placeholder')}
+          disabled={disabled}
+          withCounter
+          maxLength={ALT_TEXT_LENGTH}
+          required={required}
+        />
+      </FormRow>
+      <FormRow>
+        <FormikMarkdownField
           name="description"
           title={t('components.profileSegment.description.name')}
           placeholder={t('components.profileSegment.description.placeholder')}
+          rows={10}
+          multiline
           disabled={disabled}
+          withCounter
+          maxLength={LONG_TEXT_LENGTH}
           required={required}
         />
       </FormRow>

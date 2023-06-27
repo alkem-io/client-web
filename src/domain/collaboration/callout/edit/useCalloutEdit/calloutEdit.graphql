@@ -1,12 +1,26 @@
 mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
   updateCallout(calloutData: $calloutData) {
     id
-    description
-    displayName
+    profile {
+      id
+      description
+      displayName
+      tagset {
+        id
+        tags
+      }
+      references {
+        id
+        name
+        uri
+      }
+    }
     state
+    group
     type
     visibility
-    ...CardTemplate
+    ...CalloutPostTemplate
+    ...CalloutWhiteboardTemplate
   }
 }
 

@@ -1,9 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
-import { useUpdateNavigation, useConfig } from '../../../../../hooks';
-import { FEATURE_SSI } from '../../../../../models/constants';
-import { PageProps, Error404 } from '../../../../../pages';
-import { EntityPageLayoutHolder } from '../../../../shared/layout/PageLayout';
+import { useConfig } from '../../../../platform/config/useConfig';
+import { FEATURE_SSI } from '../../../../platform/config/features.constants';
+import { PageProps } from '../../../../shared/types/PageProps';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
+import { EntityPageLayoutHolder } from '../../../../challenge/common/EntityPageLayout';
 import EditUserProfilePage from '../pages/EditUserProfilePage';
 import UserCredentialsPage from '../pages/UserCredentialsPage';
 import UserMembershipPage from '../pages/UserMembershipPage';
@@ -15,8 +16,6 @@ interface UserSettingsProps extends PageProps {}
 export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'settings', real: false }], [paths, url]);
-  useUpdateNavigation({ currentPaths });
-
   const { isFeatureEnabled } = useConfig();
 
   return (
@@ -24,7 +23,7 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
         <Route index element={<Navigate to={'profile'} />} />
         <Route path={'profile'} element={<EditUserProfilePage paths={currentPaths} />} />
-        <Route path={'membership'} element={<UserMembershipPage paths={currentPaths} />} />
+        <Route path={'membership'} element={<UserMembershipPage />} />
         <Route path={'organizations'} element={<UserOrganizationsPage paths={currentPaths} />} />
         <Route path={'notifications'} element={<UserNotificationsPage paths={currentPaths} />} />
         {isFeatureEnabled(FEATURE_SSI) && (
@@ -35,4 +34,5 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
     </Routes>
   );
 };
+
 export default UserSettingsRoute;

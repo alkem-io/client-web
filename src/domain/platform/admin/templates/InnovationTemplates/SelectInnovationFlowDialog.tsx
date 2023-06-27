@@ -8,17 +8,17 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../common
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
-import { LifecycleType } from '../../../../../models/graphql-schema';
+import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
 
-export interface LifecycleTemplateInfo {
+export interface InnovationFlowTemplateProfile {
   id: string;
-  title?: string;
+  displayName: string;
 }
-export interface LifecycleTemplate {
+export interface InnovationFlowTemplate {
   definition: string;
   id: string;
-  type: LifecycleType;
-  info: LifecycleTemplateInfo;
+  type: InnovationFlowType;
+  profile: InnovationFlowTemplateProfile;
 }
 export interface SelectInnovationFlowFormValuesType {
   innovationFlowTemplateID: string;
@@ -27,7 +27,7 @@ export interface SelectInnovationFlowFormValuesType {
 export interface SelectInnovationFlowDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  innovationFlowTemplates: LifecycleTemplate[] | undefined;
+  innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   innovationFlowTemplateID: string | undefined;
   onSubmitForm: (formData: SelectInnovationFlowFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
@@ -49,7 +49,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
     () =>
       Object.values(innovationFlowTemplates || []).map<FormikSelectValue>(x => ({
         id: x.id,
-        name: x.info.title || '',
+        name: x.profile.displayName,
       })),
     [innovationFlowTemplates]
   );

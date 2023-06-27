@@ -1,6 +1,0 @@
-mutation removeUserAsGlobalHubsAdmin($input: RemoveGlobalHubsAdminInput!) {
-  removeUserAsGlobalHubsAdmin(membershipData: $input) {
-    id
-    displayName
-  }
-}

@@ -4,9 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutlined';
-
-import { PageProps } from '../../../../../pages';
 import SearchableList, { SearchableListItem } from '../../components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import {
@@ -14,46 +11,45 @@ import {
   useCreateOpportunityMutation,
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUrlParams, useNotification, useChallenge } from '../../../../../hooks';
-import { useHub } from '../../../../../hooks';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
+import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../challenge/opportunity/forms/CreateOpportunityForm';
 import { buildAdminOpportunityUrl } from '../../../../../common/utils/urlBuilders';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
 
-interface OpportunityListProps extends PageProps {}
-
-export const OpportunityList: FC<OpportunityListProps> = () => {
-  const handleError = useApolloErrorHandler();
+export const OpportunityList: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { hubNameId } = useHub();
+  const { spaceNameId } = useSpace();
   const { challengeId } = useChallenge();
   const { challengeNameId = '' } = useUrlParams();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
   });
 
   const opportunityList =
-    challengesListQuery?.hub?.challenge?.opportunities?.map(o => ({
+    challengesListQuery?.space?.challenge?.opportunities?.map(o => ({
       id: o.id,
-      value: o.displayName,
+      value: o.profile.displayName,
       url: `${o.nameID}`,
     })) || [];
 
   const [deleteOpportunity] = useDeleteOpportunityMutation({
     refetchQueries: [
       refetchOpportunitiesQuery({
-        hubId: hubNameId,
+        spaceId: spaceNameId,
         challengeId: challengeNameId,
       }),
     ],
     awaitRefetchQueries: true,
-    onError: handleError,
     onCompleted: () => notify(t('pages.admin.opportunity.notifications.opportunity-removed'), 'success'),
   });
 
@@ -68,12 +64,11 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
   };
 
   const [createOpportunity] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchOpportunitiesQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
     onCompleted: () => {
       notify(t('pages.admin.opportunity.notifications.opportunity-created'), 'success');
     },
-    onError: handleError,
   });
 
   const handleCreate = useCallback(
@@ -82,10 +77,12 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
         variables: {
           input: {
             challengeID: challengeId,
-            displayName: value.displayName,
             context: {
-              tagline: value.tagline,
               vision: value.vision,
+            },
+            profileData: {
+              displayName: value.displayName,
+              tagline: value.tagline,
             },
             tags: value.tags,
           },
@@ -96,12 +93,12 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
         return;
       }
 
-      navigate(buildAdminOpportunityUrl(hubNameId, challengeNameId, data?.createOpportunity.nameID));
+      navigate(buildAdminOpportunityUrl(spaceNameId, challengeNameId, data?.createOpportunity.nameID));
     },
-    [navigate, createOpportunity, hubNameId, challengeId, challengeNameId]
+    [navigate, createOpportunity, spaceNameId, challengeId, challengeNameId]
   );
 
-  if (loading) return <Loading text={'Loading hubs'} />;
+  if (loading) return <Loading text={'Loading spaces'} />;
 
   return (
     <>
@@ -118,8 +115,8 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
       </Box>
       <JourneyCreationDialog
         open={open}
-        icon={<BatchPredictionOutlinedIcon />}
-        journeyName={t('common.challenge')}
+        icon={<OpportunityIcon />}
+        journeyName={t('common.opportunity')}
         onClose={() => setOpen(false)}
         OnCreate={handleCreate}
         formComponent={CreateOpportunityForm}
@@ -127,4 +124,5 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
     </>
   );
 };
+
 export default OpportunityList;

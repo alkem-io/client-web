@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { OrganizationDetailsFragment } from '../../../../../models/graphql-schema';
+import { OrganizationDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import EditMembers, { AvailableMembers } from '../../components/Community/EditMembers';
 import { Avatar, Box, Button, Dialog, DialogContent, TableCell } from '@mui/material';
 import Heading from '../../../../shared/components/Heading';
@@ -17,9 +17,9 @@ const toOrganizationDetailsVm = (prop: OrganizationDetailsFragment[]) => {
     x =>
       ({
         id: x.id,
-        avatarSrc: x.profile?.avatar?.uri ?? '',
-        name: x.displayName,
-        tags: (x.profile?.tagsets || []).flatMap(y => y.tags).join(', '),
+        avatarSrc: x.profile.avatar?.uri ?? '',
+        name: x.profile.displayName,
+        tags: (x.profile.tagsets || []).flatMap(y => y.tags).join(', '),
       } as OrganizationDetailsVm)
   );
 };

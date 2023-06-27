@@ -304,7 +304,7 @@ export interface CardProps extends Record<string, unknown> {
     name: string;
   };
   actions?: JSX.Element[];
-  onClick?: () => any;
+  onClick?: () => void;
 }
 
 const useCardStyles = makeStyles<Theme, ClassProps>(theme => ({
@@ -351,7 +351,7 @@ const Card: FC<CardProps> = ({
   const styles = useCardStyles(classes);
 
   //TODO this should not be here...
-  const isHubLevel = level?.level === 'Hub';
+  const isSpaceLevel = level?.level === 'Space';
 
   return (
     <div
@@ -368,7 +368,7 @@ const Card: FC<CardProps> = ({
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
         {level && (
           <WrapperTypography color={'background'}>
-            {!isHubLevel && `${level.level}: `}
+            {!isSpaceLevel && `${level.level}: `}
             {`${level.name} `}
           </WrapperTypography>
         )}

@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
 import LoadingOrganizationCard from '../../../shared/components/LoadingOrganizationCard';
-import OrganizationCard, {
+import OrganizationCardHorizontal, {
   OrganizationCardProps,
-} from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
+} from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 import React, { FC, ReactElement } from 'react';
 import { Identifiable } from '../../../shared/types/Identifiable';
 
@@ -35,7 +35,7 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
     <Grid container spacing={3} columns={1}>
       {organizations?.map(org => (
         <Grid key={org.id} item xs={1}>
-          <OrganizationCard {...org} transparent />
+          <OrganizationCardHorizontal {...org} transparent />
         </Grid>
       ))}
     </Grid>

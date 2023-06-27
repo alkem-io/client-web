@@ -3,15 +3,14 @@ import { useSelector } from '@xstate/react';
 import { AppBar, Box, Container, Theme } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useGlobalState } from '../../../../../hooks';
-import useCurrentBreakpoint from '../../../../../hooks/useCurrentBreakpoint';
+import { useGlobalState } from '../../../../../core/state/useGlobalState';
+import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 import HideOnScroll from '../HideOnScroll';
-import HelpIcon from './HelpIcon';
-import LanguageSelect from './LanguageSelect';
-import LogoComponent from './LogoComponent';
+import { AlkemioLogoComponent } from './LogoComponent';
 import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
-import MobileTopBar from './MobileTopBar';
+import MobileTopBar, { MobileTopBarHeightGutters } from './MobileTopBar';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 const PREFIX = 'TopBar';
 
@@ -19,7 +18,7 @@ const classes = {
   bar: `${PREFIX}-bar`,
 };
 
-export const TopBarHeight = 9;
+export const TopBarHeightGutters = 4;
 
 const Root = styled(AppBar)(({ theme }) => ({
   width: '100%',
@@ -45,7 +44,7 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
     return state.matches('visible');
   });
 
-  const isBreakpointSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   if (!loginVisible) {
     return null;
@@ -54,7 +53,7 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
   return (
     <HideOnScroll>
       <Root position="fixed" className={classes.bar}>
-        {isBreakpointSm ? (
+        {isMobile ? (
           <MobileTopBar />
         ) : (
           <Container maxWidth={breakpoint}>
@@ -69,7 +68,11 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
 export const TopBarSpacer = () => {
   const theme = useTheme();
 
-  return <Box height={theme.spacing(TopBarHeight)} sx={{ visibility: 'hidden' }} />;
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+
+  const height = gutters(isMobile ? MobileTopBarHeightGutters : TopBarHeightGutters)(theme);
+
+  return <Box height={height} sx={{ visibility: 'hidden' }} />;
 };
 
 export default TopBar;
@@ -77,14 +80,13 @@ export default TopBar;
 const DesktopTopBar = () => {
   return (
     <Box
-      height={theme => theme.spacing(TopBarHeight)}
+      height={gutters(TopBarHeightGutters)}
       display="flex"
-      gap={2}
+      gap={gutters()}
       alignItems="center"
       justifyContent="space-between"
     >
-      <LogoComponent flexGrow={1} height={theme => theme.spacing(5)} />
-
+      <AlkemioLogoComponent height={gutters(2.5)} />
       <SearchBarGroup
         sx={{
           display: { xs: 'none', md: 'flex' },
@@ -104,8 +106,6 @@ const DesktopTopBar = () => {
             },
           })}
         />
-        <LanguageSelect />
-        <HelpIcon />
       </SearchBarGroup>
 
       <TopNavIcons />

@@ -1,18 +1,21 @@
-import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   OrganizationContainerEntities,
   OrganizationContainerState,
-} from '../../../../../containers/organization/OrganizationPageContainer';
-import { OrganizationVerificationEnum } from '../../../../../models/graphql-schema';
+} from '../OrganizationPageContainer/OrganizationPageContainer';
+import { OrganizationVerificationEnum } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildAdminOrganizationUrl } from '../../../../../common/utils/urlBuilders';
 import {
-  OrganizationProfileViewEntity,
-  OrganizationProfileView,
   AssociatesView,
   ContributionsView,
+  OrganizationProfileView,
+  OrganizationProfileViewEntity,
 } from '../../../profile/views/ProfileView';
+import PageContent from '../../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
+import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
+import { MetricType } from '../../../../platform/metrics/MetricType';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -35,8 +38,8 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
   const entity = useMemo(
     () =>
       ({
-        avatar: organization?.profile.avatar?.uri,
-        displayName: organization?.displayName || '',
+        avatar: organization?.profile.visual?.uri,
+        displayName: organization?.profile.displayName || '',
         settingsTooltip: t('pages.organization.settings.tooltip'),
         settingsUrl: buildAdminOrganizationUrl(organization?.nameID || ''),
         bio: organization?.profile.description,
@@ -44,31 +47,27 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
         tagsets,
         socialLinks,
         links,
-        location: organization?.profile?.location,
+        location: organization?.profile.location,
       } as OrganizationProfileViewEntity),
     [organization, tagsets, socialLinks, links, t]
   );
 
+  const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} xl={6}>
+    <PageContent>
+      <PageContentColumn columns={4}>
         <OrganizationProfileView entity={entity} permissions={permissions} />
-      </Grid>
-      <Grid item xs={12} xl={6}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <AssociatesView associates={associates} />
-          </Grid>
-          <Grid item xs={12}>
-            <ContributionsView
-              title={t('components.contributions.title')}
-              helpText={t('components.contributions.help')}
-              contributions={contributions}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+      </PageContentColumn>
+      <PageContentColumn columns={8}>
+        <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
+        <ContributionsView
+          title={t('components.contributions.title')}
+          helpText={t('components.contributions.help')}
+          contributions={contributions}
+        />
+      </PageContentColumn>
+    </PageContent>
   );
 };
 

@@ -1,19 +1,19 @@
-import React, { FC, useCallback } from 'react';
-import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
+import React, { FC } from 'react';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
-import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
-import { HubIcon } from '../../../../../common/icons/HubIcon';
-import { SearchChallengeCard } from '../../../../shared/components/search-cards';
-import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
-import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
-import { useUserContext } from '../../../../../hooks';
-import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
-import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
+import { SpaceIcon } from '../../../space/icon/SpaceIcon';
+import { SimpleChallengeWithSearchTerms } from '../../../../platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerContainer';
+import { buildChallengeUrl, buildSpaceUrl } from '../../../../../common/utils/urlBuilders';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import { Text } from '../../../../../core/ui/typography/components';
+import ChallengeCard from '../../ChallengeCard/ChallengeCard';
+import { gutters } from '../../../../../core/ui/grid/utils';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
-export type ChallengeExplorerGroupByType = 'hub';
+export type ChallengeExplorerGroupByType = 'space';
 
 export interface ChallengeExplorerSearchViewProps {
   challenges: SimpleChallengeWithSearchTerms[] | undefined;
@@ -29,15 +29,6 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useUserContext();
-  const getCardLabel = useCallback(
-    (roles: string[]) => {
-      return isAuthenticated
-        ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
-        : undefined;
-    },
-    [isAuthenticated]
-  );
 
   const groupKey = getGroupKey(groupBy);
 
@@ -49,35 +40,40 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
     <>
       {challenges && challenges.length > 0 && (
         <GroupBy data={challenges} groupKey={groupKey}>
-          {groups => {
-            return groups.map(({ keyValue, values }) => (
-              <Box key={`boxchallenge_${keyValue}`}>
-                <DashboardGenericSection
-                  key={`challenge_${keyValue}`}
-                  headerText={values[0].hubDisplayName}
-                  headerIcon={<HubIcon />}
-                  subHeaderText={values[0].hubTagline}
-                >
-                  <CardsLayoutScroller maxHeight={376} sx={{ marginRight: 0 }}>
-                    <CardsLayout items={values}>
-                      {challenge => (
-                        <SearchChallengeCard
-                          name={challenge.displayName}
-                          tagline={challenge.tagline}
-                          image={challenge.imageUrl}
-                          matchedTerms={challenge.matchedTerms}
-                          label={getCardLabel(challenge.roles)}
-                          url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                          parentName={challenge.hubDisplayName}
-                        />
-                      )}
-                    </CardsLayout>
-                  </CardsLayoutScroller>
-                </DashboardGenericSection>
-                <SectionSpacer key={`spacer_${keyValue}`} />
-              </Box>
-            ));
-          }}
+          {groups => (
+            <Gutters disablePadding>
+              {groups.map(({ keyValue, values }) => (
+                <PageContentBlock key={keyValue}>
+                  <PageContentBlockHeader
+                    title={
+                      <>
+                        <SpaceIcon sx={{ verticalAlign: 'bottom' }} /> {values[0].spaceDisplayName}
+                      </>
+                    }
+                  />
+                  <Text>{values[0].spaceTagline}</Text>
+                  <ScrollableCardsLayoutContainer maxHeight={gutters(40)}>
+                    {values.map(challenge => (
+                      <ChallengeCard
+                        challengeId={challenge.id}
+                        challengeNameId={challenge.nameID}
+                        banner={challenge.banner}
+                        displayName={challenge.displayName}
+                        tags={challenge.tags}
+                        tagline={challenge.tagline}
+                        vision={challenge.vision}
+                        journeyUri={buildChallengeUrl(challenge.spaceNameId, challenge.nameID)}
+                        spaceDisplayName={challenge.spaceDisplayName}
+                        spaceUri={buildSpaceUrl(challenge.spaceNameId)}
+                        spaceVisibility={challenge.spaceVisibility}
+                        hideJoin
+                      />
+                    ))}
+                  </ScrollableCardsLayoutContainer>
+                </PageContentBlock>
+              ))}
+            </Gutters>
+          )}
         </GroupBy>
       )}
       {!loading && searchTerms && searchTerms?.length > 0 && !challenges?.length && (
@@ -87,12 +83,13 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
     </>
   );
 };
+
 export default ChallengeExplorerSearchView;
 
 const getGroupKey = (groupBy: ChallengeExplorerGroupByType): keyof SimpleChallengeWithSearchTerms | undefined => {
   switch (groupBy) {
-    case 'hub':
-      return 'hubId';
+    case 'space':
+      return 'spaceId';
     default:
       return undefined;
   }

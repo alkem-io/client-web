@@ -1,0 +1,88 @@
+query JourneyData(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $includeCommunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      profile {
+        ...ProfileJourneyData
+      }
+      context {
+        ...ContextJourneyData
+      }
+      community @include(if: $includeCommunity) {
+        ...JourneyCommunity
+      }
+      metrics {
+        ...MetricsItem
+      }
+      host {
+        ...AssociatedOrganizationDetails
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      profile {
+        ...ProfileJourneyData
+      }
+      context {
+        ...ContextJourneyData
+      }
+      community @include(if: $includeCommunity) {
+        ...JourneyCommunity
+      }
+      metrics {
+        ...MetricsItem
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      profile {
+        ...ProfileJourneyData
+      }
+      context {
+        ...ContextJourneyData
+      }
+      community @include(if: $includeCommunity) {
+        ...JourneyCommunity
+      }
+      metrics {
+        ...MetricsItem
+      }
+    }
+  }
+}
+
+fragment ProfileJourneyData on Profile {
+  id
+  displayName
+  tagline
+  description
+}
+
+fragment ContextJourneyData on Context {
+  id
+  vision
+  who
+  impact
+}
+
+fragment JourneyCommunity on Community {
+  id
+  leadUsers {
+    ...DashboardLeadUser
+  }
+  leadOrganizations {
+    ...AssociatedOrganizationDetails
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}

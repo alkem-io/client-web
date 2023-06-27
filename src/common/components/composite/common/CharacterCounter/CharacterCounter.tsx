@@ -1,37 +1,47 @@
-import React, { FC } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { DistributiveOmit } from '@mui/types';
-import { styled, Box, Typography, TypographyProps } from '@mui/material';
+import { Box, TypographyProps } from '@mui/material';
+import { Caption } from '../../../../../core/ui/typography';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 type CharacterCounterProps = DistributiveOmit<TypographyProps, 'variant'> & {
   count?: number;
   separator?: string;
   maxLength?: number;
+  disabled?: boolean;
 };
 
-const Container = styled(Box)(() => ({
-  position: 'relative',
-}));
+const getText = (count: number, separator: string, maxLength?: number) =>
+  [count, maxLength].filter(num => typeof num !== 'undefined').join(separator);
 
-const CounterText = styled(Typography)(() => ({
-  position: 'absolute',
-  right: 0,
-}));
+export const CharacterCounter = ({
+  count = 0,
+  separator = ' / ',
+  disabled = false,
+  maxLength,
+  flexWrap,
+  children,
+  ...rest
+}: PropsWithChildren<CharacterCounterProps>) => {
+  const color = maxLength && count > maxLength ? 'negative.main' : undefined;
 
-const getText = (count: number, separator: string, maxLength?: number) => {
-  if (maxLength && count > maxLength) {
-    return <Typography color="red">{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>;
-  } else {
-    return <Typography>{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>;
-  }
-};
-
-export const CharacterCounter: FC<CharacterCounterProps> = ({ count = 0, separator = ' / ', maxLength, ...rest }) => {
   return (
-    <Container>
-      <CounterText variant="caption" {...rest}>
-        {getText(count, separator, maxLength)}
-      </CounterText>
-    </Container>
+    <Box
+      display="flex"
+      justifyContent={children ? 'space-between' : 'end'}
+      gap={gutters()}
+      rowGap={0}
+      alignItems="start"
+      flexWrap={flexWrap}
+    >
+      {children}
+      {!disabled && (
+        <Caption color={color} {...rest}>
+          {getText(count, separator, maxLength)}
+        </Caption>
+      )}
+    </Box>
   );
 };
+
 export default CharacterCounter;

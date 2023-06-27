@@ -6,6 +6,11 @@ import {
   UiNodeInputAttributes,
   UiNodeTextAttributes,
 } from '@ory/kratos-client';
+import { FormEvent } from 'react';
+import { UiNodeAnchor, UiNodeInput } from './UiNodeTypes';
+import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './constants';
+import { TFunction } from 'react-i18next';
+import TranslationKey from '../../../../../types/TranslationKey';
 
 export function isUiNodeAnchorAttributes(pet: UiNodeAttributes): pet is UiNodeAnchorAttributes {
   return (pet as UiNodeAnchorAttributes).href !== undefined;
@@ -39,19 +44,18 @@ export function getNodeValue({ attributes }: UiNode) {
   return '';
 }
 
-export const getNodeTitle = ({ attributes, meta }: UiNode): string => {
-  if (isUiNodeInputAttributes(attributes)) {
-    if (meta?.label?.text) {
-      return meta.label.text;
-    }
-    return attributes.name;
+export const getNodeTitle = ({ attributes, meta }: UiNode, t: TFunction): string => {
+  if (!isUiNodeInputAttributes(attributes)) {
+    throw new Error('Not an Input node');
   }
 
-  if (meta?.label?.text) {
-    return meta.label.text;
+  const labelText = meta.label?.text;
+
+  if (!labelText) {
+    throw new Error('No label text specified for the Node');
   }
 
-  return '';
+  return t(`kratos.fields.${labelText}` as TranslationKey, labelText) as string;
 };
 
 export const guessVariant = ({ attributes }: UiNode) => {
@@ -81,8 +85,26 @@ export const isInvalidNode = (node: UiNode) =>
   !!(node && Array.isArray(node.messages) && node.messages.find(x => x.type === 'error'));
 
 export const isRequired = (node: UiNode) => {
-  const requiredFileds = ['traits.email', 'traits.name.first', 'traits.name.last', 'traits.accepted_terms'];
   const attributes = node.attributes as UiNodeInputAttributes;
   const name = getNodeName(node);
-  return attributes.required || requiredFileds.includes(name);
+  return attributes.required || KRATOS_REQUIRED_FIELDS.includes(name);
 };
+
+export const isSubmittingPasswordFlow = (event: FormEvent<HTMLFormElement>) => {
+  // https://developer.mozilla.org/en-US/docs/Web/API/SubmitEvent/submitter
+  const button = event.nativeEvent['submitter'] as HTMLButtonElement;
+  return button && button.name === 'method' && button.value === 'password';
+};
+
+export const isInputNode = (node: UiNode): node is UiNodeInput => node.type === 'input';
+
+export const isAnchorNode = (node: UiNode): node is UiNodeAnchor => node.type === 'a';
+
+export const isSubmitButton = (node: UiNode): node is UiNodeInput =>
+  isInputNode(node) && node.attributes.type === 'submit';
+
+export const isHiddenInput = (node: UiNode): node is UiNodeInput =>
+  isInputNode(node) && node.attributes.type === 'hidden';
+
+export const isVerificationContinueLink = (link: UiNodeAnchor) =>
+  link.meta.label?.id === KRATOS_VERIFICATION_CONTINUE_LINK_ID;

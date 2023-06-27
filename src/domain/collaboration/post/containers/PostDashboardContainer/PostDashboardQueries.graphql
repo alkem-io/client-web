@@ -1,0 +1,109 @@
+query SpacePost($spaceNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    collaboration {
+      ...PostDashboardData
+    }
+  }
+}
+
+query ChallengePost(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+  $postNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        ...PostDashboardData
+      }
+    }
+  }
+}
+
+query OpportunityPost(
+  $spaceNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+  $postNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
+  space(ID: $spaceNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        ...PostDashboardData
+      }
+    }
+  }
+}
+
+fragment PostDashboardData on Collaboration {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  callouts(IDs: [$calloutNameId]) {
+    id
+    type
+    posts(IDs: [$postNameId]) {
+      ...PostDashboard
+    }
+  }
+}
+
+fragment PostDashboard on Post {
+  id
+  nameID
+  type
+
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      visual(type: BANNER) {
+        id
+        uri
+      }
+      tagsets {
+        tags
+      }
+    }
+  }
+  createdDate
+
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+    visual(type: BANNER) {
+      ...VisualUri
+    }
+  }
+  comments {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    messages {
+      ...MessageDetails
+    }
+  }
+}

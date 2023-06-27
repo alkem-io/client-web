@@ -3,10 +3,9 @@ export interface Author {
   displayName: string;
   firstName: string;
   lastName: string;
-  avatarUrl: string;
+  avatarUrl: string | undefined;
   url: string;
   tags?: string[];
-  roleName?: string;
   city?: string;
   country?: string;
 }

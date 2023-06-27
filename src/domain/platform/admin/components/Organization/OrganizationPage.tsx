@@ -1,27 +1,32 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useNotification, useOrganization, useUpdateNavigation } from '../../../../../hooks';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
-import { EditMode } from '../../../../../models/editMode';
-import { CreateOrganizationInput, UpdateOrganizationInput, Organization } from '../../../../../models/graphql-schema';
-import { PageProps } from '../../../../../pages';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
+import {
+  CreateOrganizationInput,
+  Organization,
+  UpdateOrganizationInput,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { Loading } from '../../../../../common/components/core';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
-interface Props extends PageProps {
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+
+interface Props {
   title?: string;
   mode: EditMode;
 }
 
-const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
-  const handleError = useApolloErrorHandler();
+const OrganizationPage: FC<Props> = ({ title, mode }) => {
   const { t } = useTranslation();
   const { organizationNameId } = useOrganization();
 
@@ -33,10 +38,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
 
   const organization = data?.organization;
 
-  const currentPaths = useMemo(
-    () => [...paths, { name: t(`common.enums.edit-mode.${mode}` as const), real: false }],
-    [paths, mode, t]
-  );
   const notify = useNotification();
   const navigateToEdit = useNavigateToEdit();
   const [createTagset] = useCreateTagsetOnProfileMutation({
@@ -44,7 +45,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     // there is an issue handling multiple snackbars.
     onError: error => logger.error(error.message),
   });
-  useUpdateNavigation({ currentPaths });
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {
@@ -54,12 +54,10 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         navigateToEdit(organizationId);
       }
     },
-    onError: handleError,
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
 
   const [updateOrganization] = useUpdateOrganizationMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('Organization updated successfully', 'success');
     },
@@ -67,20 +65,20 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
 
   const handleSubmit = async (editedOrganization: CreateOrganizationInput | UpdateOrganizationInput) => {
     if (mode === EditMode.new) {
-      const { nameID, profileData, contactEmail, displayName, domain, legalEntityName, website } =
+      const { nameID, profileData, contactEmail, domain, legalEntityName, website } =
         editedOrganization as CreateOrganizationInput;
 
       const input: CreateOrganizationInput = {
         nameID,
         contactEmail: contactEmail,
-        displayName: displayName,
         domain: domain,
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
-          description: profileData?.description,
-          referencesData: profileData?.referencesData,
-          tagsetsData: profileData?.tagsetsData,
+          displayName: profileData.displayName,
+          description: profileData.description,
+          tagline: profileData.tagline,
+          referencesData: profileData.referencesData,
         },
       };
 
@@ -97,12 +95,11 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         nameID,
         profileData,
         contactEmail,
-        displayName,
         domain,
         legalEntityName,
         website,
       } = editedOrganization as UpdateOrganizationInput;
-      const profileId = organization?.profile?.id;
+      const profileId = organization?.profile.id;
       const references = profileData?.references;
       const tagsetsToAdd = profileData?.tagsets?.filter(x => !x.ID) || [];
 
@@ -123,13 +120,13 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         ID: orgID,
         nameID,
         contactEmail: contactEmail,
-        displayName: displayName,
         domain: domain,
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
-          ID: profileId || '',
+          displayName: profileData?.displayName,
           description: profileData?.description,
+          tagline: profileData?.tagline,
           location: {
             city: profileData?.location?.city,
             country: profileData?.location?.country,
@@ -150,7 +147,14 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
   if (loading) return <Loading text={t('components.loading.message', { blockName: t('common.organization') })} />;
 
   return (
-    <OrganizationForm organization={organization as Organization} onSave={handleSubmit} editMode={mode} title={title} />
+    <StorageConfigContextProvider locationType="organization" organizationId={organizationNameId}>
+      <OrganizationForm
+        organization={organization as Organization}
+        onSave={handleSubmit}
+        editMode={mode}
+        title={title}
+      />
+    </StorageConfigContextProvider>
   );
 };
 

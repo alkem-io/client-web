@@ -1,0 +1,22 @@
+query userAvatars($ids: [UUID!]!) {
+  usersById(IDs: $ids) {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      location {
+        country
+        city
+      }
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
+  }
+}

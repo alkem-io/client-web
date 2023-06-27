@@ -1,13 +1,14 @@
-import { Card, CardContent, Grid, Typography as MUITypography } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
-import References from '../../../../../common/components/composite/common/References/References';
+import References from '../../../../shared/components/References/References';
 import { styled } from '@mui/styles';
 import { UserMetadata } from '../../../contributor/user/hooks/useUserMetadataWrapper';
 import { isSocialNetworkSupported } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';
 
 export interface UserProfileViewProps {
   entities: {
@@ -23,51 +24,38 @@ const TagsWithOffset = styled(TagsComponent)({
 export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMetadata } }) => {
   const { t } = useTranslation();
   const { user, keywords, skills } = userMetadata;
-  const references = user.profile?.references;
-  const bio = user.profile?.description;
+  const references = user.profile.references;
+  const bio = user.profile.description;
 
   const nonSocialReferences = useMemo(() => {
     return references?.filter(x => !isSocialNetworkSupported(x.name));
   }, [references]);
 
   return (
-    <Card square elevation={0} variant="outlined">
-      <CardContent>
-        <Grid container spacing={2} direction="column">
-          <Grid item>
-            <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
-          </Grid>
+    <PageContentBlock>
+      <Grid item>
+        <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
+      </Grid>
 
-          <Grid item>
-            <WrapperTypography color="primary" weight="boldLight" aria-label="keywords">
-              {t('components.profile.fields.keywords.title')}
-            </WrapperTypography>
-            <TagsWithOffset tags={keywords} />
-          </Grid>
+      <Grid item>
+        <BlockSectionTitle>{t('components.profile.fields.keywords.title')}</BlockSectionTitle>
+        <TagsWithOffset tags={keywords} />
+      </Grid>
 
-          <Grid item>
-            <WrapperTypography color="primary" weight="boldLight" aria-label="skills">
-              {t('components.profile.fields.skills.title')}
-            </WrapperTypography>
-            <TagsWithOffset tags={skills} />
-          </Grid>
+      <Grid item>
+        <BlockSectionTitle>{t('components.profile.fields.skills.title')}</BlockSectionTitle>
+        <TagsWithOffset tags={skills} />
+      </Grid>
 
-          <Grid item container direction="column">
-            <WrapperTypography color="primary" weight="boldLight" aria-label="links">
-              {t('components.profile.fields.links.title')}
-            </WrapperTypography>
-            <References
-              references={nonSocialReferences}
-              noItemsView={
-                <MUITypography color="neutral.main" variant="subtitle2">
-                  {t('common.no-references')}
-                </MUITypography>
-              }
-            />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+      <Grid item container direction="column">
+        <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+        <References
+          references={nonSocialReferences}
+          noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+        />
+      </Grid>
+    </PageContentBlock>
   );
 };
+
 export default UserProfileView;

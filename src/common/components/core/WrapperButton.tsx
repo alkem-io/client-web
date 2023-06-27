@@ -96,8 +96,7 @@ export interface ButtonProps extends Record<string, unknown> {
   className?: string;
   classes?: unknown;
   classOverrides?: MuiButtonProps['classes'];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  as?: React.ComponentType<any> | string;
+  as?: React.ElementType;
   startIcon?: React.ReactNode;
   to?: string;
   onClick?: (e: Event) => void;
@@ -109,6 +108,9 @@ export interface ButtonProps extends Record<string, unknown> {
   disabled?: boolean;
 }
 
+/**
+ * @deprecated - Please use MUI Button directly
+ */
 const WrapperButton: FC<ButtonProps> = forwardRef(
   (
     {
@@ -146,7 +148,7 @@ const WrapperButton: FC<ButtonProps> = forwardRef(
           outlined: styles[variant],
           ...classOverrides,
         }}
-        component={Component as any}
+        component={Component}
         variant="outlined"
         color={variant === 'primary' ? 'primary' : 'grey'}
         startIcon={startIcon}

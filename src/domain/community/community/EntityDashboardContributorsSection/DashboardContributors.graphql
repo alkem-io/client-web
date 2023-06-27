@@ -1,14 +1,16 @@
 fragment DashboardContributingUser on User {
   id
-  displayName
+  isContactable
   nameID
   profile {
     id
+    displayName
     location {
+      id
       city
       country
     }
-    avatar {
+    visual(type: AVATAR) {
       id
       uri
     }
@@ -21,11 +23,11 @@ fragment DashboardContributingUser on User {
 
 fragment DashboardContributingOrganization on Organization {
   id
-  displayName
   nameID
   profile {
     id
-    avatar {
+    displayName
+    visual(type: AVATAR) {
       id
       uri
       name

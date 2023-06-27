@@ -1,38 +1,33 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { buildAdminOrganizationUrl, buildOrganizationUrl } from '../../../../../common/utils/urlBuilders';
-import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
-import { useTranslation } from 'react-i18next';
-import { useOrganization } from '../../../../../hooks';
-import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
-import OrganizationPageContainer from '../../../../../containers/organization/OrganizationPageContainer';
-import { EntityTabsProps } from '../../../../shared/layout/PageLayout/EntityPageLayout';
-
-const routes = {
-  profile: 'profile',
-  settings: 'settings',
-};
+import { useOrganization } from '../hooks/useOrganization';
+import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
+import { EntityTabsProps } from '../../../../challenge/common/EntityPageLayout';
+import ProfileTabs from '../../../../shared/layout/ProfileTabs';
+import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
+import { BadgeOutlined } from '@mui/icons-material';
 
 const OrganizationTabs = (props: EntityTabsProps) => {
-  const { t } = useTranslation();
-
   const { organizationNameId } = useOrganization();
+
+  const routes = useMemo(
+    () => ({
+      [EntityPageSection.Profile]: buildOrganizationUrl(organizationNameId),
+      [EntityPageSection.Settings]: buildAdminOrganizationUrl(organizationNameId),
+    }),
+    [organizationNameId]
+  );
 
   return (
     <OrganizationPageContainer>
       {({ permissions }) => (
-        <HeaderNavigationTabs
-          value={props.currentTab}
-          defaultTab={routes.profile}
+        <ProfileTabs
           showSettings={permissions.canEdit}
-          settingsUrl={buildAdminOrganizationUrl(organizationNameId)}
-        >
-          <HeaderNavigationTab
-            label={t('common.profile')}
-            value={routes.profile}
-            to={buildOrganizationUrl(organizationNameId)}
-            className="singleCenteredTab"
-          />
-        </HeaderNavigationTabs>
+          profileIconComponent={BadgeOutlined}
+          routes={routes}
+          entityTypeName="organization"
+          {...props}
+        />
       )}
     </OrganizationPageContainer>
   );

@@ -1,16 +1,15 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { NotificationHandler } from '../../../../../containers/NotificationHandler';
-import { useApm, useUserContext, useUserScope } from '../../../../../hooks';
-import { ScrollButton } from '../../../core';
-import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
-import Footer from './Footer';
-import Main from './Main';
-import useServerMetadata from '../../../../../hooks/useServerMetadata';
-import useCommunityUpdatesNotifier from '../../../../../hooks/subscription/CommunityUpdatesNotifier';
+import { NotificationHandler } from '../../../../../core/ui/notifications/NotificationHandler';
+import { useUserContext } from '../../../../../domain/community/contributor/user';
+import { useUserScope } from '../../../../../core/analytics/useSentry';
+import { useApm } from '../../../../../core/analytics/useApm';
+import useServerMetadata from '../../../../../domain/platform/metadata/useServerMetadata';
+import useCommunityUpdatesNotifier from '../../../../../domain/communication/updates/useCommunityUpdatesNotifier';
 import { useCookies } from 'react-cookie';
 import { ALKEMIO_COOKIE_NAME } from '../../../../../domain/platform/cookies/useAlkemioCookies';
 import CookieConsent from '../../../../../domain/platform/cookies/CookieConsent';
+import { Box } from '@mui/material';
 
 const App: FC = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
@@ -37,18 +36,24 @@ const App: FC = () => {
     }
   }, [services]);
 
+  const [cookieConsentHeight, setCookieConsentHeight] = useState(0);
+
+  const cookieConsentRef = useCallback((element: HTMLDivElement | null) => {
+    const height = element?.getBoundingClientRect().height ?? 0;
+    setCookieConsentHeight(height);
+  }, []);
+
   return (
     <>
-      <div id="main">
-        <TopBar />
-        <Main>
-          <TopBarSpacer />
-          <Outlet />
-        </Main>
-        <Footer />
-      </div>
-      {!cookies.accepted_cookies && <CookieConsent />}
-      <ScrollButton />
+      <Box
+        paddingBottom={cookieConsentHeight && `${cookieConsentHeight}px`}
+        display="flex"
+        flexDirection="column"
+        flexGrow={1}
+      >
+        <Outlet />
+      </Box>
+      {!cookies.accepted_cookies && <CookieConsent ref={cookieConsentRef} />}
       <NotificationHandler />
     </>
   );

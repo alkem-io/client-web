@@ -1,0 +1,74 @@
+query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    challenges {
+      id
+      nameID
+      profile {
+        ...SpaceDashboardNavigationProfile
+      }
+      context {
+        ...SpaceDashboardNavigationContext
+      }
+      lifecycle {
+        ...SpaceDashboardNavigationLifecycle
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      community {
+        id
+        myMembershipStatus
+      }
+    }
+    visibility
+  }
+}
+
+query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeIds: [UUID!]!) {
+  space(ID: $spaceId) {
+    id
+    challenges(IDs: $challengeIds) {
+      id
+      opportunities {
+        id
+        nameID
+        profile {
+          ...SpaceDashboardNavigationProfile
+        }
+        context {
+          ...SpaceDashboardNavigationContext
+        }
+        lifecycle {
+          ...SpaceDashboardNavigationLifecycle
+        }
+      }
+    }
+  }
+}
+
+fragment SpaceDashboardNavigationProfile on Profile {
+  id
+  displayName
+  tagline
+  tagset {
+    id
+    tags
+  }
+  visual(type: CARD) {
+    id
+    uri
+    alternativeText
+  }
+}
+
+fragment SpaceDashboardNavigationContext on Context {
+  id
+  vision
+}
+
+fragment SpaceDashboardNavigationLifecycle on Lifecycle {
+  id
+  state
+}

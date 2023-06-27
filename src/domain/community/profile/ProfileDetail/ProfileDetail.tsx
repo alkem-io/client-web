@@ -1,18 +1,17 @@
 import React, { FC } from 'react';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { BlockTitle } from '../../../../core/ui/typography';
 
 interface ProfileDetailProps {
   title: string;
   value?: string;
 }
 
-const ProfileDetail: FC<ProfileDetailProps> = ({ title, value, ...rest }) => {
+const ProfileDetail: FC<ProfileDetailProps> = ({ title, value = '' }) => {
   return (
     <>
-      <WrapperTypography color="primary" weight="boldLight" {...rest}>
-        {title}
-      </WrapperTypography>
-      <WrapperTypography>{value}</WrapperTypography>
+      <BlockTitle>{title}</BlockTitle>
+      <WrapperMarkdown>{value}</WrapperMarkdown>
     </>
   );
 };

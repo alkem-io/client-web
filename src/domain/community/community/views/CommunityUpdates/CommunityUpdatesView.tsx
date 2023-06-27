@@ -11,6 +11,7 @@ import {
   Grid,
   GridProps,
   IconButton,
+  Skeleton,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -19,8 +20,6 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Skeleton } from '@mui/material';
-import MDEditor from '@uiw/react-md-editor';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
@@ -29,16 +28,19 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import MarkdownInput from '../../../../platform/admin/components/Common/MarkdownInput';
-import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
-import { useNotification } from '../../../../../hooks';
-import { Message } from '../../../../../models/graphql-schema';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
+import hexToRGBA from '../../../../../common/utils/hexToRGBA';
+import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -74,7 +76,10 @@ const useStyles = makeStyles(theme => ({
     bottom: 0,
     width: '100%',
     height: '100%',
-    background: 'linear-gradient(to top, rgba(255,255,255, 1) 20%, rgba(255,255,255, 0) 80%)',
+    background: `linear-gradient(to top, ${hexToRGBA(theme.palette.background.paper, 1)} 20%,  ${hexToRGBA(
+      theme.palette.background.paper,
+      0
+    )} 80%)`,
     pointerEvents: 'none',
   },
   expand: {
@@ -102,7 +107,9 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     'community-update': '',
   };
   const validationSchema = yup.object().shape({
-    'community-update': yup.string().trim().required(t('components.communityUpdates.msg-not-empty')),
+    'community-update': MarkdownValidator(LONG_TEXT_LENGTH)
+      .trim()
+      .required(t('components.communityUpdates.msg-not-empty')),
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
@@ -125,13 +132,6 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
 
   return (
     <>
-      {!hideHeaders && (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h4">{t('components.communityUpdates.title')}</Typography>
-          </Grid>
-        </Grid>
-      )}
       {canEdit && (
         <Formik
           initialValues={initialValues}
@@ -150,27 +150,29 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             }
           }}
         >
-          {({ isValid, handleSubmit, isSubmitting, dirty }) => {
+          {({ isValid, handleSubmit, isSubmitting }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <MarkdownInput
+                    <FormikMarkdownField
                       name="community-update"
                       rows={30}
-                      label=""
+                      title={t('components.communityUpdates.title')}
                       required
-                      maxLength={MARKDOWN_TEXT_LENGTH}
+                      maxLength={LONG_TEXT_LENGTH}
                       withCounter
                     />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
-                    <WrapperButton
-                      text={t('components.communityUpdates.actions.add.buttonTitle')}
-                      type={'submit'}
-                      disabled={isSubmitting || removingMessage || !isValid || !dirty}
-                      startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
-                    />
+                    <SaveButton
+                      type="submit"
+                      disabled={!isValid}
+                      loading={isSubmitting || removingMessage}
+                      startIcon={<PlayArrowIcon />}
+                    >
+                      {t('components.communityUpdates.actions.add.buttonTitle')}
+                    </SaveButton>
                   </Grid>
                 </Grid>
               </Form>
@@ -214,7 +216,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
           const removed = removedMessageId === m.id && state.removingMessage;
-          const member = memberMap[m.sender.id];
+          const member = m.sender?.id ? memberMap[m.sender.id] : undefined;
           return (
             <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
               <Card elevation={disableElevation ? 0 : 2} style={{ position: 'relative' }}>
@@ -249,7 +251,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 <CardContent className={styles.root}>
                   <Collapse in={expanded || disableCollapse} timeout="auto" collapsedSize={40}>
                     <Box>
-                      {!reviewed && <MDEditor.Markdown source={m.message} />}
+                      {!reviewed && <WrapperMarkdown>{m.message}</WrapperMarkdown>}
                       {reviewed && (
                         <Typography component="pre" style={{ whiteSpace: 'pre-line' }}>
                           {m.message}
@@ -301,7 +303,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                   </CardActions>
                 )}
               </Card>
-              {disableElevation && i !== lastItemIndex && <Divider variant="inset" />}
+              {disableElevation && i !== lastItemIndex && <Divider />}
             </Grid>
           );
         })}

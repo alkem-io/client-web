@@ -1,5 +1,5 @@
-query allCommunities($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query allCommunities($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     community {
       ...AllCommunityDetails
     }

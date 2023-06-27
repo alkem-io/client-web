@@ -1,24 +1,8 @@
 fragment ContextDetails on Context {
   id
-  tagline
-  background
-  location {
-    id
-    country
-    city
-  }
   vision
   impact
   who
-  references {
-    id
-    name
-    uri
-    description
-  }
-  visuals {
-    ...VisualFull
-  }
   authorization {
     id
     myPrivileges

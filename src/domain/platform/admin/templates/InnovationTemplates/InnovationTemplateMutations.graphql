@@ -1,28 +1,35 @@
-mutation updateInnovationTemplate(
+mutation updateInnovationFlowTemplate(
   $templateId: UUID!
-  $info: UpdateTemplateInfoInput
+  $profile: UpdateProfileInput!
   $definition: LifecycleDefinition!
 ) {
-  updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, info: $info, definition: $definition }) {
+  updateInnovationFlowTemplate(innovationFlowTemplateInput: { ID: $templateId, profile: $profile, definition: $definition }) {
     id
   }
 }
 
-mutation createInnovationTemplate(
+mutation createInnovationFlowTemplate(
   $templatesSetId: UUID!
-  $info: CreateTemplateInfoInput!
+  $profile: CreateProfileInput!
   $definition: LifecycleDefinition!
-  $type: LifecycleType!
+  $type: InnovationFlowType!
+  $tags: [String!]
 ) {
-  createLifecycleTemplate(
-    lifecycleTemplateInput: { templatesSetID: $templatesSetId, info: $info, type: $type, definition: $definition }
+  createInnovationFlowTemplate(
+    innovationFlowTemplateInput: {
+      templatesSetID: $templatesSetId
+      profile: $profile
+      type: $type
+      definition: $definition
+      tags: $tags
+    }
   ) {
     id
   }
 }
 
-mutation deleteInnovationTemplate($templateId: UUID!) {
-  deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
+mutation deleteInnovationFlowTemplate($templateId: UUID!) {
+  deleteInnovationFlowTemplate(deleteData: { ID: $templateId }) {
     id
   }
 }

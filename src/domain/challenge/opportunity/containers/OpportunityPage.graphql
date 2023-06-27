@@ -1,0 +1,82 @@
+query opportunityPage($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    opportunity(ID: $opportunityId) {
+      ...OpportunityPage
+    }
+  }
+}
+
+fragment OpportunityPage on Opportunity {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    visuals {
+      ...VisualUri
+    }
+  }
+  authorization {
+    id
+    anonymousReadAccess
+    myPrivileges
+  }
+
+  metrics {
+    id
+    name
+    value
+  }
+  lifecycle {
+    id
+    machineDef
+    state
+    nextEvents
+    stateIsFinal
+  }
+  collaboration {
+    id
+    relations {
+      id
+      type
+      actorRole
+      actorName
+      actorType
+      description
+    }
+    ...DashboardTopCallouts
+  }
+  context {
+    id
+    vision
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+  community {
+    ...EntityDashboardCommunity
+  }
+}
+
+fragment OpportunityPageRelations on Relation {
+  id
+  type
+  actorRole
+  actorName
+  actorType
+  description
+}

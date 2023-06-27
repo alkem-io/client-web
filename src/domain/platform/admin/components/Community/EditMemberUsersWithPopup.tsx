@@ -6,7 +6,7 @@ import { EditMemberUsersProps } from './EditMembersUsers';
 import { useTranslation } from 'react-i18next';
 import Heading from '../../../../shared/components/Heading';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
-import { AvailableUserFragment } from '../../../../../models/graphql-schema';
+import { AvailableUserFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface EditMemberUsersWithPopupProps extends EditMemberUsersProps {
   availableMembers: AvailableUserFragment[];
@@ -62,7 +62,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
         renderRow={(m, Cell) => (
           <>
             <TableCell>
-              <Cell>{m.displayName}</Cell>
+              <Cell>{m.profile.displayName}</Cell>
             </TableCell>
             <TableCell>
               <Cell>{m.firstName}</Cell>
@@ -101,7 +101,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
             }
             renderRow={m => (
               <>
-                <TableCell>{m.displayName}</TableCell>
+                <TableCell>{m.profile.displayName}</TableCell>
                 <TableCell>{m.email}</TableCell>
               </>
             )}

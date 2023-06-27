@@ -1,7 +1,10 @@
-import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../../../../hooks';
-import { useAssociatedOrganizationQuery } from '../../../../../hooks/generated/graphql';
+import { FC, useCallback } from 'react';
+import { useUserContext } from '../../user';
+import {
+  refetchUserOrganizationsQuery,
+  useAssociatedOrganizationQuery,
+  useRemoveUserFromOrganizationMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
@@ -11,12 +14,17 @@ import { AssociatedOrganization, mapToAssociatedOrganization } from './Associate
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
     organizationNameId: string;
+    enableLeave?: boolean;
   },
-  AssociatedOrganization
+  AssociatedOrganization & {
+    handleRemoveSelfFromOrganization: () => void;
+    removingFromOrganization?: boolean;
+  }
 >;
 
 export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerProps> = ({
   organizationNameId,
+  enableLeave,
   ...rendered
 }) => {
   const { user } = useUserContext();
@@ -28,14 +36,35 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
     errorPolicy: 'all',
   });
 
-  const { t } = useTranslation();
+  const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] =
+    useRemoveUserFromOrganizationMutation();
 
-  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationNameId, user?.user, t, {
+  const handleRemoveSelfFromOrganization = useCallback(
+    async () =>
+      await disassociateSelfFromOrganization({
+        variables: {
+          input: {
+            userID: user?.user.id || '',
+            organizationID: organizationNameId,
+          },
+        },
+        refetchQueries: [refetchUserOrganizationsQuery({ input: user?.user.id || '' })],
+        awaitRefetchQueries: true,
+      }),
+    [user?.user.id, organizationNameId, disassociateSelfFromOrganization]
+  );
+
+  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationNameId, {
     loading,
     error,
   });
 
-  return renderComponentOrChildrenFn(rendered, associatedOrganization);
+  return renderComponentOrChildrenFn(rendered, {
+    ...associatedOrganization,
+    handleRemoveSelfFromOrganization,
+    removingFromOrganization,
+    enableLeave,
+  });
 };
 
 export default AssociatedOrganizationContainer;

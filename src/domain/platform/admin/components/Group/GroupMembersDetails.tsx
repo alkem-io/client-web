@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { AvatarsProvider } from '../../../../../context/AvatarsProvider';
-import { User } from '../../../../../models/graphql-schema';
+import { UserAvatarsProvider } from '../../../../community/contributor/user/containers/UserAvatarsProvider/UserAvatarsProvider';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import Avatar from '../../../../../common/components/core/Avatar';
 import AvatarContainer from '../../../../../common/components/core/AvatarContainer';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
@@ -18,14 +18,14 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
   return (
     <>
       <WrapperTypography variant={'h4'}>Members</WrapperTypography>
-      <AvatarsProvider users={members}>
+      <UserAvatarsProvider users={members}>
         {populated => {
           const avatars = populated;
           return (
             <>
               <AvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar key={i} src={u.profile?.avatar?.uri} userId={u.id} name={u.displayName} />
+                  <Avatar key={i} src={u.profile.visual?.uri} userId={u.id} name={u.profile.displayName} />
                 ))}
               </AvatarContainer>
               <div style={{ flexBasis: '100%' }} />
@@ -37,9 +37,10 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
             </>
           );
         }}
-      </AvatarsProvider>
+      </UserAvatarsProvider>
       {editLink && <WrapperButton small as={Link} to={'members'} text={t('buttons.edit-members')} />}
     </>
   );
 };
+
 export default GroupMembersDetails;

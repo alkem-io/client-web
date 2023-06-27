@@ -1,0 +1,46 @@
+query CommunityApplicationForm(
+  $spaceId: UUID_NAMEID!
+  $challengeId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $isSpace: Boolean = false
+  $isChallenge: Boolean = false
+) {
+  space(ID: $spaceId) {
+    id
+    ... on Space @include(if: $isSpace) {
+      community {
+        id
+        applicationForm {
+          ...ApplicationForm
+        }
+      }
+    }
+    ... on Space @include(if: $isChallenge) {
+      challenge(ID: $challengeId) {
+        community {
+          id
+          applicationForm {
+            ...ApplicationForm
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ApplicationForm on Form {
+  id
+  description
+  questions {
+    question
+    explanation
+    maxLength
+    required
+    sortOrder
+  }
+}
+
+mutation updateCommunityApplicationQuestions($communityId: UUID!, $formData: UpdateFormInput!) {
+  updateCommunityApplicationForm(applicationFormData: { communityID: $communityId, formData: $formData }) {
+    id
+  }
+}

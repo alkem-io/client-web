@@ -1,7 +1,7 @@
 import { onError } from '@apollo/client/link/error';
 import { ServerParseError } from '@apollo/client';
 import { logger } from '../../../services/logging/winston/logger';
-import { AUTH_LOGIN_PATH } from '../../../models/constants';
+import { _AUTH_LOGIN_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
 
 /**
  * This link handles the flow of a changed cookie secret or an expired cookie:
@@ -25,7 +25,7 @@ export const redirectLink = onError(({ networkError }) => {
   if (parseError.response) {
     const { name, response } = parseError;
 
-    if (name === 'ServerParseError' && response.redirected && response.url && response.url.includes(AUTH_LOGIN_PATH)) {
+    if (name === 'ServerParseError' && response.redirected && response.url && response.url.includes(_AUTH_LOGIN_PATH)) {
       window.location.replace(response.url);
 
       logger.error(new Error(`[ServerParseError]: ${parseError}`));

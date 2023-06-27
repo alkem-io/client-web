@@ -2,6 +2,9 @@ mutation updateChallenge($input: UpdateChallengeInput!) {
   updateChallenge(challengeData: $input) {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }

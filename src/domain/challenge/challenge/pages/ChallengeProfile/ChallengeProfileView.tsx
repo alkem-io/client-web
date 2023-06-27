@@ -1,64 +1,62 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../../hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,
   useChallengeProfileInfoQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../../../../common/utils/buildContext';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
-interface Props {
+interface ChallengeProfileViewProps {
   mode: FormMode;
 }
 
-const ChallengeProfileView: FC<Props> = ({ mode }) => {
+const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeNameId = '', hubNameId = '' } = useUrlParams();
+  const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
       onSuccess('Successfully created');
       navigateToEdit(data.createChallenge.nameID);
     },
-    onError: handleError,
-    refetchQueries: [refetchChallengesWithCommunityQuery({ hubId: hubNameId })],
+    refetchQueries: [refetchChallengesWithCommunityQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     skip: mode === FormMode.create,
   });
-  const challenge = challengeProfile?.hub?.challenge;
+  const challenge = challengeProfile?.space?.challenge;
   const challengeId = useMemo(() => challenge?.id || '', [challenge]);
 
   const isLoading = isCreating || isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
-    const { name, nameID, tagsets } = values;
+    const { name: displayName, nameID, tagsets, tagline, references } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -66,9 +64,12 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              displayName: name,
-              hubID: hubNameId,
-              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              profileData: {
+                displayName,
+                tagline,
+                location: formatDatabaseLocation(values.location),
+              },
+              spaceID: spaceNameId,
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: '',
             },
@@ -81,9 +82,18 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
             input: {
               ID: challengeId,
               nameID: nameID,
-              displayName: name,
-              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              tags: tagsets.flatMap(x => x.tags),
+              profileData: {
+                displayName,
+                tagline,
+                location: formatDatabaseLocation(values.location),
+                tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+                references: references.map(reference => ({
+                  ID: reference.id,
+                  name: reference.name,
+                  description: reference.description,
+                  uri: reference.uri,
+                })),
+              },
             },
           },
         });
@@ -95,32 +105,27 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
 
   let submitWired;
   return (
-    <Grid container spacing={2}>
+    <Gutters>
       <ProfileForm
         isEdit={mode === FormMode.update}
-        name={challenge?.displayName}
+        name={challenge?.profile.displayName}
         nameID={challenge?.nameID}
         journeyType="challenge"
-        tagset={challenge?.tagset}
-        context={challenge?.context}
+        tagset={challenge?.profile.tagset}
+        profile={challenge?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <WrapperButton
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        />
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Grid>
       <Grid item marginTop={2}>
         <WrapperTypography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
         </WrapperTypography>
-        <EditVisualsView visuals={challenge?.context?.visuals} />
+        <EditVisualsView visuals={challenge?.profile.visuals} />
       </Grid>
-    </Grid>
+    </Gutters>
   );
 };
 

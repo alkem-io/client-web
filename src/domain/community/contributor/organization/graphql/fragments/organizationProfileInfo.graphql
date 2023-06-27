@@ -1,7 +1,6 @@
 fragment OrganizationProfileInfo on Organization {
   id
   nameID
-  displayName
   contactEmail
   domain
   legalEntityName
@@ -12,10 +11,12 @@ fragment OrganizationProfileInfo on Organization {
   }
   profile {
     id
-    avatar {
+    displayName
+    visual(type: AVATAR) {
       ...VisualFull
     }
     description
+    tagline
     location {
       country
       city

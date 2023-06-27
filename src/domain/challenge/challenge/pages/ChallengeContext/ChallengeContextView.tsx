@@ -1,37 +1,34 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../../hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchChallengeProfileInfoQuery,
   useChallengeProfileInfoQuery,
   useUpdateChallengeMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
 import { ChallengeContextSegment } from '../../../../platform/admin/challenge/ChallengeContextSegment';
 
 const ChallengeContextView: FC = () => {
-  const { t } = useTranslation();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeNameId = '', hubNameId = '' } = useUrlParams();
+  const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile, loading } = useChallengeProfileInfoQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     skip: false,
   });
-  const challenge = challengeProfile?.hub?.challenge;
+  const challenge = challengeProfile?.space?.challenge;
   const challengeId = challenge?.id || '';
 
   const onSubmit = async (values: ContextFormValues) => {
@@ -40,6 +37,9 @@ const ChallengeContextView: FC = () => {
         input: {
           ID: challengeId,
           context: updateContextInput(values),
+          profileData: {
+            description: values.background,
+          },
         },
       },
     });
@@ -51,17 +51,13 @@ const ChallengeContextView: FC = () => {
       <ContextForm
         contextSegment={ChallengeContextSegment}
         context={challenge?.context}
+        profile={challenge?.profile}
         loading={loading || isUpdating}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <WrapperButton
-          disabled={isUpdating}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
-        />
+        <SaveButton loading={isUpdating} onClick={() => submitWired()} />
       </Grid>
     </Grid>
   );

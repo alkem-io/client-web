@@ -1,153 +1,103 @@
-import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
-import React, { useCallback, useMemo } from 'react';
-import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
-import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
-import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
-import {
-  MessageDetailsFragmentDoc,
-  usePostCommentInCalloutMutation,
-  useRemoveCommentFromCalloutMutation,
-} from '../../../../hooks/generated/graphql';
-import { Message } from '../../../shared/components/Comments/models/message';
-import { AuthorizationPrivilege, CalloutState } from '../../../../models/graphql-schema';
+import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
+import React, { forwardRef, useCallback, useMemo } from 'react';
+import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
+import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
+import { useUserContext } from '../../../community/contributor/user';
+import { useRemoveCommentFromCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
-import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
+import usePostMessageMutations from '../../../communication/room/Comments/usePostMessageMutations';
+import { useMessages } from '../../../communication/room/Comments/useMessages';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
 
-interface CommentsCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
+interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData;
   };
-  isSubscribedToComments: boolean;
-  loading?: boolean;
+  calloutNames: string[];
 }
 
-const CommentsCallout = ({
-  callout,
-  loading,
-  onCalloutEdit,
-  onVisibilityChange,
-  onCalloutDelete,
-  isSubscribedToComments,
-}: CommentsCalloutProps) => {
-  const handleError = useApolloErrorHandler();
-  const { user: userMetadata, isAuthenticated } = useUserContext();
-  const user = userMetadata?.user;
+const COMMENTS_CONTAINER_HEIGHT = 400;
 
-  const commentsId = callout.comments.id;
-  const _messages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
-  const messages = useMemo<Message[]>(
-    () =>
-      _messages?.map(x => ({
-        id: x.id,
-        body: x.message,
-        author: x?.sender.id ? buildAuthorFromUser(x.sender) : undefined,
-        createdAt: new Date(x.timestamp),
-      })),
-    [_messages]
-  );
+const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
+  ({ callout, loading, expanded, contributionsCount, onExpand, blockProps, ...calloutLayoutProps }, ref) => {
+    const { user: userMetadata, isAuthenticated } = useUserContext();
+    const user = userMetadata?.user;
 
-  const isAuthor = useCallback(
-    (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
-    [messages]
-  );
+    const commentsId = callout.comments.id;
+    const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
+    const messages = useMessages(fetchedMessages);
 
-  const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
-  const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteMessage = useCallback(
-    msgId => canDeleteMessages || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [user, isAuthenticated, isAuthor, canDeleteMessages]
-  );
+    const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
+    const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
+    const canDeleteMessage = useCallback(
+      authorId => canDeleteMessages || (isAuthenticated && authorId === user?.id),
+      [user, isAuthenticated, canDeleteMessages]
+    );
 
-  const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostMessages =
-    commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) && callout.state !== CalloutState.Closed;
+    const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
+    const canPostMessages =
+      commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage) && callout.state !== CalloutState.Closed;
 
-  const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
-    onError: handleError,
-    update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
-  });
-
-  const handleDeleteMessage = (commentsId: string, messageId: string) =>
-    deleteMessage({
-      variables: {
-        messageData: {
-          commentsID: commentsId,
-          messageID: messageId,
-        },
-      },
+    const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
+      update: (cache, { data }) =>
+        data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
     });
 
-  const [postMessage, { loading: postingComment }] = usePostCommentInCalloutMutation({
-    onError: handleError,
-    update: (cache, { data }) => {
-      if (isSubscribedToComments) {
-        return;
-      }
+    const isSubscribedToComments = useSubscribeOnRoomEvents(commentsId);
 
-      const cacheCommentsId = cache.identify({
-        id: commentsId,
-        __typename: 'Comments',
-      });
-
-      if (!cacheCommentsId) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          messages(existingMessages = []) {
-            if (!data) {
-              return existingMessages;
-            }
-
-            const newMessage = cache.writeFragment({
-              data: data?.sendMessageOnCallout,
-              fragment: MessageDetailsFragmentDoc,
-              fragmentName: 'MessageDetails',
-            });
-            return [...existingMessages, newMessage];
+    const handleDeleteMessage = (commentsId: string, messageId: string) =>
+      deleteMessage({
+        variables: {
+          messageData: {
+            roomID: commentsId,
+            messageID: messageId,
           },
         },
       });
-    },
-  });
 
-  const handlePostMessage = async (commentsId: string, message: string) =>
-    postMessage({
-      variables: {
-        data: {
-          calloutID: callout.id,
-          message,
-        },
-      },
+    const { postMessage, postReply, postingMessage, postingReply } = usePostMessageMutations({
+      roomId: commentsId,
+      isSubscribedToMessages: isSubscribedToComments,
     });
 
-  return (
-    <>
-      <CalloutLayout
-        callout={callout}
-        onVisibilityChange={onVisibilityChange}
-        onCalloutEdit={onCalloutEdit}
-        onCalloutDelete={onCalloutDelete}
-      >
-        <CommentsComponent
-          messages={messages}
-          commentsId={commentsId}
-          canReadMessages={canReadMessages}
-          canPostMessages={canPostMessages}
-          handlePostMessage={handlePostMessage}
-          canDeleteMessage={canDeleteMessage}
-          handleDeleteMessage={handleDeleteMessage}
-          loading={loading || postingComment || deletingMessage}
-        />
-      </CalloutLayout>
-    </>
-  );
-};
+    const breakpoint = useCurrentBreakpoint();
+
+    const lastMessageOnly = breakpoint === 'xs' && !expanded;
+
+    return (
+      <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
+        <CalloutLayout
+          callout={callout}
+          contributionsCount={contributionsCount}
+          {...calloutLayoutProps}
+          expanded={expanded}
+          onExpand={onExpand}
+        >
+          <CommentsComponent
+            messages={messages}
+            commentsId={commentsId}
+            canReadMessages={canReadMessages}
+            canPostMessages={canPostMessages}
+            postMessage={postMessage}
+            postReply={postReply}
+            canDeleteMessage={canDeleteMessage}
+            handleDeleteMessage={handleDeleteMessage}
+            loading={loading || postingMessage || postingReply || deletingMessage}
+            last={lastMessageOnly}
+            maxHeight={COMMENTS_CONTAINER_HEIGHT}
+            onClickMore={onExpand}
+          />
+        </CalloutLayout>
+      </PageContentBlock>
+    );
+  }
+);
 
 export default CommentsCallout;

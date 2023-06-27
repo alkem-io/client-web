@@ -1,16 +1,12 @@
 import React, { FC } from 'react';
-import OrganizationPageContainer from '../../../../../containers/organization/OrganizationPageContainer';
+import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { useUpdateNavigation } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages/common';
 
-interface OrganizationPageProps extends PageProps {}
+interface OrganizationPageProps {}
 
-export const OrganizationPage: FC<OrganizationPageProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
-
+export const OrganizationPage: FC<OrganizationPageProps> = () => {
   return (
     <OrganizationPageLayout currentSection={EntityPageSection.Profile}>
       <OrganizationPageContainer>
@@ -21,4 +17,5 @@ export const OrganizationPage: FC<OrganizationPageProps> = ({ paths }) => {
     </OrganizationPageLayout>
   );
 };
+
 export default OrganizationPage;

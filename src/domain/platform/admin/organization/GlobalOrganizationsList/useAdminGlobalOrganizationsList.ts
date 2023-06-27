@@ -3,8 +3,8 @@ import { useMemo, useState } from 'react';
 import {
   useAdminGlobalOrganizationsListQuery,
   useDeleteOrganizationMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '../../../../shared/components/SimpleSearchableList';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
@@ -24,12 +24,10 @@ export const useAdminGlobalOrganizationsList = () => {
     getPageInfo: data => data?.organizationsPaginated.pageInfo,
   });
 
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
 
   const [deleteOrganization] = useDeleteOrganizationMutation({
-    onError: handleError,
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
     onCompleted: () => notify(t('pages.admin.organization.notifications.organization-removed'), 'success'),
   });
@@ -47,7 +45,7 @@ export const useAdminGlobalOrganizationsList = () => {
     () =>
       data?.organizationsPaginated.organization.map(org => ({
         id: org.id,
-        value: org.displayName,
+        value: org.profile.displayName,
         url: `${org.nameID}`,
       })) || [],
     [data]

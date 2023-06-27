@@ -1,34 +1,28 @@
-import { UserCardFragment } from '../../../../models/graphql-schema';
-import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
-import { addUserCardRoleNameKey } from '../../../../hooks';
-import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
-import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
+import { UserCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
+import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
 const useUserCardProps = (
-  data: UserCardFragment[] | undefined,
-  resourceId: string | undefined
-): SearchableUserCardProps[] | undefined => {
-  const { t } = useTranslation();
-
+  data: UserCardFragment[] | undefined
+): (Identifiable & SearchableUserCardProps)[] | undefined => {
   return useMemo(() => {
-    if (!data || !resourceId) {
+    if (!data) {
       return;
     }
 
-    const users = addUserCardRoleNameKey(data, resourceId);
-
-    return users.map(({ roleNameKey, ...user }) => ({
+    return data.map(user => ({
       id: user.id,
-      roleName: t(roleNameKey) as string,
-      tags: user?.profile?.tagsets?.flatMap(x => x.tags),
-      displayName: user.displayName,
-      avatarSrc: user?.profile?.avatar?.uri,
-      city: user.profile?.location?.city,
-      country: user.profile?.location?.country,
+      tags: user.profile.tagsets?.flatMap(x => x.tags),
+      displayName: user.profile.displayName,
+      avatarSrc: user.profile.visual?.uri,
+      city: user.profile.location?.city,
+      country: user.profile.location?.country,
       url: buildUserProfileUrl(user.nameID),
+      isContactable: user.isContactable,
     }));
-  }, [data, resourceId, t]);
+  }, [data]);
 };
 
 export default useUserCardProps;

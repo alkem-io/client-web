@@ -1,5 +1,7 @@
 import React, { ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
 import LinesFitterErrorBoundary from './LinesFitterErrorBoundary';
+import { Box, BoxProps } from '@mui/material';
+import { useResizeDetector } from 'react-resize-detector';
 
 enum Stage {
   MEASURING_EXPECTED_HEIGHT,
@@ -19,6 +21,7 @@ enum ActionTypes {
   AddChild,
   RemoveChild,
   Finish,
+  Reset,
 }
 
 interface Action<ActionType> {
@@ -32,8 +35,11 @@ interface ActionSetExpectedHeight extends Action<ActionTypes.SetExpectedHeight> 
 interface ActionAddChild extends Action<ActionTypes.AddChild> {}
 interface ActionRemoveChild extends Action<ActionTypes.RemoveChild> {}
 interface ActionFinish extends Action<ActionTypes.Finish> {}
+interface ActionReset extends Action<ActionTypes.Reset> {
+  payload: number | undefined;
+}
 
-type HandledAction = ActionSetExpectedHeight | ActionAddChild | ActionRemoveChild | ActionFinish;
+type HandledAction = ActionSetExpectedHeight | ActionAddChild | ActionRemoveChild | ActionFinish | ActionReset;
 
 const getNextState = (state: LinesFitterState, action: HandledAction): LinesFitterState => {
   switch (action.type) {
@@ -64,23 +70,37 @@ const getNextState = (state: LinesFitterState, action: HandledAction): LinesFitt
         stage: Stage.FINISHED,
       };
     }
+    case ActionTypes.Reset: {
+      return getInitialState(action.payload);
+    }
     default:
       return state as never;
   }
 };
 
-const initialState: LinesFitterState = {
-  stage: Stage.MEASURING_EXPECTED_HEIGHT,
+const getInitialState = (expectedHeight?: number): LinesFitterState => ({
+  stage: typeof expectedHeight === 'undefined' ? Stage.MEASURING_EXPECTED_HEIGHT : Stage.FILLING_WITH_CHILDREN,
   itemsToDisplayCount: 0,
-  expectedHeight: 0,
-};
+  expectedHeight: expectedHeight ?? 0,
+});
 
-export interface LinesFitterProps<Item>
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface LinesFitterProps<Item> extends BoxProps {
   items: Item[];
   renderItem: (item: Item, index: number) => ReactNode;
   renderMore?: (remainingItems: Item[]) => ReactNode;
+  height?: number | string;
 }
+
+const getInitialHeight = (height: number | string | undefined) => {
+  if (typeof height === 'string') {
+    const numericHeight = parseInt(height);
+    if (isNaN(numericHeight)) {
+      return undefined;
+    }
+    return numericHeight;
+  }
+  return height;
+};
 
 /**
  * A component that limits the number of items in a Flex container with the flex-flow = row-wrap.
@@ -88,10 +108,26 @@ export interface LinesFitterProps<Item>
  * when no items are rendered yet. So, to define the boundary you need to set `min-height` on the component
  * (using `className` or `style` - all props are proxied to the wrapper `<div>`).
  */
-const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: LinesFitterProps<Item>) => {
+const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperProps }: LinesFitterProps<Item>) => {
   const wrapperElementRef = useRef<HTMLDivElement>(null);
 
-  const [state, dispatch] = useReducer(getNextState, initialState);
+  const initialHeight = getInitialHeight(height);
+
+  const [state, dispatch] = useReducer(getNextState, getInitialState(initialHeight));
+
+  const containerRef = useRef<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    containerRef.current = wrapperElementRef.current?.parentElement ?? null;
+  }, [wrapperElementRef.current]);
+
+  const { width } = useResizeDetector({ targetRef: containerRef });
+
+  useLayoutEffect(() => {
+    dispatch({
+      type: ActionTypes.Reset,
+      payload: getInitialHeight(height),
+    });
+  }, [width]);
 
   const measureWrapperHeight = () => {
     const element = wrapperElementRef.current!;
@@ -148,11 +184,13 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: 
 
   const getRemainingItems = () => items.slice(state.itemsToDisplayCount);
 
+  const hasFixedHeight = state.stage === Stage.MEASURING_EXPECTED_HEIGHT || state.stage === Stage.FINISHED;
+
   return (
-    <div ref={wrapperElementRef} {...wrapperProps}>
+    <Box ref={wrapperElementRef} {...wrapperProps} maxHeight={hasFixedHeight ? height : undefined}>
       {visibleItems.map(renderItem)}
       {showMore && renderMore?.(getRemainingItems())}
-    </div>
+    </Box>
   );
 };
 

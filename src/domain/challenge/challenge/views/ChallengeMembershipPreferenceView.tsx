@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import PreferenceSection from '../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
-import { Preference, ChallengePreferenceType } from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+import { Preference, ChallengePreferenceType } from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 
 export interface ChallengeMembershipPreferenceViewEntities {
   preferences: Preference[];
@@ -47,4 +47,5 @@ const ChallengeMembershipPreferenceView: FC<ChallengeMembershipPreferenceViewPro
     />
   );
 };
+
 export default ChallengeMembershipPreferenceView;

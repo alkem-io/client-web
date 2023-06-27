@@ -1,0 +1,37 @@
+fragment PostCard on Post {
+  id
+  nameID
+  type
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+  createdDate
+  comments {
+    id
+    messagesCount
+  }
+
+  profile {
+    id
+    displayName
+    description
+    visuals {
+      ...VisualFull
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+  }
+}

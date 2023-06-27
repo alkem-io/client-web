@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
-import { CommunityUpdatesContainer } from '../../../../containers/community-updates/CommunityUpdatesContainer';
+import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 
 export interface CommunityUpdatesDialogProps {
   open: boolean;
   onClose: () => void;
-  hubId?: string;
+  spaceId?: string;
   communityId?: string;
 }
 
-const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({ open, onClose, hubId, communityId = '' }) => {
+const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({ open, onClose, spaceId, communityId = '' }) => {
   const { t } = useTranslation();
   const handleClose = () => {
     onClose();
@@ -28,7 +28,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({ open, onClose
       </DialogTitle>
       <DialogContent dividers>
         <Box marginBottom={2} marginTop={4}>
-          <CommunityUpdatesContainer entities={{ hubId, communityId }}>
+          <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
             {({ messages, authors }, actions, loading) => (
               <CommunityUpdatesView
                 entities={{ messages, authors }}

@@ -3,38 +3,38 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '../../../../common/utils/validator';
 import { Form, Formik, FormikProps } from 'formik';
-import { DialogActions, DialogContent, Typography } from '@mui/material';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { DialogActions, DialogContent } from '@mui/material';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetField } from '../components/Common/TagsetSegment';
-import { CreateTemplateInfoInput, Visual } from '../../../../models/graphql-schema';
-import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
+import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
-import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 
-export interface TemplateInfoValues {
-  title: string;
+export interface TemplateProfileValues {
+  displayName: string;
   description: string;
   tags: string[];
 }
 
 export interface TemplateInfoSubmittedValues {
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
+  tags: string[];
 }
 
-interface TemplateFormProps<Values extends {}> {
-  title: ReactNode;
-  initialValues: Partial<Values & TemplateInfoValues>;
+interface TemplateFormProps<Values extends TemplateProfileValues> {
+  initialValues: Partial<Values>;
   visual?: Visual;
   onSubmit: (values: Values & TemplateInfoSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<Values & TemplateInfoValues>) => ReactNode);
-  children: ReactNode | ((formState: FormikProps<Values & TemplateInfoValues>) => ReactNode);
+  actions: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
+  children: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
   validator: yup.ObjectSchemaDefinition<Partial<Values>>;
 }
 
-const TemplateForm = <Values extends {}>({
-  title,
+const TemplateForm = <Values extends TemplateProfileValues>({
   initialValues,
   visual,
   onSubmit,
@@ -45,23 +45,23 @@ const TemplateForm = <Values extends {}>({
   const { t } = useTranslation();
 
   const handleSubmit = useCallback(
-    (values: Partial<Values & TemplateInfoValues>) => {
-      const { title, tags, description = '', ...validValues } = values as Values & TemplateInfoValues; // ensured by yup
+    (values: Partial<Values & TemplateProfileValues>) => {
+      const { displayName, tags, description = '', ...validValues } = values as Values & TemplateProfileValues; // ensured by yup
       onSubmit({
         ...validValues,
-        info: {
-          title,
-          tags,
+        tags,
+        profile: {
+          displayName,
           description,
         },
-      } as any);
+      } as Values & TemplateInfoSubmittedValues);
     },
     [onSubmit]
   );
 
   const validationSchema = yup.object().shape({
-    title: displayNameValidator,
-    description: yup.string().required(),
+    displayName: displayNameValidator,
+    description: MarkdownValidator(LONG_TEXT_LENGTH).required(),
     tags: yup.array().of(yup.string().min(2)),
     ...validator,
   });
@@ -70,26 +70,28 @@ const TemplateForm = <Values extends {}>({
   const renderChildren = typeof children === 'function' ? children : () => children;
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+    <Formik
+      enableReinitialize
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={validationSchema}
+    >
       {formState => (
         <Form>
-          <Typography variant="h3" sx={{ px: 3, pt: 5 }}>
-            {title}
-          </Typography>
           <DialogContent>
             <FormCols>
               <TemplateFormRows>
-                <FormikInputField name="title" title={t('common.title')} />
+                <FormikInputField name="displayName" title={t('common.title')} />
                 <FormikMarkdownField
                   name="description"
                   title={t('common.description')}
-                  maxLength={MARKDOWN_TEXT_LENGTH}
+                  maxLength={LONG_TEXT_LENGTH}
                   withCounter
                 />
                 <TagsetField
                   name="tags"
                   title={t('common.tags')}
-                  helpTextIcon={t('components.aspect-creation.info-step.tags-help-text')}
+                  helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
                 />
                 {visual && <VisualUpload visual={visual} />}
               </TemplateFormRows>

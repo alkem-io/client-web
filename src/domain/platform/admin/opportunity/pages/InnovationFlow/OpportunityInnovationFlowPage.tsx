@@ -1,13 +1,10 @@
 import React, { FC } from 'react';
-import { useAppendBreadcrumb } from '../../../../../../hooks/usePathUtils';
-import { SettingsSection } from '../../../layout/EntitySettings/constants';
-import { SettingsPageProps } from '../../../layout/EntitySettings/types';
+import { SettingsSection } from '../../../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../layout/EntitySettingsLayout/types';
 import OpportunitySettingsLayout from '../../OpportunitySettingsLayout';
 import OpportunityInnovationFlowView from './OpportunityInnovationFlowView';
 
-const OpportunityInnovationFlowPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'innovation-flow' });
-
+const OpportunityInnovationFlowPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (
     <OpportunitySettingsLayout currentTab={SettingsSection.InnovationFlow} tabRoutePrefix={routePrefix}>
       <OpportunityInnovationFlowView />

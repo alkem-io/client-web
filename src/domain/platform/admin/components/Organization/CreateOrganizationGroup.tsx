@@ -1,16 +1,17 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SettingsSection } from '../../layout/EntitySettings/constants';
+import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
-import { useApolloErrorHandler, useOrganization, useUpdateNavigation } from '../../../../../hooks';
-import { GroupDetailsFragmentDoc, useCreateGroupOnOrganizationMutation } from '../../../../../hooks/generated/graphql';
-import { PageProps } from '../../../../../pages';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import {
+  GroupDetailsFragmentDoc,
+  useCreateGroupOnOrganizationMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import CreateGroupForm from '../Common/CreateGroupForm';
 
-export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
+export const CreateOrganizationGroupPage: FC = () => {
   const navigate = useNavigate();
   const { organizationId, organization } = useOrganization();
-  const handleError = useApolloErrorHandler();
 
   const redirectToCreatedGroup = (groupId: string) => {
     navigate(`../${groupId}`);
@@ -18,7 +19,6 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
 
   const [createGroup] = useCreateGroupOnOrganizationMutation({
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganization.id),
-    onError: handleError,
     update: (cache, { data }) => {
       if (data && organization) {
         const { createGroupOnOrganization: newGroup } = data;
@@ -51,9 +51,6 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
     },
     [organizationId, createGroup]
   );
-
-  const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Community} tabRoutePrefix="../../">

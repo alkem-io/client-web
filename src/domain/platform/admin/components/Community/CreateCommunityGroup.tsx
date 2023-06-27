@@ -1,18 +1,16 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../../../hooks';
-import { useUpdateNavigation } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages';
+import {
+  GroupDetailsFragmentDoc,
+  useCreateGroupOnCommunityMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import CreateGroupForm from '../Common/CreateGroupForm';
 import { WithCommunity } from './CommunityTypes';
 
-interface CreateCommunityGroupProps extends WithCommunity, PageProps {}
+interface CreateCommunityGroupProps extends WithCommunity {}
 
-export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, communityId }) => {
+export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ communityId }) => {
   const navigate = useNavigate();
-
-  const handleError = useApolloErrorHandler();
 
   const redirectToCreatedGroup = (groupId: string) => {
     navigate(`../${groupId}`, { replace: true });
@@ -20,7 +18,6 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
 
   const [createGroup] = useCreateGroupOnCommunityMutation({
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnCommunity.id),
-    onError: handleError,
     update: (cache, { data }) => {
       if (data && communityId) {
         const { createGroupOnCommunity: newGroup } = data;
@@ -57,9 +54,6 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
     },
     [communityId, createGroup]
   );
-
-  const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
 
   return <CreateGroupForm onCreate={handleCreate} />;
 };

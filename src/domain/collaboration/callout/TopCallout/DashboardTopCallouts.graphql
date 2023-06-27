@@ -1,0 +1,25 @@
+fragment DashboardTopCallouts on Collaboration {
+  id
+  callouts(sortByActivity: true) {
+    ...DashboardTopCallout
+  }
+}
+
+fragment DashboardTopCallout on Callout {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+  }
+  type
+  visibility
+  posts(limit: 2, shuffle: true) {
+    ...PostCard
+  }
+  whiteboards(limit: 2, shuffle: true) {
+    ...WhiteboardDetails
+  }
+  activity
+}

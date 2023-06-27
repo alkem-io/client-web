@@ -12,11 +12,23 @@ export interface FormikSelectValue {
 
 export type FormikAutocompleteProps = TextFieldProps & {
   name: string;
-  values: FormikSelectValue[];
+  values: readonly FormikSelectValue[];
   helpText?: string;
+  disablePortal?: boolean;
+  disabled?: boolean;
+  onChange?: (value: FormikSelectValue | undefined) => void;
 };
 
-export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({ name, values, helpText, ...textFieldProps }) => {
+export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({
+  name,
+  values,
+  helpText,
+  sx,
+  disablePortal = true,
+  disabled,
+  onChange,
+  ...textFieldProps
+}) => {
   const tErr = useValidationMessageTranslation();
 
   const [field, meta, helpers] = useField(name);
@@ -36,16 +48,19 @@ export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({ name, values, 
     value: AutocompleteValue<FormikSelectValue | undefined, false, false, false>
   ) => {
     helpers.setValue(value?.id);
+    onChange?.(value ?? undefined);
   };
 
   return (
     <Autocomplete
-      disablePortal
+      disablePortal={disablePortal}
       value={values.find(option => option.id === field.value) ?? null}
       options={values}
       onBlur={field.onBlur}
       onChange={handleChange}
       getOptionLabel={option => option?.name}
+      sx={sx}
+      disabled={disabled}
       renderInput={params => (
         <TextField
           variant="outlined"

@@ -1,13 +1,30 @@
 import React, { FC } from 'react';
-import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
-import { useOrganization } from '../../../../hooks';
-import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
+import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
+import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
+import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import OrganizationPageBanner from '../../../community/contributor/organization/layout/OrganizationPageBanner';
 import OrganizationTabs from '../../../community/contributor/organization/layout/OrganizationTabs';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 
-const tabs = [SettingsSection.Profile, SettingsSection.Community, SettingsSection.Authorization].map(section => {
-  return CommonTabs.find(tab => tab.section === section)!;
-});
+const tabs: TabDefinition<SettingsSection>[] = [
+  {
+    section: SettingsSection.Profile,
+    route: 'profile',
+    icon: PeopleOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Community,
+    route: 'community',
+    icon: PeopleOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Authorization,
+    route: 'authorization',
+    icon: GppGoodOutlinedIcon,
+  },
+];
 
 interface OrganizationAdminLayoutProps {
   currentTab: SettingsSection;

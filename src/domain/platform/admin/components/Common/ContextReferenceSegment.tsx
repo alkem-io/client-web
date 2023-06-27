@@ -1,21 +1,27 @@
 import React, { FC } from 'react';
-import { PushFunc, RemoveFunc, useEditReference } from '../../../../../hooks';
-import { Reference } from '../../../../../models/Profile';
+import { PushFunc, RemoveFunc, useEditReference } from '../../../../shared/Reference/useEditReference';
+import { Reference } from '../../../../common/profile/Profile';
 import { newReferenceName } from '../../../../../common/utils/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 
 interface ContextReferenceSegmentProps extends ReferenceSegmentProps {
-  contextId?: string;
+  fieldName?: string;
+  profileId?: string;
 }
 
-export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ contextId, readOnly, ...rest }) => {
+export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({
+  fieldName,
+  profileId,
+  readOnly,
+  ...rest
+}) => {
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
   const handleAdd = async (push: PushFunc) => {
     setPush(push);
-    if (contextId) {
+    if (profileId) {
       addReference({
-        contextId,
+        profileId,
         name: newReferenceName(rest.references.length),
         description: '',
         uri: '',
@@ -30,6 +36,15 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ cont
     }
   };
 
-  return <ReferenceSegment onAdd={handleAdd} onRemove={handleRemove} readOnly={!contextId || readOnly} {...rest} />;
+  return (
+    <ReferenceSegment
+      fieldName={fieldName}
+      onAdd={handleAdd}
+      onRemove={handleRemove}
+      readOnly={!profileId || readOnly}
+      {...rest}
+    />
+  );
 };
+
 export default ContextReferenceSegment;

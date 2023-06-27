@@ -1,0 +1,46 @@
+query spaceCommunityMembers($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    community {
+      id
+      memberUsers {
+        ...CommunityMemberUser
+      }
+      leadUsers {
+        ...CommunityMemberUser
+      }
+      memberOrganizations {
+        ...OrganizationDetails
+      }
+      leadOrganizations {
+        ...OrganizationDetails
+      }
+      policy {
+        ...CommunityPolicy
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    host {
+      ...OrganizationDetails
+    }
+  }
+}
+
+fragment CommunityPolicy on CommunityPolicy {
+  id
+  lead {
+    maxOrg
+    maxUser
+    minOrg
+    minUser
+  }
+  member {
+    maxOrg
+    maxUser
+    minOrg
+    minUser
+  }
+}

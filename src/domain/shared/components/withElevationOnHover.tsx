@@ -7,7 +7,7 @@ interface ComponentProps<Element> extends Pick<DOMAttributes<Element>, 'onMouseO
   elevation?: number;
 }
 
-type Props<El, P extends ComponentProps<El>> = P & {
+type WithElevationProps<El, P extends ComponentProps<El>> = P & {
   elevationDisabled?: boolean;
 };
 
@@ -17,21 +17,18 @@ interface Options {
 }
 
 const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: ComponentType<P>, options: Options = {}) =>
-  forwardRef((props: Props<El, P>, ref: Ref<El>) => {
+  forwardRef((props: WithElevationProps<El, P>, ref: Ref<El>) => {
     const { initialElevation = INITIAL_ELEVATION, finalElevation = FINAL_ELEVATION } = options;
 
     const { elevationDisabled = false, ...componentProps } = props;
 
-    const [elevation, setElevation] = useState(elevationDisabled ? 0 : initialElevation);
+    const [elevation, setElevation] = useState(initialElevation);
 
     const setFinalElevation = useCallback(
-      () => setElevation(elevationDisabled ? 0 : finalElevation),
-      [elevationDisabled, finalElevation]
+      () => setElevation(elevationDisabled ? initialElevation : finalElevation),
+      [elevationDisabled, initialElevation, finalElevation]
     );
-    const setInitialElevation = useCallback(
-      () => setElevation(elevationDisabled ? 0 : initialElevation),
-      [elevationDisabled, initialElevation]
-    );
+    const setInitialElevation = useCallback(() => setElevation(initialElevation), [initialElevation]);
 
     return (
       <Component

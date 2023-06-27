@@ -1,34 +1,28 @@
-import React, { FC, useMemo } from 'react';
-import { Route, Routes, useResolvedPath } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import OrganizationPage from '../components/Organization/OrganizationPage';
 import { OrganizationProvider } from '../../../community/contributor/organization/context/OrganizationProvider';
-import { EditMode } from '../../../../models/editMode';
-import { Error404, PageProps } from '../../../../pages';
-import { nameOfUrl } from '../../../../core/routing/url-params';
+import { EditMode } from '../../../../core/ui/forms/editMode';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import { nameOfUrl } from '../../../../core/routing/urlParams';
 import OrganizationAdminRoutes from './OrganizationAdminRoutes';
 import AdminOrganizationsPage from '../../../community/contributor/organization/pages/AdminOrganizationsPage';
 import { useTranslation } from 'react-i18next';
-import AdminLayout from '../toplevel/AdminLayout';
-import { AdminSection } from '../toplevel/constants';
+import AdminLayout from '../layout/toplevel/AdminLayout';
+import { AdminSection } from '../layout/toplevel/constants';
 
-const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('.');
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths, url]);
+const AdminOrganizationsRoutes: FC = () => {
   const { t } = useTranslation();
 
   return (
     <Routes>
-      <Route path={'/'}>
-        <Route index element={<AdminOrganizationsPage paths={currentPaths} />} />
+      <Route path="/">
+        <Route index element={<AdminOrganizationsPage />} />
         <Route
-          path={'new'}
+          path="new"
           element={
             <AdminLayout currentTab={AdminSection.Organization}>
-              <OrganizationPage
-                title={t('pages.admin.organization.create-organization')}
-                mode={EditMode.new}
-                paths={currentPaths}
-              />
+              <OrganizationPage title={t('pages.admin.organization.create-organization')} mode={EditMode.new} />
             </AdminLayout>
           }
         />
@@ -36,7 +30,7 @@ const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
           path={`:${nameOfUrl.organizationNameId}/*`}
           element={
             <OrganizationProvider>
-              <OrganizationAdminRoutes paths={currentPaths} />
+              <OrganizationAdminRoutes />
             </OrganizationProvider>
           }
         />

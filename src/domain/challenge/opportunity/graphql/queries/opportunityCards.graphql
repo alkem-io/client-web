@@ -1,0 +1,11 @@
+query opportunityCards($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      opportunities {
+        ...OpportunityCard
+      }
+    }
+  }
+}

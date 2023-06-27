@@ -1,24 +1,27 @@
 import React, { FC } from 'react';
-import { useTheme } from '@mui/material';
+import { Box, Paper } from '@mui/material';
+import SwapColors from '../../../../../core/ui/palette/SwapColors';
+import { gutters } from '../../../../../core/ui/grid/utils';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '../../../../../core/ui/grid/constants';
 
 const UpdatesContainer: FC = ({ children }) => {
-  const theme = useTheme();
-
   return (
-    <div
-      style={{
-        alignItems: 'center',
-        background: theme.palette.primary.main,
-        fontFamily: theme.typography.fontFamily,
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'space-between',
-        width: '100%',
-        zIndex: 10,
-      }}
-    >
-      {children}
-    </div>
+    <SwapColors>
+      <Paper square>
+        <Box
+          maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
+          marginX="auto"
+          paddingX={gutters()}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          height={gutters(2)}
+          gap={gutters()}
+        >
+          {children}
+        </Box>
+      </Paper>
+    </SwapColors>
   );
 };
 

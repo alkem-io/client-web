@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle } from '../../../../../models/graphql-schema';
+import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 import SelectInnovationFlowDialog, {
-  LifecycleTemplate,
+  InnovationFlowTemplate,
   SelectInnovationFlowFormValuesType,
 } from './SelectInnovationFlowDialog';
 import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDialog';
@@ -13,7 +13,7 @@ interface EditLifecycleProps {
   lifecycle: Lifecycle | undefined;
   entityId: string;
   onSetNewState: (id: string, newState: string) => void;
-  innovationFlowTemplates: LifecycleTemplate[] | undefined;
+  innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
 }
 
@@ -59,9 +59,11 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
 
   return (
     <>
-      {innovationFlowTemplate?.info.title && (
+      {innovationFlowTemplate?.profile.displayName && (
         <Typography variant="h5" color="black" fontWeight={600}>
-          {`${t('components.update-innovation-flow.template-label.title')}: ${innovationFlowTemplate?.info.title}`}
+          {`${t('components.update-innovation-flow.template-label.title')}: ${
+            innovationFlowTemplate?.profile.displayName
+          }`}
         </Typography>
       )}
       {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}
@@ -109,4 +111,5 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
     </>
   );
 };
+
 export default UpdateInnovationFlow;

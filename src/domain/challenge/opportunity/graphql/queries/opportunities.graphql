@@ -1,12 +1,15 @@
-query opportunities($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query opportunities($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
       id
       opportunities {
         id
         nameID
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }

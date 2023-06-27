@@ -1,19 +1,44 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../shared/layout/PageLayout';
+import React, { PropsWithChildren } from 'react';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
 import ChallengePageBanner from './ChallengePageBanner';
 import ChallengeTabs from './ChallengeTabs';
-import { PropsWithChildren } from 'react';
+import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
+import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
+import { useChallenge } from '../hooks/useChallenge';
 
-interface ChallengePageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
+export interface ChallengePageLayoutProps
+  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
+  unauthorizedDialogDisabled?: boolean;
+}
 
-const ChallengePageLayout = (props: PropsWithChildren<ChallengePageLayoutProps>) => {
+const ChallengePageLayout = ({
+  unauthorizedDialogDisabled = false,
+  ...props
+}: PropsWithChildren<ChallengePageLayoutProps>) => {
+  const { challengeId, challengeNameId, profile } = useChallenge();
+
   return (
-    <EntityPageLayout
-      {...props}
-      pageBannerComponent={ChallengePageBanner}
-      tabsComponent={ChallengeTabs}
-      entityTypeName="challenge"
-    />
+    <>
+      <EntityPageLayout
+        {...props}
+        pageBannerComponent={ChallengePageBanner}
+        tabsComponent={ChallengeTabs}
+        entityTypeName="challenge"
+      />
+      <JourneyUnauthorizedDialogContainer journeyTypeName="challenge">
+        {({ vision, ...props }) => (
+          <JourneyUnauthorizedDialog
+            journeyTypeName="challenge"
+            challengeId={challengeId}
+            challengeNameId={challengeNameId}
+            challengeName={profile.displayName}
+            description={vision}
+            disabled={unauthorizedDialogDisabled}
+            {...props}
+          />
+        )}
+      </JourneyUnauthorizedDialogContainer>
+    </>
   );
 };
 

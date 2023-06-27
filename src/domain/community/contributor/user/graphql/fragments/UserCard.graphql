@@ -1,22 +1,15 @@
 fragment UserCard on User {
   id
   nameID
-  displayName
-  agent {
-    id
-    credentials {
-      id
-      type
-      resourceID
-    }
-  }
+  isContactable
   profile {
     id
+    displayName
     location {
       country
       city
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     tagsets {

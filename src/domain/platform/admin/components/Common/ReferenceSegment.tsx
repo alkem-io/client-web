@@ -1,21 +1,30 @@
 import { DeleteOutline } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { Grid, Typography } from '@mui/material';
+import { Box, BoxProps, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { FieldArray } from 'formik';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { PushFunc, RemoveFunc } from '../../../../../hooks';
-import { Reference } from '../../../../../models/Profile';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import { useConfig } from '../../../config/useConfig';
+import { PushFunc, RemoveFunc } from '../../../../shared/Reference/useEditReference';
+import { Reference } from '../../../../common/profile/Profile';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
+import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';
+import { Caption, BlockSectionTitle } from '../../../../../core/ui/typography';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
+import FormikFileInput from '../../../../../core/ui/forms/FormikFileInput/FormikFileInput';
 
-export interface ReferenceSegmentProps {
+export interface ReferenceSegmentProps extends BoxProps {
+  fieldName?: string;
   references: Reference[];
   readOnly?: boolean;
   disabled?: boolean;
+  compactMode?: boolean;
   onAdd?: (push: PushFunc) => void;
+  // TODO REMOVE CALLBACK FROM SIGNATURE!
   onRemove?: (ref: Reference, remove: RemoveFunc) => void;
 }
 
@@ -26,20 +35,34 @@ export const referenceSegmentValidationObject = yup.object().shape({
 export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);
 
 export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
+  fieldName = 'references',
   references,
   readOnly = false,
   disabled = false,
+  compactMode = false,
   onAdd,
   onRemove,
+  ...props
 }) => {
   const { t } = useTranslation();
-  const [removing, setRemoving] = useState<number | undefined>();
+  const tLinks = TranslateWithElements(<Link target="_blank" />);
+  const { platform } = useConfig();
+  const breakpoint = useCurrentBreakpoint();
+  const isMobile = ['xs', 'sm'].includes(breakpoint);
+  const [removingItems, setRemovingItems] = useState<Partial<Record<number, boolean>>>({});
   const [adding, setAdding] = useState(false);
 
-  const handleAdd = (push: (obj: any) => void) => {
+  const isRemoving = (index: number) => Boolean(removingItems[index]);
+  const setRemoving = (index: number, state: boolean) =>
+    setRemovingItems(items => ({
+      ...items,
+      [index]: state,
+    }));
+
+  const handleAdd = (push: (obj: unknown) => void) => {
     if (onAdd) {
       setAdding(true);
-      return onAdd((obj?: any) => {
+      return onAdd((obj?: unknown) => {
         if (obj) push(obj);
         setAdding(false);
       });
@@ -48,94 +71,95 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   };
 
   return (
-    <FieldArray name={'references'}>
+    <FieldArray name={fieldName}>
       {({ push, remove }) => (
-        <Grid item container rowSpacing={2} columnSpacing={4}>
-          <Grid container item xs={12} alignItems="center" wrap="nowrap">
-            <Grid item>
-              <Typography variant={'h4'}>{t('components.referenceSegment.title')}</Typography>
-            </Grid>
-            <Grid item>
-              <Tooltip title={t('components.referenceSegment.tooltips.add-reference') || ''} placement={'bottom'}>
-                <IconButton
-                  aria-label="Add"
-                  onClick={e => {
-                    e.preventDefault();
-                    handleAdd(push);
-                  }}
-                  color="primary"
-                  disabled={disabled || adding}
-                  size="large"
-                >
-                  <AddIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-          </Grid>
-          {references?.length === 0 ? (
-            <Grid item container>
-              <Typography variant={'caption'}>{t('components.referenceSegment.missing-refreneces')}</Typography>
-            </Grid>
+        <Gutters disablePadding {...props}>
+          <Box display="flex" alignItems="center">
+            <BlockSectionTitle>{t('components.referenceSegment.title')}</BlockSectionTitle>
+            <Tooltip title={t('components.referenceSegment.tooltips.add-reference')} placement={'bottom'}>
+              <IconButton
+                aria-label="Add"
+                onClick={() => {
+                  handleAdd(push);
+                }}
+                color="primary"
+                disabled={disabled || adding}
+              >
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          {!compactMode && references?.length === 0 ? (
+            <Caption>{t('components.referenceSegment.missing-refereneces')}</Caption>
           ) : (
-            references?.map((ref, index) => (
-              <Grid key={index} container item spacing={4}>
-                <Grid item xs="auto">
+            references?.map((attachment, index) => (
+              <Gutters key={attachment.id} disablePadding>
+                <Gutters row={!isMobile} disablePadding alignItems="start">
                   <FormikInputField
-                    name={`references.${index}.name`}
-                    title={'Name'}
+                    name={`${fieldName}.${index}.name`}
+                    title={t('common.title')}
                     readOnly={readOnly}
-                    disabled={disabled || index === removing}
+                    disabled={disabled || isRemoving(index)}
+                    fullWidth={isMobile}
                   />
-                </Grid>
-                <Grid item flexGrow={1}>
-                  <FormikInputField
-                    name={`references.${index}.uri`}
-                    title={'URI'}
-                    readOnly={readOnly}
-                    disabled={disabled || index === removing}
-                  />
-                </Grid>
-                <Grid item xs="auto">
-                  <Tooltip
-                    title={t('components.referenceSegment.tooltips.remove-reference') || ''}
-                    id={'remove a reference'}
-                    placement={'bottom'}
-                  >
-                    <IconButton
-                      aria-label="Remove"
-                      onClick={e => {
-                        e.preventDefault();
-                        if (onRemove) {
-                          setRemoving(index);
-                          onRemove(ref, (success: boolean) => {
-                            if (success) remove(index);
-                            setRemoving(undefined);
-                          });
-                        } else {
-                          remove(index);
-                        }
-                      }}
-                      disabled={disabled || index === removing}
-                      size="large"
-                    >
-                      <DeleteOutline />
-                    </IconButton>
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={`references.${index}.description`}
-                    title={'Description'}
-                    readOnly={readOnly}
-                    disabled={disabled || index === removing}
-                  />
-                </Grid>
-              </Grid>
+                  <Box display="flex" flexDirection="row">
+                    <FormikFileInput
+                      name={`${fieldName}.${index}.uri`}
+                      title={t('common.url')}
+                      readOnly={readOnly}
+                      disabled={disabled || isRemoving(index)}
+                      referenceID={attachment.id}
+                      helperText={tLinks('components.referenceSegment.url-helper-text', {
+                        terms: { href: platform?.terms },
+                      })}
+                    />
+                    <Box>
+                      <Tooltip
+                        title={t('components.referenceSegment.tooltips.remove-reference') || ''}
+                        id={'remove a reference'}
+                        placement={'bottom'}
+                      >
+                        <IconButton
+                          aria-label="Remove"
+                          onClick={() => {
+                            // TODO When onRemove doesn't have this callback signature anymore
+                            // TODO remove branching and use `try { ... } finally { setRemoving(index, false) }`
+                            if (onRemove) {
+                              setRemoving(index, true);
+                              onRemove(attachment, (success: boolean) => {
+                                if (success) remove(index);
+                                setRemoving(index, false);
+                              });
+                            } else {
+                              remove(index);
+                            }
+                          }}
+                          disabled={disabled || isRemoving(index)}
+                          size="large"
+                        >
+                          <DeleteOutline />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
+                </Gutters>
+                {!compactMode && (
+                  <Box>
+                    <FormikInputField
+                      name={`${fieldName}.${index}.description`}
+                      title={'Description'}
+                      readOnly={readOnly}
+                      disabled={disabled || isRemoving(index)}
+                    />
+                  </Box>
+                )}
+              </Gutters>
             ))
           )}
-        </Grid>
+        </Gutters>
       )}
     </FieldArray>
   );
 };
+
 export default ReferenceSegment;

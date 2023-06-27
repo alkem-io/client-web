@@ -1,9 +1,9 @@
-import { OpportunityCreatedDocument } from '../../../../hooks/generated/graphql';
+import { OpportunityCreatedDocument } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   OpportunitiesOnChallengeFragment,
   OpportunityCreatedSubscription,
   OpportunityCreatedSubscriptionVariables,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 
 const useOpportunityCreatedSubscription = createUseSubscriptionToSubEntityHook<

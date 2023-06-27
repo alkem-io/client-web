@@ -1,23 +1,34 @@
-query challengeProfileInfo($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
       id
       nameID
-      displayName
-      tagset {
+      profile {
         id
-        name
-        tags
+        displayName
+        tagline
+        description
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
       lifecycle {
         state
       }
       context {
         ...ContextDetails
-        visuals {
-          ...VisualFull
-        }
       }
     }
   }

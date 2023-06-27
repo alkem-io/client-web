@@ -1,0 +1,15 @@
+mutation AddReaction($roomId: UUID!, $messageId: MessageID!, $emoji: Emoji!) {
+  addReactionToMessageInRoom(reactionData: {
+    emoji: $emoji,
+    messageID: $messageId,
+    roomID: $roomId
+  }) {
+    id
+    emoji
+    sender {
+      id
+      firstName
+      lastName
+    }
+  }
+}

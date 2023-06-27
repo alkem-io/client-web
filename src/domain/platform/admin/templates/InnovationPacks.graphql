@@ -1,24 +1,76 @@
 query InnovationPacks {
-  library {
-    innovationPacks {
+  platform {
+    id
+    library {
       id
-      nameID
-      provider {
+      innovationPacks {
         id
         nameID
-        displayName
+        provider {
+          ...InnovationPackProviderProfileWithAvatar
+        }
+        profile {
+          id
+          displayName
+        }
+        templates {
+          id
+          postTemplates {
+            ...AdminPostTemplate
+          }
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplate
+          }
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
+          }
+        }
       }
-      displayName
-      templates {
+    }
+  }
+}
+
+fragment InnovationPackProviderProfileWithAvatar on Organization {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      id
+      uri
+    }
+  }
+}
+
+query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
         id
-        aspectTemplates {
-          ...AdminAspectTemplate
+        templates {
+          whiteboardTemplate(ID: $whiteboardTemplateId) {
+            ...AdminWhiteboardTemplateValue
+          }
         }
-        canvasTemplates {
-          ...AdminCanvasTemplate
-        }
-        lifecycleTemplates {
-          ...AdminLifecycleTemplate
+      }
+    }
+  }
+}
+
+query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        templates {
+          whiteboardTemplate(ID: $whiteboardTemplateId) {
+            ...WhiteboardTemplateWithValue
+          }
         }
       }
     }

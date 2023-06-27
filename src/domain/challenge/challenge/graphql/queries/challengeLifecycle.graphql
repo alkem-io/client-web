@@ -1,5 +1,5 @@
-query challengeLifecycle($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query challengeLifecycle($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
       id

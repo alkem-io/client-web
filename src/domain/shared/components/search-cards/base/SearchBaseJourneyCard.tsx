@@ -1,29 +1,65 @@
-import React, { FC } from 'react';
-import { BoxProps, styled, useTheme } from '@mui/material';
-import Box from '@mui/material/Box';
-import { ClampedTypography, ClampedTypographyProps } from '../../ClampedTypography';
-import SearchBaseCard, { SearchBaseCardImplProps } from './SearchBaseCard';
+import React, { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import CardActions from '../../../../../core/ui/card/CardActions';
+import JourneyCardGoToButton from '../../../../challenge/common/JourneyCard/JourneyCardGoToButton';
+import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
+import journeyIcon from '../../JourneyIcon/JourneyIcon';
+import JourneyCard, { JourneyCardProps } from '../../../../challenge/common/JourneyCard/JourneyCard';
+import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
+import { BlockTitle } from '../../../../../core/ui/typography/components';
+import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
+import JourneyCardDescription from '../../../../challenge/common/JourneyCard/JourneyCardDescription';
+import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
+import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import CardRibbon from '../../../../../core/ui/card/CardRibbon';
 
-const TaglineBox = styled(Box)<BoxProps & ClampedTypographyProps>({
-  height: 75,
-});
-
-export interface SearchBaseJourneyCardProps extends SearchBaseCardImplProps {
-  tagline?: string;
+export interface SearchBaseJourneyCardProps
+  extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
+  locked?: boolean;
+  journeyTypeName: JourneyTypeName;
+  displayName: string;
+  vision: string;
+  parentSegment?: ReactNode;
+  spaceVisibility?: SpaceVisibility;
 }
 
-export const SearchBaseJourneyCard: FC<SearchBaseJourneyCardProps> = ({ tagline, children, ...rest }) => {
-  const theme = useTheme();
+const SearchBaseJourneyCard = ({
+  journeyTypeName,
+  tagline,
+  displayName,
+  vision,
+  parentSegment,
+  spaceVisibility,
+  ...props
+}: SearchBaseJourneyCardProps) => {
+  const { t } = useTranslation();
+  const ribbon =
+    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
+    ) : undefined;
+
   return (
-    <SearchBaseCard
-      height={theme.cards.search.journey.height}
-      imgHeight={theme.cards.search.journey.imgHeight}
-      {...rest}
+    <JourneyCard
+      tagline={tagline}
+      iconComponent={journeyIcon[journeyTypeName]}
+      header={
+        <BlockTitle component="div" sx={webkitLineClamp(2)}>
+          {displayName}
+        </BlockTitle>
+      }
+      ribbon={ribbon}
+      expansion={<JourneyCardDescription>{vision}</JourneyCardDescription>}
+      expansionActions={
+        <CardActions>
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName={journeyTypeName} />
+        </CardActions>
+      }
+      {...props}
     >
-      <TaglineBox component={ClampedTypography} clamp={3}>
-        {tagline}
-      </TaglineBox>
-      {children}
-    </SearchBaseCard>
+      <JourneyCardTagline>{tagline}</JourneyCardTagline>
+      {parentSegment ?? <JourneyCardSpacing height={2} />}
+    </JourneyCard>
   );
 };
+
+export default SearchBaseJourneyCard;

@@ -1,5 +1,3 @@
-export * from './SearchHubCard';
+export * from './SearchSpaceCard';
 export * from './SearchChallengeCard';
 export * from './SearchOpportunityCard';
-export * from './SearchUserCard';
-export * from './SearchOrganizationCard';

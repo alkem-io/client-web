@@ -1,23 +1,31 @@
 import { Grid, Link } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributorCard, {
-  ContributorCardProps,
-} from '../../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
-import ProfileCard from '../../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
+import ContributorCardSquare, {
+  ContributorCardSquareProps,
+} from '../../../contributor/ContributorCardSquare/ContributorCardSquare';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import { BlockSectionTitle } from '../../../../../core/ui/typography';
 
 const ASSOCIATE_CARDS_COUNT = 12;
 
 interface AssociatesViewProps {
-  associates: ContributorCardProps[];
+  canReadUsers: boolean;
+  associates: ContributorCardSquareProps[];
+  totalCount: number;
   count?: number;
-  perRow?: 1 | 2 | 3 | 4 | 6 | 12;
 }
 
-export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = ASSOCIATE_CARDS_COUNT, perRow = 6 }) => {
+export const AssociatesView: FC<AssociatesViewProps> = ({
+  canReadUsers,
+  associates,
+  totalCount,
+  count = ASSOCIATE_CARDS_COUNT,
+}) => {
   const { t } = useTranslation();
   const [showAll, setShowAll] = useState(false);
-  const columnWidth = 12 / perRow;
+  const toggleShowAll = () => setShowAll(prevValue => !prevValue);
   const usersCount = associates.length - count;
 
   const associatesToShow = useMemo(
@@ -26,26 +34,34 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = AS
   );
 
   return (
-    <ProfileCard
-      title={t('components.associates.title', { count: associates.length })}
-      helpText={t('components.associates.help')}
-    >
-      <Grid container spacing={2}>
-        {associatesToShow.map((x, i) => (
-          <Grid key={i} item xs={columnWidth}>
-            <ContributorCard {...x} />
+    <PageContentBlock>
+      <PageContentBlockHeader title={t('components.associates.title', { count: totalCount })} />
+
+      <Grid container spacing={2} columns={{ xs: 6, sm: 12 }}>
+        {canReadUsers ? (
+          <>
+            {associatesToShow.map(associate => (
+              <Grid key={associate.id} item xs={2}>
+                <ContributorCardSquare {...associate} />
+              </Grid>
+            ))}
+            <Grid item container justifyContent="flex-end">
+              {usersCount > 0 && (
+                <Link component="button" onClick={toggleShowAll}>
+                  {!showAll && t('associates-view.more', { count: usersCount })}
+                  {showAll && t('associates-view.less')}
+                </Link>
+              )}
+            </Grid>
+          </>
+        ) : (
+          <Grid item>
+            <BlockSectionTitle>{t('associates-view.sign-in')}</BlockSectionTitle>
           </Grid>
-        ))}
-        <Grid item container justifyContent="flex-end">
-          {usersCount > 0 && (
-            <Link component="button" onClick={() => setShowAll(oldValue => !oldValue)}>
-              {!showAll && t('associates-view.more', { count: usersCount })}
-              {showAll && t('associates-view.less')}
-            </Link>
-          )}
-        </Grid>
+        )}
       </Grid>
-    </ProfileCard>
+    </PageContentBlock>
   );
 };
+
 export default AssociatesView;

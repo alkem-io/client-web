@@ -2,7 +2,11 @@ import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '../../../../utils/test/test-utils';
 import { ApplicationButton } from './ApplicationButton';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH } from '../../../../../models/constants';
+import { _AUTH_LOGIN_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
+import {
+  APPLICATION_STATE_NEW,
+  APPLICATION_STATE_REJECTED,
+} from '../../../../../domain/community/application/constants/ApplicationState';
 
 describe('ApplicationButton component', () => {
   test('buttons is loading', () => {
@@ -42,7 +46,7 @@ describe('ApplicationButton component', () => {
     const button = screen.getByText('Sign in to apply') as HTMLAnchorElement;
 
     expect(button).toBeInTheDocument();
-    expect(button.href).toContain(AUTH_LOGIN_PATH);
+    expect(button.href).toContain(_AUTH_LOGIN_PATH);
     expect(button).toBeEnabled();
   });
 
@@ -129,7 +133,7 @@ describe('ApplicationButton component', () => {
       onJoin: () => void 0,
       isMember: false,
       canApplyToCommunity: true,
-      applyUrl: 'hub1/apply',
+      applyUrl: 'space1/apply',
     };
 
     render(
@@ -144,7 +148,7 @@ describe('ApplicationButton component', () => {
     expect(button).toBeInTheDocument();
     expect(button).toBeEnabled();
     expect(button).toHaveTextContent('Apply');
-    expect(button['href']).toContain('hub1/apply');
+    expect(button['href']).toContain('space1/apply');
   });
 
   test('isParentMember & CANT apply & CANT join', () => {
@@ -344,7 +348,7 @@ describe('ApplicationButton component', () => {
       expect(dialogButton).toHaveAttribute('href');
       expect(dialogButton['href']).toContain('/parent/apply');
 
-      const title = screen.getByText('Want to join the parent Hub?');
+      const title = screen.getByText('Want to join the parent Space?');
       expect(title).toBeInTheDocument();
     });
   });

@@ -39,7 +39,7 @@ module.exports = {
       },
     ],
     'import/prefer-default-export': 'off',
-    'react-hooks/exhaustive-deps': 'error',
+    'react-hooks/exhaustive-deps': 'off',
     'react/jsx-pascal-case': 'error',
     'react/jsx-closing-bracket-location': 'error',
     'react/jsx-closing-tag-location': 'error',
@@ -55,5 +55,13 @@ module.exports = {
     'jsx-a11y/img-redundant-alt': 'error',
     'jsx-quotes': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'error',
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: 'block', next: 'export' },
+      { blankLine: 'always', prev: 'block-like', next: 'export' },
+      { blankLine: 'always', prev: 'class', next: 'export' },
+      { blankLine: 'always', prev: 'function', next: 'export' },
+    ],
   },
 };

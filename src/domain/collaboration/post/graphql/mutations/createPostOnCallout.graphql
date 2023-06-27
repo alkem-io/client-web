@@ -1,0 +1,20 @@
+mutation CreatePost($postData: CreatePostOnCalloutInput!) {
+  createPostOnCallout(postData: $postData) {
+    id
+    nameID
+    type
+    profile {
+      id
+      description
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      visuals {
+        ...VisualUri
+      }
+    }
+  }
+}

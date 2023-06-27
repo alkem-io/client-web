@@ -1,0 +1,191 @@
+# context tab fragments
+fragment ContextTab on Context {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  vision
+  impact
+  who
+}
+#
+fragment LifecycleContextTab on Lifecycle {
+  id
+  state
+  machineDef
+}
+fragment MetricsItem on NVP {
+  id
+  name
+  value
+}
+#
+query AboutPageNonMembers(
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+        description
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
+      }
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      context {
+        ...ContextTab
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+        description
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTab
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+        description
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
+      }
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTab
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+#
+query AboutPageMembers(
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $communityReadAccess: Boolean!
+  $referencesReadAccess: Boolean!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      community @include(if: $communityReadAccess) {
+        ...EntityDashboardCommunity
+      }
+      profile {
+        id
+        references @include(if: $referencesReadAccess) {
+          ...ReferenceDetails
+        }
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      community @include(if: $communityReadAccess) {
+        ...EntityDashboardCommunity
+      }
+      profile {
+        id
+        references @include(if: $referencesReadAccess) {
+          ...ReferenceDetails
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      community @include(if: $communityReadAccess) {
+        ...EntityDashboardCommunity
+      }
+      profile {
+        id
+        references @include(if: $referencesReadAccess) {
+          ...ReferenceDetails
+        }
+      }
+    }
+  }
+}

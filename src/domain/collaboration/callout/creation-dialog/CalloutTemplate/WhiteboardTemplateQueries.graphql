@@ -1,0 +1,90 @@
+query TemplatesForCalloutCreation($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      postTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+      whiteboardTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+    }
+  }
+}
+
+query PostTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      postTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+    }
+  }
+}
+
+query WhiteboardTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      whiteboardTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+    }
+  }
+}
+
+fragment ProfileDisplayName on Profile {
+  id
+  displayName
+}
+
+query PostTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      postTemplate(ID: $id) {
+        id
+        type
+        defaultDescription
+        profile {
+          id
+          description
+          tagset {
+            id
+            tags
+          }
+        }
+      }
+    }
+  }
+}
+
+query WhiteboardTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $id) {
+        id
+        value
+      }
+    }
+  }
+}

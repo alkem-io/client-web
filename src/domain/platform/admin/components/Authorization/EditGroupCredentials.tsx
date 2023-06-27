@@ -3,9 +3,8 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../../../hooks';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import EditMemberUsers from '../Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '../../../../community/community/useAvailableMembersWithCredential';
 
@@ -18,15 +17,9 @@ interface EditCredentialsProps {
 export type GroupCredentials = AuthorizationCredential.UserGroupMember;
 
 export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCommunityId, resourceId }) => {
-  const handleError = useApolloErrorHandler();
+  const [grant, { loading: addingMember }] = useAssignUserToGroupMutation({});
 
-  const [grant, { loading: addingMember }] = useAssignUserToGroupMutation({
-    onError: handleError,
-  });
-
-  const [revoke, { loading: removingMember }] = useRemoveUserFromGroupMutation({
-    onError: handleError,
-  });
+  const [revoke, { loading: removingMember }] = useRemoveUserFromGroupMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
