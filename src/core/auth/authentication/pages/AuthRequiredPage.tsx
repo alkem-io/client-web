@@ -5,15 +5,27 @@ import { Link } from 'react-router-dom';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useQueryParams } from '../../../routing/useQueryParams';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import { AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
+import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
 import { Box, Button } from '@mui/material';
-import { buildLoginUrl } from '../../../../common/utils/urlBuilders';
+import { buildReturnUrlParam } from '../../../../common/utils/urlBuilders';
 
 interface AuthRequiredPageProps {}
 
 export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
   const returnUrl = useQueryParams().get('returnUrl') ?? undefined;
   const { t } = useTranslation();
+
+  /**
+   * AuthRequiredPage can't use buildLoginUrl() directly for the following reasons:
+   * - it belongs to /identity routes and is accessed from identity subdomain while the resource the user was trying
+   * to access most likely was on the root domain or in an innovation hub.
+   * - it isn't meant to be returned back to, the page the user intended to visit is the previous one.
+   *
+   * For Login/SignUp redirection to work this component receives the full returnUrl with origin already baked in.
+   */
+  const returnUrlParam = buildReturnUrlParam(returnUrl, '');
+  const loginUrl = `${_AUTH_LOGIN_PATH}${returnUrlParam}`;
+  const signUpUrl = `${AUTH_SIGN_UP_PATH}${returnUrlParam}`;
 
   return (
     <AuthenticationLayout>
@@ -25,10 +37,10 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
         <WrapperTypography variant={'h3'}>{t('pages.authentication-required.subheader')}</WrapperTypography>
       </Box>
       <Box display="flex" marginTop={4} gap={2} justifyContent="center">
-        <Button component={Link} to={buildLoginUrl(returnUrl)} variant="outlined" color="primary">
+        <Button component={Link} to={loginUrl} variant="outlined" color="primary">
           {t('authentication.sign-in')}
         </Button>
-        <Button component={Link} to={AUTH_SIGN_UP_PATH} variant="outlined">
+        <Button component={Link} to={signUpUrl} variant="outlined">
           {t('authentication.sign-up')}
         </Button>
       </Box>
