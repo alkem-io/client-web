@@ -46,7 +46,7 @@ const getKratosErrorMessage = (requestError: AxiosError) => {
 const createAxiosClient = () => {
   const client = axios.create({
     withCredentials: true,
- });
+  });
   client.interceptors.response.use(
     value => {
       try {
