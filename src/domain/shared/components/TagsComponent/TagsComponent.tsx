@@ -17,10 +17,8 @@ export interface TagsComponentProps extends BoxProps {
   color?: ChipProps['color'];
   size?: ChipProps['size'];
   variant?: ChipProps['variant'];
-  showAll?: boolean;
+  canShowAll?: boolean;
   onClickTag?: (tag: string) => void;
-  onClickGroup?: ChipProps['onClick'];
-  onClickShowLess?: ChipProps['onClick'];
 }
 
 const getDefaultTagsContainerProps = (hasHeight?: boolean): Partial<BoxProps> => ({
@@ -40,13 +38,12 @@ const TagsComponent = ({
   size = 'small',
   variant = 'outlined',
   height,
-  showAll = false,
+  canShowAll = false,
   onClickTag,
-  onClickGroup,
-  onClickShowLess,
   ...tagsContainerProps
 }: TagsComponentProps) => {
   const { t } = useTranslation();
+  const [isExpanded, setExpanded] = useState(false);
 
   const theme = useTheme();
 
@@ -84,14 +81,16 @@ const TagsComponent = ({
           size={size}
           onClick={event => {
             event.preventDefault();
-            onClickGroup ? onClickGroup(event) : setTooltipOpen(true);
+            canShowAll ? setExpanded(true) : setTooltipOpen(true);
           }}
         />
       </Tooltip>
     </ClickAwayListener>
   );
 
-  const renderShowLess = () => <Chip label={<ExpandLessIcon />} size={size} onClick={onClickShowLess} />;
+  const renderShowLess = () => (
+    <ExpandLessIcon sx={{ cursor: 'pointer' }} fontSize="small" onClick={() => setExpanded(false)} />
+  );
 
   if (loading) {
     return (
@@ -113,7 +112,7 @@ const TagsComponent = ({
     );
   }
 
-  if (showAll) {
+  if (canShowAll && isExpanded) {
     return (
       <Box {...getDefaultTagsContainerProps(false)} {...tagsContainerProps}>
         {tags.map((tag, index) => renderTag(tag, index))}

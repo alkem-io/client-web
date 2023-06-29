@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SearchTagsInputProps } from '../../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import { Identifiable } from '../../../../domain/shared/types/Identifiable';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
@@ -38,11 +38,9 @@ const JourneyFilter = <T extends Identifiable>({
 
   const filteredData = useMemo(() => filterFn(data, terms, valueGetter), [data, terms, valueGetter]);
 
-  const [tagsExpanded, setTagsExpanded] = useState(false);
-
-  const handleChange = useCallback((value: string[]) => {
+  const handleChange = (value: string[]) => {
     setTerms(value);
-  }, []);
+  };
 
   if (!data.length) {
     return <>{children([])}</>;
@@ -64,11 +62,11 @@ const JourneyFilter = <T extends Identifiable>({
         color="primary"
         gap={gutters(0.5)}
         justifyContent="end"
-        showAll={tagsExpanded}
         height={gutters(2.5)}
-        onClickTag={term => setTerms(uniq([...terms, term]))}
-        onClickGroup={() => setTagsExpanded(true)}
-        onClickShowLess={() => setTagsExpanded(false)}
+        onClickTag={term => {
+          handleChange(uniq([...terms, term]));
+        }}
+        canShowAll
       />
       {children(filteredData)}
     </>
