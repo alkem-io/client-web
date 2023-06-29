@@ -48,6 +48,10 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
 
       if (message) {
         const { data, type } = message;
+        const messageRefId = client.cache.identify({
+          id: data.id,
+          __typename: 'Message',
+        });
 
         switch (type) {
           case MutationType.Create: {
@@ -55,22 +59,22 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
               id: roomRefId,
               fields: {
                 messages(existingMessages = []) {
-                  const newMessage = client.cache.writeFragment({
-                    data,
-                    fragment: MessageDetailsFragmentDoc,
-                    fragmentName: 'MessageDetails',
-                  });
-                  return [...existingMessages, newMessage];
+                  if (messageRefId && existingMessages.some(m => m.__ref === messageRefId)) {
+                    return existingMessages; // Message already in the list
+                  } else {
+                    const newMessage = client.cache.writeFragment({
+                      data,
+                      fragment: MessageDetailsFragmentDoc,
+                      fragmentName: 'MessageDetails',
+                    });
+                    return [...existingMessages, newMessage];
+                  }
                 },
               },
             });
             break;
           }
           case MutationType.Delete: {
-            const messageRefId = client.cache.identify({
-              id: data.id,
-              __typename: 'Message',
-            });
             client.cache.modify({
               id: roomRefId,
               fields: {
@@ -84,8 +88,14 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
           }
         }
       }
+
       if (reaction) {
         const { messageID, data, type } = reaction;
+        const reactionRefId = client.cache.identify({
+          id: data.id,
+          __typename: 'Reaction',
+        });
+
         switch (type) {
           case MutationType.Create: {
             const messageRefId = client.cache.identify({
@@ -96,6 +106,9 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
               id: messageRefId,
               fields: {
                 reactions(existingReactions = []) {
+                  if (existingReactions.some(r => r.__ref === reactionRefId)) {
+                    return existingReactions;
+                  }
                   const newReactionRef = client.cache.writeFragment({
                     data,
                     fragment: ReactionDetailsFragmentDoc,
@@ -108,10 +121,6 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
             break;
           }
           case MutationType.Delete: {
-            const reactionRefId = client.cache.identify({
-              id: data.id,
-              __typename: 'Reaction',
-            });
             // Do not modify cache objects directly!
             // We only do this to find the parent messageId of this deleted reaction:
             const cacheObjects = client.cache.extract();

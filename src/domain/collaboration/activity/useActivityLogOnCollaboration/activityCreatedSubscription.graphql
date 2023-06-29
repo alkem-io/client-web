@@ -63,4 +63,7 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   ... on ActivityLogEntryOpportunityCreated {
     ...ActivityLogOpportunityCreated
   }
+  ... on ActivityLogEntryUpdateSent {
+    ...ActivityLogUpdateSent
+  }
 }

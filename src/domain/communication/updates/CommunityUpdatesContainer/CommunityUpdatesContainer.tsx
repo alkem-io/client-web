@@ -2,22 +2,15 @@ import React, { FC, useCallback } from 'react';
 import { useConfig } from '../../../platform/config/useConfig';
 import {
   refetchCommunityUpdatesQuery,
-  RoomEventsDocument,
   useCommunityUpdatesQuery,
   useRemoveMessageOnRoomMutation,
   useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import {
-  Community,
-  CommunityUpdatesQuery,
-  Space,
-  Message,
-  RoomEventsSubscription,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { Community, Space, Message } from '../../../../core/apollo/generated/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -53,9 +46,16 @@ const EMPTY = [];
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const { isFeatureEnabled } = useConfig();
   const { communityId, spaceId } = entities;
-  const { data, loading } = useCommunityUpdatesData(spaceId, communityId);
+  const { data, loading } = useCommunityUpdatesQuery({
+    variables: {
+      spaceId: spaceId!,
+      communityId: communityId!,
+    },
+    skip: !spaceId || !communityId,
+  });
+  useSubscribeOnRoomEvents(data?.space.community?.communication?.updates.id);
 
-  const updatesId = data?.space.community?.communication?.updates?.id || '';
+  const roomID = data?.space.community?.communication?.updates?.id;
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendMessageToRoomMutation({
     refetchQueries:
@@ -66,31 +66,36 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
     async message => {
+      if (!roomID) {
+        throw new Error('RoomId is not defined');
+      }
       const update = await sendUpdate({
-        variables: { messageData: { message, roomID: updatesId } },
+        variables: { messageData: { message, roomID } },
       });
       return update.data?.sendMessageToRoom as Message;
     },
-    [sendUpdate, updatesId]
+    [sendUpdate, roomID]
   );
 
   const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveMessageOnRoomMutation();
 
   const onRemove = useCallback<CommunityUpdatesActions['onRemove']>(
-    async messageId => {
+    async messageID => {
+      if (!roomID) {
+        throw new Error('RoomId is not defined');
+      }
       const update = await removeUpdate({
-        variables: { messageData: { messageID: messageId, roomID: updatesId } },
+        variables: { messageData: { messageID, roomID } },
         refetchQueries: spaceId && communityId ? [refetchCommunityUpdatesQuery({ spaceId, communityId })] : [],
       });
       return update.data?.removeMessageOnRoom;
     },
-    [communityId, updatesId, spaceId, removeUpdate]
+    [communityId, roomID, spaceId, removeUpdate]
   );
 
   const onLoadMore = () => {
     throw new Error('Not implemented');
   };
-
   const messages = (data?.space.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
   const authors: Author[] = [];
@@ -112,37 +117,4 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       )}
     </>
   );
-};
-
-const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
-  NonNullable<NonNullable<CommunityUpdatesQuery['space']['community']>['communication']>['updates'],
-  RoomEventsSubscription
->({
-  subscriptionDocument: RoomEventsDocument,
-  updateSubEntity: (updates, subscriptionData) => {
-    if (updates?.id === subscriptionData.roomEvents.roomID) {
-      if (subscriptionData.roomEvents?.message) {
-        const { data } = subscriptionData.roomEvents?.message;
-        updates?.messages?.push(data);
-      }
-    }
-  },
-});
-
-const useCommunityUpdatesData = (spaceNameId?: string, communityId?: string) => {
-  const { data, loading, subscribeToMore } = useCommunityUpdatesQuery({
-    variables: {
-      spaceId: spaceNameId!,
-      communityId: communityId!,
-    },
-    skip: !spaceNameId || !communityId,
-  });
-
-  useCommunicationUpdateMessageReceivedSubscription(
-    data,
-    parent => parent?.space?.community?.communication?.updates,
-    subscribeToMore
-  );
-
-  return { data, loading };
 };
