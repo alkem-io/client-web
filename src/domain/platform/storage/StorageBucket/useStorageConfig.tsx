@@ -193,9 +193,7 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
             storageBucketId: storageConfig.id,
             allowedMimeTypes: storageConfig.allowedMimeTypes,
             maxFileSize: storageConfig.maxFileSize,
-            canUpload: (storageConfig.authorization?.myPrivileges ?? []).some(
-              x => x === AuthorizationPrivilege.FileUpload
-            ),
+            canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
           }
         : undefined,
     }),
