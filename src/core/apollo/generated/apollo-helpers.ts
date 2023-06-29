@@ -678,6 +678,7 @@ export type CommunityKeySpecifier = (
   | 'groups'
   | 'id'
   | 'invitations'
+  | 'invitationsExternal'
   | 'leadOrganizations'
   | 'leadUsers'
   | 'memberOrganizations'
@@ -697,6 +698,7 @@ export type CommunityFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitationsExternal?: FieldPolicy<any> | FieldReadFunction<any>;
   leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1016,6 +1018,27 @@ export type InvitationFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InvitationExternalKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'createdDate'
+  | 'email'
+  | 'firstName'
+  | 'id'
+  | 'lastName'
+  | 'profileCreated'
+  | InvitationExternalKeySpecifier
+)[];
+export type InvitationExternalFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InvitationForRoleResultKeySpecifier = (
   | 'challengeID'
   | 'communityID'
@@ -1181,6 +1204,7 @@ export type MutationKeySpecifier = (
   | 'deleteInnovationHub'
   | 'deleteInnovationPack'
   | 'deleteInvitation'
+  | 'deleteInvitationExternal'
   | 'deleteOpportunity'
   | 'deleteOrganization'
   | 'deletePost'
@@ -1203,6 +1227,7 @@ export type MutationKeySpecifier = (
   | 'eventOnWhiteboardCheckout'
   | 'grantCredentialToUser'
   | 'inviteExistingUserForCommunityMembership'
+  | 'inviteExternalUserForCommunityMembership'
   | 'joinCommunity'
   | 'messageUser'
   | 'movePostToCallout'
@@ -1334,6 +1359,7 @@ export type MutationFieldPolicy = {
   deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteInvitationExternal?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1356,6 +1382,7 @@ export type MutationFieldPolicy = {
   eventOnWhiteboardCheckout?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteExternalUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   movePostToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2762,6 +2789,10 @@ export type StrictTypedTypePolicies = {
   Invitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InvitationKeySpecifier | (() => undefined | InvitationKeySpecifier);
     fields?: InvitationFieldPolicy;
+  };
+  InvitationExternal?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InvitationExternalKeySpecifier | (() => undefined | InvitationExternalKeySpecifier);
+    fields?: InvitationExternalFieldPolicy;
   };
   InvitationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InvitationForRoleResultKeySpecifier | (() => undefined | InvitationForRoleResultKeySpecifier);

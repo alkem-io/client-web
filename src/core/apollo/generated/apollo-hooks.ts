@@ -1217,6 +1217,11 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
     }
   }
 `;
+export const ActivityLogUpdateSentFragmentDoc = gql`
+  fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+    message
+  }
+`;
 export const ActivityLogOnCollaborationFragmentDoc = gql`
   fragment ActivityLogOnCollaboration on ActivityLogEntry {
     id
@@ -1275,6 +1280,9 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     ... on ActivityLogEntryOpportunityCreated {
       ...ActivityLogOpportunityCreated
     }
+    ... on ActivityLogEntryUpdateSent {
+      ...ActivityLogUpdateSent
+    }
   }
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
@@ -1284,15 +1292,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
-`;
-export const ActivityLogUpdateSentFragmentDoc = gql`
-  fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
-    updates {
-      id
-      messagesCount
-    }
-    message
-  }
+  ${ActivityLogUpdateSentFragmentDoc}
 `;
 export const ProfileDisplayNameFragmentDoc = gql`
   fragment ProfileDisplayName on Profile {
