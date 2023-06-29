@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import UploadButton from '../../../../common/components/core/UploadButton';
 import { StorageConfig } from '../../../../domain/platform/storage/StorageBucket/useStorageConfig';
-import { useUploadFileMutation } from '../../../apollo/generated/apollo-hooks';
+import { useUploadFileMutation, useUploadFileOnReferenceMutation } from '../../../apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
-  referenceID: string;
+  referenceID?: string;
   storageConfig: StorageConfig;
 }
 
@@ -23,12 +23,20 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
   const acceptedFileTypes = storageConfig.allowedMimeTypes.join(',');
   const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
 
-  const [uploadFile, { loading }] = useUploadFileMutation({
+  const [uploadFileOnReference, { loading: loadingOnReference }] = useUploadFileOnReferenceMutation({
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
       onUpload?.(data.uploadFileOnReference.uri);
     },
   });
+
+  const [uploadFile, { loading: loadingOnStorageBucket }] = useUploadFileMutation({
+    onCompleted: data => {
+      notify(t('components.file-upload.file-upload-success'), 'success');
+      onUpload?.(data.uploadFileOnStorageBucket);
+    },
+  });
+  const loading = loadingOnReference || loadingOnStorageBucket;
 
   const handleSubmit = async (selectedFile: File) => {
     if (!selectedFile) return;
@@ -37,15 +45,25 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
       notify(t('components.file-upload.file-size-error', { limit: maxFileSizeMb }), 'error');
       return;
     }
-
-    await uploadFile({
-      variables: {
-        file: selectedFile,
-        uploadData: {
-          referenceID,
+    if (referenceID) {
+      await uploadFileOnReference({
+        variables: {
+          file: selectedFile,
+          uploadData: {
+            referenceID,
+          },
         },
-      },
-    });
+      });
+    } else {
+      await uploadFile({
+        variables: {
+          file: selectedFile,
+          uploadData: {
+            storageBucketId: storageConfig.storageBucketId,
+          },
+        },
+      });
+    }
   };
 
   return (

@@ -20,9 +20,11 @@ import SpaceSearchPage from '../pages/SpaceSearchPage';
 import SpaceCollaborationPage from '../SpaceCollaborationPage/SpaceCollaborationPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
+import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 
 export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
+    spaceNameId,
     profile: { displayName },
   } = useSpace();
   const resolved = useResolvedPath('.');
@@ -32,49 +34,51 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
   );
 
   return (
-    <Routes>
-      <Route path="/" element={<EntityPageLayoutHolder />}>
-        <Route index element={<Navigate replace to={routes.Dashboard} />} />
-        <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
-        <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
-        <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />
-        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCollaborationPage />} />
-        <Route
-          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-          element={<SpaceCollaborationPage>{props => <CalloutRoute {...props} />}</SpaceCollaborationPage>}
-        />
-        <Route path={`${routes.Dashboard}/calendar`} element={<SpaceDashboardPage dialog="calendar" />} />
-        <Route
-          path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
-          element={<SpaceDashboardPage dialog="calendar" />}
-        />
-        <Route path={routes.Community} element={<SpaceCommunityPage />} />
-        <Route path={routes.Challenges} element={<SpaceChallengesPage />} />
-        <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
-        <Route path={routes.Search} element={<SpaceSearchPage />} />
-      </Route>
-      <Route
-        path="apply"
-        element={
-          <ApplyRoute
-            paths={currentPaths}
-            type={ApplicationTypeEnum.space}
-            journeyPageLayoutComponent={SpacePageLayout}
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" spaceNameId={spaceNameId}>
+      <Routes>
+        <Route path="/" element={<EntityPageLayoutHolder />}>
+          <Route index element={<Navigate replace to={routes.Dashboard} />} />
+          <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
+          <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
+          <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCollaborationPage />} />
+          <Route
+            path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+            element={<SpaceCollaborationPage>{props => <CalloutRoute {...props} />}</SpaceCollaborationPage>}
           />
-        }
-      />
-      <Route
-        path={`challenges/:${nameOfUrl.challengeNameId}/*`}
-        element={
-          <ChallengeProvider>
-            <CommunityContextProvider>
-              <ChallengeRoute paths={currentPaths} />
-            </CommunityContextProvider>
-          </ChallengeProvider>
-        }
-      />
-      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-      <Route path="*" element={<Error404 />} />
-    </Routes>
+          <Route path={`${routes.Dashboard}/calendar`} element={<SpaceDashboardPage dialog="calendar" />} />
+          <Route
+            path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
+            element={<SpaceDashboardPage dialog="calendar" />}
+          />
+          <Route path={routes.Community} element={<SpaceCommunityPage />} />
+          <Route path={routes.Challenges} element={<SpaceChallengesPage />} />
+          <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
+          <Route path={routes.Search} element={<SpaceSearchPage />} />
+        </Route>
+        <Route
+          path="apply"
+          element={
+            <ApplyRoute
+              paths={currentPaths}
+              type={ApplicationTypeEnum.space}
+              journeyPageLayoutComponent={SpacePageLayout}
+            />
+          }
+        />
+        <Route
+          path={`challenges/:${nameOfUrl.challengeNameId}/*`}
+          element={
+            <ChallengeProvider>
+              <CommunityContextProvider>
+                <ChallengeRoute paths={currentPaths} />
+              </CommunityContextProvider>
+            </ChallengeProvider>
+          }
+        />
+        <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </StorageConfigContextProvider>
   );
 };

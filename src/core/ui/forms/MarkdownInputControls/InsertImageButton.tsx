@@ -3,7 +3,7 @@ import { Editor } from '@tiptap/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
-import FormikInputField from '../FormikInputField/FormikInputField';
+import FormikFileInput from '../FormikFileInput/FormikFileInput';
 import { AddPhotoAlternateOutlined } from '@mui/icons-material';
 import DialogHeader from '../../dialog/DialogHeader';
 import Gutters from '../../grid/Gutters';
@@ -68,7 +68,7 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
         <Formik initialValues={initialValues} onSubmit={insertImage}>
           <Form>
             <Gutters>
-              <FormikInputField title={t('common.url')} name="src" />
+              <FormikFileInput title={t('common.url')} name="src" />
               <Actions justifyContent="space-between">
                 <Button onClick={closeDialog}>{t('buttons.cancel')}</Button>
                 <Button type="submit" variant="contained">

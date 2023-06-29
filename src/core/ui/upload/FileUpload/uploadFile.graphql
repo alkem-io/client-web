@@ -1,6 +1,10 @@
-mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
+mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
   uploadFileOnReference(uploadData: $uploadData, file: $file) {
     id
     uri
   }
+}
+
+mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
+  uploadFileOnStorageBucket(uploadData: $uploadData, file: $file)
 }
