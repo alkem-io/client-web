@@ -954,7 +954,7 @@ export type Community = Groupable & {
   __typename?: 'Community';
   /** The Form used for Applications to this community. */
   applicationForm?: Maybe<Form>;
-  /** Application available for this community. */
+  /** Applications available for this community. */
   applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
@@ -972,6 +972,8 @@ export type Community = Groupable & {
   id: Scalars['UUID'];
   /** Invitations for this community. */
   invitations?: Maybe<Array<Invitation>>;
+  /** Invitations to join this Community for users not yet on the Alkemio platform. */
+  invitationsExternal?: Maybe<Array<InvitationExternal>>;
   /** All Organizations that are leads in this Community. */
   leadOrganizations?: Maybe<Array<Organization>>;
   /** All users that are leads in this Community. */
@@ -1242,6 +1244,14 @@ export type CreateInvitationExistingUserOnCommunityInput = {
   invitedUser: Scalars['UUID'];
 };
 
+export type CreateInvitationExternalUserOnCommunityInput = {
+  communityID: Scalars['UUID'];
+  email: Scalars['String'];
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  welcomeMessage?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateLocationInput = {
   addressLine1?: InputMaybe<Scalars['String']>;
   addressLine2?: InputMaybe<Scalars['String']>;
@@ -1497,6 +1507,10 @@ export type DeleteInnovationHubInput = {
 
 export type DeleteInnovationPackInput = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeleteInvitationExternalInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteInvitationInput = {
@@ -1803,6 +1817,23 @@ export type InvitationEventInput = {
   invitationID: Scalars['UUID'];
 };
 
+export type InvitationExternal = {
+  __typename?: 'InvitationExternal';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The User who triggered the invitationExternal. */
+  createdBy: User;
+  createdDate: Scalars['DateTime'];
+  /** The email address of the external user being invited */
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  lastName: Scalars['String'];
+  /** Whether a new user profile has been created. */
+  profileCreated: Scalars['Boolean'];
+};
+
 export type InvitationForRoleResult = {
   __typename?: 'InvitationForRoleResult';
   /** ID for the Challenge being invited to, if any. Or the Challenge containing the Opportunity being invited to. */
@@ -2054,6 +2085,8 @@ export type Mutation = {
   deleteInnovationPack: InnovationPack;
   /** Removes the specified User invitation. */
   deleteInvitation: Invitation;
+  /** Removes the specified User invitationExternal. */
+  deleteInvitationExternal: InvitationExternal;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
@@ -2098,6 +2131,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Invitation;
+  /** Invite an external User to join the specified Community as a member. */
+  inviteExternalUserForCommunityMembership: InvitationExternal;
   /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
@@ -2472,6 +2507,10 @@ export type MutationDeleteInvitationArgs = {
   deleteData: DeleteInvitationInput;
 };
 
+export type MutationDeleteInvitationExternalArgs = {
+  deleteData: DeleteInvitationExternalInput;
+};
+
 export type MutationDeleteOpportunityArgs = {
   deleteData: DeleteOpportunityInput;
 };
@@ -2558,6 +2597,10 @@ export type MutationGrantCredentialToUserArgs = {
 
 export type MutationInviteExistingUserForCommunityMembershipArgs = {
   invitationData: CreateInvitationExistingUserOnCommunityInput;
+};
+
+export type MutationInviteExternalUserForCommunityMembershipArgs = {
+  invitationData: CreateInvitationExternalUserOnCommunityInput;
 };
 
 export type MutationJoinCommunityArgs = {
@@ -11579,6 +11622,7 @@ export type ActivityCreatedSubscription = {
           child: boolean;
           parentNameID: string;
           parentDisplayName: string;
+          message: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -11903,6 +11947,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
   child: boolean;
   parentNameID: string;
   parentDisplayName: string;
+  message: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -12251,7 +12296,6 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        updates: { __typename?: 'Room'; id: string; messagesCount: number };
       }
   >;
 };
@@ -12367,11 +12411,7 @@ export type ActivityLogCalloutDiscussionCommentFragment = {
   };
 };
 
-export type ActivityLogUpdateSentFragment = {
-  __typename?: 'ActivityLogEntryUpdateSent';
-  message: string;
-  updates: { __typename?: 'Room'; id: string; messagesCount: number };
-};
+export type ActivityLogUpdateSentFragment = { __typename?: 'ActivityLogEntryUpdateSent'; message: string };
 
 export type UpdateCalloutsSortOrderMutationVariables = Exact<{
   collaborationId: Scalars['UUID'];
