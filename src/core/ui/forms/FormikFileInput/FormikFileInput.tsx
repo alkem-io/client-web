@@ -19,7 +19,12 @@ const FormikFileInput = ({ name, referenceID, ...props }: FormikFileInputProps) 
       loading={!storageConfig}
       endAdornment={
         storageConfig && (
-          <FileUploadButton onUpload={helpers.setValue} referenceID={referenceID} storageConfig={storageConfig} />
+          <FileUploadButton
+            onUpload={helpers.setValue}
+            referenceID={referenceID}
+            storageConfig={storageConfig}
+            disabled={!storageConfig.canUpload}
+          />
         )
       }
       {...props}

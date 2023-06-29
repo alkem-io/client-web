@@ -10,11 +10,13 @@ import {
   useUserStorageConfigQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface StorageConfig {
   storageBucketId: string;
   allowedMimeTypes: string[];
   maxFileSize: number;
+  canUpload: boolean;
 }
 
 type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'post' | 'innovationPack' | 'platform';
@@ -191,6 +193,9 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
             storageBucketId: storageConfig.id,
             allowedMimeTypes: storageConfig.allowedMimeTypes,
             maxFileSize: storageConfig.maxFileSize,
+            canUpload: (storageConfig?.authorization?.myPrivileges || []).some(
+              x => x === AuthorizationPrivilege.FileUpload
+            ),
           }
         : undefined,
     }),

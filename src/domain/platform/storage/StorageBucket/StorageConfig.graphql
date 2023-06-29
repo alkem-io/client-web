@@ -131,6 +131,10 @@ query PlatformStorageConfig {
       id
       allowedMimeTypes
       maxFileSize
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }
@@ -141,6 +145,10 @@ fragment ProfileStorageConfig on Profile {
     id
     allowedMimeTypes
     maxFileSize
+    authorization {
+      id
+      myPrivileges
+    }
   }
 }
 

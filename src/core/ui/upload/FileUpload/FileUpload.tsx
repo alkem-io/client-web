@@ -12,11 +12,12 @@ interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
   referenceID?: string;
   storageConfig: StorageConfig;
+  disabled: boolean;
 }
 
 const bytesInMegabyte = Math.pow(1024, 2);
 
-const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageConfig }) => {
+const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageConfig, disabled }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -69,7 +70,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
   return (
     <UploadButton
       icon={loading ? <CircularProgress size={20} /> : <AttachFileIcon />}
-      disabled={loading}
+      disabled={loading || disabled}
       accept={acceptedFileTypes}
       onChange={e => {
         const file = e && e.target && e.target.files && e.target.files[0];

@@ -3036,6 +3036,10 @@ export const ProfileStorageConfigFragmentDoc = gql`
       id
       allowedMimeTypes
       maxFileSize
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 `;
@@ -23937,6 +23941,10 @@ export const PlatformStorageConfigDocument = gql`
         id
         allowedMimeTypes
         maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
       }
     }
   }

@@ -24242,7 +24242,15 @@ export type JourneyStorageConfigQuery = {
       __typename?: 'Profile';
       id: string;
       storageBucket?:
-        | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+        | {
+            __typename?: 'StorageBucket';
+            id: string;
+            allowedMimeTypes: Array<string>;
+            maxFileSize: number;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
         | undefined;
     };
     challenge?: {
@@ -24252,7 +24260,15 @@ export type JourneyStorageConfigQuery = {
         __typename?: 'Profile';
         id: string;
         storageBucket?:
-          | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+          | {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       };
     };
@@ -24263,7 +24279,15 @@ export type JourneyStorageConfigQuery = {
         __typename?: 'Profile';
         id: string;
         storageBucket?:
-          | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+          | {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       };
     };
@@ -24297,7 +24321,19 @@ export type CalloutStorageConfigQuery = {
                   __typename?: 'Profile';
                   id: string;
                   storageBucket?:
-                    | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+                    | {
+                        __typename?: 'StorageBucket';
+                        id: string;
+                        allowedMimeTypes: Array<string>;
+                        maxFileSize: number;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                      }
                     | undefined;
                 };
               }>
@@ -24324,6 +24360,13 @@ export type CalloutStorageConfigQuery = {
                           id: string;
                           allowedMimeTypes: Array<string>;
                           maxFileSize: number;
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
                         }
                       | undefined;
                   };
@@ -24352,6 +24395,13 @@ export type CalloutStorageConfigQuery = {
                           id: string;
                           allowedMimeTypes: Array<string>;
                           maxFileSize: number;
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
                         }
                       | undefined;
                   };
@@ -24400,6 +24450,13 @@ export type CalloutPostStorageConfigQuery = {
                               id: string;
                               allowedMimeTypes: Array<string>;
                               maxFileSize: number;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       };
@@ -24433,6 +24490,13 @@ export type CalloutPostStorageConfigQuery = {
                                 id: string;
                                 allowedMimeTypes: Array<string>;
                                 maxFileSize: number;
+                                authorization?:
+                                  | {
+                                      __typename?: 'Authorization';
+                                      id: string;
+                                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    }
+                                  | undefined;
                               }
                             | undefined;
                         };
@@ -24467,6 +24531,13 @@ export type CalloutPostStorageConfigQuery = {
                                 id: string;
                                 allowedMimeTypes: Array<string>;
                                 maxFileSize: number;
+                                authorization?:
+                                  | {
+                                      __typename?: 'Authorization';
+                                      id: string;
+                                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    }
+                                  | undefined;
                               }
                             | undefined;
                         };
@@ -24493,7 +24564,15 @@ export type UserStorageConfigQuery = {
       __typename?: 'Profile';
       id: string;
       storageBucket?:
-        | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+        | {
+            __typename?: 'StorageBucket';
+            id: string;
+            allowedMimeTypes: Array<string>;
+            maxFileSize: number;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
         | undefined;
     };
   };
@@ -24512,7 +24591,15 @@ export type OrganizationStorageConfigQuery = {
       __typename?: 'Profile';
       id: string;
       storageBucket?:
-        | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+        | {
+            __typename?: 'StorageBucket';
+            id: string;
+            allowedMimeTypes: Array<string>;
+            maxFileSize: number;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
         | undefined;
     };
   };
@@ -24538,7 +24625,19 @@ export type InnovationPackStorageConfigQuery = {
               __typename?: 'Profile';
               id: string;
               storageBucket?:
-                | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+                | {
+                    __typename?: 'StorageBucket';
+                    id: string;
+                    allowedMimeTypes: Array<string>;
+                    maxFileSize: number;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
                 | undefined;
             };
           }
@@ -24555,7 +24654,15 @@ export type PlatformStorageConfigQuery = {
     __typename?: 'Platform';
     id: string;
     storageBucket?:
-      | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+      | {
+          __typename?: 'StorageBucket';
+          id: string;
+          allowedMimeTypes: Array<string>;
+          maxFileSize: number;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
       | undefined;
   };
 };
@@ -24564,7 +24671,15 @@ export type ProfileStorageConfigFragment = {
   __typename?: 'Profile';
   id: string;
   storageBucket?:
-    | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+    | {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
     | undefined;
 };
 
@@ -24579,7 +24694,19 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
           __typename?: 'Profile';
           id: string;
           storageBucket?:
-            | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+            | {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
             | undefined;
         };
       }>
@@ -24601,7 +24728,19 @@ export type PostInCalloutOnCollaborationWithStorageConfigFragment = {
                 __typename?: 'Profile';
                 id: string;
                 storageBucket?:
-                  | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+                  | {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    }
                   | undefined;
               };
             }>
