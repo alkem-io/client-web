@@ -7,6 +7,7 @@ import { Theme } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
 import LinesFitter from '../LinesFitter/LinesFitter';
 import { CardText } from '../../../../core/ui/typography';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export interface TagsComponentProps extends BoxProps {
   tags: string[];
@@ -16,6 +17,10 @@ export interface TagsComponentProps extends BoxProps {
   color?: ChipProps['color'];
   size?: ChipProps['size'];
   variant?: ChipProps['variant'];
+  showAll?: boolean;
+  onClickTag?: (tag: string) => void;
+  onClickGroup?: ChipProps['onClick'];
+  onClickShowLess?: ChipProps['onClick'];
 }
 
 const getDefaultTagsContainerProps = (hasHeight?: boolean): Partial<BoxProps> => ({
@@ -35,6 +40,10 @@ const TagsComponent = ({
   size = 'small',
   variant = 'outlined',
   height,
+  showAll = false,
+  onClickTag,
+  onClickGroup,
+  onClickShowLess,
   ...tagsContainerProps
 }: TagsComponentProps) => {
   const { t } = useTranslation();
@@ -46,7 +55,14 @@ const TagsComponent = ({
   const renderTag = useCallback(
     (item: string, i: number) => (
       <Tooltip key={i} title={item} arrow placement="bottom">
-        <Chip label={item} color={color} size={size} variant={variant} sx={{ maxWidth: '100%' }} />
+        <Chip
+          label={item}
+          color={color}
+          size={size}
+          variant={variant}
+          sx={{ maxWidth: '100%' }}
+          onClick={onClickTag ? () => onClickTag(item) : undefined}
+        />
       </Tooltip>
     ),
     [color, size, variant]
@@ -68,12 +84,14 @@ const TagsComponent = ({
           size={size}
           onClick={event => {
             event.preventDefault();
-            setTooltipOpen(true);
+            onClickGroup ? onClickGroup(event) : setTooltipOpen(true);
           }}
         />
       </Tooltip>
     </ClickAwayListener>
   );
+
+  const renderShowLess = () => <Chip label={<ExpandLessIcon />} size={size} onClick={onClickShowLess} />;
 
   if (loading) {
     return (
@@ -91,6 +109,15 @@ const TagsComponent = ({
     return (
       <Box {...tagsContainerProps}>
         <CardText color="neutral.main">{t('components.tags-component.no-tags')}</CardText>
+      </Box>
+    );
+  }
+
+  if (showAll) {
+    return (
+      <Box {...getDefaultTagsContainerProps(false)} {...tagsContainerProps}>
+        {tags.map((tag, index) => renderTag(tag, index))}
+        {renderShowLess()}
       </Box>
     );
   }
