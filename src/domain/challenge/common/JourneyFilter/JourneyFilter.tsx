@@ -33,7 +33,13 @@ const JourneyFilter = <T extends Identifiable>({
   const [terms, setTerms] = useState<string[]>([]);
 
   const allValues = getAllValues(data, tagsGetter)
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) =>
+      a.count !== b.count
+        ? // Sort by count
+          b.count - a.count
+        : // And if equal, alphabetically
+          a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase())
+    )
     .map(element => element.term);
 
   const filteredData = useMemo(() => filterFn(data, terms, valueGetter), [data, terms, valueGetter]);
