@@ -24,8 +24,10 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
           description
         }
       }
-      lifecycle {
-        state
+      innovationFlow {
+        lifecycle {
+          state
+        }
       }
       context {
         ...ContextDetails

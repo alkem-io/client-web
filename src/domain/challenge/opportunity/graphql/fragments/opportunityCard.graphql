@@ -19,9 +19,11 @@ fragment OpportunityCard on Opportunity {
     name
     value
   }
-  lifecycle {
-    id
-    state
+  innovationFlow{
+    lifecycle {
+      id
+      state
+    }
   }
   context {
     ...ContextDetails

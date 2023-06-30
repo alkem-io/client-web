@@ -86,8 +86,10 @@ query AboutPageNonMembers(
         myPrivileges
       }
 
-      lifecycle {
-        ...LifecycleContextTab
+      innovationFlow {
+          lifecycle {
+          ...LifecycleContextTab
+        }
       }
       context {
         ...ContextTab
@@ -120,8 +122,10 @@ query AboutPageNonMembers(
           ...VisualFull
         }
       }
-      lifecycle {
-        ...LifecycleContextTab
+      innovationFlow {
+        lifecycle {
+          ...LifecycleContextTab
+        }
       }
       context {
         ...ContextTab

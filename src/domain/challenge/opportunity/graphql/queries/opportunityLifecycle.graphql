@@ -3,13 +3,15 @@ query opportunityLifecycle($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!)
     id
     opportunity(ID: $opportunityId) {
       id
-      lifecycle {
-        id
-        machineDef
-        state
-        nextEvents
-        stateIsFinal
-        templateName
+      innovationFlow {
+        lifecycle {
+          id
+          machineDef
+          state
+          nextEvents
+          stateIsFinal
+          templateName
+        }
       }
     }
   }
