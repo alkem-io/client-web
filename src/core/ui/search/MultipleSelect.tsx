@@ -104,6 +104,12 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (checkMaxTermsReached()) {
+      onChange(value.slice(0, MAX_TERMS_SEARCH));
+    }
+  }, [value.length]);
+
   const handleSelect = (term: string): void => {
     if (checkMaxTermsReached()) return;
     // If it's already selected:

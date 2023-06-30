@@ -64,7 +64,7 @@ const JourneyFilter = <T extends Identifiable>({
         justifyContent="end"
         height={gutters(2.5)}
         onClickTag={term => {
-          handleChange(uniq([...terms, term]));
+          setTerms(currentTerms => uniq([...currentTerms, term]));
         }}
         canShowAll
       />
