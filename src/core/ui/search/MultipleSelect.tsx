@@ -96,7 +96,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const handleTextInputChange: ChangeEventHandler<HTMLInputElement> = event => setTextInput(event.target.value);
 
   const checkMaxTermsReached = (): boolean => {
-    if (normalizedValue.length >= MAX_TERMS_SEARCH) {
+    if (normalizedValue.length === MAX_TERMS_SEARCH) {
       setTooltipShown(true);
       setTimeout(() => setTooltipShown(false), 5000);
       return true;

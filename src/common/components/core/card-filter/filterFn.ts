@@ -70,10 +70,9 @@ const toFlatValueType = ({ id, values }: ValueType): FlatValueType => ({
 });
 
 /**
- * Returns all the terms and the amount of times found in each element of data
- * @param data
- * @param valueGetter
- * @returns
+ * Returns all the tags/terms found in each data item and the amount of times that they appear
+ * @param data items to search for tags in.
+ * @param tagsGetter a function that will be called for each item to retrieve the tags and group them
  */
 export function getAllValues<T extends Identifiable>(
   data: T[],

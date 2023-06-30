@@ -33,10 +33,14 @@ const JourneyFilter = <T extends Identifiable>({
 }: CardFilterProps<T>) => {
   const [terms, setTerms] = useState<string[]>([]);
 
-  const allValues = getAllValues(data, tagsGetter)
-    .sort((a, b) => a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase()))
-    .sort((a, b) => b.count - a.count)
-    .map(element => element.term);
+  const allValues = useMemo(
+    () =>
+      getAllValues(data, tagsGetter)
+        .sort((a, b) => a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase()))
+        .sort((a, b) => b.count - a.count)
+        .map(element => element.term),
+    [data, tagsGetter]
+  );
 
   const filteredData = useMemo(
     () => filterFn(data, terms.slice(0, MAX_TERMS_SEARCH), valueGetter),
