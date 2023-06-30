@@ -3036,6 +3036,10 @@ export const ProfileStorageConfigFragmentDoc = gql`
       id
       allowedMimeTypes
       maxFileSize
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 `;
@@ -3770,12 +3774,59 @@ export type RemoveUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsSpaceAdminMutation,
   SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
 >;
-export const UploadFileDocument = gql`
-  mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
+export const UploadFileOnReferenceDocument = gql`
+  mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
     uploadFileOnReference(uploadData: $uploadData, file: $file) {
       id
       uri
     }
+  }
+`;
+export type UploadFileOnReferenceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadFileOnReferenceMutation,
+  SchemaTypes.UploadFileOnReferenceMutationVariables
+>;
+
+/**
+ * __useUploadFileOnReferenceMutation__
+ *
+ * To run a mutation, you first call `useUploadFileOnReferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileOnReferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileOnReferenceMutation, { data, loading, error }] = useUploadFileOnReferenceMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      uploadData: // value for 'uploadData'
+ *   },
+ * });
+ */
+export function useUploadFileOnReferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UploadFileOnReferenceMutation,
+    SchemaTypes.UploadFileOnReferenceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UploadFileOnReferenceMutation,
+    SchemaTypes.UploadFileOnReferenceMutationVariables
+  >(UploadFileOnReferenceDocument, options);
+}
+
+export type UploadFileOnReferenceMutationHookResult = ReturnType<typeof useUploadFileOnReferenceMutation>;
+export type UploadFileOnReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnReferenceMutation>;
+export type UploadFileOnReferenceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadFileOnReferenceMutation,
+  SchemaTypes.UploadFileOnReferenceMutationVariables
+>;
+export const UploadFileDocument = gql`
+  mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
+    uploadFileOnStorageBucket(uploadData: $uploadData, file: $file)
   }
 `;
 export type UploadFileMutationFn = Apollo.MutationFunction<
@@ -23880,6 +23931,74 @@ export function refetchInnovationPackStorageConfigQuery(
   variables: SchemaTypes.InnovationPackStorageConfigQueryVariables
 ) {
   return { query: InnovationPackStorageConfigDocument, variables: variables };
+}
+
+export const PlatformStorageConfigDocument = gql`
+  query PlatformStorageConfig {
+    platform {
+      id
+      storageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformStorageConfigQuery__
+ *
+ * To run a query within a React component, call `usePlatformStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformStorageConfigQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformStorageConfigQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformStorageConfigQuery,
+    SchemaTypes.PlatformStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformStorageConfigQuery, SchemaTypes.PlatformStorageConfigQueryVariables>(
+    PlatformStorageConfigDocument,
+    options
+  );
+}
+
+export function usePlatformStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformStorageConfigQuery,
+    SchemaTypes.PlatformStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformStorageConfigQuery, SchemaTypes.PlatformStorageConfigQueryVariables>(
+    PlatformStorageConfigDocument,
+    options
+  );
+}
+
+export type PlatformStorageConfigQueryHookResult = ReturnType<typeof usePlatformStorageConfigQuery>;
+export type PlatformStorageConfigLazyQueryHookResult = ReturnType<typeof usePlatformStorageConfigLazyQuery>;
+export type PlatformStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformStorageConfigQuery,
+  SchemaTypes.PlatformStorageConfigQueryVariables
+>;
+export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.PlatformStorageConfigQueryVariables) {
+  return { query: PlatformStorageConfigDocument, variables: variables };
 }
 
 export const CreateReferenceOnProfileDocument = gql`

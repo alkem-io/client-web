@@ -1287,6 +1287,7 @@ export type MutationKeySpecifier = (
   | 'updateWhiteboard'
   | 'updateWhiteboardTemplate'
   | 'uploadFileOnReference'
+  | 'uploadFileOnStorageBucket'
   | 'uploadImageOnVisual'
   | MutationKeySpecifier
 )[];
@@ -1442,6 +1443,7 @@ export type MutationFieldPolicy = {
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
