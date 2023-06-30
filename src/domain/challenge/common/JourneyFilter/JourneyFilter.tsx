@@ -12,6 +12,7 @@ import { BlockTitle } from '../../../../core/ui/typography';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { uniq } from 'lodash';
+import { MAX_TERMS_SEARCH } from '../../../platform/search/SearchView';
 
 export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {
   data: T[];
@@ -33,16 +34,14 @@ const JourneyFilter = <T extends Identifiable>({
   const [terms, setTerms] = useState<string[]>([]);
 
   const allValues = getAllValues(data, tagsGetter)
-    .sort((a, b) =>
-      a.count !== b.count
-        ? // Sort by count
-          b.count - a.count
-        : // And if equal, alphabetically
-          a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase())
-    )
+    .sort((a, b) => a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase()))
+    .sort((a, b) => b.count - a.count)
     .map(element => element.term);
 
-  const filteredData = useMemo(() => filterFn(data, terms, valueGetter), [data, terms, valueGetter]);
+  const filteredData = useMemo(
+    () => filterFn(data, terms.slice(0, MAX_TERMS_SEARCH), valueGetter),
+    [data, terms, valueGetter]
+  );
 
   const handleChange = (value: string[]) => {
     setTerms(value);
