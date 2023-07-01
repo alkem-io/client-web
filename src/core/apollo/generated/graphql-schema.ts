@@ -410,14 +410,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type AssignChallengeAdminInput = {
   challengeID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -1241,7 +1233,8 @@ export type CreateInnovationPackOnLibraryInput = {
 export type CreateInvitationExistingUserOnCommunityInput = {
   communityID: Scalars['UUID'];
   /** The identifier for the user being invited. */
-  invitedUser: Scalars['UUID'];
+  invitedUsers: Array<Scalars['UUID']>;
+  welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateInvitationExternalUserOnCommunityInput = {
@@ -1710,16 +1703,6 @@ export type Groupable = {
   groups?: Maybe<Array<UserGroup>>;
 };
 
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
-};
-
 export type ISearchResults = {
   __typename?: 'ISearchResults';
   /** The search results for contributions (Posts, Whiteboards etc). */
@@ -1810,6 +1793,7 @@ export type Invitation = {
   updatedDate: Scalars['DateTime'];
   /** The User who is invited. */
   user: User;
+  welcomeMessage?: Maybe<Scalars['String']>;
 };
 
 export type InvitationEventInput = {
@@ -1832,6 +1816,7 @@ export type InvitationExternal = {
   lastName: Scalars['String'];
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean'];
+  welcomeMessage?: Maybe<Scalars['String']>;
 };
 
 export type InvitationForRoleResult = {
@@ -2130,7 +2115,7 @@ export type Mutation = {
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
   /** Invite an existing User to join the specified Community as a member. */
-  inviteExistingUserForCommunityMembership: Invitation;
+  inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
   inviteExternalUserForCommunityMembership: InvitationExternal;
   /** Join the specified Community as a member, without going through an approval process. */
@@ -2251,7 +2236,7 @@ export type Mutation = {
   updateWhiteboardTemplate: WhiteboardTemplate;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
   uploadFileOnReference: Reference;
-  /** Create a new Document on the Storage and return the value as part of the returned Reference. */
+  /** Create a new Document on the Storage and return the public Url. */
   uploadFileOnStorageBucket: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
@@ -10521,11 +10506,20 @@ export type BannerInnovationHubQuery = {
   };
 };
 
-export type SpaceApplicationsQueryVariables = Exact<{
+export type SpaceDisplayNameQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
 
-export type SpaceApplicationsQuery = {
+export type SpaceDisplayNameQuery = {
+  __typename?: 'Query';
+  space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+};
+
+export type SpaceApplicationsInvitationsQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceApplicationsInvitationsQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -10562,12 +10556,42 @@ export type SpaceApplicationsQuery = {
                 questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
               }>
             | undefined;
+          invitations?:
+            | Array<{
+                __typename?: 'Invitation';
+                id: string;
+                createdDate: Date;
+                updatedDate: Date;
+                lifecycle: {
+                  __typename?: 'Lifecycle';
+                  id: string;
+                  state?: string | undefined;
+                  nextEvents?: Array<string> | undefined;
+                };
+                user: {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  email: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                };
+              }>
+            | undefined;
+          invitationsExternal?:
+            | Array<{ __typename?: 'InvitationExternal'; id: string; createdDate: Date; email: string }>
+            | undefined;
         }
       | undefined;
   };
 };
 
-export type ApplicationInfoFragment = {
+export type AdminSpaceCommunityApplicationFragment = {
   __typename?: 'Application';
   id: string;
   createdDate: Date;
@@ -10592,6 +10616,53 @@ export type ApplicationInfoFragment = {
     };
   };
   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+};
+
+export type AdminSpaceCommunityInvitationFragment = {
+  __typename?: 'Invitation';
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  lifecycle: {
+    __typename?: 'Lifecycle';
+    id: string;
+    state?: string | undefined;
+    nextEvents?: Array<string> | undefined;
+  };
+  user: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    email: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+};
+
+export type AdminSpaceCommunityInvitationExternalFragment = {
+  __typename?: 'InvitationExternal';
+  id: string;
+  createdDate: Date;
+  email: string;
+};
+
+export type AdminSpaceCommunityCandidateMemberFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  email: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  };
 };
 
 export type CalloutPageCalloutQueryVariables = Exact<{
@@ -21519,6 +21590,65 @@ export type UserListQuery = {
     }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
+};
+
+export type DeleteInvitationMutationVariables = Exact<{
+  invitationId: Scalars['UUID'];
+}>;
+
+export type DeleteInvitationMutation = {
+  __typename?: 'Mutation';
+  deleteInvitation: { __typename?: 'Invitation'; id: string };
+};
+
+export type DeleteExternalInvitationMutationVariables = Exact<{
+  invitationId: Scalars['UUID'];
+}>;
+
+export type DeleteExternalInvitationMutation = {
+  __typename?: 'Mutation';
+  deleteInvitationExternal: { __typename?: 'InvitationExternal'; id: string };
+};
+
+export type InvitationStateEventMutationVariables = Exact<{
+  eventName: Scalars['String'];
+  invitationId: Scalars['UUID'];
+}>;
+
+export type InvitationStateEventMutation = {
+  __typename?: 'Mutation';
+  eventOnCommunityInvitation: {
+    __typename?: 'Application';
+    id: string;
+    lifecycle: {
+      __typename?: 'Lifecycle';
+      id: string;
+      nextEvents?: Array<string> | undefined;
+      state?: string | undefined;
+    };
+  };
+};
+
+export type InviteExistingUserMutationVariables = Exact<{
+  userIds: Array<Scalars['UUID']> | Scalars['UUID'];
+  communityId: Scalars['UUID'];
+  message?: InputMaybe<Scalars['String']>;
+}>;
+
+export type InviteExistingUserMutation = {
+  __typename?: 'Mutation';
+  inviteExistingUserForCommunityMembership: Array<{ __typename?: 'Invitation'; id: string }>;
+};
+
+export type InviteExternalUserMutationVariables = Exact<{
+  email: Scalars['String'];
+  communityId: Scalars['UUID'];
+  message?: InputMaybe<Scalars['String']>;
+}>;
+
+export type InviteExternalUserMutation = {
+  __typename?: 'Mutation';
+  inviteExternalUserForCommunityMembership: { __typename?: 'InvitationExternal'; id: string };
 };
 
 export type SpaceContributionDetailsQueryVariables = Exact<{

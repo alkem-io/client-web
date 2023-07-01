@@ -1,0 +1,80 @@
+query spaceApplicationsInvitations($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    community {
+      id
+      applications {
+        ...AdminSpaceCommunityApplication
+      }
+      invitations {
+        ...AdminSpaceCommunityInvitation
+      }
+      invitationsExternal {
+        ...AdminSpaceCommunityInvitationExternal
+      }
+    }
+  }
+}
+
+fragment AdminSpaceCommunityApplication on Application {
+  id
+  createdDate
+  updatedDate
+  lifecycle {
+    id
+    state
+    nextEvents
+  }
+  user {
+    ...AdminSpaceCommunityCandidateMember
+  }
+  questions {
+    id
+    name
+    value
+  }
+}
+
+fragment AdminSpaceCommunityInvitation on Invitation {
+  id
+  createdDate
+  updatedDate
+  lifecycle {
+    id
+    state
+    nextEvents
+  }
+  user {
+    ...AdminSpaceCommunityCandidateMember
+  }
+}
+
+fragment AdminSpaceCommunityInvitationExternal on InvitationExternal {
+  id
+  createdDate
+  #updatedDate
+  email
+  #lifecycle {
+  #  id
+  #  state
+  #  nextEvents
+  #}
+}
+
+fragment AdminSpaceCommunityCandidateMember on User {
+  id
+  nameID
+  email
+  profile {
+    id
+    displayName
+    visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
+  }
+}

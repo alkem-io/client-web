@@ -7,7 +7,7 @@ import {
   useAssignUserAsCommunityMemberMutation,
   useAssignUserAsSpaceAdminMutation,
   useEventOnApplicationMutation,
-  useSpaceApplicationsQuery,
+  useSpaceApplicationsInvitationsQuery,
   useSpaceAvailableMemberUsersLazyQuery,
   useSpaceCommunityMembersQuery,
   useRemoveOrganizationAsCommunityLeadMutation,
@@ -16,10 +16,15 @@ import {
   useRemoveUserAsCommunityMemberMutation,
   useRemoveUserAsSpaceAdminMutation,
   useUsersWithCredentialsQuery,
+  useInvitationStateEventMutation,
+  useSpaceDisplayNameQuery,
+  useDeleteInvitationMutation,
+  useDeleteExternalInvitationMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationCredential, AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityUsers';
+import useInviteUsers from '../../../../community/invitations/useInviteUsers';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -62,6 +67,14 @@ const useSpaceCommunityContext = (spaceId: string) => {
     ),
   };
 
+  const { data: spaceDisplayNameData } = useSpaceDisplayNameQuery({
+    variables: {
+      spaceId,
+    },
+  });
+
+  const spaceDisplayName = spaceDisplayNameData?.space.profile.displayName;
+
   const {
     data: dataAdmins,
     loading: loadingAdmins,
@@ -75,7 +88,11 @@ const useSpaceCommunityContext = (spaceId: string) => {
     },
   });
 
-  const { data: dataApplications, loading: loadingApplications } = useSpaceApplicationsQuery({
+  const {
+    data: dataApplications,
+    loading: loadingApplications,
+    refetch: refetchApplicationsAndInvitations,
+  } = useSpaceApplicationsInvitationsQuery({
     variables: { spaceId },
   });
 
@@ -328,13 +345,58 @@ const useSpaceCommunityContext = (spaceId: string) => {
     return refetchCommunityMembers();
   };
 
+  const onInviteUser = async () => {
+    await refetchApplicationsAndInvitations();
+  };
+
+  const { inviteExistingUser, inviteExternalUser } = useInviteUsers(communityId, {
+    onInviteExistingUser: onInviteUser,
+    onInviteExternalUser: onInviteUser,
+  });
+
+  const [sendInvitationStateEvent] = useInvitationStateEventMutation();
+
+  const [deleteInvitation] = useDeleteInvitationMutation();
+  const [deleteExternalInvitation] = useDeleteExternalInvitationMutation();
+
+  const handleInvitationStateChange = async (invitationId: string, eventName: string) => {
+    await sendInvitationStateEvent({
+      variables: {
+        invitationId,
+        eventName,
+      },
+    });
+    await refetchApplicationsAndInvitations();
+  };
+
+  const handleDeleteInvitation = async (invitationId: string) => {
+    await deleteInvitation({
+      variables: {
+        invitationId,
+      },
+    });
+    await refetchApplicationsAndInvitations();
+  };
+  const handleDeleteInvitationExternal = async (invitationId: string) => {
+    await deleteExternalInvitation({
+      variables: {
+        invitationId,
+      },
+    });
+    await refetchApplicationsAndInvitations();
+  };
+
   return {
     users,
     organizations,
     communityPolicy,
     permissions,
+    spaceDisplayName,
     applications: dataApplications?.space.community?.applications,
+    invitations: dataApplications?.space.community?.invitations,
+    invitationsExternal: dataApplications?.space.community?.invitationsExternal,
     onApplicationStateChange: handleApplicationStateChange,
+    onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,
     onUserAuthorizationChange: handleUserAuthorizationChange,
     onOrganizationLeadChange: onOrganizationLeadChange,
@@ -342,8 +404,12 @@ const useSpaceCommunityContext = (spaceId: string) => {
     onAddOrganization: handleAddOrganization,
     onRemoveUser: handleRemoveUser,
     onRemoveOrganization: handleRemoveOrganization,
+    onDeleteInvitation: handleDeleteInvitation,
+    onDeleteInvitationExternal: handleDeleteInvitationExternal,
     getAvailableUsers,
     getAvailableOrganizations,
+    inviteExistingUser,
+    inviteExternalUser,
     loading: loadingAdmins || loadingMembers || loadingApplications,
   };
 };

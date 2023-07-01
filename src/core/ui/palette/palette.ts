@@ -6,6 +6,7 @@ const COLOR_POSITIVE_CONTAINER = '#CDE7ED';
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#065F6B' },
   secondary: { main: '#00a88f' },
+  muted: { main: '#A8A8A8' },
   text: {
     primary: '#000000',
   },
@@ -46,6 +47,7 @@ declare module '@mui/material/styles/createPalette' {
     positive: PaletteColorOptions;
     negative: PaletteColorOptions;
     neutral: PaletteColorOptions;
+    muted: PaletteColorOptions;
     neutralMedium: PaletteColorOptions;
     neutralLight: PaletteColorOptions;
     highlight: PaletteColorOptions;
@@ -57,6 +59,7 @@ declare module '@mui/material/styles/createPalette' {
     positive: PaletteColor;
     negative: PaletteColor;
     neutral: PaletteColor;
+    muted: PaletteColor;
     neutralMedium: PaletteColor;
     neutralLight: PaletteColor;
     highlight: PaletteColor;
