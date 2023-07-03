@@ -50,6 +50,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
   childEntityReadAccess,
   renderChildEntityCard,
   childEntityValueGetter,
+  childEntityTagsGetter,
   getChildEntityUrl,
   childEntityCreateAccess = false,
   childEntityOnCreate,
@@ -109,6 +110,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                 <JourneyFilter
                   data={childEntities}
                   valueGetter={childEntityValueGetter}
+                  tagsGetter={childEntityTagsGetter}
                   title={t('common.all-entities', {
                     entityType: t(getJourneyChildrenTranslationKey(journeyTypeName)),
                     count: childEntities.length,
