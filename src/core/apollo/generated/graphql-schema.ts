@@ -2206,6 +2206,8 @@ export type Mutation = {
   updateEcosystemModel: EcosystemModel;
   /** Updates the InnovationFlow. */
   updateInnovationFlow: InnovationFlow;
+  /** Updates the template for the specified Innovation Flow. */
+  updateInnovationFlowLifecycleTemplate: InnovationFlow;
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Update Innovation Hub. */
@@ -2748,6 +2750,10 @@ export type MutationUpdateEcosystemModelArgs = {
 
 export type MutationUpdateInnovationFlowArgs = {
   innovationFlowData: UpdateInnovationFlowInput;
+};
+
+export type MutationUpdateInnovationFlowLifecycleTemplateArgs = {
+  innovationFlowData: UpdateInnovationFlowLifecycleTemplateInput;
 };
 
 export type MutationUpdateInnovationFlowTemplateArgs = {
@@ -4359,6 +4365,13 @@ export type UpdateInnovationFlowInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UpdateInnovationFlowLifecycleTemplateInput = {
+  /** ID of the Innovation Flow */
+  innovationFlowID: Scalars['UUID'];
+  /** The Innovation Flow Template to use for updating the lifecycle used in this Innovation Flow. */
+  innovationFlowTemplateID: Scalars['UUID'];
+};
+
 export type UpdateInnovationFlowTemplateInput = {
   ID: Scalars['UUID'];
   /** The XState definition for this InnovationFlowTemplate. */
@@ -5014,6 +5027,7 @@ export type ChallengeCardFragment = {
   innovationFlow?:
     | {
         __typename?: 'InnovationFlow';
+        id: string;
         lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
       }
     | undefined;
@@ -5060,6 +5074,7 @@ export type ChallengePageQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?:
               | {
                   __typename?: 'Lifecycle';
@@ -5342,6 +5357,7 @@ export type ChallengePageQuery = {
             innovationFlow?:
               | {
                   __typename?: 'InnovationFlow';
+                  id: string;
                   lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
                 }
               | undefined;
@@ -5413,6 +5429,7 @@ export type ChallengeProfileFragment = {
   innovationFlow?:
     | {
         __typename?: 'InnovationFlow';
+        id: string;
         lifecycle?:
           | {
               __typename?: 'Lifecycle';
@@ -5686,6 +5703,7 @@ export type ChallengeProfileFragment = {
         innovationFlow?:
           | {
               __typename?: 'InnovationFlow';
+              id: string;
               lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
             }
           | undefined;
@@ -5843,6 +5861,7 @@ export type OpportunitiesOnChallengeFragment = {
         innovationFlow?:
           | {
               __typename?: 'InnovationFlow';
+              id: string;
               lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
             }
           | undefined;
@@ -5901,6 +5920,7 @@ export type CreateChallengeMutation = {
     innovationFlow?:
       | {
           __typename?: 'InnovationFlow';
+          id: string;
           lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
         }
       | undefined;
@@ -6028,6 +6048,7 @@ export type ChallengeCardQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
           }
         | undefined;
@@ -6064,6 +6085,7 @@ export type ChallengeCardsQuery = {
           innovationFlow?:
             | {
                 __typename?: 'InnovationFlow';
+                id: string;
                 lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
               }
             | undefined;
@@ -6162,6 +6184,7 @@ export type ChallengeLifecycleQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?:
               | {
                   __typename?: 'Lifecycle';
@@ -6240,7 +6263,8 @@ export type ChallengeProfileInfoQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
-            lifecycle?: { __typename?: 'Lifecycle'; state?: string | undefined } | undefined;
+            id: string;
+            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
           }
         | undefined;
       context?:
@@ -6300,6 +6324,7 @@ export type OpportunityCreatedSubscription = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
           }
         | undefined;
@@ -6330,6 +6355,19 @@ export type OpportunityCreatedSubscription = {
           }>
         | undefined;
     };
+  };
+};
+
+export type UpdateInnovationFlowLifecycleTemplateMutationVariables = Exact<{
+  input: UpdateInnovationFlowLifecycleTemplateInput;
+}>;
+
+export type UpdateInnovationFlowLifecycleTemplateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowLifecycleTemplate: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 
@@ -6458,6 +6496,7 @@ export type AboutPageNonMembersQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?:
               | { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string }
               | undefined;
@@ -6514,6 +6553,7 @@ export type AboutPageNonMembersQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?:
               | { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string }
               | undefined;
@@ -8009,6 +8049,7 @@ export type OpportunityCardFragment = {
   innovationFlow?:
     | {
         __typename?: 'InnovationFlow';
+        id: string;
         lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
       }
     | undefined;
@@ -8074,6 +8115,7 @@ export type CreateOpportunityMutation = {
     innovationFlow?:
       | {
           __typename?: 'InnovationFlow';
+          id: string;
           lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
         }
       | undefined;
@@ -8286,6 +8328,7 @@ export type OpportunityCardsQuery = {
             innovationFlow?:
               | {
                   __typename?: 'InnovationFlow';
+                  id: string;
                   lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
                 }
               | undefined;
@@ -8409,6 +8452,7 @@ export type OpportunityLifecycleQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?:
               | {
                   __typename?: 'Lifecycle';
@@ -8511,6 +8555,7 @@ export type OpportunityProfileInfoQuery = {
               | undefined;
           }
         | undefined;
+      innovationFlow?: { __typename?: 'InnovationFlow'; id: string } | undefined;
     };
   };
 };
@@ -9241,6 +9286,7 @@ export type SpacePageQuery = {
           innovationFlow?:
             | {
                 __typename?: 'InnovationFlow';
+                id: string;
                 lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
               }
             | undefined;
@@ -9577,6 +9623,7 @@ export type SpacePageFragment = {
         innovationFlow?:
           | {
               __typename?: 'InnovationFlow';
+              id: string;
               lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
             }
           | undefined;
@@ -9635,6 +9682,7 @@ export type SpaceDashboardNavigationChallengesQuery = {
           innovationFlow?:
             | {
                 __typename?: 'InnovationFlow';
+                id: string;
                 lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
               }
             | undefined;
@@ -9682,6 +9730,7 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                 innovationFlow?:
                   | {
                       __typename?: 'InnovationFlow';
+                      id: string;
                       lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
                     }
                   | undefined;
@@ -10045,6 +10094,7 @@ export type ChallengesOnSpaceFragment = {
         innovationFlow?:
           | {
               __typename?: 'InnovationFlow';
+              id: string;
               lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
             }
           | undefined;
@@ -10611,6 +10661,7 @@ export type ChallengeCreatedSubscription = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
+            id: string;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
           }
         | undefined;

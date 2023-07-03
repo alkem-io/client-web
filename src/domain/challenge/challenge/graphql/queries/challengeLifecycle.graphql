@@ -4,6 +4,7 @@ query challengeLifecycle($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       innovationFlow{
+        id
         lifecycle {
           id
           machineDef

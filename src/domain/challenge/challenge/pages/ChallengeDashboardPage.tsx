@@ -87,7 +87,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   displayName={opportunity.profile.displayName}
                   tagline={opportunity.profile.tagline!}
                   vision={opportunity.context?.vision!}
-                  innovationFlowState={opportunity.lifecycle?.state}
+                  innovationFlowState={opportunity.innovationFlow?.lifecycle?.state}
                   tags={opportunity.profile.tagset?.tags!}
                   banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
                   journeyUri={buildOpportunityUrl(entities.spaceNameId, entities.challenge!.nameID, opportunity.nameID)}

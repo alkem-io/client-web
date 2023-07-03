@@ -87,6 +87,7 @@ query AboutPageNonMembers(
       }
 
       innovationFlow {
+          id
           lifecycle {
           ...LifecycleContextTab
         }
@@ -123,6 +124,7 @@ query AboutPageNonMembers(
         }
       }
       innovationFlow {
+        id
         lifecycle {
           ...LifecycleContextTab
         }

@@ -33,6 +33,7 @@ fragment ChallengeProfile on Challenge {
     myPrivileges
   }
   innovationFlow {
+    id
     lifecycle {
       id
       machineDef

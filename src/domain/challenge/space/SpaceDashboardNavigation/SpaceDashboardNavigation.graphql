@@ -11,6 +11,7 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
         ...SpaceDashboardNavigationContext
       }
       innovationFlow{
+        id
         lifecycle {
           ...SpaceDashboardNavigationLifecycle
         }
@@ -43,6 +44,7 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeId
           ...SpaceDashboardNavigationContext
         }
         innovationFlow{
+          id
           lifecycle {
             ...SpaceDashboardNavigationLifecycle
           }

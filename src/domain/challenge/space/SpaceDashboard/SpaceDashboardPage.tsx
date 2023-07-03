@@ -95,7 +95,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   tags={challenge.profile.tagset?.tags!}
                   tagline={challenge.profile.tagline!}
                   vision={challenge.context?.vision!}
-                  innovationFlowState={challenge.lifecycle?.state}
+                  innovationFlowState={challenge.innovationFlow?.lifecycle?.state}
                   journeyUri={buildChallengeUrl(entities.space!.nameID, challenge.nameID)}
                   spaceDisplayName={entities.space!.profile.displayName}
                   spaceUri={buildSpaceUrl(entities.space!.nameID)}
