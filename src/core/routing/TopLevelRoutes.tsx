@@ -90,14 +90,7 @@ export const TopLevelRoutes: FC = () => {
             </NonIdentity>
           }
         />
-        <Route
-          path="/identity/*"
-          element={
-            <WithApmTransaction path="/identity/*">
-              <IdentityRoute />
-            </WithApmTransaction>
-          }
-        />
+        {IdentityRoute()}
         <Route
           path={`/user/:${nameOfUrl.userNameId}/*`}
           element={

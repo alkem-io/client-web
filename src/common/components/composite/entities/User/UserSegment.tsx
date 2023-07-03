@@ -21,6 +21,7 @@ import UserAvatar from './UserAvatar';
 import { UserMetadata } from '../../../../../domain/community/contributor/user/hooks/useUserMetadataWrapper';
 import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
 
 const PREFIX = 'UserSegment';
 
@@ -129,7 +130,7 @@ const UserSegment = <El extends ElementType>({
               <ListItemButton
                 onClick={() => {
                   setDropdownOpen(false);
-                  navigate('/identity/logout', { replace: true });
+                  navigate(AUTH_LOGOUT_PATH, { replace: true });
                 }}
               >
                 <ListItemIcon>
