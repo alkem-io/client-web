@@ -14,6 +14,18 @@ import SignUp from '../pages/SignUp';
 import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
 import { useConfig } from '../../../../domain/platform/config/useConfig';
 
+const IdentityLocations = [
+  '/login',
+  '/logout',
+  '/sign_up',
+  '/registration',
+  '/verify',
+  '/recovery',
+  '/required',
+  '/settings',
+  '/error',
+];
+
 export const IdentityRoute = () => {
   const config = useConfig();
 
@@ -26,8 +38,10 @@ export const IdentityRoute = () => {
   useLayoutEffect(() => {
     if (identityOrigin && !isOnIdentityOrigin) {
       const { pathname, search } = window.location;
-
-      window.location.replace(`${identityOrigin}${pathname}${search}`);
+      if (IdentityLocations.some(location => pathname.startsWith(location))) {
+        window.location.replace(`${identityOrigin}${pathname}${search}`);
+        return;
+      }
     }
   }, [isOnIdentityOrigin]);
 
