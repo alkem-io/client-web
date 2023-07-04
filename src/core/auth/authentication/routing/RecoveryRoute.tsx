@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useQueryParams } from '../../../routing/useQueryParams';
 import RecoveryPage from '../pages/RecoveryPage';
+import { AUTH_RESET_PASSWORD_REQUEST } from '../constants/authentication.constants';
 
 interface RecoveryRouteProps {}
 
@@ -9,7 +10,7 @@ export const RecoveryRoute: FC<RecoveryRouteProps> = () => {
   const flow = params.get('flow');
 
   if (!flow) {
-    window.location.replace('/identity/ory/kratos/public/self-service/recovery/browser');
+    window.location.replace(AUTH_RESET_PASSWORD_REQUEST);
     return null;
   }
 

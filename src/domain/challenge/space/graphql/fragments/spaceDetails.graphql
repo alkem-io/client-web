@@ -24,7 +24,9 @@ fragment SpaceDetails on Space {
       ...fullLocation
     }
   }
-
+  host {
+    id
+  }
   authorization {
     id
     anonymousReadAccess

@@ -8885,6 +8885,7 @@ export type SpaceProviderQuery = {
           }
         | undefined;
     };
+    host?: { __typename?: 'Organization'; id: string } | undefined;
   };
 };
 
@@ -8963,6 +8964,7 @@ export type SpaceInfoFragment = {
         }
       | undefined;
   };
+  host?: { __typename?: 'Organization'; id: string } | undefined;
 };
 
 export type SpaceHostQueryVariables = Exact<{
@@ -10142,6 +10144,7 @@ export type SpaceDetailsFragment = {
         }
       | undefined;
   };
+  host?: { __typename?: 'Organization'; id: string } | undefined;
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   context?:
     | {
@@ -10242,6 +10245,7 @@ export type CreateSpaceMutation = {
           }
         | undefined;
     };
+    host?: { __typename?: 'Organization'; id: string } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     context?:
       | {
@@ -10318,6 +10322,7 @@ export type UpdateSpaceMutation = {
           }
         | undefined;
     };
+    host?: { __typename?: 'Organization'; id: string } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     context?:
       | {
