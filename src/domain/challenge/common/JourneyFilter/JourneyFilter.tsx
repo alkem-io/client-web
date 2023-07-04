@@ -61,9 +61,15 @@ const JourneyFilter = <T extends Identifiable>({
 
   return (
     <>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="space-between" flexWrap="wrap" gap={gutters(0.5)}>
         <BlockTitle>{title}</BlockTitle>
-        <MultipleSelect onChange={handleChange} value={terms} minLength={2} size="xsmall" />
+        <MultipleSelect
+          onChange={handleChange}
+          value={terms}
+          minLength={2}
+          size="xsmall"
+          containerProps={{ marginLeft: 'auto', maxWidth: '100%', overflow: 'hidden' }}
+        />
       </Box>
       <TagsComponent
         tags={allValues}
