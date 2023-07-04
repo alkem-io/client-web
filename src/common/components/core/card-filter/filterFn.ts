@@ -78,20 +78,20 @@ export function getAllValues<T extends Identifiable>(
   data: T[],
   tagsGetter: (element: T) => string[]
 ): { term: string; count: number }[] {
-  const result: { term: string; count: number }[] = [];
+  const result: Record<string, { term: string; count: number }> = {};
   data.forEach(element => {
     const terms = tagsGetter(element);
     terms.forEach(term => {
-      const item = result.find(i => i.term === term);
+      const item = result[term.toLocaleLowerCase()];
       if (item) {
         item.count++;
       } else {
-        result.push({
+        result[term.toLocaleLowerCase()] = {
           term,
           count: 1,
-        });
+        };
       }
     });
   });
-  return result;
+  return Object.values(result);
 }

@@ -46,7 +46,14 @@ const SelectedTerms: FC<SelectedTermsProps> = ({
   handleRemove,
 }) => {
   return (
-    <Box flex={5} display="flex" flexWrap="nowrap" justifyContent="flex-end" gap={gutters(0.5)} margin={gutters(0.5)}>
+    <Box
+      display="flex"
+      flexWrap="nowrap"
+      justifyContent="flex-end"
+      gap={gutters(0.5)}
+      margin={gutters(0.5)}
+      maxWidth="40%"
+    >
       {selectedTerms.slice(0, maxTermsVisible).map((term, index) => (
         <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
       ))}
