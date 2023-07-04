@@ -1007,6 +1007,7 @@ export type InvitationKeySpecifier = (
   | 'lifecycle'
   | 'updatedDate'
   | 'user'
+  | 'welcomeMessage'
   | InvitationKeySpecifier
 )[];
 export type InvitationFieldPolicy = {
@@ -1017,6 +1018,7 @@ export type InvitationFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationExternalKeySpecifier = (
   | 'authorization'
@@ -1027,6 +1029,7 @@ export type InvitationExternalKeySpecifier = (
   | 'id'
   | 'lastName'
   | 'profileCreated'
+  | 'welcomeMessage'
   | InvitationExternalKeySpecifier
 )[];
 export type InvitationExternalFieldPolicy = {
@@ -1038,6 +1041,7 @@ export type InvitationExternalFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationForRoleResultKeySpecifier = (
   | 'challengeID'
