@@ -30,7 +30,6 @@ const OpportunityInnovationFlowView: FC = () => {
   });
 
   const opportunity = opportunityProfile?.space?.opportunity;
-  const opportunityId = opportunity?.id;
   const innovationFlowID = opportunity?.innovationFlow?.id;
 
   const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowLifecycleTemplateMutation({
@@ -57,13 +56,13 @@ const OpportunityInnovationFlowView: FC = () => {
     <Grid container spacing={2}>
       <OpportunityLifecycleContainer spaceNameId={spaceNameId} opportunityNameId={opportunityNameId}>
         {({ loading, ...provided }) => {
-          if (loading || !opportunityId) {
+          if (loading || !innovationFlowID) {
             return <Loading text="Loading" />;
           }
 
           return (
             <UpdateInnovationFlow
-              entityId={opportunityId}
+              entityId={innovationFlowID}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}
               {...provided}

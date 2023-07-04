@@ -29,7 +29,6 @@ const ChallengeInnovationFlowView: FC = () => {
     skip: !spaceNameId || !challengeNameId,
   });
   const challenge = challengeProfile?.space?.challenge;
-  const challengeId = challenge?.id;
   const innovationFlowID = challenge?.innovationFlow?.id;
 
   const [updateChallengeInnovationFlowTemplate] = useUpdateInnovationFlowLifecycleTemplateMutation({
@@ -56,13 +55,13 @@ const ChallengeInnovationFlowView: FC = () => {
     <Grid container spacing={2}>
       <ChallengeLifecycleContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
         {({ loading, ...provided }) => {
-          if (loading || !challengeId) {
+          if (loading || !innovationFlowID) {
             return <Loading text="Loading" />;
           }
 
           return (
             <UpdateInnovationFlow
-              entityId={challengeId}
+              entityId={innovationFlowID}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}
               {...provided}
