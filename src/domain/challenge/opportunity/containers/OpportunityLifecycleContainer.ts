@@ -12,7 +12,7 @@ import {
 interface OpportunityLifecycleContainerProvided {
   lifecycle: Lifecycle | undefined;
   loading: boolean;
-  onSetNewState: (opportunityId: string, nextState: string) => void;
+  onSetNewState: (innovationFlowId: string, nextState: string) => void;
 }
 
 type OpportunityLifecycleContainerProps = ComponentOrChildrenFn<OpportunityLifecycleContainerProvided> & {
@@ -31,14 +31,15 @@ const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
     nextFetchPolicy: 'cache-first',
   });
 
-  const lifecycle = data?.space.opportunity?.lifecycle;
+  const innovationFlow = data?.space.opportunity?.innovationFlow;
+  const lifecycle = innovationFlow?.lifecycle;
 
   const [updateOpportunityLifecycle] = useEventOnOpportunityMutation({});
 
-  const setNextState = (opportunityId: string, nextState: string) =>
+  const setNextState = (innovationFlowId: string, nextState: string) =>
     updateOpportunityLifecycle({
       variables: {
-        opportunityId,
+        innovationFlowId,
         eventName: nextState,
       },
     });

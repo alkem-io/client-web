@@ -39,12 +39,14 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  lifecycle {
-    id
-    machineDef
-    state
-    nextEvents
-    stateIsFinal
+  innovationFlow{
+    lifecycle {
+      id
+      machineDef
+      state
+      nextEvents
+      stateIsFinal
+    }
   }
   collaboration {
     id

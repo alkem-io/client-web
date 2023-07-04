@@ -72,6 +72,8 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const normalizedValue = value.slice(0, MAX_TERMS_SEARCH);
+
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const [isShrunk, setShrink] = useState<boolean>();
   useLayoutEffect(() => {
@@ -91,10 +93,10 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
   const [textInput, setTextInput] = useState('');
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = event => setTextInput(event.target.value);
+  const handleTextInputChange: ChangeEventHandler<HTMLInputElement> = event => setTextInput(event.target.value);
 
   const checkMaxTermsReached = (): boolean => {
-    if (value.length >= MAX_TERMS_SEARCH) {
+    if (normalizedValue.length === MAX_TERMS_SEARCH) {
       setTooltipShown(true);
       setTimeout(() => setTooltipShown(false), 5000);
       return true;
@@ -104,34 +106,41 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (value.length > MAX_TERMS_SEARCH) {
+      setTooltipShown(true);
+      setTimeout(() => setTooltipShown(false), 5000);
+    }
+  }, [value.length]);
+
   const handleSelect = (term: string): void => {
     if (checkMaxTermsReached()) return;
     // If it's already selected:
-    if (value.find(el => el === term)) return;
+    if (normalizedValue.find(el => el === term)) return;
     // If it's empty or whitespace
     if (!term.trim()) return;
     if (disabled) return;
 
-    const newSelected = filterTerms([...value, term]);
+    const newSelected = filterTerms([...normalizedValue, term]);
 
     setTextInput('');
     onChange(newSelected);
   };
 
   const handleRemove = (term: string) => {
-    const newSelected = value.filter(el => el !== term);
+    const newSelected = normalizedValue.filter(el => el !== term);
 
     setTooltipShown(false);
     onChange(newSelected);
     setShrink(false);
   };
 
-  const handleSearch = (value?: string) => {
-    if (!value || value.trim().length === 0) {
+  const handleSearch = (textInput?: string) => {
+    if (!textInput || textInput.trim().length === 0) {
       return;
     }
 
-    return handleSelect(value);
+    return handleSelect(textInput);
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = event => {
@@ -160,7 +169,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
             <Box>
               <TextField
                 value={textInput}
-                onChange={handleChange}
+                onChange={handleTextInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder={t('pages.search.placeholder')}
                 InputProps={{
@@ -168,7 +177,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                   endAdornment: (
                     <>
                       <SelectedTerms
-                        selectedTerms={value}
+                        selectedTerms={normalizedValue}
                         disabled={disabled}
                         handleRemove={handleRemove}
                         maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}

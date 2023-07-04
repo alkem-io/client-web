@@ -309,9 +309,12 @@ export const OpportunityCardFragmentDoc = gql`
       name
       value
     }
-    lifecycle {
+    innovationFlow {
       id
-      state
+      lifecycle {
+        id
+        state
+      }
     }
     context {
       ...ContextDetails
@@ -359,12 +362,15 @@ export const ChallengeProfileFragmentDoc = gql`
       id
       myPrivileges
     }
-    lifecycle {
+    innovationFlow {
       id
-      machineDef
-      state
-      nextEvents
-      stateIsFinal
+      lifecycle {
+        id
+        machineDef
+        state
+        nextEvents
+        stateIsFinal
+      }
     }
     context {
       id
@@ -559,12 +565,14 @@ export const OpportunityPageFragmentDoc = gql`
       name
       value
     }
-    lifecycle {
-      id
-      machineDef
-      state
-      nextEvents
-      stateIsFinal
+    innovationFlow {
+      lifecycle {
+        id
+        machineDef
+        state
+        nextEvents
+        stateIsFinal
+      }
     }
     collaboration {
       id
@@ -708,6 +716,9 @@ export const SpaceDetailsFragmentDoc = gql`
         ...fullLocation
       }
     }
+    host {
+      id
+    }
     authorization {
       id
       anonymousReadAccess
@@ -791,9 +802,12 @@ export const ChallengeCardFragmentDoc = gql`
       id
       vision
     }
-    lifecycle {
+    innovationFlow {
       id
-      state
+      lifecycle {
+        id
+        state
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -4185,8 +4199,8 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutationVariables
 >;
 export const UpdateChallengeInnovationFlowDocument = gql`
-  mutation updateChallengeInnovationFlow($input: UpdateChallengeInnovationFlowInput!) {
-    updateChallengeInnovationFlow(challengeData: $input) {
+  mutation updateChallengeInnovationFlow($input: UpdateInnovationFlowInput!) {
+    updateInnovationFlow(innovationFlowData: $input) {
       id
       profile {
         id
@@ -4569,13 +4583,16 @@ export const ChallengeLifecycleDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
-        lifecycle {
+        innovationFlow {
           id
-          machineDef
-          state
-          nextEvents
-          stateIsFinal
-          templateName
+          lifecycle {
+            id
+            machineDef
+            state
+            nextEvents
+            stateIsFinal
+            templateName
+          }
         }
       }
     }
@@ -4726,8 +4743,12 @@ export const ChallengeProfileInfoDocument = gql`
             description
           }
         }
-        lifecycle {
-          state
+        innovationFlow {
+          id
+          lifecycle {
+            id
+            state
+          }
         }
         context {
           ...ContextDetails
@@ -4835,6 +4856,61 @@ export function useOpportunityCreatedSubscription(
 export type OpportunityCreatedSubscriptionHookResult = ReturnType<typeof useOpportunityCreatedSubscription>;
 export type OpportunityCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.OpportunityCreatedSubscription>;
+export const UpdateInnovationFlowLifecycleTemplateDocument = gql`
+  mutation UpdateInnovationFlowLifecycleTemplate($input: UpdateInnovationFlowLifecycleTemplateInput!) {
+    updateInnovationFlowLifecycleTemplate(innovationFlowData: $input) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type UpdateInnovationFlowLifecycleTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutation,
+  SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowLifecycleTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowLifecycleTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowLifecycleTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowLifecycleTemplateMutation, { data, loading, error }] = useUpdateInnovationFlowLifecycleTemplateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowLifecycleTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutation,
+    SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutation,
+    SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutationVariables
+  >(UpdateInnovationFlowLifecycleTemplateDocument, options);
+}
+
+export type UpdateInnovationFlowLifecycleTemplateMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowLifecycleTemplateMutation
+>;
+export type UpdateInnovationFlowLifecycleTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutation>;
+export type UpdateInnovationFlowLifecycleTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutation,
+  SchemaTypes.UpdateInnovationFlowLifecycleTemplateMutationVariables
+>;
 export const AboutPageNonMembersDocument = gql`
   query AboutPageNonMembers(
     $spaceNameId: UUID_NAMEID!
@@ -4900,8 +4976,11 @@ export const AboutPageNonMembersDocument = gql`
           id
           myPrivileges
         }
-        lifecycle {
-          ...LifecycleContextTab
+        innovationFlow {
+          id
+          lifecycle {
+            ...LifecycleContextTab
+          }
         }
         context {
           ...ContextTab
@@ -4934,8 +5013,11 @@ export const AboutPageNonMembersDocument = gql`
             ...VisualFull
           }
         }
-        lifecycle {
-          ...LifecycleContextTab
+        innovationFlow {
+          id
+          lifecycle {
+            ...LifecycleContextTab
+          }
         }
         context {
           ...ContextTab
@@ -5726,8 +5808,8 @@ export function refetchOpportunityPageQuery(variables: SchemaTypes.OpportunityPa
 }
 
 export const EventOnOpportunityDocument = gql`
-  mutation eventOnOpportunity($opportunityId: UUID!, $eventName: String!) {
-    eventOnOpportunity(opportunityEventData: { ID: $opportunityId, eventName: $eventName }) {
+  mutation eventOnOpportunity($innovationFlowId: UUID!, $eventName: String!) {
+    eventOnOpportunity(innovationFlowEventData: { innovationFlowID: $innovationFlowId, eventName: $eventName }) {
       id
       lifecycle {
         id
@@ -5755,7 +5837,7 @@ export type EventOnOpportunityMutationFn = Apollo.MutationFunction<
  * @example
  * const [eventOnOpportunityMutation, { data, loading, error }] = useEventOnOpportunityMutation({
  *   variables: {
- *      opportunityId: // value for 'opportunityId'
+ *      innovationFlowId: // value for 'innovationFlowId'
  *      eventName: // value for 'eventName'
  *   },
  * });
@@ -5996,8 +6078,8 @@ export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOpportunityMutationVariables
 >;
 export const UpdateOpportunityInnovationFlowDocument = gql`
-  mutation updateOpportunityInnovationFlow($input: UpdateOpportunityInnovationFlowInput!) {
-    updateOpportunityInnovationFlow(opportunityData: $input) {
+  mutation updateOpportunityInnovationFlow($input: UpdateInnovationFlowInput!) {
+    updateInnovationFlow(innovationFlowData: $input) {
       id
       profile {
         id
@@ -6546,13 +6628,16 @@ export const OpportunityLifecycleDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         id
-        lifecycle {
+        innovationFlow {
           id
-          machineDef
-          state
-          nextEvents
-          stateIsFinal
-          templateName
+          lifecycle {
+            id
+            machineDef
+            state
+            nextEvents
+            stateIsFinal
+            templateName
+          }
         }
       }
     }
@@ -6706,6 +6791,9 @@ export const OpportunityProfileInfoDocument = gql`
         }
         context {
           ...ContextDetails
+        }
+        innovationFlow {
+          id
         }
       }
     }
@@ -7304,8 +7392,11 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
         context {
           ...SpaceDashboardNavigationContext
         }
-        lifecycle {
-          ...SpaceDashboardNavigationLifecycle
+        innovationFlow {
+          id
+          lifecycle {
+            ...SpaceDashboardNavigationLifecycle
+          }
         }
         authorization {
           id
@@ -7397,8 +7488,11 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
           context {
             ...SpaceDashboardNavigationContext
           }
-          lifecycle {
-            ...SpaceDashboardNavigationLifecycle
+          innovationFlow {
+            id
+            lifecycle {
+              ...SpaceDashboardNavigationLifecycle
+            }
           }
         }
       }
@@ -14938,8 +15032,8 @@ export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnApplicationMutationVariables
 >;
 export const EventOnChallengeDocument = gql`
-  mutation eventOnChallenge($input: ChallengeEventInput!) {
-    eventOnChallenge(challengeEventData: $input) {
+  mutation eventOnChallenge($input: InnovationFlowEvent!) {
+    eventOnChallenge(innovationFlowEventData: $input) {
       id
       lifecycle {
         id
