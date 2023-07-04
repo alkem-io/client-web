@@ -1241,7 +1241,8 @@ export type CreateInnovationPackOnLibraryInput = {
 export type CreateInvitationExistingUserOnCommunityInput = {
   communityID: Scalars['UUID'];
   /** The identifier for the user being invited. */
-  invitedUser: Scalars['UUID'];
+  invitedUsers: Array<Scalars['UUID']>;
+  welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateInvitationExternalUserOnCommunityInput = {
@@ -1810,6 +1811,7 @@ export type Invitation = {
   updatedDate: Scalars['DateTime'];
   /** The User who is invited. */
   user: User;
+  welcomeMessage?: Maybe<Scalars['String']>;
 };
 
 export type InvitationEventInput = {
@@ -1832,6 +1834,7 @@ export type InvitationExternal = {
   lastName: Scalars['String'];
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean'];
+  welcomeMessage?: Maybe<Scalars['String']>;
 };
 
 export type InvitationForRoleResult = {
@@ -2130,7 +2133,7 @@ export type Mutation = {
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
   /** Invite an existing User to join the specified Community as a member. */
-  inviteExistingUserForCommunityMembership: Invitation;
+  inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
   inviteExternalUserForCommunityMembership: InvitationExternal;
   /** Join the specified Community as a member, without going through an approval process. */
@@ -2251,7 +2254,7 @@ export type Mutation = {
   updateWhiteboardTemplate: WhiteboardTemplate;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
   uploadFileOnReference: Reference;
-  /** Create a new Document on the Storage and return the value as part of the returned Reference. */
+  /** Create a new Document on the Storage and return the public Url. */
   uploadFileOnStorageBucket: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
@@ -8753,6 +8756,7 @@ export type SpaceProviderQuery = {
           }
         | undefined;
     };
+    host?: { __typename?: 'Organization'; id: string } | undefined;
   };
 };
 
@@ -8831,6 +8835,7 @@ export type SpaceInfoFragment = {
         }
       | undefined;
   };
+  host?: { __typename?: 'Organization'; id: string } | undefined;
 };
 
 export type SpaceHostQueryVariables = Exact<{
@@ -9980,6 +9985,7 @@ export type SpaceDetailsFragment = {
         }
       | undefined;
   };
+  host?: { __typename?: 'Organization'; id: string } | undefined;
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   context?:
     | {
@@ -10080,6 +10086,7 @@ export type CreateSpaceMutation = {
           }
         | undefined;
     };
+    host?: { __typename?: 'Organization'; id: string } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     context?:
       | {
@@ -10156,6 +10163,7 @@ export type UpdateSpaceMutation = {
           }
         | undefined;
     };
+    host?: { __typename?: 'Organization'; id: string } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     context?:
       | {

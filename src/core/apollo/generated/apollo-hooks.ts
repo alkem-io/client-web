@@ -708,6 +708,9 @@ export const SpaceDetailsFragmentDoc = gql`
         ...fullLocation
       }
     }
+    host {
+      id
+    }
     authorization {
       id
       anonymousReadAccess
