@@ -1,5 +1,5 @@
-mutation updateChallengeInnovationFlow($input: UpdateChallengeInnovationFlowInput!) {
-  updateChallengeInnovationFlow(challengeData: $input) {
+mutation updateChallengeInnovationFlow($input: UpdateInnovationFlowInput!) {
+  updateInnovationFlow(innovationFlowData: $input) {
     id
     profile {
       id

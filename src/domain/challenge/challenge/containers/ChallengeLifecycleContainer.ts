@@ -12,7 +12,7 @@ import {
 interface ChallengeLifecycleContainerProvided {
   lifecycle: Lifecycle | undefined;
   loading: boolean;
-  onSetNewState: (id: string, newState: string) => void;
+  onSetNewState: (innovationFlowID: string, newState: string) => void;
 }
 
 type ChallengeLifecycleContainerProps = ComponentOrChildrenFn<ChallengeLifecycleContainerProvided> & {
@@ -31,15 +31,15 @@ const ChallengeLifecycleContainer: FC<ChallengeLifecycleContainerProps> = ({
     nextFetchPolicy: 'cache-first',
   });
 
-  const lifecycle = data?.space.challenge?.lifecycle;
+  const lifecycle = data?.space.challenge?.innovationFlow?.lifecycle;
 
   const [updateChallengeLifecycle] = useEventOnChallengeMutation({});
 
-  const setNextState = (id: string, nextState: string) =>
+  const setNextState = (innovationFlowID: string, nextState: string) =>
     updateChallengeLifecycle({
       variables: {
         input: {
-          ID: id,
+          innovationFlowID,
           eventName: nextState,
         },
       },

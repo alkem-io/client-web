@@ -1,0 +1,9 @@
+mutation UpdateInnovationFlowLifecycleTemplate($input: UpdateInnovationFlowLifecycleTemplateInput!) {
+  updateInnovationFlowLifecycleTemplate(innovationFlowData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

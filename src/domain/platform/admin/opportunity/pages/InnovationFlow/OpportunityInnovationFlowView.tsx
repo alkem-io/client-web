@@ -5,7 +5,7 @@ import {
   refetchOpportunityLifecycleQuery,
   useSpaceInnovationFlowTemplatesQuery,
   useOpportunityProfileInfoQuery,
-  useUpdateOpportunityInnovationFlowMutation,
+  useUpdateInnovationFlowLifecycleTemplateMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
@@ -30,9 +30,9 @@ const OpportunityInnovationFlowView: FC = () => {
   });
 
   const opportunity = opportunityProfile?.space?.opportunity;
-  const opportunityId = opportunity?.id;
+  const innovationFlowID = opportunity?.innovationFlow?.id;
 
-  const [updateOpportunityInnovationFlow] = useUpdateOpportunityInnovationFlowMutation({
+  const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowLifecycleTemplateMutation({
     refetchQueries: [refetchOpportunityLifecycleQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
@@ -40,12 +40,12 @@ const OpportunityInnovationFlowView: FC = () => {
   const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
     const { innovationFlowTemplateID } = values;
 
-    if (opportunityId) {
+    if (innovationFlowID) {
       updateOpportunityInnovationFlow({
         variables: {
           input: {
-            opportunityID: opportunityId,
-            innovationFlowTemplateID: innovationFlowTemplateID,
+            innovationFlowID,
+            innovationFlowTemplateID,
           },
         },
       });
@@ -56,13 +56,13 @@ const OpportunityInnovationFlowView: FC = () => {
     <Grid container spacing={2}>
       <OpportunityLifecycleContainer spaceNameId={spaceNameId} opportunityNameId={opportunityNameId}>
         {({ loading, ...provided }) => {
-          if (loading || !opportunityId) {
+          if (loading || !innovationFlowID) {
             return <Loading text="Loading" />;
           }
 
           return (
             <UpdateInnovationFlow
-              entityId={opportunityId}
+              entityId={innovationFlowID}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}
               {...provided}
