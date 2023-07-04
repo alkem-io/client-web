@@ -2438,6 +2438,18 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const PendingMembershipsMembershipsFragmentDoc = gql`
+  fragment PendingMembershipsMemberships on Community {
+    id
+    applications {
+      id
+    }
+    invitations {
+      id
+      welcomeMessage
+    }
+  }
+`;
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   fragment InnovationHubHomeInnovationHub on InnovationHub {
     id
@@ -20320,6 +20332,81 @@ export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutation,
   SchemaTypes.InviteExternalUserMutationVariables
 >;
+export const PendingMembershipsDocument = gql`
+  query PendingMemberships {
+    spaces {
+      id
+      community {
+        ...PendingMembershipsMemberships
+      }
+      challenges {
+        id
+        community {
+          ...PendingMembershipsMemberships
+        }
+      }
+      opportunities {
+        id
+        community {
+          ...PendingMembershipsMemberships
+        }
+      }
+    }
+  }
+  ${PendingMembershipsMembershipsFragmentDoc}
+`;
+
+/**
+ * __usePendingMembershipsQuery__
+ *
+ * To run a query within a React component, call `usePendingMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePendingMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePendingMembershipsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePendingMembershipsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PendingMembershipsQuery,
+    SchemaTypes.PendingMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PendingMembershipsQuery, SchemaTypes.PendingMembershipsQueryVariables>(
+    PendingMembershipsDocument,
+    options
+  );
+}
+
+export function usePendingMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PendingMembershipsQuery,
+    SchemaTypes.PendingMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PendingMembershipsQuery, SchemaTypes.PendingMembershipsQueryVariables>(
+    PendingMembershipsDocument,
+    options
+  );
+}
+
+export type PendingMembershipsQueryHookResult = ReturnType<typeof usePendingMembershipsQuery>;
+export type PendingMembershipsLazyQueryHookResult = ReturnType<typeof usePendingMembershipsLazyQuery>;
+export type PendingMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PendingMembershipsQuery,
+  SchemaTypes.PendingMembershipsQueryVariables
+>;
+export function refetchPendingMembershipsQuery(variables?: SchemaTypes.PendingMembershipsQueryVariables) {
+  return { query: PendingMembershipsDocument, variables: variables };
+}
+
 export const SpaceContributionDetailsDocument = gql`
   query spaceContributionDetails($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {

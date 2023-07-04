@@ -466,6 +466,12 @@
       "title": "Deleting invitation from {{user}}",
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
+    "pendingMembership": {
+      "pendingMemberships": "Pending Memberships",
+      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
+      "dialogSubtitle": "Invitations",
+      "invitationTitle": "{{date}} {{user}} invited you to <journeyicon /> {{journey}}"
+    },
     "memberSettings": {
       "title": "Member Settings",
       "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the Community. ",

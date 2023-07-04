@@ -21839,6 +21839,65 @@ export type InviteExternalUserMutation = {
   inviteExternalUserForCommunityMembership: { __typename?: 'InvitationExternal'; id: string };
 };
 
+export type PendingMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PendingMembershipsQuery = {
+  __typename?: 'Query';
+  spaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
+          invitations?:
+            | Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }>
+            | undefined;
+        }
+      | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
+                invitations?:
+                  | Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }>
+                  | undefined;
+              }
+            | undefined;
+        }>
+      | undefined;
+    opportunities?:
+      | Array<{
+          __typename?: 'Opportunity';
+          id: string;
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
+                invitations?:
+                  | Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }>
+                  | undefined;
+              }
+            | undefined;
+        }>
+      | undefined;
+  }>;
+};
+
+export type PendingMembershipsMembershipsFragment = {
+  __typename?: 'Community';
+  id: string;
+  applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
+  invitations?: Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }> | undefined;
+};
+
 export type SpaceContributionDetailsQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;

@@ -1,0 +1,54 @@
+query PendingMemberships {
+  spaces {
+    id
+    profile {
+      ...PendingMembershipsJourneyProfile
+    }
+    community {
+      ...PendingMembershipsMemberships
+    }
+    challenges {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+      community {
+        ...PendingMembershipsMemberships
+      }
+    }
+    opportunities {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+      community {
+        ...PendingMembershipsMemberships
+      }
+    }
+  }
+}
+
+fragment PendingMembershipsJourneyProfile on Profile {
+  id
+  displayName
+}
+
+fragment PendingMembershipsMemberships on Community {
+  id
+  applications {
+    id
+  }
+  invitations {
+    ...PendingMembershipInvitation
+  }
+}
+
+fragment PendingMembershipInvitation on Invitation {
+  id
+  welcomeMessage
+  createdBy {
+    profile {
+      displayName
+    }
+  }
+}
