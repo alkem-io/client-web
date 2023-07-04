@@ -69,10 +69,6 @@ const toFlatValueType = ({ id, values }: ValueType): FlatValueType => ({
   value: values.filter(x => x).join(' '),
 });
 
-interface HashTable<T> {
-  [key: string]: T;
-}
-
 /**
  * Returns all the tags/terms found in each data item and the amount of times that they appear
  * @param data items to search for tags in.
@@ -82,7 +78,7 @@ export function getAllValues<T extends Identifiable>(
   data: T[],
   tagsGetter: (element: T) => string[]
 ): { term: string; count: number }[] {
-  const result: HashTable<{ term: string; count: number }> = {};
+  const result: Record<string, { term: string; count: number }> = {};
   data.forEach(element => {
     const terms = tagsGetter(element);
     terms.forEach(term => {
