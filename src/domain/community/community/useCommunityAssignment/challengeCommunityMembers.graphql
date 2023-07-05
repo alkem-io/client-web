@@ -8,13 +8,13 @@ query challengeCommunityMembers($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEI
         memberUsers {
           ...CommunityMemberUser
         }
-        leadUsers {
+        leadUsers: usersInRole(role: LEAD) {
           ...CommunityMemberUser
         }
-        memberOrganizations {
+        memberOrganizations: organizationsInRole(role: MEMBER)  {
           ...OrganizationDetails
         }
-        leadOrganizations {
+        leadOrganizations: organizationsInRole(role: LEAD) {
           ...OrganizationDetails
         }
       }

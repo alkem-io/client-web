@@ -8,7 +8,7 @@ import {
   useAssignUserAsChallengeAdminMutation,
   useRemoveUserAsChallengeAdminMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, CommunityRole } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ChallengeAuthorizationViewProps {
   credential: AuthorizationCredential;
@@ -25,9 +25,11 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
       variables: {
         input: {
           userID: memberId,
-          challengeID: resourceId,
+          communityID: resourceId, // TODO: fix the value passed in
+          role: CommunityRole.Admin,
         },
       },
+      // TODO: this also needs to be refactored to use the updated roles based query on community
       refetchQueries: [
         refetchUsersWithCredentialsQuery({
           input: { type: credential, resourceID: resourceId },
@@ -42,7 +44,8 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
       variables: {
         input: {
           userID: memberId,
-          challengeID: resourceId,
+          communityID: resourceId, // TODO: fix the value passed in
+          role: CommunityRole.Admin,
         },
       },
       refetchQueries: [

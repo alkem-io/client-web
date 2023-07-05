@@ -6,13 +6,13 @@ query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
     }
     community {
       id
-      leadUsers {
+      leadUsers: usersInRole(role: LEAD) {
         ...UserCard
       }
       memberUsers {
         ...UserCard
       }
-      memberOrganizations {
+      memberOrganizations: organizationsInRole(role: MEMBER)  {
         ...OrganizationCard
       }
     }
@@ -46,16 +46,16 @@ query OpportunityCommunityContributors($spaceId: UUID_NAMEID!, $opportunityId: U
 }
 
 fragment CommunityMembers on Community {
-  leadUsers {
+  leadUsers: usersInRole(role: LEAD) {
     ...UserCard
   }
   memberUsers {
     ...UserCard
   }
-  leadOrganizations {
+  leadOrganizations: organizationsInRole(role: LEAD) {
     ...OrganizationCard
   }
-  memberOrganizations {
+  memberOrganizations: organizationsInRole(role: MEMBER)  {
     ...OrganizationCard
   }
 }
