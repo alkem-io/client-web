@@ -28,8 +28,11 @@ fragment ChallengeCard on Challenge {
     id
     vision
   }
-  lifecycle {
+  innovationFlow {
     id
-    state
+    lifecycle {
+      id
+      state
+    }
   }
 }

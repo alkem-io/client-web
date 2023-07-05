@@ -13,8 +13,8 @@ import { useUserContext } from '../../community/contributor/user';
 import { Message } from '../../communication/room/models/Message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
-import useCalendarEventCommentsMessageReceivedSubscription from './calendar/useCalendarEventCommentsMessageReceivedSubscription';
 import usePostMessageMutations from '../../communication/room/Comments/usePostMessageMutations';
+import useSubscribeOnRoomEvents from '../../collaboration/callout/useSubscribeOnRoomEvents';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
@@ -54,7 +54,6 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ s
     data,
     loading: loadingEvent,
     error,
-    subscribeToMore: subscribeToMessages,
   } = useCalendarEventDetailsQuery({
     variables: { spaceId: spaceNameId, eventId: eventId! },
     skip: !spaceNameId || !eventId,
@@ -63,20 +62,14 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ s
   const loading = !eventId || loadingEvent;
   const event = data?.space.timeline?.calendar.event;
 
-  const eventCommentsSubscription = useCalendarEventCommentsMessageReceivedSubscription(
-    data,
-    eventData => eventData?.space?.timeline?.calendar.event,
-    subscribeToMessages
-  );
-
-  const isSubscribedToMessages = eventCommentsSubscription.enabled;
+  const roomId = event?.comments.id;
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
 
   const creator = event?.createdBy;
   const creatorAvatar = creator?.profile.visual?.uri;
   const creatorName = creator?.profile.displayName;
   const createdDate = event?.createdDate.toString();
 
-  const roomId = event?.comments?.id;
   const _messages = useMemo(() => event?.comments?.messages ?? [], [event?.comments?.messages]);
   const messages = useMemo<Message[]>(
     () =>

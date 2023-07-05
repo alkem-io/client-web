@@ -13,6 +13,7 @@ import {
   CalendarEventDetailsFragment,
   Profile,
 } from '../../../core/apollo/generated/graphql-schema';
+import { StorageConfigContextProvider } from '../../platform/storage/StorageBucket/StorageConfigContext';
 
 export interface CalendarEventFormData
   extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
@@ -168,7 +169,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
   );
 
   return (
-    <>
+    <StorageConfigContextProvider spaceNameId={spaceId} locationType={'journey'} journeyTypeName={'space'}>
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },
@@ -179,6 +180,6 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
           deletingCalendarEvent,
         }
       )}
-    </>
+    </StorageConfigContextProvider>
   );
 };

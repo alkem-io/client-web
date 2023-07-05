@@ -3,13 +3,16 @@ query challengeLifecycle($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     id
     challenge(ID: $challengeId) {
       id
-      lifecycle {
+      innovationFlow{
         id
-        machineDef
-        state
-        nextEvents
-        stateIsFinal
-        templateName
+        lifecycle {
+          id
+          machineDef
+          state
+          nextEvents
+          stateIsFinal
+          templateName
+        }
       }
     }
   }

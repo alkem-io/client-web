@@ -68,3 +68,30 @@ const toFlatValueType = ({ id, values }: ValueType): FlatValueType => ({
   id,
   value: values.filter(x => x).join(' '),
 });
+
+/**
+ * Returns all the tags/terms found in each data item and the amount of times that they appear
+ * @param data items to search for tags in.
+ * @param tagsGetter a function that will be called for each item to retrieve the tags and group them
+ */
+export function getAllValues<T extends Identifiable>(
+  data: T[],
+  tagsGetter: (element: T) => string[]
+): { term: string; count: number }[] {
+  const result: Record<string, { term: string; count: number }> = {};
+  data.forEach(element => {
+    const terms = tagsGetter(element);
+    terms.forEach(term => {
+      const item = result[term.toLocaleLowerCase()];
+      if (item) {
+        item.count++;
+      } else {
+        result[term.toLocaleLowerCase()] = {
+          term,
+          count: 1,
+        };
+      }
+    });
+  });
+  return Object.values(result);
+}

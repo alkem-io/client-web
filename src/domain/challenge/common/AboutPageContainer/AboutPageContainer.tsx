@@ -124,7 +124,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const memberJourney = membersData?.space?.opportunity ?? membersData?.space?.challenge ?? membersData?.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
-  const lifecycle = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.lifecycle;
+  const lifecycle = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.innovationFlow?.lifecycle;
   const hostOrganization = nonMembersData?.space?.host;
   const community = {
     ...nonMemberJourney?.community,

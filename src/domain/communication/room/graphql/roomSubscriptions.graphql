@@ -11,14 +11,8 @@ subscription roomEvents($roomID: UUID!) {
       type
       messageID
       data {
-        id
-        emoji
-        timestamp
-        sender {
-          id
-        }
+        ...ReactionDetails
       }
     }
-
   }
 }

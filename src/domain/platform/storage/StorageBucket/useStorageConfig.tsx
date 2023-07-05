@@ -6,16 +6,20 @@ import {
   useInnovationPackStorageConfigQuery,
   useJourneyStorageConfigQuery,
   useOrganizationStorageConfigQuery,
+  usePlatformStorageConfigQuery,
   useUserStorageConfigQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface StorageConfig {
+  storageBucketId: string;
   allowedMimeTypes: string[];
   maxFileSize: number;
+  canUpload: boolean;
 }
 
-type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'post' | 'innovationPack';
+type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'post' | 'innovationPack' | 'platform';
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
@@ -54,13 +58,18 @@ interface UseStorageConfigOptionsInnovationPack extends UseStorageConfigOptionsB
   locationType: 'innovationPack';
 }
 
+interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
+  locationType: 'platform';
+}
+
 export type StorageConfigOptions =
   | UseStorageConfigOptionsJourney
   | UseStorageConfigOptionsUser
   | UseStorageConfigOptionsOrganization
   | UseStorageConfigOptionsCallout
   | UseStorageConfigOptionsPost
-  | UseStorageConfigOptionsInnovationPack;
+  | UseStorageConfigOptionsInnovationPack
+  | UseStorageConfigOptionsPlatform;
 
 export interface StorageConfigProvided {
   storageConfig: StorageConfig | undefined;
@@ -143,6 +152,10 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     skip: locationType !== 'innovationPack' || !innovationPackOptions.innovationPackId,
   });
 
+  const { data: platformStorageConfigData } = usePlatformStorageConfigQuery({
+    skip: locationType !== 'platform',
+  });
+
   const journey =
     journeyStorageConfigData?.space.opportunity ??
     journeyStorageConfigData?.space.challenge ??
@@ -171,9 +184,21 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     innovationPackStorageConfigData?.platform.library.innovationPack ??
     {};
 
-  const storageConfig = profile?.storageBucket;
+  const storageConfig = profile?.storageBucket ?? platformStorageConfigData?.platform.storageBucket;
 
-  return useMemo(() => ({ storageConfig }), [storageConfig]);
+  return useMemo(
+    () => ({
+      storageConfig: storageConfig
+        ? {
+            storageBucketId: storageConfig.id,
+            allowedMimeTypes: storageConfig.allowedMimeTypes,
+            maxFileSize: storageConfig.maxFileSize,
+            canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
+          }
+        : undefined,
+    }),
+    [storageConfig]
+  );
 };
 
 export default useStorageConfig;

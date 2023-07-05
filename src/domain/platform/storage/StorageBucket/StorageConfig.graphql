@@ -124,12 +124,31 @@ query InnovationPackStorageConfig($innovationPackId: UUID_NAMEID!) {
   }
 }
 
+query PlatformStorageConfig {
+  platform {
+    id
+    storageBucket {
+      id
+      allowedMimeTypes
+      maxFileSize
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+
 fragment ProfileStorageConfig on Profile {
   id
   storageBucket {
     id
     allowedMimeTypes
     maxFileSize
+    authorization {
+      id
+      myPrivileges
+    }
   }
 }
 

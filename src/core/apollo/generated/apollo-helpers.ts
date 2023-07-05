@@ -541,7 +541,7 @@ export type ChallengeKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
-  | 'lifecycle'
+  | 'innovationFlow'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
@@ -559,7 +559,7 @@ export type ChallengeFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -673,6 +673,7 @@ export type CommunityKeySpecifier = (
   | 'groups'
   | 'id'
   | 'invitations'
+  | 'invitationsExternal'
   | 'memberUsers'
   | 'myMembershipStatus'
   | 'organizationsInRole'
@@ -691,14 +692,17 @@ export type CommunityFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitationsExternal?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyKeySpecifier = ('id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
+export type CommunityPolicyKeySpecifier = ('admin' | 'host' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
+  admin?: FieldPolicy<any> | FieldReadFunction<any>;
+  host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lead?: FieldPolicy<any> | FieldReadFunction<any>;
   member?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -928,6 +932,21 @@ export type ISearchResultsFieldPolicy = {
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InnovationFlowKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'lifecycle'
+  | 'profile'
+  | 'type'
+  | InnovationFlowKeySpecifier
+)[];
+export type InnovationFlowFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InnovationFlowTemplateKeySpecifier = (
   | 'authorization'
   | 'definition'
@@ -989,6 +1008,7 @@ export type InvitationKeySpecifier = (
   | 'lifecycle'
   | 'updatedDate'
   | 'user'
+  | 'welcomeMessage'
   | InvitationKeySpecifier
 )[];
 export type InvitationFieldPolicy = {
@@ -999,10 +1019,35 @@ export type InvitationFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InvitationExternalKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'createdDate'
+  | 'email'
+  | 'firstName'
+  | 'id'
+  | 'lastName'
+  | 'profileCreated'
+  | 'welcomeMessage'
+  | InvitationExternalKeySpecifier
+)[];
+export type InvitationExternalFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationForRoleResultKeySpecifier = (
   | 'challengeID'
   | 'communityID'
+  | 'createdBy'
   | 'createdDate'
   | 'displayName'
   | 'id'
@@ -1010,11 +1055,13 @@ export type InvitationForRoleResultKeySpecifier = (
   | 'spaceID'
   | 'state'
   | 'updatedDate'
+  | 'welcomeMessage'
   | InvitationForRoleResultKeySpecifier
 )[];
 export type InvitationForRoleResultFieldPolicy = {
   challengeID?: FieldPolicy<any> | FieldReadFunction<any>;
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1022,6 +1069,7 @@ export type InvitationForRoleResultFieldPolicy = {
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LibraryKeySpecifier = (
   | 'authorization'
@@ -1160,6 +1208,7 @@ export type MutationKeySpecifier = (
   | 'deleteInnovationHub'
   | 'deleteInnovationPack'
   | 'deleteInvitation'
+  | 'deleteInvitationExternal'
   | 'deleteOpportunity'
   | 'deleteOrganization'
   | 'deletePost'
@@ -1182,6 +1231,7 @@ export type MutationKeySpecifier = (
   | 'eventOnWhiteboardCheckout'
   | 'grantCredentialToUser'
   | 'inviteExistingUserForCommunityMembership'
+  | 'inviteExternalUserForCommunityMembership'
   | 'joinCommunity'
   | 'messageUser'
   | 'movePostToCallout'
@@ -1209,16 +1259,16 @@ export type MutationKeySpecifier = (
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
   | 'updateChallenge'
-  | 'updateChallengeInnovationFlow'
   | 'updateCommunityApplicationForm'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
+  | 'updateInnovationFlow'
+  | 'updateInnovationFlowLifecycleTemplate'
   | 'updateInnovationFlowTemplate'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
   | 'updateOpportunity'
-  | 'updateOpportunityInnovationFlow'
   | 'updateOrganization'
   | 'updatePost'
   | 'updatePostTemplate'
@@ -1236,6 +1286,7 @@ export type MutationKeySpecifier = (
   | 'updateWhiteboard'
   | 'updateWhiteboardTemplate'
   | 'uploadFileOnReference'
+  | 'uploadFileOnStorageBucket'
   | 'uploadImageOnVisual'
   | MutationKeySpecifier
 )[];
@@ -1303,6 +1354,7 @@ export type MutationFieldPolicy = {
   deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteInvitationExternal?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1325,6 +1377,7 @@ export type MutationFieldPolicy = {
   eventOnWhiteboardCheckout?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteExternalUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   movePostToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1352,16 +1405,16 @@ export type MutationFieldPolicy = {
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateChallengeInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlowLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateOpportunityInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1379,6 +1432,7 @@ export type MutationFieldPolicy = {
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
@@ -1393,7 +1447,7 @@ export type OpportunityKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
-  | 'lifecycle'
+  | 'innovationFlow'
   | 'metrics'
   | 'nameID'
   | 'parentNameID'
@@ -1407,7 +1461,7 @@ export type OpportunityFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2703,6 +2757,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
   };
+  InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);
+    fields?: InnovationFlowFieldPolicy;
+  };
   InnovationFlowTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowTemplateKeySpecifier | (() => undefined | InnovationFlowTemplateKeySpecifier);
     fields?: InnovationFlowTemplateFieldPolicy;
@@ -2718,6 +2776,10 @@ export type StrictTypedTypePolicies = {
   Invitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InvitationKeySpecifier | (() => undefined | InvitationKeySpecifier);
     fields?: InvitationFieldPolicy;
+  };
+  InvitationExternal?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InvitationExternalKeySpecifier | (() => undefined | InvitationExternalKeySpecifier);
+    fields?: InvitationExternalFieldPolicy;
   };
   InvitationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InvitationForRoleResultKeySpecifier | (() => undefined | InvitationForRoleResultKeySpecifier);

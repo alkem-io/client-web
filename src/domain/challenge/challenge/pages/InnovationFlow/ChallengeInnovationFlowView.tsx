@@ -5,7 +5,7 @@ import {
   refetchChallengeLifecycleQuery,
   useChallengeProfileInfoQuery,
   useSpaceInnovationFlowTemplatesQuery,
-  useUpdateChallengeInnovationFlowMutation,
+  useUpdateInnovationFlowLifecycleTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import UpdateInnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/UpdateInnovationFlow';
@@ -29,9 +29,9 @@ const ChallengeInnovationFlowView: FC = () => {
     skip: !spaceNameId || !challengeNameId,
   });
   const challenge = challengeProfile?.space?.challenge;
-  const challengeId = challenge?.id;
+  const innovationFlowID = challenge?.innovationFlow?.id;
 
-  const [updateChallengeInnovationFlow] = useUpdateChallengeInnovationFlowMutation({
+  const [updateChallengeInnovationFlowTemplate] = useUpdateInnovationFlowLifecycleTemplateMutation({
     refetchQueries: [refetchChallengeLifecycleQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
@@ -39,12 +39,12 @@ const ChallengeInnovationFlowView: FC = () => {
   const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
     const { innovationFlowTemplateID } = values;
 
-    if (challengeId) {
-      updateChallengeInnovationFlow({
+    if (innovationFlowID) {
+      updateChallengeInnovationFlowTemplate({
         variables: {
           input: {
-            challengeID: challengeId,
-            innovationFlowTemplateID: innovationFlowTemplateID,
+            innovationFlowID,
+            innovationFlowTemplateID,
           },
         },
       });
@@ -55,13 +55,13 @@ const ChallengeInnovationFlowView: FC = () => {
     <Grid container spacing={2}>
       <ChallengeLifecycleContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
         {({ loading, ...provided }) => {
-          if (loading || !challengeId) {
+          if (loading || !innovationFlowID) {
             return <Loading text="Loading" />;
           }
 
           return (
             <UpdateInnovationFlow
-              entityId={challengeId}
+              entityId={innovationFlowID}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}
               {...provided}

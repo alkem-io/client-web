@@ -1,5 +1,5 @@
-mutation updateOpportunityInnovationFlow($input: UpdateOpportunityInnovationFlowInput!) {
-  updateOpportunityInnovationFlow(opportunityData: $input) {
+mutation updateOpportunityInnovationFlow($input: UpdateInnovationFlowInput!) {
+  updateInnovationFlow(innovationFlowData: $input) {
     id
     profile {
       id

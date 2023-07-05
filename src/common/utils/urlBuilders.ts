@@ -39,8 +39,8 @@ export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
-export const buildReturnUrlParam = (returnUrl = ROUTE_HOME) => {
-  const fullReturnUrl = `${window.location.origin}${returnUrl}`;
+export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
+  const fullReturnUrl = `${origin}${returnUrl}`;
   return `?returnUrl=${encodeURI(fullReturnUrl)}`;
 };
 
