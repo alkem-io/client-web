@@ -69,7 +69,7 @@ fragment SpacePage on Space {
   }
   community {
     ...EntityDashboardCommunity
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       profile {
         ...SpaceWelcomeBlockContributorProfile
       }
