@@ -416,6 +416,19 @@
     "blocks": {
       "users-contributing": "users that are contributing",
       "all-contributing-users": "all contributing users"
+    },
+    "time": {
+      "timeAgo": "{{time}} ago",
+      "second": "{{count}} second",
+      "second_plural": "{{count}} seconds",
+      "minute": "{{count}} minute",
+      "minute_plural": "{{count}} minutes",
+      "hour": "{{count}} hour",
+      "hour_plural": "{{count}} hours",
+      "day": "{{count}} day",
+      "day_plural": "{{count}} days",
+      "month": "{{count}} month",
+      "month_plural": "{{count}} months"
     }
   },
   "community": {

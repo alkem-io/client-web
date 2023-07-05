@@ -31,7 +31,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   parentDisplayName,
 }) => {
   const { t } = useTranslation();
-  const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
+  const formattedTime = useMemo(() => formatTimeElapsed(createdDate, t), [createdDate]);
 
   const truncatedParentName =
     parentDisplayName.length > PARENT_NAME_MAX_LENGTH
