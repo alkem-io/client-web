@@ -1045,6 +1045,7 @@ export type InvitationExternalFieldPolicy = {
 export type InvitationForRoleResultKeySpecifier = (
   | 'challengeID'
   | 'communityID'
+  | 'createdBy'
   | 'createdDate'
   | 'displayName'
   | 'id'
@@ -1052,11 +1053,13 @@ export type InvitationForRoleResultKeySpecifier = (
   | 'spaceID'
   | 'state'
   | 'updatedDate'
+  | 'welcomeMessage'
   | InvitationForRoleResultKeySpecifier
 )[];
 export type InvitationForRoleResultFieldPolicy = {
   challengeID?: FieldPolicy<any> | FieldReadFunction<any>;
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1064,6 +1067,7 @@ export type InvitationForRoleResultFieldPolicy = {
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LibraryKeySpecifier = (
   | 'authorization'

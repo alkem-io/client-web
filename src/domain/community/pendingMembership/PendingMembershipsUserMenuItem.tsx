@@ -11,7 +11,10 @@ import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import JourneyAvatar from '../../challenge/common/JourneyAvatar/JourneyAvatar';
-import usePendingMemberships from './usePendingMemberships';
+import usePendingMemberships, { ApplicationHydrator, InvitationHydrator } from './usePendingMemberships';
+import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
+import JourneyCard from '../../challenge/common/JourneyCard/JourneyCard';
+import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 
 interface PendingMembershipsUserMenuItemProps {
   onClick?: (e: React.MouseEvent) => void;
@@ -49,32 +52,29 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
         />
         <Gutters paddingTop={0}>
           <BlockSectionTitle>
-            {t('community.pendingMembership.dialogSubtitle')}
+            {t('community.pendingMembership.invitationsSectionTitle')}
           </BlockSectionTitle>
-          <BadgeCardView
-            component={RouterLink}
-            to={''}
-            visual={
-              <JourneyAvatar
-                journeyTypeName="space"
-                visualUri={undefined}
-              />
-            }
-          >
-            <BlockSectionTitle noWrap>21 days ago Denise Larsson invited you to        Working Challenge Centric</BlockSectionTitle>
-            <CardText
-              sx={{
-                img: {
-                  maxHeight: gutters(1),
-                },
-              }}
-              noWrap
-            >
-              <WrapperMarkdown card flat>
-                Hi Simone, I would like to invite you to join this Challenge, I have some amazing reasons for that which i will share with you but that won’t fit on one line and therefore this text needs to be truncated after I don’t know how many characters Hi Simone, I would like to invite you to join this Challenge, I have some amazing reasons for that which i will share with you but that won’t fit on one line and therefore this text needs to be truncated after I don’t know how many characters
-              </WrapperMarkdown>
-            </CardText>
-          </BadgeCardView>
+          {invitations?.map(invitation => (
+            <InvitationHydrator invitation={invitation}>
+              {({ invitation }) => <InvitationCardHorizontal invitation={invitation} />}
+            </InvitationHydrator>
+          ))}
+          <BlockSectionTitle>
+            {t('community.pendingMembership.applicationsSectionTitle')}
+          </BlockSectionTitle>
+          {applications?.map(application => (
+            <ApplicationHydrator application={application}>
+              {({ application }) => application && (
+                <JourneyCard
+                  iconComponent={journeyIcon[application.journeyTypeName]}
+                  header={application.journeyDisplayName}
+                  tagline={application.journeyDescription ?? ''}
+                  tags={application.journeyTags ?? []}
+                  journeyUri={''}
+                />
+              )}
+            </ApplicationHydrator>
+          ))}
         </Gutters>
       </DialogWithGrid>
     </>

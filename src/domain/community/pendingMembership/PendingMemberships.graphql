@@ -1,29 +1,61 @@
-query PendingMemberships {
-  spaces {
+query PendingMemberships($userId: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userId }) {
+    invitations {
+      id
+      spaceID
+      challengeID
+      opportunityID
+      welcomeMessage
+      createdBy
+    }
+    applications {
+      id
+      spaceID
+      challengeID
+      opportunityID
+    }
+  }
+}
+
+query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
     id
     profile {
       ...PendingMembershipsJourneyProfile
     }
-    community {
-      ...PendingMembershipsMemberships
-    }
-    challenges {
+  }
+}
+
+query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
       id
       profile {
         ...PendingMembershipsJourneyProfile
       }
-      community {
-        ...PendingMembershipsMemberships
-      }
     }
-    opportunities {
+  }
+}
+
+query PendingMembershipsOpportunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    opportunity(ID: $opportunityId) {
       id
       profile {
         ...PendingMembershipsJourneyProfile
       }
-      community {
-        ...PendingMembershipsMemberships
-      }
+    }
+  }
+}
+
+query PendingMembershipsUser($userId: UUID!) {
+  usersById(IDs: [$userId]) {
+    id
+    profile {
+      id
+      displayName
     }
   }
 }
@@ -31,6 +63,17 @@ query PendingMemberships {
 fragment PendingMembershipsJourneyProfile on Profile {
   id
   displayName
+  ... on Profile @include(if: $fetchDetails) {
+    description
+    tagset {
+      id
+      tags
+    }
+    banner: visual(type: BANNER) {
+      id
+      uri
+    }
+  }
 }
 
 fragment PendingMembershipsMemberships on Community {

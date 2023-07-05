@@ -1839,6 +1839,8 @@ export type InvitationForRoleResult = {
   challengeID?: Maybe<Scalars['UUID']>;
   /** ID for the community */
   communityID: Scalars['UUID'];
+  /** ID for the user that created the invitation. */
+  createdBy: Scalars['UUID'];
   /** Date of creation */
   createdDate: Scalars['DateTime'];
   /** Display name of the community */
@@ -1853,6 +1855,8 @@ export type InvitationForRoleResult = {
   state: Scalars['String'];
   /** Date of last update */
   updatedDate: Scalars['DateTime'];
+  /** The welcome message of the invitation */
+  welcomeMessage?: Maybe<Scalars['UUID']>;
 };
 
 export type Library = {
@@ -21839,63 +21843,151 @@ export type InviteExternalUserMutation = {
   inviteExternalUserForCommunityMembership: { __typename?: 'InvitationExternal'; id: string };
 };
 
-export type PendingMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+export type PendingMembershipsQueryVariables = Exact<{
+  userId: Scalars['UUID_NAMEID_EMAIL'];
+}>;
 
 export type PendingMembershipsQuery = {
   __typename?: 'Query';
-  spaces: Array<{
+  rolesUser: {
+    __typename?: 'ContributorRoles';
+    invitations?:
+      | Array<{
+          __typename?: 'InvitationForRoleResult';
+          id: string;
+          spaceID: string;
+          challengeID?: string | undefined;
+          opportunityID?: string | undefined;
+          welcomeMessage?: string | undefined;
+          createdBy: string;
+        }>
+      | undefined;
+    applications?:
+      | Array<{
+          __typename?: 'ApplicationForRoleResult';
+          id: string;
+          spaceID: string;
+          challengeID?: string | undefined;
+          opportunityID?: string | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type PendingMembershipsSpaceQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  fetchDetails?: Scalars['Boolean'];
+}>;
+
+export type PendingMembershipsSpaceQuery = {
+  __typename?: 'Query';
+  space: {
     __typename?: 'Space';
     id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
-          invitations?:
-            | Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }>
-            | undefined;
-        }
-      | undefined;
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          id: string;
-          community?:
-            | {
-                __typename?: 'Community';
-                id: string;
-                applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
-                invitations?:
-                  | Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }>
-                  | undefined;
-              }
-            | undefined;
-        }>
-      | undefined;
-    opportunities?:
-      | Array<{
-          __typename?: 'Opportunity';
-          id: string;
-          community?:
-            | {
-                __typename?: 'Community';
-                id: string;
-                applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
-                invitations?:
-                  | Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }>
-                  | undefined;
-              }
-            | undefined;
-        }>
-      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      description?: string | undefined;
+      id: string;
+      displayName: string;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+      banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    };
+  };
+};
+
+export type PendingMembershipsChallengeQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  fetchDetails?: Scalars['Boolean'];
+}>;
+
+export type PendingMembershipsChallengeQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        description?: string | undefined;
+        id: string;
+        displayName: string;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      };
+    };
+  };
+};
+
+export type PendingMembershipsOpportunityQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  fetchDetails?: Scalars['Boolean'];
+}>;
+
+export type PendingMembershipsOpportunityQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        description?: string | undefined;
+        id: string;
+        displayName: string;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      };
+    };
+  };
+};
+
+export type PendingMembershipsUserQueryVariables = Exact<{
+  userId: Scalars['UUID'];
+}>;
+
+export type PendingMembershipsUserQuery = {
+  __typename?: 'Query';
+  usersById: Array<{
+    __typename?: 'User';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
   }>;
+};
+
+export type PendingMembershipsJourneyProfileFragment = {
+  __typename?: 'Profile';
+  description?: string | undefined;
+  id: string;
+  displayName: string;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type PendingMembershipsMembershipsFragment = {
   __typename?: 'Community';
   id: string;
   applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
-  invitations?: Array<{ __typename?: 'Invitation'; id: string; welcomeMessage?: string | undefined }> | undefined;
+  invitations?:
+    | Array<{
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        createdBy: { __typename?: 'User'; profile: { __typename?: 'Profile'; displayName: string } };
+      }>
+    | undefined;
+};
+
+export type PendingMembershipInvitationFragment = {
+  __typename?: 'Invitation';
+  id: string;
+  welcomeMessage?: string | undefined;
+  createdBy: { __typename?: 'User'; profile: { __typename?: 'Profile'; displayName: string } };
 };
 
 export type SpaceContributionDetailsQueryVariables = Exact<{

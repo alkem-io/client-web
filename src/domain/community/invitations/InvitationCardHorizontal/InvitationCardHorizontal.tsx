@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { InvitationWithMeta } from '../../pendingMembership/usePendingMemberships';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import JourneyAvatar from '../../../challenge/common/JourneyAvatar/JourneyAvatar';
@@ -7,13 +7,21 @@ import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
+import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import ActivityDescription from '../../../shared/components/ActivityDescription/ActivityDescription';
 
 interface InvitationCardHorizontalProps {
-  invitation: InvitationWithMeta;
+  invitation: InvitationWithMeta | undefined;
 }
 
 const InvitationCardHorizontal = ({ invitation }: InvitationCardHorizontalProps) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
+
+  if (!invitation) {
+    return null; // TODO Skeleton
+  }
+
+  const JourneyIcon = journeyIcon[invitation.journeyTypeName];
 
   return (
     <BadgeCardView
@@ -26,7 +34,12 @@ const InvitationCardHorizontal = ({ invitation }: InvitationCardHorizontalProps)
         />
       }
     >
-      <BlockSectionTitle noWrap>{t('community.pendingMembership.invitationTitle')}</BlockSectionTitle>
+      <BlockSectionTitle noWrap>
+        <ActivityDescription
+          i18nKey="community.pendingMembership.invitationTitle"
+          {...invitation}
+        />
+      </BlockSectionTitle>
       <CardText
         sx={{
           img: {
@@ -35,9 +48,11 @@ const InvitationCardHorizontal = ({ invitation }: InvitationCardHorizontalProps)
         }}
         noWrap
       >
-        <WrapperMarkdown card flat>
-          Hi Simone, I would like to invite you to join this Challenge, I have some amazing reasons for that which i will share with you but that won’t fit on one line and therefore this text needs to be truncated after I don’t know how many characters Hi Simone, I would like to invite you to join this Challenge, I have some amazing reasons for that which i will share with you but that won’t fit on one line and therefore this text needs to be truncated after I don’t know how many characters
-        </WrapperMarkdown>
+        {invitation.welcomeMessage && (
+          <WrapperMarkdown card flat>
+            {invitation.welcomeMessage}
+          </WrapperMarkdown>
+        )}
       </CardText>
     </BadgeCardView>
   );

@@ -469,7 +469,8 @@
     "pendingMembership": {
       "pendingMemberships": "Pending Memberships",
       "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
-      "dialogSubtitle": "Invitations",
+      "invitationsSectionTitle": "Invitations",
+      "applicationsSectionTitle": "Open applications",
       "invitationTitle": "{{date}} {{user}} invited you to <journeyicon /> {{journey}}"
     },
     "memberSettings": {
