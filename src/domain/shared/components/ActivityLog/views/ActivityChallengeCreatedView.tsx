@@ -17,7 +17,7 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
   loading,
   createdDate,
   journeyTypeName,
-  journeyDisplayName,
+  parentDisplayName,
   journeyLocation,
   challenge,
 }) => {
@@ -36,7 +36,7 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
     author,
     createdDate,
     journeyTypeName,
-    parentDisplayName: journeyDisplayName,
+    parentDisplayName,
   });
 
   return (

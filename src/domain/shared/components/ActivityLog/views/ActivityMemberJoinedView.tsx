@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
-import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
+import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { Community } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
-import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
 import useActivityViewParams from './useActivityViewParams';
 import ActivityDescription from '../../ActivityDescription/ActivityDescription';
 
@@ -20,8 +19,6 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
   loading,
   createdDate,
   journeyTypeName,
-  journeyDisplayName,
-  journeyLocation,
   member,
   community,
   communityType,
@@ -44,6 +41,7 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
     journeyTypeName,
     parentDisplayName: community.displayName,
     values: {
+      communityType,
       user: member.displayName,
     },
   });

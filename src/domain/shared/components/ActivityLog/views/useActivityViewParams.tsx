@@ -29,7 +29,7 @@ interface Props {
   components?: Record<string, ReactNode>;
 }
 
-interface Result extends Pick<Props, 'values' | 'components'> {
+interface UseActivityViewParamsProvided extends Pick<Props, 'values' | 'components'> {
   i18nKey: TranslationKey;
 }
 
@@ -44,7 +44,7 @@ const useActivityViewParams = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const result = useMemo<Result>(() => {
+  const result = useMemo<UseActivityViewParamsProvided>(() => {
     const time = formatTimeElapsed(createdDate, t);
     values['time'] = time;
 

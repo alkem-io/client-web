@@ -19,7 +19,7 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
   loading,
   createdDate,
   journeyTypeName,
-  journeyDisplayName,
+  parentDisplayName,
   journeyLocation,
   callout,
   description,
@@ -41,7 +41,7 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
     author,
     createdDate,
     journeyTypeName,
-    parentDisplayName: journeyDisplayName,
+    parentDisplayName,
     values: {
       calloutDisplayName: callout.profile.displayName,
     },

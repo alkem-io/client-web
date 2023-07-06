@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
-import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
+import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
+import useActivityViewParams from './useActivityViewParams';
+import ActivityDescription from '../../ActivityDescription/ActivityDescription';
 
 export interface ActivityCardCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -13,30 +15,49 @@ export interface ActivityCardCreatedViewProps extends ActivityViewProps {
   postDescription: string;
 }
 
-export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props => {
+export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = ({
+  author,
+  loading,
+  createdDate,
+  journeyTypeName,
+  parentDisplayName,
+  journeyLocation,
+  callout,
+  card,
+  postType,
+  postDescription,
+}) => {
   const { t } = useTranslation();
 
-  const url = buildPostUrl(props.callout.nameID, props.card.nameID, props.journeyLocation);
   const description = t('components.activity-log-view.activity-description.post-created', {
-    postDisplayName: props.card.profile.displayName,
-    postType: props.postType,
-    postDescription: props.postDescription,
+    postDisplayName: card.profile.displayName,
+    postType: postType,
+    postDescription: postDescription,
     interpolation: {
       escapeValue: false,
     },
   });
 
-  const resultProps: ActivityBaseViewProps = {
-    ...props,
-    i18nKey: props.parentJourneyTypeName
-      ? 'components.activity-log-view.actions-in-journey.post-created'
-      : 'components.activity-log-view.actions.post-created',
-    calloutDisplayName: props.callout.profile.displayName,
-    url,
-  };
+  const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
+
+  const { i18nKey, values, components } = useActivityViewParams({
+    activityType: 'post-created',
+    author,
+    createdDate,
+    journeyTypeName,
+    parentDisplayName,
+    values: {
+      calloutDisplayName: callout.profile.displayName,
+    },
+  });
 
   return (
-    <ActivityBaseView {...resultProps}>
+    <ActivityBaseView
+      author={author}
+      loading={loading}
+      title={<ActivityDescription i18nKey={i18nKey} values={values} components={components} />}
+      url={url}
+    >
       <OneLineMarkdown>{description}</OneLineMarkdown>
     </ActivityBaseView>
   );

@@ -92,16 +92,6 @@ export const getJourneyLocationKey = (journeyTypeName: JourneyTypeName): keyof J
   }
 };
 
-/*export const getJourneyTypeNameFromLocation = (journeyLocation: JourneyLocation): JourneyTypeName => {
-  if (journeyLocation.opportunityNameId) {
-    return 'opportunity';
-  } else if (journeyLocation.challengeNameId) {
-    return 'challenge';
-  } else {
-    return 'space';
-  }
-}
-*/
 export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
   if (isSpaceId(journeyLocation)) {
     return buildSpaceUrl(journeyLocation.spaceNameId);
