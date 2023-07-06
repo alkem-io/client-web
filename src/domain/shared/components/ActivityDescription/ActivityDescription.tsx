@@ -1,38 +1,53 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Trans } from 'react-i18next';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import TranslationKey from '../../../../types/TranslationKey';
-import journeyIcon from '../JourneyIcon/JourneyIcon';
 
 interface ActivityDescriptionProps {
-  // TODO add time
   i18nKey: TranslationKey;
-  userDisplayName: string;
-  journeyDisplayName: string;
-  journeyTypeName: JourneyTypeName;
+  values: Record<string, string>;
+  components?: Record<string, ReactNode>;
 }
 
-const ActivityDescription = ({
-  i18nKey,
-  userDisplayName,
-  journeyDisplayName,
-  journeyTypeName,
-}: ActivityDescriptionProps) => {
-  const JourneyIcon = journeyIcon[journeyTypeName];
-
+const ActivityDescription = ({ i18nKey, values, components }: ActivityDescriptionProps) => {
   return (
     <Trans
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       i18nKey={i18nKey as any}
-      values={{
-        user: userDisplayName,
-        journey: journeyDisplayName,
-      }}
-      components={{
-        journeyicon: <JourneyIcon fontSize="inherit" />,
-      }}
+      values={values}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      components={components as any}
     />
   );
 };
 
 export default ActivityDescription;
+
+/*
+  /* journeyTypeName: JourneyTypeName | undefined;
+  journeyDisplayName: string | undefined;
+*/
+/*time: string;
+  userDisplayName: string;
+  userUrl?: string;
+  journeyUrl: string | undefined;
+  calloutDisplayName?: string;
+  postDisplayName?: string;
+
+  const JourneyIcon = journeyTypeName && journeyIcon[journeyTypeName];
+
+    if (!components) {
+    components = {};
+  }
+  if (JourneyIcon) {
+    components['journeyIcon'] = <JourneyIcon fontSize="inherit" sx={{ verticalAlign: 'bottom' }} />;
+  }
+  components['ParentLink'] = journeyUrl ? <Link href={journeyUrl} /> : <span />;
+  components['UserLink'] = userUrl ? <Link href={userUrl} /> : <span />;
+
+        user: userDisplayName,
+        journeyType: journeyTypeName ? t(`common.${journeyTypeName}` as const) : undefined,
+        journeyDisplayName,
+        calloutDisplayName,
+        postDisplayName,
+      }}
+*/
