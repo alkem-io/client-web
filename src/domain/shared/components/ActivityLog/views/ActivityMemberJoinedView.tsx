@@ -19,6 +19,7 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
   loading,
   createdDate,
   journeyTypeName,
+  journeyLocation,
   member,
   community,
   communityType,
@@ -39,10 +40,11 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
     author,
     createdDate,
     journeyTypeName,
+    journeyLocation,
     parentDisplayName: community.displayName,
     values: {
       communityType,
-      user: member.displayName,
+      communityDisplayName: community.displayName!,
     },
   });
 

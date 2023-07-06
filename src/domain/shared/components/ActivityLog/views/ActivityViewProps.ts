@@ -5,6 +5,6 @@ import { ActivityBaseViewProps } from './ActivityBaseView';
 export interface ActivityViewProps extends Pick<ActivityBaseViewProps, 'author' | 'loading'> {
   createdDate: Date | string;
   journeyTypeName: JourneyTypeName | undefined;
-  parentDisplayName: string | undefined;
   journeyLocation: JourneyLocation;
+  parentDisplayName: string | undefined;
 }

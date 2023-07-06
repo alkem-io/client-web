@@ -18,8 +18,8 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
   loading,
   createdDate,
   journeyTypeName,
-  parentDisplayName,
   journeyLocation,
+  parentDisplayName,
   callout,
   whiteboard,
 }) => {
@@ -39,6 +39,7 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
     author,
     createdDate,
     journeyTypeName,
+    journeyLocation,
     parentDisplayName,
     values: {
       calloutDisplayName: callout.profile.displayName,

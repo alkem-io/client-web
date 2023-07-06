@@ -799,23 +799,23 @@
         "callout-published": "1 {{time}} '<UserLink>{{user}}</UserLink>' published a new $t(common.callout)",
         "challenge-created": "2 {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.challenge)",
         "discussion-comment-created": "3 {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{calloutDisplayName}}'",
-        "member-joined": "4 {{time}} '<UserLink>{{user}}</UserLink>' joined the {{journeyType}} '{{journeyDisplayName}}'",
+        "member-joined": "4 {{time}} '<UserLink>{{user}}</UserLink>' joined the {{communityType}} '{{communityDisplayName}}'",
         "opportunity-created": "5 {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.opportunity)",
         "post-comment-created": "6 {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{postDisplayName}}'",
         "post-created": "7 {{time}} '<UserLink>{{user}}</UserLink>' added a Post to '{{calloutDisplayName}}'",
         "update-sent": "8 {{time}} '<UserLink>{{user}}</UserLink>' shared a new $t(common.update)",
-        "whiteboard-created": "9 {{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{parentDisplayName}}'"
+        "whiteboard-created": "9 {{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'"
       },
       "actions-in-journey": {
-        "callout-published": "1b {{time}} '<UserLink>{{user}}</UserLink>' published a new $t(common.callout) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "challenge-created": "2b {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.challenge) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "discussion-comment-created": "3b {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{calloutDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "member-joined": "4b {{time}} '<UserLink>{{user}}</UserLink>' joined the {{journeyType}} '{{journeyDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "opportunity-created": "5b {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.opportunity) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "post-comment-created": "6b {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{postDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "post-created": "7b {{time}} '<UserLink>{{user}}</UserLink>' added a Post to '{{calloutDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "update-sent": "8b {{time}} '<UserLink>{{user}}</UserLink>' shared a new $t(common.update) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
-        "whiteboard-created": "9b {{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{parentDisplayName}}'"
+        "callout-published": "1b {{time}} '<UserLink>{{user}}</UserLink>' published a new $t(common.callout) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "challenge-created": "2b {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.challenge) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "discussion-comment-created": "3b {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{calloutDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "member-joined": "4b {{time}} '<UserLink>{{user}}</UserLink>' joined the {{communityType}} '{{communityDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "opportunity-created": "5b {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.opportunity) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "post-comment-created": "6b {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{postDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "post-created": "7b {{time}} '<UserLink>{{user}}</UserLink>' added a Post to '{{calloutDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "update-sent": "8b {{time}} '<UserLink>{{user}}</UserLink>' shared a new $t(common.update) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
+        "whiteboard-created": "9b {{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>"
       },
       "activity-description": {
         "callout-published": "{{displayName}}",

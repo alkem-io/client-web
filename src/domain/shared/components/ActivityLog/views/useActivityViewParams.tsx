@@ -6,6 +6,7 @@ import journeyIcon from '../../JourneyIcon/JourneyIcon';
 import { Author } from '../../AuthorAvatar/models/author';
 import { Link } from '@mui/material';
 import TranslationKey from '../../../../../types/TranslationKey';
+import { JourneyLocation, buildJourneyUrl } from '../../../../../common/utils/urlBuilders';
 
 const PARENT_NAME_MAX_LENGTH = 20;
 
@@ -22,10 +23,11 @@ interface Props {
     | 'update-sent';
   createdDate: Date | string;
   parentDisplayName: string | undefined; // Callout name or Journey name
+  journeyLocation: JourneyLocation | undefined;
   journeyTypeName: JourneyTypeName | undefined;
   author: Author | undefined;
 
-  values?: Record<string, string>;
+  values?: Record<string, string | undefined>;
   components?: Record<string, ReactNode>;
 }
 
@@ -37,6 +39,7 @@ const useActivityViewParams = ({
   activityType,
   createdDate,
   parentDisplayName,
+  journeyLocation,
   journeyTypeName,
   author,
   values = {},
@@ -69,7 +72,7 @@ const useActivityViewParams = ({
 
     const JourneyIcon = journeyTypeName ? journeyIcon[journeyTypeName] : undefined;
     if (JourneyIcon) {
-      components['ParentIcon'] = <JourneyIcon fontSize="inherit" sx={{ verticalAlign: 'bottom' }} />;
+      components['ParentIcon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
     }
 
     if (journeyTypeName) {
@@ -77,8 +80,11 @@ const useActivityViewParams = ({
     }
 
     const i18nKey: TranslationKey = `components.activity-log-view.actions${
-      parentDisplayName ? '-in-journey' : ''
+      journeyTypeName ? '-in-journey' : ''
     }.${activityType}` as const;
+    if (journeyLocation) {
+      components['ParentLink'] = <Link href={buildJourneyUrl(journeyLocation)} />;
+    }
 
     return {
       i18nKey,

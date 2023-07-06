@@ -18,8 +18,8 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
   loading,
   createdDate,
   journeyTypeName,
-  parentDisplayName,
   journeyLocation,
+  parentDisplayName,
   callout,
   calloutType,
 }) => {
@@ -39,6 +39,7 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
     author,
     createdDate,
     journeyTypeName,
+    journeyLocation,
     parentDisplayName,
     values: {
       calloutDisplayName: callout.profile.displayName,

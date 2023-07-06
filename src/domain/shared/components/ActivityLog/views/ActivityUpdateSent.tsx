@@ -17,8 +17,8 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   loading,
   createdDate,
   journeyTypeName,
-  parentDisplayName,
   journeyLocation,
+  parentDisplayName,
   message,
 }) => {
   const { t } = useTranslation();
@@ -38,6 +38,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
     author,
     createdDate,
     journeyTypeName,
+    journeyLocation,
     parentDisplayName,
   });
 

@@ -17,8 +17,8 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
   loading,
   createdDate,
   journeyTypeName,
-  parentDisplayName,
   journeyLocation,
+  parentDisplayName,
   opportunity,
 }) => {
   const { t } = useTranslation();
@@ -36,6 +36,7 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
     author,
     createdDate,
     journeyTypeName,
+    journeyLocation,
     parentDisplayName,
   });
 

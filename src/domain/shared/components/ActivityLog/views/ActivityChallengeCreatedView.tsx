@@ -17,8 +17,8 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
   loading,
   createdDate,
   journeyTypeName,
-  parentDisplayName,
   journeyLocation,
+  parentDisplayName,
   challenge,
 }) => {
   const { t } = useTranslation();
@@ -36,6 +36,7 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
     author,
     createdDate,
     journeyTypeName,
+    journeyLocation,
     parentDisplayName,
   });
 
