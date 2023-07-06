@@ -8,13 +8,13 @@ query opportunityCommunityMembers($spaceId: UUID_NAMEID!, $opportunityId: UUID_N
         memberUsers {
           ...CommunityMemberUser
         }
-        leadUsers {
+        leadUsers: usersInRole(role: LEAD) {
           ...CommunityMemberUser
         }
-        memberOrganizations {
+        memberOrganizations: organizationsInRole(role: MEMBER)  {
           ...OrganizationDetails
         }
-        leadOrganizations {
+        leadOrganizations: organizationsInRole(role: LEAD) {
           ...OrganizationDetails
         }
       }

@@ -410,28 +410,15 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type AssignChallengeAdminInput = {
-  challengeID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignCommunityLeadOrganizationInput = {
+export type AssignCommunityRoleToOrganizationInput = {
   communityID: Scalars['UUID'];
   organizationID: Scalars['UUID_NAMEID'];
+  role: CommunityRole;
 };
 
-export type AssignCommunityLeadUserInput = {
+export type AssignCommunityRoleToUserInput = {
   communityID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignCommunityMemberOrganizationInput = {
-  communityID: Scalars['UUID'];
-  organizationID: Scalars['UUID_NAMEID'];
-};
-
-export type AssignCommunityMemberUserInput = {
-  communityID: Scalars['UUID'];
+  role: CommunityRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -447,11 +434,6 @@ export type AssignGlobalSpacesAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignOpportunityAdminInput = {
-  opportunityID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
 export type AssignOrganizationAdminInput = {
   organizationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -464,11 +446,6 @@ export type AssignOrganizationAssociateInput = {
 
 export type AssignOrganizationOwnerInput = {
   organizationID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignSpaceAdminInput = {
-  spaceID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -516,6 +493,7 @@ export type Authorization = {
 
 export enum AuthorizationCredential {
   ChallengeAdmin = 'CHALLENGE_ADMIN',
+  ChallengeHost = 'CHALLENGE_HOST',
   ChallengeLead = 'CHALLENGE_LEAD',
   ChallengeMember = 'CHALLENGE_MEMBER',
   GlobalAdmin = 'GLOBAL_ADMIN',
@@ -524,6 +502,7 @@ export enum AuthorizationCredential {
   GlobalRegistered = 'GLOBAL_REGISTERED',
   InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
   OpportunityAdmin = 'OPPORTUNITY_ADMIN',
+  OpportunityHost = 'OPPORTUNITY_HOST',
   OpportunityLead = 'OPPORTUNITY_LEAD',
   OpportunityMember = 'OPPORTUNITY_MEMBER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
@@ -531,6 +510,7 @@ export enum AuthorizationCredential {
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceHost = 'SPACE_HOST',
+  SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
@@ -961,18 +941,16 @@ export type Community = Groupable & {
   invitations?: Maybe<Array<Invitation>>;
   /** Invitations to join this Community for users not yet on the Alkemio platform. */
   invitationsExternal?: Maybe<Array<InvitationExternal>>;
-  /** All Organizations that are leads in this Community. */
-  leadOrganizations?: Maybe<Array<Organization>>;
-  /** All users that are leads in this Community. */
-  leadUsers?: Maybe<Array<User>>;
-  /** All Organizations that are contributing to this Community. */
-  memberOrganizations?: Maybe<Array<Organization>>;
   /** All users that are contributing to this Community. */
   memberUsers?: Maybe<Array<User>>;
   /** The membership status of the currently logged in user. */
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
+  /** All Organizations that have the specified Role in this Community. */
+  organizationsInRole?: Maybe<Array<Organization>>;
   /** The policy that defines the roles for this Community. */
   policy?: Maybe<CommunityPolicy>;
+  /** All users that have the specified Role in this Community. */
+  usersInRole?: Maybe<Array<User>>;
 };
 
 export type CommunityAvailableLeadUsersArgs = {
@@ -995,6 +973,14 @@ export type CommunityMemberUsersArgs = {
   limit?: InputMaybe<Scalars['Float']>;
 };
 
+export type CommunityOrganizationsInRoleArgs = {
+  role: CommunityRole;
+};
+
+export type CommunityUsersInRoleArgs = {
+  role: CommunityRole;
+};
+
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
@@ -1013,6 +999,10 @@ export enum CommunityMembershipStatus {
 
 export type CommunityPolicy = {
   __typename?: 'CommunityPolicy';
+  /** The role policy that defines the Admins for this Community. */
+  admin: CommunityRolePolicy;
+  /** The role policy that defines the hosts for this Community. */
+  host: CommunityRolePolicy;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The role policy that defines the leads for this Community. */
@@ -1021,10 +1011,19 @@ export type CommunityPolicy = {
   member: CommunityRolePolicy;
 };
 
+export enum CommunityRole {
+  Admin = 'ADMIN',
+  Host = 'HOST',
+  Lead = 'LEAD',
+  Member = 'MEMBER',
+}
+
 export type CommunityRolePolicy = {
   __typename?: 'CommunityRolePolicy';
   /** The CredentialDefinition that is associated with this role */
   credential: CredentialDefinition;
+  /** Is this role enabled for this Community */
+  enabled: Scalars['Boolean'];
   /** Maximum number of Organizations in this role */
   maxOrg: Scalars['Float'];
   /** Maximum number of Users in this role */
@@ -1964,30 +1963,20 @@ export type Mutation = {
   adminStorageMigrateIpfsUrls: Scalars['Boolean'];
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
-  /** Assigns an Organization as a Lead of the specified Community. */
-  assignOrganizationAsCommunityLead: Community;
-  /** Assigns an Organization as a member of the specified Community. */
-  assignOrganizationAsCommunityMember: Community;
-  /** Assigns a User as an Challenge Admin. */
-  assignUserAsChallengeAdmin: User;
-  /** Assigns a User as a lead of the specified Community. */
-  assignUserAsCommunityLead: Community;
-  /** Assigns a User as a member of the specified Community. */
-  assignUserAsCommunityMember: Community;
+  /** Assigns an Organization a Role in the specified Community. */
+  assignCommunityRoleToOrganization: Organization;
+  /** Assigns a User to a role in the specified Community. */
+  assignCommunityRoleToUser: User;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
   assignUserAsGlobalCommunityAdmin: User;
   /** Assigns a User as a Global Spaces Admin. */
   assignUserAsGlobalSpacesAdmin: User;
-  /** Assigns a User as an Opportunity Admin. */
-  assignUserAsOpportunityAdmin: User;
   /** Assigns a User as an Organization Admin. */
   assignUserAsOrganizationAdmin: User;
   /** Assigns a User as an Organization Owner. */
   assignUserAsOrganizationOwner: User;
-  /** Assigns a User as an Space Admin. */
-  assignUserAsSpaceAdmin: User;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
   /** Assigns a User as an associate of the specified Organization. */
@@ -2142,34 +2131,24 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Moves the specified Post to another Callout. */
   movePostToCallout: Post;
+  /** Removes an Organization from a Role in the specified Community. */
+  removeCommunityRoleFromOrganization: Organization;
+  /** Removes a User from a Role in the specified Community. */
+  removeCommunityRoleFromUser: User;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
-  /** Removes an Organization as a Lead of the specified Community. */
-  removeOrganizationAsCommunityLead: Community;
-  /** Removes an Organization as a member of the specified Community. */
-  removeOrganizationAsCommunityMember: Community;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean'];
-  /** Removes a User from being an Challenge Admin. */
-  removeUserAsChallengeAdmin: User;
-  /** Removes a User as a Lead of the specified Community. */
-  removeUserAsCommunityLead: Community;
-  /** Removes a User as a member of the specified Community. */
-  removeUserAsCommunityMember: Community;
   /** Removes a User from being a Global Admin. */
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
   removeUserAsGlobalCommunityAdmin: User;
   /** Removes a User from being a Global Spaces Admin. */
   removeUserAsGlobalSpacesAdmin: User;
-  /** Removes a User from being an Opportunity Admin. */
-  removeUserAsOpportunityAdmin: User;
   /** Removes a User from being an Organization Admin. */
   removeUserAsOrganizationAdmin: User;
   /** Removes a User from being an Organization Owner. */
   removeUserAsOrganizationOwner: User;
-  /** Removes a User from being an Space Admin. */
-  removeUserAsSpaceAdmin: User;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
   /** Removes a User as a member of the specified Organization. */
@@ -2280,24 +2259,12 @@ export type MutationApplyForCommunityMembershipArgs = {
   applicationData: CommunityApplyInput;
 };
 
-export type MutationAssignOrganizationAsCommunityLeadArgs = {
-  leadershipData: AssignCommunityLeadOrganizationInput;
+export type MutationAssignCommunityRoleToOrganizationArgs = {
+  roleData: AssignCommunityRoleToOrganizationInput;
 };
 
-export type MutationAssignOrganizationAsCommunityMemberArgs = {
-  membershipData: AssignCommunityMemberOrganizationInput;
-};
-
-export type MutationAssignUserAsChallengeAdminArgs = {
-  membershipData: AssignChallengeAdminInput;
-};
-
-export type MutationAssignUserAsCommunityLeadArgs = {
-  leadershipData: AssignCommunityLeadUserInput;
-};
-
-export type MutationAssignUserAsCommunityMemberArgs = {
-  membershipData: AssignCommunityMemberUserInput;
+export type MutationAssignCommunityRoleToUserArgs = {
+  roleData: AssignCommunityRoleToUserInput;
 };
 
 export type MutationAssignUserAsGlobalAdminArgs = {
@@ -2312,20 +2279,12 @@ export type MutationAssignUserAsGlobalSpacesAdminArgs = {
   membershipData: AssignGlobalSpacesAdminInput;
 };
 
-export type MutationAssignUserAsOpportunityAdminArgs = {
-  membershipData: AssignOpportunityAdminInput;
-};
-
 export type MutationAssignUserAsOrganizationAdminArgs = {
   membershipData: AssignOrganizationAdminInput;
 };
 
 export type MutationAssignUserAsOrganizationOwnerArgs = {
   membershipData: AssignOrganizationOwnerInput;
-};
-
-export type MutationAssignUserAsSpaceAdminArgs = {
-  membershipData: AssignSpaceAdminInput;
 };
 
 export type MutationAssignUserToGroupArgs = {
@@ -2620,32 +2579,20 @@ export type MutationMovePostToCalloutArgs = {
   movePostData: MovePostInput;
 };
 
+export type MutationRemoveCommunityRoleFromOrganizationArgs = {
+  roleData: RemoveCommunityRoleFromOrganizationInput;
+};
+
+export type MutationRemoveCommunityRoleFromUserArgs = {
+  roleData: RemoveCommunityRoleFromUserInput;
+};
+
 export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
-export type MutationRemoveOrganizationAsCommunityLeadArgs = {
-  leadershipData: RemoveCommunityLeadOrganizationInput;
-};
-
-export type MutationRemoveOrganizationAsCommunityMemberArgs = {
-  membershipData: RemoveCommunityMemberOrganizationInput;
-};
-
 export type MutationRemoveReactionToMessageInRoomArgs = {
   reactionData: RoomRemoveReactionToMessageInput;
-};
-
-export type MutationRemoveUserAsChallengeAdminArgs = {
-  membershipData: RemoveChallengeAdminInput;
-};
-
-export type MutationRemoveUserAsCommunityLeadArgs = {
-  leadershipData: RemoveCommunityLeadUserInput;
-};
-
-export type MutationRemoveUserAsCommunityMemberArgs = {
-  membershipData: RemoveCommunityMemberUserInput;
 };
 
 export type MutationRemoveUserAsGlobalAdminArgs = {
@@ -2660,20 +2607,12 @@ export type MutationRemoveUserAsGlobalSpacesAdminArgs = {
   membershipData: RemoveGlobalSpacesAdminInput;
 };
 
-export type MutationRemoveUserAsOpportunityAdminArgs = {
-  membershipData: RemoveOpportunityAdminInput;
-};
-
 export type MutationRemoveUserAsOrganizationAdminArgs = {
   membershipData: RemoveOrganizationAdminInput;
 };
 
 export type MutationRemoveUserAsOrganizationOwnerArgs = {
   membershipData: RemoveOrganizationOwnerInput;
-};
-
-export type MutationRemoveUserAsSpaceAdminArgs = {
-  membershipData: RemoveSpaceAdminInput;
 };
 
 export type MutationRemoveUserFromGroupArgs = {
@@ -3536,28 +3475,15 @@ export type RelayPaginatedUserPageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
-export type RemoveChallengeAdminInput = {
-  challengeID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveCommunityLeadOrganizationInput = {
+export type RemoveCommunityRoleFromOrganizationInput = {
   communityID: Scalars['UUID'];
   organizationID: Scalars['UUID_NAMEID'];
+  role: CommunityRole;
 };
 
-export type RemoveCommunityLeadUserInput = {
+export type RemoveCommunityRoleFromUserInput = {
   communityID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveCommunityMemberOrganizationInput = {
-  communityID: Scalars['UUID'];
-  organizationID: Scalars['UUID_NAMEID'];
-};
-
-export type RemoveCommunityMemberUserInput = {
-  communityID: Scalars['UUID'];
+  role: CommunityRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -3573,11 +3499,6 @@ export type RemoveGlobalSpacesAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveOpportunityAdminInput = {
-  opportunityID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
 export type RemoveOrganizationAdminInput = {
   organizationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -3590,11 +3511,6 @@ export type RemoveOrganizationAssociateInput = {
 
 export type RemoveOrganizationOwnerInput = {
   organizationID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveSpaceAdminInput = {
-  spaceID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -4839,19 +4755,6 @@ export type MyPrivilegesFragment = {
   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
 };
 
-export type AssignUserAsChallengeAdminMutationVariables = Exact<{
-  input: AssignChallengeAdminInput;
-}>;
-
-export type AssignUserAsChallengeAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsChallengeAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
 export type AssignUserAsGlobalAdminMutationVariables = Exact<{
   input: AssignGlobalAdminInput;
 }>;
@@ -4904,32 +4807,6 @@ export type AssignUserAsOrganizationOwnerMutation = {
   };
 };
 
-export type AssignUserAsSpaceAdminMutationVariables = Exact<{
-  input: AssignSpaceAdminInput;
-}>;
-
-export type AssignUserAsSpaceAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsSpaceAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
-  input: RemoveChallengeAdminInput;
-}>;
-
-export type RemoveUserAsChallengeAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsChallengeAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
 export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
   input: RemoveGlobalAdminInput;
 }>;
@@ -4976,19 +4853,6 @@ export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
 export type RemoveUserAsOrganizationOwnerMutation = {
   __typename?: 'Mutation';
   removeUserAsOrganizationOwner: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsSpaceAdminMutationVariables = Exact<{
-  input: RemoveSpaceAdminInput;
-}>;
-
-export type RemoveUserAsSpaceAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsSpaceAdmin: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -7255,32 +7119,6 @@ export type JourneyPrivilegesQuery = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
-  };
-};
-
-export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
-  input: AssignOpportunityAdminInput;
-}>;
-
-export type AssignUserAsOpportunityAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsOpportunityAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsOpportunityAdminMutationVariables = Exact<{
-  input: RemoveOpportunityAdminInput;
-}>;
-
-export type RemoveUserAsOpportunityAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsOpportunityAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 
@@ -19750,7 +19588,7 @@ export type AssignUserAsCommunityMemberMutationVariables = Exact<{
 
 export type AssignUserAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  assignUserAsCommunityMember: { __typename?: 'Community'; id: string; displayName?: string | undefined };
+  assignCommunityRoleToUser: { __typename?: 'User'; id: string };
 };
 
 export type AssignUserAsCommunityLeadMutationVariables = Exact<{
@@ -19760,7 +19598,7 @@ export type AssignUserAsCommunityLeadMutationVariables = Exact<{
 
 export type AssignUserAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  assignUserAsCommunityLead: { __typename?: 'Community'; id: string };
+  assignCommunityRoleToUser: { __typename?: 'User'; id: string };
 };
 
 export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
@@ -19770,7 +19608,7 @@ export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
 
 export type RemoveUserAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  removeUserAsCommunityMember: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
 };
 
 export type RemoveUserAsCommunityLeadMutationVariables = Exact<{
@@ -19780,7 +19618,7 @@ export type RemoveUserAsCommunityLeadMutationVariables = Exact<{
 
 export type RemoveUserAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  removeUserAsCommunityLead: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
 };
 
 export type AssignOrganizationAsCommunityMemberMutationVariables = Exact<{
@@ -19790,7 +19628,7 @@ export type AssignOrganizationAsCommunityMemberMutationVariables = Exact<{
 
 export type AssignOrganizationAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  assignOrganizationAsCommunityMember: { __typename?: 'Community'; id: string };
+  assignCommunityRoleToOrganization: { __typename?: 'Organization'; id: string };
 };
 
 export type AssignOrganizationAsCommunityLeadMutationVariables = Exact<{
@@ -19800,7 +19638,7 @@ export type AssignOrganizationAsCommunityLeadMutationVariables = Exact<{
 
 export type AssignOrganizationAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  assignOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+  assignCommunityRoleToOrganization: { __typename?: 'Organization'; id: string };
 };
 
 export type RemoveOrganizationAsCommunityMemberMutationVariables = Exact<{
@@ -19810,7 +19648,7 @@ export type RemoveOrganizationAsCommunityMemberMutationVariables = Exact<{
 
 export type RemoveOrganizationAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  removeOrganizationAsCommunityMember: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromOrganization: { __typename?: 'Organization'; id: string };
 };
 
 export type RemoveOrganizationAsCommunityLeadMutationVariables = Exact<{
@@ -19820,7 +19658,61 @@ export type RemoveOrganizationAsCommunityLeadMutationVariables = Exact<{
 
 export type RemoveOrganizationAsCommunityLeadMutation = {
   __typename?: 'Mutation';
-  removeOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+  removeCommunityRoleFromOrganization: { __typename?: 'Organization'; id: string };
+};
+
+export type AssignUserAsSpaceAdminMutationVariables = Exact<{
+  input: AssignCommunityRoleToUserInput;
+}>;
+
+export type AssignUserAsSpaceAdminMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToUser: { __typename?: 'User'; id: string };
+};
+
+export type RemoveUserAsSpaceAdminMutationVariables = Exact<{
+  input: RemoveCommunityRoleFromUserInput;
+}>;
+
+export type RemoveUserAsSpaceAdminMutation = {
+  __typename?: 'Mutation';
+  removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
+};
+
+export type AssignUserAsChallengeAdminMutationVariables = Exact<{
+  input: AssignCommunityRoleToUserInput;
+}>;
+
+export type AssignUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToUser: { __typename?: 'User'; id: string };
+};
+
+export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
+  input: RemoveCommunityRoleFromUserInput;
+}>;
+
+export type RemoveUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
+};
+
+export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
+  input: AssignCommunityRoleToUserInput;
+}>;
+
+export type AssignUserAsOpportunityAdminMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToUser: { __typename?: 'User'; id: string };
+};
+
+export type RemoveUserAsOpportunityAdminMutationVariables = Exact<{
+  input: RemoveCommunityRoleFromUserInput;
+}>;
+
+export type RemoveUserAsOpportunityAdminMutation = {
+  __typename?: 'Mutation';
+  removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
 };
 
 export type OpportunityCommunityMembersQueryVariables = Exact<{

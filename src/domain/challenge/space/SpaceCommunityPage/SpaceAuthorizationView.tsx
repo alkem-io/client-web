@@ -9,7 +9,7 @@ import {
   useAssignUserAsSpaceAdminMutation,
   useRemoveUserAsSpaceAdminMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 
 interface SpaceAuthorizationViewProps {
   credential: AuthorizationCredential;
@@ -29,7 +29,8 @@ const SpaceAuthorizationView: FC<SpaceAuthorizationViewProps> = ({ credential, r
       variables: {
         input: {
           userID: memberId,
-          spaceID: resourceId,
+          communityID: communityId || '',
+          role: CommunityRole.Admin,
         },
       },
       refetchQueries: [
@@ -46,7 +47,8 @@ const SpaceAuthorizationView: FC<SpaceAuthorizationViewProps> = ({ credential, r
       variables: {
         input: {
           userID: memberId,
-          spaceID: resourceId,
+          communityID: communityId || '',
+          role: CommunityRole.Admin,
         },
       },
       refetchQueries: [

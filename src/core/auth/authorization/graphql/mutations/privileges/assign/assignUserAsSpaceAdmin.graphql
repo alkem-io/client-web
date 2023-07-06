@@ -1,9 +1,0 @@
-mutation assignUserAsSpaceAdmin($input: AssignSpaceAdminInput!) {
-  assignUserAsSpaceAdmin(membershipData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

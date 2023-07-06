@@ -674,12 +674,11 @@ export type CommunityKeySpecifier = (
   | 'id'
   | 'invitations'
   | 'invitationsExternal'
-  | 'leadOrganizations'
-  | 'leadUsers'
-  | 'memberOrganizations'
   | 'memberUsers'
   | 'myMembershipStatus'
+  | 'organizationsInRole'
   | 'policy'
+  | 'usersInRole'
   | CommunityKeySpecifier
 )[];
 export type CommunityFieldPolicy = {
@@ -694,21 +693,23 @@ export type CommunityFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   invitationsExternal?: FieldPolicy<any> | FieldReadFunction<any>;
-  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
-  leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyKeySpecifier = ('id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
+export type CommunityPolicyKeySpecifier = ('admin' | 'host' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
+  admin?: FieldPolicy<any> | FieldReadFunction<any>;
+  host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lead?: FieldPolicy<any> | FieldReadFunction<any>;
   member?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityRolePolicyKeySpecifier = (
   | 'credential'
+  | 'enabled'
   | 'maxOrg'
   | 'maxUser'
   | 'minOrg'
@@ -718,6 +719,7 @@ export type CommunityRolePolicyKeySpecifier = (
 )[];
 export type CommunityRolePolicyFieldPolicy = {
   credential?: FieldPolicy<any> | FieldReadFunction<any>;
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   maxOrg?: FieldPolicy<any> | FieldReadFunction<any>;
   maxUser?: FieldPolicy<any> | FieldReadFunction<any>;
   minOrg?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1149,18 +1151,13 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'adminStorageMigrateIpfsUrls'
   | 'applyForCommunityMembership'
-  | 'assignOrganizationAsCommunityLead'
-  | 'assignOrganizationAsCommunityMember'
-  | 'assignUserAsChallengeAdmin'
-  | 'assignUserAsCommunityLead'
-  | 'assignUserAsCommunityMember'
+  | 'assignCommunityRoleToOrganization'
+  | 'assignCommunityRoleToUser'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
   | 'assignUserAsGlobalSpacesAdmin'
-  | 'assignUserAsOpportunityAdmin'
   | 'assignUserAsOrganizationAdmin'
   | 'assignUserAsOrganizationOwner'
-  | 'assignUserAsSpaceAdmin'
   | 'assignUserToGroup'
   | 'assignUserToOrganization'
   | 'authorizationPolicyResetAll'
@@ -1238,20 +1235,15 @@ export type MutationKeySpecifier = (
   | 'joinCommunity'
   | 'messageUser'
   | 'movePostToCallout'
+  | 'removeCommunityRoleFromOrganization'
+  | 'removeCommunityRoleFromUser'
   | 'removeMessageOnRoom'
-  | 'removeOrganizationAsCommunityLead'
-  | 'removeOrganizationAsCommunityMember'
   | 'removeReactionToMessageInRoom'
-  | 'removeUserAsChallengeAdmin'
-  | 'removeUserAsCommunityLead'
-  | 'removeUserAsCommunityMember'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
   | 'removeUserAsGlobalSpacesAdmin'
-  | 'removeUserAsOpportunityAdmin'
   | 'removeUserAsOrganizationAdmin'
   | 'removeUserAsOrganizationOwner'
-  | 'removeUserAsSpaceAdmin'
   | 'removeUserFromGroup'
   | 'removeUserFromOrganization'
   | 'revokeCredentialFromUser'
@@ -1305,18 +1297,13 @@ export type MutationFieldPolicy = {
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminStorageMigrateIpfsUrls?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalSpacesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsSpaceAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetAll?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1394,20 +1381,15 @@ export type MutationFieldPolicy = {
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   movePostToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalSpacesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsSpaceAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
