@@ -18,16 +18,16 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
 
 fragment CommunityPageCommunity on Community {
   id
-  leadUsers {
+  leadUsers: usersInRole(role: LEAD) {
     ...DashboardLeadUser
   }
   memberUsers {
     ...DashboardContributingUser
   }
-  leadOrganizations {
+  leadOrganizations: organizationsInRole(role: LEAD) {
     ...AssociatedOrganizationDetails
   }
-  memberOrganizations {
+  memberOrganizations: organizationsInRole(role: MEMBER) {
     ...DashboardContributingOrganization
   }
 }

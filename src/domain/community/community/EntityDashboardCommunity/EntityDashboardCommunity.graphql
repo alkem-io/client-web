@@ -1,15 +1,15 @@
 fragment EntityDashboardCommunity on Community {
   id
-  leadUsers {
+  leadUsers: usersInRole(role: LEAD) {
     ...DashboardLeadUser
   }
   memberUsers(limit: 8) {
     ...DashboardContributingUser
   }
-  leadOrganizations {
+  leadOrganizations: organizationsInRole(role: LEAD) {
     ...AssociatedOrganizationDetails
   }
-  memberOrganizations {
+  memberOrganizations: organizationsInRole(role: MEMBER)  {
     ...DashboardContributingOrganization
   }
   authorization {
