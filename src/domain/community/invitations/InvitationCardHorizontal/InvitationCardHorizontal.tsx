@@ -23,6 +23,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
       component={LinkButton}
       visual={<JourneyAvatar journeyTypeName="space" visualUri={undefined} />}
       onClick={onClick}
+      outlined
     >
       <BlockSectionTitle noWrap>
         <ActivityDescription i18nKey="community.pendingMembership.invitationTitle" {...invitation} />
