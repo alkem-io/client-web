@@ -1,44 +1,31 @@
 import React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { InvitationWithMeta } from '../../pendingMembership/usePendingMemberships';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import { InvitationWithMeta } from '../../pendingMembership/PendingMemberships';
 import JourneyAvatar from '../../../challenge/common/JourneyAvatar/JourneyAvatar';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import ActivityDescription from '../../../shared/components/ActivityDescription/ActivityDescription';
+import LinkButton from '../../../../core/ui/button/LinkButton';
 
 interface InvitationCardHorizontalProps {
   invitation: InvitationWithMeta | undefined;
+  onClick?: () => void;
 }
 
-const InvitationCardHorizontal = ({ invitation }: InvitationCardHorizontalProps) => {
-  // const { t } = useTranslation();
-
+const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizontalProps) => {
   if (!invitation) {
     return null; // TODO Skeleton
   }
 
-  const JourneyIcon = journeyIcon[invitation.journeyTypeName];
-
   return (
     <BadgeCardView
-      component={RouterLink}
-      to={''}
-      visual={
-        <JourneyAvatar
-          journeyTypeName="space"
-          visualUri={undefined}
-        />
-      }
+      component={LinkButton}
+      visual={<JourneyAvatar journeyTypeName="space" visualUri={undefined} />}
+      onClick={onClick}
     >
       <BlockSectionTitle noWrap>
-        <ActivityDescription
-          i18nKey="community.pendingMembership.invitationTitle"
-          {...invitation}
-        />
+        <ActivityDescription i18nKey="community.pendingMembership.invitationTitle" {...invitation} />
       </BlockSectionTitle>
       <CardText
         sx={{

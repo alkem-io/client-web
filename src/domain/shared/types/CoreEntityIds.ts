@@ -21,10 +21,10 @@ export type ChallengeOpportunityIdsHolder = Required<
 >;
 
 export const isSpaceId = (ids: OptionalCoreEntityIds): ids is SpaceIdHolder =>
-  typeof ids.challengeNameId === 'undefined' && typeof ids.opportunityNameId === 'undefined';
+  !ids.challengeNameId && !ids.opportunityNameId;
 export const isChallengeId = (ids: OptionalCoreEntityIds): ids is ChallengeIdHolder =>
-  typeof ids.challengeNameId === 'string' && typeof ids.opportunityNameId === 'undefined';
+  Boolean(ids.challengeNameId) && !ids.opportunityNameId;
 export const isOpportunityId = (ids: OptionalCoreEntityIds): ids is OpportunityIdHolder =>
-  typeof ids.opportunityNameId === 'string';
+  Boolean(ids.opportunityNameId);
 export const isChallengeOpportunityIds = (ids: OptionalCoreEntityIds): ids is ChallengeOpportunityIdsHolder =>
-  typeof ids.challengeNameId === 'string' && typeof ids.opportunityNameId === 'string';
+  Boolean(ids.challengeNameId) && Boolean(ids.opportunityNameId);

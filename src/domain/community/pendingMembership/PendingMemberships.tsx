@@ -4,22 +4,13 @@ import {
   usePendingMembershipsOpportunityQuery,
   usePendingMembershipsQuery,
   usePendingMembershipsSpaceQuery,
-  usePendingMembershipsUserQuery
+  usePendingMembershipsUserQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 import { PendingMembershipsQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useUserContext } from '../contributor/user';
 
-export interface InvitationWithMeta {
-  id: string;
-  journeyTypeName: JourneyTypeName;
-  userDisplayName: string;
-  journeyDisplayName: string;
-  welcomeMessage: string | undefined;
-}
-
-interface ApplicationWithMeta {
-  id: string;
+interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
   journeyDisplayName: string;
   journeyDescription: string | undefined;
@@ -27,25 +18,26 @@ interface ApplicationWithMeta {
   journeyBannerUri: string | undefined;
 }
 
+export interface InvitationWithMeta extends JourneyDetails {
+  id: string;
+  userDisplayName: string;
+  welcomeMessage: string | undefined;
+}
+
+interface ApplicationWithMeta extends JourneyDetails {
+  id: string;
+}
+
 interface UsePendingMembershipsProvided {
   applications: PendingMembershipsQuery['rolesUser']['applications'];
   invitations: PendingMembershipsQuery['rolesUser']['invitations'];
+  refetchPendingMemberships: () => void;
 }
 
-// const mapInvitation = (invitation: PendingMembershipInvitationFragment, journey: { profile: PendingMembershipsJourneyProfileFragment }, createdBy: { profile: { displayName: string } }, journeyTypeName: JourneyTypeName): InvitationWithMeta => {
-//   return {
-//     id: invitation.id,
-//     welcomeMessage: invitation.welcomeMessage,
-//     userDisplayName: createdBy.profile.displayName,
-//     journeyDisplayName: journey.profile.displayName,
-//     journeyTypeName,
-//   };
-// };
-
-const usePendingMemberships = (): UsePendingMembershipsProvided => {
+export const usePendingMemberships = (): UsePendingMembershipsProvided => {
   const { user } = useUserContext();
 
-  const { data } = usePendingMembershipsQuery({
+  const { data, refetch: refetchPendingMemberships } = usePendingMembershipsQuery({
     variables: {
       userId: user?.user.id!,
     },
@@ -55,55 +47,8 @@ const usePendingMemberships = (): UsePendingMembershipsProvided => {
   return {
     invitations: data?.rolesUser.invitations,
     applications: data?.rolesUser.applications,
+    refetchPendingMemberships,
   };
-  //
-  // const spaceInvitations = useMemo<InvitationWithMeta[] | undefined>(() => data?.spaces.flatMap(space => {
-  //   return space.community?.invitations?.map(invitation => (
-  //     mapInvitation(invitation, space, 'space')
-  //   )) ?? [];
-  // }), [data]);
-  //
-  // const challengeInvitations = useMemo<InvitationWithMeta[] | undefined>(() => data?.spaces.flatMap(space => {
-  //   return space.challenges?.flatMap(challenge => challenge.community?.invitations?.map(invitation => (
-  //     mapInvitation(invitation, challenge, 'challenge')
-  //   )) ?? []) ?? [];
-  // }), [data]);
-  //
-  // const opportunityInvitations = useMemo<InvitationWithMeta[] | undefined>(() => data?.spaces.flatMap(space => {
-  //   return space.opportunities?.flatMap(opportunity => opportunity.community?.invitations?.map(invitation => (
-  //     mapInvitation(invitation, opportunity, 'opportunity')
-  //   )) ?? []) ?? [];
-  // }), [data]);
-  //
-  // const spaceApplications = useMemo<ApplicationWithMeta[] | undefined>(() => data?.spaces.flatMap(space => {
-  //   return space.community?.applications?.map(invitation => ({
-  //     ...invitation,
-  //     journeyTypeName: 'space',
-  //   })) ?? [];
-  // }), [data]);
-  //
-  // const challengeApplications = useMemo<ApplicationWithMeta[] | undefined>(() => data?.spaces.flatMap(space => {
-  //   return space.challenges?.flatMap(challenge => challenge.community?.applications?.map(invitation => ({
-  //     ...invitation,
-  //     journeyTypeName: 'challenge',
-  //   })) ?? []) ?? [];
-  // }), [data]);
-  //
-  // const opportunityApplications = useMemo<ApplicationWithMeta[] | undefined>(() => data?.spaces.flatMap(space => {
-  //   return space.opportunities?.flatMap(opportunity => opportunity.community?.applications?.map(invitation => ({
-  //     ...invitation,
-  //     journeyTypeName: 'opportunity',
-  //   })) ?? []) ?? [];
-  // }), [data]);
-  //
-  // const invitations = useMemo(() => [...spaceInvitations ?? [], ...challengeInvitations ?? [], ...opportunityInvitations ?? []], [spaceInvitations, challengeInvitations, opportunityInvitations]);
-  //
-  // const applications = useMemo(() => [...spaceApplications ?? [], ...challengeApplications ?? [], ...opportunityApplications ?? []], [spaceApplications, challengeApplications, opportunityApplications]);
-  //
-  // return {
-  //   invitations,
-  //   applications,
-  // };
 };
 
 interface InvitationHydratorProvided {
@@ -112,12 +57,19 @@ interface InvitationHydratorProvided {
 
 interface InvitationHydratorProps {
   invitation: NonNullable<PendingMembershipsQuery['rolesUser']['invitations']>[number];
+  withJourneyDetails?: boolean;
   children: (provided: InvitationHydratorProvided) => ReactNode;
 }
 
-const getJourneyTypeName = ({ challengeID, opportunityID }: { challengeID?: string, opportunityID?: string }): JourneyTypeName => {
+const getJourneyTypeName = ({
+  challengeID,
+  opportunityID,
+}: {
+  challengeID?: string;
+  opportunityID?: string;
+}): JourneyTypeName => {
   if (opportunityID) {
-    return 'opportunity'
+    return 'opportunity';
   }
   if (challengeID) {
     return 'challenge';
@@ -125,10 +77,11 @@ const getJourneyTypeName = ({ challengeID, opportunityID }: { challengeID?: stri
   return 'space';
 };
 
-export const InvitationHydrator = ({ invitation, children }: InvitationHydratorProps) => {
+export const InvitationHydrator = ({ invitation, withJourneyDetails = false, children }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: invitation.spaceID,
+      fetchDetails: withJourneyDetails,
     },
     skip: Boolean(invitation.challengeID || invitation.opportunityID),
   });
@@ -137,6 +90,7 @@ export const InvitationHydrator = ({ invitation, children }: InvitationHydratorP
     variables: {
       spaceId: invitation.spaceID,
       challengeId: invitation.challengeID!,
+      fetchDetails: withJourneyDetails,
     },
     skip: !invitation.challengeID,
   });
@@ -145,14 +99,12 @@ export const InvitationHydrator = ({ invitation, children }: InvitationHydratorP
     variables: {
       spaceId: invitation.spaceID,
       opportunityId: invitation.opportunityID!,
+      fetchDetails: withJourneyDetails,
     },
     skip: !invitation.opportunityID,
   });
 
-  const journey =
-    opportunityData?.space.opportunity ??
-    challengeData?.space.challenge ??
-    spaceData?.space;
+  const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
 
   const { data: userData } = usePendingMembershipsUserQuery({
     variables: {
@@ -172,14 +124,13 @@ export const InvitationHydrator = ({ invitation, children }: InvitationHydratorP
       userDisplayName: createdBy.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
       journeyTypeName: getJourneyTypeName(invitation),
-    }
+      journeyDescription: journey.profile.description,
+      journeyTags: journey.profile.tagset?.tags,
+      journeyBannerUri: journey.profile.banner?.uri,
+    };
   }, [invitation, journey, createdBy]);
 
-  return (
-    <>
-      {children({ invitation: hydratedInvitation })}
-    </>
-  );
+  return <>{children({ invitation: hydratedInvitation })}</>;
 };
 
 interface ApplicationHydratorProvided {
@@ -218,10 +169,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
     skip: !application.opportunityID,
   });
 
-  const journey =
-    opportunityData?.space.opportunity ??
-    challengeData?.space.challenge ??
-    spaceData?.space;
+  const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
 
   const hydratedInvitation = useMemo<ApplicationWithMeta | undefined>(() => {
     if (!application || !journey) {
@@ -234,14 +182,8 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
       journeyDescription: journey.profile.description,
       journeyTags: journey.profile.tagset?.tags,
       journeyBannerUri: journey.profile.banner?.uri,
-    }
+    };
   }, [application, journey]);
 
-  return (
-    <>
-      {children({ application: hydratedInvitation })}
-    </>
-  );
+  return <>{children({ application: hydratedInvitation })}</>;
 };
-
-export default usePendingMemberships;
