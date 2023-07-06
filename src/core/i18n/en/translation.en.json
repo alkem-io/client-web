@@ -806,27 +806,17 @@
         "update-sent": "{{time}} '<UserLink>{{user}}</UserLink>' shared a new $t(common.update)",
         "whiteboard-created": "{{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'"
       },
-      "actions-in-journey": {
-        "callout-published": "{{time}} '<UserLink>{{user}}</UserLink>' published a new $t(common.callout) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "challenge-created": "{{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.challenge) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "discussion-comment-created": "{{time}} '<UserLink>{{user}}</UserLink>' commented on '{{calloutDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "member-joined": "{{time}} '<UserLink>{{user}}</UserLink>' joined the {{communityType}} '{{communityDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "opportunity-created": "{{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.opportunity) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "post-comment-created": "{{time}} '<UserLink>{{user}}</UserLink>' commented on '{{postDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "post-created": "{{time}} '<UserLink>{{user}}</UserLink>' added a Post to '{{calloutDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "update-sent": "{{time}} '<UserLink>{{user}}</UserLink>' shared a new $t(common.update) in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
-        "whiteboard-created": "{{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}' in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>"
-      },
+      "parent-link": " in <ParentLink><ParentIcon /> {{parentDisplayName}}</ParentLink>",
       "activity-description": {
         "callout-published": "{{displayName}}",
         "challenge-created": "{{displayName}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{user}}",
+        "opportunity-created": "{{displayName}}",
         "post-comment-created": "{{comment}}",
         "post-created": "{{postDisplayName}} - {{postDescription}}",
-        "opportunity-created": "{{displayName}}",
-        "whiteboard-created": "{{displayName}}",
-        "update-sent": "{{update}}"
+        "update-sent": "{{update}}",
+        "whiteboard-created": "{{displayName}}"
       }
     },
     "lifecycle-visualizer": {

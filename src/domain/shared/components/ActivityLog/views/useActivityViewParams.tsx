@@ -79,15 +79,12 @@ const useActivityViewParams = ({
       values['journeyType'] = t(`common.${journeyTypeName}` as const);
     }
 
-    const i18nKey: TranslationKey = `components.activity-log-view.actions${
-      journeyTypeName ? '-in-journey' : ''
-    }.${activityType}` as const;
     if (journeyLocation) {
       components['ParentLink'] = <Link href={buildJourneyUrl(journeyLocation)} />;
     }
 
     return {
-      i18nKey,
+      i18nKey: `components.activity-log-view.actions.${activityType}` as const,
       values,
       components,
     };

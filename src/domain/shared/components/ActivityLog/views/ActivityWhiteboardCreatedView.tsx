@@ -50,7 +50,14 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
     <ActivityBaseView
       author={author}
       loading={loading}
-      title={<ActivityDescription i18nKey={i18nKey} values={values} components={components} />}
+      title={
+        <ActivityDescription
+          i18nKey={i18nKey}
+          values={values}
+          components={components}
+          withLinkToParent={Boolean(journeyTypeName)}
+        />
+      }
       url={url}
     >
       <Caption>{description}</Caption>
