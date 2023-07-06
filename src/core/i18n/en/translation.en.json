@@ -796,15 +796,26 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "published a new $t(common.callout)",
-        "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
-        "post-comment-created": "commented on '{{postDisplayName}}'",
-        "post-created": "added a Post to '{{calloutDisplayName}}'",
-        "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
-        "challenge-created": "created a new $t(common.challenge)",
-        "opportunity-created": "created a new $t(common.opportunity)",
-        "update-sent": "shared a new $t(common.update)"
+        "callout-published": "{{time}} '<UserLink>{{user}}</UserLink>' published a new $t(common.callout)",
+        "challenge-created": "{{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.challenge)",
+        "discussion-comment-created": "3 {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{calloutDisplayName}}'",
+        "member-joined": "4 {{time}} '<UserLink>{{user}}</UserLink>' joined the {{journeyType}} '{{journeyDisplayName}}'",
+        "post-comment-created": "5 {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{postDisplayName}}'",
+        "post-created": "6 {{time}} '<UserLink>{{user}}</UserLink>' added a Post to '{{calloutDisplayName}}'",
+        "whiteboard-created": "7 {{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{parentDisplayName}}'",
+        "opportunity-created": "8 {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.opportunity)",
+        "update-sent": "9 {{time}} '<UserLink>{{user}}</UserLink>' shared a new $t(common.update)"
+      },
+      "actions-in-journey": {
+        "callout-published": "1b {{time}} '<UserLink>{{user}}</UserLink>' published a new $t(common.callout) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
+        "whiteboard-created": "2b {{time}} '<UserLink>{{user}}</UserLink>' added a $t(common.whiteboard) to '{{parentDisplayName}}'",
+        "post-comment-created": "3b {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{postDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
+        "post-created": "4b {{time}} '<UserLink>{{user}}</UserLink>' added a Post to '{{calloutDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
+        "discussion-comment-created": "5b {{time}} '<UserLink>{{user}}</UserLink>' commented on '{{calloutDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
+        "member-joined": "6b {{time}} '<UserLink>{{user}}</UserLink>' joined the {{journeyType}} '{{journeyDisplayName}}' in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
+        "challenge-created": "7b {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.challenge) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
+        "opportunity-created": "8b {{time}} '<UserLink>{{user}}</UserLink>' created a new $t(common.opportunity) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>",
+        "update-sent": "9b {{time}} '<UserLink>{{user}}</UserLink>' shared a new $t(common.update) in <ParentLink>{{journeyIcon}} {{parentDisplayName}}</ParentLink>"
       },
       "activity-description": {
         "callout-published": "{{displayName}}",
@@ -812,12 +823,11 @@
         "post-comment-created": "{{comment}}",
         "post-created": "{{postDisplayName}} - {{postDescription}}",
         "discussion-comment-created": "{{comment}}",
-        "member-joined": "{{userDisplayName}}",
+        "member-joined": "{{user}}",
         "challenge-created": "{{displayName}}",
         "opportunity-created": "{{displayName}}",
         "update-sent": "{{update}}"
-      },
-      "parent-details": "in {{displayName}}"
+      }
     },
     "lifecycle-visualizer": {
       "error": "The definition was not able to be visualized"

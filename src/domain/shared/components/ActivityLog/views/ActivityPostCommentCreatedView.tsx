@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ActivityBaseView } from './ActivityBaseView';
+import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
@@ -17,15 +17,10 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
   callout,
   journeyLocation,
   description,
-  ...baseProps
+  ...props
 }) => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.post-comment-created', {
-    postDisplayName: card.profile.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+
   const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
   const comment = replaceQuotesInOldDescription(description);
   const translatedDescription = t('components.activity-log-view.activity-description.post-comment-created', {
@@ -36,8 +31,17 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
     },
   });
 
+  const resultProps: ActivityBaseViewProps = {
+    ...props,
+    i18nKey: props.parentJourneyTypeName
+      ? 'components.activity-log-view.actions-in-journey.post-comment-created'
+      : 'components.activity-log-view.actions.post-comment-created',
+    postDisplayName: card.profile.displayName,
+    url,
+  };
+
   return (
-    <ActivityBaseView {...baseProps} action={action} url={url}>
+    <ActivityBaseView {...resultProps}>
       <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
     </ActivityBaseView>
   );

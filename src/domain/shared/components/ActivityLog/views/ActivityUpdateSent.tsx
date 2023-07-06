@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ActivityBaseView } from './ActivityBaseView';
+import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildUpdatesUrl } from '../../../../../common/utils/urlBuilders';
@@ -14,11 +14,10 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   message,
   description,
   journeyLocation,
-  ...baseProps
+  ...props
 }) => {
   const { t } = useTranslation();
 
-  const action = t('components.activity-log-view.actions.update-sent');
   const update = replaceQuotesInOldDescription(message);
   const translatedDescription = t('components.activity-log-view.activity-description.update-sent', {
     update,
@@ -29,8 +28,16 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
 
   const url = buildUpdatesUrl(journeyLocation);
 
+  const resultProps: ActivityBaseViewProps = {
+    ...props,
+    i18nKey: props.parentJourneyTypeName
+      ? 'components.activity-log-view.actions-in-journey.update-sent'
+      : 'components.activity-log-view.actions.update-sent',
+    url,
+  };
+
   return (
-    <ActivityBaseView {...baseProps} action={action} url={url}>
+    <ActivityBaseView {...resultProps}>
       <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
     </ActivityBaseView>
   );

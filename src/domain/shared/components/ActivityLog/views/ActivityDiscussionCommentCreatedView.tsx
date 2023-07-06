@@ -6,22 +6,26 @@ import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
+import ActivityDescription from '../../ActivityDescription/ActivityDescription';
+import useActivityViewParams from './useActivityViewParams';
 
 export interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
+  description: string;
 }
 
 export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentCreatedViewProps> = ({
+  author,
+  loading,
+  createdDate,
+  journeyTypeName,
+  journeyDisplayName,
+  journeyLocation,
   callout,
   description,
-  journeyLocation,
-  ...baseProps
 }) => {
   const { t } = useTranslation();
 
-  const action = t('components.activity-log-view.actions.discussion-comment-created', {
-    calloutDisplayName: callout.profile.displayName,
-  });
   const comment = replaceQuotesInOldDescription(description);
   const translatedDescription = t('components.activity-log-view.activity-description.discussion-comment-created', {
     comment,
@@ -32,8 +36,24 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
 
   const url = buildCalloutUrl(callout.nameID, journeyLocation);
 
+  const { i18nKey, values, components } = useActivityViewParams({
+    activityType: 'discussion-comment-created',
+    author,
+    createdDate,
+    journeyTypeName,
+    parentDisplayName: journeyDisplayName,
+    values: {
+      calloutDisplayName: callout.profile.displayName,
+    },
+  });
+
   return (
-    <ActivityBaseView {...baseProps} action={action} url={url}>
+    <ActivityBaseView
+      author={author}
+      loading={loading}
+      title={<ActivityDescription i18nKey={i18nKey} values={values} components={components} />}
+      url={url}
+    >
       <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
     </ActivityBaseView>
   );

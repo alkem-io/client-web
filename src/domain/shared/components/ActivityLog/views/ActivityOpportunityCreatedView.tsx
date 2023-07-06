@@ -12,7 +12,7 @@ export interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
 
 export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.opportunity-created');
+
   const url = buildOpportunityUrl(
     props.journeyLocation.spaceNameId,
     props.journeyLocation.challengeNameId!,
@@ -25,7 +25,13 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
     },
   });
 
-  const resultProps: ActivityBaseViewProps = { ...props, action, url };
+  const resultProps: ActivityBaseViewProps = {
+    ...props,
+    i18nKey: props.parentJourneyTypeName
+      ? 'components.activity-log-view.actions-in-journey.opportunity-created'
+      : 'components.activity-log-view.actions.opportunity-created',
+    url,
+  };
 
   return (
     <ActivityBaseView {...resultProps}>

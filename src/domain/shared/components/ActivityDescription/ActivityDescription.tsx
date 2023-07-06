@@ -4,7 +4,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 
 interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
-  values: Record<string, string>;
+  values?: Record<string, string>;
   components?: Record<string, ReactNode>;
 }
 

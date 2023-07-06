@@ -15,12 +15,7 @@ export interface ActivityCardCreatedViewProps extends ActivityViewProps {
 
 export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.post-created', {
-    calloutDisplayName: props.callout.profile.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+
   const url = buildPostUrl(props.callout.nameID, props.card.nameID, props.journeyLocation);
   const description = t('components.activity-log-view.activity-description.post-created', {
     postDisplayName: props.card.profile.displayName,
@@ -31,7 +26,14 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props =
     },
   });
 
-  const resultProps: ActivityBaseViewProps = { ...props, action, url };
+  const resultProps: ActivityBaseViewProps = {
+    ...props,
+    i18nKey: props.parentJourneyTypeName
+      ? 'components.activity-log-view.actions-in-journey.post-created'
+      : 'components.activity-log-view.actions.post-created',
+    calloutDisplayName: props.callout.profile.displayName,
+    url,
+  };
 
   return (
     <ActivityBaseView {...resultProps}>

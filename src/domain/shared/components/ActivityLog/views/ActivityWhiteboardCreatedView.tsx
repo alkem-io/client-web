@@ -13,12 +13,7 @@ export interface ActivityWhiteboardCreatedViewProps extends ActivityViewProps {
 
 export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.whiteboard-created', {
-    parentDisplayName: props.callout.profile.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+
   const description = t('components.activity-log-view.activity-description.whiteboard-created', {
     displayName: props.whiteboard.profile.displayName,
     interpolation: {
@@ -27,7 +22,14 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
   });
   const url = buildWhiteboardUrl(props.callout.nameID, props.whiteboard.nameID, props.journeyLocation);
 
-  const resultProps: ActivityBaseViewProps = { ...props, action, url };
+  const resultProps: ActivityBaseViewProps = {
+    ...props,
+    i18nKey: props.parentJourneyTypeName
+      ? 'components.activity-log-view.actions-in-journey.whiteboard-created'
+      : 'components.activity-log-view.actions.whiteboard-created',
+    parentDisplayName: props.callout.profile.displayName,
+    url,
+  };
 
   return (
     <ActivityBaseView {...resultProps}>
