@@ -23,7 +23,7 @@
     "gulp": "gulp"
   },
   "dependencies": {
-    "@alkemio/excalidraw": "0.13.0-alkemio-7",
+    "@alkemio/excalidraw": "^0.15.2-alkemio-2",
     "@alkemio/visualization": "0.1.6",
     "@apollo/client": "^3.6.9",
     "@elastic/apm-rum": "^5.12.0",
