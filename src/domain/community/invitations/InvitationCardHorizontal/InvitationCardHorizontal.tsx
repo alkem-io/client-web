@@ -15,7 +15,7 @@ interface InvitationCardHorizontalProps {
 
 const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizontalProps) => {
   if (!invitation) {
-    return null; // TODO Skeleton
+    return null;
   }
 
   return (
