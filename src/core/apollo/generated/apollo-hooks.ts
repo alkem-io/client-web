@@ -1059,7 +1059,7 @@ export const AdminSpaceCommunityCandidateMemberFragmentDoc = gql`
     profile {
       id
       displayName
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualUri
       }
       location {

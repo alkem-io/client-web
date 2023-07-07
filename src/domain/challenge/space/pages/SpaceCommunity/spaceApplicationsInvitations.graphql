@@ -52,13 +52,7 @@ fragment AdminSpaceCommunityInvitation on Invitation {
 fragment AdminSpaceCommunityInvitationExternal on InvitationExternal {
   id
   createdDate
-  #updatedDate
   email
-  #lifecycle {
-  #  id
-  #  state
-  #  nextEvents
-  #}
 }
 
 fragment AdminSpaceCommunityCandidateMember on User {
@@ -68,7 +62,7 @@ fragment AdminSpaceCommunityCandidateMember on User {
   profile {
     id
     displayName
-    visual(type: AVATAR) {
+    avatar: visual(type: AVATAR) {
       ...VisualUri
     }
     location {

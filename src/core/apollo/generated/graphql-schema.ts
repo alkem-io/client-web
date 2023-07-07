@@ -10579,7 +10579,7 @@ export type SpaceApplicationsInvitationsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
                 };
@@ -10607,7 +10607,7 @@ export type SpaceApplicationsInvitationsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
                 };
@@ -10641,7 +10641,7 @@ export type AdminSpaceCommunityApplicationFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
@@ -10668,7 +10668,7 @@ export type AdminSpaceCommunityInvitationFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
@@ -10690,7 +10690,7 @@ export type AdminSpaceCommunityCandidateMemberFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   };
 };
@@ -22652,7 +22652,7 @@ export type ChallengeApplicationsQuery = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     };
                   };

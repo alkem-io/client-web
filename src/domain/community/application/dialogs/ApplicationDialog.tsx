@@ -92,12 +92,12 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
 
   const appId = app?.id || '';
   const user = app?.user;
-  const questions = app?.questions || [];
+  const questions = app?.questions ?? [];
 
-  const nextEvents = app?.lifecycle?.nextEvents || [];
+  const nextEvents = app?.lifecycle?.nextEvents ?? [];
 
-  const username = user?.profile.displayName || '';
-  const avatarSrc = user?.profile.visual?.uri || '';
+  const username = user?.profile.displayName ?? '';
+  const avatarSrc = user?.profile.avatar?.uri ?? '';
 
   const createdDate = app?.createdDate ? new Date(app?.createdDate).toLocaleString() : '';
   const updatedDate = app?.updatedDate ? new Date(app?.updatedDate).toLocaleString() : '';
