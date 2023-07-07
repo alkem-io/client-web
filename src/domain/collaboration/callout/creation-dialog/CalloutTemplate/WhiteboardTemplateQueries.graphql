@@ -67,8 +67,7 @@ query PostTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
           id
           description
           tagset {
-            id
-            tags
+            ...TagsetDetails
           }
         }
       }

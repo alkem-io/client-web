@@ -1663,10 +1663,6 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Новий спосіб спільної роботи над викликами. Створення спільноти людей, компаній, НУО та державних органів.",
-          "impact": "<impact>Вплив</impact>",
-          "foundation": "<foundation>Фундамент</foundation>",
-          "opensource": "<opensource>Відкрите джерело</opensource>",
           "welcome-back": "Ласкаво просимо назад {{username}}!",
           "join": "Бажаєте приєднатись до Спільноти і побачити більше?",
           "existing-user": {

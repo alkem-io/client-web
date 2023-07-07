@@ -22,6 +22,15 @@ export const VisualFullFragmentDoc = gql`
     alternativeText
   }
 `;
+export const TagsetDetailsFragmentDoc = gql`
+  fragment TagsetDetails on Tagset {
+    id
+    name
+    tags
+    allowedValues
+    type
+  }
+`;
 export const PostCardFragmentDoc = gql`
   fragment PostCard on Post {
     id
@@ -47,9 +56,7 @@ export const PostCardFragmentDoc = gql`
         ...VisualFull
       }
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -60,6 +67,7 @@ export const PostCardFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const WhiteboardProfileFragmentDoc = gql`
   fragment WhiteboardProfile on Profile {
@@ -73,11 +81,11 @@ export const WhiteboardProfileFragmentDoc = gql`
       ...VisualFull
     }
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CheckoutDetailsFragmentDoc = gql`
   fragment CheckoutDetails on WhiteboardCheckout {
@@ -179,12 +187,12 @@ export const DashboardLeadUserFragmentDoc = gql`
         city
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
@@ -204,11 +212,11 @@ export const DashboardContributingUserFragmentDoc = gql`
         uri
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {
@@ -252,16 +260,16 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
 export const EntityDashboardCommunityFragmentDoc = gql`
   fragment EntityDashboardCommunity on Community {
     id
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...DashboardLeadUser
     }
     memberUsers(limit: 8) {
       ...DashboardContributingUser
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
     }
-    memberOrganizations {
+    memberOrganizations: organizationsInRole(role: MEMBER) {
       ...DashboardContributingOrganization
     }
     authorization {
@@ -296,9 +304,7 @@ export const OpportunityCardFragmentDoc = gql`
       displayName
       tagline
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       visuals {
         ...VisualFull
@@ -333,6 +339,7 @@ export const OpportunityCardFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
@@ -353,9 +360,7 @@ export const ChallengeProfileFragmentDoc = gql`
         ...VisualFull
       }
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
     authorization {
@@ -392,6 +397,7 @@ export const ChallengeProfileFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
   ${OpportunityCardFragmentDoc}
@@ -417,9 +423,7 @@ export const ChallengeInfoFragmentDoc = gql`
       tagline
       description
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -452,6 +456,7 @@ export const ChallengeInfoFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${FullLocationFragmentDoc}
 `;
@@ -519,10 +524,10 @@ export const ContextJourneyDataFragmentDoc = gql`
 export const JourneyCommunityFragmentDoc = gql`
   fragment JourneyCommunity on Community {
     id
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...DashboardLeadUser
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
     }
     authorization {
@@ -541,9 +546,7 @@ export const OpportunityPageFragmentDoc = gql`
       id
       displayName
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -599,6 +602,7 @@ export const OpportunityPageFragmentDoc = gql`
       ...EntityDashboardCommunity
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
@@ -626,9 +630,7 @@ export const OpportunityProviderFragmentDoc = gql`
         ...VisualFull
       }
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       location {
         id
@@ -657,6 +659,7 @@ export const OpportunityProviderFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const NewOpportunityFragmentDoc = gql`
   fragment NewOpportunity on Opportunity {
@@ -671,16 +674,16 @@ export const NewOpportunityFragmentDoc = gql`
 export const CommunityPageCommunityFragmentDoc = gql`
   fragment CommunityPageCommunity on Community {
     id
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...DashboardLeadUser
     }
     memberUsers {
       ...DashboardContributingUser
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
     }
-    memberOrganizations {
+    memberOrganizations: organizationsInRole(role: MEMBER) {
       ...DashboardContributingOrganization
     }
   }
@@ -699,9 +702,7 @@ export const SpaceDetailsFragmentDoc = gql`
       description
       tagline
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -727,6 +728,7 @@ export const SpaceDetailsFragmentDoc = gql`
       ...ContextDetails
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
@@ -766,10 +768,10 @@ export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
       country
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
@@ -793,9 +795,7 @@ export const ChallengeCardFragmentDoc = gql`
         ...VisualUri
       }
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
     context {
@@ -811,6 +811,7 @@ export const ChallengeCardFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
@@ -842,9 +843,7 @@ export const SpacePageFragmentDoc = gql`
         ...VisualUri
       }
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
     context {
@@ -863,7 +862,7 @@ export const SpacePageFragmentDoc = gql`
     }
     community {
       ...EntityDashboardCommunity
-      leadUsers {
+      leadUsers: usersInRole(role: LEAD) {
         profile {
           ...SpaceWelcomeBlockContributorProfile
         }
@@ -884,6 +883,7 @@ export const SpacePageFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${SpaceWelcomeBlockContributorProfileFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
@@ -894,8 +894,7 @@ export const SpaceDashboardNavigationProfileFragmentDoc = gql`
     displayName
     tagline
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
     visual(type: CARD) {
       id
@@ -903,6 +902,7 @@ export const SpaceDashboardNavigationProfileFragmentDoc = gql`
       alternativeText
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const SpaceDashboardNavigationContextFragmentDoc = gql`
   fragment SpaceDashboardNavigationContext on Context {
@@ -922,14 +922,14 @@ export const TemplateCardProfileInfoFragmentDoc = gql`
     displayName
     description
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
     visual(type: CARD) {
       id
       uri
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const PostTemplateCardFragmentDoc = gql`
   fragment PostTemplateCard on PostTemplate {
@@ -1017,9 +1017,7 @@ export const SpaceDetailsProviderFragmentDoc = gql`
         ...VisualUri
       }
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
     authorization {
@@ -1039,6 +1037,7 @@ export const SpaceDetailsProviderFragmentDoc = gql`
     visibility
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${ContextDetailsProviderFragmentDoc}
 `;
 export const SpaceNameFragmentDoc = gql`
@@ -1106,8 +1105,7 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
         location {
           id
@@ -1117,6 +1115,7 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ActivityLogCalloutPublishedFragmentDoc = gql`
   fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
@@ -1260,8 +1259,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
         location {
           id
@@ -1298,6 +1296,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogUpdateSent
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutCardCreatedFragmentDoc}
@@ -1364,9 +1363,7 @@ export const MessageDetailsFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         location {
           id
@@ -1377,6 +1374,7 @@ export const MessageDetailsFragmentDoc = gql`
     }
   }
   ${ReactionDetailsFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Room {
@@ -1401,8 +1399,7 @@ export const CalloutPostTemplateFragmentDoc = gql`
       defaultDescription
       profile {
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
         visual(type: CARD) {
           id
@@ -1411,6 +1408,7 @@ export const CalloutPostTemplateFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CalloutWhiteboardTemplateFragmentDoc = gql`
   fragment CalloutWhiteboardTemplate on Callout {
@@ -1422,8 +1420,7 @@ export const CalloutWhiteboardTemplateFragmentDoc = gql`
         displayName
         description
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
         visual(type: CARD) {
           id
@@ -1432,6 +1429,7 @@ export const CalloutWhiteboardTemplateFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -1444,8 +1442,7 @@ export const CalloutFragmentDoc = gql`
       displayName
       description
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
       references {
         ...ReferenceDetails
@@ -1468,6 +1465,7 @@ export const CalloutFragmentDoc = gql`
     ...CalloutPostTemplate
     ...CalloutWhiteboardTemplate
   }
+  ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
@@ -1521,7 +1519,7 @@ export const PostDashboardFragmentDoc = gql`
           uri
         }
         tagsets {
-          tags
+          ...TagsetDetails
         }
       }
     }
@@ -1531,9 +1529,7 @@ export const PostDashboardFragmentDoc = gql`
       displayName
       description
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -1556,6 +1552,7 @@ export const PostDashboardFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${MessageDetailsFragmentDoc}
 `;
@@ -1590,9 +1587,7 @@ export const PostSettingsFragmentDoc = gql`
       displayName
       description
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -1605,6 +1600,7 @@ export const PostSettingsFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 export const PostSettingsCalloutFragmentDoc = gql`
@@ -1853,13 +1849,12 @@ export const UserCardFragmentDoc = gql`
         ...VisualUri
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const OrganizationCardFragmentDoc = gql`
   fragment OrganizationCard on Organization {
@@ -1887,16 +1882,16 @@ export const OrganizationCardFragmentDoc = gql`
 `;
 export const CommunityMembersFragmentDoc = gql`
   fragment CommunityMembers on Community {
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       ...UserCard
     }
     memberUsers {
       ...UserCard
     }
-    leadOrganizations {
+    leadOrganizations: organizationsInRole(role: LEAD) {
       ...OrganizationCard
     }
-    memberOrganizations {
+    memberOrganizations: organizationsInRole(role: MEMBER) {
       ...OrganizationCard
     }
   }
@@ -1928,12 +1923,12 @@ export const CommunityPageMembersFragmentDoc = gql`
       }
       description
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
@@ -2061,13 +2056,12 @@ export const UserContributorFragmentDoc = gql`
         ...VisualUri
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const UserContributorPaginatedFragmentDoc = gql`
   fragment UserContributorPaginated on PaginatedUsers {
@@ -2121,9 +2115,7 @@ export const OrganizationInfoFragmentDoc = gql`
         alternativeText
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -2155,8 +2147,7 @@ export const OrganizationInfoFragmentDoc = gql`
           alternativeText
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
       }
     }
@@ -2168,6 +2159,7 @@ export const OrganizationInfoFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${FullLocationFragmentDoc}
 `;
 export const OrganizationDetailsFragmentDoc = gql`
@@ -2182,8 +2174,7 @@ export const OrganizationDetailsFragmentDoc = gql`
       }
       description
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
       location {
         country
@@ -2192,6 +2183,7 @@ export const OrganizationDetailsFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
@@ -2224,13 +2216,12 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         description
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const MessagingUserInformationFragmentDoc = gql`
   fragment MessagingUserInformation on User {
@@ -2275,13 +2266,12 @@ export const GroupInfoFragmentDoc = gql`
         description
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
@@ -2343,13 +2333,12 @@ export const UserDetailsFragmentDoc = gql`
         description
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
@@ -2433,14 +2422,13 @@ export const InnovationHubProfileFragmentDoc = gql`
     description
     tagline
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     visual(type: BANNER) {
       ...VisualFull
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 export const LibraryTemplatesFragmentDoc = gql`
@@ -2456,8 +2444,7 @@ export const LibraryTemplatesFragmentDoc = gql`
           ...VisualUri
         }
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
       }
       type
@@ -2473,8 +2460,7 @@ export const LibraryTemplatesFragmentDoc = gql`
           ...VisualUri
         }
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
       }
     }
@@ -2488,8 +2474,7 @@ export const LibraryTemplatesFragmentDoc = gql`
           ...VisualUri
         }
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
       }
       definition
@@ -2497,6 +2482,7 @@ export const LibraryTemplatesFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
   fragment InnovationPackProviderProfileWithAvatar on Organization {
@@ -2521,8 +2507,7 @@ export const InnovationPackCardFragmentDoc = gql`
       displayName
       description
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
     }
     templates {
@@ -2532,6 +2517,7 @@ export const InnovationPackCardFragmentDoc = gql`
       ...InnovationPackProviderProfileWithAvatar
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${LibraryTemplatesFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
@@ -2651,9 +2637,7 @@ export const InnovationPackProfileFragmentDoc = gql`
     description
     tagline
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id
@@ -2662,6 +2646,7 @@ export const InnovationPackProfileFragmentDoc = gql`
       uri
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ProfileInfoWithVisualFragmentDoc = gql`
   fragment ProfileInfoWithVisual on Profile {
@@ -2669,13 +2654,13 @@ export const ProfileInfoWithVisualFragmentDoc = gql`
     displayName
     description
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
     visual(type: CARD) {
       ...VisualFull
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 export const AdminPostTemplateFragmentDoc = gql`
@@ -2787,10 +2772,10 @@ export const SearchResultPostProfileFragmentDoc = gql`
     id
     description
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const PostParentFragmentDoc = gql`
   fragment PostParent on SearchResultPost {
@@ -2881,13 +2866,13 @@ export const SearchResultProfileFragmentDoc = gql`
       city
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
     visual(type: AVATAR) {
       ...VisualUri
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const SearchResultUserFragmentDoc = gql`
@@ -2925,9 +2910,7 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         displayName
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         tagline
         visuals {
@@ -2945,6 +2928,7 @@ export const SearchResultSpaceFragmentDoc = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const SearchResultChallengeFragmentDoc = gql`
@@ -2956,9 +2940,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         displayName
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         tagline
         visuals {
@@ -2990,6 +2972,7 @@ export const SearchResultChallengeFragmentDoc = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const SearchResultOpportunityFragmentDoc = gql`
@@ -3001,9 +2984,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
         id
         displayName
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         tagline
         visuals {
@@ -3041,6 +3022,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const ProfileStorageConfigFragmentDoc = gql`
@@ -3090,9 +3072,7 @@ export const EventProfileFragmentDoc = gql`
     displayName
     description
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id
@@ -3101,6 +3081,7 @@ export const EventProfileFragmentDoc = gql`
       description
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CalendarEventInfoFragmentDoc = gql`
   fragment CalendarEventInfo on CalendarEvent {
@@ -3131,8 +3112,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
       }
     }
@@ -3142,61 +3122,9 @@ export const CalendarEventDetailsFragmentDoc = gql`
     }
   }
   ${CalendarEventInfoFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
-export const AssignUserAsChallengeAdminDocument = gql`
-  mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
-    assignUserAsChallengeAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignUserAsChallengeAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsChallengeAdminMutation,
-  SchemaTypes.AssignUserAsChallengeAdminMutationVariables
->;
-
-/**
- * __useAssignUserAsChallengeAdminMutation__
- *
- * To run a mutation, you first call `useAssignUserAsChallengeAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsChallengeAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsChallengeAdminMutation, { data, loading, error }] = useAssignUserAsChallengeAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserAsChallengeAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsChallengeAdminMutation,
-    SchemaTypes.AssignUserAsChallengeAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsChallengeAdminMutation,
-    SchemaTypes.AssignUserAsChallengeAdminMutationVariables
-  >(AssignUserAsChallengeAdminDocument, options);
-}
-
-export type AssignUserAsChallengeAdminMutationHookResult = ReturnType<typeof useAssignUserAsChallengeAdminMutation>;
-export type AssignUserAsChallengeAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsChallengeAdminMutation>;
-export type AssignUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsChallengeAdminMutation,
-  SchemaTypes.AssignUserAsChallengeAdminMutationVariables
->;
 export const AssignUserAsGlobalAdminDocument = gql`
   mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
     assignUserAsGlobalAdmin(membershipData: $input) {
@@ -3414,111 +3342,6 @@ export type AssignUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.AssignUserAsOrganizationOwnerMutation,
   SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
 >;
-export const AssignUserAsSpaceAdminDocument = gql`
-  mutation assignUserAsSpaceAdmin($input: AssignSpaceAdminInput!) {
-    assignUserAsSpaceAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsSpaceAdminMutation,
-  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
->;
-
-/**
- * __useAssignUserAsSpaceAdminMutation__
- *
- * To run a mutation, you first call `useAssignUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsSpaceAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsSpaceAdminMutation, { data, loading, error }] = useAssignUserAsSpaceAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserAsSpaceAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsSpaceAdminMutation,
-    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsSpaceAdminMutation,
-    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
-  >(AssignUserAsSpaceAdminDocument, options);
-}
-
-export type AssignUserAsSpaceAdminMutationHookResult = ReturnType<typeof useAssignUserAsSpaceAdminMutation>;
-export type AssignUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsSpaceAdminMutation>;
-export type AssignUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsSpaceAdminMutation,
-  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
->;
-export const RemoveUserAsChallengeAdminDocument = gql`
-  mutation removeUserAsChallengeAdmin($input: RemoveChallengeAdminInput!) {
-    removeUserAsChallengeAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsChallengeAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsChallengeAdminMutation,
-  SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsChallengeAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsChallengeAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsChallengeAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsChallengeAdminMutation, { data, loading, error }] = useRemoveUserAsChallengeAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsChallengeAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsChallengeAdminMutation,
-    SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsChallengeAdminMutation,
-    SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
-  >(RemoveUserAsChallengeAdminDocument, options);
-}
-
-export type RemoveUserAsChallengeAdminMutationHookResult = ReturnType<typeof useRemoveUserAsChallengeAdminMutation>;
-export type RemoveUserAsChallengeAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsChallengeAdminMutation>;
-export type RemoveUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsChallengeAdminMutation,
-  SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
->;
 export const RemoveUserAsGlobalAdminDocument = gql`
   mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
     removeUserAsGlobalAdmin(membershipData: $input) {
@@ -3735,58 +3558,6 @@ export type RemoveUserAsOrganizationOwnerMutationResult =
 export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
->;
-export const RemoveUserAsSpaceAdminDocument = gql`
-  mutation removeUserAsSpaceAdmin($input: RemoveSpaceAdminInput!) {
-    removeUserAsSpaceAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsSpaceAdminMutation,
-  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsSpaceAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsSpaceAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsSpaceAdminMutation, { data, loading, error }] = useRemoveUserAsSpaceAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsSpaceAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsSpaceAdminMutation,
-    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsSpaceAdminMutation,
-    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
-  >(RemoveUserAsSpaceAdminDocument, options);
-}
-
-export type RemoveUserAsSpaceAdminMutationHookResult = ReturnType<typeof useRemoveUserAsSpaceAdminMutation>;
-export type RemoveUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsSpaceAdminMutation>;
-export type RemoveUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsSpaceAdminMutation,
-  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
 >;
 export const UploadFileOnReferenceDocument = gql`
   mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
@@ -4700,9 +4471,7 @@ export const ChallengeProfileInfoDocument = gql`
           tagline
           description
           tagset {
-            id
-            name
-            tags
+            ...TagsetDetails
           }
           visuals {
             ...VisualFull
@@ -4727,6 +4496,7 @@ export const ChallengeProfileInfoDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
@@ -4901,9 +4671,7 @@ export const AboutPageNonMembersDocument = gql`
           tagline
           description
           tagset {
-            id
-            name
-            tags
+            ...TagsetDetails
           }
           visuals {
             ...VisualFull
@@ -4935,9 +4703,7 @@ export const AboutPageNonMembersDocument = gql`
           tagline
           description
           tagset {
-            id
-            name
-            tags
+            ...TagsetDetails
           }
           visuals {
             ...VisualFull
@@ -4976,9 +4742,7 @@ export const AboutPageNonMembersDocument = gql`
           tagline
           description
           tagset {
-            id
-            name
-            tags
+            ...TagsetDetails
           }
           visuals {
             ...VisualFull
@@ -5006,6 +4770,7 @@ export const AboutPageNonMembersDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
@@ -5613,112 +5378,6 @@ export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPriv
   return { query: JourneyPrivilegesDocument, variables: variables };
 }
 
-export const AssignUserAsOpportunityAdminDocument = gql`
-  mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
-    assignUserAsOpportunityAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignUserAsOpportunityAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsOpportunityAdminMutation,
-  SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
->;
-
-/**
- * __useAssignUserAsOpportunityAdminMutation__
- *
- * To run a mutation, you first call `useAssignUserAsOpportunityAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsOpportunityAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsOpportunityAdminMutation, { data, loading, error }] = useAssignUserAsOpportunityAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserAsOpportunityAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsOpportunityAdminMutation,
-    SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsOpportunityAdminMutation,
-    SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
-  >(AssignUserAsOpportunityAdminDocument, options);
-}
-
-export type AssignUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useAssignUserAsOpportunityAdminMutation>;
-export type AssignUserAsOpportunityAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsOpportunityAdminMutation>;
-export type AssignUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsOpportunityAdminMutation,
-  SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
->;
-export const RemoveUserAsOpportunityAdminDocument = gql`
-  mutation removeUserAsOpportunityAdmin($input: RemoveOpportunityAdminInput!) {
-    removeUserAsOpportunityAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsOpportunityAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsOpportunityAdminMutation,
-  SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsOpportunityAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsOpportunityAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsOpportunityAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsOpportunityAdminMutation, { data, loading, error }] = useRemoveUserAsOpportunityAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsOpportunityAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsOpportunityAdminMutation,
-    SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsOpportunityAdminMutation,
-    SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
-  >(RemoveUserAsOpportunityAdminDocument, options);
-}
-
-export type RemoveUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useRemoveUserAsOpportunityAdminMutation>;
-export type RemoveUserAsOpportunityAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsOpportunityAdminMutation>;
-export type RemoveUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsOpportunityAdminMutation,
-  SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
->;
 export const OpportunityPageDocument = gql`
   query opportunityPage($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -6743,9 +6402,7 @@ export const OpportunityProfileInfoDocument = gql`
           description
           tagline
           tagset {
-            id
-            name
-            tags
+            ...TagsetDetails
           }
           visuals {
             ...VisualFull
@@ -6769,6 +6426,7 @@ export const OpportunityProfileInfoDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
@@ -6983,12 +6641,12 @@ export const OpportunityWithActivityDocument = gql`
             ...VisualUri
           }
           tagset {
-            name
-            tags
+            ...TagsetDetails
           }
         }
         nameID
         metrics {
+          id
           name
           value
         }
@@ -6996,6 +6654,7 @@ export const OpportunityWithActivityDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -9249,8 +8908,7 @@ export const ActivityLogOnCollaborationDocument = gql`
             uri
           }
           tagsets {
-            id
-            tags
+            ...TagsetDetails
           }
           location {
             id
@@ -9288,6 +8946,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutCardCreatedFragmentDoc}
@@ -9645,14 +9304,14 @@ export const PostTemplateValueDocument = gql`
             id
             description
             tagset {
-              id
-              tags
+              ...TagsetDetails
             }
           }
         }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -10030,8 +9689,7 @@ export const UpdateCalloutDocument = gql`
         description
         displayName
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
         references {
           id
@@ -10047,6 +9705,7 @@ export const UpdateCalloutDocument = gql`
       ...CalloutWhiteboardTemplate
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${CalloutPostTemplateFragmentDoc}
   ${CalloutWhiteboardTemplateFragmentDoc}
 `;
@@ -10199,9 +9858,7 @@ export const CreatePostFromContributeTabDocument = gql`
         displayName
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visual(type: CARD) {
           ...VisualUri
@@ -10209,6 +9866,7 @@ export const CreatePostFromContributeTabDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export type CreatePostFromContributeTabMutationFn = Apollo.MutationFunction<
@@ -11253,9 +10911,7 @@ export const UpdatePostDocument = gql`
         displayName
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         references {
           id
@@ -11266,6 +10922,7 @@ export const UpdatePostDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export type UpdatePostMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdatePostMutation,
@@ -11751,9 +11408,7 @@ export const CreatePostDocument = gql`
         description
         displayName
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualUri
@@ -11761,6 +11416,7 @@ export const CreatePostDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export type CreatePostMutationFn = Apollo.MutationFunction<
@@ -13514,11 +13170,10 @@ export type UpdatePreferenceOnSpaceMutationOptions = Apollo.BaseMutationOptions<
 export const CreateTagsetOnProfileDocument = gql`
   mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
     createTagsetOnProfile(tagsetData: $input) {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export type CreateTagsetOnProfileMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateTagsetOnProfileMutation,
@@ -15713,13 +15368,13 @@ export const SpaceCommunityContributorsDocument = gql`
       }
       community {
         id
-        leadUsers {
+        leadUsers: usersInRole(role: LEAD) {
           ...UserCard
         }
         memberUsers {
           ...UserCard
         }
-        memberOrganizations {
+        memberOrganizations: organizationsInRole(role: MEMBER) {
           ...OrganizationCard
         }
       }
@@ -16021,12 +15676,12 @@ export const ContributingUsersDocument = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -16611,13 +16266,13 @@ export const ChallengeCommunityMembersDocument = gql`
           memberUsers {
             ...CommunityMemberUser
           }
-          leadUsers {
+          leadUsers: usersInRole(role: LEAD) {
             ...CommunityMemberUser
           }
-          memberOrganizations {
+          memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationDetails
           }
-          leadOrganizations {
+          leadOrganizations: organizationsInRole(role: LEAD) {
             ...OrganizationDetails
           }
         }
@@ -16683,9 +16338,8 @@ export function refetchChallengeCommunityMembersQuery(variables: SchemaTypes.Cha
 
 export const AssignUserAsCommunityMemberDocument = gql`
   mutation assignUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    assignUserAsCommunityMember(membershipData: { communityID: $communityId, userID: $memberId }) {
+    assignCommunityRoleToUser(roleData: { communityID: $communityId, userID: $memberId, role: MEMBER }) {
       id
-      displayName
     }
   }
 `;
@@ -16734,7 +16388,7 @@ export type AssignUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOpti
 >;
 export const AssignUserAsCommunityLeadDocument = gql`
   mutation assignUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    assignUserAsCommunityLead(leadershipData: { communityID: $communityId, userID: $memberId }) {
+    assignCommunityRoleToUser(roleData: { communityID: $communityId, userID: $memberId, role: LEAD }) {
       id
     }
   }
@@ -16784,7 +16438,7 @@ export type AssignUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOption
 >;
 export const RemoveUserAsCommunityMemberDocument = gql`
   mutation removeUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    removeUserAsCommunityMember(membershipData: { communityID: $communityId, userID: $memberId }) {
+    removeCommunityRoleFromUser(roleData: { communityID: $communityId, userID: $memberId, role: MEMBER }) {
       id
     }
   }
@@ -16834,7 +16488,7 @@ export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOpti
 >;
 export const RemoveUserAsCommunityLeadDocument = gql`
   mutation removeUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    removeUserAsCommunityLead(leadershipData: { communityID: $communityId, userID: $memberId }) {
+    removeCommunityRoleFromUser(roleData: { communityID: $communityId, userID: $memberId, role: LEAD }) {
       id
     }
   }
@@ -16884,7 +16538,9 @@ export type RemoveUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOption
 >;
 export const AssignOrganizationAsCommunityMemberDocument = gql`
   mutation assignOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    assignOrganizationAsCommunityMember(membershipData: { communityID: $communityId, organizationID: $memberId }) {
+    assignCommunityRoleToOrganization(
+      roleData: { communityID: $communityId, organizationID: $memberId, role: MEMBER }
+    ) {
       id
     }
   }
@@ -16936,7 +16592,7 @@ export type AssignOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMuta
 >;
 export const AssignOrganizationAsCommunityLeadDocument = gql`
   mutation assignOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    assignOrganizationAsCommunityLead(leadershipData: { communityID: $communityId, organizationID: $memberId }) {
+    assignCommunityRoleToOrganization(roleData: { communityID: $communityId, organizationID: $memberId, role: LEAD }) {
       id
     }
   }
@@ -16988,7 +16644,9 @@ export type AssignOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutati
 >;
 export const RemoveOrganizationAsCommunityMemberDocument = gql`
   mutation removeOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    removeOrganizationAsCommunityMember(membershipData: { communityID: $communityId, organizationID: $memberId }) {
+    removeCommunityRoleFromOrganization(
+      roleData: { communityID: $communityId, organizationID: $memberId, role: MEMBER }
+    ) {
       id
     }
   }
@@ -17040,7 +16698,9 @@ export type RemoveOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMuta
 >;
 export const RemoveOrganizationAsCommunityLeadDocument = gql`
   mutation removeOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    removeOrganizationAsCommunityLead(leadershipData: { communityID: $communityId, organizationID: $memberId }) {
+    removeCommunityRoleFromOrganization(
+      roleData: { communityID: $communityId, organizationID: $memberId, role: LEAD }
+    ) {
       id
     }
   }
@@ -17090,6 +16750,298 @@ export type RemoveOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutati
   SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
   SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
 >;
+export const AssignUserAsSpaceAdminDocument = gql`
+  mutation assignUserAsSpaceAdmin($input: AssignCommunityRoleToUserInput!) {
+    assignCommunityRoleToUser(roleData: $input) {
+      id
+    }
+  }
+`;
+export type AssignUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsSpaceAdminMutation,
+  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
+>;
+
+/**
+ * __useAssignUserAsSpaceAdminMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsSpaceAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsSpaceAdminMutation, { data, loading, error }] = useAssignUserAsSpaceAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsSpaceAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsSpaceAdminMutation,
+    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsSpaceAdminMutation,
+    SchemaTypes.AssignUserAsSpaceAdminMutationVariables
+  >(AssignUserAsSpaceAdminDocument, options);
+}
+
+export type AssignUserAsSpaceAdminMutationHookResult = ReturnType<typeof useAssignUserAsSpaceAdminMutation>;
+export type AssignUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsSpaceAdminMutation>;
+export type AssignUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsSpaceAdminMutation,
+  SchemaTypes.AssignUserAsSpaceAdminMutationVariables
+>;
+export const RemoveUserAsSpaceAdminDocument = gql`
+  mutation removeUserAsSpaceAdmin($input: RemoveCommunityRoleFromUserInput!) {
+    removeCommunityRoleFromUser(roleData: $input) {
+      id
+    }
+  }
+`;
+export type RemoveUserAsSpaceAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsSpaceAdminMutation,
+  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsSpaceAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsSpaceAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsSpaceAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsSpaceAdminMutation, { data, loading, error }] = useRemoveUserAsSpaceAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsSpaceAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsSpaceAdminMutation,
+    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsSpaceAdminMutation,
+    SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
+  >(RemoveUserAsSpaceAdminDocument, options);
+}
+
+export type RemoveUserAsSpaceAdminMutationHookResult = ReturnType<typeof useRemoveUserAsSpaceAdminMutation>;
+export type RemoveUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsSpaceAdminMutation>;
+export type RemoveUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsSpaceAdminMutation,
+  SchemaTypes.RemoveUserAsSpaceAdminMutationVariables
+>;
+export const AssignUserAsChallengeAdminDocument = gql`
+  mutation assignUserAsChallengeAdmin($input: AssignCommunityRoleToUserInput!) {
+    assignCommunityRoleToUser(roleData: $input) {
+      id
+    }
+  }
+`;
+export type AssignUserAsChallengeAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsChallengeAdminMutation,
+  SchemaTypes.AssignUserAsChallengeAdminMutationVariables
+>;
+
+/**
+ * __useAssignUserAsChallengeAdminMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsChallengeAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsChallengeAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsChallengeAdminMutation, { data, loading, error }] = useAssignUserAsChallengeAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsChallengeAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsChallengeAdminMutation,
+    SchemaTypes.AssignUserAsChallengeAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsChallengeAdminMutation,
+    SchemaTypes.AssignUserAsChallengeAdminMutationVariables
+  >(AssignUserAsChallengeAdminDocument, options);
+}
+
+export type AssignUserAsChallengeAdminMutationHookResult = ReturnType<typeof useAssignUserAsChallengeAdminMutation>;
+export type AssignUserAsChallengeAdminMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignUserAsChallengeAdminMutation>;
+export type AssignUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsChallengeAdminMutation,
+  SchemaTypes.AssignUserAsChallengeAdminMutationVariables
+>;
+export const RemoveUserAsChallengeAdminDocument = gql`
+  mutation removeUserAsChallengeAdmin($input: RemoveCommunityRoleFromUserInput!) {
+    removeCommunityRoleFromUser(roleData: $input) {
+      id
+    }
+  }
+`;
+export type RemoveUserAsChallengeAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsChallengeAdminMutation,
+  SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsChallengeAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsChallengeAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsChallengeAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsChallengeAdminMutation, { data, loading, error }] = useRemoveUserAsChallengeAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsChallengeAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsChallengeAdminMutation,
+    SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsChallengeAdminMutation,
+    SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
+  >(RemoveUserAsChallengeAdminDocument, options);
+}
+
+export type RemoveUserAsChallengeAdminMutationHookResult = ReturnType<typeof useRemoveUserAsChallengeAdminMutation>;
+export type RemoveUserAsChallengeAdminMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveUserAsChallengeAdminMutation>;
+export type RemoveUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsChallengeAdminMutation,
+  SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
+>;
+export const AssignUserAsOpportunityAdminDocument = gql`
+  mutation assignUserAsOpportunityAdmin($input: AssignCommunityRoleToUserInput!) {
+    assignCommunityRoleToUser(roleData: $input) {
+      id
+    }
+  }
+`;
+export type AssignUserAsOpportunityAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsOpportunityAdminMutation,
+  SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
+>;
+
+/**
+ * __useAssignUserAsOpportunityAdminMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsOpportunityAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsOpportunityAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsOpportunityAdminMutation, { data, loading, error }] = useAssignUserAsOpportunityAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsOpportunityAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsOpportunityAdminMutation,
+    SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsOpportunityAdminMutation,
+    SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
+  >(AssignUserAsOpportunityAdminDocument, options);
+}
+
+export type AssignUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useAssignUserAsOpportunityAdminMutation>;
+export type AssignUserAsOpportunityAdminMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignUserAsOpportunityAdminMutation>;
+export type AssignUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsOpportunityAdminMutation,
+  SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
+>;
+export const RemoveUserAsOpportunityAdminDocument = gql`
+  mutation removeUserAsOpportunityAdmin($input: RemoveCommunityRoleFromUserInput!) {
+    removeCommunityRoleFromUser(roleData: $input) {
+      id
+    }
+  }
+`;
+export type RemoveUserAsOpportunityAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsOpportunityAdminMutation,
+  SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsOpportunityAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsOpportunityAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsOpportunityAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsOpportunityAdminMutation, { data, loading, error }] = useRemoveUserAsOpportunityAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsOpportunityAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsOpportunityAdminMutation,
+    SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsOpportunityAdminMutation,
+    SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
+  >(RemoveUserAsOpportunityAdminDocument, options);
+}
+
+export type RemoveUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useRemoveUserAsOpportunityAdminMutation>;
+export type RemoveUserAsOpportunityAdminMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveUserAsOpportunityAdminMutation>;
+export type RemoveUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsOpportunityAdminMutation,
+  SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
+>;
 export const OpportunityCommunityMembersDocument = gql`
   query opportunityCommunityMembers($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -17101,13 +17053,13 @@ export const OpportunityCommunityMembersDocument = gql`
           memberUsers {
             ...CommunityMemberUser
           }
-          leadUsers {
+          leadUsers: usersInRole(role: LEAD) {
             ...CommunityMemberUser
           }
-          memberOrganizations {
+          memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationDetails
           }
-          leadOrganizations {
+          leadOrganizations: organizationsInRole(role: LEAD) {
             ...OrganizationDetails
           }
         }
@@ -17182,13 +17134,13 @@ export const SpaceCommunityMembersDocument = gql`
         memberUsers {
           ...CommunityMemberUser
         }
-        leadUsers {
+        leadUsers: usersInRole(role: LEAD) {
           ...CommunityMemberUser
         }
-        memberOrganizations {
+        memberOrganizations: organizationsInRole(role: MEMBER) {
           ...OrganizationDetails
         }
-        leadOrganizations {
+        leadOrganizations: organizationsInRole(role: LEAD) {
           ...OrganizationDetails
         }
         policy {
@@ -18203,9 +18155,7 @@ export const OrganizationDetailsDocument = gql`
           uri
         }
         tagsets {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
       }
       groups {
@@ -18222,6 +18172,7 @@ export const OrganizationDetailsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -18737,14 +18688,13 @@ export const UserAvatarsDocument = gql`
           ...VisualUri
         }
         tagsets {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -19101,13 +19051,13 @@ export const UpdateGroupDocument = gql`
           description
         }
         tagsets {
-          name
-          tags
+          ...TagsetDetails
         }
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export type UpdateGroupMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateGroupMutation,
@@ -19974,9 +19924,7 @@ export const SpaceContributionDetailsDocument = gql`
           ...VisualUri
         }
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
       }
       context {
@@ -19988,6 +19936,7 @@ export const SpaceContributionDetailsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -20054,9 +20003,7 @@ export const ChallengeContributionDetailsDocument = gql`
           id
           displayName
           tagset {
-            id
-            name
-            tags
+            ...TagsetDetails
           }
           tagline
           visuals {
@@ -20073,6 +20020,7 @@ export const ChallengeContributionDetailsDocument = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
@@ -20145,9 +20093,7 @@ export const OpportunityContributionDetailsDocument = gql`
           id
           displayName
           tagset {
-            id
-            name
-            tags
+            ...TagsetDetails
           }
           tagline
           visuals {
@@ -20165,6 +20111,7 @@ export const OpportunityContributionDetailsDocument = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
@@ -20292,8 +20239,7 @@ export const HomePageSpacesDocument = gql`
         displayName
         tagline
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
         cardBanner: visual(type: CARD) {
           id
@@ -20319,6 +20265,7 @@ export const HomePageSpacesDocument = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -20890,8 +20837,7 @@ export const ChallengeExplorerDataDocument = gql`
             ...VisualUri
           }
           tagset {
-            id
-            tags
+            ...TagsetDetails
           }
         }
         context {
@@ -20902,6 +20848,7 @@ export const ChallengeExplorerDataDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**

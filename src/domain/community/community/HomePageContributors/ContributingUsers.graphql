@@ -16,8 +16,7 @@ query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [A
         uri
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }

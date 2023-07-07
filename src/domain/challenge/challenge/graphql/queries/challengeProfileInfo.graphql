@@ -10,9 +10,7 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
         tagline
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualFull

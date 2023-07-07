@@ -11,12 +11,12 @@ query opportunityWithActivity($spaceId: UUID_NAMEID!) {
           ...VisualUri
         }
         tagset {
-          name
-          tags
+          ...TagsetDetails
         }
       }
       nameID
       metrics {
+        id
         name
         value
       }

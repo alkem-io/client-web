@@ -14,9 +14,7 @@ fragment OpportunityPage on Opportunity {
     id
     displayName
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id

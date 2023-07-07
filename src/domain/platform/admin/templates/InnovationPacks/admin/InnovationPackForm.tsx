@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikAutocomplete from '../../../../../../common/components/composite/forms/FormikAutocomplete';
-import { Reference, Tagset } from '../../../../../../core/apollo/generated/graphql-schema';
+import { Reference, Tagset, TagsetType } from '../../../../../../core/apollo/generated/graphql-schema';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import { MID_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -20,7 +20,7 @@ export interface InnovationPackFormValues {
   profile: {
     displayName: string;
     description: string;
-    tagsets: Pick<Tagset, 'id' | 'tags' | 'name'>[];
+    tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
     references: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
   };
   providerId: string;
@@ -33,7 +33,7 @@ interface InnovationPackFormProps {
     id?: string;
     displayName?: string;
     description?: string;
-    tagset?: { id: string; name: string; tags: string[] };
+    tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
     references?: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
   };
   providerId?: string;
@@ -62,7 +62,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
     profile: {
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
-      tagsets: [profile?.tagset ?? { id: '', name: 'Tags', tags: [] }],
+      tagsets: [profile?.tagset ?? { id: '', name: 'default', tags: [], allowedValues: [], type: TagsetType.Freeform }],
       references: profile?.references ?? [],
     },
     providerId: providerId ?? '',

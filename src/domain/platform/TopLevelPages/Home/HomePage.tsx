@@ -3,7 +3,6 @@ import React from 'react';
 import { useUserContext } from '../../../community/contributor/user';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../challenge/space/DashboardSpaces/SpacesSection';
-import WelcomeSection from './WelcomeSection';
 import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
@@ -42,7 +41,6 @@ export const HomePage = () => {
 
   return (
     <HomePageLayout>
-      <WelcomeSection />
       {!isFromLanding && <PlatformUpdates />}
       <PageContent>
         <PageContentColumn columns={12}>

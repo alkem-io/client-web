@@ -73,8 +73,7 @@ fragment CalendarEventDetails on CalendarEvent {
         uri
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
@@ -89,9 +88,7 @@ fragment EventProfile on Profile {
   displayName
   description
   tagset {
-    id
-    name
-    tags
+    ...TagsetDetails
   }
   references {
     id

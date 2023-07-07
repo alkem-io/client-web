@@ -48,9 +48,7 @@ fragment SpacePage on Space {
       ...VisualUri
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
   context {
@@ -69,7 +67,7 @@ fragment SpacePage on Space {
   }
   community {
     ...EntityDashboardCommunity
-    leadUsers {
+    leadUsers: usersInRole(role: LEAD) {
       profile {
         ...SpaceWelcomeBlockContributorProfile
       }
@@ -97,7 +95,6 @@ fragment SpaceWelcomeBlockContributorProfile on Profile {
     country
   }
   tagsets {
-    id
-    tags
+    ...TagsetDetails
   }
 }
