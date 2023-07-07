@@ -8,7 +8,7 @@ const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string) => {
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
       environment: process.env.NODE_ENV,
-      release: `${process.env.REACT_APP_NAME}@${process.env.REACT_APP_VERSION}`,
+      release: `${import.meta.env.VITE_NAME}@${import.meta.env.VITE_VERSION}`,
     });
   }
 };

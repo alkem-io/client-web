@@ -12,7 +12,7 @@ interface ReleaseNotificationData {
 }
 
 const PlatformUpdates: FC = () => {
-  const clientVersion = process.env.REACT_APP_VERSION || '';
+  const clientVersion = import.meta.env.VITE_VERSION || '';
   const theme = useTheme();
   const { platform } = useConfig();
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);

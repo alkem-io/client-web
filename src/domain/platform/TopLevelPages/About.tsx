@@ -67,7 +67,7 @@ export const AboutPage = () => {
           <div className={styles.content}>
             <div className={styles.version}>
               <img src="/logo.png" className={styles.logo} alt="Alkemio" />
-              <WrapperTypography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</WrapperTypography>
+              <WrapperTypography color={'neutralMedium'}>v{import.meta.env.VITE_VERSION}</WrapperTypography>
             </div>
             {services.length >= 1 && (
               <Box marginBottom={4}>

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import ReleaseUpdatesTopBar from './ReleaseUpdatesTopBar';
 
 const PlatformUpdates: FC = () => {
-  // const clientVersion = process.env.REACT_APP_VERSION || '';
+  // const clientVersion = import.meta.env.VITE_VERSION || '';
   const releaseNotificationData = localStorage.getItem('releaseNotification');
   let showReleaseUpdatesNotification = false;
 

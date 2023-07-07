@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2016",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vite/client", "vite-plugin-svgr/client"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
