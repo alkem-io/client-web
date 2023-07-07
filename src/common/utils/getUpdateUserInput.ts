@@ -20,8 +20,6 @@ export const getUpdateProfileInput = (profile?: Partial<UserModel['profile']>): 
       tagsets:
         profile.tagsets?.filter(doesHaveId).map(({ id, ...tagset }) => ({
           ID: id,
-          ...tagset,
-          // If 'tags' is undefined, use an empty array instead
           tags: tagset.tags ?? [],
         })) ?? [],
       location: {
