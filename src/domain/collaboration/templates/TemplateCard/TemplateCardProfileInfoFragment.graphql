@@ -3,8 +3,7 @@ fragment TemplateCardProfileInfo on Profile {
   displayName
   description
   tagset {
-    id
-    tags
+    ...TagsetDetails
   }
   visual(type: CARD) {
     id

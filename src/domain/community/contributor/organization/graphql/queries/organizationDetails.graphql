@@ -14,9 +14,7 @@ query organizationDetails($id: UUID_NAMEID!) {
         uri
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
     groups {

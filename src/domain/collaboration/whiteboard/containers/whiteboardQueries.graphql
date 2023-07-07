@@ -9,8 +9,7 @@ fragment WhiteboardProfile on Profile {
     ...VisualFull
   }
   tagset {
-    id
-    tags
+    ...TagsetDetails
   }
 }
 

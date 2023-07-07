@@ -9,7 +9,7 @@ import {
   useCreatePostFromContributeTabMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { usePostCreatedOnCalloutSubscription } from '../usePostCreatedOnCalloutSubscription';
-import { CalloutState, CreatePostOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CreatePostOnCalloutInput, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { buildPostUrl } from '../../../../common/utils/urlBuilders';
 import PostCard, { PostCardPost } from './PostCard';
@@ -125,6 +125,8 @@ const PostCallout = forwardRef<HTMLDivElement, PostCalloutProps>(
                 id: '-1',
                 name: 'default',
                 tags: [],
+                allowedValues: [],
+                type: TagsetType.Freeform,
               },
             },
             type: post.type,

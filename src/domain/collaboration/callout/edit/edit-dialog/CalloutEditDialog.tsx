@@ -12,6 +12,7 @@ import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutF
 import {
   CalloutType,
   PostTemplateCardFragment,
+  TagsetType,
   WhiteboardTemplateCardFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
@@ -94,7 +95,15 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         displayName: newCallout.displayName,
         description: newCallout.description,
         references: newCallout.references,
-        tagsets: [{ id: callout.profile.tagset?.id, name: 'default', tags: newCallout.tags }],
+        tagsets: [
+          {
+            id: callout.profile.tagset?.id,
+            name: 'default',
+            tags: newCallout.tags,
+            allowedValues: [],
+            type: TagsetType.Freeform,
+          },
+        ],
       },
       state: newCallout.state,
       postTemplate: newCallout.postTemplateData,

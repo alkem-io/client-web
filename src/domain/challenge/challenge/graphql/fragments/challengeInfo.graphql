@@ -7,9 +7,7 @@ fragment ChallengeInfo on Challenge {
     tagline
     description
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id

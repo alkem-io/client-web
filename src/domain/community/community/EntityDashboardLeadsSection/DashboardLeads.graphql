@@ -13,8 +13,7 @@ fragment DashboardLeadUser on User {
       city
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
   }
 }

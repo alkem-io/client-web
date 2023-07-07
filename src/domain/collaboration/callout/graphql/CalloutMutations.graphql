@@ -8,9 +8,7 @@ mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
       displayName
       description
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       visual(type: CARD) {
         ...VisualUri

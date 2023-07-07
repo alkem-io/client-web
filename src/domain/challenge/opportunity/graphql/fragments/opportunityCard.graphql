@@ -6,9 +6,7 @@ fragment OpportunityCard on Opportunity {
     displayName
     tagline
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     visuals {
       ...VisualFull
