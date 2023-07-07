@@ -4,7 +4,7 @@ import {
   useUpdateCalloutMutation,
   useUpdateCalloutVisibilityMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { Callout, CalloutVisibility, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
+import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
 
@@ -51,8 +51,6 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
                 ID: tagset.id || '',
                 name: tagset.name,
                 tags: tagset.tags ?? [],
-                allowedValues: [],
-                type: TagsetType.Freeform,
               })),
             },
             state: callout.state,
