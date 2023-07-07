@@ -109,10 +109,8 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
   return <Root>{display ?? <ActivityLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };
 
-interface ActivityViewChooserProps {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyLocation'> {
   activity: ActivityLogResultType;
-  journeyLocation: JourneyLocation;
-  journeyTypeName: JourneyTypeName | undefined;
 }
 
 const ActivityViewChooser = ({

@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { formatTimeElapsed } from '../../../utils/formatTimeElapsed';
 import { useTranslation } from 'react-i18next';
 import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
@@ -28,7 +28,7 @@ interface Props {
   author: Author | undefined;
 
   values?: Record<string, string | undefined>;
-  components?: Record<string, ReactNode>;
+  components?: Record<string, ReactElement>;
 }
 
 interface UseActivityViewParamsProvided extends Pick<Props, 'values' | 'components'> {
@@ -54,9 +54,9 @@ const useActivityViewParams = ({
     if (author) {
       values['user'] = author.displayName;
       if (author.url) {
-        components['UserLink'] = <Link href={author.url} />;
+        components['userlink'] = <Link href={author.url} />;
       } else {
-        components['UserLink'] = <span />;
+        components['userlink'] = <span />;
       }
     } else {
       values['user'] = t('common.user');
@@ -64,7 +64,7 @@ const useActivityViewParams = ({
 
     const truncatedParentName =
       parentDisplayName && parentDisplayName.length > PARENT_NAME_MAX_LENGTH
-        ? parentDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('...')
+        ? parentDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
         : parentDisplayName;
     if (truncatedParentName) {
       values['parentDisplayName'] = truncatedParentName;
@@ -72,7 +72,7 @@ const useActivityViewParams = ({
 
     const JourneyIcon = journeyTypeName ? journeyIcon[journeyTypeName] : undefined;
     if (JourneyIcon) {
-      components['ParentIcon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
+      components['parenticon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
     }
 
     if (journeyTypeName) {
@@ -80,9 +80,10 @@ const useActivityViewParams = ({
     }
 
     if (journeyLocation) {
-      components['ParentLink'] = <Link href={buildJourneyUrl(journeyLocation)} />;
+      components['parentlink'] = <Link href={buildJourneyUrl(journeyLocation)} />;
+    } else {
+      components['parentlink'] = <span />;
     }
-
     return {
       i18nKey: `components.activity-log-view.actions.${activityType}` as const,
       values,
