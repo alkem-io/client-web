@@ -1,6 +1,8 @@
 query me {
   me {
-    ...UserDetails
-    ...UserAgent
+    user {
+      ...UserDetails
+      ...UserAgent
+    }
   }
 }

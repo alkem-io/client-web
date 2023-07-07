@@ -1,8 +1,7 @@
 import React, { FC, useEffect, useMemo } from 'react';
 import {
-  refetchMeHasProfileQuery,
+  refetchMeQuery,
   useCreateUserNewRegistrationMutation,
-  useMeHasProfileQuery,
   useMeQuery,
   usePlatformLevelAuthorizationQuery,
   useRolesUserQuery,
@@ -33,16 +32,15 @@ const UserContext = React.createContext<UserContextValue>({
 
 const UserProvider: FC<{}> = ({ children }) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
-  const { data: meHasProfileData, loading: loadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
   // TODO "me" query fetches too much beyond user name
   const { data: meData, loading: loadingMe } = useMeQuery({
-    skip: !meHasProfileData?.meHasProfile,
+    skip: !isAuthenticated,
   });
 
   const { data: rolesData, loading: loadingRolesData } = useRolesUserQuery({
-    skip: !meData?.me.id,
+    skip: !meData?.me.user?.id,
     variables: {
-      input: meData?.me.id!,
+      input: meData?.me.user?.id!,
     },
   });
 
@@ -50,30 +48,29 @@ const UserProvider: FC<{}> = ({ children }) => {
   const platformLevelAuthorization = platformLevelAuthorizationData?.authorization;
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchMeHasProfileQuery()],
+    refetchQueries: [refetchMeQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });
 
   useEffect(() => {
-    if (isAuthenticated && meHasProfileData && !meHasProfileData.meHasProfile) {
+    if (isAuthenticated && !loadingMe && !meData?.me?.user) {
       createUserProfile();
     }
-  }, [meHasProfileData, createUserProfile, isAuthenticated]);
+  }, [meData?.me.user, loadingMe, createUserProfile, isAuthenticated]);
 
   const loading =
     loadingAuthentication ||
-    loadingMeHasProfile ||
     loadingCreateUser ||
     loadingMe ||
     loadingRolesData ||
-    (isAuthenticated && !meHasProfileData?.meHasProfile);
+    (isAuthenticated && !meData?.me.user);
 
-  const loadingMeAndParentQueries = loadingAuthentication || loadingMeHasProfile || loadingMe;
+  const loadingMeAndParentQueries = loadingAuthentication || loadingMe;
 
   const wrappedMe = useMemo(
     () =>
-      meData?.me ? toUserMetadata(meData.me as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined,
+      meData?.me ? toUserMetadata(meData.me.user as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined,
     [meData, rolesData, platformLevelAuthorization]
   );
 
