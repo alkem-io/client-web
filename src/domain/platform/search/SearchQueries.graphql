@@ -161,8 +161,7 @@ fragment SearchResultPostProfile on Profile {
   id
   description
   tagset {
-    id
-    tags
+    ...TagsetDetails
   }
 }
 
@@ -177,6 +176,8 @@ fragment SearchResultSpace on SearchResultSpace {
         id
         name
         tags
+        allowedValues
+        type
       }
       tagline
       visuals {
@@ -206,6 +207,8 @@ fragment SearchResultChallenge on SearchResultChallenge {
         id
         name
         tags
+        allowedValues
+        type
       }
       tagline
       visuals {
@@ -251,6 +254,8 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
         id
         name
         tags
+        allowedValues
+        type
       }
       tagline
       visuals {

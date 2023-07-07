@@ -12,9 +12,7 @@ query spaceContributionDetails($spaceId: UUID_NAMEID!) {
         ...VisualUri
       }
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
     context {
@@ -40,6 +38,8 @@ query challengeContributionDetails($spaceId: UUID_NAMEID!, $challengeId: UUID_NA
           id
           name
           tags
+          allowedValues
+          type
         }
         tagline
         visuals {
@@ -71,6 +71,8 @@ query opportunityContributionDetails($spaceId: UUID_NAMEID!, $opportunityId: UUI
           id
           name
           tags
+          allowedValues
+          type
         }
         tagline
         visuals {

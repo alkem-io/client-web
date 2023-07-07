@@ -19,9 +19,7 @@ fragment ChallengeCard on Challenge {
       ...VisualUri
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
   context {

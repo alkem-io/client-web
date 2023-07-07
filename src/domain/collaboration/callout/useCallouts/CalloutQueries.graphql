@@ -155,8 +155,7 @@ fragment Callout on Callout {
     displayName
     description
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
     references {
       ...ReferenceDetails
@@ -188,7 +187,10 @@ fragment CalloutPostTemplate on Callout {
     profile {
       tagset {
         id
+        name
         tags
+        allowedValues
+        type
       }
       visual(type: CARD) {
         id
@@ -208,7 +210,10 @@ fragment CalloutWhiteboardTemplate on Callout {
       description
       tagset {
         id
+        name
         tags
+        allowedValues
+        type
       }
       visual(type: CARD) {
         id

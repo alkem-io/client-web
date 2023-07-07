@@ -39,9 +39,7 @@ query AboutPageNonMembers(
         tagline
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualFull
@@ -76,6 +74,8 @@ query AboutPageNonMembers(
           id
           name
           tags
+          allowedValues
+          type
         }
         visuals {
           ...VisualFull
@@ -118,6 +118,8 @@ query AboutPageNonMembers(
           id
           name
           tags
+          allowedValues
+          type
         }
         visuals {
           ...VisualFull

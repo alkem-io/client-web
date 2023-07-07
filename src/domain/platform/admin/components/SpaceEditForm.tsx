@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Context, Profile, Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema } from './Common/ContextSegment';
 import FormikAutocomplete from '../../../../common/components/composite/forms/FormikAutocomplete';
@@ -60,6 +60,8 @@ const SpaceEditForm: FC<Props> = ({
         id: '',
         name: 'default',
         tags: [],
+        allowedValues: [],
+        type: TagsetType.Freeform,
       },
     ] as Tagset[];
   }, [tagset]);

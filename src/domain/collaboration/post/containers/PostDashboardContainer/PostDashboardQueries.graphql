@@ -82,9 +82,7 @@ fragment PostDashboard on Post {
     displayName
     description
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id

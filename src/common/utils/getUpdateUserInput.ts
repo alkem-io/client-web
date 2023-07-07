@@ -17,7 +17,13 @@ export const getUpdateProfileInput = (profile?: Partial<UserModel['profile']>): 
       description: profile.description,
       tagline: profile.tagline,
       references: profile.references?.filter(doesHaveId).map(convertIdAttrToUppercase),
-      tagsets: profile.tagsets?.filter(doesHaveId).map(convertIdAttrToUppercase),
+      tagsets:
+        profile.tagsets?.filter(doesHaveId).map(({ id, ...tagset }) => ({
+          ID: id,
+          ...tagset,
+          // If 'tags' is undefined, use an empty array instead
+          tags: tagset.tags ?? [],
+        })) ?? [],
       location: {
         city: profile.location?.city,
         country: profile.location?.country,

@@ -18,8 +18,7 @@ fragment InnovationPackCard on InnovationPack {
     displayName
     description
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
   }
   templates {
@@ -43,7 +42,10 @@ fragment LibraryTemplates on TemplatesSet {
       }
       tagset {
         id
+        name
         tags
+        allowedValues
+        type
       }
     }
     type
@@ -60,7 +62,10 @@ fragment LibraryTemplates on TemplatesSet {
       }
       tagset {
         id
+        name
         tags
+        allowedValues
+        type
       }
     }
   }
@@ -75,7 +80,10 @@ fragment LibraryTemplates on TemplatesSet {
       }
       tagset {
         id
+        name
         tags
+        allowedValues
+        type
       }
     }
     definition
