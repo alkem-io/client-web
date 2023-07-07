@@ -19683,7 +19683,14 @@ export type CreateTagsetOnProfileMutationVariables = Exact<{
 
 export type CreateTagsetOnProfileMutation = {
   __typename?: 'Mutation';
-  createTagsetOnProfile: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> };
+  createTagsetOnProfile: {
+    __typename?: 'Tagset';
+    id: string;
+    name: string;
+    tags: Array<string>;
+    allowedValues: Array<string>;
+    type: TagsetType;
+  };
 };
 
 export type TagsetDetailsFragment = {

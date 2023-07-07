@@ -13170,11 +13170,10 @@ export type UpdatePreferenceOnSpaceMutationOptions = Apollo.BaseMutationOptions<
 export const CreateTagsetOnProfileDocument = gql`
   mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
     createTagsetOnProfile(tagsetData: $input) {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export type CreateTagsetOnProfileMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateTagsetOnProfileMutation,
