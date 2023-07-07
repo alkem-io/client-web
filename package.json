@@ -10,7 +10,7 @@
   "license": "EUPL-1.2",
   "scripts": {
     "start": "cross-env NODE_ENV=development node buildConfiguration && react-scripts start",
-    "build": "cross-env NODE_ENV=production node buildConfiguration && react-scripts --max_old_space_size=4096 build",
+    "build": "cross-env NODE_ENV=production node buildConfiguration && react-scripts --max_old_space_size=8192 build",
     "test": "cross-env NODE_ENV=test node buildConfiguration && react-scripts test --transformIgnorePatterns \"node_modules/(?!unified)/\"",
     "test:cov": "npm run test -- --coverage --watchAll=false",
     "test:coverage": "npm run test -- --coverage && cat ./coverage/lcov.info | coveralls",
@@ -160,7 +160,7 @@
     "prettier": "^2.5.1",
     "sass": "^1.52.1",
     "source-map-explorer": "^2.5.3",
-    "webpack": "^5.66.0"
+    "webpack": "^5.88.1"
   },
   "husky": {
     "hooks": {
