@@ -40,7 +40,7 @@ const ChallengeCard = ({
 
   const isMember = challengeId ? user?.ofChallenge(challengeId) : undefined;
   const ribbon =
-    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
+    spaceVisibility === SpaceVisibility.Archived ? (
       <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 
