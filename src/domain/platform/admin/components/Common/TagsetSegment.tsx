@@ -35,13 +35,10 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
   helpText,
   loading,
 }) => {
-  const getTagsetPlaceholder = useCallback(
-    (name: string) => {
-      if (!template) return DEFAULT_PLACEHOLDER;
-      return template.find(x => x.name.toLowerCase() === name.toLowerCase())?.placeholder || DEFAULT_PLACEHOLDER;
-    },
-    [template]
-  );
+  const getTagsetPlaceholder = useCallback(() => {
+    //toDo check with Neil why the placeholder was removed so I am just going to pass the default placeholder...
+    return DEFAULT_PLACEHOLDER;
+  }, [template]);
 
   return (
     <FieldArray name={fieldName}>
@@ -51,7 +48,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
             key={index}
             name={`${fieldName}[${index}].tags`}
             title={toTagsetTitle(tagSet, title)}
-            placeholder={getTagsetPlaceholder(tagSet.name)}
+            placeholder={getTagsetPlaceholder()}
             readOnly={readOnly}
             disabled={disabled}
             helpTextIcon={helpText}

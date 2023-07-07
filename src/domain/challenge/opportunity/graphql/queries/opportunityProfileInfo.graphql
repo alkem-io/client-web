@@ -10,9 +10,7 @@ query opportunityProfileInfo($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID
         description
         tagline
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualFull

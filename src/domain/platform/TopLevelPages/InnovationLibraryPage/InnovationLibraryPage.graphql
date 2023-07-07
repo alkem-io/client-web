@@ -18,8 +18,7 @@ fragment InnovationPackCard on InnovationPack {
     displayName
     description
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
   }
   templates {
@@ -42,8 +41,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...VisualUri
       }
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
     }
     type
@@ -59,8 +57,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...VisualUri
       }
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
@@ -74,8 +71,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...VisualUri
       }
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
     }
     definition

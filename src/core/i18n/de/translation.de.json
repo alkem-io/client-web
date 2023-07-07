@@ -1663,10 +1663,6 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Die Ermächtigung der Gesellschaft, die Plattform zum Erfolg bei der Arbeit an Herausforderungen.",
-          "impact": "<impact>Zweck angetrieben</impact>",
-          "foundation": "<foundation>Innovation</foundation>",
-          "opensource": "<opensource>Open Source</opensource>",
           "welcome-back": "Hallo, willkommen zurück bei Consentio!",
           "join": "Willst du der Community beitreten und mehr sehen?",
           "existing-user": {

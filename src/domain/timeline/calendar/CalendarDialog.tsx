@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DialogContent } from '../../../common/components/core/dialog';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
-import { CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
+import { CalendarEventDetailsFragment, TagsetType } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import { Actions } from '../../../core/ui/actions/Actions';
@@ -67,7 +67,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, spaceNameId, onClose })
         displayName: '',
         description: t('calendar.defaultEventDescription'),
         references: [],
-        tagset: { id: '', name: '', tags: [] },
+        tagset: { id: '', name: '', tags: [], allowedValues: [], type: TagsetType.Freeform },
       },
       multipleDays: false,
       durationDays: 0,

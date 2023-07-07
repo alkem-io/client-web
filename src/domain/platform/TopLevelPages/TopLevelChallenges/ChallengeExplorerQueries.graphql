@@ -46,8 +46,7 @@ query ChallengeExplorerData($spaceIDs: [UUID!], $challengeIDs: [UUID!]) {
           ...VisualUri
         }
         tagset {
-          id
-          tags
+          ...TagsetDetails
         }
       }
       context {

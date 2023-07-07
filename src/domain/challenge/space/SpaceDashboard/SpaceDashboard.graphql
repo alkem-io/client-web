@@ -48,9 +48,7 @@ fragment SpacePage on Space {
       ...VisualUri
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
   context {
@@ -97,7 +95,6 @@ fragment SpaceWelcomeBlockContributorProfile on Profile {
     country
   }
   tagsets {
-    id
-    tags
+    ...TagsetDetails
   }
 }

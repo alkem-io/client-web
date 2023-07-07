@@ -1663,10 +1663,6 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Una nueva forma de trabajar en desafíos, juntos. Construyendo una comunidad de personas, empresas, ONGs y entes públicos.",
-          "impact": "<impact>Impacto</impact>",
-          "foundation": "<foundation>Fundación</foundation>",
-          "opensource": "<opensource>Código Abierto</opensource>",
           "welcome-back": "¡Bienvenido de nuevo, {{username}}!",
           "join": "¿Quieres unirte a la comunidad para ver mas?",
           "existing-user": {
