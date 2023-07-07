@@ -16,9 +16,7 @@ fragment GroupInfo on UserGroup {
       description
     }
     tagsets {
-      id
-      name
-      tags
+        ...TagsetDetails
     }
   }
 }

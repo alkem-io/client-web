@@ -19,9 +19,7 @@ fragment MessageDetails on Message {
         uri
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       location {
         id

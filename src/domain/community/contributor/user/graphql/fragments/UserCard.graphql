@@ -13,9 +13,7 @@ fragment UserCard on User {
       ...VisualUri
     }
     tagsets {
-      id
-      name
-      tags
+        ...TagsetDetails
     }
   }
 }

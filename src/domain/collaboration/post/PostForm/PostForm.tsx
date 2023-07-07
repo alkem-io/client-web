@@ -8,7 +8,7 @@ import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/comp
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import FormikEffectFactory from '../../../../common/utils/formik/formik-effect/FormikEffect';
 import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
-import { Post, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Post, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ReferenceSegment, { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import { PushFunc, RemoveFunc } from '../../../shared/Reference/useEditReference';
 import { Reference } from '../../../common/profile/Profile';
@@ -73,6 +73,8 @@ const PostForm: FC<PostFormProps> = ({
       id: '-1',
       name: 'default',
       tags: tags ?? [],
+      allowedValues: [],
+      type: TagsetType.Freeform,
     },
   ];
 
