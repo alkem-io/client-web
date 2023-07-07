@@ -15,9 +15,6 @@ export interface RadioButtonProps<Value> {
 }
 
 const StyledButton = styled(IconButton)(({ theme }) => ({
-  // width: iconButtonSize,
-  // height: iconButtonSize,
-  // padding: theme.spacing(2),
   border: `1px solid ${theme.palette.neutralMedium.main}`,
   borderRadius: theme.shape.borderRadius,
 }));
