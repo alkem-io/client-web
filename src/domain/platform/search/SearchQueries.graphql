@@ -149,8 +149,7 @@ fragment SearchResultProfile on Profile {
     city
   }
   tagsets {
-    id
-    tags
+    ...TagsetDetails
   }
   visual(type: AVATAR) {
     ...VisualUri
@@ -173,11 +172,7 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       displayName
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
       tagline
       visuals {
@@ -204,11 +199,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
       id
       displayName
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
       tagline
       visuals {
@@ -251,11 +242,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       id
       displayName
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
       tagline
       visuals {

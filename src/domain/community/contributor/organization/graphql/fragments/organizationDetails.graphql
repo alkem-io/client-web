@@ -9,8 +9,7 @@ fragment OrganizationDetails on Organization {
     }
     description
     tagsets {
-      id
-      tags
+        ...TagsetDetails
     }
     location {
       country

@@ -15,8 +15,7 @@ fragment DashboardContributingUser on User {
       uri
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
   }
 }

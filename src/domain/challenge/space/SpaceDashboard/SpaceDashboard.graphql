@@ -95,7 +95,6 @@ fragment SpaceWelcomeBlockContributorProfile on Profile {
     country
   }
   tagsets {
-    id
-    tags
+    ...TagsetDetails
   }
 }

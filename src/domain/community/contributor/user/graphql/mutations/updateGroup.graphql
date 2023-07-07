@@ -14,8 +14,7 @@ mutation updateGroup($input: UpdateUserGroupInput!) {
         description
       }
       tagsets {
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }

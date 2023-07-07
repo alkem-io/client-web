@@ -71,7 +71,7 @@ fragment PostDashboard on Post {
         uri
       }
       tagsets {
-        tags
+        ...TagsetDetails
       }
     }
   }

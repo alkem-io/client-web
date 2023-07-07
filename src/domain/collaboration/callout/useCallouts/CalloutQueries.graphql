@@ -186,11 +186,7 @@ fragment CalloutPostTemplate on Callout {
     defaultDescription
     profile {
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
       visual(type: CARD) {
         id
@@ -209,11 +205,7 @@ fragment CalloutWhiteboardTemplate on Callout {
       displayName
       description
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
       visual(type: CARD) {
         id

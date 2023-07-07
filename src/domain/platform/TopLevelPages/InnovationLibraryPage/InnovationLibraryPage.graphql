@@ -41,11 +41,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...VisualUri
       }
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
     }
     type
@@ -61,11 +57,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...VisualUri
       }
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
     }
   }
@@ -79,11 +71,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...VisualUri
       }
       tagset {
-        id
-        name
-        tags
-        allowedValues
-        type
+        ...TagsetDetails
       }
     }
     definition

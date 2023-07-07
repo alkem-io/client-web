@@ -35,11 +35,7 @@ query challengeContributionDetails($spaceId: UUID_NAMEID!, $challengeId: UUID_NA
         id
         displayName
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
         tagline
         visuals {
@@ -68,11 +64,7 @@ query opportunityContributionDetails($spaceId: UUID_NAMEID!, $opportunityId: UUI
         id
         displayName
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
         tagline
         visuals {

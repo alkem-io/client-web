@@ -187,12 +187,12 @@ export const DashboardLeadUserFragmentDoc = gql`
         city
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
@@ -212,11 +212,11 @@ export const DashboardContributingUserFragmentDoc = gql`
         uri
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {
@@ -546,9 +546,7 @@ export const OpportunityPageFragmentDoc = gql`
       id
       displayName
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -604,6 +602,7 @@ export const OpportunityPageFragmentDoc = gql`
       ...EntityDashboardCommunity
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
@@ -769,10 +768,10 @@ export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
       country
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
@@ -1106,8 +1105,7 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
         location {
           id
@@ -1117,6 +1115,7 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ActivityLogCalloutPublishedFragmentDoc = gql`
   fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
@@ -1260,8 +1259,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
         location {
           id
@@ -1298,6 +1296,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogUpdateSent
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutCardCreatedFragmentDoc}
@@ -1364,9 +1363,7 @@ export const MessageDetailsFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         location {
           id
@@ -1377,6 +1374,7 @@ export const MessageDetailsFragmentDoc = gql`
     }
   }
   ${ReactionDetailsFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Room {
@@ -1401,11 +1399,7 @@ export const CalloutPostTemplateFragmentDoc = gql`
       defaultDescription
       profile {
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
         visual(type: CARD) {
           id
@@ -1414,6 +1408,7 @@ export const CalloutPostTemplateFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CalloutWhiteboardTemplateFragmentDoc = gql`
   fragment CalloutWhiteboardTemplate on Callout {
@@ -1425,11 +1420,7 @@ export const CalloutWhiteboardTemplateFragmentDoc = gql`
         displayName
         description
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
         visual(type: CARD) {
           id
@@ -1438,6 +1429,7 @@ export const CalloutWhiteboardTemplateFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -1527,7 +1519,7 @@ export const PostDashboardFragmentDoc = gql`
           uri
         }
         tagsets {
-          tags
+          ...TagsetDetails
         }
       }
     }
@@ -1857,13 +1849,12 @@ export const UserCardFragmentDoc = gql`
         ...VisualUri
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const OrganizationCardFragmentDoc = gql`
   fragment OrganizationCard on Organization {
@@ -1932,12 +1923,12 @@ export const CommunityPageMembersFragmentDoc = gql`
       }
       description
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
@@ -2065,13 +2056,12 @@ export const UserContributorFragmentDoc = gql`
         ...VisualUri
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const UserContributorPaginatedFragmentDoc = gql`
   fragment UserContributorPaginated on PaginatedUsers {
@@ -2125,9 +2115,7 @@ export const OrganizationInfoFragmentDoc = gql`
         alternativeText
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       references {
         id
@@ -2159,8 +2147,7 @@ export const OrganizationInfoFragmentDoc = gql`
           alternativeText
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
       }
     }
@@ -2172,6 +2159,7 @@ export const OrganizationInfoFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${FullLocationFragmentDoc}
 `;
 export const OrganizationDetailsFragmentDoc = gql`
@@ -2186,8 +2174,7 @@ export const OrganizationDetailsFragmentDoc = gql`
       }
       description
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
       location {
         country
@@ -2196,6 +2183,7 @@ export const OrganizationDetailsFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
@@ -2228,13 +2216,12 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         description
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const MessagingUserInformationFragmentDoc = gql`
   fragment MessagingUserInformation on User {
@@ -2279,13 +2266,12 @@ export const GroupInfoFragmentDoc = gql`
         description
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
@@ -2347,13 +2333,12 @@ export const UserDetailsFragmentDoc = gql`
         description
       }
       tagsets {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
     }
   }
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
@@ -2459,11 +2444,7 @@ export const LibraryTemplatesFragmentDoc = gql`
           ...VisualUri
         }
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
       }
       type
@@ -2479,11 +2460,7 @@ export const LibraryTemplatesFragmentDoc = gql`
           ...VisualUri
         }
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
       }
     }
@@ -2497,11 +2474,7 @@ export const LibraryTemplatesFragmentDoc = gql`
           ...VisualUri
         }
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
       }
       definition
@@ -2509,6 +2482,7 @@ export const LibraryTemplatesFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
   fragment InnovationPackProviderProfileWithAvatar on Organization {
@@ -2892,13 +2866,13 @@ export const SearchResultProfileFragmentDoc = gql`
       city
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
     visual(type: AVATAR) {
       ...VisualUri
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const SearchResultUserFragmentDoc = gql`
@@ -2936,11 +2910,7 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         displayName
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
         tagline
         visuals {
@@ -2958,6 +2928,7 @@ export const SearchResultSpaceFragmentDoc = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const SearchResultChallengeFragmentDoc = gql`
@@ -2969,11 +2940,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         displayName
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
         tagline
         visuals {
@@ -3005,6 +2972,7 @@ export const SearchResultChallengeFragmentDoc = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const SearchResultOpportunityFragmentDoc = gql`
@@ -3016,11 +2984,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
         id
         displayName
         tagset {
-          id
-          name
-          tags
-          allowedValues
-          type
+          ...TagsetDetails
         }
         tagline
         visuals {
@@ -3058,6 +3022,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const ProfileStorageConfigFragmentDoc = gql`
@@ -3147,8 +3112,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
       }
     }
@@ -3158,6 +3122,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
     }
   }
   ${CalendarEventInfoFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
 export const AssignUserAsGlobalAdminDocument = gql`
@@ -4738,11 +4703,7 @@ export const AboutPageNonMembersDocument = gql`
           tagline
           description
           tagset {
-            id
-            name
-            tags
-            allowedValues
-            type
+            ...TagsetDetails
           }
           visuals {
             ...VisualFull
@@ -4781,11 +4742,7 @@ export const AboutPageNonMembersDocument = gql`
           tagline
           description
           tagset {
-            id
-            name
-            tags
-            allowedValues
-            type
+            ...TagsetDetails
           }
           visuals {
             ...VisualFull
@@ -8951,8 +8908,7 @@ export const ActivityLogOnCollaborationDocument = gql`
             uri
           }
           tagsets {
-            id
-            tags
+            ...TagsetDetails
           }
           location {
             id
@@ -8990,6 +8946,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutCardCreatedFragmentDoc}
@@ -15720,12 +15677,12 @@ export const ContributingUsersDocument = gql`
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -18199,9 +18156,7 @@ export const OrganizationDetailsDocument = gql`
           uri
         }
         tagsets {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
       }
       groups {
@@ -18218,6 +18173,7 @@ export const OrganizationDetailsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -18733,14 +18689,13 @@ export const UserAvatarsDocument = gql`
           ...VisualUri
         }
         tagsets {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -19097,13 +19052,13 @@ export const UpdateGroupDocument = gql`
           description
         }
         tagsets {
-          name
-          tags
+          ...TagsetDetails
         }
       }
     }
   }
   ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export type UpdateGroupMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateGroupMutation,
@@ -20049,11 +20004,7 @@ export const ChallengeContributionDetailsDocument = gql`
           id
           displayName
           tagset {
-            id
-            name
-            tags
-            allowedValues
-            type
+            ...TagsetDetails
           }
           tagline
           visuals {
@@ -20070,6 +20021,7 @@ export const ChallengeContributionDetailsDocument = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
@@ -20142,11 +20094,7 @@ export const OpportunityContributionDetailsDocument = gql`
           id
           displayName
           tagset {
-            id
-            name
-            tags
-            allowedValues
-            type
+            ...TagsetDetails
           }
           tagline
           visuals {
@@ -20164,6 +20112,7 @@ export const OpportunityContributionDetailsDocument = gql`
       visibility
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
