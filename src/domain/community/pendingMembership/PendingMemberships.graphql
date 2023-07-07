@@ -7,12 +7,14 @@ query PendingMemberships($userId: UUID_NAMEID_EMAIL!) {
       opportunityID
       welcomeMessage
       createdBy
+      state
     }
     applications {
       id
       spaceID
       challengeID
       opportunityID
+      state
     }
   }
 }

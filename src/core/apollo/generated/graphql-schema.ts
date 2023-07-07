@@ -21752,6 +21752,7 @@ export type PendingMembershipsQuery = {
           opportunityID?: string | undefined;
           welcomeMessage?: string | undefined;
           createdBy: string;
+          state: string;
         }>
       | undefined;
     applications?:
@@ -21761,6 +21762,7 @@ export type PendingMembershipsQuery = {
           spaceID: string;
           challengeID?: string | undefined;
           opportunityID?: string | undefined;
+          state: string;
         }>
       | undefined;
   };
@@ -21870,7 +21872,11 @@ export type PendingMembershipsMembershipsFragment = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
-        createdBy: { __typename?: 'User'; profile: { __typename?: 'Profile'; displayName: string } };
+        createdBy: {
+          __typename?: 'User';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
       }>
     | undefined;
 };
@@ -21879,7 +21885,7 @@ export type PendingMembershipInvitationFragment = {
   __typename?: 'Invitation';
   id: string;
   welcomeMessage?: string | undefined;
-  createdBy: { __typename?: 'User'; profile: { __typename?: 'Profile'; displayName: string } };
+  createdBy: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
 };
 
 export type SpaceContributionDetailsQueryVariables = Exact<{

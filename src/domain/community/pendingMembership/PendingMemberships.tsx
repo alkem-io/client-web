@@ -34,6 +34,8 @@ interface UsePendingMembershipsProvided {
   refetchPendingMemberships: () => void;
 }
 
+const VISIBLE_STATES = ['invited', 'new'];
+
 export const usePendingMemberships = (): UsePendingMembershipsProvided => {
   const { user } = useUserContext();
 
@@ -44,9 +46,25 @@ export const usePendingMemberships = (): UsePendingMembershipsProvided => {
     skip: !user?.user.id,
   });
 
+  const invitations = useMemo(
+    () =>
+      data?.rolesUser.invitations?.filter(({ state }) => {
+        return VISIBLE_STATES.includes(state);
+      }),
+    [data]
+  );
+
+  const applications = useMemo(
+    () =>
+      data?.rolesUser.applications?.filter(({ state }) => {
+        return VISIBLE_STATES.includes(state);
+      }),
+    [data]
+  );
+
   return {
-    invitations: data?.rolesUser.invitations,
-    applications: data?.rolesUser.applications,
+    invitations,
+    applications,
     refetchPendingMemberships,
   };
 };

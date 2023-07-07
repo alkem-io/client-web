@@ -2460,7 +2460,9 @@ export const PendingMembershipInvitationFragmentDoc = gql`
     id
     welcomeMessage
     createdBy {
+      id
       profile {
+        id
         displayName
       }
     }
@@ -20351,12 +20353,14 @@ export const PendingMembershipsDocument = gql`
         opportunityID
         welcomeMessage
         createdBy
+        state
       }
       applications {
         id
         spaceID
         challengeID
         opportunityID
+        state
       }
     }
   }
