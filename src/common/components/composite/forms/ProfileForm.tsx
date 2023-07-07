@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Profile, Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
@@ -57,6 +57,8 @@ const ProfileForm: FC<ProfileFormProps> = ({
         id: '',
         name: 'default',
         tags: [],
+        allowedValues: [],
+        type: TagsetType.Freeform,
       },
     ] as Tagset[];
   }, [tagset]);

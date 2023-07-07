@@ -1708,10 +1708,6 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Empowering society. The platform to succeed in working on challenges, together.",
-          "impact": "<impact>Purpose Driven</impact>",
-          "foundation": "<foundation>Innovation</foundation>",
-          "opensource": "<opensource>Open Source</opensource>",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {

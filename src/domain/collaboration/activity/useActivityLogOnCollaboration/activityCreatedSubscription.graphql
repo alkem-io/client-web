@@ -29,8 +29,7 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
         uri
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
       location {
         id

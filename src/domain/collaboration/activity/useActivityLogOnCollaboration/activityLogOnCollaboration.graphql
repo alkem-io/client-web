@@ -22,8 +22,7 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
           uri
         }
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
         location {
           id
@@ -81,8 +80,7 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
         uri
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
       location {
         id

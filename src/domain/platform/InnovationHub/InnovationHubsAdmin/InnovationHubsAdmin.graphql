@@ -25,9 +25,7 @@ fragment InnovationHubProfile on Profile {
   description
   tagline
   tagset {
-    id
-    name
-    tags
+    ...TagsetDetails
   }
   visual(type: BANNER) {
     ...VisualFull

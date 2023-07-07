@@ -23,9 +23,7 @@ fragment ChallengeProfile on Challenge {
       ...VisualFull
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
   authorization {

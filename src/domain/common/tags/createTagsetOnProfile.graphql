@@ -1,7 +1,5 @@
 mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
   createTagsetOnProfile(tagsetData: $input) {
-    id
-    name
-    tags
+    ...TagsetDetails
   }
 }
