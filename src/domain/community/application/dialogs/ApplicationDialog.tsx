@@ -2,14 +2,14 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
-import { ApplicationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
-import LifecycleButton from '../../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
-import { Optional } from '../../../../../types/util';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import { ProfileChip } from '../../../contributor/ProfileChip/ProfileChip';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import Gutters from '../../../../../core/ui/grid/Gutters';
+import { AdminSpaceCommunityApplicationFragment } from '../../../../core/apollo/generated/graphql-schema';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
+import LifecycleButton from '../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
+import { Optional } from '../../../../types/util';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {
@@ -74,7 +74,7 @@ const appStyles = makeStyles(theme => ({
   },
 }));
 
-export type ApplicationDialogDataType = Optional<ApplicationInfoFragment, 'lifecycle' | 'user'>;
+export type ApplicationDialogDataType = Optional<AdminSpaceCommunityApplicationFragment, 'lifecycle' | 'user'>;
 
 export interface ApplicationDialogProps {
   app?: ApplicationDialogDataType;
@@ -92,12 +92,12 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
 
   const appId = app?.id || '';
   const user = app?.user;
-  const questions = app?.questions || [];
+  const questions = app?.questions ?? [];
 
-  const nextEvents = app?.lifecycle?.nextEvents || [];
+  const nextEvents = app?.lifecycle?.nextEvents ?? [];
 
-  const username = user?.profile.displayName || '';
-  const avatarSrc = user?.profile.visual?.uri || '';
+  const username = user?.profile.displayName ?? '';
+  const avatarSrc = user?.profile.avatar?.uri ?? '';
 
   const createdDate = app?.createdDate ? new Date(app?.createdDate).toLocaleString() : '';
   const updatedDate = app?.updatedDate ? new Date(app?.updatedDate).toLocaleString() : '';

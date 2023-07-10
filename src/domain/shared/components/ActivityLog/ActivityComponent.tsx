@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Box, styled } from '@mui/material';
 import {
   ActivityEventType,
@@ -30,7 +30,6 @@ import { getJourneyLocationKey, JourneyLocation } from '../../../../common/utils
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
-import journeyIcon from '../JourneyIcon/JourneyIcon';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -87,7 +86,6 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
       <>
         {activities.map(activity => {
           const activityOriginJourneyTypeName = getActivityOriginJourneyTypeName(activity, journeyLocation);
-          const ActivityOriginJourneyIcon = activityOriginJourneyTypeName && journeyIcon[activityOriginJourneyTypeName];
           const activityOriginJourneyLocation = activityOriginJourneyTypeName
             ? {
                 ...journeyLocation,
@@ -98,13 +96,9 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
           return (
             <ActivityViewChooser
               activity={activity}
+              journeyTypeName={activityOriginJourneyTypeName}
               journeyLocation={activityOriginJourneyLocation}
               key={activity.id}
-              activityOriginJourneyIcon={
-                ActivityOriginJourneyIcon && (
-                  <ActivityOriginJourneyIcon sx={{ verticalAlign: 'bottom' }} fontSize="small" />
-                )
-              }
             />
           );
         })}
@@ -115,10 +109,8 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
   return <Root>{display ?? <ActivityLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };
 
-interface ActivityViewChooserProps {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyLocation'> {
   activity: ActivityLogResultType;
-  journeyLocation: JourneyLocation;
-  activityOriginJourneyIcon?: ReactNode;
 }
 
 const ActivityViewChooser = ({
