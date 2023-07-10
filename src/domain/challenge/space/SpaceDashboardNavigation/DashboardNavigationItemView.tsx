@@ -1,13 +1,11 @@
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined, LockOutlined } from '@mui/icons-material';
-import { Avatar, Box, Collapse, IconButton, Skeleton, Tooltip, TooltipProps } from '@mui/material';
+import { Box, Collapse, IconButton, Skeleton, Tooltip, TooltipProps } from '@mui/material';
 import React, { PropsWithChildren, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import SwapColors from '../../../../core/ui/palette/SwapColors';
 import { Caption } from '../../../../core/ui/typography';
-import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
@@ -33,8 +31,6 @@ const DashboardNavigationItemView = ({
 
   const { t } = useTranslation();
 
-  const JourneyIcon = journeyIcon[journeyTypeName];
-
   const preventDefault = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
@@ -51,12 +47,7 @@ const DashboardNavigationItemView = ({
         <BadgeCardView
           component={LinkNoUnderline}
           to={url ?? ''}
-          visual={
-            <JourneyAvatar
-              visualUri={visualUri}
-              journeyTypeName={journeyTypeName}
-            />
-          }
+          visual={<JourneyAvatar visualUri={visualUri} journeyTypeName={journeyTypeName} />}
           visualRight={
             isPrivate ? (
               <Tooltip
