@@ -492,7 +492,7 @@
           "accept": "Join"
         }
       },
-      "invitationTitle": "{{date}} {{user}} invited you to <journeyicon /> {{journey}}"
+      "invitationTitle": "{{time}} {{user}} invited you to <journeyicon /> {{journey}}"
     },
     "memberSettings": {
       "title": "Member Settings",
