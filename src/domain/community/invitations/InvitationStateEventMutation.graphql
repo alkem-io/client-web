@@ -1,0 +1,13 @@
+mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
+  eventOnCommunityInvitation(invitationEventData: {
+    eventName: $eventName
+    invitationID: $invitationId
+  }) {
+    id
+    lifecycle {
+      id
+      nextEvents
+      state
+    }
+  }
+}

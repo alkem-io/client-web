@@ -459,9 +459,40 @@
       "applicationRejected": "Application Rejected",
       "applicationArchived": "Application Archived"
     },
+    "invitationStatus": {
+      "invited": "Invited",
+      "accepted": "Invitation Accepted",
+      "rejected": "Invitation Rejected"
+    },
+    "invitationExternalStatus": {
+      "invited": "Invited to join Alkemio & this Space"
+    },
     "confirmDeleteApplication": {
       "title": "Deleting application from {{user}}",
       "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+    },
+    "confirmDeleteInvitation": {
+      "title": "Deleting invitation from {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "confirmDeleteInvitationExternal": {
+      "title": "Deleting invitation from {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "pendingMembership": {
+      "pendingMemberships": "Pending Memberships",
+      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
+      "invitationsSectionTitle": "Invitations",
+      "applicationsSectionTitle": "Open applications",
+      "invitationDialog": {
+        "title": "Pending Membership: {{journey}}",
+        "actions": {
+          "hide": "Hide this invitation",
+          "reject": "Decline",
+          "accept": "Join"
+        }
+      },
+      "invitationTitle": "{{time}} {{user}} invited you to <journeyicon /> {{journey}}"
     },
     "memberSettings": {
       "title": "Member Settings",
@@ -709,6 +740,20 @@
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
+    },
+    "invitations": {
+      "inviteExistingUser": "Invite Alkemio users",
+      "inviteExternalUser": "Send email invitation",
+      "inviteByURL": "Copy magic \u2028URL",
+      "inviteOrganizations": "Invite Organizations",
+      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "inviteExistingUserDialog": {
+        "title": "Invite other Alkemio users to join this Space",
+        "subtitle": "You can search for Alkemio users below and attach a personalized message."
+      },
+      "inviteExternalUserDialog": {
+        "title": "Send an email invitation"
+      }
     },
     "confirmation-dialog": {
       "delete-comment": {

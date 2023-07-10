@@ -7,6 +7,7 @@ interface BadgeCardViewProps {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;
   visualRight?: ReactElement<{ sx: { flexShrink: number } }>;
   contentProps?: BoxProps;
+  outlined?: boolean;
 }
 
 const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ sx: Partial<Sx> }> | undefined) => {
@@ -31,12 +32,22 @@ const BadgeCardView = forwardRef(
       visualRight,
       children,
       contentProps,
+      outlined = false,
       ...containerProps
     }: PropsWithChildren<BadgeCardViewProps> & BoxProps<D, P>,
     ref
   ) => {
     return (
-      <Box ref={ref} display="flex" alignItems="center" gap={gutters()} {...containerProps}>
+      <Box
+        ref={ref}
+        display="flex"
+        alignItems="center"
+        gap={gutters()}
+        {...containerProps}
+        border={outlined ? theme => `1px solid ${theme.palette.divider}` : undefined}
+        borderRadius={theme => theme.spacing(1.2)}
+        padding={outlined ? gutters(0.5) : undefined}
+      >
         {cloneVisual(visual)}
         <Box overflow="hidden" flexGrow={1} minWidth={0} {...contentProps}>
           {children}

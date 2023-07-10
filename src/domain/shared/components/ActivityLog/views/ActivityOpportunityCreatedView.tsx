@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { buildOpportunityUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
-import useActivityViewParams from './useActivityViewParams';
-import ActivityDescription from '../../ActivityDescription/ActivityDescription';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 export interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
   opportunity: NameableEntity;
@@ -31,24 +30,20 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
   });
   const url = buildOpportunityUrl(journeyLocation.spaceNameId, journeyLocation.challengeNameId!, opportunity.nameID!);
 
-  const { i18nKey, values, components } = useActivityViewParams({
-    activityType: 'opportunity-created',
-    author,
-    createdDate,
-    journeyTypeName,
-    journeyLocation,
-    parentDisplayName,
-  });
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       title={
-        <ActivityDescription
-          i18nKey={i18nKey}
-          values={values}
-          components={components}
+        <ActivityDescriptionByType
+          activityType="opportunity-created"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            parentDisplayName,
+          }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }

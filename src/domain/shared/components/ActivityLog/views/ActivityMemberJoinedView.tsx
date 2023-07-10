@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Community } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
-import useActivityViewParams from './useActivityViewParams';
-import ActivityDescription from '../../ActivityDescription/ActivityDescription';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 export interface ActivityMemberJoinedViewProps extends ActivityViewProps {
   member: Author;
@@ -35,28 +34,24 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
 
   const url = member.url;
 
-  const { i18nKey, values, components } = useActivityViewParams({
-    activityType: 'member-joined',
-    author,
-    createdDate,
-    journeyTypeName,
-    journeyLocation,
-    parentDisplayName: community.displayName,
-    values: {
-      communityType,
-      communityDisplayName: community.displayName!,
-    },
-  });
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       title={
-        <ActivityDescription
-          i18nKey={i18nKey}
-          values={values}
-          components={components}
+        <ActivityDescriptionByType
+          activityType="member-joined"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            parentDisplayName: community.displayName,
+            values: {
+              communityType,
+              communityDisplayName: community.displayName!,
+            },
+          }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }

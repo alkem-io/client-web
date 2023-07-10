@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { buildWhiteboardUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
-import useActivityViewParams from './useActivityViewParams';
-import ActivityDescription from '../../ActivityDescription/ActivityDescription';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 export interface ActivityWhiteboardCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -34,27 +33,23 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
 
   const url = buildWhiteboardUrl(callout.nameID, whiteboard.nameID, journeyLocation);
 
-  const { i18nKey, values, components } = useActivityViewParams({
-    activityType: 'whiteboard-created',
-    author,
-    createdDate,
-    journeyTypeName,
-    journeyLocation,
-    parentDisplayName,
-    values: {
-      calloutDisplayName: callout.profile.displayName,
-    },
-  });
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       title={
-        <ActivityDescription
-          i18nKey={i18nKey}
-          values={values}
-          components={components}
+        <ActivityDescriptionByType
+          activityType="whiteboard-created"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            parentDisplayName,
+            values: {
+              calloutDisplayName: callout.profile.displayName,
+            },
+          }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }

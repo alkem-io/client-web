@@ -1,0 +1,102 @@
+query PendingMemberships($userId: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userId }) {
+    invitations {
+      id
+      spaceID
+      challengeID
+      opportunityID
+      welcomeMessage
+      createdBy
+      createdDate
+      state
+    }
+    applications {
+      id
+      spaceID
+      challengeID
+      opportunityID
+      state
+    }
+  }
+}
+
+query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      ...PendingMembershipsJourneyProfile
+    }
+  }
+}
+
+query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+    }
+  }
+}
+
+query PendingMembershipsOpportunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+    }
+  }
+}
+
+query PendingMembershipsUser($userId: UUID!) {
+  usersById(IDs: [$userId]) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment PendingMembershipsJourneyProfile on Profile {
+  id
+  displayName
+  ... on Profile @include(if: $fetchDetails) {
+    description
+    tagset {
+      id
+      tags
+    }
+    banner: visual(type: BANNER) {
+      id
+      uri
+    }
+  }
+}
+
+fragment PendingMembershipsMemberships on Community {
+  id
+  applications {
+    id
+  }
+  invitations {
+    ...PendingMembershipInvitation
+  }
+}
+
+fragment PendingMembershipInvitation on Invitation {
+  id
+  welcomeMessage
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

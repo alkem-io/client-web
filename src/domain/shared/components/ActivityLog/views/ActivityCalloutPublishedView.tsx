@@ -5,8 +5,7 @@ import { NameableEntity } from '../../../types/NameableEntity';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { Caption } from '../../../../../core/ui/typography';
-import ActivityDescription from '../../ActivityDescription/ActivityDescription';
-import useActivityViewParams from './useActivityViewParams';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 export interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -34,27 +33,23 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
   });
   const url = buildCalloutUrl(callout.nameID, journeyLocation);
 
-  const { i18nKey, values, components } = useActivityViewParams({
-    activityType: 'callout-published',
-    author,
-    createdDate,
-    journeyTypeName,
-    journeyLocation,
-    parentDisplayName,
-    values: {
-      calloutDisplayName: callout.profile.displayName,
-    },
-  });
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       title={
-        <ActivityDescription
-          i18nKey={i18nKey}
-          values={values}
-          components={components}
+        <ActivityDescriptionByType
+          activityType="callout-published"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            parentDisplayName,
+            values: {
+              calloutDisplayName: callout.profile.displayName,
+            },
+          }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }
