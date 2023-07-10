@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { buildUpdatesUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
-import useActivityViewParams from './useActivityViewParams';
-import ActivityDescription from '../../ActivityDescription/ActivityDescription';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
   message: string;
@@ -33,24 +32,20 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
 
   const url = buildUpdatesUrl(journeyLocation);
 
-  const { i18nKey, values, components } = useActivityViewParams({
-    activityType: 'update-sent',
-    author,
-    createdDate,
-    journeyTypeName,
-    journeyLocation,
-    parentDisplayName,
-  });
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       title={
-        <ActivityDescription
-          i18nKey={i18nKey}
-          values={values}
-          components={components}
+        <ActivityDescriptionByType
+          activityType="update-sent"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            parentDisplayName,
+          }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }

@@ -7,6 +7,7 @@ query PendingMemberships($userId: UUID_NAMEID_EMAIL!) {
       opportunityID
       welcomeMessage
       createdBy
+      createdDate
       state
     }
     applications {

@@ -22,6 +22,7 @@ export interface InvitationWithMeta extends JourneyDetails {
   id: string;
   userDisplayName: string;
   welcomeMessage: string | undefined;
+  createdDate: Date | string;
 }
 
 interface ApplicationWithMeta extends JourneyDetails {
@@ -145,6 +146,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       journeyDescription: journey.profile.description,
       journeyTags: journey.profile.tagset?.tags,
       journeyBannerUri: journey.profile.banner?.uri,
+      createdDate: new Date(), // TODO replace with fetched createdDate
     };
   }, [invitation, journey, createdBy]);
 

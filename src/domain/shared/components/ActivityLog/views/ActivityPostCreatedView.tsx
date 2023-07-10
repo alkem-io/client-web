@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
-import useActivityViewParams from './useActivityViewParams';
-import ActivityDescription from '../../ActivityDescription/ActivityDescription';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 export interface ActivityCardCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -40,27 +39,23 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = ({
 
   const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
 
-  const { i18nKey, values, components } = useActivityViewParams({
-    activityType: 'post-created',
-    author,
-    createdDate,
-    journeyTypeName,
-    journeyLocation,
-    parentDisplayName,
-    values: {
-      calloutDisplayName: callout.profile.displayName,
-    },
-  });
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       title={
-        <ActivityDescription
-          i18nKey={i18nKey}
-          values={values}
-          components={components}
+        <ActivityDescriptionByType
+          activityType="post-created"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            parentDisplayName,
+            values: {
+              calloutDisplayName: callout.profile.displayName,
+            },
+          }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }

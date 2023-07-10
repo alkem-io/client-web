@@ -6,8 +6,7 @@ import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
-import ActivityDescription from '../../ActivityDescription/ActivityDescription';
-import useActivityViewParams from './useActivityViewParams';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 export interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -36,27 +35,23 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
 
   const url = buildCalloutUrl(callout.nameID, journeyLocation);
 
-  const { i18nKey, values, components } = useActivityViewParams({
-    activityType: 'discussion-comment-created',
-    author,
-    createdDate,
-    journeyTypeName,
-    journeyLocation,
-    parentDisplayName,
-    values: {
-      calloutDisplayName: callout.profile.displayName,
-    },
-  });
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       title={
-        <ActivityDescription
-          i18nKey={i18nKey}
-          values={values}
-          components={components}
+        <ActivityDescriptionByType
+          activityType="discussion-comment-created"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            parentDisplayName,
+            values: {
+              calloutDisplayName: callout.profile.displayName,
+            },
+          }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }
