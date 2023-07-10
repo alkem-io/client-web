@@ -235,6 +235,10 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
       avatar: visual(type: AVATAR) {
         ...VisualUri
       }
+      tagsets {
+        id
+        tags
+      }
     }
     verification {
       id
@@ -786,10 +790,10 @@ export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
       country
     }
     tagsets {
-      ...TagsetDetails
+      id
+      tags
     }
   }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {

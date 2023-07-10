@@ -20,6 +20,10 @@ fragment AssociatedOrganizationDetails on Organization {
     avatar: visual(type: AVATAR) {
       ...VisualUri
     }
+    tagsets {
+      id
+      tags
+    }
   }
   verification {
     id

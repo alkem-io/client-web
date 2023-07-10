@@ -34,12 +34,14 @@ const EntityDashboardLeadsSection: FC<EntityDashboardLeadsProps> = ({
     () =>
       leadOrganizations?.map(org => ({
         key: org.id,
+        id: org.id,
         organizationUrl: buildOrganizationUrl(org.nameID),
-        avatarUrl: org.profile.avatar?.uri,
+        avatarSrc: org.profile.avatar?.uri,
         displayName: org.profile.displayName,
         city: org.profile.location?.city,
         country: org.profile.location?.country,
         tagline: org.profile.tagline,
+        tags: org.profile.tagsets?.flatMap(({ tags }) => tags),
       })),
     [leadOrganizations, user?.user]
   );
