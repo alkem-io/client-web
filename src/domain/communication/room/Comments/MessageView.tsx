@@ -85,7 +85,7 @@ export const MessageView = ({
           </MessageContentWrapper>
           <Box display="flex" justifyContent="end">
             <Typography variant="body2" color="neutralMedium.dark">
-              {`${root ? t('components.message.root') : ''} ${formatTimeElapsed(message.createdAt)}`}
+              {`${root ? t('components.message.root') : ''} ${formatTimeElapsed(message.createdAt, t)}`}
             </Typography>
           </Box>
         </Paper>
