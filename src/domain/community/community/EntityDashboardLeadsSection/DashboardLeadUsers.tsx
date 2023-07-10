@@ -1,5 +1,5 @@
 import React from 'react';
-import LeadUserCard, { LeadUserCardProps } from '../LeadUserCard/LeadUserCard';
+import LeadUserCard, { LeadUserCardProps } from '../LeadCards/LeadUserCard';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 

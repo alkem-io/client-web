@@ -5209,10 +5209,11 @@ export type ChallengePageQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
+                    tagline: string;
                     displayName: string;
                     description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                   verification: {
                     __typename?: 'OrganizationVerification';
@@ -5610,10 +5611,11 @@ export type ChallengeProfileFragment = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                tagline: string;
                 displayName: string;
                 description?: string | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
               verification: {
                 __typename?: 'OrganizationVerification';
@@ -6492,10 +6494,11 @@ export type AboutPageNonMembersQuery = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            tagline: string;
             displayName: string;
             description?: string | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -6738,10 +6741,11 @@ export type AboutPageMembersQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  tagline: string;
                   displayName: string;
                   description?: string | undefined;
                   location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
                 verification: {
                   __typename?: 'OrganizationVerification';
@@ -6840,10 +6844,11 @@ export type AboutPageMembersQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
+                    tagline: string;
                     displayName: string;
                     description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                   verification: {
                     __typename?: 'OrganizationVerification';
@@ -6943,10 +6948,11 @@ export type AboutPageMembersQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
+                    tagline: string;
                     displayName: string;
                     description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                   verification: {
                     __typename?: 'OrganizationVerification';
@@ -7143,10 +7149,11 @@ export type JourneyDataQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  tagline: string;
                   displayName: string;
                   description?: string | undefined;
                   location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
                 verification: {
                   __typename?: 'OrganizationVerification';
@@ -7170,10 +7177,11 @@ export type JourneyDataQuery = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            tagline: string;
             displayName: string;
             description?: string | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -7237,10 +7245,11 @@ export type JourneyDataQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
+                    tagline: string;
                     displayName: string;
                     description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                   verification: {
                     __typename?: 'OrganizationVerification';
@@ -7315,10 +7324,11 @@ export type JourneyDataQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
+                    tagline: string;
                     displayName: string;
                     description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                   verification: {
                     __typename?: 'OrganizationVerification';
@@ -7392,10 +7402,11 @@ export type JourneyCommunityFragment = {
         profile: {
           __typename?: 'Profile';
           id: string;
+          tagline: string;
           displayName: string;
           description?: string | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -7755,10 +7766,11 @@ export type OpportunityPageQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
+                    tagline: string;
                     displayName: string;
                     description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                   verification: {
                     __typename?: 'OrganizationVerification';
@@ -8086,10 +8098,11 @@ export type OpportunityPageFragment = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                tagline: string;
                 displayName: string;
                 description?: string | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
               verification: {
                 __typename?: 'OrganizationVerification';
@@ -8972,10 +8985,11 @@ export type SpaceCommunityPageQuery = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            tagline: string;
             displayName: string;
             description?: string | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9042,10 +9056,11 @@ export type SpaceCommunityPageQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  tagline: string;
                   displayName: string;
                   description?: string | undefined;
                   location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
                 verification: {
                   __typename?: 'OrganizationVerification';
@@ -9134,10 +9149,11 @@ export type CommunityPageCommunityFragment = {
         profile: {
           __typename?: 'Profile';
           id: string;
+          tagline: string;
           displayName: string;
           description?: string | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9387,10 +9403,11 @@ export type SpacePageQuery = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            tagline: string;
             displayName: string;
             description?: string | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagsets?:
               | Array<{
                   __typename?: 'Tagset';
@@ -9664,10 +9681,11 @@ export type SpacePageQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  tagline: string;
                   displayName: string;
                   description?: string | undefined;
                   location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
                 verification: {
                   __typename?: 'OrganizationVerification';
@@ -9788,10 +9806,11 @@ export type SpacePageFragment = {
         profile: {
           __typename?: 'Profile';
           id: string;
+          tagline: string;
           displayName: string;
           description?: string | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -10065,10 +10084,11 @@ export type SpacePageFragment = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                tagline: string;
                 displayName: string;
                 description?: string | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
               verification: {
                 __typename?: 'OrganizationVerification';
@@ -21352,10 +21372,11 @@ export type EntityDashboardCommunityFragment = {
         profile: {
           __typename?: 'Profile';
           id: string;
+          tagline: string;
           displayName: string;
           description?: string | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -22493,10 +22514,11 @@ export type AssociatedOrganizationQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      tagline: string;
       displayName: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -22510,10 +22532,11 @@ export type AssociatedOrganizationDetailsFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    tagline: string;
     displayName: string;
     description?: string | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;

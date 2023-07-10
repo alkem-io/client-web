@@ -9,6 +9,7 @@ fragment AssociatedOrganizationDetails on Organization {
   nameID
   profile {
     id
+    tagline
     displayName
     description
     location {
@@ -16,7 +17,7 @@ fragment AssociatedOrganizationDetails on Organization {
       city
       country
     }
-    visual(type: AVATAR) {
+    avatar: visual(type: AVATAR) {
       ...VisualUri
     }
   }

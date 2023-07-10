@@ -224,6 +224,7 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      tagline
       displayName
       description
       location {
@@ -231,7 +232,7 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
         city
         country
       }
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualUri
       }
     }
