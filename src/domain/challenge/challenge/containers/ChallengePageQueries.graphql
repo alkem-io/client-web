@@ -23,21 +23,22 @@ fragment ChallengeProfile on Challenge {
       ...VisualFull
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
   authorization {
     id
     myPrivileges
   }
-  lifecycle {
+  innovationFlow {
     id
-    machineDef
-    state
-    nextEvents
-    stateIsFinal
+    lifecycle {
+      id
+      machineDef
+      state
+      nextEvents
+      stateIsFinal
+    }
   }
   context {
     id

@@ -33,7 +33,7 @@ const OpportunityCard = ({
 
   const isMember = opportunityId ? user?.ofOpportunity(opportunityId) : undefined;
   const ribbon =
-    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
+    spaceVisibility === SpaceVisibility.Archived ? (
       <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 

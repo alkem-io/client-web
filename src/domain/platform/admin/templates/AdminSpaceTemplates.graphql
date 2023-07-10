@@ -55,8 +55,7 @@ fragment ProfileInfoWithVisual on Profile {
   displayName
   description
   tagset {
-    id
-    tags
+    ...TagsetDetails
   }
   visual(type: CARD) {
     ...VisualFull

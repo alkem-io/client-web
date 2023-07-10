@@ -7,8 +7,7 @@ query HomePageSpaces($includeMembershipStatus: Boolean!) {
       displayName
       tagline
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
       cardBanner: visual(type: CARD) {
         id

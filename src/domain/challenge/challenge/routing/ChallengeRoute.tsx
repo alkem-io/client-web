@@ -22,12 +22,15 @@ import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import ChallengeCollaborationPage from '../ChallengeCollaborationPage/ChallengeCollaborationPage';
+import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 
 interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const {
     challengeId,
+    challengeNameId,
+    spaceNameId,
     profile: { displayName },
     loading,
   } = useChallenge();
@@ -46,45 +49,54 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<EntityPageLayoutHolder />}>
-        <Route index element={<Navigate replace to={routes.Dashboard} />} />
-        <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
-        <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
-        <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
-        <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
-        <Route path={routes.About} element={<ChallengeAboutPage />} />
-        <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
-        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCollaborationPage />} />
-        <Route
-          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-          element={<ChallengeCollaborationPage>{props => <CalloutRoute {...props} />}</ChallengeCollaborationPage>}
-        />
-      </Route>
-      <Route
-        path="apply/*"
-        element={
-          <ApplyRoute
-            paths={currentPaths}
-            type={ApplicationTypeEnum.challenge}
-            journeyPageLayoutComponent={ChallengePageLayout}
+    <StorageConfigContextProvider
+      locationType="journey"
+      journeyTypeName="challenge"
+      {...{ spaceNameId, challengeNameId }}
+    >
+      <Routes>
+        <Route path="/" element={<EntityPageLayoutHolder />}>
+          <Route index element={<Navigate replace to={routes.Dashboard} />} />
+          <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
+          <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
+          <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
+          <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
+          <Route path={routes.About} element={<ChallengeAboutPage />} />
+          <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
+          <Route
+            path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`}
+            element={<ChallengeCollaborationPage />}
           />
-        }
-      />
-      <Route path="feedback/*" element={<CommunityFeedbackRoute paths={currentPaths} />} />
-      <Route
-        path={`${routes.Opportunities}/:${nameOfUrl.opportunityNameId}/*`}
-        element={
-          <OpportunityProvider>
-            <CommunityContextProvider>
-              <OpportunityRoute paths={currentPaths} />
-            </CommunityContextProvider>
-          </OpportunityProvider>
-        }
-      />
-      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-      <Route path="*" element={<Error404 />} />
-    </Routes>
+          <Route
+            path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+            element={<ChallengeCollaborationPage>{props => <CalloutRoute {...props} />}</ChallengeCollaborationPage>}
+          />
+        </Route>
+        <Route
+          path="apply/*"
+          element={
+            <ApplyRoute
+              paths={currentPaths}
+              type={ApplicationTypeEnum.challenge}
+              journeyPageLayoutComponent={ChallengePageLayout}
+            />
+          }
+        />
+        <Route path="feedback/*" element={<CommunityFeedbackRoute paths={currentPaths} />} />
+        <Route
+          path={`${routes.Opportunities}/:${nameOfUrl.opportunityNameId}/*`}
+          element={
+            <OpportunityProvider>
+              <CommunityContextProvider>
+                <OpportunityRoute paths={currentPaths} />
+              </CommunityContextProvider>
+            </OpportunityProvider>
+          }
+        />
+        <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </StorageConfigContextProvider>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutState, CalloutType, Tagset } from '../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, Tagset, TagsetType } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
@@ -103,6 +103,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
         id: '-1',
         name: 'default',
         tags: callout?.tags ?? [],
+        allowedValues: [],
+        type: TagsetType.Freeform,
       },
     ],
     [callout?.id]

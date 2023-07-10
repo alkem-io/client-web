@@ -39,9 +39,7 @@ query AboutPageNonMembers(
         tagline
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualFull
@@ -73,9 +71,7 @@ query AboutPageNonMembers(
         tagline
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualFull
@@ -86,8 +82,11 @@ query AboutPageNonMembers(
         myPrivileges
       }
 
-      lifecycle {
-        ...LifecycleContextTab
+      innovationFlow {
+          id
+          lifecycle {
+          ...LifecycleContextTab
+        }
       }
       context {
         ...ContextTab
@@ -112,16 +111,17 @@ query AboutPageNonMembers(
         tagline
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualFull
         }
       }
-      lifecycle {
-        ...LifecycleContextTab
+      innovationFlow {
+        id
+        lifecycle {
+          ...LifecycleContextTab
+        }
       }
       context {
         ...ContextTab

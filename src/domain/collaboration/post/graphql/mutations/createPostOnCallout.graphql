@@ -8,9 +8,7 @@ mutation CreatePost($postData: CreatePostOnCalloutInput!) {
       description
       displayName
       tagset {
-        id
-        name
-        tags
+        ...TagsetDetails
       }
       visuals {
         ...VisualUri

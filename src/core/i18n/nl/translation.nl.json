@@ -1663,10 +1663,6 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Het platform om samen te werken aan een betere wereld.",
-          "impact": "<impact>Impact</impact>",
-          "foundation": "<foundation>Stichting</foundation>",
-          "opensource": "<opensource>Open Source</opensource>",
           "welcome-back": "Welkom terug {{username}}!",
           "join": "Deelnemen aan de Community en meer zien?",
           "existing-user": {

@@ -6,9 +6,7 @@ fragment OpportunityCard on Opportunity {
     displayName
     tagline
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     visuals {
       ...VisualFull
@@ -19,9 +17,12 @@ fragment OpportunityCard on Opportunity {
     name
     value
   }
-  lifecycle {
+  innovationFlow{
     id
-    state
+    lifecycle {
+      id
+      state
+    }
   }
   context {
     ...ContextDetails

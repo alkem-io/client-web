@@ -124,7 +124,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const memberJourney = membersData?.space?.opportunity ?? membersData?.space?.challenge ?? membersData?.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
-  const lifecycle = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.lifecycle;
+  const lifecycle = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.innovationFlow?.lifecycle;
   const hostOrganization = nonMembersData?.space?.host;
   const community = {
     ...nonMemberJourney?.community,
@@ -137,7 +137,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const metrics = nonMemberJourney?.metrics;
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (community.memberOrganizations?.length ?? 0);
+  const memberUsersCount = membersCount - (community.organizationsInRole?.length ?? 0); // Todo: may not be safe, better to simply report out metrics on member users + member orgs
   const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const canCreateCommunityContextReview =

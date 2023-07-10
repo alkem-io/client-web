@@ -22,9 +22,7 @@ fragment OrganizationInfo on Organization {
       alternativeText
     }
     tagsets {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id
@@ -56,8 +54,7 @@ fragment OrganizationInfo on Organization {
         alternativeText
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
     }
   }

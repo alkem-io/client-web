@@ -1663,10 +1663,6 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Autonomisation de la société. La plateforme pour réussir à travailler ensemble sur les défis.",
-          "impact": "<impact>Objectif conduit</impact>",
-          "foundation": "<foundation>Innovation</foundation>",
-          "opensource": "<opensource>Open Source</opensource>",
           "welcome-back": "Vous êtes de retour, bienvenue {{username}} !",
           "join": "Vous voulez rejoindre la communauté et en voir plus?",
           "existing-user": {

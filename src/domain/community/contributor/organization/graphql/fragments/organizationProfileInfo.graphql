@@ -28,9 +28,7 @@ fragment OrganizationProfileInfo on Organization {
       description
     }
     tagsets {
-      id
-      name
-      tags
+        ...TagsetDetails
     }
   }
 }

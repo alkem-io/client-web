@@ -132,7 +132,7 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
             country: profileData?.location?.country,
           },
           references: references,
-          tagsets: profileData?.tagsets?.filter(t => t.ID),
+          tagsets: profileData?.tagsets?.filter(t => t.ID).map(({ ID, tags }) => ({ ID, tags })),
         },
       };
 

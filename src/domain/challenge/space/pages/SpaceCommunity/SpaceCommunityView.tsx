@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
@@ -6,6 +6,8 @@ import CommunityUsers from '../../../../community/community/CommunityAdmin/Commu
 import useSpaceCommunityContext from './useSpaceCommunityContext';
 import CommunityOrganizations from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityApplications from '../../../../community/community/CommunityAdmin/CommunityApplications';
+import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
+import InvitationOptionsBlock from '../../../../community/invitations/InvitationOptionsBlock';
 
 interface SpaceCommunityViewProps {
   spaceId: string;
@@ -16,9 +18,15 @@ export const SpaceCommunityView: FC<SpaceCommunityViewProps> = ({ spaceId }) => 
     users,
     organizations,
     applications,
+    invitations,
+    invitationsExternal,
     communityPolicy,
     permissions,
+    spaceDisplayName,
     onApplicationStateChange,
+    onInvitationStateChange,
+    onDeleteInvitation,
+    onDeleteInvitationExternal,
     onUserLeadChange,
     onUserAuthorizationChange,
     onOrganizationLeadChange,
@@ -29,18 +37,32 @@ export const SpaceCommunityView: FC<SpaceCommunityViewProps> = ({ spaceId }) => 
     getAvailableUsers,
     getAvailableOrganizations,
     loading,
+    inviteExternalUser,
+    inviteExistingUser,
   } = useSpaceCommunityContext(spaceId);
 
   return (
     <PageContent background="transparent">
       <PageContentColumn columns={12}>
-        <PageContentBlock>
+        <PageContentBlock columns={8}>
           <CommunityApplications
             applications={applications}
+            invitations={invitations}
+            invitationsExternal={invitationsExternal}
             onApplicationStateChange={onApplicationStateChange}
+            onInvitationStateChange={onInvitationStateChange}
+            onDeleteInvitation={onDeleteInvitation}
+            onDeleteInvitationExternal={onDeleteInvitationExternal}
             loading={loading}
           />
         </PageContentBlock>
+        <PageContentBlockSeamless columns={4} disablePadding>
+          <InvitationOptionsBlock
+            spaceDisplayName={spaceDisplayName}
+            inviteExistingUser={inviteExistingUser}
+            inviteExternalUser={inviteExternalUser}
+          />
+        </PageContentBlockSeamless>
       </PageContentColumn>
       <PageContentColumn columns={6}>
         <PageContentBlock>

@@ -1,15 +1,14 @@
 import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined, LockOutlined } from '@mui/icons-material';
-import { Avatar, Box, Collapse, IconButton, Skeleton, Tooltip, TooltipProps } from '@mui/material';
+import { Box, Collapse, IconButton, Skeleton, Tooltip, TooltipProps } from '@mui/material';
 import React, { PropsWithChildren, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import SwapColors from '../../../../core/ui/palette/SwapColors';
 import { Caption } from '../../../../core/ui/typography';
-import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
+import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
 
 interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'children'> {
   url?: string;
@@ -32,8 +31,6 @@ const DashboardNavigationItemView = ({
 
   const { t } = useTranslation();
 
-  const JourneyIcon = journeyIcon[journeyTypeName];
-
   const preventDefault = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
@@ -50,33 +47,7 @@ const DashboardNavigationItemView = ({
         <BadgeCardView
           component={LinkNoUnderline}
           to={url ?? ''}
-          visual={
-            <Box position="relative">
-              <Avatar
-                src={visualUri}
-                sx={{
-                  '.MuiAvatar-img': { filter: 'blur(1.5px)', opacity: '50%' },
-                  '.MuiAvatar-fallback': { display: 'none' },
-                  borderRadius: 0.5,
-                  backgroundColor: theme => theme.palette.challenge.main,
-                }}
-              />
-              <SwapColors>
-                <Box
-                  position="absolute"
-                  top={0}
-                  left={0}
-                  bottom={0}
-                  right={0}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <JourneyIcon color="primary" />
-                </Box>
-              </SwapColors>
-            </Box>
-          }
+          visual={<JourneyAvatar visualUri={visualUri} journeyTypeName={journeyTypeName} />}
           visualRight={
             isPrivate ? (
               <Tooltip

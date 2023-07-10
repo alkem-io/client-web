@@ -23,9 +23,7 @@ fragment PostCard on Post {
       ...VisualFull
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id

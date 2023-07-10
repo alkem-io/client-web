@@ -7,9 +7,7 @@ fragment SpaceDetails on Space {
     description
     tagline
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
     references {
       id
@@ -24,7 +22,9 @@ fragment SpaceDetails on Space {
       ...fullLocation
     }
   }
-
+  host {
+    id
+  }
   authorization {
     id
     anonymousReadAccess

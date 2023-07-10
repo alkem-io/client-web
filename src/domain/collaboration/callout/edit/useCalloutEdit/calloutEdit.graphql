@@ -6,8 +6,7 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
       description
       displayName
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
       references {
         id

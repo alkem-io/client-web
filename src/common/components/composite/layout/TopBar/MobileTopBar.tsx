@@ -33,6 +33,7 @@ import { ReactComponent as LogoSmallImage } from './alkemio-logo-small.svg';
 import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
 import HelpDialog from '../../../../../core/help/dialog/HelpDialog';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
 
 export const MobileTopBarHeightGutters = 3;
 
@@ -199,7 +200,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
         )}
         <Divider variant="middle" />
         {isAuthenticated && (
-          <MenuItem component={RouterLink} to="/identity/logout">
+          <MenuItem component={RouterLink} to={AUTH_LOGOUT_PATH}>
             <ListItemIcon>
               <MeetingRoomOutlinedIcon />
             </ListItemIcon>

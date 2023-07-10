@@ -21,6 +21,9 @@ import UserAvatar from './UserAvatar';
 import { UserMetadata } from '../../../../../domain/community/contributor/user/hooks/useUserMetadataWrapper';
 import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
+import PendingMembershipsUserMenuItem
+  from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 
 const PREFIX = 'UserSegment';
 
@@ -89,6 +92,7 @@ const UserSegment = <El extends ElementType>({
           vertical: 'top',
           horizontal: 'center',
         }}
+        keepMounted
       >
         <PopoverRoot>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
@@ -113,6 +117,11 @@ const UserSegment = <El extends ElementType>({
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.my-profile')} />
               </ListItemButton>
+              <PendingMembershipsUserMenuItem
+                onClick={() => {
+                  setDropdownOpen(false);
+                }}
+              />
               {isAdmin && (
                 <ListItemButton
                   onClick={() => {
@@ -129,7 +138,7 @@ const UserSegment = <El extends ElementType>({
               <ListItemButton
                 onClick={() => {
                   setDropdownOpen(false);
-                  navigate('/identity/logout', { replace: true });
+                  navigate(AUTH_LOGOUT_PATH, { replace: true });
                 }}
               >
                 <ListItemIcon>

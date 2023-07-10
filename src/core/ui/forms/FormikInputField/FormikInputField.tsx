@@ -55,14 +55,6 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
     return tErr(meta.error as TranslationKey, { field: title });
   }, [isError, meta.error, _helperText, tErr, title]);
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === '') {
-      helpers.setValue(undefined);
-    } else {
-      helpers.setValue(e.target.value);
-    }
-  };
-
   if (withCounter && (maxLength === undefined || maxLength < 0)) {
     throw new Error('Counter requires "maxLength" property to be defined and with a positive value!');
   }
@@ -74,7 +66,7 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
         placeholder={placeholder}
         label={title}
         onBlur={field.onBlur}
-        onChange={handleOnChange}
+        onChange={event => helpers.setValue(event.target.value)}
         value={field.value}
         variant="outlined"
         error={isError}

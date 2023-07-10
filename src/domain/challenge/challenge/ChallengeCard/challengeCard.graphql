@@ -19,17 +19,18 @@ fragment ChallengeCard on Challenge {
       ...VisualUri
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
   context {
     id
     vision
   }
-  lifecycle {
+  innovationFlow {
     id
-    state
+    lifecycle {
+      id
+      state
+    }
   }
 }
