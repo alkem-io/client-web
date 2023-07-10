@@ -17,7 +17,7 @@ export interface ActivityDescriptionProps {
   parentDisplayName?: string; // Callout name or Journey name
   journeyLocation?: JourneyLocation;
   journeyTypeName: JourneyTypeName | undefined;
-  author: Author | undefined;
+  author?: Author;
   withLinkToParent?: boolean;
 }
 
