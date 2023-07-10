@@ -14,7 +14,7 @@ export interface ActivityDescriptionProps {
   components?: Record<string, ReactElement>;
 
   createdDate: Date | string;
-  parentDisplayName?: string; // Callout name or Journey name
+  journeyDisplayName?: string; // Callout name or Journey name
   journeyLocation?: JourneyLocation;
   journeyTypeName: JourneyTypeName | undefined;
   author?: Author;
@@ -26,7 +26,7 @@ const PARENT_NAME_MAX_LENGTH = 20;
 const ActivityDescription = ({
   i18nKey,
   createdDate,
-  parentDisplayName,
+  journeyDisplayName,
   journeyLocation,
   journeyTypeName,
   author,
@@ -54,10 +54,12 @@ const ActivityDescription = ({
       mergedValues['user'] = t('common.user');
     }
 
+    mergedValues['journey'] = journeyDisplayName;
+
     const truncatedParentName =
-      parentDisplayName && parentDisplayName.length > PARENT_NAME_MAX_LENGTH
-        ? parentDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
-        : parentDisplayName;
+      journeyDisplayName && journeyDisplayName.length > PARENT_NAME_MAX_LENGTH
+        ? journeyDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
+        : journeyDisplayName;
     if (truncatedParentName) {
       mergedValues['parentDisplayName'] = truncatedParentName;
     }
@@ -65,6 +67,7 @@ const ActivityDescription = ({
     const JourneyIcon = journeyTypeName ? journeyIcon[journeyTypeName] : undefined;
     if (JourneyIcon) {
       mergedComponents['parenticon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
+      mergedComponents['journeyicon'] = <JourneyIcon fontSize="inherit" />;
     }
 
     if (journeyTypeName) {
@@ -80,7 +83,7 @@ const ActivityDescription = ({
       values: mergedValues,
       components: mergedComponents,
     };
-  }, [createdDate, t, author, author?.displayName, author?.url, parentDisplayName, journeyTypeName, i18nKey]);
+  }, [createdDate, t, author, author?.displayName, author?.url, journeyDisplayName, journeyTypeName, i18nKey]);
 
   return (
     <>
