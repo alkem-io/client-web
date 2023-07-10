@@ -20322,6 +20322,7 @@ export const PendingMembershipsDocument = gql`
         opportunityID
         welcomeMessage
         createdBy
+        createdDate
         state
       }
       applications {

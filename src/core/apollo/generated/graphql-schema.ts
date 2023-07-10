@@ -24372,6 +24372,7 @@ export type PendingMembershipsQuery = {
           opportunityID?: string | undefined;
           welcomeMessage?: string | undefined;
           createdBy: string;
+          createdDate: Date;
           state: string;
         }>
       | undefined;

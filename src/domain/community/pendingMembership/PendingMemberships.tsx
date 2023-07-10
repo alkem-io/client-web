@@ -140,13 +140,13 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
     return {
       id: invitation.id,
       welcomeMessage: invitation.welcomeMessage,
+      createdDate: invitation.createdDate,
       userDisplayName: createdBy.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
       journeyTypeName: getJourneyTypeName(invitation),
       journeyDescription: journey.profile.description,
       journeyTags: journey.profile.tagset?.tags,
       journeyBannerUri: journey.profile.banner?.uri,
-      createdDate: new Date(), // TODO replace with fetched createdDate
     };
   }, [invitation, journey, createdBy]);
 
