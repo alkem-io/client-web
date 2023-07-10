@@ -11,6 +11,11 @@ fragment AssociatedOrganizationDetails on Organization {
     id
     displayName
     description
+    location {
+      id
+      city
+      country
+    }
     visual(type: AVATAR) {
       ...VisualUri
     }
