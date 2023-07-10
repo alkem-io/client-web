@@ -23,7 +23,7 @@ interface FormikUserSelectorProps {
   name: string;
   required?: boolean;
   readonly?: boolean;
-  onChange?: (currentValue: string[]) => void;
+  onChange?: (userIds: string[]) => void;
 }
 
 export const FormikUserSelector: FC<FormikUserSelectorProps> = ({

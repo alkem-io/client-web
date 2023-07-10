@@ -40,8 +40,7 @@ interface SendMessageData {
 }
 
 /**
- * @deprecated - please don't use directly unless absolutely unavoidable.
- * Use useDirectMessageDialog hook instead.
+ * Consider using useDirectMessageDialog hook that has Send Message mutations baked in.
  */
 export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
   open,

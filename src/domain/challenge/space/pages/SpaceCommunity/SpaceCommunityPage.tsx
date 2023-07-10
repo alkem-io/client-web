@@ -7,6 +7,7 @@ import { useSpace } from '../../SpaceContext/useSpace';
 
 const SpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, loading } = useSpace();
+
   if (!spaceId || loading) {
     return null;
   }
