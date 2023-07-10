@@ -73,6 +73,7 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
     async (...args: Parameters<typeof invitationStateEventMutation>) => {
       await invitationStateEventMutation(...args);
       await refetchPendingMemberships();
+      setOpenDialog({ type: DialogType.PendingMembershipsList });
     }
   );
 
@@ -134,7 +135,7 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
             <>
               <BlockSectionTitle>{t('community.pendingMembership.invitationsSectionTitle')}</BlockSectionTitle>
               {invitations?.map(invitation => (
-                <InvitationHydrator invitation={invitation}>
+                <InvitationHydrator key={invitation.id} invitation={invitation}>
                   {({ invitation }) => (
                     <InvitationCardHorizontal
                       invitation={invitation}
@@ -149,7 +150,7 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
             <>
               <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
               {applications?.map(application => (
-                <ApplicationHydrator application={application}>
+                <ApplicationHydrator key={application.id} application={application}>
                   {({ application: hydratedApplication }) =>
                     hydratedApplication && (
                       <JourneyCard
