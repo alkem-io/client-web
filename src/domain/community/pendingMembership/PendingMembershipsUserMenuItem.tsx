@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import { CheckOutlined, HdrStrongOutlined, VisibilityOffOutlined } from '@mui/icons-material';
+import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { BlockSectionTitle, Caption, Text } from '../../../core/ui/typography';
 import { ApplicationHydrator, InvitationHydrator, usePendingMemberships } from './PendingMemberships';
@@ -14,10 +14,7 @@ import ActivityDescription from '../../shared/components/ActivityDescription/Act
 import { Actions } from '../../../core/ui/actions/Actions';
 import { Identifiable } from '../../shared/types/Identifiable';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import {
-  useDeleteInvitationMutation,
-  useInvitationStateEventMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+import { useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
 import { buildJourneyUrl } from '../../../common/utils/urlBuilders';
@@ -67,8 +64,6 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
 
   const [invitationStateEventMutation] = useInvitationStateEventMutation();
 
-  const [deleteInvitation] = useDeleteInvitationMutation();
-
   const [changeInvitationState, isChangingInvitationState] = useLoadingState(
     async (...args: Parameters<typeof invitationStateEventMutation>) => {
       await invitationStateEventMutation(...args);
@@ -95,13 +90,14 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
     })
   );
 
-  const [hideInvitation, isHiding] = useLoadingState((invitationId: string) =>
-    deleteInvitation({
-      variables: {
-        invitationId,
-      },
-    })
-  );
+  // TODO Uncomment when hiding an Invitation is available in the API
+  // const [hideInvitation, isHiding] = useLoadingState((invitationId: string) =>
+  //   deleteInvitation({
+  //     variables: {
+  //       invitationId,
+  //     },
+  //   })
+  // );
 
   const pendingMembershipsCount = invitations && applications ? invitations.length + applications.length : undefined;
 
@@ -218,14 +214,14 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
                   </Gutters>
                   <Gutters paddingTop={0}>
                     <Actions justifyContent="end">
-                      <LoadingButton
-                        startIcon={<VisibilityOffOutlined />}
-                        onClick={() => hideInvitation(currentInvitation.id)}
-                        loading={isHiding}
-                        disabled={isChangingInvitationState && !isHiding}
-                      >
-                        {t('community.pendingMembership.invitationDialog.actions.hide')}
-                      </LoadingButton>
+                      {/*<LoadingButton*/}
+                      {/*  startIcon={<VisibilityOffOutlined />}*/}
+                      {/*  onClick={() => hideInvitation(currentInvitation.id)}*/}
+                      {/*  loading={isHiding}*/}
+                      {/*  disabled={isChangingInvitationState && !isHiding}*/}
+                      {/*>*/}
+                      {/*  {t('community.pendingMembership.invitationDialog.actions.hide')}*/}
+                      {/*</LoadingButton>*/}
                       <LoadingButton
                         startIcon={<CloseOutlinedIcon />}
                         onClick={() => rejectInvitation(currentInvitation.id)}
