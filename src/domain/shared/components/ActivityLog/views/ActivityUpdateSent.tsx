@@ -5,20 +5,24 @@ import { useTranslation } from 'react-i18next';
 import { buildUpdatesUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
+import useActivityViewParams from './useActivityViewParams';
+import ActivityDescription from '../../ActivityDescription/ActivityDescription';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
   message: string;
 }
 
 export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
-  message,
-  description,
+  author,
+  loading,
+  createdDate,
+  journeyTypeName,
   journeyLocation,
-  ...baseProps
+  parentDisplayName,
+  message,
 }) => {
   const { t } = useTranslation();
 
-  const action = t('components.activity-log-view.actions.update-sent');
   const update = replaceQuotesInOldDescription(message);
   const translatedDescription = t('components.activity-log-view.activity-description.update-sent', {
     update,
@@ -29,8 +33,29 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
 
   const url = buildUpdatesUrl(journeyLocation);
 
+  const { i18nKey, values, components } = useActivityViewParams({
+    activityType: 'update-sent',
+    author,
+    createdDate,
+    journeyTypeName,
+    journeyLocation,
+    parentDisplayName,
+  });
+
   return (
-    <ActivityBaseView {...baseProps} action={action} url={url}>
+    <ActivityBaseView
+      author={author}
+      loading={loading}
+      title={
+        <ActivityDescription
+          i18nKey={i18nKey}
+          values={values}
+          components={components}
+          withLinkToParent={Boolean(journeyTypeName)}
+        />
+      }
+      url={url}
+    >
       <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
     </ActivityBaseView>
   );

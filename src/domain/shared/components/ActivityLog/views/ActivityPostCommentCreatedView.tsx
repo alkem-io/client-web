@@ -6,27 +6,28 @@ import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
+import useActivityViewParams from './useActivityViewParams';
+import ActivityDescription from '../../ActivityDescription/ActivityDescription';
 
 export interface ActivityCardCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   card: NameableEntity;
+  description: string;
 }
 
 export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewProps> = ({
+  author,
+  loading,
+  createdDate,
+  journeyTypeName,
+  journeyLocation,
+  parentDisplayName,
   card,
   callout,
-  journeyLocation,
   description,
-  ...baseProps
 }) => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.post-comment-created', {
-    postDisplayName: card.profile.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
-  const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
+
   const comment = replaceQuotesInOldDescription(description);
   const translatedDescription = t('components.activity-log-view.activity-description.post-comment-created', {
     postDisplayName: card.profile.displayName,
@@ -36,8 +37,34 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
     },
   });
 
+  const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
+
+  const { i18nKey, values, components } = useActivityViewParams({
+    activityType: 'post-comment-created',
+    author,
+    createdDate,
+    journeyTypeName,
+    journeyLocation,
+    parentDisplayName,
+    values: {
+      postDisplayName: card.profile.displayName,
+    },
+  });
+
   return (
-    <ActivityBaseView {...baseProps} action={action} url={url}>
+    <ActivityBaseView
+      author={author}
+      loading={loading}
+      title={
+        <ActivityDescription
+          i18nKey={i18nKey}
+          values={values}
+          components={components}
+          withLinkToParent={Boolean(journeyTypeName)}
+        />
+      }
+      url={url}
+    >
       <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
     </ActivityBaseView>
   );
