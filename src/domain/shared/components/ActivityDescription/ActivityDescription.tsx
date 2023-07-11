@@ -61,7 +61,7 @@ const ActivityDescription = ({
         ? journeyDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
         : journeyDisplayName;
     if (truncatedParentName) {
-      mergedValues['parentDisplayName'] = truncatedParentName;
+      mergedValues['journeyDisplayName'] = truncatedParentName;
     }
 
     const JourneyIcon = journeyTypeName ? journeyIcon[journeyTypeName] : undefined;

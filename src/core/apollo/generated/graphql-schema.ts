@@ -12530,7 +12530,7 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12571,7 +12571,7 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12618,7 +12618,7 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12666,7 +12666,7 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12708,7 +12708,7 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12755,7 +12755,7 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12796,8 +12796,8 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
           communityType: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12857,7 +12857,7 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12898,8 +12898,8 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
-          parentDisplayName: string;
           message: string;
+          journeyDisplayName: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -12937,7 +12937,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragmen
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -12979,7 +12979,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13027,7 +13027,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostCreated_Fragment = {
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13076,7 +13076,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13119,7 +13119,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragmen
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13167,7 +13167,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13209,8 +13209,8 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
   communityType: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13271,7 +13271,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13313,8 +13313,8 @@ type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
   type: ActivityEventType;
   child: boolean;
   parentNameID: string;
-  parentDisplayName: string;
   message: string;
+  journeyDisplayName: string;
   triggeredBy: {
     __typename?: 'User';
     id: string;
@@ -13368,7 +13368,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13409,7 +13409,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13456,7 +13456,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13504,7 +13504,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13546,7 +13546,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13593,7 +13593,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13634,8 +13634,8 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
         communityType: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13695,7 +13695,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -13736,8 +13736,8 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         parentNameID: string;
-        parentDisplayName: string;
         message: string;
+        journeyDisplayName: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;

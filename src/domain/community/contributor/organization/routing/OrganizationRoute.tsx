@@ -11,7 +11,7 @@ const OrganizationRoute: FC = () => {
 
   if (loading) return <Loading />;
 
-  if (!organization) {
+  if (!organization && !loading) {
     return <Error404 />;
   }
 

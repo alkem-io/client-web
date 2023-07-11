@@ -1295,7 +1295,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     type
     child
     parentNameID
-    parentDisplayName
+    journeyDisplayName: parentDisplayName
     __typename
     triggeredBy {
       id
@@ -9059,7 +9059,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       type
       child
       parentNameID
-      parentDisplayName
+      journeyDisplayName: parentDisplayName
       __typename
       triggeredBy {
         id

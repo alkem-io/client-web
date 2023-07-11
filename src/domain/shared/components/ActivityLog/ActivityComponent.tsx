@@ -44,7 +44,7 @@ const Root = styled(Box)(({ theme }) => ({
   },
 }));
 
-export type ActivityLogResult<T> = T & ActivityLogEntry;
+export type ActivityLogResult<T> = T & Omit<ActivityLogEntry, 'parentDisplayName'> & { journeyDisplayName: string };
 
 export type ActivityLogResultType = ActivityLogResult<
   | ActivityLogMemberJoinedFragment
