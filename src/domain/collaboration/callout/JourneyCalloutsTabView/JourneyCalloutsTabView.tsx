@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -27,6 +27,7 @@ import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 import InnovationFlowStates, {
   InnovationFlowState,
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 
 interface JourneyCalloutsTabViewProps {
   journeyTypeName: JourneyTypeName;
@@ -55,6 +56,11 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   );
 
   const flowStates = flowStatesTagset?.allowedValues;
+
+  const currentInnovationFlowState = flowStatesData?.space.challenge.innovationFlow?.lifecycle?.state;
+
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
+    useStateWithAsyncDefault(currentInnovationFlowState);
 
   const {
     callouts: allCallouts,
@@ -113,8 +119,6 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     [updateCalloutVisibility]
   );
 
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useState('Define');
-
   const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
 
   return (
@@ -151,9 +155,9 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
           </PageContentColumn>
 
           <PageContentColumn columns={8}>
-            {flowStates && (
+            {flowStates && currentInnovationFlowState && selectedInnovationFlowState && (
               <InnovationFlowStates
-                currentState="Define"
+                currentState={currentInnovationFlowState}
                 selectedState={selectedInnovationFlowState}
                 states={flowStates}
                 onSelectState={handleSelectInnovationFlowState}
