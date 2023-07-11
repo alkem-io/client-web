@@ -103,7 +103,6 @@ const usePostSettings: ContainerHook<
   const parentCalloutPostNames = parentCallout?.postNames?.map(x => x.profile.displayName);
 
   const post = parentCallout?.posts?.find(x => x.nameID === postNameId);
-  console.log(parentCallout);
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 
