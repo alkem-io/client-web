@@ -20,7 +20,7 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
   createdDate,
   journeyTypeName,
   journeyLocation,
-  parentDisplayName,
+  journeyDisplayName,
   card,
   callout,
   description,
@@ -50,7 +50,7 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
             createdDate,
             journeyTypeName,
             journeyLocation,
-            parentDisplayName,
+            journeyDisplayName,
             values: {
               postDisplayName: card.profile.displayName,
             },
