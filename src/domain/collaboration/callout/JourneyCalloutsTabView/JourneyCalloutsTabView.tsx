@@ -16,7 +16,6 @@ import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import {
   useCalloutFormTemplatesFromSpaceLazyQuery,
-  useInnovationFlowStatesAllowedValuesQuery,
   useUpdateCalloutVisibilityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
@@ -28,13 +27,12 @@ import InnovationFlowStates, {
   InnovationFlowState,
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
+import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
 interface JourneyCalloutsTabViewProps {
   journeyTypeName: JourneyTypeName;
   scrollToCallout?: boolean;
 }
-
-const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
 
 const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCalloutsTabViewProps) => {
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
@@ -43,21 +41,10 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     throw new Error('Must be within a Space');
   }
 
-  const { data: flowStatesData } = useInnovationFlowStatesAllowedValuesQuery({
-    variables: {
-      spaceId: spaceNameId,
-      challengeId: challengeNameId!,
-    },
-    skip: !challengeNameId,
+  const { innovationFlowStates, currentInnovationFlowState } = useInnovationFlowStates({
+    spaceId: spaceNameId,
+    challengeId: challengeNameId!,
   });
-
-  const flowStatesTagset = flowStatesData?.space.challenge.innovationFlow?.profile.tagsets?.find(
-    tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
-  );
-
-  const flowStates = flowStatesTagset?.allowedValues;
-
-  const currentInnovationFlowState = flowStatesData?.space.challenge.innovationFlow?.lifecycle?.state;
 
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
@@ -74,6 +61,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     spaceNameId,
     challengeNameId,
     opportunityNameId,
+    innovationFlowState: selectedInnovationFlowState,
   });
 
   const callouts = allCallouts?.filter(callout => callout.group !== CalloutsGroup.HomeTop);
@@ -155,11 +143,11 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
           </PageContentColumn>
 
           <PageContentColumn columns={8}>
-            {flowStates && currentInnovationFlowState && selectedInnovationFlowState && (
+            {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && (
               <InnovationFlowStates
                 currentState={currentInnovationFlowState}
                 selectedState={selectedInnovationFlowState}
-                states={flowStates}
+                states={innovationFlowStates}
                 onSelectState={handleSelectInnovationFlowState}
                 showSettings
               />

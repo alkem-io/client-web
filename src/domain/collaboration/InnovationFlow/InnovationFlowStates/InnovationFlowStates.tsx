@@ -3,7 +3,8 @@ import { Button, IconButton, useTheme } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import TranslationKey from '../../../../types/TranslationKey';
 
 export type InnovationFlowState = string;
 
@@ -22,7 +23,7 @@ const InnovationFlowStates = ({
   showSettings = false,
   onSelectState,
 }: InnovationFlowStatesProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const getStateButtonVariant = (state: InnovationFlowState) => {
     if (state === currentState) {
@@ -45,6 +46,11 @@ const InnovationFlowStates = ({
 
   const theme = useTheme();
 
+  const getStateName = (state: InnovationFlowState) =>
+    i18n.exists(`common.enums.innovationFlowState.${state}`)
+      ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
+      : state;
+
   return (
     <PageContentBlockSeamless disablePadding>
       <Gutters row justifyContent="space-around">
@@ -56,7 +62,7 @@ const InnovationFlowStates = ({
             sx={{ textTransform: 'none', ...getStateButtonSx(state) }}
             onClick={() => onSelectState?.(state)}
           >
-            <BlockTitle fontWeight="bold">{state}</BlockTitle>
+            <BlockTitle fontWeight="bold">{getStateName(state)}</BlockTitle>
           </Button>
         ))}
         {showSettings && (
@@ -67,7 +73,15 @@ const InnovationFlowStates = ({
       </Gutters>
       {selectedState !== currentState && (
         <Caption fontStyle="italic">
-          {t('components.innovationFlowStateSelector.selectedStateNotice', { currentState, selectedState })}
+          <Trans
+            i18nKey="components.innovationFlowStateSelector.selectedStateNotice"
+            values={{
+              currentState: getStateName(currentState),
+              selectedState: getStateName(selectedState),
+            }}
+            components={{ strong: <strong /> }}
+            t={t}
+          />
         </Caption>
       )}
     </PageContentBlockSeamless>

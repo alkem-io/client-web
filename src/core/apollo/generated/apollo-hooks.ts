@@ -1473,6 +1473,9 @@ export const CalloutFragmentDoc = gql`
       tagset {
         ...TagsetDetails
       }
+      tagsets {
+        ...TagsetDetails
+      }
       references {
         ...ReferenceDetails
       }

@@ -289,6 +289,14 @@
       "not-verified": ""
     },
     "enums": {
+      "innovationFlowState": {
+        "new": "New",
+        "beingRefined": "Being Refined",
+        "inProgress": "In Progress",
+        "complete": "Complete",
+        "abandoned": "Abandoned",
+        "archived": "Archived"
+      },
       "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",

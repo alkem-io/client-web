@@ -1151,6 +1151,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'adminInnovationFlowSynchronizeStates'
   | 'adminStorageMigrateIpfsUrls'
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
@@ -1298,6 +1299,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminInnovationFlowSynchronizeStates?: FieldPolicy<any> | FieldReadFunction<any>;
   adminStorageMigrateIpfsUrls?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
