@@ -12,6 +12,7 @@ interface ResultSectionProps {
   title: ReactNode;
   results: SearchResultMetaType[] | undefined;
   filterTitle?: string;
+  count?: number;
   filterConfig: FilterConfig;
   currentFilter: FilterDefinition;
   onFilterChange: (value: FilterDefinition) => void;
@@ -22,12 +23,13 @@ const SearchResultSection: FC<ResultSectionProps> = ({
   title,
   results = [],
   filterTitle,
+  count = 0,
   filterConfig,
   currentFilter,
   onFilterChange,
   loading,
 }) => {
-  const titleWithCount = useMemo(() => `${title} (${results.length})`, [title, results.length]);
+  const titleWithCount = useMemo(() => `${title} (${count})`, [title, results.length]);
   const { t } = useTranslation();
   const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined;
   return (
