@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -16,6 +16,7 @@ import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import {
   useCalloutFormTemplatesFromSpaceLazyQuery,
+  useInnovationFlowStatesAllowedValuesQuery,
   useUpdateCalloutVisibilityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
@@ -23,11 +24,16 @@ import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
+import InnovationFlowStates, {
+  InnovationFlowState,
+} from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 
 interface JourneyCalloutsTabViewProps {
   journeyTypeName: JourneyTypeName;
   scrollToCallout?: boolean;
 }
+
+const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
 
 const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCalloutsTabViewProps) => {
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
@@ -35,6 +41,20 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
+
+  const { data: flowStatesData } = useInnovationFlowStatesAllowedValuesQuery({
+    variables: {
+      spaceId: spaceNameId,
+      challengeId: challengeNameId!,
+    },
+    skip: !challengeNameId,
+  });
+
+  const flowStatesTagset = flowStatesData?.space.challenge.innovationFlow?.profile.tagsets?.find(
+    tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
+  );
+
+  const flowStates = flowStatesTagset?.allowedValues;
 
   const {
     callouts: allCallouts,
@@ -93,6 +113,10 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     [updateCalloutVisibility]
   );
 
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useState('Define');
+
+  const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
+
   return (
     <>
       <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${journeyTypeName}` as const)}>
@@ -127,6 +151,15 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
           </PageContentColumn>
 
           <PageContentColumn columns={8}>
+            {flowStates && (
+              <InnovationFlowStates
+                currentState="Define"
+                selectedState={selectedInnovationFlowState}
+                states={flowStates}
+                onSelectState={handleSelectInnovationFlowState}
+                showSettings
+              />
+            )}
             <CalloutsGroupView
               callouts={callouts}
               spaceId={spaceNameId!}
