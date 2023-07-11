@@ -1661,6 +1661,10 @@ export const PostProvidedFragmentDoc = gql`
       id
       myPrivileges
     }
+    comments {
+      id
+      messagesCount
+    }
   }
 `;
 export const PostProviderDataFragmentDoc = gql`
