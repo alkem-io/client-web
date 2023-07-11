@@ -6,5 +6,5 @@ export interface ActivityViewProps extends Pick<ActivityBaseViewProps, 'author' 
   createdDate: Date | string;
   journeyTypeName: JourneyTypeName | undefined;
   journeyLocation: JourneyLocation;
-  parentDisplayName: string | undefined;
+  journeyDisplayName: string | undefined;
 }
