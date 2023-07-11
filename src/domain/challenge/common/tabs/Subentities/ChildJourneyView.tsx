@@ -19,6 +19,8 @@ import ChildJourneyCreate from './ChildJourneyCreate';
 import { Loading } from '../../../../../common/components/core';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import JourneyFilter from '../../JourneyFilter/JourneyFilter';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button } from '@mui/material';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -124,6 +126,16 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                 </JourneyFilter>
               )}
             </PageContentBlock>
+          )}
+          {!state.loading && childEntities.length === 0 && childEntityCreateAccess && (
+            <Button
+              startIcon={<AddOutlinedIcon />}
+              variant="contained"
+              onClick={childEntityOnCreate}
+              sx={{ width: '100%' }}
+            >
+              {t('common.create-new-entity', { entity: t(getJourneyChildrenTranslationKey(journeyTypeName, false)) })}
+            </Button>
           )}
           {childrenRight}
           {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
