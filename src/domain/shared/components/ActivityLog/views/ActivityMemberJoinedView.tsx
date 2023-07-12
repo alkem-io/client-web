@@ -46,7 +46,7 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
             createdDate,
             journeyTypeName,
             journeyLocation,
-            parentDisplayName: community.displayName,
+            journeyDisplayName: community.displayName,
             values: {
               communityType,
               communityDisplayName: community.displayName!,

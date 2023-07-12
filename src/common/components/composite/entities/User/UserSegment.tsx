@@ -22,8 +22,7 @@ import { UserMetadata } from '../../../../../domain/community/contributor/user/h
 import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
-import PendingMembershipsUserMenuItem
-  from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
+import PendingMembershipsUserMenuItem from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 
 const PREFIX = 'UserSegment';
 

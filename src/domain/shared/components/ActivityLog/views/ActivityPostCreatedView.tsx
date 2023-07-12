@@ -20,7 +20,7 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = ({
   createdDate,
   journeyTypeName,
   journeyLocation,
-  parentDisplayName,
+  journeyDisplayName,
   callout,
   card,
   postType,
@@ -51,7 +51,7 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = ({
             createdDate,
             journeyTypeName,
             journeyLocation,
-            parentDisplayName,
+            journeyDisplayName,
             values: {
               calloutDisplayName: callout.profile.displayName,
             },

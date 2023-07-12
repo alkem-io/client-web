@@ -13,6 +13,7 @@ import {
   AuthorizationPrivilege,
   CalloutType,
   Visual,
+  VisualType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../common/visual/views/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
@@ -23,6 +24,9 @@ import { useMovePostToCalloutMutation } from '../../../../core/apollo/generated/
 import { buildPostUrl } from '../../../../common/utils/urlBuilders';
 import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { LoadingButton } from '@mui/lab';
+import useLoadingState from '../../../shared/utils/useLoadingState';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
@@ -36,6 +40,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
   const navigate = useNavigate();
 
   const [post, setPost] = useState<PostFormOutput>();
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
 
   const toPostFormInput = (post?: PostSettingsFragment): PostFormInput | undefined =>
     post && {
@@ -60,7 +65,6 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     calloutNameId,
   });
 
-  console.log(entities);
   const notify = useNotification();
 
   const canMoveCard = entities.post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.MovePost);
@@ -97,7 +101,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     navigate(contributeUrl);
   };
 
-  const handleUpdate = async (shouldUpdate: boolean) => {
+  const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
     if (!entities.post || !post) {
       return;
     }
@@ -135,7 +139,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       await refetchCallouts();
       navigate(`${postURL}/settings`, { replace: true });
     }
-  };
+  });
 
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onClose}>
@@ -167,7 +171,10 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
                 <Box>
                   <Typography variant={'h4'}>{t('common.visuals')}</Typography>
                   <SectionSpacer />
-                  <EditVisualsView visuals={visuals} />
+                  {/* Do not show VisualType.Card for Posts for now, see #4362.
+                      TODO: Maybe in the future we want to remove those visuals from the database,
+                      for now Card profiles don't have a Banner because it's not shown anywhere */}
+                  <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
                 </Box>
                 <SectionSpacer double />
                 {canMoveCard && (
@@ -199,23 +206,37 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
                     variant="outlined"
                     color="error"
                     disabled={!isPostLoaded}
-                    onClick={handleDelete}
+                    onClick={() => setDeleteConfirmDialogOpen(true)}
                   >
                     {t('buttons.delete')}
                   </Button>
-                  <Button
-                    aria-label="save-post"
+                  <LoadingButton
                     variant="contained"
                     disabled={!canSave && !isMoveEnabled}
+                    loading={loading}
                     onClick={() => handleUpdate(canSave)}
                   >
                     {t('buttons.save')}
-                  </Button>
+                  </LoadingButton>
                 </Box>
               </>
             );
           }}
         </PostForm>
+        <ConfirmationDialog
+          actions={{
+            onConfirm: handleDelete,
+            onCancel: () => setDeleteConfirmDialogOpen(false),
+          }}
+          options={{
+            show: Boolean(deleteConfirmDialogOpen),
+          }}
+          entities={{
+            titleId: 'post-edit.delete.title',
+            contentId: 'post-edit.delete.description',
+            confirmButtonTextId: 'buttons.delete',
+          }}
+        />
       </StorageConfigContextProvider>
     </PostLayout>
   );

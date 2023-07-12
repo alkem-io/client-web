@@ -63,6 +63,9 @@ fragment ProfileJourneyData on Profile {
   id
   displayName
   tagline
+  references {
+    ...ReferenceDetails
+  }
   description
 }
 

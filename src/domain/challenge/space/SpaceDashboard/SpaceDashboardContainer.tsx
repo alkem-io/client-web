@@ -118,7 +118,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const references = referencesData?.space?.profile.references;
 
-  const hostOrganizations = useMemo(() => _space?.space.host && [_space?.space.host], [_space]);
+  const hostOrganizations = useMemo(() => (_space?.space.host ? [_space.space.host] : []), [_space]);
 
   const topCallouts = _space?.space.collaboration?.callouts?.slice(0, 3);
 

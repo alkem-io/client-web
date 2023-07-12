@@ -14,7 +14,7 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   type
   child
   parentNameID
-  parentDisplayName
+  journeyDisplayName: parentDisplayName
   __typename
   triggeredBy {
     id

@@ -224,10 +224,20 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      tagline
       displayName
       description
-      visual(type: AVATAR) {
+      location {
+        id
+        city
+        country
+      }
+      avatar: visual(type: AVATAR) {
         ...VisualUri
+      }
+      tagsets {
+        id
+        tags
       }
     }
     verification {
@@ -505,13 +515,25 @@ export const MetricsItemFragmentDoc = gql`
     value
   }
 `;
+export const ReferenceDetailsFragmentDoc = gql`
+  fragment ReferenceDetails on Reference {
+    id
+    name
+    uri
+    description
+  }
+`;
 export const ProfileJourneyDataFragmentDoc = gql`
   fragment ProfileJourneyData on Profile {
     id
     displayName
     tagline
+    references {
+      ...ReferenceDetails
+    }
     description
   }
+  ${ReferenceDetailsFragmentDoc}
 `;
 export const ContextJourneyDataFragmentDoc = gql`
   fragment ContextJourneyData on Context {
@@ -768,10 +790,10 @@ export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
       country
     }
     tagsets {
-      ...TagsetDetails
+      id
+      tags
     }
   }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
@@ -1273,7 +1295,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     type
     child
     parentNameID
-    parentDisplayName
+    journeyDisplayName: parentDisplayName
     __typename
     triggeredBy {
       id
@@ -1349,14 +1371,6 @@ export const PrivilegesOnCollaborationFragmentDoc = gql`
       id
       myPrivileges
     }
-  }
-`;
-export const ReferenceDetailsFragmentDoc = gql`
-  fragment ReferenceDetails on Reference {
-    id
-    name
-    uri
-    description
   }
 `;
 export const ReactionDetailsFragmentDoc = gql`
@@ -1471,6 +1485,9 @@ export const CalloutFragmentDoc = gql`
       displayName
       description
       tagset {
+        ...TagsetDetails
+      }
+      tagsets {
         ...TagsetDetails
       }
       references {
@@ -1660,6 +1677,10 @@ export const PostProvidedFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+    }
+    comments {
+      id
+      messagesCount
     }
   }
 `;
@@ -1899,6 +1920,11 @@ export const OrganizationCardFragmentDoc = gql`
       displayName
       visual(type: AVATAR) {
         ...VisualUri
+      }
+      location {
+        id
+        city
+        country
       }
       description
     }
@@ -8893,6 +8919,91 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
   return { query: CalloutPageCalloutDocument, variables: variables };
 }
 
+export const InnovationFlowStatesAllowedValuesDocument = gql`
+  query InnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        innovationFlow {
+          id
+          lifecycle {
+            id
+            state
+          }
+          profile {
+            id
+            tagsets {
+              id
+              name
+              allowedValues
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useInnovationFlowStatesAllowedValuesQuery__
+ *
+ * To run a query within a React component, call `useInnovationFlowStatesAllowedValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationFlowStatesAllowedValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationFlowStatesAllowedValuesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useInnovationFlowStatesAllowedValuesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >(InnovationFlowStatesAllowedValuesDocument, options);
+}
+
+export function useInnovationFlowStatesAllowedValuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >(InnovationFlowStatesAllowedValuesDocument, options);
+}
+
+export type InnovationFlowStatesAllowedValuesQueryHookResult = ReturnType<
+  typeof useInnovationFlowStatesAllowedValuesQuery
+>;
+export type InnovationFlowStatesAllowedValuesLazyQueryHookResult = ReturnType<
+  typeof useInnovationFlowStatesAllowedValuesLazyQuery
+>;
+export type InnovationFlowStatesAllowedValuesQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+  SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+>;
+export function refetchInnovationFlowStatesAllowedValuesQuery(
+  variables: SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+) {
+  return { query: InnovationFlowStatesAllowedValuesDocument, variables: variables };
+}
+
 export const InnovationPackProfilePageDocument = gql`
   query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
     platform {
@@ -9040,7 +9151,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       type
       child
       parentNameID
-      parentDisplayName
+      journeyDisplayName: parentDisplayName
       __typename
       triggeredBy {
         id

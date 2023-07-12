@@ -7,7 +7,7 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     type
     child
     parentNameID
-    parentDisplayName
+    journeyDisplayName: parentDisplayName
     __typename
     triggeredBy {
       id

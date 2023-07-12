@@ -17,7 +17,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   createdDate,
   journeyTypeName,
   journeyLocation,
-  parentDisplayName,
+  journeyDisplayName,
   message,
 }) => {
   const { t } = useTranslation();
@@ -44,7 +44,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
             createdDate,
             journeyTypeName,
             journeyLocation,
-            parentDisplayName,
+            journeyDisplayName,
           }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
