@@ -1487,6 +1487,9 @@ export const CalloutFragmentDoc = gql`
       tagset {
         ...TagsetDetails
       }
+      tagsets {
+        ...TagsetDetails
+      }
       references {
         ...ReferenceDetails
       }
@@ -1674,6 +1677,10 @@ export const PostProvidedFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+    }
+    comments {
+      id
+      messagesCount
     }
   }
 `;
@@ -8910,6 +8917,91 @@ export type CalloutPageCalloutQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPageCalloutQueryVariables) {
   return { query: CalloutPageCalloutDocument, variables: variables };
+}
+
+export const InnovationFlowStatesAllowedValuesDocument = gql`
+  query InnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        innovationFlow {
+          id
+          lifecycle {
+            id
+            state
+          }
+          profile {
+            id
+            tagsets {
+              id
+              name
+              allowedValues
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useInnovationFlowStatesAllowedValuesQuery__
+ *
+ * To run a query within a React component, call `useInnovationFlowStatesAllowedValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationFlowStatesAllowedValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationFlowStatesAllowedValuesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useInnovationFlowStatesAllowedValuesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >(InnovationFlowStatesAllowedValuesDocument, options);
+}
+
+export function useInnovationFlowStatesAllowedValuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >(InnovationFlowStatesAllowedValuesDocument, options);
+}
+
+export type InnovationFlowStatesAllowedValuesQueryHookResult = ReturnType<
+  typeof useInnovationFlowStatesAllowedValuesQuery
+>;
+export type InnovationFlowStatesAllowedValuesLazyQueryHookResult = ReturnType<
+  typeof useInnovationFlowStatesAllowedValuesLazyQuery
+>;
+export type InnovationFlowStatesAllowedValuesQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+  SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+>;
+export function refetchInnovationFlowStatesAllowedValuesQuery(
+  variables: SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+) {
+  return { query: InnovationFlowStatesAllowedValuesDocument, variables: variables };
 }
 
 export const InnovationPackProfilePageDocument = gql`
