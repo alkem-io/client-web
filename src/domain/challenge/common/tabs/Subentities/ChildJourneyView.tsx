@@ -3,7 +3,7 @@ import { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValueType } from '../../../../../common/components/core/card-filter/filterFn';
 import ErrorBlock from '../../../../../common/components/core/ErrorBlock';
-import getJourneyChildrenTranslationKey from '../../../../../common/utils/translation/getJourneyChildrenTranslationKey';
+import getJourneyChildrenTranslation from '../../../../../common/utils/translation/getJourneyChildrenTranslation';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -64,7 +64,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
   const { t } = useTranslation();
 
   return (
-    <MembershipBackdrop show={!childEntityReadAccess} blockName={t(getJourneyChildrenTranslationKey(journeyTypeName))}>
+    <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
       <PageContent>
         <PageContentColumn columns={4}>
           <ChildJourneyCreate
@@ -76,7 +76,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
           <PageContentBlock>
             <PageContentBlockHeader
               title={t('pages.generic.sections.subentities.list', {
-                entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
+                entities: getJourneyChildrenTranslation(t, journeyTypeName),
               })}
             />
             <LinksList
@@ -87,7 +87,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                 uri: getChildEntityUrl(entity),
               }))}
               emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
+                entities: getJourneyChildrenTranslation(t, journeyTypeName),
                 parentEntity: t(`common.${journeyTypeName}` as const),
               })}
             />
@@ -100,7 +100,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
             <PageContentBlockSeamless>
               <Caption textAlign="center">
                 {t('pages.generic.sections.subentities.empty', {
-                  entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
+                  entities: getJourneyChildrenTranslation(t, journeyTypeName),
                   parentEntity: t(`common.${journeyTypeName}` as const),
                 })}
               </Caption>
@@ -114,7 +114,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                   valueGetter={childEntityValueGetter}
                   tagsGetter={childEntityTagsGetter}
                   title={t('common.all-entities', {
-                    entityType: t(getJourneyChildrenTranslationKey(journeyTypeName)),
+                    entityType: getJourneyChildrenTranslation(t, journeyTypeName),
                     count: childEntities.length,
                   })}
                 >
@@ -134,7 +134,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
               onClick={childEntityOnCreate}
               sx={{ width: '100%' }}
             >
-              {t('common.create-new-entity', { entity: t(getJourneyChildrenTranslationKey(journeyTypeName, false)) })}
+              {t('common.create-new-entity', { entity: getJourneyChildrenTranslation(t, journeyTypeName, 1) })}
             </Button>
           )}
           {childrenRight}
