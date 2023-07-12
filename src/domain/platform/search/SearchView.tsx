@@ -111,6 +111,8 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spac
 
   const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
 
+  const { journeyResultsCount, contributorResultsCount, contributionResultsCount } = data?.search ?? {};
+
   const [journeyResults, contributionResults, contributorResults] = useMemo(
     () => [
       results?.filter(
@@ -151,6 +153,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spac
         <SearchResultSection
           title={journeyFilterTitle}
           filterTitle={t('pages.search.filter.type.journey')}
+          count={journeyResultsCount}
           filterConfig={journeyFilterConfig}
           results={journeyResults}
           currentFilter={journeyFilter}
@@ -160,6 +163,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spac
         <SearchResultSection
           title={t('common.contributions')}
           filterTitle={t('pages.search.filter.type.contribution')}
+          count={contributionResultsCount}
           filterConfig={contributionFilterConfig}
           results={contributionResults}
           currentFilter={contributionFilter}
@@ -169,6 +173,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spac
         <SearchResultSection
           title={t('common.contributors')}
           filterTitle={t('pages.search.filter.type.contributor')}
+          count={contributorResultsCount}
           filterConfig={contributorFilterConfig}
           results={contributorResults}
           currentFilter={contributorFilter}
