@@ -17,7 +17,7 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
   createdDate,
   journeyTypeName,
   journeyLocation,
-  parentDisplayName,
+  journeyDisplayName,
   challenge,
 }) => {
   const { t } = useTranslation();
@@ -42,7 +42,7 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
             createdDate,
             journeyTypeName,
             journeyLocation,
-            parentDisplayName,
+            journeyDisplayName,
           }}
           withLinkToParent={Boolean(journeyTypeName)}
         />

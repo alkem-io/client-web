@@ -12,6 +12,8 @@ export interface AssociatedOrganization {
   name?: string;
   avatar?: string;
   description?: string;
+  city?: string;
+  country?: string;
   associatesCount: number;
   verified: boolean;
   url?: string;
@@ -34,7 +36,9 @@ export const mapToAssociatedOrganization = (
     name: organization?.profile.displayName,
     associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
     description: organization?.profile.description,
-    avatar: organization?.profile.visual?.uri,
+    city: organization?.profile.location?.city,
+    country: organization?.profile.location?.country,
+    avatar: organization?.profile.avatar?.uri,
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
     url: organization && buildOrganizationUrl(organization.nameID),
     ...state,

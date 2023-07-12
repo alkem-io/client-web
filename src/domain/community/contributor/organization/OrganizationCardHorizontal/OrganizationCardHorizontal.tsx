@@ -6,11 +6,14 @@ import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import CircleTag from '../../../../../common/components/core/CircleTag';
 import LinkCard from '../../../../../common/components/core/LinkCard/LinkCard';
 import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
+import LocationCaption from '../../../../../core/ui/location/LocationCaption';
 
 export interface OrganizationCardProps {
   name?: string;
   avatar?: string;
   description?: string;
+  city?: string;
+  country?: string;
   role?: string;
   associatesCount?: number;
   verified?: boolean;
@@ -43,6 +46,8 @@ const OrganizationCardHorizontal: FC<OrganizationCardProps> = ({
   associatesCount,
   verified,
   loading,
+  city,
+  country,
   url,
   transparent = false,
 }) => {
@@ -69,6 +74,7 @@ const OrganizationCardHorizontal: FC<OrganizationCardProps> = ({
         }
         subheader={
           <>
+            {loading ? <Skeleton width="80%" /> : <LocationCaption city={city} country={country} />}
             {loading ? <Skeleton width="80%" /> : <OneLineMarkdown>{description}</OneLineMarkdown>}
             <Typography variant="body2" color="primary">
               {loading ? <Skeleton width="30%" /> : role}

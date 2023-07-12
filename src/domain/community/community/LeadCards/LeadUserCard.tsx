@@ -1,8 +1,10 @@
 import Avatar from '../../../../common/components/core/Avatar';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import { styled } from '@mui/styles';
+import LocationCaption from '../../../../core/ui/location/LocationCaption';
+import { Text } from '../../../../core/ui/typography';
 
 export interface LeadUserCardProps {
   userUrl: string;
@@ -28,8 +30,8 @@ const LeadUserCard = ({ userUrl, fullName, city, country, avatarUrl, tags }: Lea
         <Box display="flex" gap={2}>
           <Avatar src={avatarUrl} name={fullName} size="md2" />
           <Box>
-            <Typography variant="body1">{fullName}</Typography>
-            {city || country ? <Typography variant="body2">{[city, country].join(', ')}</Typography> : null}
+            <Text>{fullName}</Text>
+            <LocationCaption city={city} country={country} />
             {tags && <TagsWithSpacing tags={tags} />}
           </Box>
         </Box>
