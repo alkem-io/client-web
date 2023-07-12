@@ -22,6 +22,7 @@ import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 import { compact, groupBy, sortBy } from 'lodash';
 import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import { Tagset } from '../../../common/profile/Profile';
+import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
 interface CalloutChildTypePropName {
   [CalloutType.PostCollection]: 'posts';
@@ -87,6 +88,7 @@ export type TypedCallout = Pick<
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
   calloutGroups?: CalloutsGroup[];
+  innovationFlowState?: string;
 }
 
 interface UseCalloutsProvided {
@@ -158,19 +160,29 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
 
   const callouts = useMemo(
     () =>
-      collaboration?.callouts?.map(({ authorization, ...callout }) => {
-        const draft = callout?.visibility === CalloutVisibility.Draft;
-        const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        return {
-          ...callout,
-          // Add calloutNameId to all whiteboards
-          whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
-          comments: { ...callout.comments, calloutNameId: callout.nameID },
-          authorization,
-          draft,
-          editable,
-        } as TypedCallout;
-      }),
+      collaboration?.callouts
+        ?.filter(callout => {
+          if (!params.innovationFlowState) {
+            return true;
+          }
+          const innovationFlowTagset = callout.profile.tagsets?.find(
+            tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
+          );
+          return innovationFlowTagset?.tags.includes(params.innovationFlowState);
+        })
+        .map(({ authorization, ...callout }) => {
+          const draft = callout?.visibility === CalloutVisibility.Draft;
+          const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+          return {
+            ...callout,
+            // Add calloutNameId to all whiteboards
+            whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
+            comments: { ...callout.comments, calloutNameId: callout.nameID },
+            authorization,
+            draft,
+            editable,
+          } as TypedCallout;
+        }),
     [collaboration]
   );
 

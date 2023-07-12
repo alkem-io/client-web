@@ -157,6 +157,9 @@ fragment Callout on Callout {
     tagset {
       ...TagsetDetails
     }
+    tagsets {
+      ...TagsetDetails
+    }
     references {
       ...ReferenceDetails
     }
