@@ -22,7 +22,6 @@ export interface JourneyCardBanner {
 export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
-  tagline: string;
   banner?: JourneyCardBanner;
   tags: string[];
   journeyUri?: string;
@@ -38,7 +37,6 @@ export interface JourneyCardProps extends ContributeCardProps {
 const JourneyCard = ({
   iconComponent: Icon,
   header,
-  tagline,
   banner,
   tags,
   journeyUri,

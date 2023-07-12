@@ -18,6 +18,7 @@ import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
 import { buildJourneyUrl } from '../../../common/utils/urlBuilders';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import JourneyCardTagline from '../../challenge/common/JourneyCard/JourneyCardTagline';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -149,7 +150,6 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                         <JourneyCard
                           iconComponent={journeyIcon[hydratedApplication.journeyTypeName]}
                           header={hydratedApplication.journeyDisplayName}
-                          tagline={hydratedApplication.journeyTagline ?? ''}
                           tags={hydratedApplication.journeyTags ?? []}
                           banner={hydratedApplication.journeyCardBanner}
                           journeyUri={
@@ -159,7 +159,9 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                               opportunityNameId: application.opportunityID,
                             }) ?? ''
                           }
-                        />
+                        >
+                          <JourneyCardTagline>{hydratedApplication.journeyTagline ?? ''}</JourneyCardTagline>
+                        </JourneyCard>
                       )
                     }
                   </ApplicationHydrator>
@@ -194,10 +196,11 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                     <JourneyCard
                       iconComponent={journeyIcon[invitation.journeyTypeName]}
                       header={invitation.journeyDisplayName}
-                      tagline={invitation.journeyTagline ?? ''}
                       tags={invitation.journeyTags ?? []}
                       banner={invitation.journeyCardBanner}
-                    />
+                    >
+                      <JourneyCardTagline>{invitation.journeyTagline ?? ''}</JourneyCardTagline>
+                    </JourneyCard>
                     <Gutters disablePadding>
                       <Caption>
                         <ActivityDescription i18nKey="community.pendingMembership.invitationTitle" {...invitation} />

@@ -15,6 +15,7 @@ import CardRibbon from '../../../../core/ui/card/CardRibbon';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
+  tagline: string;
   journeyTypeName: JourneyTypeName;
   displayName: string;
   enableLeave?: boolean;
@@ -50,7 +51,6 @@ const ContributionDetailsCard = ({
     <>
       <JourneyCard
         {...props}
-        tagline={tagline}
         iconComponent={journeyIcon[journeyTypeName]}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>

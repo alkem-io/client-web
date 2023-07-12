@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 interface OpportunityCardProps
   extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
+  tagline: string;
   opportunityId?: string;
   challengeUri?: string;
   challengeDisplayName?: string;

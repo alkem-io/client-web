@@ -15,6 +15,7 @@ import CardRibbon from '../../../../../core/ui/card/CardRibbon';
 
 export interface SearchBaseJourneyCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
+  tagline: string;
   locked?: boolean;
   journeyTypeName: JourneyTypeName;
   displayName: string;
@@ -41,7 +42,6 @@ const SearchBaseJourneyCard = ({
 
   return (
     <JourneyCard
-      tagline={tagline}
       iconComponent={journeyIcon[journeyTypeName]}
       header={
         <BlockTitle component="div" sx={webkitLineClamp(2)}>

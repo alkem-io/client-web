@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 interface ChallengeCardProps
   extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
+  tagline: string;
   challengeId?: string;
   challengeNameId?: string;
   spaceUri?: string;

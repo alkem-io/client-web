@@ -192,7 +192,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
 
   const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
 
-  const hydratedInvitation = useMemo<ApplicationWithMeta | undefined>(() => {
+  const hydratedApplication = useMemo<ApplicationWithMeta | undefined>(() => {
     if (!application || !journey) {
       return undefined;
     }
@@ -206,5 +206,5 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
     };
   }, [application, journey]);
 
-  return <>{children({ application: hydratedInvitation })}</>;
+  return <>{children({ application: hydratedApplication })}</>;
 };
