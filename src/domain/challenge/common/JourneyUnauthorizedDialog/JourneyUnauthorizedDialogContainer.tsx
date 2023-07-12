@@ -8,11 +8,16 @@ import {
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import { AuthorizationPrivilege, MetricsItemFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  MetricsItemFragment,
+  Reference,
+} from '../../../../core/apollo/generated/graphql-schema';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   displayName: string | undefined;
   tagline: string | undefined;
+  references: Reference[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: MetricsItemFragment[] | undefined;
   privilegesLoading: boolean;
@@ -135,12 +140,14 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     background: profile?.description,
     displayName: profile?.displayName,
     tagline: profile?.tagline,
+    references: profile?.references,
     vision: context?.vision,
     who: context?.who,
     impact: context?.impact,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
-    leadOrganizations: journeyTypeName === 'space' ? hostOrganizations : community?.leadOrganizations,
+    hostOrganizations: journeyTypeName === 'space' ? hostOrganizations : undefined,
+    leadOrganizations: community?.leadOrganizations,
     leadUsers: community?.leadUsers,
     loading: privilegesLoading,
     error: privilegesError ?? journeyCommunityPrivilegesError ?? journeyDataError,

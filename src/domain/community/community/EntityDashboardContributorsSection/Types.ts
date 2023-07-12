@@ -15,4 +15,5 @@ export interface EntityDashboardContributors {
 export interface EntityDashboardLeads {
   leadUsers: DashboardLeadUserFragment[] | undefined;
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
+  hostOrganizations?: AssociatedOrganizationDetailsFragment[] | undefined;
 }

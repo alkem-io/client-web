@@ -1793,7 +1793,10 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Facilitating organization",
+          "organization": "Hosted by",
+          "hostTooltip": "The host is the organization responsible for the creation of the Space.",
+          "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
+          "leadingOrganizations": "Leading Organizations",
           "activity": "Space statistics",
           "community": "Community"
         },

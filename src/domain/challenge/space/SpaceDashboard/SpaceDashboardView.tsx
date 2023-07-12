@@ -1,6 +1,5 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import References from '../../../shared/components/References/References';
 import {
   AssociatedOrganizationDetailsFragment,
   DashboardLeadUserFragment,
@@ -68,6 +67,7 @@ interface SpaceDashboardViewProps<ChildEntity extends Identifiable> extends Part
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
+  hostOrganizations: (SpaceWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
   leadOrganizations: (SpaceWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
   leadUsers: (SpaceWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
   communityReadAccess: boolean;
@@ -118,6 +118,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
   timelineReadAccess = false,
   entityReadAccess,
   readUsersAccess,
+  hostOrganizations,
   leadOrganizations,
   leadUsers,
   activities,
@@ -211,7 +212,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
               ))}
             </Gutters>
             <Gutters row disablePadding>
-              {leadOrganizations?.slice(0, 2).map(org => (
+              {hostOrganizations?.slice(0, 2).map(org => (
                 <ContributorCardHorizontal
                   key={org.id}
                   profile={org.profile}
@@ -220,7 +221,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
                     sendMessage('organization', {
                       id: org.id,
                       displayName: org.profile.displayName,
-                      avatarUri: org.profile.visual?.uri,
+                      avatarUri: org.profile.avatar?.uri,
                       country: org.profile.location?.country,
                       city: org.profile.location?.city,
                     });
@@ -240,11 +241,6 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
             loading={dashboardNavigationLoading}
           />
           {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
-          <PageContentBlock>
-            <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-            <References references={references} />
-            {/* TODO figure out the URL for references */}
-          </PageContentBlock>
           {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
           {childrenLeft}
         </PageContentColumn>
@@ -312,6 +308,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
         journeyTypeName="space"
         displayName={displayName}
         tagline={tagline}
+        references={references}
         sendMessageToCommunityLeads={sendMessageToCommunityLeads}
         metrics={metrics}
         description={vision}
@@ -320,6 +317,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
         impact={impact}
         loading={loading}
         leadUsers={leadUsers}
+        hostOrganizations={hostOrganizations}
         leadOrganizations={leadOrganizations}
         endButton={
           <IconButton onClick={() => setIsAboutDialogOpen(false)}>
