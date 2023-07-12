@@ -63,6 +63,10 @@ fragment PostProvided on Post {
     id
     myPrivileges
   }
+  comments {
+    id
+    messagesCount
+  }
 }
 
 fragment CalloutPostInfo on Collaboration {

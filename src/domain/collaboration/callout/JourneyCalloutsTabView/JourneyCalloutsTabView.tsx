@@ -23,6 +23,11 @@ import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
+import InnovationFlowStates, {
+  InnovationFlowState,
+} from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
+import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
 interface JourneyCalloutsTabViewProps {
   journeyTypeName: JourneyTypeName;
@@ -36,6 +41,14 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     throw new Error('Must be within a Space');
   }
 
+  const { innovationFlowStates, currentInnovationFlowState } = useInnovationFlowStates({
+    spaceId: spaceNameId,
+    challengeId: challengeNameId!,
+  });
+
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
+    useStateWithAsyncDefault(currentInnovationFlowState);
+
   const {
     callouts: allCallouts,
     canCreateCallout,
@@ -48,6 +61,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     spaceNameId,
     challengeNameId,
     opportunityNameId,
+    innovationFlowState: selectedInnovationFlowState,
   });
 
   const callouts = allCallouts?.filter(callout => callout.group !== CalloutsGroup.HomeTop);
@@ -93,6 +107,8 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     [updateCalloutVisibility]
   );
 
+  const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
+
   return (
     <>
       <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${journeyTypeName}` as const)}>
@@ -127,6 +143,15 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
           </PageContentColumn>
 
           <PageContentColumn columns={8}>
+            {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && (
+              <InnovationFlowStates
+                currentState={currentInnovationFlowState}
+                selectedState={selectedInnovationFlowState}
+                states={innovationFlowStates}
+                onSelectState={handleSelectInnovationFlowState}
+                showSettings
+              />
+            )}
             <CalloutsGroupView
               callouts={callouts}
               spaceId={spaceNameId!}

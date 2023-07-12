@@ -289,6 +289,14 @@
       "not-verified": ""
     },
     "enums": {
+      "innovationFlowState": {
+        "new": "New",
+        "beingRefined": "Being Refined",
+        "inProgress": "In Progress",
+        "complete": "Complete",
+        "abandoned": "Abandoned",
+        "archived": "Archived"
+      },
       "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
@@ -740,6 +748,9 @@
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
+    },
+    "innovationFlowStateSelector": {
+      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
     },
     "invitations": {
       "inviteExistingUser": "Invite Alkemio users",
@@ -2142,6 +2153,10 @@
       "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved Post to the new Callout.",
       "error": "Something went wrong when moving the Post, please try again."
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this Post?",
+      "description": "This action cannot be undone"
     }
   },
   "innovation-edit": {
