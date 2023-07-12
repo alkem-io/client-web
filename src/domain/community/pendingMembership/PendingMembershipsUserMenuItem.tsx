@@ -203,7 +203,11 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                     </JourneyCard>
                     <Gutters disablePadding>
                       <Caption>
-                        <ActivityDescription i18nKey="community.pendingMembership.invitationTitle" {...invitation} />
+                        <ActivityDescription
+                          i18nKey="community.pendingMembership.invitationTitle"
+                          {...invitation}
+                          author={{ displayName: invitation.userDisplayName }}
+                        />
                       </Caption>
                       {invitation.welcomeMessage && <Text>{invitation.welcomeMessage}</Text>}
                     </Gutters>
