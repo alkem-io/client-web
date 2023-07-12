@@ -25,7 +25,7 @@ import InnovationLibraryIcon from '../../../../../domain/platform/TopLevelPages/
 import { SEARCH_ROUTE } from '../../../../../domain/platform/routes/constants';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LanguageIcon from '@mui/icons-material/Language';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, HdrStrongOutlined } from '@mui/icons-material';
 import { supportedLngs } from '../../../../../core/i18n/config';
 import ListItemText from '@mui/material/ListItemText';
 import SearchBar from './SearchBar';
@@ -34,6 +34,7 @@ import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
 import HelpDialog from '../../../../../core/help/dialog/HelpDialog';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
+import PendingMembershipsUserMenuItem from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 
 export const MobileTopBarHeightGutters = 3;
 
@@ -146,6 +147,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 0, vertical: 47 }}
         MenuListProps={{ dense: false }}
+        keepMounted
       >
         {!isAuthenticated && (
           <>
@@ -189,6 +191,18 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             </ListItemIcon>
             {t('common.my-profile')}
           </MenuItem>
+        )}
+        {isAuthenticated && (
+          <PendingMembershipsUserMenuItem>
+            {({ header, openDialog }) => (
+              <MenuItem onClick={openDialog}>
+                <ListItemIcon>
+                  <HdrStrongOutlined />
+                </ListItemIcon>
+                {header}
+              </MenuItem>
+            )}
+          </PendingMembershipsUserMenuItem>
         )}
         {isAdmin && (
           <MenuItem component={RouterLink} to="/admin">

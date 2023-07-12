@@ -9,13 +9,14 @@ import {
 import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 import { PendingMembershipsQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useUserContext } from '../contributor/user';
+import { JourneyCardBanner } from '../../challenge/common/JourneyCard/JourneyCard';
 
 interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
   journeyDisplayName: string;
-  journeyDescription: string | undefined;
+  journeyTagline: string | undefined;
   journeyTags: string[] | undefined;
-  journeyBannerUri: string | undefined;
+  journeyCardBanner: JourneyCardBanner | undefined;
 }
 
 export interface InvitationWithMeta extends JourneyDetails {
@@ -144,9 +145,9 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       userDisplayName: createdBy.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
       journeyTypeName: getJourneyTypeName(invitation),
-      journeyDescription: journey.profile.description,
+      journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
-      journeyBannerUri: journey.profile.banner?.uri,
+      journeyCardBanner: journey.profile.cardBanner,
     };
   }, [invitation, journey, createdBy]);
 
@@ -191,7 +192,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
 
   const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
 
-  const hydratedInvitation = useMemo<ApplicationWithMeta | undefined>(() => {
+  const hydratedApplication = useMemo<ApplicationWithMeta | undefined>(() => {
     if (!application || !journey) {
       return undefined;
     }
@@ -199,11 +200,11 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
       id: application.id,
       journeyDisplayName: journey.profile.displayName,
       journeyTypeName: getJourneyTypeName(application),
-      journeyDescription: journey.profile.description,
+      journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
-      journeyBannerUri: journey.profile.banner?.uri,
+      journeyCardBanner: journey.profile.cardBanner,
     };
   }, [application, journey]);
 
-  return <>{children({ application: hydratedInvitation })}</>;
+  return <>{children({ application: hydratedApplication })}</>;
 };

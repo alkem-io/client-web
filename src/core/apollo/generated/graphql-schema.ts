@@ -24604,11 +24604,11 @@ export type PendingMembershipsSpaceQuery = {
     id: string;
     profile: {
       __typename?: 'Profile';
-      description?: string | undefined;
+      tagline: string;
       id: string;
       displayName: string;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     };
   };
 };
@@ -24629,11 +24629,11 @@ export type PendingMembershipsChallengeQuery = {
       id: string;
       profile: {
         __typename?: 'Profile';
-        description?: string | undefined;
+        tagline: string;
         id: string;
         displayName: string;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
     };
   };
@@ -24655,11 +24655,11 @@ export type PendingMembershipsOpportunityQuery = {
       id: string;
       profile: {
         __typename?: 'Profile';
-        description?: string | undefined;
+        tagline: string;
         id: string;
         displayName: string;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
     };
   };
@@ -24680,11 +24680,11 @@ export type PendingMembershipsUserQuery = {
 
 export type PendingMembershipsJourneyProfileFragment = {
   __typename?: 'Profile';
-  description?: string | undefined;
+  tagline: string;
   id: string;
   displayName: string;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-  banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type PendingMembershipsMembershipsFragment = {
