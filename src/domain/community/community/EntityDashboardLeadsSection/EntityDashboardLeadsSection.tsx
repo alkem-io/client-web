@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useMemo } from 'react';
+import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
@@ -18,14 +18,14 @@ interface EntityDashboardLeadsProps extends EntityDashboardLeads {
   usersHeader?: string;
 }
 
-const EntityDashboardLeadsSection: FC<EntityDashboardLeadsProps> = ({
+const EntityDashboardLeadsSection = ({
   leadUsers,
   leadOrganizations,
   usersHeader,
   organizationsHeader,
   organizationsHeaderIcon,
   children,
-}) => {
+}: PropsWithChildren<EntityDashboardLeadsProps>) => {
   const { t } = useTranslation();
 
   const { user } = useUserContext();
