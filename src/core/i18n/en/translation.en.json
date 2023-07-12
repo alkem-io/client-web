@@ -2150,6 +2150,10 @@
       "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved Post to the new Callout.",
       "error": "Something went wrong when moving the Post, please try again."
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this Post?",
+      "description": "This action cannot be undone"
     }
   },
   "innovation-edit": {

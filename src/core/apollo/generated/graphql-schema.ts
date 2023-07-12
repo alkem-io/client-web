@@ -17697,6 +17697,7 @@ export type SpacePostProviderQuery = {
                             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                           }
                         | undefined;
+                      comments: { __typename?: 'Room'; id: string; messagesCount: number };
                     }>
                   | undefined;
               }>
@@ -17743,6 +17744,7 @@ export type ChallengePostProviderQuery = {
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                             }
                           | undefined;
+                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                       }>
                     | undefined;
                 }>
@@ -17790,6 +17792,7 @@ export type OpportunityPostProviderQuery = {
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                             }
                           | undefined;
+                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                       }>
                     | undefined;
                 }>
@@ -17817,6 +17820,7 @@ export type PostProviderDataFragment = {
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
+              comments: { __typename?: 'Room'; id: string; messagesCount: number };
             }>
           | undefined;
       }>
@@ -17831,6 +17835,7 @@ export type PostProvidedFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+  comments: { __typename?: 'Room'; id: string; messagesCount: number };
 };
 
 export type CalloutPostInfoFragment = {
