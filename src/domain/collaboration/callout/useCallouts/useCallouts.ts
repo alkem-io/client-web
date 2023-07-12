@@ -168,7 +168,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           const innovationFlowTagset = callout.profile.tagsets?.find(
             tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
           );
-          return innovationFlowTagset?.name === params.innovationFlowState;
+          return innovationFlowTagset?.tags.includes(params.innovationFlowState);
         })
         .map(({ authorization, ...callout }) => {
           const draft = callout?.visibility === CalloutVisibility.Draft;
