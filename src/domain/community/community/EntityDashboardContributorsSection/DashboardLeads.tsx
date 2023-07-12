@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { WithId } from '../../../../types/WithId';
 import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
-import LeadUserCard, { LeadUserCardProps } from '../LeadUserCard/LeadUserCard';
+import LeadUserCard, { LeadUserCardProps } from '../LeadCards/LeadUserCard';
 import { Identifiable } from '../../../shared/types/Identifiable';
 
 interface DashboardLeadsProps {

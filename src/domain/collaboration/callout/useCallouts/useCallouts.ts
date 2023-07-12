@@ -183,7 +183,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
             editable,
           } as TypedCallout;
         }),
-    [collaboration]
+    [collaboration, params.innovationFlowState]
   );
 
   const submitCalloutsSortOrder = useCallback(

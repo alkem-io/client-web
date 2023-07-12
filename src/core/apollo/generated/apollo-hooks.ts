@@ -224,10 +224,20 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      tagline
       displayName
       description
-      visual(type: AVATAR) {
+      location {
+        id
+        city
+        country
+      }
+      avatar: visual(type: AVATAR) {
         ...VisualUri
+      }
+      tagsets {
+        id
+        tags
       }
     }
     verification {
@@ -505,13 +515,25 @@ export const MetricsItemFragmentDoc = gql`
     value
   }
 `;
+export const ReferenceDetailsFragmentDoc = gql`
+  fragment ReferenceDetails on Reference {
+    id
+    name
+    uri
+    description
+  }
+`;
 export const ProfileJourneyDataFragmentDoc = gql`
   fragment ProfileJourneyData on Profile {
     id
     displayName
     tagline
+    references {
+      ...ReferenceDetails
+    }
     description
   }
+  ${ReferenceDetailsFragmentDoc}
 `;
 export const ContextJourneyDataFragmentDoc = gql`
   fragment ContextJourneyData on Context {
@@ -768,10 +790,10 @@ export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
       country
     }
     tagsets {
-      ...TagsetDetails
+      id
+      tags
     }
   }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
@@ -1351,14 +1373,6 @@ export const PrivilegesOnCollaborationFragmentDoc = gql`
     }
   }
 `;
-export const ReferenceDetailsFragmentDoc = gql`
-  fragment ReferenceDetails on Reference {
-    id
-    name
-    uri
-    description
-  }
-`;
 export const ReactionDetailsFragmentDoc = gql`
   fragment ReactionDetails on Reaction {
     id
@@ -1906,6 +1920,11 @@ export const OrganizationCardFragmentDoc = gql`
       displayName
       visual(type: AVATAR) {
         ...VisualUri
+      }
+      location {
+        id
+        city
+        country
       }
       description
     }
