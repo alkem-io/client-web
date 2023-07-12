@@ -19,6 +19,7 @@ interface OpportunityCardProps
   challengeDisplayName?: string;
   spaceVisibility?: SpaceVisibility;
   innovationFlowState?: string;
+  journeyUri: string;
 }
 
 const OpportunityCard = ({

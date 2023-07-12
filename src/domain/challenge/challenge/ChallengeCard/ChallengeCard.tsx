@@ -24,6 +24,7 @@ interface ChallengeCardProps
   private?: boolean;
   privateParent?: boolean;
   hideJoin?: boolean;
+  journeyUri: string;
 }
 
 const ChallengeCard = ({

@@ -19,6 +19,7 @@ export interface SpaceCardProps
   vision: string;
   membersCount: number;
   spaceVisibility?: SpaceVisibility;
+  journeyUri: string;
 }
 
 const SpaceCard = ({

@@ -21,6 +21,7 @@ export interface SearchBaseJourneyCardProps
   vision: string;
   parentSegment?: ReactNode;
   spaceVisibility?: SpaceVisibility;
+  journeyUri: string;
 }
 
 const SearchBaseJourneyCard = ({
