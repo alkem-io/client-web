@@ -166,6 +166,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
+              createButtonPlace="top"
             />
           </PageContentColumn>
         </PageContent>
