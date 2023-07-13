@@ -9,6 +9,7 @@ import translationUa from './ua/translation.ua.json';
 import translationDe from './de/translation.de.json';
 import translationFr from './fr/translation.fr.json';
 import inContextTranslation from './ach/translation.ach.json';
+import { env } from '../../../src/types/env';
 
 export const resources = {
   en: {
@@ -41,8 +42,7 @@ type Language = keyof typeof resources;
 
 export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua', 'de', 'fr'];
 
-const hostname = window.location.hostname;
-if (hostname === 'dev.alkem.io' || hostname === 'localhost') {
+if (env?.REACT_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');
 }
 
