@@ -20,7 +20,8 @@
     "bg": "Bulgarian",
     "ua": "Ukranian",
     "de": "German",
-    "fr": "French"
+    "fr": "French",
+    "inContextTool": "In context translation"
   },
   "fields": {
     "displayName": "Title",
