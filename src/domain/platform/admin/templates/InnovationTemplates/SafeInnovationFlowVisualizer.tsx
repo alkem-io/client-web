@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import InnovationFlowVisualizer, { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 import { Box } from '@mui/material';
-import Typography from '@mui/material/Typography';
+import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { LifecycleDataProvider } from '@alkemio/visualization';
 
@@ -21,7 +21,7 @@ export const SafeInnovationFlowVisualizer = ({ definition }: { definition: strin
     <InnovationFlowVisualizer lifecycle={lifecycle} />
   ) : (
     <Box justifyContent="center">
-      <Typography variant={'h4'}>{t('components.lifecycle-visualizer.error')}</Typography>
+      <BlockSectionTitle>{t('components.lifecycles.error')}</BlockSectionTitle>
     </Box>
   );
 };

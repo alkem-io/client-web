@@ -164,6 +164,7 @@
     "remove": "Remove",
     "callout": "Callout",
     "callouts": "Callouts",
+    "collaborationTools": "Collaboration Tools",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Calendar",
@@ -886,7 +887,9 @@
         "whiteboard-created": "{{displayName}}"
       }
     },
-    "lifecycle-visualizer": {
+    "lifecycles": {
+      "currentState": "Current State:",
+      "changeState": "Change State to:",
       "error": "The definition was not able to be visualized"
     },
     "activity-tooltip": {
@@ -1409,6 +1412,10 @@
     },
     "contribute": {
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
+      "innovationFlow": {
+        "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
+        "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
+      },
       "no-posts": "No Posts found"
     },
     "innovationLibrary": {

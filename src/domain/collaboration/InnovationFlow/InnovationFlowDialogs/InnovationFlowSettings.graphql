@@ -1,0 +1,91 @@
+query InnovationFlowSettings(
+  $spaceNameId: UUID_NAMEID!
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      nameID
+      innovationFlow {
+        id
+        profile {
+          ...LifecycleProfile
+        }
+        type
+        lifecycle {
+          ...LifecycleDetails
+        }
+      }
+      collaboration {
+        ...InnovationFlowCollaboration
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      nameID
+      innovationFlow {
+        id
+        profile {
+          ...LifecycleProfile
+        }
+        type
+        lifecycle {
+          ...LifecycleDetails
+        }
+      }
+      collaboration {
+        ...InnovationFlowCollaboration
+      }
+    }
+  }
+}
+
+fragment LifecycleProfile on Profile {
+  id
+  displayName
+  description
+  tagsets {
+    ...TagsetDetails
+  }
+  references {
+    id
+    name
+    description
+    uri
+  }
+  bannerNarrow: visual(type: CARD) {
+    ...VisualFull
+  }
+}
+
+fragment LifecycleDetails on Lifecycle {
+  id
+  state
+  nextEvents
+  stateIsFinal
+}
+
+fragment InnovationFlowCollaboration on Collaboration {
+  id
+  authorization {
+    myPrivileges
+  }
+  callouts {
+    id
+    nameID
+    type
+    activity
+    profile {
+      id
+      displayName
+      # TODO: This would be easier with a tagset(name:'flow-state')
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+}
