@@ -4,6 +4,7 @@ declare global {
       REACT_APP_ALKEMIO_DOMAIN?: string;
       REACT_APP_DEBUG_QUERY?: string;
       REACT_APP_LOG_ERRORS?: string;
+      REACT_APP_ENVIRONMENT?: string;
     };
   }
 }
