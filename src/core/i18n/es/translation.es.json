@@ -19,20 +19,20 @@
     "es": "Español",
     "bg": "Búlgaro",
     "ua": "Ucraniano",
-    "de": "German",
-    "fr": "French"
+    "de": "Alemán",
+    "fr": "Francés"
   },
   "fields": {
     "displayName": "Título",
     "startTime": "Hora de inicio",
     "endTime": "Hora de finalización",
-    "name": "Name"
+    "name": "Nombre"
   },
   "calendar": {
     "add-event": "Añadir evento",
     "edit-event": "Modificar evento",
     "delete-event": "Eliminar evento",
-    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the space?",
+    "delete-confirmation": "¿Estás seguro de que deseas eliminar el evento: '{{title}}' de este Espacio?",
     "event": {
       "type": "Tipo de evento",
       "multiple-days": "{{days}} días",
@@ -61,7 +61,7 @@
     "publish": "Publicar",
     "unpublish": "Ocultar",
     "save-draft": "Guardar como borrador",
-    "archive": "Archive",
+    "archive": "Archivar",
     "save": "Guardar",
     "back": "Volver",
     "next": "Siguiente",
@@ -104,7 +104,7 @@
     "importing": "Importando...",
     "go-to-entity": "Ir a {{entity}}",
     "read-more": "Leer más",
-    "reply": "Reply",
+    "reply": "Responder",
     "select": "Seleccionar",
     "change-field": "Cambiar {{field}}",
     "send": "Enviar",
@@ -142,7 +142,7 @@
     },
     "signUp": {
       "signUpEmail": "Sign up with E-Mail",
-      "alreadyHaveAccount": "Already have an account?"
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?"
     }
   },
   "common": {
@@ -160,12 +160,12 @@
     "tags": "Etiquetas",
     "administration": "Administración",
     "add": "Agregar",
-    "added": "Added",
+    "added": "Añadido",
     "remove": "Eliminar",
     "callout": "Callout",
     "callouts": "Callouts",
-    "whiteboard": "Whiteboard",
-    "whiteboards": "Whiteboards",
+    "whiteboard": "Pizarra",
+    "whiteboards": "Pizarras",
     "calendar": "Calendario",
     "comment": "Comentario",
     "comments": "Comentarios",
@@ -177,7 +177,7 @@
     "create-new-entity": "Crear {{entity}}",
     "date": "Fecha",
     "description": "Descripción",
-    "event": "Event",
+    "event": "Evento",
     "events": "Eventos",
     "about": "Acerca de",
     "aboutThis": "Sobre este {{entity}}",
@@ -190,7 +190,7 @@
     "state": "Estado",
     "post": "Post",
     "posts": "Posts",
-    "status": "Status",
+    "status": "Estado",
     "aspect": "Tarjeta",
     "aspects": "Tarjetas",
     "host": "Anfitrión",
@@ -211,7 +211,8 @@
     "interest": "Interés",
     "interests": "Intereses",
     "project": "Proyecto",
-    "role": "Role",
+    "role": "Rol",
+    "agreement": "Agreement",
     "agreements": "Acuerdos",
     "templates": "Plantillas",
     "template": "Plantilla",
@@ -246,7 +247,7 @@
     "settings": "Ajustes",
     "space-settings": "$t(common.settings)",
     "search": "Buscar...",
-    "storage": "Storage",
+    "storage": "Almacenamiento",
     "reference": "Referencia",
     "references": "Referencias",
     "notifications": "Notificaciones",
@@ -265,7 +266,7 @@
     "show-subject": "Show: ",
     "show-all": "Mostrar todo",
     "title": "Título",
-    "visibility": "Visibility",
+    "visibility": "Visibilidad",
     "warning": "Advertencia",
     "welcome": "Bienvenido",
     "preview": "Vista previa",
@@ -284,14 +285,32 @@
       "male": "hombre",
       "female": "mujer"
     },
+    "journeyTypes": {
+      "space": "$t(common.space)",
+      "space_plural": "$t(common.spaces)",
+      "challenge": "$t(common.challenge)",
+      "challenge_plural": "$t(common.challenges)",
+      "opportunity": "$t(common.opportunity)",
+      "opportunity_plural": "$t(common.opportunities)",
+      "agreement": "$t(common.agreement)",
+      "agreement_plural": "$t(common.agreements)"
+    },
     "verified-status": {
       "verified": "Verificado",
       "not-verified": ""
     },
     "enums": {
+      "innovationFlowState": {
+        "new": "Nuevo",
+        "beingRefined": "Being Refined",
+        "inProgress": "En curso",
+        "complete": "Completada",
+        "abandoned": "Abandonada",
+        "archived": "Archivado"
+      },
       "space-visibility": {
-        "ACTIVE": "Active",
-        "ARCHIVED": "Archived",
+        "ACTIVE": "Activo",
+        "ARCHIVED": "Archivado",
         "DEMO": "Demo"
       },
       "authorization-credentials": {
@@ -416,6 +435,19 @@
     "blocks": {
       "users-contributing": "los usuarios que están contribuyendo.",
       "all-contributing-users": "todos los colaboradores."
+    },
+    "time": {
+      "timeAgo": "hace {{time}}",
+      "second": "{{count}} segundo",
+      "second_plural": "{{count}} segundos",
+      "minute": "{{count}} minuto",
+      "minute_plural": "{{count}} minutos",
+      "hour": "{{count}} hora",
+      "hour_plural": "{{count}} horas",
+      "day": "{{count}} día",
+      "day_plural": "{{count}} días",
+      "month": "{{count}} mes",
+      "month_plural": "{{count}} meses"
     }
   },
   "community": {
@@ -446,9 +478,40 @@
       "applicationRejected": "Application Rejected",
       "applicationArchived": "Application Archived"
     },
+    "invitationStatus": {
+      "invited": "Invitado",
+      "accepted": "Invitación aceptada",
+      "rejected": "Invitación rechazada"
+    },
+    "invitationExternalStatus": {
+      "invited": "Invitado a unirse a Alkemio y a este Espacio"
+    },
     "confirmDeleteApplication": {
       "title": "Deleting application from {{user}}",
       "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+    },
+    "confirmDeleteInvitation": {
+      "title": "Eliminando invitación de {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "confirmDeleteInvitationExternal": {
+      "title": "Deleting invitation from {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "pendingMembership": {
+      "pendingMemberships": "Pending Memberships",
+      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
+      "invitationsSectionTitle": "Invitaciones",
+      "applicationsSectionTitle": "Solicitudes abiertas",
+      "invitationDialog": {
+        "title": "Pending Membership: {{journey}}",
+        "actions": {
+          "hide": "Ocultar esta invitación",
+          "reject": "Rechazar",
+          "accept": "Unirse"
+        }
+      },
+      "invitationTitle": "{{time}} {{user}} te ha invitado a <journeyicon /> {{journey}}"
     },
     "memberSettings": {
       "title": "Member Settings",
@@ -571,7 +634,7 @@
         "placeholder": ""
       },
       "who": {
-        "title": "Who should be involved?",
+        "title": "¿Quién debería estar involucrado?",
         "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       }
@@ -673,10 +736,10 @@
     "whiteboard-template": "Whiteboard template",
     "space-templates": "Templates selected by the host of this community",
     "load-platform-templates": "Or click here to browse through all platform templates",
-    "platform-templates": "Platform Templates",
+    "platform-templates": "Plantillas de la plataforma",
     "error-importing": "Error importing Whiteboard Template",
-    "edit-template-button": "Edit Template",
-    "edit-dialog-title": "Edit Whiteboard Template"
+    "edit-template-button": "Editar Plantilla",
+    "edit-dialog-title": "Plantilla de pizarra"
   },
   "innovation-templates": {
     "innovation-template": "Plantilla de Innovation Flow",
@@ -697,9 +760,26 @@
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
     },
+    "innovationFlowStateSelector": {
+      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
+    },
+    "invitations": {
+      "inviteExistingUser": "Invitar a usuarios de Alkemio",
+      "inviteExternalUser": "Enviar invitación por email",
+      "inviteByURL": "Copiar URL mágica",
+      "inviteOrganizations": "Invitar a una organización",
+      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "inviteExistingUserDialog": {
+        "title": "Invite other Alkemio users to join this Space",
+        "subtitle": "You can search for Alkemio users below and attach a personalized message."
+      },
+      "inviteExternalUserDialog": {
+        "title": "Enviar una invitación por email"
+      }
+    },
     "confirmation-dialog": {
       "delete-comment": {
-        "confirmation-title": "Deleting comment",
+        "confirmation-title": "Eliminando comentario",
         "confirmation-text": "Are you sure you want to delete this comment?"
       }
     },
@@ -709,21 +789,21 @@
         "cancel": "$t(buttons.cancel)"
       },
       "toolbar": {
-        "blocktype.h1": "Header 1",
-        "blocktype.h2": "Header 2",
-        "blocktype.h3": "Header 3",
-        "blocktype.h4": "Header 4",
-        "blocktype.h5": "Header 5",
-        "blocktype.h6": "Header 6",
-        "blocktype.blockquote": "Blockquote",
-        "blocktype.code": "Code",
-        "blocktype.blocktype": "Block Type",
+        "blocktype.h1": "Encabezado 1",
+        "blocktype.h2": "Encabezado 2",
+        "blocktype.h3": "Encabezado 3",
+        "blocktype.h4": "Encabezado 4",
+        "blocktype.h5": "Encabezado 5",
+        "blocktype.h6": "Encabezado 6",
+        "blocktype.blockquote": "Cita",
+        "blocktype.code": "Código",
+        "blocktype.blocktype": "Tipo de Bloque",
         "blocktype.normal": "Normal",
-        "emoji.emoji": "Emoticons",
-        "history.history": "History",
-        "history.undo": "Undo",
-        "history.redo": "Redo",
-        "image.image": "Visuals",
+        "emoji.emoji": "Emojis",
+        "history.history": "Historial",
+        "history.undo": "Deshacer",
+        "history.redo": "Rehacer",
+        "image.image": "Visuales",
         "image.fileUpload": "Upload File",
         "image.byURL": "Paste URL",
         "image.dropFileText": "Drop the file or click to upload",
@@ -783,28 +863,28 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "ha publicado un nuevo $t(common.callout)",
-        "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
-        "post-comment-created": "commented on '{{postDisplayName}}'",
-        "post-created": "added a Post to '{{calloutDisplayName}}'",
-        "discussion-comment-created": "comentó sobre '{{calloutDisplayName}}'",
-        "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
-        "challenge-created": "creó un nuevo $t(common.challenge)",
-        "opportunity-created": "creó una nueva $t(common.opportunity)",
-        "update-sent": "compartir$t(common.update)"
+        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' ha publicado un nuevo $t(common.callout)",
+        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' creó un nuevo $t(common.challenge)",
+        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' comentó sobre '{{calloutDisplayName}}'",
+        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' se unió al {{communityType}} '{{communityDisplayName}}'",
+        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' creó una nueva $t(common.opportunity)",
+        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un comentario en '{{postDisplayName}}'",
+        "post-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un Post a '{{calloutDisplayName}}'",
+        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' compartió una nueva actualización",
+        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un $t(common.whiteboard) a '{{calloutDisplayName}}'"
       },
+      "parent-link": " en <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
       "activity-description": {
         "callout-published": "Hola, {{displayName}}",
-        "whiteboard-created": "{{displayName}}",
-        "post-comment-created": "{{comment}}",
-        "post-created": "{{postDisplayName}} - {{postDescription}}",
+        "challenge-created": "{{displayName}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "nombre del usuario",
-        "challenge-created": "{{displayName}}",
         "opportunity-created": "{{displayName}}",
-        "update-sent": "actualizar"
-      },
-      "parent-details": "in {{displayName}}"
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
+        "update-sent": "actualizar",
+        "whiteboard-created": "{{displayName}}"
+      }
     },
     "lifecycle-visualizer": {
       "error": "La definición no puede ser visualizada"
@@ -1725,6 +1805,9 @@
       "sections": {
         "dashboard": {
           "organization": "Facilitating organization",
+          "hostTooltip": "The host is the organization responsible for the creation of the Space.",
+          "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
+          "leadingOrganizations": "Leading Organizations",
           "activity": "Space statistics",
           "community": "Community"
         },
@@ -2081,6 +2164,10 @@
       "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved Post to the new Callout.",
       "error": "Something went wrong when moving the Post, please try again."
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this Post?",
+      "description": "This action cannot be undone"
     }
   },
   "innovation-edit": {
