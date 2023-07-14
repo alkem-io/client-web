@@ -2458,12 +2458,12 @@ export const PendingMembershipsJourneyProfileFragmentDoc = gql`
     id
     displayName
     ... on Profile @include(if: $fetchDetails) {
-      description
+      tagline
       tagset {
         id
         tags
       }
-      banner: visual(type: BANNER) {
+      cardBanner: visual(type: CARD) {
         id
         uri
       }

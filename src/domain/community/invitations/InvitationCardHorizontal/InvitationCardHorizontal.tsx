@@ -26,7 +26,11 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
       outlined
     >
       <BlockSectionTitle noWrap>
-        <ActivityDescription i18nKey="community.pendingMembership.invitationTitle" {...invitation} />
+        <ActivityDescription
+          i18nKey="community.pendingMembership.invitationTitle"
+          {...invitation}
+          author={{ displayName: invitation.userDisplayName }}
+        />
       </BlockSectionTitle>
       <CardText
         sx={{

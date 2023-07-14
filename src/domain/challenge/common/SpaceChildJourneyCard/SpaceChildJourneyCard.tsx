@@ -9,6 +9,7 @@ import JourneyCardSpacing from '../JourneyCard/JourneyCardSpacing';
 
 export interface SpaceChildJourneyCardProps extends Omit<JourneyCardProps, 'header' | 'expansion'> {
   displayName: string;
+  tagline: string;
   vision: string;
   innovationFlowState?: string;
   parentSegment?: ReactNode;
@@ -24,7 +25,6 @@ const SpaceChildJourneyCard = ({
 }: SpaceChildJourneyCardProps) => {
   return (
     <JourneyCard
-      tagline={tagline}
       header={
         <BlockTitle component="div" sx={webkitLineClamp(2)}>
           {displayName}

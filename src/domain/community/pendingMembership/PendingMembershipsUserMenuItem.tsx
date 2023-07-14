@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
@@ -18,9 +17,16 @@ import { useInvitationStateEventMutation } from '../../../core/apollo/generated/
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
 import { buildJourneyUrl } from '../../../common/utils/urlBuilders';
+import ScrollableCardsLayoutContainer from '../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import JourneyCardTagline from '../../challenge/common/JourneyCard/JourneyCardTagline';
+
+interface ButtonImplementationParams {
+  header: ReactNode;
+  openDialog: () => void;
+}
 
 interface PendingMembershipsUserMenuItemProps {
-  onClick?: (e: React.MouseEvent) => void;
+  children: ({ header, openDialog }: ButtonImplementationParams) => ReactNode;
 }
 
 enum DialogType {
@@ -41,7 +47,7 @@ interface InvitationViewDialogDetails extends DialogDetails {
   invitationId: string;
 }
 
-const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuItemProps) => {
+const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenuItemProps) => {
   const { t } = useTranslation();
 
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
@@ -103,19 +109,10 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
 
   return (
     <>
-      <ListItemButton
-        onClick={event => {
-          setOpenDialog({ type: DialogType.PendingMembershipsList });
-          onClick?.(event);
-        }}
-      >
-        <ListItemIcon>
-          <HdrStrongOutlined />
-        </ListItemIcon>
-        <ListItemText
-          primary={t('community.pendingMembership.pendingMembershipsWithCount', { count: pendingMembershipsCount })}
-        />
-      </ListItemButton>
+      {children({
+        header: t('community.pendingMembership.pendingMembershipsWithCount', { count: pendingMembershipsCount }),
+        openDialog: () => setOpenDialog({ type: DialogType.PendingMembershipsList }),
+      })}
       <DialogWithGrid columns={12} open={openDialog?.type === DialogType.PendingMembershipsList} onClose={closeDialog}>
         <DialogHeader
           title={
@@ -145,27 +142,31 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
           {applications && applications.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
-              {applications?.map(application => (
-                <ApplicationHydrator key={application.id} application={application}>
-                  {({ application: hydratedApplication }) =>
-                    hydratedApplication && (
-                      <JourneyCard
-                        iconComponent={journeyIcon[hydratedApplication.journeyTypeName]}
-                        header={hydratedApplication.journeyDisplayName}
-                        tagline={hydratedApplication.journeyDescription ?? ''}
-                        tags={hydratedApplication.journeyTags ?? []}
-                        journeyUri={
-                          buildJourneyUrl({
-                            spaceNameId: application.spaceID,
-                            challengeNameId: application.challengeID,
-                            opportunityNameId: application.opportunityID,
-                          }) ?? ''
-                        }
-                      />
-                    )
-                  }
-                </ApplicationHydrator>
-              ))}
+              <ScrollableCardsLayoutContainer>
+                {applications?.map(application => (
+                  <ApplicationHydrator key={application.id} application={application}>
+                    {({ application: hydratedApplication }) =>
+                      hydratedApplication && (
+                        <JourneyCard
+                          iconComponent={journeyIcon[hydratedApplication.journeyTypeName]}
+                          header={hydratedApplication.journeyDisplayName}
+                          tags={hydratedApplication.journeyTags ?? []}
+                          banner={hydratedApplication.journeyCardBanner}
+                          journeyUri={
+                            buildJourneyUrl({
+                              spaceNameId: application.spaceID,
+                              challengeNameId: application.challengeID,
+                              opportunityNameId: application.opportunityID,
+                            }) ?? ''
+                          }
+                        >
+                          <JourneyCardTagline>{hydratedApplication.journeyTagline ?? ''}</JourneyCardTagline>
+                        </JourneyCard>
+                      )
+                    }
+                  </ApplicationHydrator>
+                ))}
+              </ScrollableCardsLayoutContainer>
             </>
           )}
         </Gutters>
@@ -195,19 +196,18 @@ const PendingMembershipsUserMenuItem = ({ onClick }: PendingMembershipsUserMenuI
                     <JourneyCard
                       iconComponent={journeyIcon[invitation.journeyTypeName]}
                       header={invitation.journeyDisplayName}
-                      tagline={invitation.journeyDescription ?? ''}
                       tags={invitation.journeyTags ?? []}
-                      journeyUri={
-                        buildJourneyUrl({
-                          spaceNameId: currentInvitation.spaceID,
-                          challengeNameId: currentInvitation.challengeID,
-                          opportunityNameId: currentInvitation.opportunityID,
-                        }) ?? ''
-                      }
-                    />
+                      banner={invitation.journeyCardBanner}
+                    >
+                      <JourneyCardTagline>{invitation.journeyTagline ?? ''}</JourneyCardTagline>
+                    </JourneyCard>
                     <Gutters disablePadding>
                       <Caption>
-                        <ActivityDescription i18nKey="community.pendingMembership.invitationTitle" {...invitation} />
+                        <ActivityDescription
+                          i18nKey="community.pendingMembership.invitationTitle"
+                          {...invitation}
+                          author={{ displayName: invitation.userDisplayName }}
+                        />
                       </Caption>
                       {invitation.welcomeMessage && <Text>{invitation.welcomeMessage}</Text>}
                     </Gutters>
