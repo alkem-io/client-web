@@ -1124,6 +1124,19 @@ export type LocationFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MeQueryResultsKeySpecifier = (
+  | 'applications'
+  | 'invitations'
+  | 'spaceMemberships'
+  | 'user'
+  | MeQueryResultsKeySpecifier
+)[];
+export type MeQueryResultsFieldPolicy = {
+  applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MessageKeySpecifier = (
   | 'id'
   | 'message'
@@ -1740,7 +1753,6 @@ export type QueryKeySpecifier = (
   | 'context'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'me'
-  | 'meHasProfile'
   | 'metadata'
   | 'organization'
   | 'organizations'
@@ -1771,7 +1783,6 @@ export type QueryFieldPolicy = {
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
-  meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2790,6 +2801,10 @@ export type StrictTypedTypePolicies = {
   Location?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LocationKeySpecifier | (() => undefined | LocationKeySpecifier);
     fields?: LocationFieldPolicy;
+  };
+  MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
+    fields?: MeQueryResultsFieldPolicy;
   };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);

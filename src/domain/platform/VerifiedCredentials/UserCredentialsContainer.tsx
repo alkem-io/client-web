@@ -49,7 +49,7 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
     nextFetchPolicy: 'cache-first',
     errorPolicy: 'all',
   });
-  const verifiedCredentials = userData?.me?.agent?.verifiedCredentials || [];
+  const verifiedCredentials = userData?.me?.user?.agent?.verifiedCredentials || [];
 
   const { data: credentialMetadata, loading: getCredentialMetadataLoading } = useGetSupportedCredentialMetadataQuery();
   const [_generateAlkemioUserCredentialOffer, { loading: generateAlkemioUserCredentialOfferLoading }] =
