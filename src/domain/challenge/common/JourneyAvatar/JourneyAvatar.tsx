@@ -21,6 +21,8 @@ const JourneyAvatar = ({ visualUri, journeyTypeName }: JourneyAvatarProps) => {
           '.MuiAvatar-fallback': { display: 'none' },
           borderRadius: 0.5,
           backgroundColor: theme => theme.palette.challenge.main,
+          width: theme => theme.spacing(8),
+          height: theme => theme.spacing(8),
         }}
       />
       <SwapColors>

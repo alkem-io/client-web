@@ -10,8 +10,8 @@ import ChildJourneyPageBanner from '../../common/ChildJourneyPageBanner/ChildJou
 const ChallengePageBanner: FC = () => {
   const { profile, spaceNameId } = useSpace();
   const { challenge, loading, spaceId } = useChallenge();
-  const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
-  const avatar = getVisualByType(VisualName.AVATAR, challenge?.profile.visuals);
+  const banner = getVisualByType(VisualName.BANNER, profile?.visuals);
+  const avatar = getVisualByType(VisualName.BANNERNARROW, challenge?.profile.visuals);
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
@@ -20,7 +20,8 @@ const ChallengePageBanner: FC = () => {
 
   return (
     <ChildJourneyPageBanner
-      banner={visual}
+      banner={banner}
+      ribbon={ribbon}
       journeyTypeName="challenge"
       journeyAvatar={avatar}
       journeyTags={challenge?.profile.tagset?.tags}
@@ -36,8 +37,8 @@ const ChallengePageBanner: FC = () => {
       title={profile.displayName}
       tagline={profile.tagline}
       loading={loading}
-      bannerUrl={visual?.uri}
-      bannerAltText={visual?.alternativeText}
+      bannerUrl={banner?.uri}
+      bannerAltText={banner?.alternativeText}
       ribbon={ribbon}
       journeyTypeName="challenge"
       showBreadcrumbs

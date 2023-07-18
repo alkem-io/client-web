@@ -2,19 +2,21 @@ import { Trans, useTranslation } from 'react-i18next';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Caption, CardText, PageTitle } from '../../../../../core/ui/typography';
-import { JourneyLocation } from '../../../../../common/utils/urlBuilders';
+import { buildJourneyUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import React from 'react';
 import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import JourneyAvatar from '../../JourneyAvatar/JourneyAvatar';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { Visual } from '../../../../common/visual/Visual';
+import { alpha } from '@mui/material/styles';
+import RouterLink from '../../../../../core/ui/link/RouterLink';
 
 type ChildJourneyTypeName = Exclude<JourneyTypeName, 'space'>;
 
-export interface JourneyPageBannerCardProps {
+export interface JourneyPageBannerCardProps extends BoxProps {
   parentJourneyDisplayName: string;
   parentJourneyLocation: JourneyLocation;
   journeyTypeName: ChildJourneyTypeName;
@@ -42,33 +44,48 @@ const JourneyPageBannerCard = ({
   journeyAvatar,
   journeyTags = [],
   parentJourneyDisplayName,
+  parentJourneyLocation,
+  ...boxProps
 }: JourneyPageBannerCardProps) => {
   const { t } = useTranslation();
 
-  const JourneyIcon = journeyIcon[journeyDisplayName];
+  const JourneyIcon = journeyIcon[journeyTypeName];
 
   const parentJourneyTypeName = getParentJourneyTypeName(journeyTypeName);
 
   const ParentJourneyIcon = journeyIcon[parentJourneyTypeName];
 
   return (
-    <Gutters paddingTop={gutters(0.5)}>
+    <Gutters
+      paddingTop={gutters(0.5)}
+      gap={gutters(0.5)}
+      sx={{
+        backgroundColor: theme => alpha(theme.palette.background.paper, 0.7),
+        borderTopRightRadius: theme => theme.shape.borderRadius,
+        borderBottomRightRadius: theme => theme.shape.borderRadius,
+      }}
+      {...boxProps}
+    >
       <CardText>
-        <Trans
-          i18nKey="components.journeyPageBannerCard.parentJourney"
-          values={{ journey: parentJourneyDisplayName }}
-          components={{ journeyicon: <ParentJourneyIcon fontSize="inherit" /> }}
-          t={t}
-        />
+        <RouterLink to={buildJourneyUrl(parentJourneyLocation) ?? ''}>
+          <Trans
+            i18nKey="components.journeyPageBannerCard.parentJourney"
+            values={{ journey: parentJourneyDisplayName }}
+            components={{ journeyicon: <ParentJourneyIcon fontSize="inherit" /> }}
+            t={t}
+          />
+        </RouterLink>
       </CardText>
       <BadgeCardView visual={<JourneyAvatar visualUri={journeyAvatar?.uri} journeyTypeName={journeyTypeName} />}>
         <Box display="flex" flexDirection="column" gap={gutters(0.5)}>
-          <PageTitle>
-            <JourneyIcon fontSize="inherit" />
+          <PageTitle color="primary">
+            <JourneyIcon fontSize="inherit" sx={{ verticalAlign: 'bottom' }} />
             {journeyDisplayName}
           </PageTitle>
-          <Caption fontStyle="italic">{journeyTagline}</Caption>
-          <TagsComponent tags={journeyTags} size="medium" />
+          <Caption color="primary" fontStyle="italic">
+            {journeyTagline}
+          </Caption>
+          <TagsComponent tags={journeyTags} color="primary" minHeight={gutters()} variant="filled" />
         </Box>
       </BadgeCardView>
     </Gutters>
