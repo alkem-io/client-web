@@ -7,9 +7,9 @@ import ChildJourneyPageBanner from '../../common/ChildJourneyPageBanner/ChildJou
 import { useSpace } from '../../space/SpaceContext/useSpace';
 
 const OpportunityPageBanner: FC = () => {
-  const { profile } = useSpace();
+  const { profile: spaceProfile } = useSpace();
   const { opportunity, spaceId, spaceNameId, challengeNameId } = useOpportunity();
-  const banner = getVisualByType(VisualName.BANNER, profile?.visuals);
+  const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, opportunity?.profile?.visuals);
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
@@ -26,7 +26,7 @@ const OpportunityPageBanner: FC = () => {
       journeyTags={opportunity?.profile.tagset?.tags}
       journeyDisplayName={opportunity?.profile.displayName ?? ''}
       journeyTagline={opportunity?.profile.tagline ?? ''}
-      parentJourneyDisplayName={profile.displayName}
+      parentJourneyDisplayName={spaceProfile.displayName}
       parentJourneyLocation={{ spaceNameId, challengeNameId }}
     />
   );

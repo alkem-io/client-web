@@ -18,6 +18,7 @@ import EditVisualsView from '../../../../../common/visual/views/EditVisualsView'
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import Gutters from '../../../../../../core/ui/grid/Gutters';
+import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
 
 interface Props {
   mode: FormMode;
@@ -124,7 +125,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         <Typography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
         </Typography>
-        <EditVisualsView visuals={opportunity?.profile.visuals} />
+        <EditVisualsView visuals={opportunity?.profile.visuals} visualTypes={[VisualType.Avatar, VisualType.Card]} />
       </Grid>
     </Gutters>
   );

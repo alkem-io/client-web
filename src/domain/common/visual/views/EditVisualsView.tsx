@@ -14,11 +14,23 @@ export interface EditVisualsViewProps {
 
 const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals, visualTypes }) => {
   const { t } = useTranslation();
+  const avatar = getVisualByType(VisualName.AVATAR, visuals);
   const banner = getVisualByType(VisualName.BANNER, visuals);
   const bannerNarrow = getVisualByType(VisualName.BANNERNARROW, visuals);
 
   return (
     <>
+      {visualTypes?.includes(VisualType.Avatar) && (
+        <Box display="flex" flexDirection="row" paddingBottom={3}>
+          <VisualUpload
+            visual={avatar}
+            altText={t('visuals-alt-text.avatar.contributor.text', {
+              displayName: '',
+              altText: avatar?.alternativeText,
+            })}
+          />
+        </Box>
+      )}
       {(!visualTypes || visualTypes.includes(VisualType.Banner)) && (
         <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
           <VisualUpload
