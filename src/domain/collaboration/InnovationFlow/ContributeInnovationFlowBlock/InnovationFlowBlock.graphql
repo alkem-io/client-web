@@ -2,8 +2,8 @@ query InnovationFlowBlock(
   $spaceNameId: UUID_NAMEID!
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
 ) {
   space(ID: $spaceNameId) {
     id

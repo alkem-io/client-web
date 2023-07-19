@@ -21,7 +21,7 @@ const ListItem = ({ displayName, icon: Icon, activity = 0 }: ListItemProps) => {
   return (
     <Box>
       <Caption>
-        {Icon ? <Icon /> : undefined}
+        {Icon && <Icon />}
         {displayName} ({activity})
       </Caption>
     </Box>

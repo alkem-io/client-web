@@ -28,7 +28,6 @@ import InnovationFlowStates, {
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
-import { Box } from '@mui/material';
 import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
 
 interface JourneyCalloutsTabViewProps {
@@ -118,10 +117,8 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
       <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
           <PageContentColumn columns={4}>
-            <Box sx={{ border: '1px solid red' }}>
-              <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
-              <ContributeInnovationFlowBlock journeyTypeName={journeyTypeName} />
-            </Box>
+            <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
+            <ContributeInnovationFlowBlock journeyTypeName={journeyTypeName} />
             <PageContentBlock>
               <PageContentBlockHeader
                 title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}

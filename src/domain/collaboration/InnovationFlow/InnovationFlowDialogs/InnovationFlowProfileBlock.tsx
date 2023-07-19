@@ -2,7 +2,7 @@ import { AutoGraphOutlined, Close } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, Theme, useMediaQuery } from '@mui/material';
 import { FC, useState } from 'react';
-import { Lifecycle, Profile, Reference, Tagset, Visual } from '../../../../core/apollo/generated/graphql-schema';
+import { Lifecycle, Reference, TagsetType, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -13,11 +13,20 @@ import InnovationFlowProfileView from './InnovationFlowProfileView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import Icon from '../../../../core/ui/icon/Icon';
 
-export type InnovationFlowProfile = Pick<Profile, 'id' | 'displayName' | 'description'> & {
+export interface InnovationFlowProfile {
+  id: string;
+  displayName: string;
+  description?: string;
   bannerNarrow?: Visual;
-  tagsets?: Tagset[];
+  tagsets?: {
+    id: string;
+    name: string;
+    tags: string[];
+    allowedValues: string[];
+    type: TagsetType;
+  }[];
   references?: Reference[];
-};
+}
 
 export interface InnovationFlowProfileBlockProps {
   innovationFlow:

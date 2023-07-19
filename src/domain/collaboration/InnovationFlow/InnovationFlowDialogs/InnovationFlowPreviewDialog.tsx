@@ -15,12 +15,12 @@ interface InnovationFlowPreviewDialogProps extends CoreEntityIdTypes {
   onClose: () => void;
 }
 
-const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ open, onClose, ...location }) => {
+const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ open = false, onClose, ...location }) => {
   const { t } = useTranslation();
   const { data, state } = useInnovationFlowSettings(location);
   const { innovationFlow } = data;
   return (
-    <DialogWithGrid open={!!open} columns={12} onClose={onClose}>
+    <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>
           <InnovationFlowIcon /> {t('common.innovation-flow')}
