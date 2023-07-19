@@ -803,6 +803,7 @@ export type CollaborationCalloutsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
+  tagsets?: InputMaybe<Array<TagsetArgs>>;
 };
 
 export type Communication = {
@@ -1881,7 +1882,7 @@ export type Library = {
   id: Scalars['UUID'];
   /** A single Innovation Pack */
   innovationPack?: Maybe<InnovationPack>;
-  /** Platform level library. */
+  /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
   /** The StorageBucket with documents in use by this User */
   storageBucket?: Maybe<StorageBucket>;
@@ -4084,6 +4085,13 @@ export type Tagset = {
   type: TagsetType;
 };
 
+export type TagsetArgs = {
+  /** Return only Callouts that match one of the tagsets and any of the tags in them. */
+  name: Scalars['String'];
+  /** A list of tags to include. */
+  tags: Array<Scalars['String']>;
+};
+
 export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
   allowedValues: Array<Scalars['String']>;
@@ -4320,6 +4328,8 @@ export type UpdateInnovationFlowInput = {
   innovationFlowID: Scalars['UUID'];
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  /** The states on this InnovationFlow that should be selectable. */
+  visibleStates?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateInnovationFlowLifecycleTemplateInput = {
@@ -12444,18 +12454,49 @@ export type CalloutPageCalloutQuery = {
   };
 };
 
-export type InnovationFlowStatesAllowedValuesQueryVariables = Exact<{
+export type ChallengeInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type InnovationFlowStatesAllowedValuesQuery = {
+export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
     id: string;
     challenge: {
       __typename?: 'Challenge';
+      id: string;
+      innovationFlow?:
+        | {
+            __typename?: 'InnovationFlow';
+            id: string;
+            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              tagsets?:
+                | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                | undefined;
+            };
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
       id: string;
       innovationFlow?:
         | {
