@@ -6,6 +6,7 @@ import { Box, SvgIconProps } from '@mui/material';
 import { GrouppedCallout } from './useInnovationFlowSettings';
 import { groupBy } from 'lodash';
 import calloutIcons from '../../callout/utils/calloutIcons';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 
 interface InnovationFlowCollaborationToolsBlockProps {
   callouts: GrouppedCallout[];
@@ -36,11 +37,11 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   const groupedCallouts = groupBy(callouts, callout => callout.flowState);
 
   return (
-    <PageContentBlock disablePadding disableGap>
+    <PageContentBlock>
       <BlockTitle>{t('common.collaborationTools')}</BlockTitle>
-      <Box>
+      <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
         {flowStateAllowedValues.map(state => (
-          <PageContentBlock disablePadding disableGap>
+          <PageContentBlock columns={3}>
             <Caption>{state}</Caption>
             {groupedCallouts[state] &&
               groupedCallouts[state].length &&
@@ -53,7 +54,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
               ))}
           </PageContentBlock>
         ))}
-      </Box>
+      </ScrollableCardsLayoutContainer>
     </PageContentBlock>
   );
 };
