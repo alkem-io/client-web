@@ -20380,8 +20380,10 @@ export function refetchUsersWithCredentialsSimpleListQuery(
 export const MeDocument = gql`
   query me {
     me {
-      ...UserDetails
-      ...UserAgent
+      user {
+        ...UserDetails
+        ...UserAgent
+      }
     }
   }
   ${UserDetailsFragmentDoc}
@@ -20420,57 +20422,6 @@ export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>;
 export function refetchMeQuery(variables?: SchemaTypes.MeQueryVariables) {
   return { query: MeDocument, variables: variables };
-}
-
-export const MeHasProfileDocument = gql`
-  query meHasProfile {
-    meHasProfile
-  }
-`;
-
-/**
- * __useMeHasProfileQuery__
- *
- * To run a query within a React component, call `useMeHasProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeHasProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMeHasProfileQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMeHasProfileQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>(
-    MeHasProfileDocument,
-    options
-  );
-}
-
-export function useMeHasProfileLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.MeHasProfileQuery, SchemaTypes.MeHasProfileQueryVariables>(
-    MeHasProfileDocument,
-    options
-  );
-}
-
-export type MeHasProfileQueryHookResult = ReturnType<typeof useMeHasProfileQuery>;
-export type MeHasProfileLazyQueryHookResult = ReturnType<typeof useMeHasProfileLazyQuery>;
-export type MeHasProfileQueryResult = Apollo.QueryResult<
-  SchemaTypes.MeHasProfileQuery,
-  SchemaTypes.MeHasProfileQueryVariables
->;
-export function refetchMeHasProfileQuery(variables?: SchemaTypes.MeHasProfileQueryVariables) {
-  return { query: MeHasProfileDocument, variables: variables };
 }
 
 export const UserListDocument = gql`
@@ -22364,7 +22315,9 @@ export type BeginCommunityMemberCredentialOfferInteractionMutationOptions = Apol
 export const UserSsiDocument = gql`
   query userSsi {
     me {
-      ...UserAgentSsi
+      user {
+        ...UserAgentSsi
+      }
     }
   }
   ${UserAgentSsiFragmentDoc}

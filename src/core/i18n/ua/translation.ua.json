@@ -212,6 +212,7 @@
     "interests": "Інтереси",
     "project": "Проект",
     "role": "Role",
+    "agreement": "Agreement",
     "agreements": "Agreements",
     "templates": "Templates",
     "template": "Template",
@@ -284,11 +285,29 @@
       "male": "Чоловіча",
       "female": "Жіноча"
     },
+    "journeyTypes": {
+      "space": "$t(common.space)",
+      "space_plural": "$t(common.spaces)",
+      "challenge": "$t(common.challenge)",
+      "challenge_plural": "$t(common.challenges)",
+      "opportunity": "$t(common.opportunity)",
+      "opportunity_plural": "$t(common.opportunities)",
+      "agreement": "$t(common.agreement)",
+      "agreement_plural": "$t(common.agreements)"
+    },
     "verified-status": {
       "verified": "Підтверджено",
       "not-verified": ""
     },
     "enums": {
+      "innovationFlowState": {
+        "new": "New",
+        "beingRefined": "Being Refined",
+        "inProgress": "In Progress",
+        "complete": "Complete",
+        "abandoned": "Abandoned",
+        "archived": "Archived"
+      },
       "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
@@ -416,6 +435,19 @@
     "blocks": {
       "users-contributing": "користувачі, які роблять внесок",
       "all-contributing-users": "всі учасники"
+    },
+    "time": {
+      "timeAgo": "{{time}} ago",
+      "second": "{{count}} second",
+      "second_plural": "{{count}} seconds",
+      "minute": "{{count}} minute",
+      "minute_plural": "{{count}} minutes",
+      "hour": "{{count}} hour",
+      "hour_plural": "{{count}} hours",
+      "day": "{{count}} day",
+      "day_plural": "{{count}} days",
+      "month": "{{count}} month",
+      "month_plural": "{{count}} months"
     }
   },
   "community": {
@@ -446,9 +478,40 @@
       "applicationRejected": "Application Rejected",
       "applicationArchived": "Application Archived"
     },
+    "invitationStatus": {
+      "invited": "Invited",
+      "accepted": "Invitation Accepted",
+      "rejected": "Invitation Rejected"
+    },
+    "invitationExternalStatus": {
+      "invited": "Invited to join Alkemio & this Space"
+    },
     "confirmDeleteApplication": {
       "title": "Deleting application from {{user}}",
       "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+    },
+    "confirmDeleteInvitation": {
+      "title": "Deleting invitation from {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "confirmDeleteInvitationExternal": {
+      "title": "Deleting invitation from {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "pendingMembership": {
+      "pendingMemberships": "Pending Memberships",
+      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
+      "invitationsSectionTitle": "Invitations",
+      "applicationsSectionTitle": "Open applications",
+      "invitationDialog": {
+        "title": "Pending Membership: {{journey}}",
+        "actions": {
+          "hide": "Hide this invitation",
+          "reject": "Decline",
+          "accept": "Join"
+        }
+      },
+      "invitationTitle": "{{time}} {{user}} invited you to <journeyicon /> {{journey}}"
     },
     "memberSettings": {
       "title": "Member Settings",
@@ -697,6 +760,23 @@
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
     },
+    "innovationFlowStateSelector": {
+      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
+    },
+    "invitations": {
+      "inviteExistingUser": "Invite Alkemio users",
+      "inviteExternalUser": "Send email invitation",
+      "inviteByURL": "Copy magic \u2028URL",
+      "inviteOrganizations": "Invite Organizations",
+      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "inviteExistingUserDialog": {
+        "title": "Invite other Alkemio users to join this Space",
+        "subtitle": "You can search for Alkemio users below and attach a personalized message."
+      },
+      "inviteExternalUserDialog": {
+        "title": "Send an email invitation"
+      }
+    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Deleting comment",
@@ -783,28 +863,28 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "published a new $t(common.callout)",
-        "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
-        "post-comment-created": "commented on '{{postDisplayName}}'",
-        "post-created": "added a Post to '{{calloutDisplayName}}'",
-        "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
-        "challenge-created": "created a new $t(common.challenge)",
-        "opportunity-created": "created a new $t(common.opportunity)",
-        "update-sent": "shared a new $t(common.update)"
+        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' опублікував новий $t(common.callout)",
+        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' створив новий $t(common.challenge)",
+        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' прокоментував '{{calloutDisplayName}}'",
+        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' приєднався до {{communityType}} '{{communityDisplayName}}'",
+        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' створив новий $t(common.opportunity)",
+        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' прокоментував '{{postDisplayName}}'",
+        "post-created": "{{time}} '<userlink>{{user}}</userlink>' додав Допис до '{{calloutDisplayName}}'",
+        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' поділився новим $t(common.update)",
+        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' додав а $t(common.whiteboard) до '{{calloutDisplayName}}'"
       },
+      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
       "activity-description": {
         "callout-published": "{{displayName}}",
-        "whiteboard-created": "{{displayName}}",
-        "post-comment-created": "{{comment}}",
-        "post-created": "{{postDisplayName}} - {{postDescription}}",
+        "challenge-created": "{{displayName}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
-        "challenge-created": "{{displayName}}",
         "opportunity-created": "{{displayName}}",
-        "update-sent": "{{update}}"
-      },
-      "parent-details": "in {{displayName}}"
+        "post-comment-created": "{{comment}}",
+        "post-created": "{{postDisplayName}} - {{postDescription}}",
+        "update-sent": "{{update}}",
+        "whiteboard-created": "{{displayName}}"
+      }
     },
     "lifecycle-visualizer": {
       "error": "The definition was not able to be visualized"
@@ -1725,6 +1805,9 @@
       "sections": {
         "dashboard": {
           "organization": "Facilitating organization",
+          "hostTooltip": "The host is the organization responsible for the creation of the Space.",
+          "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
+          "leadingOrganizations": "Leading Organizations",
           "activity": "Space statistics",
           "community": "Community"
         },
@@ -2081,6 +2164,10 @@
       "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved Post to the new Callout.",
       "error": "Something went wrong when moving the Post, please try again."
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this Post?",
+      "description": "This action cannot be undone"
     }
   },
   "innovation-edit": {

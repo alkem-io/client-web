@@ -8,11 +8,14 @@ import {
   useUpdateCalloutVisibilityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   spaceId: string;
   canCreateCallout: boolean;
   group: string;
+  createButtonPlace?: 'top' | 'bottom';
 }
 
 const CalloutsGroupView = ({
@@ -20,6 +23,7 @@ const CalloutsGroupView = ({
   calloutNames,
   canCreateCallout,
   group,
+  createButtonPlace = 'bottom',
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -54,10 +58,21 @@ const CalloutsGroupView = ({
     [updateCalloutVisibility]
   );
 
+  const columns = useColumns();
+
+  const { t } = useTranslation();
+
+  const createButton = (
+    <AddContentButton onClick={handleCreate}>
+      {columns > 4 ? t('callout.createFull') : t('common.add')}
+    </AddContentButton>
+  );
+
   return (
     <>
+      {canCreateCallout && createButtonPlace === 'top' && createButton}
       <CalloutsView calloutNames={calloutNames} {...calloutsViewProps} />
-      {canCreateCallout && <AddContentButton onClick={handleCreate} />}
+      {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}

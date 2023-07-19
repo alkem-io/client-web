@@ -8,8 +8,7 @@ import LinksList from '../../../../core/ui/list/LinksList';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import useCallouts, { TypedCallout } from '../useCallouts/useCallouts';
-import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
+import useCallouts from '../useCallouts/useCallouts';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
 import calloutIcons from '../utils/calloutIcons';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
@@ -28,6 +27,7 @@ import InnovationFlowStates, {
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 import { Box } from '@mui/material';
 import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
 
@@ -63,16 +63,18 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     spaceNameId,
     challengeNameId,
     opportunityNameId,
-    innovationFlowState: selectedInnovationFlowState,
   });
 
-  const callouts = allCallouts?.filter(callout => callout.group !== CalloutsGroup.HomeTop);
+  const callouts = allCallouts
+    ?.filter(callout => callout.group !== CalloutsGroup.HomeTop)
+    ?.filter(callout => {
+      if (!selectedInnovationFlowState) {
+        return true;
+      }
+      return callout.flowStates?.includes(selectedInnovationFlowState);
+    });
 
   const { t } = useTranslation();
-
-  const buildCalloutTitle = (callout: TypedCallout) => {
-    return <EllipsableWithCount count={callout.activity}>{callout.profile.displayName}</EllipsableWithCount>;
-  };
 
   const {
     isCalloutCreationDialogOpen,
@@ -129,7 +131,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
                   const CalloutIcon = calloutIcons[callout.type];
                   return {
                     id: callout.id,
-                    title: buildCalloutTitle(callout),
+                    title: <JourneyCalloutsListItemTitle callout={callout} />,
                     icon: <CalloutIcon />,
                     uri: buildCalloutUrl(callout.nameID, {
                       spaceNameId,
@@ -169,6 +171,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
+              createButtonPlace="top"
             />
           </PageContentColumn>
         </PageContent>
