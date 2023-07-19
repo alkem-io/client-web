@@ -14,11 +14,13 @@ import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schem
 
 export interface SpaceCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
+  tagline: string;
   spaceId?: string;
   displayName: string;
   vision: string;
   membersCount: number;
   spaceVisibility?: SpaceVisibility;
+  journeyUri: string;
 }
 
 const SpaceCard = ({
@@ -43,7 +45,6 @@ const SpaceCard = ({
   return (
     <JourneyCard
       iconComponent={HubOutlined}
-      tagline={tagline}
       member={isMember}
       header={
         <>

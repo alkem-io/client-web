@@ -803,6 +803,7 @@ export type CollaborationCalloutsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
+  tagsets?: InputMaybe<Array<TagsetArgs>>;
 };
 
 export type Communication = {
@@ -1881,7 +1882,7 @@ export type Library = {
   id: Scalars['UUID'];
   /** A single Innovation Pack */
   innovationPack?: Maybe<InnovationPack>;
-  /** Platform level library. */
+  /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
   /** The StorageBucket with documents in use by this User */
   storageBucket?: Maybe<StorageBucket>;
@@ -1917,6 +1918,30 @@ export type Location = {
   id: Scalars['UUID'];
   postalCode: Scalars['String'];
   stateOrProvince: Scalars['String'];
+};
+
+export type MeQueryResults = {
+  __typename?: 'MeQueryResults';
+  /** The applications of the current authenticated user */
+  applications: Array<Application>;
+  /** The invitations of the current authenticated user */
+  invitations: Array<Invitation>;
+  /** The applications of the current authenticated user */
+  spaceMemberships: Array<Space>;
+  /** The current authenticated User;  null if not yet registered on the platform */
+  user?: Maybe<User>;
+};
+
+export type MeQueryResultsApplicationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type MeQueryResultsInvitationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type MeQueryResultsSpaceMembershipsArgs = {
+  visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
@@ -3245,10 +3270,8 @@ export type Query = {
   context: Context;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
-  /** The currently logged in user */
-  me: User;
-  /** Check if the currently logged in user has a User profile */
-  meHasProfile: Scalars['Boolean'];
+  /** Information about the current authenticated user */
+  me: MeQueryResults;
   /** Alkemio Services Metadata */
   metadata: Metadata;
   /** A particular Organization */
@@ -4062,6 +4085,13 @@ export type Tagset = {
   type: TagsetType;
 };
 
+export type TagsetArgs = {
+  /** Return only Callouts that match one of the tagsets and any of the tags in them. */
+  name: Scalars['String'];
+  /** A list of tags to include. */
+  tags: Array<Scalars['String']>;
+};
+
 export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
   allowedValues: Array<Scalars['String']>;
@@ -4298,6 +4328,8 @@ export type UpdateInnovationFlowInput = {
   innovationFlowID: Scalars['UUID'];
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  /** The states on this InnovationFlow that should be selectable. */
+  visibleStates?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateInnovationFlowLifecycleTemplateInput = {
@@ -12422,18 +12454,49 @@ export type CalloutPageCalloutQuery = {
   };
 };
 
-export type InnovationFlowStatesAllowedValuesQueryVariables = Exact<{
+export type ChallengeInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type InnovationFlowStatesAllowedValuesQuery = {
+export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
     id: string;
     challenge: {
       __typename?: 'Challenge';
+      id: string;
+      innovationFlow?:
+        | {
+            __typename?: 'InnovationFlow';
+            id: string;
+            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              tagsets?:
+                | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                | undefined;
+            };
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
       id: string;
       innovationFlow?:
         | {
@@ -24416,67 +24479,74 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    gender: string;
-    phone: string;
-    accountUpn: string;
-    agent?:
+    __typename?: 'MeQueryResults';
+    user?:
       | {
-          __typename?: 'Agent';
+          __typename?: 'User';
           id: string;
-          did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          gender: string;
+          phone: string;
+          accountUpn: string;
+          agent?:
+            | {
+                __typename?: 'Agent';
+                id: string;
+                did?: string | undefined;
+                credentials?:
+                  | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+                  | undefined;
+              }
             | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            description?: string | undefined;
+            location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+          };
         }
       | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline: string;
-      description?: string | undefined;
-      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
   };
 };
-
-export type MeHasProfileQueryVariables = Exact<{ [key: string]: never }>;
-
-export type MeHasProfileQuery = { __typename?: 'Query'; meHasProfile: boolean };
 
 export type UserListQueryVariables = Exact<{
   first: Scalars['Int'];
@@ -24604,11 +24674,11 @@ export type PendingMembershipsSpaceQuery = {
     id: string;
     profile: {
       __typename?: 'Profile';
-      description?: string | undefined;
+      tagline: string;
       id: string;
       displayName: string;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     };
   };
 };
@@ -24629,11 +24699,11 @@ export type PendingMembershipsChallengeQuery = {
       id: string;
       profile: {
         __typename?: 'Profile';
-        description?: string | undefined;
+        tagline: string;
         id: string;
         displayName: string;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
     };
   };
@@ -24655,11 +24725,11 @@ export type PendingMembershipsOpportunityQuery = {
       id: string;
       profile: {
         __typename?: 'Profile';
-        description?: string | undefined;
+        tagline: string;
         id: string;
         displayName: string;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
     };
   };
@@ -24680,11 +24750,11 @@ export type PendingMembershipsUserQuery = {
 
 export type PendingMembershipsJourneyProfileFragment = {
   __typename?: 'Profile';
-  description?: string | undefined;
+  tagline: string;
   id: string;
   displayName: string;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-  banner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type PendingMembershipsMembershipsFragment = {
@@ -25587,28 +25657,33 @@ export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
 export type UserSsiQuery = {
   __typename?: 'Query';
   me: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    agent?:
+    __typename?: 'MeQueryResults';
+    user?:
       | {
-          __typename?: 'Agent';
+          __typename?: 'User';
           id: string;
-          did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-            | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                context: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                name: string;
-                type: string;
-                claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
-              }>
+          nameID: string;
+          agent?:
+            | {
+                __typename?: 'Agent';
+                id: string;
+                did?: string | undefined;
+                credentials?:
+                  | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+                  | undefined;
+                verifiedCredentials?:
+                  | Array<{
+                      __typename?: 'VerifiedCredential';
+                      context: string;
+                      issued: string;
+                      expires: string;
+                      issuer: string;
+                      name: string;
+                      type: string;
+                      claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
+                    }>
+                  | undefined;
+              }
             | undefined;
         }
       | undefined;

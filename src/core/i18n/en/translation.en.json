@@ -20,7 +20,8 @@
     "bg": "Bulgarian",
     "ua": "Ukranian",
     "de": "German",
-    "fr": "French"
+    "fr": "French",
+    "inContextTool": "In context translation"
   },
   "fields": {
     "displayName": "Title",
@@ -212,6 +213,7 @@
     "interests": "Interests",
     "project": "Project",
     "role": "Role",
+    "agreement": "Agreement",
     "agreements": "Agreements",
     "templates": "Templates",
     "template": "Template",
@@ -283,6 +285,16 @@
       "notSpecified": "not specified",
       "male": "male",
       "female": "female"
+    },
+    "journeyTypes": {
+      "space": "$t(common.space)",
+      "space_plural": "$t(common.spaces)",
+      "challenge": "$t(common.challenge)",
+      "challenge_plural": "$t(common.challenges)",
+      "opportunity": "$t(common.opportunity)",
+      "opportunity_plural": "$t(common.opportunities)",
+      "agreement": "$t(common.agreement)",
+      "agreement_plural": "$t(common.agreements)"
     },
     "verified-status": {
       "verified": "Verified",
@@ -516,6 +528,7 @@
     }
   },
   "callout": {
+    "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",

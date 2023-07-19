@@ -3,7 +3,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../types/TranslationKey';
 import { buildJourneyUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
-import { Author } from '../AuthorAvatar/models/author';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
 import { Link } from '@mui/material';
 import journeyIcon from '../JourneyIcon/JourneyIcon';
@@ -17,7 +16,10 @@ export interface ActivityDescriptionProps {
   journeyDisplayName?: string; // Callout name or Journey name
   journeyLocation?: JourneyLocation;
   journeyTypeName: JourneyTypeName | undefined;
-  author?: Author;
+  author?: {
+    displayName: string;
+    url?: string;
+  };
   withLinkToParent?: boolean;
 }
 

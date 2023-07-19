@@ -4,7 +4,7 @@ import { Box, Button } from '@mui/material';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import getJourneyChildrenTranslationKey from '../../../../../common/utils/translation/getJourneyChildrenTranslationKey';
+import getJourneyChildrenTranslation from '../../../../../common/utils/translation/getJourneyChildrenTranslation';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 interface ChildJourneyCreateProps {
@@ -20,7 +20,7 @@ const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSuben
     <PageContentBlock accent>
       <WrapperMarkdown>
         {t('pages.generic.sections.subentities.description', {
-          entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
+          entities: getJourneyChildrenTranslation(t, journeyTypeName),
           parentEntity: t(`common.${journeyTypeName}` as const),
         })}
       </WrapperMarkdown>

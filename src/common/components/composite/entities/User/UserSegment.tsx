@@ -23,6 +23,7 @@ import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
 import PendingMembershipsUserMenuItem from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
+import { HdrStrongOutlined } from '@mui/icons-material';
 
 const PREFIX = 'UserSegment';
 
@@ -116,11 +117,21 @@ const UserSegment = <El extends ElementType>({
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.my-profile')} />
               </ListItemButton>
-              <PendingMembershipsUserMenuItem
-                onClick={() => {
-                  setDropdownOpen(false);
-                }}
-              />
+              <PendingMembershipsUserMenuItem>
+                {({ header, openDialog }) => (
+                  <ListItemButton
+                    onClick={() => {
+                      openDialog();
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <HdrStrongOutlined />
+                    </ListItemIcon>
+                    <ListItemText primary={header} />
+                  </ListItemButton>
+                )}
+              </PendingMembershipsUserMenuItem>
               {isAdmin && (
                 <ListItemButton
                   onClick={() => {
