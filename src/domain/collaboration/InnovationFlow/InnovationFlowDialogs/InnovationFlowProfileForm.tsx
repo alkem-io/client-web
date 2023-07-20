@@ -52,14 +52,7 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile
   });
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize
-      onSubmit={async values => {
-        handleSave(values);
-      }}
-    >
+    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={handleSave}>
       {({ values: { references }, handleSubmit }) => {
         return (
           <Gutters>
