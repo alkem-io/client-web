@@ -41,7 +41,9 @@ const InnovationFlowStates = ({
         backgroundColor: theme.palette.highlight.light,
       };
     }
-    return {};
+    return {
+      backgroundColor: theme.palette.background.paper,
+    };
   };
 
   const theme = useTheme();
