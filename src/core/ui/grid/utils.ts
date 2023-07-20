@@ -14,7 +14,7 @@ export const gutters =
   (theme: Theme) =>
     theme.spacing(GUTTER_MUI * num);
 
-interface UseGridItemProvided {
+export interface UseGridItemProvided {
   (columns?: number): {
     width: string;
     flexGrow: 0;

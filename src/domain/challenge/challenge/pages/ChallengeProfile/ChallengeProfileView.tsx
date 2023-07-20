@@ -18,6 +18,7 @@ import ProfileForm, { ProfileFormValues } from '../../../../../common/components
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import Gutters from '../../../../../core/ui/grid/Gutters';
+import { VisualType } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ChallengeProfileViewProps {
   mode: FormMode;
@@ -123,7 +124,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
         <WrapperTypography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
         </WrapperTypography>
-        <EditVisualsView visuals={challenge?.profile.visuals} />
+        <EditVisualsView visuals={challenge?.profile.visuals} visualTypes={[VisualType.Avatar, VisualType.Card]} />
       </Grid>
     </Gutters>
   );

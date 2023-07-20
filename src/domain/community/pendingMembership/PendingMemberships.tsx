@@ -9,14 +9,14 @@ import {
 import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 import { PendingMembershipsQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useUserContext } from '../contributor/user';
-import { JourneyCardBanner } from '../../challenge/common/JourneyCard/JourneyCard';
+import { Visual } from '../../common/visual/Visual';
 
 interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
   journeyDisplayName: string;
   journeyTagline: string | undefined;
   journeyTags: string[] | undefined;
-  journeyCardBanner: JourneyCardBanner | undefined;
+  journeyCardBanner: Visual | undefined;
 }
 
 export interface InvitationWithMeta extends JourneyDetails {
