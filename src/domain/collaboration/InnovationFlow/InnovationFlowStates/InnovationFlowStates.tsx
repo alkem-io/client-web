@@ -5,6 +5,7 @@ import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../types/TranslationKey';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export type InnovationFlowState = string;
 
@@ -55,13 +56,13 @@ const InnovationFlowStates = ({
 
   return (
     <PageContentBlockSeamless disablePadding>
-      <Gutters row justifyContent="space-around">
+      <Gutters row justifyContent="space-around" flexWrap="wrap">
         {states.map(state => (
           <Button
             key={state}
             variant={getStateButtonVariant(state)}
             disableElevation
-            sx={{ textTransform: 'none', ...getStateButtonSx(state) }}
+            sx={{ textTransform: 'none', minHeight: gutters(2), ...getStateButtonSx(state) }}
             onClick={() => onSelectState?.(state)}
           >
             <BlockTitle fontWeight="bold">{getStateName(state)}</BlockTitle>
