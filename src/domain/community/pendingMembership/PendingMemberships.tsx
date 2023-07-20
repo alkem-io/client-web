@@ -6,7 +6,7 @@ import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { JourneyTypeName } from '../../challenge/JourneyTypeName';
+import { JourneyTypeName, getJourneyTypeName } from '../../challenge/JourneyTypeName';
 import { PendingMembershipsQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useUserContext } from '../contributor/user';
 import { JourneyCardBanner } from '../../challenge/common/JourneyCard/JourneyCard';
@@ -81,22 +81,6 @@ interface InvitationHydratorProps {
   children: (provided: InvitationHydratorProvided) => ReactNode;
 }
 
-const getJourneyTypeName = ({
-  challengeID,
-  opportunityID,
-}: {
-  challengeID?: string;
-  opportunityID?: string;
-}): JourneyTypeName => {
-  if (opportunityID) {
-    return 'opportunity';
-  }
-  if (challengeID) {
-    return 'challenge';
-  }
-  return 'space';
-};
-
 export const InvitationHydrator = ({ invitation, withJourneyDetails = false, children }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
@@ -144,7 +128,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       createdDate: invitation.createdDate,
       userDisplayName: createdBy.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getJourneyTypeName(invitation),
+      journeyTypeName: getJourneyTypeName(invitation.challengeID, invitation.opportunityID),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
       journeyCardBanner: journey.profile.cardBanner,
@@ -199,7 +183,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
     return {
       id: application.id,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getJourneyTypeName(application),
+      journeyTypeName: getJourneyTypeName(application.challengeID, application.opportunityID),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
       journeyCardBanner: journey.profile.cardBanner,

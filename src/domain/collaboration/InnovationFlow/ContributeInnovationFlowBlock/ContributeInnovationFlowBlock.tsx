@@ -5,7 +5,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useInnovationFlowBlockQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { getJourneyTypeName } from '../../../challenge/JourneyTypeName';
 import Image from '../../../shared/components/Image';
 import { Link, Skeleton } from '@mui/material';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
@@ -13,21 +13,21 @@ import { Text } from '../../../../core/ui/typography';
 import { times } from 'lodash';
 import InnovationFlowPreviewDialog from '../InnovationFlowDialogs/InnovationFlowPreviewDialog';
 
-interface ContributeInnovationFlowBlockProps {
-  journeyTypeName: JourneyTypeName;
-}
+interface ContributeInnovationFlowBlockProps {}
 
-export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProps> = ({ journeyTypeName }) => {
+export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProps> = () => {
   const { t } = useTranslation();
 
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const journeyTypeName = getJourneyTypeName(challengeNameId, opportunityNameId);
+
   const { data, loading } = useInnovationFlowBlockQuery({
     variables: {
       spaceNameId: spaceNameId!,
       challengeNameId,
       opportunityNameId,
-      includeChallenge: !opportunityNameId,
-      includeOpportunity: !!opportunityNameId,
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
     },
     skip: !spaceNameId || (!challengeNameId && !opportunityNameId),
   });
