@@ -44,6 +44,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   const { innovationFlowStates, currentInnovationFlowState } = useInnovationFlowStates({
     spaceId: spaceNameId,
     challengeId: challengeNameId!,
+    opportunityId: opportunityNameId,
   });
 
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
