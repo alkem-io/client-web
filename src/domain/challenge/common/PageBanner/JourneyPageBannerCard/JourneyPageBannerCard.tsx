@@ -71,7 +71,17 @@ const JourneyPageBannerCard = ({
           <Trans
             i18nKey="components.journeyPageBannerCard.parentJourney"
             values={{ journey: parentJourneyDisplayName }}
-            components={{ journeyicon: <ParentJourneyIcon fontSize="inherit" /> }}
+            components={{
+              journeyicon: (
+                <ParentJourneyIcon
+                  fontSize="inherit"
+                  sx={{
+                    marginX: theme => theme.spacing(0.25),
+                    verticalAlign: 'middle',
+                  }}
+                />
+              ),
+            }}
             t={t}
           />
         </RouterLink>
@@ -87,7 +97,7 @@ const JourneyPageBannerCard = ({
       >
         <Box display="flex" flexDirection="column" gap={gutters(0.5)}>
           <PageTitle color="primary">
-            <JourneyIcon fontSize="inherit" sx={{ verticalAlign: 'bottom' }} />
+            <JourneyIcon fontSize="inherit" sx={{ marginRight: gutters(0.25), verticalAlign: 'bottom' }} />
             {journeyDisplayName}
           </PageTitle>
           <Caption color="primary" fontStyle="italic">
