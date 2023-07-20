@@ -4,6 +4,7 @@ import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useLoadingState from '../../../shared/utils/useLoadingState';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface LifecycleStateSelectorProps {
   currentState: string | undefined;
@@ -27,7 +28,7 @@ const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState,
       {nextEvents && (
         <>
           <BlockSectionTitle>{t('components.lifecycles.changeState')}</BlockSectionTitle>
-          <Box>
+          <Box display="flex" gap={gutters(0.5)}>
             {nextEvents?.map(nextEvent => (
               <Chip
                 disabled={loading}

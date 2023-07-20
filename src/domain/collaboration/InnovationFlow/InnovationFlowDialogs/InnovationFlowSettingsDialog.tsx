@@ -17,13 +17,17 @@ interface InnovationFlowSettingsDialogProps extends CoreEntityIdTypes {
   onClose: () => void;
 }
 
-const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open, onClose, ...location }) => {
+const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
+  open = false,
+  onClose,
+  ...location
+}) => {
   const { t } = useTranslation();
   const { data, actions, state } = useInnovationFlowSettings(location);
   const { innovationFlow, callouts, flowStateAllowedValues } = data;
 
   return (
-    <DialogWithGrid open={!!open} columns={12} onClose={onClose}>
+    <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>
           <InnovationFlowIcon /> {t('common.innovation-flow')}
@@ -31,14 +35,23 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
       </DialogHeader>
       <DialogContent sx={{ paddingTop: 0 }}>
         <Gutters disablePadding>
-          <InnovationFlowProfileBlock innovationFlow={innovationFlow} loading={state.loading} editable>
+          <InnovationFlowProfileBlock
+            innovationFlow={innovationFlow}
+            loading={state.loading}
+            onUpdate={actions.updateInnovationFlowProfile}
+            editable
+          >
             <LifecycleStateSelector
               currentState={innovationFlow?.lifecycle?.state}
               nextEvents={innovationFlow?.lifecycle?.nextEvents}
               onNextEventClick={nextEvent => actions.nextEvent(nextEvent)}
             />
           </InnovationFlowProfileBlock>
-          <InnovationFlowCollaborationToolsBlock flowStateAllowedValues={flowStateAllowedValues} callouts={callouts} />
+          <InnovationFlowCollaborationToolsBlock
+            flowStateAllowedValues={flowStateAllowedValues}
+            callouts={callouts}
+            onUpdateCalloutFlowState={actions.updateCalloutFlowState}
+          />
         </Gutters>
       </DialogContent>
     </DialogWithGrid>

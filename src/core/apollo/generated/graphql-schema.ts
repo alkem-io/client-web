@@ -1882,7 +1882,7 @@ export type Library = {
   id: Scalars['UUID'];
   /** A single Innovation Pack */
   innovationPack?: Maybe<InnovationPack>;
-  /** Platform level library. */
+  /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
   /** The StorageBucket with documents in use by this User */
   storageBucket?: Maybe<StorageBucket>;
@@ -4328,6 +4328,8 @@ export type UpdateInnovationFlowInput = {
   innovationFlowID: Scalars['UUID'];
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  /** The states on this InnovationFlow that should be selectable. */
+  visibleStates?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateInnovationFlowLifecycleTemplateInput = {
@@ -12803,6 +12805,43 @@ export type InnovationFlowCollaborationFragment = {
         };
       }>
     | undefined;
+};
+
+export type UpdateInnovationFlowMutationVariables = Exact<{
+  updateInnovationFlowData: UpdateInnovationFlowInput;
+}>;
+
+export type UpdateInnovationFlowMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlow: { __typename?: 'InnovationFlow'; id: string };
+};
+
+export type UpdateCalloutFlowStateMutationVariables = Exact<{
+  calloutId: Scalars['UUID'];
+  flowStateTagsetId: Scalars['UUID'];
+  value: Scalars['String'];
+}>;
+
+export type UpdateCalloutFlowStateMutation = {
+  __typename?: 'Mutation';
+  updateCallout: {
+    __typename?: 'Callout';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  };
 };
 
 export type InnovationFlowStatesAllowedValuesQueryVariables = Exact<{

@@ -2,13 +2,19 @@ import { AutoGraphOutlined, Close } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, Theme, useMediaQuery } from '@mui/material';
 import { FC, useState } from 'react';
-import { Lifecycle, Reference, TagsetType, Visual } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  Lifecycle,
+  Reference,
+  TagsetType,
+  UpdateProfileInput,
+  Visual,
+} from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { BlockTitle } from '../../../../core/ui/typography';
-import InnovationFlowProfileForm from './InnovationFlowProfileForm';
+import InnovationFlowProfileForm, { InnovationFlowProfileFormValues } from './InnovationFlowProfileForm';
 import InnovationFlowProfileView from './InnovationFlowProfileView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import Icon from '../../../../core/ui/icon/Icon';
@@ -18,6 +24,9 @@ export interface InnovationFlowProfile {
   displayName: string;
   description?: string;
   bannerNarrow?: Visual;
+  tags?: {
+    tags: string[];
+  };
   tagsets?: {
     id: string;
     name: string;
@@ -31,36 +40,54 @@ export interface InnovationFlowProfile {
 export interface InnovationFlowProfileBlockProps {
   innovationFlow:
     | {
+        id: string;
         profile: InnovationFlowProfile;
         lifecycle?: Pick<Lifecycle, 'state' | 'stateIsFinal' | 'nextEvents'>;
       }
     | undefined;
   editable?: boolean;
+  onUpdate?: (innovationFlowID: string, profileData: UpdateProfileInput) => Promise<unknown> | void;
   loading?: boolean;
 }
 
 const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
   editable = false,
+  onUpdate,
   innovationFlow,
   children,
 }) => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [editMode, setEditMode] = useState(false);
 
+  const handleUpdateProfile = async (innovationFlowId: string, profileData: InnovationFlowProfileFormValues) => {
+    await onUpdate?.(innovationFlowId, {
+      displayName: profileData.displayName,
+      description: profileData.description,
+      // TODO: Pending Tags
+      references: profileData.references.map(({ id, ...reference }) => ({
+        ID: id,
+        ...reference,
+      })),
+    });
+    setEditMode(false);
+  };
+
   return (
     <PageContentBlock disablePadding disableGap>
       <PageContentBlockGrid disablePadding>
         {editMode && innovationFlow && (
-          <InnovationFlowProfileForm
-            profile={innovationFlow?.profile}
-            onSubmit={() => {}}
-            onCancel={() => setEditMode(false)}
-          />
+          <PageContentColumn columns={isMobile ? 8 : 6}>
+            <InnovationFlowProfileForm
+              profile={innovationFlow.profile}
+              onSubmit={profileData => handleUpdateProfile(innovationFlow.id, profileData)}
+              onCancel={() => setEditMode(false)}
+            />
+          </PageContentColumn>
         )}
         {!editMode && (
           <>
             <PageContentColumn columns={isMobile ? 8 : 6}>
-              <Gutters maxWidth="100%">
+              <Gutters width="100%">
                 <Box display="flex" justifyContent="space-between">
                   <BlockTitle>{innovationFlow?.profile.displayName}</BlockTitle>
                   {editable && (

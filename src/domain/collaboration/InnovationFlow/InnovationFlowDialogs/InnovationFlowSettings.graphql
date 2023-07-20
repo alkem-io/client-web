@@ -48,6 +48,9 @@ fragment LifecycleProfile on Profile {
   id
   displayName
   description
+  # tags: tagset {
+  #   ...TagsetDetails
+  # }
   tagsets {
     ...TagsetDetails
   }
@@ -83,6 +86,27 @@ fragment InnovationFlowCollaboration on Collaboration {
       id
       displayName
       # TODO: This would be easier with a tagset(name:'flow-state')
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+}
+
+mutation UpdateInnovationFlow($updateInnovationFlowData: UpdateInnovationFlowInput!) {
+  updateInnovationFlow(innovationFlowData: $updateInnovationFlowData) {
+    id
+  }
+}
+
+mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
+  updateCallout(
+    calloutData: { ID: $calloutId, profileData: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
+  ) {
+    id
+    profile {
+      id
+      # TODO: Retrieve only the 'flow-state' tagset
       tagsets {
         ...TagsetDetails
       }

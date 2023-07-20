@@ -13,6 +13,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 interface InnovationFlowCollaborationToolsBlockProps {
   callouts: GrouppedCallout[];
   flowStateAllowedValues: string[];
+  onUpdateCalloutFlowState: (calloutId: string, flowStateTagsetId: string, newValue: string) => Promise<unknown> | void;
 }
 
 interface ListItemProps extends BoxProps {
@@ -36,12 +37,22 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,
+  onUpdateCalloutFlowState,
   flowStateAllowedValues,
 }) => {
   const { t } = useTranslation();
   const groupedCallouts = groupBy(callouts, callout => callout.flowState);
 
-  const handleDragEnd: OnDragEndResponder = () => {};
+  const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
+    const flowStateTagsetId = callouts.find(callout => callout.id === draggableId)?.flowStateId;
+    if (onUpdateCalloutFlowState && flowStateTagsetId) {
+      onUpdateCalloutFlowState(draggableId, flowStateTagsetId, destination.droppableId);
+    }
+  };
+
+  //!! const [handleSave, loading] = useLoadingState(async (profileData: InnovationFlowProfileFormValues) => {
+  //   await onSubmit(profileData);
+  // });
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>

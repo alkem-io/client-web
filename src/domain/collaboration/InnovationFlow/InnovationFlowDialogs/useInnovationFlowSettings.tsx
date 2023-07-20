@@ -3,16 +3,19 @@ import {
   useChallengeInnovationFlowEventMutation,
   useInnovationFlowSettingsQuery,
   useOpportunityInnovationFlowEventMutation,
+  useUpdateCalloutFlowStateMutation,
+  useUpdateInnovationFlowMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../InnovationFlowStates/useInnovationFlowStates';
-import { Callout, Profile } from '../../../../core/apollo/generated/graphql-schema';
+import { Callout, Profile, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import { uniq } from 'lodash';
 
 interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
 
 export interface GrouppedCallout extends Pick<Callout, 'id' | 'nameID' | 'type' | 'activity'> {
   profile: Pick<Profile, 'displayName'>;
+  flowStateId: string | null;
   flowState: string | null;
   flowStateAllowedValues: string[];
 }
@@ -48,6 +51,8 @@ const useInnovationFlowSettings = ({
       },
       type: callout.type,
       activity: callout.activity,
+      flowStateId:
+        callout.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.id ?? null,
       flowState:
         callout.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.tags[0] ?? null,
       flowStateAllowedValues:
@@ -102,6 +107,45 @@ const useInnovationFlowSettings = ({
     }
   };
 
+  const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
+  const handleUpdateInnovationFlowProfile = async (innovationFlowID: string, profileData: UpdateProfileInput) =>
+    updateInnovationFlow({
+      variables: {
+        updateInnovationFlowData: {
+          innovationFlowID,
+          profileData,
+        },
+      },
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({
+          spaceNameId,
+          challengeNameId,
+          opportunityNameId,
+          includeChallenge: isChallenge,
+          includeOpportunity: !isChallenge,
+        }),
+      ],
+    });
+
+  const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
+  const handleUpdateCalloutFlowState = async (calloutId: string, flowStateTagsetId: string, value: string) =>
+    updateCalloutFlowState({
+      variables: {
+        calloutId,
+        flowStateTagsetId,
+        value,
+      },
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({
+          spaceNameId,
+          challengeNameId,
+          opportunityNameId,
+          includeChallenge: isChallenge,
+          includeOpportunity: !isChallenge,
+        }),
+      ],
+    });
+
   return {
     data: {
       innovationFlow,
@@ -110,9 +154,11 @@ const useInnovationFlowSettings = ({
     },
     actions: {
       nextEvent: handleLifecycleNextEvent,
+      updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
+      updateCalloutFlowState: handleUpdateCalloutFlowState,
     },
     state: {
-      loading: loadingData,
+      loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout,
       loadingLifecycleEvents: loadingChallengeEvent || loadingOpportunityEvent,
     },
   };

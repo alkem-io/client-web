@@ -10,10 +10,12 @@ import { LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/f
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
+import { tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
 import { InnovationFlowProfile } from './InnovationFlowProfileBlock';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
+import { LoadingButton } from '@mui/lab';
+import useLoadingState from '../../../shared/utils/useLoadingState';
 
 export interface InnovationFlowProfileFormValues {
   displayName: string;
@@ -24,7 +26,7 @@ export interface InnovationFlowProfileFormValues {
 
 interface InnovationFlowProfileFormProps {
   profile?: InnovationFlowProfile;
-  onSubmit: (formData: InnovationFlowProfileFormValues) => void;
+  onSubmit: (formData: InnovationFlowProfileFormValues) => Promise<unknown> | void;
   onCancel?: () => void;
 }
 
@@ -45,13 +47,17 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile
     tagsets: tagsetSegmentSchema,
   });
 
+  const [handleSave, loading] = useLoadingState(async (profileData: InnovationFlowProfileFormValues) => {
+    await onSubmit(profileData);
+  });
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       enableReinitialize
       onSubmit={async values => {
-        onSubmit(values);
+        handleSave(values);
       }}
     >
       {({ values: { references }, handleSubmit }) => {
@@ -64,16 +70,16 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile
               maxLength={LONG_TEXT_LENGTH}
               withCounter
             />
-            <TagsetSegment tagsets={profile?.tagsets ?? []} />
+            {/* TODO: Tags pending <TagsetSegment tagsets={profile?.tagsets ?? []} /> */}
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
             <VisualUpload visual={profile?.bannerNarrow} />
             <Actions justifyContent="end">
               <Button variant="text" onClick={onCancel}>
                 {t('buttons.cancel')}
               </Button>
-              <Button variant="contained" onClick={() => handleSubmit()}>
+              <LoadingButton loading={loading} variant="contained" onClick={() => handleSubmit()}>
                 {t('buttons.save')}
-              </Button>
+              </LoadingButton>
             </Actions>
           </Gutters>
         );
