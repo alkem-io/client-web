@@ -7,9 +7,10 @@ import { JourneyTypeName } from '../../JourneyTypeName';
 interface JourneyAvatarProps {
   journeyTypeName: JourneyTypeName;
   visualUri: string | undefined;
+  hideJourneyIcon?: boolean;
 }
 
-const JourneyAvatar = ({ visualUri, journeyTypeName }: JourneyAvatarProps) => {
+const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false }: JourneyAvatarProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
   return (
@@ -25,20 +26,22 @@ const JourneyAvatar = ({ visualUri, journeyTypeName }: JourneyAvatarProps) => {
           height: theme => theme.spacing(8),
         }}
       />
-      <SwapColors>
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          bottom={0}
-          right={0}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <JourneyIcon color="primary" />
-        </Box>
-      </SwapColors>
+      {!hideJourneyIcon && (
+        <SwapColors>
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            bottom={0}
+            right={0}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <JourneyIcon color="primary" />
+          </Box>
+        </SwapColors>
+      )}
     </Box>
   );
 };

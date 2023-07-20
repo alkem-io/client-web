@@ -76,7 +76,15 @@ const JourneyPageBannerCard = ({
           />
         </RouterLink>
       </CardText>
-      <BadgeCardView visual={<JourneyAvatar visualUri={journeyAvatar?.uri} journeyTypeName={journeyTypeName} />}>
+      <BadgeCardView
+        visual={
+          <JourneyAvatar
+            visualUri={journeyAvatar?.uri}
+            journeyTypeName={journeyTypeName}
+            hideJourneyIcon={!!journeyAvatar?.uri}
+          />
+        }
+      >
         <Box display="flex" flexDirection="column" gap={gutters(0.5)}>
           <PageTitle color="primary">
             <JourneyIcon fontSize="inherit" sx={{ verticalAlign: 'bottom' }} />

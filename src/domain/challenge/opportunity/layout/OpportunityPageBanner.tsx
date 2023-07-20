@@ -5,9 +5,11 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../platform/InnovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import ChildJourneyPageBanner from '../../common/ChildJourneyPageBanner/ChildJourneyPageBanner';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import { useChallenge } from '../../challenge/hooks/useChallenge';
 
 const OpportunityPageBanner: FC = () => {
   const { profile: spaceProfile } = useSpace();
+  const { profile: challengeProfile } = useChallenge();
   const { opportunity, spaceId, spaceNameId, challengeNameId } = useOpportunity();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, opportunity?.profile?.visuals);
@@ -26,7 +28,7 @@ const OpportunityPageBanner: FC = () => {
       journeyTags={opportunity?.profile.tagset?.tags}
       journeyDisplayName={opportunity?.profile.displayName ?? ''}
       journeyTagline={opportunity?.profile.tagline ?? ''}
-      parentJourneyDisplayName={spaceProfile.displayName}
+      parentJourneyDisplayName={challengeProfile.displayName}
       parentJourneyLocation={{ spaceNameId, challengeNameId }}
     />
   );
