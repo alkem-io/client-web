@@ -15,7 +15,7 @@ query InnovationFlowBlock(
         profile {
           id
           displayName
-          bannerNarrow: visual(type: CARD) {
+          cardBanner: visual(type: CARD) {
             id
             name
             uri
@@ -32,7 +32,7 @@ query InnovationFlowBlock(
         profile {
           id
           displayName
-          bannerNarrow: visual(type: CARD) {
+          cardBanner: visual(type: CARD) {
             id
             name
             uri

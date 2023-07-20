@@ -8988,7 +8988,7 @@ export const InnovationFlowBlockDocument = gql`
           profile {
             id
             displayName
-            bannerNarrow: visual(type: CARD) {
+            cardBanner: visual(type: CARD) {
               id
               name
               uri
@@ -9005,7 +9005,7 @@ export const InnovationFlowBlockDocument = gql`
           profile {
             id
             displayName
-            bannerNarrow: visual(type: CARD) {
+            cardBanner: visual(type: CARD) {
               id
               name
               uri

@@ -12479,7 +12479,7 @@ export type InnovationFlowBlockQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              bannerNarrow?:
+              cardBanner?:
                 | { __typename?: 'Visual'; id: string; name: string; uri: string; alternativeText?: string | undefined }
                 | undefined;
             };
@@ -12498,7 +12498,7 @@ export type InnovationFlowBlockQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              bannerNarrow?:
+              cardBanner?:
                 | { __typename?: 'Visual'; id: string; name: string; uri: string; alternativeText?: string | undefined }
                 | undefined;
             };

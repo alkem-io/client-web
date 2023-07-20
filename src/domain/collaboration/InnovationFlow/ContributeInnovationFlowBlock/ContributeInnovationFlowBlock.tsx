@@ -48,10 +48,10 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
                 innovationFlowDisplayName: innovationFlow?.profile.displayName,
               })}
             </WrapperMarkdown>
-            {innovationFlow?.profile.bannerNarrow?.uri && (
+            {innovationFlow?.profile.cardBanner?.uri && (
               <Image
-                src={innovationFlow.profile.bannerNarrow.uri}
-                alt={innovationFlow.profile.bannerNarrow.alternativeText}
+                src={innovationFlow.profile.cardBanner.uri}
+                alt={innovationFlow.profile.cardBanner.alternativeText}
               />
             )}
             <Text component={Link} onClick={() => setInnovationFlowDialogOpen(true)} sx={{ cursor: 'pointer' }}>
