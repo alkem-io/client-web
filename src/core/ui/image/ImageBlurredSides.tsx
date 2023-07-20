@@ -5,6 +5,7 @@ type Side = 'left' | 'right';
 
 interface ImageBlurredSidesProps extends BoxProps<'img'> {
   blurRadius: BlurRadius;
+  containerProps?: BoxProps;
 }
 
 interface BlurredSideProps {
@@ -43,9 +44,9 @@ const BlurredSide = ({ src, side, blurRadius }: BlurredSideProps) => {
   );
 };
 
-const ImageBlurredSides = ({ src, blurRadius, sx, ...props }: ImageBlurredSidesProps) => {
+const ImageBlurredSides = ({ src, blurRadius, sx, containerProps, ...props }: ImageBlurredSidesProps) => {
   return (
-    <Box display="flex" justifyContent="center" alignItems="stretch">
+    <Box display="flex" justifyContent="center" alignItems="stretch" {...containerProps}>
       <BlurredSide src={src} blurRadius={blurRadius} side="left" />
       <BlurredSide src={src} blurRadius={blurRadius} side="right" />
       <Box component="img" src={src} {...props} flexShrink={0} sx={{ objectFit: 'cover', ...sx }} />
