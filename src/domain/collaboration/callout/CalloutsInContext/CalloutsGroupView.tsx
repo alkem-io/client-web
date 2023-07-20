@@ -15,6 +15,7 @@ interface CalloutsGroupProps extends CalloutsViewProps {
   spaceId: string;
   canCreateCallout: boolean;
   group: string;
+  flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
 }
 
@@ -23,6 +24,7 @@ const CalloutsGroupView = ({
   calloutNames,
   canCreateCallout,
   group,
+  flowState,
   createButtonPlace = 'bottom',
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
@@ -82,6 +84,7 @@ const CalloutsGroupView = ({
         calloutNames={calloutNames}
         templates={templates}
         group={group}
+        flowState={flowState}
       />
     </>
   );

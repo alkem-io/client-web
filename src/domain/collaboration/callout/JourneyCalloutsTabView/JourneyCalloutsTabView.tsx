@@ -168,6 +168,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
               createButtonPlace="top"
+              flowState={selectedInnovationFlowState}
             />
           </PageContentColumn>
         </PageContent>
@@ -181,6 +182,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
         calloutNames={calloutNames}
         templates={templates}
         group={CalloutsGroup.KnowledgeBase}
+        flowState={selectedInnovationFlowState}
       />
     </>
   );
