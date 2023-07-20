@@ -20,7 +20,8 @@
     "bg": "Bulgarian",
     "ua": "Ukranian",
     "de": "German",
-    "fr": "French"
+    "fr": "French",
+    "inContextTool": "In context translation"
   },
   "fields": {
     "displayName": "Title",
@@ -459,7 +460,7 @@
     "members": "Потребители",
     "host": "Домакин",
     "members-count": "{{count}} член",
-    "members-count_plural": "{{count}} Члена",
+    "members-count_plural": "{{count}} Members",
     "addMember": "Add member",
     "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
     "application-form": {
@@ -527,6 +528,7 @@
     }
   },
   "callout": {
+    "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "ЧЕРНОВА - Този призив е видим само за администратори.",
@@ -873,7 +875,7 @@
         "update-sent": "{{time}} '<userlink>{{user}}</userlink>' сподели нова $t(common.update)",
         "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' добави $t(common.whiteboard) към '{{calloutDisplayName}}'"
       },
-      "parent-link": " в <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
+      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
       "activity-description": {
         "callout-published": "{{displayName}}",
         "challenge-created": "{{displayName}}",
@@ -2197,8 +2199,8 @@
   },
   "spaces-filter": {
     "current-filter": "Choose the topics you care most about! Current filter: ",
-    "show-all": "Show All",
-    "other": "Other",
+    "show-all": "Покажи всичко",
+    "other": "Други",
     "config": [
       {
         "key": "energy-transition",

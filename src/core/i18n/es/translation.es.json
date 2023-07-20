@@ -20,7 +20,8 @@
     "bg": "Búlgaro",
     "ua": "Ucraniano",
     "de": "Alemán",
-    "fr": "Francés"
+    "fr": "Francés",
+    "inContextTool": "Traducción en contexto"
   },
   "fields": {
     "displayName": "Título",
@@ -141,7 +142,7 @@
       }
     },
     "signUp": {
-      "signUpEmail": "Sign up with E-Mail",
+      "signUpEmail": "Ingresa con e-mail",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?"
     }
   },
@@ -195,8 +196,8 @@
     "aspects": "Tarjetas",
     "host": "Anfitrión",
     "lead": "Líder",
-    "space": "Space",
-    "spaces": "Spaces",
+    "space": "Espacio",
+    "spaces": "Espacios",
     "challenge": "Desafío",
     "challenges": "Desafíos",
     "all-entities": "Todos los {{entityType}} ({{count}})",
@@ -205,14 +206,14 @@
     "opportunities": "Oportunidades",
     "organization": "Organización",
     "organizations": "Organizaciones",
-    "communications": "Updates from the leads",
+    "communications": "Actualizaciones de los prospectos",
     "applications": "Aplicaciones",
     "introduction": "Introducción",
     "interest": "Interés",
     "interests": "Intereses",
     "project": "Proyecto",
     "role": "Rol",
-    "agreement": "Agreement",
+    "agreement": "Acuerdo",
     "agreements": "Acuerdos",
     "templates": "Plantillas",
     "template": "Plantilla",
@@ -223,8 +224,8 @@
     "user": "Usuario",
     "users": "Usuarios",
     "update": "Actualización",
-    "updates": "Updates from the leads",
-    "no-updates": "No updates from the leads",
+    "updates": "Actualizaciones de los prospectos",
+    "no-updates": "No hay actualizaciones de los prospectos",
     "no-tags": "No hay etiquetas disponibles",
     "no-references": "No hay referencias disponibles",
     "field-required": "Este campo es obligatorio",
@@ -263,7 +264,7 @@
     "authorization": "Autorización",
     "question": "Pregunta",
     "questions": "Preguntas",
-    "show-subject": "Show: ",
+    "show-subject": "Mostrar: ",
     "show-all": "Mostrar todo",
     "title": "Título",
     "visibility": "Visibilidad",
@@ -274,10 +275,10 @@
     "loading": "Cargando...",
     "innovation-flow": "Flujo de innovación",
     "innovation-flows": "Flujo de innovación",
-    "innovation-packs": "Innovation Packs",
-    "innovation-hub": "Innovation Hub",
-    "innovation-hubs": "Innovation Hubs",
-    "innovationPack": "Innovation Pack",
+    "innovation-packs": "Paquetes de innovación",
+    "innovation-hub": "Hub de innovación",
+    "innovation-hubs": "Hubs de innovación",
+    "innovationPack": "Paquete de innovación",
     "more": "Más",
     "url": "URL",
     "genders": {
@@ -302,7 +303,7 @@
     "enums": {
       "innovationFlowState": {
         "new": "Nuevo",
-        "beingRefined": "Being Refined",
+        "beingRefined": "Siendo refinado",
         "inProgress": "En curso",
         "complete": "Completada",
         "abandoned": "Abandonada",
@@ -320,7 +321,7 @@
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Spaces",
+          "name": "Administrador Global de Espacios",
           "order": 1,
           "hidden": false
         },
@@ -335,17 +336,17 @@
           "hidden": true
         },
         "HUB_ADMIN": {
-          "name": "Space Admin",
+          "name": "Espacio Administrativo",
           "order": 3,
           "hidden": false
         },
         "HUB_HOST": {
-          "name": "Space Host",
+          "name": "Anfitrión de espacio",
           "order": 4,
           "hidden": true
         },
         "HUB_MEMBER": {
-          "name": "Space Member",
+          "name": "Miembros del espacio",
           "order": 5,
           "hidden": true
         },
@@ -427,9 +428,9 @@
         "OTHER": "Otro"
       },
       "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard Templates",
-        "PostTemplate": "Post Templates",
-        "InnovationFlowTemplate": "Innovation Flows"
+        "WhiteboardTemplate": "Plantillas de pizarra",
+        "PostTemplate": "Plantillas de Post",
+        "InnovationFlowTemplate": "Flujo de innovación"
       }
     },
     "blocks": {
@@ -451,7 +452,7 @@
     }
   },
   "community": {
-    "memberUsers": "Member Users ({{count}})",
+    "memberUsers": "Usuarios Miembros ({{count}})",
     "leading-organizations": "Organizaciones liderando",
     "memberOrganizations": "Member Organizations ({{count}})",
     "pendingApplications": "Pending applications & invitations",
@@ -527,6 +528,7 @@
     }
   },
   "callout": {
+    "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribución",
     "contributions_plural": "{{count}} Contribuciones",
     "draftNotice": "BORRADOR - Este Callout solo es visible para administradores.",
