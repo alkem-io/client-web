@@ -21,13 +21,13 @@ const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState,
 
   return (
     <Gutters>
-      <BlockSectionTitle>{t('components.lifecycles.currentState')}</BlockSectionTitle>
+      <BlockSectionTitle>{t('components.lifecycle.currentState')}</BlockSectionTitle>
       <Box>
         <Chip variant="filled" label={currentState ?? <Skeleton />} color="primary" />
       </Box>
       {nextEvents && (
         <>
-          <BlockSectionTitle>{t('components.lifecycles.changeState')}</BlockSectionTitle>
+          <BlockSectionTitle>{t('components.lifecycle.changeState')}</BlockSectionTitle>
           <Box display="flex" gap={gutters(0.5)}>
             {nextEvents?.map(nextEvent => (
               <Chip

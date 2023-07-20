@@ -11,8 +11,7 @@ import { Link, Skeleton } from '@mui/material';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import { Text } from '../../../../core/ui/typography';
 import { times } from 'lodash';
-//import InnovationFlowPreviewDialog from '../InnovationFlowDialogs/InnovationFlowPreviewDialog';
-import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
+import InnovationFlowPreviewDialog from '../InnovationFlowDialogs/InnovationFlowPreviewDialog';
 
 interface ContributeInnovationFlowBlockProps {
   journeyTypeName: JourneyTypeName;
@@ -70,7 +69,7 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
           </>
         )}
       </PageContentBlock>
-      <InnovationFlowSettingsDialog
+      <InnovationFlowPreviewDialog
         open={innovationFlowDialogOpen}
         onClose={() => setInnovationFlowDialogOpen(false)}
         spaceNameId={spaceNameId!}

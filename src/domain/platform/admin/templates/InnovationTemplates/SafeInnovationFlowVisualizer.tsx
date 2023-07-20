@@ -21,7 +21,7 @@ export const SafeInnovationFlowVisualizer = ({ definition }: { definition: strin
     <InnovationFlowVisualizer lifecycle={lifecycle} />
   ) : (
     <Box justifyContent="center">
-      <BlockSectionTitle>{t('components.lifecycles.error')}</BlockSectionTitle>
+      <BlockSectionTitle>{t('components.lifecycle.error')}</BlockSectionTitle>
     </Box>
   );
 };

@@ -889,7 +889,7 @@
         "whiteboard-created": "{{displayName}}"
       }
     },
-    "lifecycles": {
+    "lifecycle": {
       "currentState": "Current State:",
       "changeState": "Change State to:",
       "error": "The definition was not able to be visualized"
