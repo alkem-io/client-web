@@ -96,11 +96,11 @@ const JourneyPageBannerCard = ({
         }
       >
         <Box display="flex" flexDirection="column" gap={gutters(0.5)}>
-          <PageTitle color="primary">
+          <PageTitle color="primary" noWrap>
             <JourneyIcon fontSize="inherit" sx={{ marginRight: gutters(0.25), verticalAlign: 'bottom' }} />
             {journeyDisplayName}
           </PageTitle>
-          <Caption color="primary" fontStyle="italic">
+          <Caption color="primary" fontStyle="italic" noWrap>
             {journeyTagline}
           </Caption>
           <TagsComponent tags={journeyTags} color="primary" minHeight={gutters()} variant="filled" />
