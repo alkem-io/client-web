@@ -20,7 +20,8 @@
     "bg": "Bulgarian",
     "ua": "Ukranian",
     "de": "German",
-    "fr": "French"
+    "fr": "French",
+    "inContextTool": "In context translation"
   },
   "fields": {
     "displayName": "Title",
@@ -527,6 +528,7 @@
     }
   },
   "callout": {
+    "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
