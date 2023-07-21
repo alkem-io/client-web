@@ -108,6 +108,7 @@ const JourneyPageBannerCard = ({
             visualUri={journeyAvatar?.uri}
             journeyTypeName={journeyTypeName}
             hideJourneyIcon={!!journeyAvatar?.uri}
+            size="large"
           />
         }
       >
