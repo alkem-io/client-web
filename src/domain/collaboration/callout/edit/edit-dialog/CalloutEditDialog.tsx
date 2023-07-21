@@ -10,6 +10,7 @@ import ConfirmationDialog, { ConfirmationDialogProps } from '../../../../../core
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import {
+  CalloutDisplayLocation,
   CalloutType,
   PostTemplateCardFragment,
   TagsetType,
@@ -72,7 +73,9 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
-    group: callout.group,
+    group: callout.profile.displayLocationtagset?.tags
+      ? (callout.profile.displayLocationtagset?.tags[0] as CalloutDisplayLocation)
+      : CalloutDisplayLocation.CommonKnowledgeRight,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({

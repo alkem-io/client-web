@@ -20,8 +20,7 @@ import {
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
-import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
+import { CalloutDisplayLocation, CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowStates, {
   InnovationFlowState,
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
@@ -64,7 +63,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   });
 
   const callouts = allCallouts
-    ?.filter(callout => callout.group !== CalloutsGroup.HomeTop)
+    // ?.filter(callout => callout.group !== CalloutDisplayLocation.CommonHomeTop)
     ?.filter(callout => {
       if (!selectedInnovationFlowState) {
         return true;
@@ -165,7 +164,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
-              group={CalloutsGroup.KnowledgeBase}
+              group={CalloutDisplayLocation.CommonKnowledgeRight}
               createButtonPlace="top"
             />
           </PageContentColumn>
@@ -179,7 +178,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
-        group={CalloutsGroup.KnowledgeBase}
+        group={CalloutDisplayLocation.CommonKnowledgeRight}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { Callout } from '../../../../core/apollo/generated/graphql-schema';
+import { Callout, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutFormInput } from '../CalloutForm';
 import { CalloutWhiteboardTemplate, CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
@@ -14,7 +14,7 @@ export type CalloutEditType = Omit<
     references?: Reference[];
     tagsets?: Tagset[];
   };
-  group?: string;
+  group?: CalloutDisplayLocation;
 } & {
   postTemplate?: CalloutPostTemplate;
   whiteboardTemplate?: CalloutWhiteboardTemplate;

@@ -8,6 +8,7 @@ import {
   WhiteboardTemplateCardFragment,
   CalloutVisibility,
   Callout,
+  CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -57,7 +58,7 @@ export interface CalloutCreationDialogProps {
   isCreating: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
-  group: string;
+  group: CalloutDisplayLocation;
 }
 
 export interface TemplateProfile {

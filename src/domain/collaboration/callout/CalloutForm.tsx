@@ -1,6 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutState, CalloutType, Tagset, TagsetType } from '../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutDisplayLocation,
+  CalloutState,
+  CalloutType,
+  Tagset,
+  TagsetType,
+} from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
@@ -38,7 +44,7 @@ type FormValueType = {
   tagsets: Tagset[];
   references: Reference[];
   opened: boolean;
-  group: string;
+  group: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -54,7 +60,7 @@ export type CalloutFormInput = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  group?: string;
+  group?: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
@@ -68,7 +74,7 @@ export type CalloutFormOutput = {
   references: Reference[];
   type: CalloutType;
   state: CalloutState;
-  group: string;
+  group: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -118,7 +124,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      group: callout?.group ?? '',
+      group: callout?.group ?? CalloutDisplayLocation.CommonKnowledgeRight,
       postTemplateData: callout?.postTemplateData ?? {
         profile: {
           displayName: '',

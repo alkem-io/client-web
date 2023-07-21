@@ -1,6 +1,5 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
-import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpaceChallengesPage from '../pages/SpaceChallengesPage';
 import KnowedgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
@@ -8,17 +7,18 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildSpaceUrl } from '../../../../common/utils/urlBuilders';
 import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
+import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutsGroup.HomeLeft:
-    case CalloutsGroup.HomeRight:
+    case CalloutDisplayLocation.CommonHomeLeft:
+    case CalloutDisplayLocation.CommonHomeRight:
       return EntityPageSection.Dashboard;
-    case CalloutsGroup.CommunityLeft:
-    case CalloutsGroup.CommunityRight:
+    case CalloutDisplayLocation.SpaceCommunityLeft:
+    case CalloutDisplayLocation.SpaceCommunityRight:
       return EntityPageSection.Community;
-    case CalloutsGroup.ChallengesLeft:
-    case CalloutsGroup.ChallengesRight:
+    case CalloutDisplayLocation.SpaceChallengesLeft:
+    case CalloutDisplayLocation.SpaceChallengesRight:
       return EntityPageSection.Challenges;
     default:
       return EntityPageSection.KnowledgeBase;
@@ -27,10 +27,10 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutsGroup.HomeLeft:
-    case CalloutsGroup.HomeRight:
+    case CalloutDisplayLocation.CommonHomeLeft:
+    case CalloutDisplayLocation.CommonHomeRight:
       return <SpaceDashboardPage />;
-    case CalloutsGroup.ChallengesLeft:
+    case CalloutDisplayLocation.SpaceChallengesLeft:
       return <SpaceChallengesPage />;
     default:
       return <KnowedgeBasePage journeyTypeName="space" />;

@@ -92,7 +92,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     return null;
   }
 
-  const calloutGroup = typedCallout.group;
+  const calloutGroup = 'KNOWLEDGE';
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroup) : parentRoute;
 

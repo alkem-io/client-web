@@ -1479,7 +1479,6 @@ export const CalloutFragmentDoc = gql`
     id
     nameID
     type
-    group
     profile {
       id
       displayName
@@ -9949,6 +9948,9 @@ export const UpdateCalloutDocument = gql`
         tagset {
           ...TagsetDetails
         }
+        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          ...TagsetDetails
+        }
         references {
           id
           name
@@ -9956,7 +9958,6 @@ export const UpdateCalloutDocument = gql`
         }
       }
       state
-      group
       type
       visibility
       ...CalloutPostTemplate
@@ -10224,7 +10225,7 @@ export const CalloutsDocument = gql`
     $includeOpportunity: Boolean = false
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
-    $calloutGroups: [String!]
+    $calloutGroups: [CalloutDisplayLocation!]
     $calloutIds: [UUID_NAMEID!]
   ) {
     space(ID: $spaceNameId) {

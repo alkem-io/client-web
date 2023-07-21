@@ -7,14 +7,14 @@ import {
   useCalloutFormTemplatesFromSpaceLazyQuery,
   useUpdateCalloutVisibilityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   spaceId: string;
   canCreateCallout: boolean;
-  group: string;
+  group: CalloutDisplayLocation;
   createButtonPlace?: 'top' | 'bottom';
 }
 
