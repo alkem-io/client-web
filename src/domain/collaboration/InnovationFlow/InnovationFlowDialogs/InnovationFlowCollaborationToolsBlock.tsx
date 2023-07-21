@@ -47,7 +47,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
 
   const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
     const flowStateTagsetId = callouts.find(callout => callout.id === draggableId)?.flowState?.tagsetId;
-    if (onUpdateCalloutFlowState && flowStateTagsetId) {
+    if (onUpdateCalloutFlowState && flowStateTagsetId && destination) {
       onUpdateCalloutFlowState(draggableId, flowStateTagsetId, destination.droppableId);
     }
   };

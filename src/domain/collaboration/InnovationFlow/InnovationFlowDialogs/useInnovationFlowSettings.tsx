@@ -13,8 +13,11 @@ import { compact, uniq } from 'lodash';
 
 interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
 
+const findFlowStateTagset = (tagsets: Tagset[] | undefined) =>
+  tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME);
+
 const findFlowState = (tagsets: Tagset[] | undefined) => {
-  const tagset = tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME);
+  const tagset = findFlowStateTagset(tagsets);
   return tagset
     ? {
         tagsetId: tagset.id,
@@ -143,13 +146,31 @@ const useInnovationFlowSettings = ({
     });
 
   const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
-  const handleUpdateCalloutFlowState = async (calloutId: string, flowStateTagsetId: string, value: string) =>
-    updateCalloutFlowState({
+  const handleUpdateCalloutFlowState = async (calloutId: string, flowStateTagsetId: string, value: string) => {
+    const callout = collaboration?.callouts?.find(({ id }) => id === calloutId);
+    const flowStateTagset = callout && findFlowStateTagset(callout?.profile.tagsets);
+
+    await updateCalloutFlowState({
       variables: {
         calloutId,
         flowStateTagsetId,
         value,
       },
+      optimisticResponse: callout &&
+        flowStateTagset && {
+          updateCallout: {
+            ...callout,
+            profile: {
+              ...callout.profile,
+              tagsets: [
+                {
+                  ...flowStateTagset,
+                  tags: [value],
+                },
+              ],
+            },
+          },
+        },
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({
           spaceNameId,
@@ -160,6 +181,7 @@ const useInnovationFlowSettings = ({
         }),
       ],
     });
+  };
 
   return {
     data: {

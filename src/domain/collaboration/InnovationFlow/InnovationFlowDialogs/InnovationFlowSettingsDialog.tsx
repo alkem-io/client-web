@@ -30,6 +30,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
     challengeNameId,
     opportunityNameId,
   });
+
   const { innovationFlow, callouts, flowStateAllowedValues } = data;
 
   return (
