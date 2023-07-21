@@ -148,7 +148,7 @@ const useInnovationFlowSettings = ({
   const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
   const handleUpdateCalloutFlowState = async (calloutId: string, flowStateTagsetId: string, value: string) => {
     const callout = collaboration?.callouts?.find(({ id }) => id === calloutId);
-    const flowStateTagset = callout && findFlowStateTagset(callout?.profile.tagsets);
+    const flowStateTagset = callout && findFlowStateTagset(callout.profile.tagsets);
 
     await updateCalloutFlowState({
       variables: {
