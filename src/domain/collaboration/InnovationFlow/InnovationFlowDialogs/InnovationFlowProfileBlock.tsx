@@ -82,7 +82,7 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
         )}
         {!editMode && (
           <>
-            <PageContentColumn columns={isMobile ? 8 : 6}>
+            <PageContentColumn columns={8}>
               <Gutters width="100%">
                 <Box display="flex" justifyContent="space-between">
                   <BlockTitle>{innovationFlow?.profile.displayName}</BlockTitle>
@@ -95,7 +95,7 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
                 <InnovationFlowProfileView innovationFlow={innovationFlow} />
               </Gutters>
             </PageContentColumn>
-            <PageContentColumn columns={isMobile ? 8 : 6} flexDirection="column">
+            <PageContentColumn columns={isMobile ? 8 : 4} flexDirection="column">
               {innovationFlow?.profile.bannerNarrow?.uri ? (
                 <Box
                   component="img"

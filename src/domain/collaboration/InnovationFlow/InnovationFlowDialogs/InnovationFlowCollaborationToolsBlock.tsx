@@ -43,7 +43,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   flowStateAllowedValues,
 }) => {
   const { t } = useTranslation();
-  const groupedCallouts = groupBy(callouts, callout => callout.flowState);
+  const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
 
   const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
     const flowStateTagsetId = callouts.find(callout => callout.id === draggableId)?.flowState?.tagsetId;
