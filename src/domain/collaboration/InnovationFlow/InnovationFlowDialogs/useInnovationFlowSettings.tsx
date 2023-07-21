@@ -10,7 +10,9 @@ import {
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../InnovationFlowStates/useInnovationFlowStates';
 import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
-import { compact, groupBy, uniq } from 'lodash';
+import { compact, uniq } from 'lodash';
+import { sortCallouts } from '../utils/sortCallouts';
+import { useMemo } from 'react';
 
 interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
 
@@ -68,18 +70,23 @@ const useInnovationFlowSettings = ({
 
   // Collaboration
   const collaboration = data?.space.challenge?.collaboration ?? data?.space.opportunity?.collaboration;
-  const callouts =
-    collaboration?.callouts?.map<GrouppedCallout>(callout => ({
-      id: callout.id,
-      nameID: callout.nameID,
-      profile: {
-        displayName: callout.profile.displayName,
-      },
-      type: callout.type,
-      activity: callout.activity,
-      sortOrder: callout.sortOrder,
-      flowState: findFlowState(callout.profile.tagsets),
-    })) ?? [];
+  const callouts = useMemo(
+    () =>
+      collaboration?.callouts
+        ?.map<GrouppedCallout>(callout => ({
+          id: callout.id,
+          nameID: callout.nameID,
+          profile: {
+            displayName: callout.profile.displayName,
+          },
+          type: callout.type,
+          activity: callout.activity,
+          sortOrder: callout.sortOrder,
+          flowState: findFlowState(callout.profile.tagsets),
+        }))
+        .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
+    [collaboration?.callouts]
+  );
 
   const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
@@ -148,35 +155,6 @@ const useInnovationFlowSettings = ({
       ],
     });
 
-  const calculateCalloutsSortOrder = (calloutId: string, newState: string, insertIndex: number) => {
-    const sortedCalloutIds: string[] = [];
-    let optimisticSortOrder = 0;
-
-    const sortedCallouts = groupBy(
-      // Group all the callouts except the one we are moving;
-      callouts
-        .filter(callout => callout.id !== calloutId)
-        .map(callout => ({
-          id: callout.id,
-          sortOrder: callout.sortOrder,
-          currentFlowState: callout.flowState?.currentState,
-        })),
-      callout => callout.currentFlowState
-    );
-
-    Object.entries(sortedCallouts).forEach(([state, calloutsInState]) => {
-      if (state === newState) {
-        optimisticSortOrder = calloutsInState[insertIndex].sortOrder - 0.5;
-        sortedCalloutIds.push(...calloutsInState.map(callout => callout.id).splice(insertIndex, 0, calloutId));
-      } else {
-        // Not in the destination group, just add them to the list:
-        sortedCalloutIds.push(...calloutsInState.map(callout => callout.id));
-      }
-    });
-
-    return { optimisticSortOrder, sortedCalloutIds };
-  };
-
   const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
   const [updateCalloutsSortOrder, { loading: loadingSortOrder }] = useUpdateCalloutsSortOrderMutation();
 
@@ -187,7 +165,11 @@ const useInnovationFlowSettings = ({
       return;
     }
 
-    const { optimisticSortOrder, sortedCalloutIds } = calculateCalloutsSortOrder(calloutId, newState, insertIndex);
+    const { optimisticSortOrder, sortedCalloutIds } = sortCallouts({
+      callouts,
+      availableStates: flowStateAllowedValues,
+      movedCallout: { id: calloutId, newState, insertIndex },
+    });
 
     await updateCalloutFlowState({
       variables: {
@@ -209,6 +191,21 @@ const useInnovationFlowSettings = ({
             ],
           },
         },
+      },
+      update: cache => {
+        // Here we tamper with the cached sortOrder, but next call
+        // will make sure that the order gets correctly saved to the server
+        cache.modify({
+          id: cache.identify({
+            id: calloutId,
+            __typename: 'Callout',
+          }),
+          fields: {
+            sortOrder() {
+              return optimisticSortOrder;
+            },
+          },
+        });
       },
     });
 
