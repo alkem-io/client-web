@@ -7,7 +7,7 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import React from 'react';
 import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, SxProps } from '@mui/material';
 import JourneyAvatar from '../../JourneyAvatar/JourneyAvatar';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { Visual } from '../../../../common/visual/Visual';
@@ -15,6 +15,8 @@ import { alpha } from '@mui/material/styles';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 
 type ChildJourneyTypeName = Exclude<JourneyTypeName, 'space'>;
+
+type StickSide = 'left';
 
 export interface JourneyPageBannerCardProps extends BoxProps {
   parentJourneyDisplayName: string;
@@ -24,6 +26,7 @@ export interface JourneyPageBannerCardProps extends BoxProps {
   journeyTagline: string;
   journeyAvatar: Visual | undefined;
   journeyTags: string[] | undefined;
+  stick?: StickSide;
 }
 
 const getParentJourneyTypeName = (journeyTypeName: ChildJourneyTypeName): JourneyTypeName => {
@@ -37,6 +40,18 @@ const getParentJourneyTypeName = (journeyTypeName: ChildJourneyTypeName): Journe
   }
 };
 
+const getBorderRadiusOverride = (stickSide?: StickSide): SxProps => {
+  switch (stickSide) {
+    case 'left': {
+      return {
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0,
+      };
+    }
+  }
+  return {};
+};
+
 const JourneyPageBannerCard = ({
   journeyDisplayName,
   journeyTagline,
@@ -45,6 +60,7 @@ const JourneyPageBannerCard = ({
   journeyTags = [],
   parentJourneyDisplayName,
   parentJourneyLocation,
+  stick,
   ...boxProps
 }: JourneyPageBannerCardProps) => {
   const { t } = useTranslation();
@@ -61,8 +77,8 @@ const JourneyPageBannerCard = ({
       gap={gutters(0.5)}
       sx={{
         backgroundColor: theme => alpha(theme.palette.background.paper, 0.7),
-        borderTopRightRadius: theme => theme.shape.borderRadius,
-        borderBottomRightRadius: theme => theme.shape.borderRadius,
+        borderRadius: theme => `${theme.shape.borderRadius}px`,
+        ...getBorderRadiusOverride(stick),
       }}
       {...boxProps}
     >
