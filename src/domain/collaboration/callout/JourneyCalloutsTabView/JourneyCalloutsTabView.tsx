@@ -35,6 +35,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   const { innovationFlowStates, currentInnovationFlowState } = useInnovationFlowStates({
     spaceId: spaceNameId,
     challengeId: challengeNameId!,
+    opportunityId: opportunityNameId,
   });
 
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
@@ -123,6 +124,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
               createButtonPlace="top"
+              flowState={selectedInnovationFlowState}
             />
           </PageContentColumn>
         </PageContent>

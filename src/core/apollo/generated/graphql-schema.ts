@@ -12844,18 +12844,49 @@ export type UpdateCalloutFlowStateMutation = {
   };
 };
 
-export type InnovationFlowStatesAllowedValuesQueryVariables = Exact<{
+export type ChallengeInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type InnovationFlowStatesAllowedValuesQuery = {
+export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
     id: string;
     challenge: {
       __typename?: 'Challenge';
+      id: string;
+      innovationFlow?:
+        | {
+            __typename?: 'InnovationFlow';
+            id: string;
+            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              tagsets?:
+                | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                | undefined;
+            };
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
       id: string;
       innovationFlow?:
         | {

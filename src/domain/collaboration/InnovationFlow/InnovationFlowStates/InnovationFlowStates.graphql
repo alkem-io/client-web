@@ -1,7 +1,31 @@
-query InnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query ChallengeInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
+      id
+      innovationFlow {
+        id
+        lifecycle {
+          id
+          state
+        }
+        profile {
+          id
+          tagsets {
+            id
+            name
+            allowedValues
+          }
+        }
+      }
+    }
+  }
+}
+
+query OpportunityInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!,  $opportunityId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    opportunity(ID: $opportunityId) {
       id
       innovationFlow {
         id
