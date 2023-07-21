@@ -13,6 +13,7 @@ const OpportunityPageBanner: FC = () => {
   const { opportunity, spaceId, spaceNameId, challengeNameId } = useOpportunity();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, opportunity?.profile?.visuals);
+  const cardImage = getVisualByType(VisualName.BANNERNARROW, opportunity?.profile?.visuals);
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
@@ -24,7 +25,7 @@ const OpportunityPageBanner: FC = () => {
       banner={banner}
       ribbon={ribbon}
       journeyTypeName="opportunity"
-      journeyAvatar={avatar}
+      journeyAvatar={avatar ?? cardImage}
       journeyTags={opportunity?.profile.tagset?.tags}
       journeyDisplayName={opportunity?.profile.displayName ?? ''}
       journeyTagline={opportunity?.profile.tagline ?? ''}
