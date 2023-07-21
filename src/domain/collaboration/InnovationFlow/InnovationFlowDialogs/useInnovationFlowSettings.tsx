@@ -4,12 +4,13 @@ import {
   useInnovationFlowSettingsQuery,
   useOpportunityInnovationFlowEventMutation,
   useUpdateCalloutFlowStateMutation,
+  useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../InnovationFlowStates/useInnovationFlowStates';
 import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
-import { compact, uniq } from 'lodash';
+import { compact, groupBy, uniq } from 'lodash';
 
 interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
 
@@ -32,6 +33,7 @@ export interface GrouppedCallout {
   nameID: string;
   type: CalloutType;
   activity: number;
+  sortOrder: number;
   profile: {
     displayName: string;
   };
@@ -75,6 +77,7 @@ const useInnovationFlowSettings = ({
       },
       type: callout.type,
       activity: callout.activity,
+      sortOrder: callout.sortOrder,
       flowState: findFlowState(callout.profile.tagsets),
     })) ?? [];
 
@@ -145,32 +148,75 @@ const useInnovationFlowSettings = ({
       ],
     });
 
+  const calculateCalloutsSortOrder = (calloutId: string, newState: string, insertIndex: number) => {
+    const sortedCalloutIds: string[] = [];
+    let optimisticSortOrder = 0;
+
+    const sortedCallouts = groupBy(
+      // Group all the callouts except the one we are moving;
+      callouts
+        .filter(callout => callout.id !== calloutId)
+        .map(callout => ({
+          id: callout.id,
+          sortOrder: callout.sortOrder,
+          currentFlowState: callout.flowState?.currentState,
+        })),
+      callout => callout.currentFlowState
+    );
+
+    Object.entries(sortedCallouts).forEach(([state, calloutsInState]) => {
+      if (state === newState) {
+        optimisticSortOrder = calloutsInState[insertIndex].sortOrder - 0.5;
+        sortedCalloutIds.push(...calloutsInState.map(callout => callout.id).splice(insertIndex, 0, calloutId));
+      } else {
+        // Not in the destination group, just add them to the list:
+        sortedCalloutIds.push(...calloutsInState.map(callout => callout.id));
+      }
+    });
+
+    return { optimisticSortOrder, sortedCalloutIds };
+  };
+
   const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
-  const handleUpdateCalloutFlowState = async (calloutId: string, flowStateTagsetId: string, value: string) => {
+  const [updateCalloutsSortOrder, { loading: loadingSortOrder }] = useUpdateCalloutsSortOrderMutation();
+
+  const handleUpdateCalloutFlowState = async (calloutId: string, newState: string, insertIndex: number) => {
     const callout = collaboration?.callouts?.find(({ id }) => id === calloutId);
     const flowStateTagset = callout && findFlowStateTagset(callout.profile.tagsets);
+    if (!collaboration || !callout || !flowStateTagset) {
+      return;
+    }
+
+    const { optimisticSortOrder, sortedCalloutIds } = calculateCalloutsSortOrder(calloutId, newState, insertIndex);
 
     await updateCalloutFlowState({
       variables: {
         calloutId,
-        flowStateTagsetId,
-        value,
+        flowStateTagsetId: flowStateTagset?.id,
+        value: newState,
       },
-      optimisticResponse: callout &&
-        flowStateTagset && {
-          updateCallout: {
-            ...callout,
-            profile: {
-              ...callout.profile,
-              tagsets: [
-                {
-                  ...flowStateTagset,
-                  tags: [value],
-                },
-              ],
-            },
+      optimisticResponse: {
+        updateCallout: {
+          ...callout,
+          sortOrder: optimisticSortOrder,
+          profile: {
+            ...callout.profile,
+            tagsets: [
+              {
+                ...flowStateTagset,
+                tags: [newState],
+              },
+            ],
           },
         },
+      },
+    });
+
+    await updateCalloutsSortOrder({
+      variables: {
+        collaborationId: collaboration.id,
+        calloutIds: sortedCalloutIds,
+      },
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({
           spaceNameId,
@@ -195,7 +241,7 @@ const useInnovationFlowSettings = ({
       updateCalloutFlowState: handleUpdateCalloutFlowState,
     },
     state: {
-      loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout,
+      loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout || loadingSortOrder,
       loadingLifecycleEvents: loadingChallengeEvent || loadingOpportunityEvent,
     },
   };

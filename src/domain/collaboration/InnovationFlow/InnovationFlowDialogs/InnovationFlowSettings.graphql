@@ -82,6 +82,7 @@ fragment InnovationFlowCollaboration on Collaboration {
     nameID
     type
     activity
+    sortOrder
     profile {
       id
       displayName
@@ -104,6 +105,7 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
     calloutData: { ID: $calloutId, profileData: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
   ) {
     id
+    sortOrder
     profile {
       id
       # TODO: Retrieve only the 'flow-state' tagset

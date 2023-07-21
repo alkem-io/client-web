@@ -1176,6 +1176,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       nameID
       type
       activity
+      sortOrder
       profile {
         id
         displayName
@@ -9337,6 +9338,7 @@ export const UpdateCalloutFlowStateDocument = gql`
       calloutData: { ID: $calloutId, profileData: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
     ) {
       id
+      sortOrder
       profile {
         id
         tagsets {

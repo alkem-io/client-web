@@ -12615,6 +12615,7 @@ export type InnovationFlowSettingsQuery = {
                   nameID: string;
                   type: CalloutType;
                   activity: number;
+                  sortOrder: number;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12709,6 +12710,7 @@ export type InnovationFlowSettingsQuery = {
                   nameID: string;
                   type: CalloutType;
                   activity: number;
+                  sortOrder: number;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12788,6 +12790,7 @@ export type InnovationFlowCollaborationFragment = {
         nameID: string;
         type: CalloutType;
         activity: number;
+        sortOrder: number;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -12827,6 +12830,7 @@ export type UpdateCalloutFlowStateMutation = {
   updateCallout: {
     __typename?: 'Callout';
     id: string;
+    sortOrder: number;
     profile: {
       __typename?: 'Profile';
       id: string;

@@ -11,11 +11,12 @@ import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from 'react
 import Gutters from '../../../../core/ui/grid/Gutters';
 import i18n from '../../../../core/i18n/config';
 import TranslationKey from '../../../../types/TranslationKey';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface InnovationFlowCollaborationToolsBlockProps {
   callouts: GrouppedCallout[];
   flowStateAllowedValues: string[];
-  onUpdateCalloutFlowState: (calloutId: string, flowStateTagsetId: string, newValue: string) => Promise<unknown> | void;
+  onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
 }
 
 interface ListItemProps extends BoxProps {
@@ -29,7 +30,7 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
     return (
       <Box ref={ref} {...boxProps}>
         <Caption>
-          {Icon && <Icon />}
+          {Icon && <Icon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />}
           {displayName} ({activity})
         </Caption>
       </Box>
@@ -46,9 +47,8 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
 
   const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
-    const flowStateTagsetId = callouts.find(callout => callout.id === draggableId)?.flowState?.tagsetId;
-    if (onUpdateCalloutFlowState && flowStateTagsetId && destination) {
-      onUpdateCalloutFlowState(draggableId, flowStateTagsetId, destination.droppableId);
+    if (onUpdateCalloutFlowState && destination) {
+      onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
     }
   };
 
