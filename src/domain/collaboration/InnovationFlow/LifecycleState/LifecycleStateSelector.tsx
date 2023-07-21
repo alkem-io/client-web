@@ -31,6 +31,7 @@ const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState,
           <Box display="flex" gap={gutters(0.5)}>
             {nextEvents?.map(nextEvent => (
               <Chip
+                key={nextEvent}
                 disabled={loading}
                 sx={{ cursor: loading ? 'progress' : 'pointer' }}
                 variant="outlined"

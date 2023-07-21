@@ -5,25 +5,31 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '../../../../core/ui/typography';
 import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
-import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
 import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
-interface InnovationFlowSettingsDialogProps extends CoreEntityIdTypes {
+interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
 }
 
-const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
-  open = false,
-  onClose,
-  ...location
-}) => {
+const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose }) => {
   const { t } = useTranslation();
-  const { data, actions, state } = useInnovationFlowSettings(location);
+
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space route.');
+  }
+
+  const { data, actions, state } = useInnovationFlowSettings({
+    spaceNameId: spaceNameId!,
+    challengeNameId,
+    opportunityNameId,
+  });
   const { innovationFlow, callouts, flowStateAllowedValues } = data;
 
   return (

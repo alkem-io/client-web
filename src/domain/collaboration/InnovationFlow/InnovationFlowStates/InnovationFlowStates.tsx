@@ -6,6 +6,8 @@ import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlo
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../types/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { useState } from 'react';
+import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 
 export type InnovationFlowState = string;
 
@@ -25,6 +27,7 @@ const InnovationFlowStates = ({
   onSelectState,
 }: InnovationFlowStatesProps) => {
   const { t, i18n } = useTranslation();
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   const getStateButtonVariant = (state: InnovationFlowState) => {
     if (state === currentState) {
@@ -69,7 +72,7 @@ const InnovationFlowStates = ({
           </Button>
         ))}
         {showSettings && (
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={() => setShowSettingsDialog(true)}>
             <SettingsIcon />
           </IconButton>
         )}
@@ -87,6 +90,7 @@ const InnovationFlowStates = ({
           />
         </Caption>
       )}
+      <InnovationFlowSettingsDialog open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
     </PageContentBlockSeamless>
   );
 };

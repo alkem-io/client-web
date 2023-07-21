@@ -39,7 +39,7 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
   return (
     <>
       <PageContentBlock accent>
-        {(loading || !innovationFlow) && times(3, () => <Skeleton />)}
+        {(loading || !innovationFlow) && times(3, index => <Skeleton key={index} />)}
         {!loading && innovationFlow && (
           <>
             <WrapperMarkdown>
