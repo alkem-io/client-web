@@ -2,13 +2,7 @@ import { AutoGraphOutlined, Close } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, Theme, useMediaQuery } from '@mui/material';
 import { FC, useState } from 'react';
-import {
-  Lifecycle,
-  Reference,
-  TagsetType,
-  UpdateProfileInput,
-  Visual,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { Reference, TagsetType, UpdateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -38,13 +32,15 @@ export interface InnovationFlowProfile {
 }
 
 export interface InnovationFlowProfileBlockProps {
-  innovationFlow:
-    | {
-        id: string;
-        profile: InnovationFlowProfile;
-        lifecycle?: Pick<Lifecycle, 'state' | 'stateIsFinal' | 'nextEvents'>;
-      }
-    | undefined;
+  innovationFlow?: {
+    id: string;
+    profile: InnovationFlowProfile;
+    lifecycle?: {
+      state?: string;
+      stateIsFinal: boolean;
+      nextEvents?: string[];
+    };
+  };
   editable?: boolean;
   onUpdate?: (innovationFlowID: string, profileData: UpdateProfileInput) => Promise<unknown> | void;
   loading?: boolean;

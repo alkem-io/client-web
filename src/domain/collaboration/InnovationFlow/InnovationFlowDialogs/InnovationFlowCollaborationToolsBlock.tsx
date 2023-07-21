@@ -44,7 +44,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   const groupedCallouts = groupBy(callouts, callout => callout.flowState);
 
   const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
-    const flowStateTagsetId = callouts.find(callout => callout.id === draggableId)?.flowStateId;
+    const flowStateTagsetId = callouts.find(callout => callout.id === draggableId)?.flowState?.tagsetId;
     if (onUpdateCalloutFlowState && flowStateTagsetId) {
       onUpdateCalloutFlowState(draggableId, flowStateTagsetId, destination.droppableId);
     }

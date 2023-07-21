@@ -8,16 +8,37 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../InnovationFlowStates/useInnovationFlowStates';
-import { Callout, Profile, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
-import { uniq } from 'lodash';
+import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
+import { compact, uniq } from 'lodash';
 
 interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
 
-export interface GrouppedCallout extends Pick<Callout, 'id' | 'nameID' | 'type' | 'activity'> {
-  profile: Pick<Profile, 'displayName'>;
-  flowStateId: string | null;
-  flowState: string | null;
-  flowStateAllowedValues: string[];
+const findFlowState = (tagsets: Tagset[] | undefined) => {
+  const tagset = tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME);
+  return tagset
+    ? {
+        tagsetId: tagset.id,
+        currentState: tagset.tags[0],
+        allowedValues: tagset.allowedValues,
+      }
+    : undefined;
+};
+
+export interface GrouppedCallout {
+  id: string;
+  nameID: string;
+  type: CalloutType;
+  activity: number;
+  profile: {
+    displayName: string;
+  };
+  flowState:
+    | {
+        tagsetId: string;
+        currentState: string | undefined;
+        allowedValues: string[];
+      }
+    | undefined;
 }
 
 const useInnovationFlowSettings = ({
@@ -51,16 +72,10 @@ const useInnovationFlowSettings = ({
       },
       type: callout.type,
       activity: callout.activity,
-      flowStateId:
-        callout.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.id ?? null,
-      flowState:
-        callout.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.tags[0] ?? null,
-      flowStateAllowedValues:
-        callout.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.allowedValues ??
-        [],
+      flowState: findFlowState(callout.profile.tagsets),
     })) ?? [];
 
-  const flowStateAllowedValues = uniq(callouts?.flatMap(callout => callout.flowStateAllowedValues)) ?? [];
+  const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
   const [challengeEvent, { loading: loadingChallengeEvent }] = useChallengeInnovationFlowEventMutation({
     refetchQueries: [
