@@ -9,6 +9,8 @@ import calloutIcons from '../../callout/utils/calloutIcons';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from 'react-beautiful-dnd';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import i18n from '../../../../core/i18n/config';
+import TranslationKey from '../../../../types/TranslationKey';
 
 interface InnovationFlowCollaborationToolsBlockProps {
   callouts: GrouppedCallout[];
@@ -50,9 +52,10 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
     }
   };
 
-  //!! const [handleSave, loading] = useLoadingState(async (profileData: InnovationFlowProfileFormValues) => {
-  //   await onSubmit(profileData);
-  // });
+  const getStateName = (state: string) =>
+    i18n.exists(`common.enums.innovationFlowState.${state}`)
+      ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
+      : state;
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -61,7 +64,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
         <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
           {flowStateAllowedValues.map(state => (
             <PageContentBlock key={state} columns={3}>
-              <Caption>{state}</Caption>
+              <Caption>{getStateName(state)}</Caption>
               <Droppable droppableId={state}>
                 {provided => (
                   <Gutters ref={provided.innerRef} disablePadding flexGrow={1} {...provided.droppableProps}>
