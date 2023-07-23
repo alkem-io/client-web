@@ -20,6 +20,9 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
+import { InfoOutlined } from '@mui/icons-material';
+import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -41,6 +44,12 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
       calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
     });
 
+  const journeyTypeName = 'challenge';
+
+  const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
+
+  const [, buildLinkToAbout] = useBackToParentPage('./dashboard');
+
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
       <ChallengePageContainer>
@@ -48,19 +57,29 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
           <>
             <JourneyDashboardView
               vision={
-                <JourneyDashboardVision
-                  vision={entities.challenge?.context?.vision}
-                  journeyTypeName="challenge"
-                  actions={
-                    <ApplicationButtonContainer
-                      challengeId={entities.challenge?.id}
-                      challengeNameId={challengeNameId}
-                      challengeName={entities.challenge?.profile.displayName}
-                    >
-                      {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
-                    </ApplicationButtonContainer>
-                  }
-                />
+                <>
+                  <JourneyDashboardVision
+                    vision={entities.challenge?.context?.vision}
+                    journeyTypeName="challenge"
+                    actions={
+                      <ApplicationButtonContainer
+                        challengeId={entities.challenge?.id}
+                        challengeNameId={challengeNameId}
+                        challengeName={entities.challenge?.profile.displayName}
+                      >
+                        {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+                      </ApplicationButtonContainer>
+                    }
+                  />
+                  <FullWidthButton
+                    startIcon={<InfoOutlined />}
+                    variant="contained"
+                    component={RouterLink}
+                    {...buildLinkToAbout('./about')}
+                  >
+                    {t('common.aboutThis', { entity: translatedJourneyTypeName })}
+                  </FullWidthButton>
+                </>
               }
               spaceNameId={entities.spaceNameId}
               challengeNameId={entities.challenge?.nameID}
