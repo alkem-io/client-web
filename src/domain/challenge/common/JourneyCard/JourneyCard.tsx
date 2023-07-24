@@ -13,11 +13,7 @@ import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter'
 import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMemberIcon';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
-
-export interface JourneyCardBanner {
-  uri: string;
-  alternativeText?: string;
-}
+import { JourneyCardBanner } from './Banner';
 
 export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;

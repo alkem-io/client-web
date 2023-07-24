@@ -12,6 +12,7 @@ import {
   CalloutState,
   CalloutType,
   CreateCalloutMutation,
+  CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
@@ -23,6 +24,7 @@ export interface CalloutCreationType {
     description: string;
     displayName: string;
     referencesData: Reference[];
+    tagsets?: CreateTagsetInput[];
   };
   tags?: string[];
   type: CalloutType;

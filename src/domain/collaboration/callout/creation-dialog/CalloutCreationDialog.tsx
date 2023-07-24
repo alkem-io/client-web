@@ -32,6 +32,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
+import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -44,6 +45,7 @@ export type CalloutCreationDialogFields = {
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   profileId?: string;
+  flowState?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -59,6 +61,7 @@ export interface CalloutCreationDialogProps {
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   group: CalloutDisplayLocation;
+  flowState?: string;
 }
 
 export interface TemplateProfile {
@@ -94,6 +97,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   calloutNames,
   templates,
   group,
+  flowState,
 }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
@@ -146,6 +150,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         displayName: callout.displayName!,
         description: callout.description!,
         referencesData: callout.references!,
+        tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
       },
       tags: callout.tags,
       type: callout.type!,

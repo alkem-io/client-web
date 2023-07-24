@@ -43,6 +43,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   const { innovationFlowStates, currentInnovationFlowState } = useInnovationFlowStates({
     spaceId: spaceNameId,
     challengeId: challengeNameId!,
+    opportunityId: opportunityNameId,
   });
 
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
@@ -166,6 +167,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               scrollToCallout={scrollToCallout}
               group={CalloutDisplayLocation.Knowledge}
               createButtonPlace="top"
+              flowState={selectedInnovationFlowState}
             />
           </PageContentColumn>
         </PageContent>
@@ -179,6 +181,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
         calloutNames={calloutNames}
         templates={templates}
         group={CalloutDisplayLocation.Knowledge}
+        flowState={selectedInnovationFlowState}
       />
     </>
   );
