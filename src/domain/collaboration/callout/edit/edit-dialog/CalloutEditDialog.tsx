@@ -75,7 +75,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     },
     group: callout.profile.displayLocationtagset?.tags
       ? (callout.profile.displayLocationtagset?.tags[0] as CalloutDisplayLocation)
-      : CalloutDisplayLocation.CommonKnowledgeRight,
+      : CalloutDisplayLocation.Knowledge,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({

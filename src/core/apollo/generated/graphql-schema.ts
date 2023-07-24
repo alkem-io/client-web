@@ -689,20 +689,18 @@ export type CalloutWhiteboardsArgs = {
 };
 
 export enum CalloutDisplayLocation {
-  ChallengeContribute = 'CHALLENGE_CONTRIBUTE',
-  ChallengeContributeRight = 'CHALLENGE_CONTRIBUTE_RIGHT',
-  ChallengeOpportunitiesLeft = 'CHALLENGE_OPPORTUNITIES_LEFT',
-  ChallengeOpportunitiesRight = 'CHALLENGE_OPPORTUNITIES_RIGHT',
-  CommonHomeLeft = 'COMMON_HOME_LEFT',
-  CommonHomeRight = 'COMMON_HOME_RIGHT',
-  CommonHomeTop = 'COMMON_HOME_TOP',
-  CommonKnowledgeRight = 'COMMON_KNOWLEDGE_RIGHT',
-  OpportunityContribute = 'OPPORTUNITY_CONTRIBUTE',
-  OpportunityContributeRight = 'OPPORTUNITY_CONTRIBUTE_RIGHT',
-  SpaceChallengesLeft = 'SPACE_CHALLENGES_LEFT',
-  SpaceChallengesRight = 'SPACE_CHALLENGES_RIGHT',
-  SpaceCommunityLeft = 'SPACE_COMMUNITY_LEFT',
-  SpaceCommunityRight = 'SPACE_COMMUNITY_RIGHT',
+  ChallengesLeft = 'CHALLENGES_LEFT',
+  ChallengesRight = 'CHALLENGES_RIGHT',
+  CommunityLeft = 'COMMUNITY_LEFT',
+  CommunityRight = 'COMMUNITY_RIGHT',
+  ContributeLeft = 'CONTRIBUTE_LEFT',
+  ContributeRight = 'CONTRIBUTE_RIGHT',
+  HomeLeft = 'HOME_LEFT',
+  HomeRight = 'HOME_RIGHT',
+  HomeTop = 'HOME_TOP',
+  Knowledge = 'KNOWLEDGE',
+  OpportunitiesLeft = 'OPPORTUNITIES_LEFT',
+  OpportunitiesRight = 'OPPORTUNITIES_RIGHT',
 }
 
 export type CalloutPostCreated = {

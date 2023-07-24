@@ -558,14 +558,18 @@
       "clickToSee": "Click to see the full whiteboard"
     },
     "callout-groups": {
-      "HomeTop": "Dashboard Recommendations",
-      "HomeLeft": "Dashboard Left",
-      "HomeRight": "Dashboard Right",
-      "CommunityLeft": "Community Left",
-      "CommunityRight": "Community Right",
-      "ChallengesLeft": "Challenges Left",
-      "ChallengesRight": "Challenges Right",
-      "KnowledgeBase": "Knowledge Base"
+      "HOME_TOP": "Dashboard Recommendations",
+      "HOME_LEFT": "Dashboard Left",
+      "HOME_RIGHT": "Dashboard Right",
+      "CONTRIBUTE_LEFT": "Contribute Left",
+      "CONTRIBUTE_RIGHT": "Contribute Right",
+      "COMMUNITY_LEFT": "Community Left",
+      "COMMUNITY_RIGHT": "Community Right",
+      "CHALLENGES_LEFT": "Challenges Left",
+      "CHALLENGES_RIGHT": "Challenges Right",
+      "OPPORTUNITIES_LEFT": "Opportunities Left",
+      "OPPORTUNITIES_RIGHT": "Opportunities Right",
+      "KNOWLEDGE": "Knowledge Base"
     }
   },
   "journey-creation": {

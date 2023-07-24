@@ -19,6 +19,7 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useSpaceDashboardNavigation from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -47,16 +48,14 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [
-      CalloutDisplayLocation.CommonHomeTop,
-      CalloutDisplayLocation.CommonHomeLeft,
-      CalloutDisplayLocation.CommonHomeRight,
-    ],
+    calloutGroups: [CalloutDisplayLocation.HomeTop, CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
   });
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
     spaceId: spaceNameId,
   });
+
+  console.log('value: ', CalloutDisplayLocation.HomeTop);
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -110,9 +109,9 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               journeyTypeName="space"
               childEntityTitle={t('common.challenges')}
               recommendations={
-                groupedCallouts[CalloutDisplayLocation.CommonHomeTop] && (
+                groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocation.CommonHomeTop]}
+                    callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}
@@ -121,7 +120,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    group={CalloutDisplayLocation.CommonHomeTop}
+                    group={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />
@@ -129,7 +128,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               }
               childrenLeft={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocation.CommonHomeLeft]}
+                  callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeLeft]}
                   spaceId={spaceNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
@@ -138,12 +137,12 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
                   onCalloutUpdate={refetchCallout}
-                  group={CalloutDisplayLocation.CommonHomeLeft}
+                  group={CalloutDisplayLocation.HomeLeft}
                 />
               }
               childrenRight={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocation.CommonHomeRight]}
+                  callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeRight]}
                   spaceId={spaceNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
@@ -152,7 +151,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
                   onCalloutUpdate={refetchCallout}
-                  group={CalloutDisplayLocation.CommonHomeRight}
+                  group={CalloutDisplayLocation.HomeRight}
                 />
               }
             />

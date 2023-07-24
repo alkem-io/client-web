@@ -24,6 +24,7 @@ import { CalloutDisplayLocation, CalloutVisibility } from '../../../core/apollo/
 import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutDisplayLocationValuesMap } from '../callout/CalloutsInContext/CalloutsGroup';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -51,7 +52,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     spaceNameId,
     challengeNameId,
     opportunityNameId,
-    calloutGroups: [CalloutDisplayLocation.CommonKnowledgeRight],
+    calloutGroups: [CalloutDisplayLocation.Knowledge],
   });
 
   const { t } = useTranslation();
@@ -106,7 +107,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                 title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
               />
               <LinksList
-                items={groupedCallouts[CalloutDisplayLocation.CommonKnowledgeRight]?.map(callout => {
+                items={groupedCallouts[CalloutDisplayLocationValuesMap.Knowledge]?.map(callout => {
                   const CalloutIcon = calloutIcons[callout.type];
                   return {
                     id: callout.id,
@@ -130,7 +131,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
 
           <PageContentColumn columns={8}>
             <CalloutsGroupView
-              callouts={groupedCallouts[CalloutDisplayLocation.CommonKnowledgeRight]}
+              callouts={groupedCallouts[CalloutDisplayLocationValuesMap.Knowledge]}
               spaceId={spaceNameId!}
               canCreateCallout={canCreateCallout}
               loading={loading}
@@ -140,7 +141,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
-              group={CalloutDisplayLocation.CommonKnowledgeRight}
+              group={CalloutDisplayLocation.Knowledge}
             />
           </PageContentColumn>
         </PageContent>
@@ -153,7 +154,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
-        group={CalloutDisplayLocation.CommonKnowledgeRight}
+        group={CalloutDisplayLocation.Knowledge}
       />
     </PageLayout>
   );

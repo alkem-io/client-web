@@ -20,6 +20,7 @@ import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboard
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -39,9 +40,9 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
       spaceNameId,
       challengeNameId,
       calloutGroups: [
-        CalloutDisplayLocation.CommonHomeTop,
-        CalloutDisplayLocation.CommonHomeLeft,
-        CalloutDisplayLocation.CommonHomeRight,
+        CalloutDisplayLocation.HomeTop,
+        CalloutDisplayLocation.HomeLeft,
+        CalloutDisplayLocation.HomeRight,
       ],
     });
 
@@ -103,9 +104,9 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               journeyTypeName="challenge"
               childEntityTitle={t('common.opportunities')}
               recommendations={
-                groupedCallouts[CalloutDisplayLocation.CommonHomeTop] && (
+                groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocation.CommonHomeTop]}
+                    callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}
@@ -114,7 +115,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    group={CalloutDisplayLocation.CommonHomeTop}
+                    group={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />

@@ -10,7 +10,7 @@ import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphq
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.CommonHomeTop:
+    case CalloutDisplayLocation.HomeTop:
       return <OpportunityDashboardPage />;
     default:
       return <ContributePage journeyTypeName="opportunity" />;

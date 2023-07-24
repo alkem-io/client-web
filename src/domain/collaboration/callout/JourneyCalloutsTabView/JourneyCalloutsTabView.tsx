@@ -63,7 +63,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   });
 
   const callouts = allCallouts
-    // ?.filter(callout => callout.group !== CalloutDisplayLocation.CommonHomeTop)
+    // ?.filter(callout => callout.group !== CalloutDisplayLocation.HomeTop)
     ?.filter(callout => {
       if (!selectedInnovationFlowState) {
         return true;
@@ -164,7 +164,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
-              group={CalloutDisplayLocation.CommonKnowledgeRight}
+              group={CalloutDisplayLocation.Knowledge}
               createButtonPlace="top"
             />
           </PageContentColumn>
@@ -178,7 +178,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
-        group={CalloutDisplayLocation.CommonKnowledgeRight}
+        group={CalloutDisplayLocation.Knowledge}
       />
     </>
   );

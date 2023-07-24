@@ -25,6 +25,7 @@ import useActivityOnCollaboration from '../../../collaboration/activity/useActiv
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -45,7 +46,7 @@ const SpaceCommunityPage = () => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.SpaceCommunityLeft, CalloutDisplayLocation.SpaceCommunityRight],
+    calloutGroups: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
   });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
@@ -115,7 +116,7 @@ const SpaceCommunityPage = () => {
             messageReceivers={messageReceivers}
           />
           <CalloutsGroupView
-            callouts={groupedCallouts[CalloutDisplayLocation.SpaceCommunityLeft]}
+            callouts={groupedCallouts[CalloutDisplayLocationValuesMap.CommunityLeft]}
             spaceId={spaceNameId!}
             canCreateCallout={canCreateCallout}
             loading={loading}
@@ -124,7 +125,7 @@ const SpaceCommunityPage = () => {
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
             onCalloutUpdate={refetchCallout}
-            group={CalloutDisplayLocation.SpaceCommunityLeft}
+            group={CalloutDisplayLocation.CommunityLeft}
           />
         </PageContentColumn>
         <PageContentColumn columns={8}>
@@ -134,7 +135,7 @@ const SpaceCommunityPage = () => {
             <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
           </PageContentBlock>
           <CalloutsGroupView
-            callouts={groupedCallouts[CalloutDisplayLocation.SpaceCommunityRight]}
+            callouts={groupedCallouts[CalloutDisplayLocationValuesMap.CommunityRight]}
             spaceId={spaceNameId!}
             canCreateCallout={canCreateCallout}
             loading={loading}
@@ -143,7 +144,7 @@ const SpaceCommunityPage = () => {
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
             onCalloutUpdate={refetchCallout}
-            group={CalloutDisplayLocation.SpaceCommunityRight}
+            group={CalloutDisplayLocation.CommunityRight}
           />
         </PageContentColumn>
       </PageContent>

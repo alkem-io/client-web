@@ -28,7 +28,6 @@ import EmptyWhiteboard from '../../../common/components/composite/entities/White
 import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
-import { CalloutsGroup } from './CalloutsInContext/CalloutsGroup';
 import { FormikSelectValue } from '../../../common/components/composite/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
 import { Caption } from '../../../core/ui/typography';
@@ -36,6 +35,13 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { useChallenge } from '../../challenge/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../challenge/opportunity/hooks/useOpportunity';
+import {
+  ChallengeDisplayLocationOptions,
+  OpportunityDisplayLocationOptions,
+  SpaceDisplayLocationOptions,
+} from './CalloutsInContext/CalloutsGroup';
 
 type FormValueType = {
   displayName: string;
@@ -124,7 +130,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      group: callout?.group ?? CalloutDisplayLocation.CommonKnowledgeRight,
+      group: callout?.group ?? CalloutDisplayLocation.Knowledge,
       postTemplateData: callout?.postTemplateData ?? {
         profile: {
           displayName: '',
@@ -209,10 +215,21 @@ const CalloutForm: FC<CalloutFormProps> = ({
     onChange?.(callout);
   };
 
+  const { challengeId } = useChallenge();
+  const { opportunityId } = useOpportunity();
+
+  const isSpace = !challengeId;
+  const isChallenge = !isSpace && !opportunityId;
+
   const calloutsGroups = useMemo<FormikSelectValue[]>(() => {
+    let locations = isSpace
+      ? SpaceDisplayLocationOptions
+      : isChallenge
+      ? ChallengeDisplayLocationOptions
+      : OpportunityDisplayLocationOptions;
     if (editMode) {
-      return (Object.keys(CalloutsGroup) as Array<keyof typeof CalloutsGroup>).map(key => ({
-        id: CalloutsGroup[key],
+      return locations.map(key => ({
+        id: key,
         name: t(`callout.callout-groups.${key}` as const),
       }));
     }

@@ -22,6 +22,7 @@ import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts'
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 export interface SpaceChallengesPageProps {}
 
@@ -65,7 +66,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.SpaceChallengesLeft, CalloutDisplayLocation.SpaceChallengesRight],
+    calloutGroups: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
   });
 
   return (
@@ -109,7 +110,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocation.SpaceChallengesLeft]}
+                callouts={groupedCallouts[CalloutDisplayLocationValuesMap.ChallengesLeft]}
                 spaceId={spaceNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
@@ -118,12 +119,12 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
-                group={CalloutDisplayLocation.SpaceChallengesLeft}
+                group={CalloutDisplayLocation.ChallengesLeft}
               />
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocation.SpaceChallengesRight]}
+                callouts={groupedCallouts[CalloutDisplayLocationValuesMap.ChallengesRight]}
                 spaceId={spaceNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
@@ -132,7 +133,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
-                group={CalloutDisplayLocation.SpaceChallengesRight}
+                group={CalloutDisplayLocation.ChallengesRight}
               />
             }
           />
