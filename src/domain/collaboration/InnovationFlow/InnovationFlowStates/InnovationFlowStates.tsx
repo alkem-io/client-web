@@ -5,6 +5,9 @@ import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../types/TranslationKey';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { useState } from 'react';
+import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 
 export type InnovationFlowState = string;
 
@@ -24,6 +27,7 @@ const InnovationFlowStates = ({
   onSelectState,
 }: InnovationFlowStatesProps) => {
   const { t, i18n } = useTranslation();
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   const getStateButtonVariant = (state: InnovationFlowState) => {
     if (state === currentState) {
@@ -41,7 +45,9 @@ const InnovationFlowStates = ({
         backgroundColor: theme.palette.highlight.light,
       };
     }
-    return {};
+    return {
+      backgroundColor: theme.palette.background.paper,
+    };
   };
 
   const theme = useTheme();
@@ -53,20 +59,20 @@ const InnovationFlowStates = ({
 
   return (
     <PageContentBlockSeamless disablePadding>
-      <Gutters row justifyContent="space-around">
+      <Gutters row justifyContent="space-around" flexWrap="wrap">
         {states.map(state => (
           <Button
             key={state}
             variant={getStateButtonVariant(state)}
             disableElevation
-            sx={{ textTransform: 'none', ...getStateButtonSx(state) }}
+            sx={{ textTransform: 'none', minHeight: gutters(2), ...getStateButtonSx(state) }}
             onClick={() => onSelectState?.(state)}
           >
             <BlockTitle fontWeight="bold">{getStateName(state)}</BlockTitle>
           </Button>
         ))}
         {showSettings && (
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={() => setShowSettingsDialog(true)}>
             <SettingsIcon />
           </IconButton>
         )}
@@ -84,6 +90,7 @@ const InnovationFlowStates = ({
           />
         </Caption>
       )}
+      <InnovationFlowSettingsDialog open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
     </PageContentBlockSeamless>
   );
 };
