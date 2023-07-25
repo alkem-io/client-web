@@ -30,7 +30,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
   const [requestConfig, loading, error] = useLoadingStateWithHandlers(
     async (url: string) => {
       const result = await queryRequest<ConfigurationQuery>(url, ConfigurationDocument);
-      setConfig(result.data.data.configuration);
+      setConfig(result.data.data.platform.configuration);
     },
     {
       onError: err => logger.error(err.message),

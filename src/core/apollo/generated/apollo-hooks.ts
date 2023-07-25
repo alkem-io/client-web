@@ -5044,15 +5044,17 @@ export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMem
 
 export const CommunityFeedbackTemplatesDocument = gql`
   query communityFeedbackTemplates {
-    configuration {
-      template {
-        challenges {
-          feedback {
-            name
-            questions {
-              question
-              required
-              sortOrder
+    platform {
+      configuration {
+        template {
+          challenges {
+            feedback {
+              name
+              questions {
+                question
+                required
+                sortOrder
+              }
             }
           }
         }
@@ -18955,8 +18957,10 @@ export function refetchMessagingUserDetailsQuery(variables: SchemaTypes.Messagin
 
 export const PlatformLevelAuthorizationDocument = gql`
   query PlatformLevelAuthorization {
-    authorization {
-      ...MyPrivileges
+    platform {
+      authorization {
+        ...MyPrivileges
+      }
     }
   }
   ${MyPrivilegesFragmentDoc}
@@ -19832,8 +19836,10 @@ export const UserProfileDocument = gql`
       id
       ...UserRolesDetails
     }
-    authorization {
-      ...MyPrivileges
+    platform {
+      authorization {
+        ...MyPrivileges
+      }
     }
   }
   ${UserDetailsFragmentDoc}
@@ -24131,8 +24137,10 @@ export type DeleteWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions
 >;
 export const ConfigurationDocument = gql`
   query configuration {
-    configuration {
-      ...Configuration
+    platform {
+      configuration {
+        ...Configuration
+      }
     }
   }
   ${ConfigurationFragmentDoc}
@@ -24185,15 +24193,17 @@ export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQ
 
 export const ServerMetadataDocument = gql`
   query serverMetadata {
-    metadata {
-      metrics {
-        id
-        name
-        value
-      }
-      services {
-        name
-        version
+    platform {
+      metadata {
+        metrics {
+          id
+          name
+          value
+        }
+        services {
+          name
+          version
+        }
       }
     }
   }
