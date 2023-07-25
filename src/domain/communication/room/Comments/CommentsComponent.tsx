@@ -23,6 +23,7 @@ export interface CommentsComponentProps {
   commentsId: string | undefined;
   canReadMessages: boolean;
   canPostMessages: boolean;
+  canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
   postReply: (reply: { messageText: string; threadId: string }) => void;
@@ -57,6 +58,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   handleDeleteMessage,
   canPostMessages,
   canDeleteMessage,
+  canAddReaction,
   maxHeight,
   loading,
   onClickMore,
@@ -118,6 +120,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
               onReply={postReply}
               canDeleteMessage={canDeleteMessage}
               onDeleteMessage={onDeleteComment}
+              canAddReaction={canAddReaction}
               {...commentReactionsMutations}
             />
           </Gutters>
@@ -131,6 +134,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
             message={lastMessage}
             canDelete={canDeleteMessage(lastMessage.author?.id)}
             onDelete={onDeleteComment}
+            canAddReaction={canAddReaction}
             {...commentReactionsMutations}
           />
           <CaptionSmall textAlign="center" onClick={onClickMore}>
