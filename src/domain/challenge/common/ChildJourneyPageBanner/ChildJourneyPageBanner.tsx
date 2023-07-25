@@ -30,7 +30,7 @@ const CardContainer = (props: JourneyPageBannerCardProps) => {
       width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
       maxWidth="100%"
       marginX="auto"
-      alignItems="start"
+      alignItems={cardStickSide === 'left' ? 'start' : 'stretch'}
       position="relative"
       paddingX={columns > 8 ? 0 : undefined}
     >
