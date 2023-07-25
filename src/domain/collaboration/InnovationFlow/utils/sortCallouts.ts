@@ -15,9 +15,14 @@ export interface SortCalloutsParams {
   };
 }
 
-const FLOW_STATE_MOVING = Symbol('moving');
+interface SortCalloutsReturnType {
+  sortedCalloutIds: string[];
+  optimisticSortOrder: number;
+}
 
-export const sortCallouts = ({ callouts, movedCallout }: SortCalloutsParams) => {
+const FLOW_STATE_MOVING = Symbol('Moving');
+
+export const sortCallouts = ({ callouts, movedCallout }: SortCalloutsParams): SortCalloutsReturnType => {
   const { id: calloutId, newState, insertIndex } = movedCallout;
 
   const calloutsByFlowState = groupBy(

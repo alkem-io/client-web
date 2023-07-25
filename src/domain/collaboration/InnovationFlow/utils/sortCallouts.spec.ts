@@ -1,160 +1,152 @@
 import { sortCallouts, SortCalloutsParams } from './sortCallouts';
+import { groupBy, mapValues, sortBy } from 'lodash';
 
-const testDataA: SortCalloutsParams['callouts'] = [
-  { id: '111', sortOrder: 1, flowState: { currentState: 'A' } },
-  { id: '222', sortOrder: 2, flowState: { currentState: 'A' } },
-  { id: '333', sortOrder: 3, flowState: { currentState: 'A' } },
-  { id: '444', sortOrder: 4, flowState: { currentState: 'A' } },
-  { id: '555', sortOrder: 5, flowState: { currentState: 'A' } },
-  { id: '666', sortOrder: 6, flowState: { currentState: 'A' } },
+enum FlowStates {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+}
+
+const callouts: SortCalloutsParams['callouts'] = [
+  { id: '1', sortOrder: 1, flowState: { currentState: FlowStates.A } },
+  { id: '2', sortOrder: 5, flowState: { currentState: FlowStates.A } },
+  { id: '3', sortOrder: 6, flowState: { currentState: FlowStates.B } },
+  { id: '4', sortOrder: 4, flowState: { currentState: FlowStates.A } },
+  { id: '5', sortOrder: 2, flowState: { currentState: FlowStates.A } },
+  { id: '6', sortOrder: 3, flowState: { currentState: FlowStates.B } },
 ];
 
-const testDataB: SortCalloutsParams['callouts'] = [
-  { id: '111', sortOrder: 1, flowState: { currentState: 'A' } },
-  { id: '222', sortOrder: 2, flowState: { currentState: 'A' } },
-  { id: '333', sortOrder: 3, flowState: { currentState: 'A' } },
-  { id: '444', sortOrder: 4, flowState: { currentState: 'B' } },
-  { id: '555', sortOrder: 5, flowState: { currentState: 'B' } },
-  { id: '666', sortOrder: 6, flowState: { currentState: 'B' } },
-];
-
-const testDataC: SortCalloutsParams['callouts'] = [
-  { id: '111', sortOrder: 1, flowState: { currentState: 'A' } },
-  { id: '222', sortOrder: 2, flowState: { currentState: 'A' } },
-  { id: '333', sortOrder: 3, flowState: { currentState: 'A' } },
-  { id: '444', sortOrder: 4, flowState: { currentState: 'C' } },
-  { id: '555', sortOrder: 5, flowState: { currentState: 'C' } },
-  { id: '666', sortOrder: 6, flowState: { currentState: 'C' } },
-];
-
-const runTest = (
-  callouts: SortCalloutsParams['callouts'],
-  movedCallout: SortCalloutsParams['movedCallout'],
-  expectedResult: { optimisticSortOrder: number; sortedCalloutIds: string[] }
-) => {
-  const result = sortCallouts({ callouts, movedCallout });
-  expect(result).toEqual(expectedResult);
+const sortAndGroup = (movedCallout: SortCalloutsParams['movedCallout']) => {
+  const sourceSortedCallouts = sortBy(callouts, 'sortOrder');
+  const { sortedCalloutIds, optimisticSortOrder } = sortCallouts({ callouts: sourceSortedCallouts, movedCallout });
+  const resultSortedCallouts = sortedCalloutIds.map(calloutId => callouts.find(({ id }) => id === calloutId)!);
+  const groupedCallouts = groupBy(resultSortedCallouts, callout => {
+    return callout.id === movedCallout.id ? movedCallout.newState : callout.flowState?.currentState;
+  });
+  return {
+    groupedCalloutIds: mapValues(groupedCallouts, callouts => callouts.map(({ id }) => id)),
+    optimisticSortOrder,
+  };
 };
 
-describe('sortCallouts', () => {
-  it('with an empty list of Callouts', () => {
-    runTest([], { id: '111', newState: 'B', insertIndex: 0 }, { optimisticSortOrder: 0, sortedCalloutIds: ['111'] });
+describe('sortCallouts handling grouped Callouts', () => {
+  it('does not change sortedCalloutIds if the moved Callout is the only one in the target group', () => {
+    expect(
+      sortAndGroup({
+        id: '4',
+        insertIndex: 0,
+        newState: FlowStates.C,
+      }).groupedCalloutIds
+    ).toEqual({
+      [FlowStates.A]: ['1', '5', '2'],
+      [FlowStates.B]: ['6', '3'],
+      [FlowStates.C]: ['4'],
+    });
   });
 
-  it('with only one callout', () => {
-    runTest(
-      [{ id: '111', sortOrder: 1, flowState: { currentState: 'A' } }],
-      { id: '111', newState: 'C', insertIndex: 3 },
-      { optimisticSortOrder: 0, sortedCalloutIds: ['111'] }
-    );
+  it('handles the Callout that goes to the end of the target group', () => {
+    expect(
+      sortAndGroup({
+        id: '4',
+        insertIndex: 2,
+        newState: FlowStates.B,
+      }).groupedCalloutIds
+    ).toEqual({
+      [FlowStates.A]: ['1', '5', '2'],
+      [FlowStates.B]: ['6', '3', '4'],
+    });
   });
 
-  it('move 111', () => {
-    runTest(
-      testDataA,
-      { id: '111', newState: 'C', insertIndex: 0 },
-      { optimisticSortOrder: 7, sortedCalloutIds: ['222', '333', '444', '555', '666', '111'] }
-    );
-  });
-  it('move 222', () => {
-    runTest(
-      testDataA,
-      { id: '222', newState: 'C', insertIndex: 0 },
-      { optimisticSortOrder: 7, sortedCalloutIds: ['111', '333', '444', '555', '666', '222'] }
-    );
-  });
-  it('move 333', () => {
-    runTest(
-      testDataA,
-      { id: '333', newState: 'E', insertIndex: 0 },
-      { optimisticSortOrder: 7, sortedCalloutIds: ['111', '222', '444', '555', '666', '333'] }
-    );
+  it('handles the Callout that goes to the middle of the target group', () => {
+    expect(
+      sortAndGroup({
+        id: '4',
+        insertIndex: 1,
+        newState: FlowStates.B,
+      }).groupedCalloutIds
+    ).toEqual({
+      [FlowStates.A]: ['1', '5', '2'],
+      [FlowStates.B]: ['6', '4', '3'],
+    });
   });
 
-  it('move 111 to the beginning', () => {
-    runTest(
-      testDataB,
-      { id: '111', newState: 'B', insertIndex: 0 },
-      { optimisticSortOrder: 3.5, sortedCalloutIds: ['222', '333', '111', '444', '555', '666'] }
-    );
-  });
-  it('move 111 to the middle', () => {
-    runTest(
-      testDataB,
-      { id: '111', newState: 'B', insertIndex: 1 },
-      { optimisticSortOrder: 4.5, sortedCalloutIds: ['222', '333', '444', '111', '555', '666'] }
-    );
-  });
-  it('move 111 to the middle 2', () => {
-    runTest(
-      testDataB,
-      { id: '111', newState: 'B', insertIndex: 2 },
-      { optimisticSortOrder: 5.5, sortedCalloutIds: ['222', '333', '444', '555', '111', '666'] }
-    );
-  });
-  it('move 111 to the last', () => {
-    runTest(
-      testDataB,
-      { id: '111', newState: 'B', insertIndex: 3 },
-      { optimisticSortOrder: 6.5, sortedCalloutIds: ['222', '333', '444', '555', '666', '111'] }
-    );
-  });
-  it('move 111 to another state', () => {
-    runTest(
-      testDataB,
-      { id: '111', newState: 'C', insertIndex: 0 },
-      { optimisticSortOrder: 7, sortedCalloutIds: ['222', '333', '444', '555', '666', '111'] }
-    );
+  it('handles the Callout that goes to the top of the target group', () => {
+    expect(
+      sortAndGroup({
+        id: '6',
+        insertIndex: 0,
+        newState: FlowStates.A,
+      }).groupedCalloutIds
+    ).toEqual({
+      [FlowStates.A]: ['6', '1', '5', '4', '2'],
+      [FlowStates.B]: ['3'],
+    });
   });
 
-  it('move 222 to the beginning', () => {
-    runTest(
-      testDataB,
-      { id: '222', newState: 'B', insertIndex: 0 },
-      { optimisticSortOrder: 3.5, sortedCalloutIds: ['111', '333', '222', '444', '555', '666'] }
-    );
-  });
-  it('move 222 to the middle', () => {
-    runTest(
-      testDataB,
-      { id: '222', newState: 'B', insertIndex: 1 },
-      { optimisticSortOrder: 4.5, sortedCalloutIds: ['111', '333', '444', '222', '555', '666'] }
-    );
-  });
-  it('move 222 to the middle 2', () => {
-    runTest(
-      testDataB,
-      { id: '222', newState: 'B', insertIndex: 2 },
-      { optimisticSortOrder: 5.5, sortedCalloutIds: ['111', '333', '444', '555', '222', '666'] }
-    );
-  });
-  it('move 222 to the last', () => {
-    runTest(
-      testDataB,
-      { id: '222', newState: 'B', insertIndex: 3 },
-      { optimisticSortOrder: 6.5, sortedCalloutIds: ['111', '333', '444', '555', '666', '222'] }
-    );
-  });
-  it('move 222 to another state', () => {
-    runTest(
-      testDataB,
-      { id: '222', newState: 'C', insertIndex: 0 },
-      { optimisticSortOrder: 7, sortedCalloutIds: ['111', '333', '444', '555', '666', '222'] }
-    );
+  it('handles the Callout that moves within the same group', () => {
+    expect(
+      sortAndGroup({
+        id: '4',
+        insertIndex: 1,
+        newState: FlowStates.A,
+      }).groupedCalloutIds
+    ).toEqual({
+      [FlowStates.A]: ['1', '4', '5', '2'],
+      [FlowStates.B]: ['6', '3'],
+    });
   });
 
-  it('move 222 to the state in between', () => {
-    runTest(
-      testDataC,
-      { id: '222', newState: 'B', insertIndex: 0 },
-      { optimisticSortOrder: 4, sortedCalloutIds: ['111', '333', '222', '444', '555', '666'] }
-    );
+  it('handles the Callout that stays in the same place', () => {
+    expect(
+      sortAndGroup({
+        id: '4',
+        insertIndex: 2,
+        newState: FlowStates.A,
+      }).groupedCalloutIds
+    ).toEqual({
+      [FlowStates.A]: ['1', '5', '4', '2'],
+      [FlowStates.B]: ['6', '3'],
+    });
   });
-  it('move 222 to the state after last', () => {
-    runTest(
-      testDataC,
-      { id: '222', newState: 'D', insertIndex: 1 },
-      { optimisticSortOrder: 7, sortedCalloutIds: ['111', '333', '444', '555', '666', '222'] }
-    );
+});
+
+describe('sortCallouts providing optimistic sortOrder', () => {
+  it('gives 0 if the moved Callout is the only one in the target group', () => {
+    expect(
+      sortAndGroup({
+        id: '4',
+        insertIndex: 0,
+        newState: FlowStates.C,
+      }).optimisticSortOrder
+    ).toEqual(0);
+  });
+
+  it('gives max sortOrder + 1 if the Callout goes to the end of the target group', () => {
+    expect(
+      sortAndGroup({
+        id: '4',
+        insertIndex: 2,
+        newState: FlowStates.B,
+      }).optimisticSortOrder
+    ).toEqual(7);
+  });
+
+  it('for the Callout that goes to the middle of the target group, gives sortOrder in between prev and next items', () => {
+    const { optimisticSortOrder } = sortAndGroup({
+      id: '4',
+      insertIndex: 1,
+      newState: FlowStates.B,
+    });
+    expect(optimisticSortOrder).toBeGreaterThan(3);
+    expect(optimisticSortOrder).toBeLessThan(6);
+  });
+
+  it('for the Callout that goes to the top of the target group, gives sortOrder less that of the next item', () => {
+    const { optimisticSortOrder } = sortAndGroup({
+      id: '4',
+      insertIndex: 0,
+      newState: FlowStates.B,
+    });
+    expect(optimisticSortOrder).toBeLessThan(3);
   });
 });
