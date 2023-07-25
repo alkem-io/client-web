@@ -4,26 +4,35 @@ import React from 'react';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import { JourneyTypeName } from '../../JourneyTypeName';
 
+type Size = 'large';
+
 interface JourneyAvatarProps {
   journeyTypeName: JourneyTypeName;
   visualUri: string | undefined;
   hideJourneyIcon?: boolean;
+  size?: Size;
 }
 
-const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false }: JourneyAvatarProps) => {
+const AvatarSize: Record<Size, number> = {
+  large: 8,
+};
+
+const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false, size }: JourneyAvatarProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
+
+  const avatarSize = size && AvatarSize[size];
 
   return (
     <Box position="relative">
       <Avatar
         src={visualUri}
         sx={{
-          '.MuiAvatar-img': { filter: 'blur(1.5px)', opacity: '50%' },
+          '.MuiAvatar-img': hideJourneyIcon ? undefined : { filter: 'blur(1.5px)', opacity: '50%' },
           '.MuiAvatar-fallback': { display: 'none' },
           borderRadius: 0.5,
           backgroundColor: theme => theme.palette.challenge.main,
-          width: theme => theme.spacing(8),
-          height: theme => theme.spacing(8),
+          width: avatarSize && (theme => theme.spacing(avatarSize)),
+          height: avatarSize && (theme => theme.spacing(avatarSize)),
         }}
       />
       {!hideJourneyIcon && (
