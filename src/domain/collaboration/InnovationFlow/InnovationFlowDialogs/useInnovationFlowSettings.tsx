@@ -167,7 +167,6 @@ const useInnovationFlowSettings = ({
 
     const { optimisticSortOrder, sortedCalloutIds } = sortCallouts({
       callouts,
-      availableStates: flowStateAllowedValues,
       movedCallout: { id: calloutId, newState, insertIndex },
     });
 
