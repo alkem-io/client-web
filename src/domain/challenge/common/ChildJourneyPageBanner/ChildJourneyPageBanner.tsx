@@ -13,11 +13,33 @@ import { alpha } from '@mui/material/styles';
 import { DEFAULT_BANNER_URL } from '../../../shared/components/PageHeader/JourneyPageBanner';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import GridItem from '../../../../core/ui/grid/GridItem';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
 
 interface ChildJourneyPageBannerProps extends JourneyPageBannerCardProps {
   banner: Visual | undefined;
   ribbon?: ReactNode;
 }
+
+const CardContainer = (props: JourneyPageBannerCardProps) => {
+  const columns = useColumns();
+
+  const cardStickSide = columns > 8 ? 'left' : undefined;
+
+  return (
+    <Gutters
+      width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
+      maxWidth="100%"
+      marginX="auto"
+      alignItems={cardStickSide === 'left' ? 'start' : 'stretch'}
+      position="relative"
+      paddingX={columns > 8 ? 0 : undefined}
+    >
+      <GridItem columns={8}>
+        {({ width }) => <JourneyPageBannerCard maxWidth={width} stick={cardStickSide} {...props} />}
+      </GridItem>
+    </Gutters>
+  );
+};
 
 const ChildJourneyPageBanner = ({ banner, ribbon, ...cardProps }: ChildJourneyPageBannerProps) => {
   const { t } = useTranslation();
@@ -32,7 +54,7 @@ const ChildJourneyPageBanner = ({ banner, ribbon, ...cardProps }: ChildJourneyPa
 
   return (
     <GridProvider columns={globalGridColumns}>
-      <Gutters alignItems="start" position="relative" paddingX={0}>
+      <Box position="relative">
         {ribbon}
         <Box
           position="absolute"
@@ -60,11 +82,12 @@ const ChildJourneyPageBanner = ({ banner, ribbon, ...cardProps }: ChildJourneyPa
             onLoad={() => setImageLoading(false)}
             onError={imageLoadError}
             blurRadius={2}
-            // height is content-driven, but for the default image we need to set it explicitly
-            height={banner?.uri ? '100%' : theme => theme.spacing(18)}
             width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
             maxWidth="100%"
-            containerProps={imageLoading ? { visibility: 'hidden' } : undefined}
+            containerProps={{
+              height: '100%',
+              visibility: imageLoading ? 'hidden' : undefined,
+            }}
           />
         </Box>
         {imageLoading && (
@@ -80,10 +103,8 @@ const ChildJourneyPageBanner = ({ banner, ribbon, ...cardProps }: ChildJourneyPa
             }}
           />
         )}
-        <GridItem columns={8}>
-          {({ width }) => <JourneyPageBannerCard position="relative" maxWidth={width} {...cardProps} />}
-        </GridItem>
-      </Gutters>
+        <CardContainer {...cardProps} />
+      </Box>
     </GridProvider>
   );
 };
