@@ -452,7 +452,9 @@
       "day": "{{count}} day",
       "day_plural": "{{count}} days",
       "month": "{{count}} month",
-      "month_plural": "{{count}} months"
+      "month_plural": "{{count}} months",
+      "year": "{{count}} year",
+      "year_plural": "{{count}} years"
     }
   },
   "community": {
