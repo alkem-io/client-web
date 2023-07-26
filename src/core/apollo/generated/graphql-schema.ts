@@ -796,6 +796,27 @@ export type ChallengeTemplate = {
   name: Scalars['String'];
 };
 
+export type ChatGuidanceInput = {
+  /** The question that is being asked. */
+  question: Scalars['String'];
+};
+
+export type ChatGuidanceQueryResult = {
+  __typename?: 'ChatGuidanceQueryResult';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources: Scalars['String'];
+};
+
+export type ChatGuidanceResult = {
+  __typename?: 'ChatGuidanceResult';
+  /** The answer to the question */
+  answer: Scalars['String'];
+};
+
 export type Collaboration = {
   __typename?: 'Collaboration';
   /** The authorization rules for the entity */
@@ -2176,6 +2197,8 @@ export type Mutation = {
   eventOnWhiteboardCheckout: WhiteboardCheckout;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
+  /** Resets the interaction with the chat engine. */
+  ingest: ChatGuidanceResult;
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
@@ -2208,6 +2231,8 @@ export type Mutation = {
   removeUserFromGroup: UserGroup;
   /** Removes a User as a member of the specified Organization. */
   removeUserFromOrganization: Organization;
+  /** Resets the interaction with the chat engine. */
+  resetChatGuidance: ChatGuidanceResult;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
   /** Sends a reply to a message from the specified Room. */
@@ -3275,6 +3300,8 @@ export type Query = {
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
+  /** Ask the chat engine for guidance. */
+  askChatGuidanceQuestion: ChatGuidanceQueryResult;
   /** The authorization policy for the platform */
   authorization: Authorization;
   /** A specific Collaboration entity. */
@@ -3331,6 +3358,10 @@ export type QueryActivityLogOnCollaborationArgs = {
 
 export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
+};
+
+export type QueryAskChatGuidanceQuestionArgs = {
+  chatData: ChatGuidanceInput;
 };
 
 export type QueryCollaborationArgs = {
@@ -4813,6 +4844,20 @@ export type WhiteboardTemplate = {
   profile: Profile;
   /** The JSON representation of the Whiteboard. */
   value: Scalars['JSON'];
+};
+
+export type AskChatGuidanceQuestionQueryVariables = Exact<{
+  chatData: ChatGuidanceInput;
+}>;
+
+export type AskChatGuidanceQuestionQuery = {
+  __typename?: 'Query';
+  askChatGuidanceQuestion: {
+    __typename?: 'ChatGuidanceQueryResult';
+    answer: string;
+    question: string;
+    sources: string;
+  };
 };
 
 export type MyPrivilegesFragment = {

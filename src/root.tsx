@@ -18,6 +18,8 @@ import { AuthenticationProvider } from './core/auth/authentication/context/Authe
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
 import { SearchContextProvider } from './domain/platform/search/SearchContext';
+import 'react-chat-widget/lib/styles.css';
+import ChatWidget from './common/components/core/ChatWidget';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -64,39 +66,38 @@ const GlobalStyles: FC = ({ children }) => {
   return <>{children}</>;
 };
 
-const Root: FC = () => {
-  return (
-    <StyledEngineProvider injectFirst>
-      <RootThemeProvider>
-        <GlobalStyles>
-          <ConfigProvider url={publicGraphQLEndpoint}>
-            <ServerMetadataProvider url={publicGraphQLEndpoint}>
-              <SentryErrorBoundaryProvider>
-                <GlobalStateProvider>
-                  <BrowserRouter>
-                    <AuthenticationProvider>
-                      <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                        <NavigationProvider>
-                          <UserProvider>
-                            <CookiesProvider>
-                              <ScrollToTop />
-                              <SearchContextProvider>
-                                <TopLevelRoutes />
-                              </SearchContextProvider>
-                            </CookiesProvider>
-                          </UserProvider>
-                        </NavigationProvider>
-                      </AlkemioApolloProvider>
-                    </AuthenticationProvider>
-                  </BrowserRouter>
-                </GlobalStateProvider>
-              </SentryErrorBoundaryProvider>
-            </ServerMetadataProvider>
-          </ConfigProvider>
-        </GlobalStyles>
-      </RootThemeProvider>
-    </StyledEngineProvider>
-  );
-};
+const Root: FC = () => (
+  <StyledEngineProvider injectFirst>
+    <RootThemeProvider>
+      <GlobalStyles>
+        <ConfigProvider url={publicGraphQLEndpoint}>
+          <ServerMetadataProvider url={publicGraphQLEndpoint}>
+            <SentryErrorBoundaryProvider>
+              <GlobalStateProvider>
+                <BrowserRouter>
+                  <AuthenticationProvider>
+                    <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                      <NavigationProvider>
+                        <UserProvider>
+                          <CookiesProvider>
+                            <ScrollToTop />
+                            <SearchContextProvider>
+                              <TopLevelRoutes />
+                            </SearchContextProvider>
+                            <ChatWidget />
+                          </CookiesProvider>
+                        </UserProvider>
+                      </NavigationProvider>
+                    </AlkemioApolloProvider>
+                  </AuthenticationProvider>
+                </BrowserRouter>
+              </GlobalStateProvider>
+            </SentryErrorBoundaryProvider>
+          </ServerMetadataProvider>
+        </ConfigProvider>
+      </GlobalStyles>
+    </RootThemeProvider>
+  </StyledEngineProvider>
+);
 
 export default Root;

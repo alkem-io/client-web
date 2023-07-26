@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.41.0",
+  "version": "0.41.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -81,6 +81,7 @@
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.1",
     "react-calendar": "^4.0.0",
+    "react-chat-widget": "^3.1.4",
     "react-cookie": "^4.1.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",

@@ -3273,6 +3273,68 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
+export const AskChatGuidanceQuestionDocument = gql`
+  query askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
+    askChatGuidanceQuestion(chatData: $chatData) {
+      answer
+      question
+      sources
+    }
+  }
+`;
+
+/**
+ * __useAskChatGuidanceQuestionQuery__
+ *
+ * To run a query within a React component, call `useAskChatGuidanceQuestionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAskChatGuidanceQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAskChatGuidanceQuestionQuery({
+ *   variables: {
+ *      chatData: // value for 'chatData'
+ *   },
+ * });
+ */
+export function useAskChatGuidanceQuestionQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AskChatGuidanceQuestionQuery,
+    SchemaTypes.AskChatGuidanceQuestionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AskChatGuidanceQuestionQuery, SchemaTypes.AskChatGuidanceQuestionQueryVariables>(
+    AskChatGuidanceQuestionDocument,
+    options
+  );
+}
+
+export function useAskChatGuidanceQuestionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AskChatGuidanceQuestionQuery,
+    SchemaTypes.AskChatGuidanceQuestionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AskChatGuidanceQuestionQuery,
+    SchemaTypes.AskChatGuidanceQuestionQueryVariables
+  >(AskChatGuidanceQuestionDocument, options);
+}
+
+export type AskChatGuidanceQuestionQueryHookResult = ReturnType<typeof useAskChatGuidanceQuestionQuery>;
+export type AskChatGuidanceQuestionLazyQueryHookResult = ReturnType<typeof useAskChatGuidanceQuestionLazyQuery>;
+export type AskChatGuidanceQuestionQueryResult = Apollo.QueryResult<
+  SchemaTypes.AskChatGuidanceQuestionQuery,
+  SchemaTypes.AskChatGuidanceQuestionQueryVariables
+>;
+export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskChatGuidanceQuestionQueryVariables) {
+  return { query: AskChatGuidanceQuestionDocument, variables: variables };
+}
+
 export const AssignUserAsGlobalAdminDocument = gql`
   mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
     assignUserAsGlobalAdmin(membershipData: $input) {
