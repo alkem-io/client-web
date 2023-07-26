@@ -143,7 +143,7 @@ const DisabledUseButton: FC<{}> = () => {
 };
 
 interface TemplatePreviewDialogProps {
-  open: boolean;
+  open?: boolean;
   onClose: () => void;
   template: TemplatePreviewComponentProps['template'];
   templateWithValue: TemplatePreviewComponentProps['templateWithValue'];
@@ -151,7 +151,7 @@ interface TemplatePreviewDialogProps {
 }
 
 const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
-  open,
+  open = false,
   onClose,
   template,
   templateWithValue,
@@ -160,7 +160,7 @@ const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
   const { t } = useTranslation();
 
   return (
-    <DialogWithGrid open={!!open} columns={12} onClose={onClose}>
+    <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('common.preview')}</BlockTitle>
       </DialogHeader>

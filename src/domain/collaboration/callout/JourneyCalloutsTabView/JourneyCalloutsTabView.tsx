@@ -1,31 +1,23 @@
-import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../core/ui/list/LinksList';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import useCallouts from '../useCallouts/useCallouts';
-import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
-import calloutIcons from '../utils/calloutIcons';
+import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
-import {
-  useCalloutFormTemplatesFromSpaceLazyQuery,
-  useUpdateCalloutVisibilityMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
-import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
-import { CalloutDisplayLocation, CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
 import InnovationFlowStates, {
   InnovationFlowState,
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
+import useCallouts from '../useCallouts/useCallouts';
+import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 
 interface JourneyCalloutsTabViewProps {
@@ -74,41 +66,6 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
 
   const { t } = useTranslation();
 
-  const {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
-    handleCreateCallout,
-    isCreating,
-  } = useCalloutCreationWithPreviewImages();
-
-  const { spaceId } = useSpace();
-
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery({
-    variables: { spaceId },
-  });
-
-  const postTemplates = templatesData?.space.templates?.postTemplates ?? [];
-  const whiteboardTemplates = templatesData?.space.templates?.whiteboardTemplates ?? [];
-  const templates = { postTemplates, whiteboardTemplates };
-
-  const handleCreate = () => {
-    fetchTemplates();
-    handleCreateCalloutOpened();
-  };
-
-  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
-  const handleVisibilityChange = useCallback(
-    async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
-      await updateCalloutVisibility({
-        variables: {
-          calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
-        },
-      });
-    },
-    [updateCalloutVisibility]
-  );
-
   const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
 
   return (
@@ -116,7 +73,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
       <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
           <PageContentColumn columns={4}>
-            <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
+            <ContributeInnovationFlowBlock />
             <PageContentBlock>
               <PageContentBlockHeader
                 title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
@@ -172,18 +129,6 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
           </PageContentColumn>
         </PageContent>
       </MembershipBackdrop>
-      <CalloutCreationDialog
-        open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
-        onSaveAsDraft={handleCreateCallout}
-        onVisibilityChange={handleVisibilityChange}
-        isCreating={isCreating}
-        calloutNames={calloutNames}
-        templates={templates}
-        group={CalloutDisplayLocation.Knowledge}
-        flowState={selectedInnovationFlowState}
-        journeyTypeName={journeyTypeName}
-      />
     </>
   );
 };
