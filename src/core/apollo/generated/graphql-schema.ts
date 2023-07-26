@@ -648,8 +648,6 @@ export type Callout = {
   comments?: Maybe<Room>;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
-  /** Callout group. */
-  group?: Maybe<Scalars['String']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -689,6 +687,21 @@ export type CalloutWhiteboardsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
+
+export enum CalloutDisplayLocation {
+  ChallengesLeft = 'CHALLENGES_LEFT',
+  ChallengesRight = 'CHALLENGES_RIGHT',
+  CommunityLeft = 'COMMUNITY_LEFT',
+  CommunityRight = 'COMMUNITY_RIGHT',
+  ContributeLeft = 'CONTRIBUTE_LEFT',
+  ContributeRight = 'CONTRIBUTE_RIGHT',
+  HomeLeft = 'HOME_LEFT',
+  HomeRight = 'HOME_RIGHT',
+  HomeTop = 'HOME_TOP',
+  Knowledge = 'KNOWLEDGE',
+  OpportunitiesLeft = 'OPPORTUNITIES_LEFT',
+  OpportunitiesRight = 'OPPORTUNITIES_RIGHT',
+}
 
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
@@ -799,7 +812,7 @@ export type Collaboration = {
 
 export type CollaborationCalloutsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  groups?: InputMaybe<Array<Scalars['String']>>;
+  groups?: InputMaybe<Array<CalloutDisplayLocation>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
@@ -1141,8 +1154,8 @@ export type CreateCalendarEventOnCalendarInput = {
 
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
-  /** Set callout group for this Callout. */
-  group?: InputMaybe<Scalars['String']>;
+  /** Set callout display location for this Callout. */
+  group?: InputMaybe<CalloutDisplayLocation>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** PostTemplate data for Post Callouts. */
@@ -3207,7 +3220,7 @@ export type Profile = {
   storageBucket?: Maybe<StorageBucket>;
   /** The taglie for this entity. */
   tagline: Scalars['String'];
-  /** The default tagset. */
+  /** The default or named tagset. */
   tagset?: Maybe<Tagset>;
   /** A list of named tagsets, each of which has a list of tags. */
   tagsets?: Maybe<Array<Tagset>>;
@@ -3215,6 +3228,10 @@ export type Profile = {
   visual?: Maybe<Visual>;
   /** A list of visuals for this Profile. */
   visuals: Array<Visual>;
+};
+
+export type ProfileTagsetArgs = {
+  tagsetName?: InputMaybe<TagsetReservedName>;
 };
 
 export type ProfileVisualArgs = {
@@ -4092,6 +4109,15 @@ export type TagsetArgs = {
   tags: Array<Scalars['String']>;
 };
 
+export enum TagsetReservedName {
+  CalloutDisplayLocation = 'CALLOUT_DISPLAY_LOCATION',
+  Capabilities = 'CAPABILITIES',
+  Default = 'DEFAULT',
+  FlowState = 'FLOW_STATE',
+  Keywords = 'KEYWORDS',
+  Skills = 'SKILLS',
+}
+
 export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
   allowedValues: Array<Scalars['String']>;
@@ -4197,8 +4223,8 @@ export type UpdateCalendarEventInput = {
 
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
-  /** Set callout group for this Callout. */
-  group?: InputMaybe<Scalars['String']>;
+  /** Set display location for this Callout. */
+  group?: InputMaybe<CalloutDisplayLocation>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** PostTemplate data for this Callout. */
@@ -11682,7 +11708,6 @@ export type CalloutPageCalloutQuery = {
                 id: string;
                 nameID: string;
                 type: CalloutType;
-                group?: string | undefined;
                 state: CalloutState;
                 sortOrder: number;
                 activity: number;
@@ -11938,7 +11963,6 @@ export type CalloutPageCalloutQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  group?: string | undefined;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
@@ -12201,7 +12225,6 @@ export type CalloutPageCalloutQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  group?: string | undefined;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
@@ -14891,7 +14914,6 @@ export type CreateCalloutMutation = {
     id: string;
     nameID: string;
     type: CalloutType;
-    group?: string | undefined;
     state: CalloutState;
     sortOrder: number;
     activity: number;
@@ -15176,7 +15198,6 @@ export type UpdateCalloutMutation = {
     __typename?: 'Callout';
     id: string;
     state: CalloutState;
-    group?: string | undefined;
     type: CalloutType;
     visibility: CalloutVisibility;
     profile: {
@@ -15185,6 +15206,16 @@ export type UpdateCalloutMutation = {
       description?: string | undefined;
       displayName: string;
       tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      displayLocationTagset?:
         | {
             __typename?: 'Tagset';
             id: string;
@@ -15304,7 +15335,7 @@ export type CalloutsQueryVariables = Exact<{
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  calloutGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  calloutGroups?: InputMaybe<Array<CalloutDisplayLocation> | CalloutDisplayLocation>;
   calloutIds?: InputMaybe<Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID']>;
 }>;
 
@@ -15327,7 +15358,6 @@ export type CalloutsQuery = {
                 id: string;
                 nameID: string;
                 type: CalloutType;
-                group?: string | undefined;
                 state: CalloutState;
                 sortOrder: number;
                 activity: number;
@@ -15587,7 +15617,6 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  group?: string | undefined;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
@@ -15854,7 +15883,6 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  group?: string | undefined;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
@@ -16471,7 +16499,6 @@ export type CollaborationWithCalloutsFragment = {
         id: string;
         nameID: string;
         type: CalloutType;
-        group?: string | undefined;
         state: CalloutState;
         sortOrder: number;
         activity: number;
@@ -16713,7 +16740,6 @@ export type CalloutFragment = {
   id: string;
   nameID: string;
   type: CalloutType;
-  group?: string | undefined;
   state: CalloutState;
   sortOrder: number;
   activity: number;
