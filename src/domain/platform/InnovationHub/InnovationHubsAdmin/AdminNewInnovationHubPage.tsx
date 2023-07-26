@@ -39,7 +39,7 @@ const AdminNewInnovationHubPage = () => {
       variables: {
         hubData: {
           nameID: formData.nameID,
-          //providerID: formData.providerId, //!!TODO
+          //providerID: formData.providerId, // TODO: Add provider field when serverside is ready
           subdomain: formData.subdomain,
           profileData: {
             displayName: formData.profile.displayName,

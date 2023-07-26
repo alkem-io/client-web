@@ -26,8 +26,8 @@ query AboutPageNonMembers(
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
 ) {
   space(ID: $spaceNameId) {
     id
@@ -147,8 +147,8 @@ query AboutPageMembers(
   $includeOpportunity: Boolean = false
   $communityReadAccess: Boolean!
   $referencesReadAccess: Boolean!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
 ) {
   space(ID: $spaceNameId) {
     id
