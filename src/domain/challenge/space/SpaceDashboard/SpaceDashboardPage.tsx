@@ -55,8 +55,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     spaceId: spaceNameId,
   });
 
-  console.log('value: ', CalloutDisplayLocation.HomeTop);
-
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer>
