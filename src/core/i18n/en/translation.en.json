@@ -1,4 +1,8 @@
 {
+  "chatbot": {
+    "title": "Alkemio Helpdesk",
+    "subtitle": "Ask your questions here."
+  },
   "notifications": {
     "releaseUpdates": {
       "icon": "🎉",
