@@ -15,14 +15,15 @@ import {
   ContributeTabPostFragment,
   CalloutsQueryVariables,
   ReferenceDetailsFragment,
+  CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 import { compact, groupBy, sortBy } from 'lodash';
 import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import { Tagset } from '../../../common/profile/Profile';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
 
 interface CalloutChildTypePropName {
   [CalloutType.PostCollection]: 'posts';
@@ -65,10 +66,7 @@ type CalloutTypesWithChildTypes = {
     CalloutCardTemplateType[Type];
 };
 
-export type TypedCallout = Pick<
-  Callout,
-  'id' | 'nameID' | 'state' | 'activity' | 'authorization' | 'sortOrder' | 'group'
-> &
+export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' | 'authorization' | 'sortOrder'> &
   (
     | CalloutTypesWithChildTypes[CalloutType.PostCollection]
     | CalloutTypesWithChildTypes[CalloutType.WhiteboardCollection]
@@ -85,15 +83,16 @@ export type TypedCallout = Pick<
     draft: boolean;
     editable: boolean;
     flowStates: string | undefined;
+    group: CalloutDisplayLocation;
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
-  calloutGroups?: CalloutsGroup[];
+  calloutGroups?: CalloutDisplayLocation[];
 }
 
 interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
-  groupedCallouts: Record<CalloutsGroup, TypedCallout[] | undefined>;
+  groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
   canReadCallout: boolean;
   calloutNames: string[];
@@ -107,7 +106,7 @@ interface UseCalloutsProvided {
 const getSortedCalloutIds = (callouts?: TypedCallout[]) => sortBy(callouts, c => c.sortOrder).map(c => c.id);
 
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
-
+const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
 /**
  * If you need Callouts without a group, don't specify calloutGroups at all.
  */
@@ -166,6 +165,9 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
         const innovationFlowTagset = callout.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
+        const displayLocationTagset = callout.profile.tagsets?.find(
+          tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
+        );
         const flowStates = innovationFlowTagset?.tags;
         return {
           ...callout,
@@ -176,6 +178,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           draft,
           editable,
           flowStates,
+          group: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
         } as TypedCallout;
       }),
     [collaboration]
@@ -222,7 +225,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
 
   const groupedCallouts = useMemo(() => {
     return groupBy(sortedCallouts, callout => callout.group ?? UNGROUPED_CALLOUTS_GROUP) as Record<
-      CalloutsGroup | typeof UNGROUPED_CALLOUTS_GROUP,
+      CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP,
       TypedCallout[] | undefined
     >;
   }, [sortedCallouts]);

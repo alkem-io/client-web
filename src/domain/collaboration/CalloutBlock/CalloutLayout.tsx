@@ -53,10 +53,10 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       description?: string;
       references?: Reference[];
       tagset?: Tagset;
+      displayLocationTagset?: Tagset;
     };
     type: CalloutType;
     state: CalloutState;
-    group?: string;
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
@@ -310,6 +310,7 @@ const CalloutLayout = ({
           canChangeCalloutGroup={canChangeCalloutGroup}
           calloutNames={calloutNames}
           templates={templates}
+          journeyTypeName={journeyTypeName}
         />
       </StorageConfigContextProvider>
     </>
