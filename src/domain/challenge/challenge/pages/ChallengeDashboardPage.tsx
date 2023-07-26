@@ -20,7 +20,6 @@ import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboard
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -104,9 +103,9 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               journeyTypeName="challenge"
               childEntityTitle={t('common.opportunities')}
               recommendations={
-                groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop] && (
+                groupedCallouts[CalloutDisplayLocation.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop]}
+                    callouts={groupedCallouts[CalloutDisplayLocation.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}

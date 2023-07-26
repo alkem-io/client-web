@@ -22,7 +22,6 @@ import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts'
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 export interface SpaceChallengesPageProps {}
 
@@ -110,7 +109,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocationValuesMap.ChallengesLeft]}
+                callouts={groupedCallouts[CalloutDisplayLocation.ChallengesLeft]}
                 spaceId={spaceNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
@@ -124,7 +123,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocationValuesMap.ChallengesRight]}
+                callouts={groupedCallouts[CalloutDisplayLocation.ChallengesRight]}
                 spaceId={spaceNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}

@@ -19,7 +19,6 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useSpaceDashboardNavigation from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -107,9 +106,9 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               journeyTypeName="space"
               childEntityTitle={t('common.challenges')}
               recommendations={
-                groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop] && (
+                groupedCallouts[CalloutDisplayLocation.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop]}
+                    callouts={groupedCallouts[CalloutDisplayLocation.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}
@@ -126,7 +125,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               }
               childrenLeft={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeLeft]}
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeLeft]}
                   spaceId={spaceNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
@@ -140,7 +139,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               }
               childrenRight={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeRight]}
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeRight]}
                   spaceId={spaceNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}

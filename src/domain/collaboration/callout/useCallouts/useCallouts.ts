@@ -23,6 +23,7 @@ import { compact, groupBy, sortBy } from 'lodash';
 import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import { Tagset } from '../../../common/profile/Profile';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
 
 interface CalloutChildTypePropName {
   [CalloutType.PostCollection]: 'posts';
@@ -177,7 +178,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           draft,
           editable,
           flowStates,
-          group: displayLocationTagset?.tags[0],
+          group: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
         } as TypedCallout;
       }),
     [collaboration]

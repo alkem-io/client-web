@@ -25,7 +25,6 @@ import useActivityOnCollaboration from '../../../collaboration/activity/useActiv
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -116,7 +115,7 @@ const SpaceCommunityPage = () => {
             messageReceivers={messageReceivers}
           />
           <CalloutsGroupView
-            callouts={groupedCallouts[CalloutDisplayLocationValuesMap.CommunityLeft]}
+            callouts={groupedCallouts[CalloutDisplayLocation.CommunityLeft]}
             spaceId={spaceNameId!}
             canCreateCallout={canCreateCallout}
             loading={loading}
@@ -135,7 +134,7 @@ const SpaceCommunityPage = () => {
             <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
           </PageContentBlock>
           <CalloutsGroupView
-            callouts={groupedCallouts[CalloutDisplayLocationValuesMap.CommunityRight]}
+            callouts={groupedCallouts[CalloutDisplayLocation.CommunityRight]}
             spaceId={spaceNameId!}
             canCreateCallout={canCreateCallout}
             loading={loading}

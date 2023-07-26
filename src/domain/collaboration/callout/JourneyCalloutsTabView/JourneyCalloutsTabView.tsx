@@ -64,7 +64,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   });
 
   const callouts = allCallouts
-    // ?.filter(callout => callout.group !== CalloutDisplayLocation.HomeTop)
+    ?.filter(callout => callout.group !== CalloutDisplayLocation.HomeTop)
     ?.filter(callout => {
       if (!selectedInnovationFlowState) {
         return true;

@@ -24,7 +24,6 @@ import { CalloutDisplayLocation, CalloutVisibility } from '../../../core/apollo/
 import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creation-dialog/CalloutCreationDialog';
-import { CalloutDisplayLocationValuesMap } from '../callout/CalloutsInContext/CalloutsGroup';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -107,7 +106,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                 title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
               />
               <LinksList
-                items={groupedCallouts[CalloutDisplayLocationValuesMap.Knowledge]?.map(callout => {
+                items={groupedCallouts[CalloutDisplayLocation.Knowledge]?.map(callout => {
                   const CalloutIcon = calloutIcons[callout.type];
                   return {
                     id: callout.id,
@@ -131,7 +130,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
 
           <PageContentColumn columns={8}>
             <CalloutsGroupView
-              callouts={groupedCallouts[CalloutDisplayLocationValuesMap.Knowledge]}
+              callouts={groupedCallouts[CalloutDisplayLocation.Knowledge]}
               spaceId={spaceNameId!}
               canCreateCallout={canCreateCallout}
               loading={loading}

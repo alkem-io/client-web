@@ -17,7 +17,6 @@ import DashboardMemberIcon from '../../../community/membership/DashboardMemberIc
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutDisplayLocationValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -87,9 +86,9 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               topCallouts={entities.topCallouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               recommendations={
-                groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop] && (
+                groupedCallouts[CalloutDisplayLocation.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocationValuesMap.HomeTop]}
+                    callouts={groupedCallouts[CalloutDisplayLocation.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}

@@ -10,7 +10,6 @@ import ConfirmationDialog, { ConfirmationDialogProps } from '../../../../../core
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import {
-  CalloutDisplayLocation,
   CalloutType,
   PostTemplateCardFragment,
   TagsetType,
@@ -23,6 +22,7 @@ import {
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
+import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLocationValue';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -73,9 +73,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
-    group: callout.profile.displayLocationtagset?.tags
-      ? (callout.profile.displayLocationtagset?.tags[0] as CalloutDisplayLocation)
-      : CalloutDisplayLocation.Knowledge,
+    group: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
