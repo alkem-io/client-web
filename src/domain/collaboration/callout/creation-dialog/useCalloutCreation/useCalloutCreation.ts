@@ -32,7 +32,7 @@ export interface CalloutCreationType {
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
-  group?: CalloutDisplayLocation;
+  displayLocation?: CalloutDisplayLocation;
 }
 
 export interface CalloutCreationUtils {

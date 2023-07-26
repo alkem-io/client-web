@@ -61,7 +61,7 @@ export interface CalloutCreationDialogProps {
   isCreating: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
-  group: CalloutDisplayLocation;
+  displayLocation: CalloutDisplayLocation;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
 }
@@ -98,7 +98,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   isCreating,
   calloutNames,
   templates,
-  group,
+  displayLocation,
   flowState,
   journeyTypeName,
 }) => {
@@ -161,7 +161,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
       whiteboardTemplate:
         callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
-      group,
+      displayLocation,
       whiteboard: callout.whiteboard,
     };
 

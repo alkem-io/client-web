@@ -812,7 +812,7 @@ export type Collaboration = {
 
 export type CollaborationCalloutsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  groups?: InputMaybe<Array<CalloutDisplayLocation>>;
+  displayLocations?: InputMaybe<Array<CalloutDisplayLocation>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
@@ -1155,7 +1155,7 @@ export type CreateCalendarEventOnCalendarInput = {
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
   /** Set callout display location for this Callout. */
-  group?: InputMaybe<CalloutDisplayLocation>;
+  displayLocation?: InputMaybe<CalloutDisplayLocation>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** PostTemplate data for Post Callouts. */
@@ -4224,7 +4224,7 @@ export type UpdateCalendarEventInput = {
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
   /** Set display location for this Callout. */
-  group?: InputMaybe<CalloutDisplayLocation>;
+  displayLocation?: InputMaybe<CalloutDisplayLocation>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** PostTemplate data for this Callout. */
@@ -15335,7 +15335,7 @@ export type CalloutsQueryVariables = Exact<{
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  calloutGroups?: InputMaybe<Array<CalloutDisplayLocation> | CalloutDisplayLocation>;
+  displayLocations?: InputMaybe<Array<CalloutDisplayLocation> | CalloutDisplayLocation>;
   calloutIds?: InputMaybe<Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID']>;
 }>;
 

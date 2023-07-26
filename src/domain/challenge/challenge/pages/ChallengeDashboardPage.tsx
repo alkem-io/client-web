@@ -38,7 +38,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
     useCallouts({
       spaceNameId,
       challengeNameId,
-      calloutGroups: [
+      displayLocations: [
         CalloutDisplayLocation.HomeTop,
         CalloutDisplayLocation.HomeLeft,
         CalloutDisplayLocation.HomeRight,
@@ -114,7 +114,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    group={CalloutDisplayLocation.HomeTop}
+                    displayLocation={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />

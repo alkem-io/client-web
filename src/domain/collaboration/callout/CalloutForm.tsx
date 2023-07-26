@@ -45,7 +45,7 @@ type FormValueType = {
   tagsets: Tagset[];
   references: Reference[];
   opened: boolean;
-  group: CalloutDisplayLocation;
+  displayLocation: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -61,7 +61,7 @@ export type CalloutFormInput = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  group?: CalloutDisplayLocation;
+  displayLocation?: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
@@ -75,7 +75,7 @@ export type CalloutFormOutput = {
   references: Reference[];
   type: CalloutType;
   state: CalloutState;
-  group: CalloutDisplayLocation;
+  displayLocation: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -127,7 +127,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      group: callout?.group ?? CalloutDisplayLocation.Knowledge,
+      displayLocation: callout?.displayLocation ?? CalloutDisplayLocation.Knowledge,
       postTemplateData: callout?.postTemplateData ?? {
         profile: {
           displayName: '',
@@ -204,7 +204,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: values.references,
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      group: values.group,
+      displayLocation: values.displayLocation,
       postTemplateData: values.postTemplateData,
       whiteboardTemplateData: values.whiteboardTemplateData,
       whiteboard: values.whiteboard,
@@ -285,7 +285,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"
-                control={<FormikSelect name="group" values={calloutsGroups} />}
+                control={<FormikSelect name="displayLocation" values={calloutsGroups} />}
                 label={t('callout.callout-location')}
               />
             )}

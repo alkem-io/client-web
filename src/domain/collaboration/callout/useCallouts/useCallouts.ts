@@ -83,11 +83,11 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
     draft: boolean;
     editable: boolean;
     flowStates: string | undefined;
-    group: CalloutDisplayLocation;
+    displayLocation: CalloutDisplayLocation;
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
-  calloutGroups?: CalloutDisplayLocation[];
+  displayLocations?: CalloutDisplayLocation[];
 }
 
 interface UseCalloutsProvided {
@@ -108,7 +108,7 @@ const getSortedCalloutIds = (callouts?: TypedCallout[]) => sortBy(callouts, c =>
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
 const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
 /**
- * If you need Callouts without a group, don't specify calloutGroups at all.
+ * If you need Callouts without a group, don't specify displayLocations at all.
  */
 const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const includeSpace = !params.challengeNameId && !params.opportunityNameId;
@@ -122,7 +122,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     includeSpace,
     includeChallenge,
     includeOpportunity,
-    calloutGroups: params.calloutGroups,
+    displayLocations: params.displayLocations,
   };
 
   const {
@@ -178,7 +178,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           draft,
           editable,
           flowStates,
-          group: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
+          displayLocation: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
         } as TypedCallout;
       }),
     [collaboration]
@@ -224,7 +224,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   );
 
   const groupedCallouts = useMemo(() => {
-    return groupBy(sortedCallouts, callout => callout.group ?? UNGROUPED_CALLOUTS_GROUP) as Record<
+    return groupBy(sortedCallouts, callout => callout.displayLocation ?? UNGROUPED_CALLOUTS_GROUP) as Record<
       CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP,
       TypedCallout[] | undefined
     >;

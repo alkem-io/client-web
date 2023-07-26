@@ -65,7 +65,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
+    displayLocations: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
   });
 
   return (
@@ -118,7 +118,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
-                group={CalloutDisplayLocation.ChallengesLeft}
+                displayLocation={CalloutDisplayLocation.ChallengesLeft}
               />
             }
             childrenRight={
@@ -132,7 +132,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
-                group={CalloutDisplayLocation.ChallengesRight}
+                displayLocation={CalloutDisplayLocation.ChallengesRight}
               />
             }
           />

@@ -47,7 +47,11 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.HomeTop, CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
   });
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
@@ -117,7 +121,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    group={CalloutDisplayLocation.HomeTop}
+                    displayLocation={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />
@@ -134,7 +138,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
                   onCalloutUpdate={refetchCallout}
-                  group={CalloutDisplayLocation.HomeLeft}
+                  displayLocation={CalloutDisplayLocation.HomeLeft}
                 />
               }
               childrenRight={
@@ -148,7 +152,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
                   onCalloutUpdate={refetchCallout}
-                  group={CalloutDisplayLocation.HomeRight}
+                  displayLocation={CalloutDisplayLocation.HomeRight}
                 />
               }
             />

@@ -45,7 +45,7 @@ const SpaceCommunityPage = () => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
+    displayLocations: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
   });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
@@ -124,7 +124,7 @@ const SpaceCommunityPage = () => {
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
             onCalloutUpdate={refetchCallout}
-            group={CalloutDisplayLocation.CommunityLeft}
+            displayLocation={CalloutDisplayLocation.CommunityLeft}
           />
         </PageContentColumn>
         <PageContentColumn columns={8}>
@@ -143,7 +143,7 @@ const SpaceCommunityPage = () => {
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
             onCalloutUpdate={refetchCallout}
-            group={CalloutDisplayLocation.CommunityRight}
+            displayLocation={CalloutDisplayLocation.CommunityRight}
           />
         </PageContentColumn>
       </PageContent>
