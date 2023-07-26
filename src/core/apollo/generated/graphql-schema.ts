@@ -1155,7 +1155,7 @@ export type CreateCalendarEventOnCalendarInput = {
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
   /** Set callout display location for this Callout. */
-  group?: InputMaybe<CalloutDisplayLocation>;
+  displayLocation?: InputMaybe<CalloutDisplayLocation>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** PostTemplate data for Post Callouts. */
@@ -4224,7 +4224,7 @@ export type UpdateCalendarEventInput = {
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
   /** Set display location for this Callout. */
-  group?: InputMaybe<CalloutDisplayLocation>;
+  displayLocation?: InputMaybe<CalloutDisplayLocation>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** PostTemplate data for this Callout. */

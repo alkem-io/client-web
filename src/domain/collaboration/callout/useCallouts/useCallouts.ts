@@ -83,7 +83,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
     draft: boolean;
     editable: boolean;
     flowStates: string | undefined;
-    group: CalloutDisplayLocation;
+    displayLocation: CalloutDisplayLocation;
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
@@ -178,7 +178,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           draft,
           editable,
           flowStates,
-          group: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
+          displayLocation: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
         } as TypedCallout;
       }),
     [collaboration]
@@ -224,7 +224,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   );
 
   const groupedCallouts = useMemo(() => {
-    return groupBy(sortedCallouts, callout => callout.group ?? UNGROUPED_CALLOUTS_GROUP) as Record<
+    return groupBy(sortedCallouts, callout => callout.displayLocation ?? UNGROUPED_CALLOUTS_GROUP) as Record<
       CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP,
       TypedCallout[] | undefined
     >;

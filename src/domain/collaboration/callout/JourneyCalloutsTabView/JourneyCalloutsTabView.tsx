@@ -56,7 +56,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   });
 
   const callouts = allCallouts
-    ?.filter(callout => callout.group !== CalloutDisplayLocation.HomeTop)
+    ?.filter(callout => callout.displayLocation !== CalloutDisplayLocation.HomeTop)
     ?.filter(callout => {
       if (!selectedInnovationFlowState) {
         return true;
@@ -122,7 +122,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
-              group={CalloutDisplayLocation.Knowledge}
+              displayLocation={CalloutDisplayLocation.Knowledge}
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}
             />

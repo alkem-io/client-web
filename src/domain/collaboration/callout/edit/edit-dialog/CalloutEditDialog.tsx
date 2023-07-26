@@ -76,7 +76,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
-    group: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
+    displayLocation: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
@@ -92,7 +92,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-
+    console.log('newCallout: ', newCallout);
     await onCalloutEdit({
       id: callout.id,
       profile: {
@@ -112,7 +112,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       state: newCallout.state,
       postTemplate: newCallout.postTemplateData,
       whiteboardTemplate: newCallout.whiteboardTemplateData,
-      group: newCallout.group,
+      displayLocation: newCallout.displayLocation,
     });
     setLoading(false);
   }, [

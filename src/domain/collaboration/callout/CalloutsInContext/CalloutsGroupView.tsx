@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 interface CalloutsGroupProps extends CalloutsViewProps {
   spaceId: string;
   canCreateCallout: boolean;
-  group: CalloutDisplayLocation;
+  displayLocation: CalloutDisplayLocation;
   flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
 }
@@ -23,7 +23,7 @@ const CalloutsGroupView = ({
   spaceId,
   calloutNames,
   canCreateCallout,
-  group,
+  displayLocation,
   flowState,
   createButtonPlace = 'bottom',
   journeyTypeName,
@@ -84,7 +84,7 @@ const CalloutsGroupView = ({
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
-        group={group}
+        displayLocation={displayLocation}
         flowState={flowState}
         journeyTypeName={journeyTypeName}
       />

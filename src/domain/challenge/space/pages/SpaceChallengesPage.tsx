@@ -118,7 +118,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
-                group={CalloutDisplayLocation.ChallengesLeft}
+                displayLocation={CalloutDisplayLocation.ChallengesLeft}
               />
             }
             childrenRight={
@@ -132,7 +132,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
-                group={CalloutDisplayLocation.ChallengesRight}
+                displayLocation={CalloutDisplayLocation.ChallengesRight}
               />
             }
           />
