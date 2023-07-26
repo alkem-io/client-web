@@ -92,7 +92,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-    console.log('newCallout: ', newCallout);
+
     await onCalloutEdit({
       id: callout.id,
       profile: {
