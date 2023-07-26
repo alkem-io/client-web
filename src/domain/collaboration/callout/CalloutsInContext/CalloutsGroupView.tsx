@@ -26,6 +26,7 @@ const CalloutsGroupView = ({
   group,
   flowState,
   createButtonPlace = 'bottom',
+  journeyTypeName,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -73,7 +74,7 @@ const CalloutsGroupView = ({
   return (
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
-      <CalloutsView calloutNames={calloutNames} {...calloutsViewProps} />
+      <CalloutsView calloutNames={calloutNames} journeyTypeName={journeyTypeName} {...calloutsViewProps} />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
@@ -85,6 +86,7 @@ const CalloutsGroupView = ({
         templates={templates}
         group={group}
         flowState={flowState}
+        journeyTypeName={journeyTypeName}
       />
     </>
   );

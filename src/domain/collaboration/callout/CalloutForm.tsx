@@ -35,13 +35,13 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { useChallenge } from '../../challenge/challenge/hooks/useChallenge';
-import { useOpportunity } from '../../challenge/opportunity/hooks/useOpportunity';
-import {
-  ChallengeDisplayLocationOptions,
-  OpportunityDisplayLocationOptions,
-  SpaceDisplayLocationOptions,
-} from './CalloutsInContext/CalloutsGroup';
+import { JourneyTypeName } from '../../challenge/JourneyTypeName';
+import { JourneyCalloutDisplayLocationOptions } from './CalloutsInContext/CalloutsGroup';
+// import {
+//   ChallengeDisplayLocationOptions,
+//   OpportunityDisplayLocationOptions,
+//   SpaceDisplayLocationOptions,
+// } from './CalloutsInContext/CalloutsGroup';
 
 type FormValueType = {
   displayName: string;
@@ -95,6 +95,7 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
   calloutNames: string[];
+  journeyTypeName: JourneyTypeName;
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
@@ -105,6 +106,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   canChangeCalloutGroup,
   onChange,
   onStatusChanged,
+  journeyTypeName,
   children,
 }) => {
   const { t } = useTranslation();
@@ -215,18 +217,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
     onChange?.(callout);
   };
 
-  const { challengeId } = useChallenge();
-  const { opportunityId } = useOpportunity();
-
-  const isSpace = !challengeId;
-  const isChallenge = !isSpace && !opportunityId;
-
   const calloutsGroups = useMemo<FormikSelectValue[]>(() => {
-    let locations = isSpace
-      ? SpaceDisplayLocationOptions
-      : isChallenge
-      ? ChallengeDisplayLocationOptions
-      : OpportunityDisplayLocationOptions;
+    const locations = JourneyCalloutDisplayLocationOptions[journeyTypeName];
+
     if (editMode) {
       return locations.map(key => ({
         id: key,

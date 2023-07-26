@@ -33,6 +33,7 @@ import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templat
 import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -62,6 +63,7 @@ export interface CalloutCreationDialogProps {
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   group: CalloutDisplayLocation;
   flowState?: string;
+  journeyTypeName: JourneyTypeName;
 }
 
 export interface TemplateProfile {
@@ -98,6 +100,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   templates,
   group,
   flowState,
+  journeyTypeName,
 }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
@@ -206,6 +209,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             calloutNames={calloutNames}
             onChange={handleValueChange}
             onStatusChanged={handleStatusChange}
+            journeyTypeName={journeyTypeName}
           />
           <Actions padding={gutters()}>
             <Button onClick={handleClose}>{t('buttons.cancel')}</Button>

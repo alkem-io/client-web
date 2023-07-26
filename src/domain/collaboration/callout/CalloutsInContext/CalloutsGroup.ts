@@ -1,4 +1,5 @@
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export enum CalloutDisplayLocationValuesMap {
   HomeTop = 'HOME_0',
@@ -15,29 +16,31 @@ export enum CalloutDisplayLocationValuesMap {
   Knowledge = 'KNOWLEDGE',
 }
 
-export const SpaceDisplayLocationOptions = [
-  CalloutDisplayLocation.HomeTop,
-  CalloutDisplayLocation.HomeLeft,
-  CalloutDisplayLocation.HomeRight,
-  CalloutDisplayLocation.CommunityLeft,
-  CalloutDisplayLocation.CommunityRight,
-  CalloutDisplayLocation.ChallengesLeft,
-  CalloutDisplayLocation.ChallengesRight,
-  CalloutDisplayLocation.Knowledge,
-];
-export const ChallengeDisplayLocationOptions = [
-  CalloutDisplayLocation.HomeTop,
-  CalloutDisplayLocation.HomeLeft,
-  CalloutDisplayLocation.HomeRight,
-  CalloutDisplayLocation.ContributeLeft,
-  CalloutDisplayLocation.ContributeRight,
-  CalloutDisplayLocation.OpportunitiesLeft,
-  CalloutDisplayLocation.OpportunitiesRight,
-];
-export const OpportunityDisplayLocationOptions = [
-  CalloutDisplayLocation.HomeTop,
-  CalloutDisplayLocation.HomeLeft,
-  CalloutDisplayLocation.HomeRight,
-  CalloutDisplayLocation.ContributeLeft,
-  CalloutDisplayLocation.ContributeRight,
-];
+export const JourneyCalloutDisplayLocationOptions: Record<JourneyTypeName, CalloutDisplayLocation[]> = {
+  space: [
+    CalloutDisplayLocation.HomeTop,
+    CalloutDisplayLocation.HomeLeft,
+    CalloutDisplayLocation.HomeRight,
+    CalloutDisplayLocation.CommunityLeft,
+    CalloutDisplayLocation.CommunityRight,
+    CalloutDisplayLocation.ChallengesLeft,
+    CalloutDisplayLocation.ChallengesRight,
+    CalloutDisplayLocation.Knowledge,
+  ],
+  challenge: [
+    CalloutDisplayLocation.HomeTop,
+    CalloutDisplayLocation.HomeLeft,
+    CalloutDisplayLocation.HomeRight,
+    CalloutDisplayLocation.ContributeLeft,
+    CalloutDisplayLocation.ContributeRight,
+    CalloutDisplayLocation.OpportunitiesLeft,
+    CalloutDisplayLocation.OpportunitiesRight,
+  ],
+  opportunity: [
+    CalloutDisplayLocation.HomeTop,
+    CalloutDisplayLocation.HomeLeft,
+    CalloutDisplayLocation.HomeRight,
+    CalloutDisplayLocation.ContributeLeft,
+    CalloutDisplayLocation.ContributeRight,
+  ],
+};

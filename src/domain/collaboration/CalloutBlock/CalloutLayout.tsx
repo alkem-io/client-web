@@ -310,6 +310,7 @@ const CalloutLayout = ({
           canChangeCalloutGroup={canChangeCalloutGroup}
           calloutNames={calloutNames}
           templates={templates}
+          journeyTypeName={journeyTypeName}
         />
       </StorageConfigContextProvider>
     </>

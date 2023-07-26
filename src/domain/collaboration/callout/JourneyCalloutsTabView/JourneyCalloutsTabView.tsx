@@ -182,6 +182,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
         templates={templates}
         group={CalloutDisplayLocation.Knowledge}
         flowState={selectedInnovationFlowState}
+        journeyTypeName={journeyTypeName}
       />
     </>
   );

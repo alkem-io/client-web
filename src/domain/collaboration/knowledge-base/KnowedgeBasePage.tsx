@@ -154,6 +154,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
         calloutNames={calloutNames}
         templates={templates}
         group={CalloutDisplayLocation.Knowledge}
+        journeyTypeName={journeyTypeName}
       />
     </PageLayout>
   );
