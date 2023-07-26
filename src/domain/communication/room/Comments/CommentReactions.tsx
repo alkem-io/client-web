@@ -18,11 +18,17 @@ interface CommentReactionsReaction extends Identifiable {
 
 interface CommentReactionsProps {
   reactions: CommentReactionsReaction[];
+  canAddReaction: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: ReactionViewProps['onRemoveReaction'];
 }
 
-const CommentReactions = ({ reactions, onAddReaction, onRemoveReaction }: CommentReactionsProps) => {
+const CommentReactions = ({
+  reactions,
+  canAddReaction = true,
+  onAddReaction,
+  onRemoveReaction,
+}: CommentReactionsProps) => {
   const { user } = useUserContext();
   const userId = user?.user.id;
 
@@ -57,7 +63,12 @@ const CommentReactions = ({ reactions, onAddReaction, onRemoveReaction }: Commen
         ))}
       </Box>
       <CardText>
-        <IconButton ref={addEmojiButtonRef} size="small" onClick={() => setIsReactionDialogOpen(true)}>
+        <IconButton
+          ref={addEmojiButtonRef}
+          size="small"
+          disabled={!canAddReaction}
+          onClick={() => setIsReactionDialogOpen(true)}
+        >
           <AddReactionOutlined fontSize="inherit" />
         </IconButton>
       </CardText>
