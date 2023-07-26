@@ -37,11 +37,6 @@ import CalloutWhiteboardField, {
 } from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 import { JourneyCalloutDisplayLocationOptions } from './CalloutsInContext/CalloutsGroup';
-// import {
-//   ChallengeDisplayLocationOptions,
-//   OpportunityDisplayLocationOptions,
-//   SpaceDisplayLocationOptions,
-// } from './CalloutsInContext/CalloutsGroup';
 
 type FormValueType = {
   displayName: string;
