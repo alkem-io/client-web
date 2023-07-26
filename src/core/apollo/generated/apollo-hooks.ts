@@ -1576,7 +1576,7 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(groups: $calloutGroups, IDs: $calloutIds) {
+    callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
       ...Callout
     }
   }
@@ -10783,7 +10783,7 @@ export const CalloutsDocument = gql`
     $includeOpportunity: Boolean = false
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
-    $calloutGroups: [CalloutDisplayLocation!]
+    $displayLocations: [CalloutDisplayLocation!]
     $calloutIds: [UUID_NAMEID!]
   ) {
     space(ID: $spaceNameId) {
@@ -10833,7 +10833,7 @@ export const CalloutsDocument = gql`
  *      includeOpportunity: // value for 'includeOpportunity'
  *      challengeNameId: // value for 'challengeNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
- *      calloutGroups: // value for 'calloutGroups'
+ *      displayLocations: // value for 'displayLocations'
  *      calloutIds: // value for 'calloutIds'
  *   },
  * });

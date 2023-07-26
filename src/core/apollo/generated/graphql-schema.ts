@@ -812,7 +812,7 @@ export type Collaboration = {
 
 export type CollaborationCalloutsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  groups?: InputMaybe<Array<CalloutDisplayLocation>>;
+  displayLocations?: InputMaybe<Array<CalloutDisplayLocation>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
@@ -15335,7 +15335,7 @@ export type CalloutsQueryVariables = Exact<{
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  calloutGroups?: InputMaybe<Array<CalloutDisplayLocation> | CalloutDisplayLocation>;
+  displayLocations?: InputMaybe<Array<CalloutDisplayLocation> | CalloutDisplayLocation>;
   calloutIds?: InputMaybe<Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID']>;
 }>;
 

@@ -87,7 +87,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
-  calloutGroups?: CalloutDisplayLocation[];
+  displayLocations?: CalloutDisplayLocation[];
 }
 
 interface UseCalloutsProvided {
@@ -108,7 +108,7 @@ const getSortedCalloutIds = (callouts?: TypedCallout[]) => sortBy(callouts, c =>
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
 const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
 /**
- * If you need Callouts without a group, don't specify calloutGroups at all.
+ * If you need Callouts without a group, don't specify displayLocations at all.
  */
 const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const includeSpace = !params.challengeNameId && !params.opportunityNameId;
@@ -122,7 +122,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     includeSpace,
     includeChallenge,
     includeOpportunity,
-    calloutGroups: params.calloutGroups,
+    displayLocations: params.displayLocations,
   };
 
   const {

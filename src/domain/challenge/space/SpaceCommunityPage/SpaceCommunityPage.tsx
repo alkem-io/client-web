@@ -45,7 +45,7 @@ const SpaceCommunityPage = () => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
+    displayLocations: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
   });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);

@@ -38,7 +38,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
     useCallouts({
       spaceNameId,
       challengeNameId,
-      calloutGroups: [
+      displayLocations: [
         CalloutDisplayLocation.HomeTop,
         CalloutDisplayLocation.HomeLeft,
         CalloutDisplayLocation.HomeRight,

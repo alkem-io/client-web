@@ -33,7 +33,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
     useCallouts({
       spaceNameId,
       opportunityNameId,
-      calloutGroups: [
+      displayLocations: [
         CalloutDisplayLocation.HomeTop,
         CalloutDisplayLocation.HomeLeft,
         CalloutDisplayLocation.HomeRight,

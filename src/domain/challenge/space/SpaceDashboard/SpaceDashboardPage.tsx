@@ -47,7 +47,11 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.HomeTop, CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
   });
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({

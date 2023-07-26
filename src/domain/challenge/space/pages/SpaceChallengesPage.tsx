@@ -65,7 +65,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
+    displayLocations: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
   });
 
   return (

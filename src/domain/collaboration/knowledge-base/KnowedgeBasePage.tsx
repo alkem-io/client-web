@@ -51,7 +51,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     spaceNameId,
     challengeNameId,
     opportunityNameId,
-    calloutGroups: [CalloutDisplayLocation.Knowledge],
+    displayLocations: [CalloutDisplayLocation.Knowledge],
   });
 
   const { t } = useTranslation();
