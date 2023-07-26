@@ -6,7 +6,6 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
@@ -25,7 +24,7 @@ import { useSpaceCommunityPageQuery } from '../../../../core/apollo/generated/ap
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { ActivityEventType } from '../../../../core/apollo/generated/graphql-schema';
+import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -46,7 +45,7 @@ const SpaceCommunityPage = () => {
     refetchCallout,
   } = useCallouts({
     spaceNameId,
-    calloutGroups: [CalloutsGroup.CommunityLeft, CalloutsGroup.CommunityRight],
+    calloutGroups: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
   });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
@@ -116,7 +115,7 @@ const SpaceCommunityPage = () => {
             messageReceivers={messageReceivers}
           />
           <CalloutsGroupView
-            callouts={groupedCallouts[CalloutsGroup.CommunityLeft]}
+            callouts={groupedCallouts[CalloutDisplayLocation.CommunityLeft]}
             spaceId={spaceNameId!}
             canCreateCallout={canCreateCallout}
             loading={loading}
@@ -125,7 +124,7 @@ const SpaceCommunityPage = () => {
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
             onCalloutUpdate={refetchCallout}
-            group={CalloutsGroup.CommunityLeft}
+            group={CalloutDisplayLocation.CommunityLeft}
           />
         </PageContentColumn>
         <PageContentColumn columns={8}>
@@ -135,7 +134,7 @@ const SpaceCommunityPage = () => {
             <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
           </PageContentBlock>
           <CalloutsGroupView
-            callouts={groupedCallouts[CalloutsGroup.CommunityRight]}
+            callouts={groupedCallouts[CalloutDisplayLocation.CommunityRight]}
             spaceId={spaceNameId!}
             canCreateCallout={canCreateCallout}
             loading={loading}
@@ -144,7 +143,7 @@ const SpaceCommunityPage = () => {
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
             onCalloutUpdate={refetchCallout}
-            group={CalloutsGroup.CommunityRight}
+            group={CalloutDisplayLocation.CommunityRight}
           />
         </PageContentColumn>
       </PageContent>

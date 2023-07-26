@@ -8,6 +8,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
+import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 
 export type InnovationFlowState = string;
 
@@ -57,20 +58,28 @@ const InnovationFlowStates = ({
       ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
       : state;
 
+  const columns = useGlobalGridColumns();
+
   return (
     <PageContentBlockSeamless disablePadding>
-      <Gutters row justifyContent="space-around" flexWrap="wrap">
-        {states.map(state => (
-          <Button
-            key={state}
-            variant={getStateButtonVariant(state)}
-            disableElevation
-            sx={{ textTransform: 'none', minHeight: gutters(2), ...getStateButtonSx(state) }}
-            onClick={() => onSelectState?.(state)}
-          >
-            <BlockTitle fontWeight="bold">{getStateName(state)}</BlockTitle>
-          </Button>
-        ))}
+      <Gutters row disablePadding alignItems="center" overflow="hidden">
+        <Gutters row={columns > 4} disablePadding flexGrow={1} flexShrink={1} justifyContent="start" flexWrap="wrap">
+          {states.map(state => (
+            <Button
+              key={state}
+              variant={getStateButtonVariant(state)}
+              disableElevation
+              sx={{
+                textTransform: 'none',
+                minHeight: gutters(2),
+                ...getStateButtonSx(state),
+              }}
+              onClick={() => onSelectState?.(state)}
+            >
+              <BlockTitle fontWeight="bold">{getStateName(state)}</BlockTitle>
+            </Button>
+          ))}
+        </Gutters>
         {showSettings && (
           <IconButton color="primary" onClick={() => setShowSettingsDialog(true)}>
             <SettingsIcon />
