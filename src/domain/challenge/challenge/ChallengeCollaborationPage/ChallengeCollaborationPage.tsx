@@ -5,12 +5,12 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
-import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
+import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutsGroup.HomeTop:
+    case CalloutDisplayLocation.HomeTop:
       return <ChallengeDashboardPage />;
     default:
       return <ContributePage journeyTypeName="challenge" />;

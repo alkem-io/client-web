@@ -492,7 +492,6 @@ export type CalloutKeySpecifier = (
   | 'authorization'
   | 'comments'
   | 'createdBy'
-  | 'group'
   | 'id'
   | 'nameID'
   | 'postTemplate'
@@ -513,7 +512,6 @@ export type CalloutFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  group?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
