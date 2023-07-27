@@ -77,6 +77,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                             {...provided.dragHandleProps}
                             displayName={callout.profile.displayName}
                             icon={calloutIcons[callout.type]}
+                            activity={callout.activity}
                           />
                         )}
                       </Draggable>
