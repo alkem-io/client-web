@@ -1,20 +1,19 @@
 import React, { FC, useCallback, useState } from 'react';
-import { Link, useTheme } from '@mui/material';
-import UpdatesContainer from './Components/UpdatesContainer';
-import CloseButton from './Components/CloseButton';
-import { useConfig } from '../../config/useConfig';
-import { Caption } from '../../../../core/ui/typography';
-import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
-import CelebrationIcon from '@mui/icons-material/Celebration';
+import { Box, Dialog, DialogContent, Link, useTheme } from '@mui/material';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { Trans, useTranslation } from 'react-i18next';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 
 interface ReleaseNotificationData {
   prevClientVersion: string;
 }
+const Icon = props => <Box sx={{ display: 'inline', fontSize: '1.5em', marginRight: gutters(0.5) }} {...props} />;
 
 const PlatformUpdates: FC = () => {
+  const { t } = useTranslation();
   const clientVersion = process.env.REACT_APP_VERSION || '';
   const theme = useTheme();
-  const { platform } = useConfig();
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);
 
   const handleCloseNotification = useCallback(() => {
@@ -26,29 +25,38 @@ const PlatformUpdates: FC = () => {
     localStorage.setItem('releaseNotification', JSON.stringify(updatedReleaseNotificationData));
   }, [setIsNotificationVisible, clientVersion]);
 
-  const tLinks = TranslateWithElements(
-    <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
-  );
-
   return (
     <>
       {isNotificationVisible && (
-        <UpdatesContainer>
-          <Caption flexGrow={1} textAlign="center">
-            <CelebrationIcon fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: theme.spacing(0.5) }} />
-            {tLinks('notifications.release-updates.text', {
-              clickhere: {
-                href: platform?.releases ?? '',
-              },
-            })}
-          </Caption>
-          <CloseButton
-            sx={{
-              color: theme.palette.background.default,
-            }}
-            onClick={handleCloseNotification}
-          />
-        </UpdatesContainer>
+        <Dialog open={isNotificationVisible} maxWidth="lg">
+          <DialogHeader onClose={handleCloseNotification}>
+            <BlockTitle>
+              <Icon>{t('notifications.releaseUpdates.icon')}</Icon>
+              {t('notifications.releaseUpdates.title')}
+            </BlockTitle>
+          </DialogHeader>
+          <DialogContent>
+            <Trans
+              i18nKey="notifications.releaseUpdates.content"
+              components={{
+                br: <br />,
+                b: <strong />,
+                i: <em />,
+                ul: <ul />,
+                li: <li />,
+                clickhere: (
+                  <Link
+                    underline="always"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    color={theme.palette.primary.main}
+                    href={t('notifications.releaseUpdates.url')}
+                  />
+                ),
+              }}
+            />
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

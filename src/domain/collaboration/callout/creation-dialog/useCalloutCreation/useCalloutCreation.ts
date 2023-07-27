@@ -8,6 +8,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
+  CalloutDisplayLocation,
   CalloutState,
   CalloutType,
   CreateCalloutMutation,
@@ -31,7 +32,7 @@ export interface CalloutCreationType {
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
-  group?: string;
+  displayLocation?: CalloutDisplayLocation;
 }
 
 export interface CalloutCreationUtils {

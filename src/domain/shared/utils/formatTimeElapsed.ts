@@ -16,7 +16,7 @@ export const formatTimeElapsed = (date: Date | string, t: TFunction<'translation
   if (diffInTime > ONE_YEAR) {
     const timeDiff = Math.round(diffInTime / ONE_YEAR);
     return t('common.time.timeAgo', {
-      time: t('common.time.month', { count: timeDiff }),
+      time: t('common.time.year', { count: timeDiff }),
     });
   }
   if (diffInTime > ONE_MONTH) {

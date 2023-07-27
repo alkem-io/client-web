@@ -1,6 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutState, CalloutType, Tagset, TagsetType } from '../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutDisplayLocation,
+  CalloutState,
+  CalloutType,
+  Tagset,
+  TagsetType,
+} from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
@@ -22,7 +28,6 @@ import EmptyWhiteboard from '../../../common/components/composite/entities/White
 import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
-import { CalloutsGroup } from './CalloutsInContext/CalloutsGroup';
 import { FormikSelectValue } from '../../../common/components/composite/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
 import { Caption } from '../../../core/ui/typography';
@@ -30,6 +35,8 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { JourneyTypeName } from '../../challenge/JourneyTypeName';
+import { JourneyCalloutDisplayLocationOptions } from './CalloutsInContext/CalloutsGroup';
 
 type FormValueType = {
   displayName: string;
@@ -38,7 +45,7 @@ type FormValueType = {
   tagsets: Tagset[];
   references: Reference[];
   opened: boolean;
-  group: string;
+  displayLocation: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -54,7 +61,7 @@ export type CalloutFormInput = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  group?: string;
+  displayLocation?: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
@@ -68,7 +75,7 @@ export type CalloutFormOutput = {
   references: Reference[];
   type: CalloutType;
   state: CalloutState;
-  group: string;
+  displayLocation: CalloutDisplayLocation;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -78,11 +85,12 @@ export interface CalloutFormProps {
   calloutType: CalloutType;
   callout: CalloutFormInput;
   editMode?: boolean;
-  canChangeCalloutGroup?: boolean;
+  canChangeCalloutLocation?: boolean;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
   calloutNames: string[];
+  journeyTypeName: JourneyTypeName;
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
@@ -90,9 +98,10 @@ const CalloutForm: FC<CalloutFormProps> = ({
   callout,
   calloutNames,
   editMode = false,
-  canChangeCalloutGroup,
+  canChangeCalloutLocation,
   onChange,
   onStatusChanged,
+  journeyTypeName,
   children,
 }) => {
   const { t } = useTranslation();
@@ -118,7 +127,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      group: callout?.group ?? '',
+      displayLocation: callout?.displayLocation ?? CalloutDisplayLocation.Knowledge,
       postTemplateData: callout?.postTemplateData ?? {
         profile: {
           displayName: '',
@@ -195,7 +204,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: values.references,
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      group: values.group,
+      displayLocation: values.displayLocation,
       postTemplateData: values.postTemplateData,
       whiteboardTemplateData: values.whiteboardTemplateData,
       whiteboard: values.whiteboard,
@@ -204,9 +213,11 @@ const CalloutForm: FC<CalloutFormProps> = ({
   };
 
   const calloutsGroups = useMemo<FormikSelectValue[]>(() => {
+    const locations = JourneyCalloutDisplayLocationOptions[journeyTypeName];
+
     if (editMode) {
-      return (Object.keys(CalloutsGroup) as Array<keyof typeof CalloutsGroup>).map(key => ({
-        id: CalloutsGroup[key],
+      return locations.map(key => ({
+        id: key,
         name: t(`callout.callout-groups.${key}` as const),
       }));
     }
@@ -221,7 +232,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
     newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.Whiteboard,
-    groupChange: editMode && Boolean(canChangeCalloutGroup),
+    locationChange: editMode && Boolean(canChangeCalloutLocation),
     whiteboard: calloutType === CalloutType.Whiteboard,
   };
 
@@ -270,11 +281,11 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {formConfiguration.postTemplate && <PostTemplatesChooser name="postTemplateData" />}
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
-            {formConfiguration.groupChange && (
+            {formConfiguration.locationChange && (
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"
-                control={<FormikSelect name="group" values={calloutsGroups} />}
+                control={<FormikSelect name="displayLocation" values={calloutsGroups} />}
                 label={t('callout.callout-location')}
               />
             )}

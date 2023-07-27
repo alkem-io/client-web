@@ -19,13 +19,15 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
   const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({});
 
   const [revoke, { loading: removingMember }] = useRemoveUserAsChallengeAdminMutation({});
+  const { challenge, loading: loadingChallenge } = useChallenge();
+  const communityId = challenge?.community?.id ?? '';
 
   const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
           userID: memberId,
-          communityID: resourceId, // TODO: fix the value passed in
+          communityID: communityId,
           role: CommunityRole.Admin,
         },
       },
@@ -44,7 +46,7 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
       variables: {
         input: {
           userID: memberId,
-          communityID: resourceId, // TODO: fix the value passed in
+          communityID: communityId,
           role: CommunityRole.Admin,
         },
       },
@@ -56,9 +58,6 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
       awaitRefetchQueries: true,
     });
   };
-
-  const { challenge, loading: loadingChallenge } = useChallenge();
-  const communityId = challenge?.community?.id || '';
 
   if (loadingChallenge) {
     return <Loading />;
