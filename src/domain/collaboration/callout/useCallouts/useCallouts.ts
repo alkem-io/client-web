@@ -79,11 +79,11 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
       displayName: string;
       description?: string;
       tagset?: Tagset;
+      displayLocationTagset?: Tagset;
     };
     draft: boolean;
     editable: boolean;
     flowStates: string | undefined;
-    displayLocation: CalloutDisplayLocation;
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
@@ -224,10 +224,10 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   );
 
   const groupedCallouts = useMemo(() => {
-    return groupBy(sortedCallouts, callout => callout.displayLocation ?? UNGROUPED_CALLOUTS_GROUP) as Record<
-      CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP,
-      TypedCallout[] | undefined
-    >;
+    return groupBy(
+      sortedCallouts,
+      callout => getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags) ?? UNGROUPED_CALLOUTS_GROUP
+    ) as Record<CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP, TypedCallout[] | undefined>;
   }, [sortedCallouts]);
 
   const [runUpdateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
