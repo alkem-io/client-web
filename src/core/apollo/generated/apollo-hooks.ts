@@ -264,8 +264,12 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
         uri
         name
       }
+      tagsets {
+        ...TagsetDetails
+      }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const EntityDashboardCommunityFragmentDoc = gql`
   fragment EntityDashboardCommunity on Community {

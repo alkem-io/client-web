@@ -31,5 +31,8 @@ fragment DashboardContributingOrganization on Organization {
       uri
       name
     }
+    tagsets {
+      ...TagsetDetails
+    }
   }
 }

@@ -5310,6 +5310,16 @@ export type ChallengePageQuery = {
                     id: string;
                     displayName: string;
                     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
                   };
                 }>
               | undefined;
@@ -5713,6 +5723,16 @@ export type ChallengeProfileFragment = {
                 id: string;
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
               };
             }>
           | undefined;
@@ -6845,6 +6865,16 @@ export type AboutPageMembersQuery = {
                   id: string;
                   displayName: string;
                   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
                 };
               }>
             | undefined;
@@ -6949,6 +6979,16 @@ export type AboutPageMembersQuery = {
                     id: string;
                     displayName: string;
                     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
                   };
                 }>
               | undefined;
@@ -7054,6 +7094,16 @@ export type AboutPageMembersQuery = {
                     id: string;
                     displayName: string;
                     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
                   };
                 }>
               | undefined;
@@ -7878,6 +7928,16 @@ export type OpportunityPageQuery = {
                     id: string;
                     displayName: string;
                     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
                   };
                 }>
               | undefined;
@@ -8211,6 +8271,16 @@ export type OpportunityPageFragment = {
                 id: string;
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
               };
             }>
           | undefined;
@@ -9171,6 +9241,16 @@ export type SpaceCommunityPageQuery = {
                   id: string;
                   displayName: string;
                   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
                 };
               }>
             | undefined;
@@ -9261,6 +9341,16 @@ export type CommunityPageCommunityFragment = {
           id: string;
           displayName: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
         };
       }>
     | undefined;
@@ -9789,6 +9879,16 @@ export type SpacePageQuery = {
                   id: string;
                   displayName: string;
                   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
                 };
               }>
             | undefined;
@@ -10184,6 +10284,16 @@ export type SpacePageFragment = {
                 id: string;
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
               };
             }>
           | undefined;
@@ -22097,6 +22207,16 @@ export type EntityDashboardCommunityFragment = {
           id: string;
           displayName: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
         };
       }>
     | undefined;
@@ -22138,6 +22258,16 @@ export type DashboardContributingOrganizationFragment = {
     id: string;
     displayName: string;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
   };
 };
 
