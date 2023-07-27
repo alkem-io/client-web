@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import useCanGoBack from '../../../core/routing/useCanGoBack';
 import { Theme, useMediaQuery } from '@mui/material';
+import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -19,7 +20,7 @@ interface CalloutLocation {
 
 export interface CalloutPageProps {
   journeyTypeName: JourneyTypeName;
-  renderPage: (calloutGroup: string | undefined) => ReactNode;
+  renderPage: (calloutDisplayLocation: string | undefined) => ReactNode;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
 }
@@ -92,9 +93,9 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     return null;
   }
 
-  const calloutGroup = typedCallout.displayLocation;
+  const calloutDisplayLocation = getCalloutDisplayLocationValue(typedCallout.profile.displayLocationTagset?.tags);
 
-  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroup) : parentRoute;
+  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 
   const handleClose = () => {
     canGoBack ? navigate(-1) : navigate(parentPagePath);
@@ -108,7 +109,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   return (
     <>
-      {renderPage(calloutGroup)}
+      {renderPage(calloutDisplayLocation)}
       <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
           callout={typedCallout}

@@ -32,7 +32,7 @@ export interface CalloutEditDialogProps {
   onClose: () => void;
   onDelete: (callout: CalloutDeleteType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
-  canChangeCalloutGroup?: boolean;
+  canChangeCalloutLocation?: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   journeyTypeName: JourneyTypeName;
@@ -45,7 +45,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onClose,
   onDelete,
   onCalloutEdit,
-  canChangeCalloutGroup,
+  canChangeCalloutLocation,
   calloutNames,
   templates,
   journeyTypeName,
@@ -174,7 +174,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             editMode
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
-            canChangeCalloutGroup={canChangeCalloutGroup}
+            canChangeCalloutLocation={canChangeCalloutLocation}
             journeyTypeName={journeyTypeName}
           />
         </DialogContent>
