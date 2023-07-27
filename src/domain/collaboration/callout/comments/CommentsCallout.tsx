@@ -44,6 +44,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
     const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
     const canPostMessages =
       commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage) && callout.state !== CalloutState.Closed;
+    const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
     const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
       update: (cache, { data }) =>
@@ -89,6 +90,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
             postReply={postReply}
             canDeleteMessage={canDeleteMessage}
             handleDeleteMessage={handleDeleteMessage}
+            canAddReaction={canAddReaction}
             loading={loading || postingMessage || postingReply || deletingMessage}
             last={lastMessageOnly}
             maxHeight={COMMENTS_CONTAINER_HEIGHT}

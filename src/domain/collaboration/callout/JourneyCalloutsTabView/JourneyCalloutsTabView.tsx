@@ -9,12 +9,12 @@ import LinksList from '../../../../core/ui/list/LinksList';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
+import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
 import InnovationFlowStates, {
   InnovationFlowState,
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import useCallouts from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
@@ -56,7 +56,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   });
 
   const callouts = allCallouts
-    ?.filter(callout => callout.group !== CalloutsGroup.HomeTop)
+    ?.filter(callout => callout.displayLocation !== CalloutDisplayLocation.HomeTop)
     ?.filter(callout => {
       if (!selectedInnovationFlowState) {
         return true;
@@ -122,7 +122,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
-              group={CalloutsGroup.KnowledgeBase}
+              displayLocation={CalloutDisplayLocation.Knowledge}
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}
             />
