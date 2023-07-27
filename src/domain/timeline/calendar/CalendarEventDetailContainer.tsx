@@ -27,6 +27,7 @@ interface Provided {
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteComment: (authorId: string | undefined) => boolean;
+  canAddReaction: boolean;
   event?: CalendarEventDetailData;
   messages: Message[];
   roomId: string | undefined;
@@ -93,6 +94,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ s
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
+  const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveMessageOnRoomMutation({
     update: (cache, { data }) =>
@@ -118,6 +120,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ s
     canReadComments,
     canPostComments,
     canDeleteComment,
+    canAddReaction,
     event,
     messages,
     roomId,

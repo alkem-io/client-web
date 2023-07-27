@@ -14,12 +14,12 @@ import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
+import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { InfoOutlined } from '@mui/icons-material';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -41,7 +41,11 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
     useCallouts({
       spaceNameId,
       challengeNameId,
-      calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+      displayLocations: [
+        CalloutDisplayLocation.HomeTop,
+        CalloutDisplayLocation.HomeLeft,
+        CalloutDisplayLocation.HomeRight,
+      ],
     });
 
   const journeyTypeName = 'challenge';
@@ -118,9 +122,9 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               journeyTypeName="challenge"
               childEntityTitle={t('common.opportunities')}
               recommendations={
-                groupedCallouts[CalloutsGroup.HomeTop] && (
+                groupedCallouts[CalloutDisplayLocation.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutsGroup.HomeTop]}
+                    callouts={groupedCallouts[CalloutDisplayLocation.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}
@@ -129,7 +133,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    group={CalloutsGroup.HomeTop}
+                    displayLocation={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />

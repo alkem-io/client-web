@@ -45,6 +45,7 @@ export interface MessageViewProps {
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
   root?: boolean;
   actions?: ReactNode;
+  canAddReaction?: boolean;
   addReaction?: (reaction: { emoji: string; messageId: string }) => void;
   removeReaction?: (reactionId: string, messageId: string) => void;
 }
@@ -55,6 +56,7 @@ export const MessageView = ({
   onDelete,
   root = false,
   actions,
+  canAddReaction = true,
   addReaction,
   removeReaction,
   children,
@@ -94,6 +96,7 @@ export const MessageView = ({
             <Box component="li">
               <CommentReactions
                 reactions={message.reactions}
+                canAddReaction={canAddReaction}
                 onAddReaction={handleAddReaction}
                 onRemoveReaction={handleRemoveReaction}
               />

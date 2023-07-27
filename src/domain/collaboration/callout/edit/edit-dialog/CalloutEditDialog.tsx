@@ -22,6 +22,8 @@ import {
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
+import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLocationValue';
+import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -33,6 +35,7 @@ export interface CalloutEditDialogProps {
   canChangeCalloutGroup?: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
+  journeyTypeName: JourneyTypeName;
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
@@ -45,6 +48,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   canChangeCalloutGroup,
   calloutNames,
   templates,
+  journeyTypeName,
 }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
@@ -72,7 +76,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
-    group: callout.group,
+    displayLocation: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
@@ -108,7 +112,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       state: newCallout.state,
       postTemplate: newCallout.postTemplateData,
       whiteboardTemplate: newCallout.whiteboardTemplateData,
-      group: newCallout.group,
+      displayLocation: newCallout.displayLocation,
     });
     setLoading(false);
   }, [
@@ -171,6 +175,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
             canChangeCalloutGroup={canChangeCalloutGroup}
+            journeyTypeName={journeyTypeName}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>

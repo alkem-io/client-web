@@ -39,10 +39,11 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 
   const { id, description, author, authors, createdAt, comments, myPrivileges, nameID } = discussion;
 
-  const canPost = comments.myPrivileges?.some(x => x === AuthorizationPrivilege.CreateMessage) ?? false;
-  const canDeleteDiscussion = myPrivileges?.some(x => x === AuthorizationPrivilege.Delete) ?? false;
+  const canPost = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessage) ?? false;
+  const canDeleteDiscussion = myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false;
   const canDeleteComment = (authorId?: string) =>
     (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
+  const canAddReaction = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessageReaction) ?? false;
 
   // construct the discussion info as a comment with ID of the discussion for easier update/delete
   const initialComment = {
@@ -89,6 +90,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                         canDeleteMessage={canDeleteComment}
                         onDeleteMessage={onDeleteComment}
                         onReply={postReply}
+                        canAddReaction={canAddReaction}
                         {...commentReactionsMutations}
                       />
                     </Gutters>
