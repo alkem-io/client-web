@@ -37,6 +37,7 @@ interface Provided {
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteComment: (authorId: string | undefined) => boolean;
+  canAddReaction: boolean;
   post?: PostDashboardFragment;
   messages: Message[];
   roomId: string | undefined;
@@ -153,6 +154,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
+  const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveMessageOnRoomMutation({
     update: (cache, { data }) =>
@@ -184,6 +186,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     canReadComments,
     canPostComments,
     canDeleteComment,
+    canAddReaction,
     post,
     messages,
     roomId,
