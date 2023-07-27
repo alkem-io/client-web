@@ -61,6 +61,9 @@ const mapOrganizationToContributorCardProps = (
   avatar: getVisualAvatar(org.profile.visual) || '',
   displayName: org.profile.displayName,
   url: buildOrganizationUrl(org.nameID),
+  tooltip: {
+    tags: org.profile.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
+  },
   isContactable: true,
 });
 
