@@ -30,7 +30,7 @@ const CardContainer = (props: JourneyPageBannerCardProps) => {
       width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
       maxWidth="100%"
       marginX="auto"
-      alignItems="start"
+      alignItems={cardStickSide === 'left' ? 'start' : 'stretch'}
       position="relative"
       paddingX={columns > 8 ? 0 : undefined}
     >
@@ -82,11 +82,12 @@ const ChildJourneyPageBanner = ({ banner, ribbon, ...cardProps }: ChildJourneyPa
             onLoad={() => setImageLoading(false)}
             onError={imageLoadError}
             blurRadius={2}
-            // height is content-driven, but for the default image we need to set it explicitly
-            height={banner?.uri ? '100%' : theme => theme.spacing(18)}
             width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
             maxWidth="100%"
-            containerProps={imageLoading ? { visibility: 'hidden' } : undefined}
+            containerProps={{
+              height: '100%',
+              visibility: imageLoading ? 'hidden' : undefined,
+            }}
           />
         </Box>
         {imageLoading && (

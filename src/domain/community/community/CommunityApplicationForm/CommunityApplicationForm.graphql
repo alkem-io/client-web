@@ -1,6 +1,6 @@
 query CommunityApplicationForm(
   $spaceId: UUID_NAMEID!
-  $challengeId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+  $challengeId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
   $isSpace: Boolean = false
   $isChallenge: Boolean = false
 ) {

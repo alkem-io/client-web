@@ -7,14 +7,14 @@ import {
   useCalloutFormTemplatesFromSpaceLazyQuery,
   useUpdateCalloutVisibilityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   spaceId: string;
   canCreateCallout: boolean;
-  group: string;
+  displayLocation: CalloutDisplayLocation;
   flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
 }
@@ -23,9 +23,10 @@ const CalloutsGroupView = ({
   spaceId,
   calloutNames,
   canCreateCallout,
-  group,
+  displayLocation,
   flowState,
   createButtonPlace = 'bottom',
+  journeyTypeName,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -73,7 +74,7 @@ const CalloutsGroupView = ({
   return (
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
-      <CalloutsView calloutNames={calloutNames} {...calloutsViewProps} />
+      <CalloutsView calloutNames={calloutNames} journeyTypeName={journeyTypeName} {...calloutsViewProps} />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
@@ -83,8 +84,9 @@ const CalloutsGroupView = ({
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
-        group={group}
+        displayLocation={displayLocation}
         flowState={flowState}
+        journeyTypeName={journeyTypeName}
       />
     </>
   );

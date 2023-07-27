@@ -31,6 +31,7 @@ export interface PostDashboardViewProps {
   mode: 'messages' | 'share';
   canReadComments: boolean;
   canPostComments: boolean;
+  canAddReaction: boolean;
   canDeleteComment: (authorId: string | undefined) => boolean;
   banner?: string;
   displayName?: string;
@@ -106,6 +107,7 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
   }, [messages]);
 
   const commentReactionsMutations = useCommentReactionsMutations(roomId);
+  const { canAddReaction } = props;
 
   const handleCommentsScroll = () => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
@@ -171,6 +173,7 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
                   onReply={postReply}
                   canDeleteMessage={canDeleteComment}
                   onDeleteMessage={onDeleteComment}
+                  canAddReaction={canAddReaction}
                   {...commentReactionsMutations}
                 />
               </Gutters>

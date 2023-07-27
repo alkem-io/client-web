@@ -30,24 +30,24 @@ const mapUserToContributorCardProps = (
   user: DashboardContributingUserFragment
 ): WithId<ContributorCardSquareProps> => ({
   id: user.id,
-  avatar: user.profile.visual?.uri || '',
+  avatar: user.profile.visual?.uri ?? '',
   displayName: user.profile.displayName,
   url: buildUserProfileUrl(user.nameID),
   tooltip: {
-    tags: user.profile.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
+    tags: user.profile.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
     city: user.profile.location?.city,
-    country: COUNTRIES_BY_CODE[user.profile.location?.country || ''],
+    country: user.profile.location?.country ? COUNTRIES_BY_CODE[user.profile.location.country] : undefined,
   },
   isContactable: user.isContactable,
 });
 
 export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): WithId<ContributorCardSquareProps> => ({
-  id: user.id || '',
-  avatar: user.avatarSrc || '',
-  displayName: user.displayName || '',
-  url: user.url || '',
+  id: user.id ?? '',
+  avatar: user.avatarSrc ?? '',
+  displayName: user.displayName ?? '',
+  url: user.url ?? '',
   tooltip: {
-    tags: user.tags || [],
+    tags: user.tags ?? [],
     city: user.city,
     country: user.country,
   },
@@ -58,9 +58,12 @@ const mapOrganizationToContributorCardProps = (
   org: DashboardContributingOrganizationFragment
 ): WithId<ContributorCardSquareProps> => ({
   id: org.id,
-  avatar: getVisualAvatar(org.profile.visual) || '',
+  avatar: getVisualAvatar(org.profile.visual) ?? '',
   displayName: org.profile.displayName,
   url: buildOrganizationUrl(org.nameID),
+  tooltip: {
+    tags: org.profile.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
+  },
   isContactable: true,
 });
 
