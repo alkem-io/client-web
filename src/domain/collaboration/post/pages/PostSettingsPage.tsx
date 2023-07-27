@@ -85,7 +85,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     opportunityNameId,
   });
 
-  const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.Post);
+  const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.PostCollection);
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
