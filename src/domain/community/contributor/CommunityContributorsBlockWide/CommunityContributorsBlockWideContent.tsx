@@ -26,7 +26,7 @@ const filterFn = (filter: string[]) => (element: ContributorCardSquareProps) => 
     filter.some(
       term =>
         element.displayName.toLowerCase().includes(term.toLowerCase()) ||
-        element.tooltip?.tags.includes(term.toLowerCase())
+        element.tooltip?.tags.map(tag => tag.toLowerCase()).includes(term.toLowerCase())
     )
   );
 };
