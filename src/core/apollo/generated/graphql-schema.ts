@@ -11856,6 +11856,16 @@ export type CalloutPageCalloutQuery = {
                         description?: string | undefined;
                       }>
                     | undefined;
+                  displayLocationTagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
                 };
                 whiteboards?:
                   | Array<{
@@ -12110,6 +12120,16 @@ export type CalloutPageCalloutQuery = {
                           uri: string;
                           description?: string | undefined;
                         }>
+                      | undefined;
+                    displayLocationTagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
                       | undefined;
                   };
                   whiteboards?:
@@ -12372,6 +12392,16 @@ export type CalloutPageCalloutQuery = {
                           uri: string;
                           description?: string | undefined;
                         }>
+                      | undefined;
+                    displayLocationTagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
                       | undefined;
                   };
                   whiteboards?:
@@ -15056,6 +15086,16 @@ export type CreateCalloutMutation = {
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
+      displayLocationTagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
     };
     whiteboards?:
       | Array<{
@@ -15506,6 +15546,16 @@ export type CalloutsQuery = {
                         description?: string | undefined;
                       }>
                     | undefined;
+                  displayLocationTagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
                 };
                 whiteboards?:
                   | Array<{
@@ -15764,6 +15814,16 @@ export type CalloutsQuery = {
                           uri: string;
                           description?: string | undefined;
                         }>
+                      | undefined;
+                    displayLocationTagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
                       | undefined;
                   };
                   whiteboards?:
@@ -16030,6 +16090,16 @@ export type CalloutsQuery = {
                           uri: string;
                           description?: string | undefined;
                         }>
+                      | undefined;
+                    displayLocationTagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
                       | undefined;
                   };
                   whiteboards?:
@@ -16647,6 +16717,16 @@ export type CollaborationWithCalloutsFragment = {
                 description?: string | undefined;
               }>
             | undefined;
+          displayLocationTagset?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
         };
         whiteboards?:
           | Array<{
@@ -16881,6 +16961,16 @@ export type CalloutFragment = {
       | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+    displayLocationTagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
       | undefined;
   };
   whiteboards?:

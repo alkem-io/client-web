@@ -1548,6 +1548,9 @@ export const CalloutFragmentDoc = gql`
       references {
         ...ReferenceDetails
       }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
+      }
     }
     state
     sortOrder

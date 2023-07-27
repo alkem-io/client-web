@@ -19,6 +19,7 @@ import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import useCallouts from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
+import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
 
 interface JourneyCalloutsTabViewProps {
   journeyTypeName: JourneyTypeName;
@@ -56,7 +57,10 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   });
 
   const callouts = allCallouts
-    ?.filter(callout => callout.displayLocation !== CalloutDisplayLocation.HomeTop)
+    ?.filter(
+      callout =>
+        getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags) !== CalloutDisplayLocation.HomeTop
+    )
     ?.filter(callout => {
       if (!selectedInnovationFlowState) {
         return true;
