@@ -128,7 +128,10 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       createdDate: invitation.createdDate,
       userDisplayName: createdBy.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getJourneyTypeName(invitation.challengeID, invitation.opportunityID),
+      journeyTypeName: getJourneyTypeName({
+        challengeNameId: invitation.challengeID,
+        opportunityNameId: invitation.opportunityID,
+      }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
       journeyCardBanner: journey.profile.cardBanner,
@@ -183,7 +186,10 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
     return {
       id: application.id,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getJourneyTypeName(application.challengeID, application.opportunityID),
+      journeyTypeName: getJourneyTypeName({
+        challengeNameId: application.challengeID,
+        opportunityNameId: application.opportunityID,
+      }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
       journeyCardBanner: journey.profile.cardBanner,

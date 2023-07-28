@@ -12,7 +12,7 @@ import ContributorTooltip from './ContributorTooltip';
 interface SpaceWelcomeSectionContributorProps {
   profile: {
     displayName: string;
-    visual?: {
+    avatar?: {
       uri: string;
     };
     location?: Location;
@@ -32,7 +32,7 @@ const ContributorCardHorizontal = ({ url, profile, onContact }: SpaceWelcomeSect
       <GridItem columns={2}>
         <ContributorTooltip
           displayName={profile.displayName}
-          avatarSrc={profile.visual?.uri}
+          avatarSrc={profile.avatar?.uri}
           tags={tags}
           city={profile.location?.city}
           country={profile.location?.country}
@@ -42,7 +42,7 @@ const ContributorCardHorizontal = ({ url, profile, onContact }: SpaceWelcomeSect
           <BadgeCardView
             visual={
               <Avatar
-                src={profile.visual?.uri}
+                src={profile.avatar?.uri}
                 aria-label="User avatar"
                 alt={t('common.avatar-of', { user: profile.displayName })}
               >
