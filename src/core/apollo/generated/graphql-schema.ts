@@ -1933,6 +1933,76 @@ export type Location = {
   stateOrProvince: Scalars['String'];
 };
 
+export type LookupQueryResults = {
+  __typename?: 'LookupQueryResults';
+  /** Lookup the specified Callout */
+  callout?: Maybe<Callout>;
+  /** Lookup the specified Collaboration */
+  collaboration?: Maybe<Collaboration>;
+  /** Lookup the specified Community */
+  community?: Maybe<Community>;
+  /** Lookup the specified Context */
+  context?: Maybe<Context>;
+  /** Lookup the specified InnovationFlow */
+  innovationFlow?: Maybe<InnovationFlow>;
+  /** Lookup the specified InnovationFlow Template */
+  innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
+  /** Lookup the specified Post */
+  post?: Maybe<Post>;
+  /** Lookup the specified Profile */
+  profile?: Maybe<Profile>;
+  /** Lookup the specified Room */
+  room?: Maybe<Room>;
+  /** Lookup the specified Whiteboard */
+  whiteboard?: Maybe<Whiteboard>;
+  /** Lookup the specified Whiteboard Template */
+  whiteboardTemplate?: Maybe<WhiteboardTemplate>;
+};
+
+export type LookupQueryResultsCalloutArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsCollaborationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsCommunityArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsContextArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsInnovationFlowArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsInnovationFlowTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsPostArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsProfileArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsRoomArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsWhiteboardArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsWhiteboardTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** The applications of the current authenticated user */
@@ -3039,7 +3109,7 @@ export type Platform = {
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The StorageBucket with documents in use by Users + Organizations on the Platform. */
-  storageBucket?: Maybe<StorageBucket>;
+  storageBucket: StorageBucket;
 };
 
 export type PlatformInnovationHubArgs = {
@@ -3279,14 +3349,10 @@ export type Query = {
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
-  /** A specific Collaboration entity. */
-  collaboration: Collaboration;
-  /** A specific Community entity. */
-  community: Community;
-  /** A specific Context entity. */
-  context: Context;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
+  /** Allow direct lookup of entities from the domain model */
+  lookup: LookupQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
   /** A particular Organization */
@@ -3319,8 +3385,6 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
-  /** A particular whiteboard, identified by the provided ID. */
-  whiteboard: Whiteboard;
 };
 
 export type QueryActivityLogOnCollaborationArgs = {
@@ -3329,18 +3393,6 @@ export type QueryActivityLogOnCollaborationArgs = {
 
 export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
-};
-
-export type QueryCollaborationArgs = {
-  ID: Scalars['UUID'];
-};
-
-export type QueryCommunityArgs = {
-  ID: Scalars['UUID'];
-};
-
-export type QueryContextArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type QueryOrganizationArgs = {
@@ -3410,10 +3462,6 @@ export type QueryUsersPaginatedArgs = {
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
   credentialsCriteriaData: UsersWithAuthorizationCredentialInput;
-};
-
-export type QueryWhiteboardArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type Question = {
@@ -19861,88 +19909,97 @@ export type WhiteboardWithValueQueryVariables = Exact<{
 
 export type WhiteboardWithValueQuery = {
   __typename?: 'Query';
-  whiteboard: {
-    __typename?: 'Whiteboard';
-    id: string;
-    nameID: string;
-    createdDate: Date;
-    value: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      visual?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      preview?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
-    authorization?:
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
       | {
-          __typename?: 'Authorization';
+          __typename?: 'Whiteboard';
           id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          anonymousReadAccess: boolean;
-        }
-      | undefined;
-    checkout?:
-      | {
-          __typename?: 'WhiteboardCheckout';
-          id: string;
-          lockedBy: string;
-          status: WhiteboardCheckoutStateEnum;
-          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-    createdBy?:
-      | {
-          __typename?: 'User';
-          id: string;
+          nameID: string;
+          createdDate: Date;
+          value: string;
           profile: {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
           };
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          checkout?:
+            | {
+                __typename?: 'WhiteboardCheckout';
+                id: string;
+                lockedBy: string;
+                status: WhiteboardCheckoutStateEnum;
+                lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -29044,17 +29101,15 @@ export type PlatformStorageConfigQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    storageBucket?:
-      | {
-          __typename?: 'StorageBucket';
-          id: string;
-          allowedMimeTypes: Array<string>;
-          maxFileSize: number;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
+    storageBucket: {
+      __typename?: 'StorageBucket';
+      id: string;
+      allowedMimeTypes: Array<string>;
+      maxFileSize: number;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
   };
 };
 
