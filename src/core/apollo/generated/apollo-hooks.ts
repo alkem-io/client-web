@@ -12961,9 +12961,11 @@ export function refetchSpaceWhiteboardsQuery(variables: SchemaTypes.SpaceWhitebo
 
 export const WhiteboardWithValueDocument = gql`
   query whiteboardWithValue($whiteboardId: UUID!) {
-    whiteboard(ID: $whiteboardId) {
-      ...WhiteboardDetails
-      ...WhiteboardValue
+    lookup {
+      whiteboard(ID: $whiteboardId) {
+        ...WhiteboardDetails
+        ...WhiteboardValue
+      }
     }
   }
   ${WhiteboardDetailsFragmentDoc}
