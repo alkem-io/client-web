@@ -44,6 +44,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
 
   const {
     callouts: allCallouts,
+    groupedCallouts,
     canCreateCallout,
     calloutNames,
     loading,
@@ -103,6 +104,20 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
                 loading={loading}
               />
             </PageContentBlock>
+            <CalloutsGroupView
+              callouts={groupedCallouts[CalloutDisplayLocation.ContributeLeft]}
+              spaceId={spaceNameId!}
+              canCreateCallout={canCreateCallout}
+              loading={loading}
+              journeyTypeName={journeyTypeName}
+              sortOrder={calloutsSortOrder}
+              calloutNames={calloutNames}
+              onSortOrderUpdate={onCalloutsSortOrderUpdate}
+              onCalloutUpdate={refetchCallout}
+              scrollToCallout={scrollToCallout}
+              displayLocation={CalloutDisplayLocation.ContributeLeft}
+              flowState={selectedInnovationFlowState}
+            />
           </PageContentColumn>
 
           <PageContentColumn columns={8}>

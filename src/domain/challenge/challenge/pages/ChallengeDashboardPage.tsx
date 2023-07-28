@@ -34,16 +34,23 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const { spaceNameId, challengeNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
-    useCallouts({
-      spaceNameId,
-      challengeNameId,
-      displayLocations: [
-        CalloutDisplayLocation.HomeTop,
-        CalloutDisplayLocation.HomeLeft,
-        CalloutDisplayLocation.HomeRight,
-      ],
-    });
+  const {
+    groupedCallouts,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+    canCreateCallout,
+  } = useCallouts({
+    spaceNameId,
+    challengeNameId,
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
+  });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -119,6 +126,34 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />
                 )
+              }
+              childrenLeft={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+                  spaceId={spaceNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="challenge"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  displayLocation={CalloutDisplayLocation.HomeLeft}
+                />
+              }
+              childrenRight={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeRight]}
+                  spaceId={spaceNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="challenge"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  displayLocation={CalloutDisplayLocation.HomeRight}
+                />
               }
             />
             <CommunityUpdatesDialog
