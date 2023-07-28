@@ -1,34 +1,73 @@
 import React, { FC } from 'react';
 import { useChallenge } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import ChallengePageLayout from '../layout/ChallengePageLayout';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { ChallengeAboutView } from '../views/ChallengeAboutView';
+import ChallengeDashboardPage from './ChallengeDashboardPage';
+import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
+import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
+import { IconButton } from '@mui/material';
+import { Close } from '@mui/icons-material';
+import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
+import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 
 const ChallengeAboutPage: FC = () => {
   const { spaceNameId, profile, challengeNameId, communityId } = useChallenge();
 
+  const [backToParentPage] = useBackToParentPage('../dashboard');
+
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
+
   return (
-    <ChallengePageLayout currentSection={EntityPageSection.About}>
+    <>
+      <ChallengeDashboardPage />
       <AboutPageContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
-        {({ context, tagset, permissions, ...rest }, state) => (
-          <ChallengeAboutView
-            name={profile?.displayName}
+        {(
+          {
+            context,
+            references,
+            hostOrganization,
+            leadOrganizations,
+            leadUsers,
+            metrics,
+            memberUsers,
+            memberUsersCount,
+            memberOrganizations,
+            memberOrganizationsCount,
+          },
+          state
+        ) => (
+          <JourneyAboutDialog
+            open
+            journeyTypeName="challenge"
+            displayName={profile?.displayName}
             tagline={profile?.tagline}
-            tags={tagset?.tags}
+            references={references}
+            sendMessageToCommunityLeads={sendMessageToCommunityLeads}
+            metrics={metrics}
+            description={context?.vision}
+            background={profile?.description}
             who={context?.who}
             impact={context?.impact}
-            background={profile?.description}
-            vision={context?.vision}
-            communityReadAccess={permissions.communityReadAccess}
-            spaceNameId={spaceNameId}
-            communityId={communityId}
-            {...rest}
-            {...state}
+            loading={state.loading}
+            leadUsers={leadUsers}
+            hostOrganizations={hostOrganization && [hostOrganization]}
+            leadOrganizations={leadOrganizations}
+            endButton={
+              <IconButton onClick={backToParentPage}>
+                <Close />
+              </IconButton>
+            }
+            leftColumnChildren={
+              <EntityDashboardContributorsSection
+                memberUsers={memberUsers}
+                memberUsersCount={memberUsersCount}
+                memberOrganizations={memberOrganizations}
+                memberOrganizationsCount={memberOrganizationsCount}
+              />
+            }
           />
         )}
       </AboutPageContainer>
-    </ChallengePageLayout>
+    </>
   );
 };
 
