@@ -8,8 +8,10 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
     id
     ...UserRolesDetails
   }
-  authorization {
-    ...MyPrivileges
+  platform {
+    authorization {
+      ...MyPrivileges
+    }
   }
 }
 

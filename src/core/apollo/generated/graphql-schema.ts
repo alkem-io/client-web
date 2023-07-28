@@ -1955,7 +1955,7 @@ export type LookupQueryResults = {
   room?: Maybe<Room>;
   /** Lookup the specified Whiteboard */
   whiteboard?: Maybe<Whiteboard>;
-  /** Lookup the specified Whiteboard Tmplate */
+  /** Lookup the specified Whiteboard Template */
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
 };
 
@@ -3096,6 +3096,8 @@ export type Platform = {
   authorization?: Maybe<Authorization>;
   /** The Communications for the platform */
   communication: Communication;
+  /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
+  configuration: Config;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Details about an Innovation Hubs on the platform. If the arguments are omitted, the current Innovation Hub you are in will be returned. */
@@ -3104,8 +3106,10 @@ export type Platform = {
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Library for the platform */
   library: Library;
+  /** Alkemio Services Metadata. */
+  metadata: Metadata;
   /** The StorageBucket with documents in use by Users + Organizations on the Platform. */
-  storageBucket?: Maybe<StorageBucket>;
+  storageBucket: StorageBucket;
 };
 
 export type PlatformInnovationHubArgs = {
@@ -3345,18 +3349,12 @@ export type Query = {
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
-  /** The authorization policy for the platform */
-  authorization: Authorization;
-  /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
-  configuration: Config;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
   lookup: LookupQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
-  /** Alkemio Services Metadata */
-  metadata: Metadata;
   /** A particular Organization */
   organization: Organization;
   /** The Organizations on this platform */
@@ -7175,25 +7173,28 @@ export type CommunityFeedbackTemplatesQueryVariables = Exact<{ [key: string]: ne
 
 export type CommunityFeedbackTemplatesQuery = {
   __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      challenges: Array<{
-        __typename?: 'ChallengeTemplate';
-        feedback?:
-          | Array<{
-              __typename?: 'FeedbackTemplate';
-              name: string;
-              questions: Array<{
-                __typename?: 'QuestionTemplate';
-                question: string;
-                required: boolean;
-                sortOrder?: number | undefined;
-              }>;
-            }>
-          | undefined;
-      }>;
+  platform: {
+    __typename?: 'Platform';
+    configuration: {
+      __typename?: 'Config';
+      template: {
+        __typename?: 'Template';
+        challenges: Array<{
+          __typename?: 'ChallengeTemplate';
+          feedback?:
+            | Array<{
+                __typename?: 'FeedbackTemplate';
+                name: string;
+                questions: Array<{
+                  __typename?: 'QuestionTemplate';
+                  question: string;
+                  required: boolean;
+                  sortOrder?: number | undefined;
+                }>;
+              }>
+            | undefined;
+        }>;
+      };
     };
   };
 };
@@ -24269,7 +24270,12 @@ export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: ne
 
 export type PlatformLevelAuthorizationQuery = {
   __typename?: 'Query';
-  authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
+  platform: {
+    __typename?: 'Platform';
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
 };
 
 export type UserAvatarsQueryVariables = Exact<{
@@ -25108,7 +25114,12 @@ export type UserProfileQuery = {
         }>
       | undefined;
   };
-  authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
+  platform: {
+    __typename?: 'Platform';
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
 };
 
 export type UserProfileApplicationsQueryVariables = Exact<{
@@ -27914,45 +27925,48 @@ export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigurationQuery = {
   __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    authentication: {
-      __typename?: 'AuthenticationConfig';
-      providers: Array<{
-        __typename?: 'AuthenticationProviderConfig';
-        name: string;
-        label: string;
-        icon: string;
-        enabled: boolean;
-        config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-      }>;
+  platform: {
+    __typename?: 'Platform';
+    configuration: {
+      __typename?: 'Config';
+      authentication: {
+        __typename?: 'AuthenticationConfig';
+        providers: Array<{
+          __typename?: 'AuthenticationProviderConfig';
+          name: string;
+          label: string;
+          icon: string;
+          enabled: boolean;
+          config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+        }>;
+      };
+      platform: {
+        __typename?: 'PlatformLocations';
+        environment: string;
+        domain: string;
+        about: string;
+        feedback: string;
+        privacy: string;
+        security: string;
+        support: string;
+        terms: string;
+        impact: string;
+        foundation: string;
+        opensource: string;
+        inspiration: string;
+        innovationLibrary: string;
+        releases: string;
+        help: string;
+        community: string;
+        newuser: string;
+        tips: string;
+        aup: string;
+        featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
+      };
+      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+      apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+      geo: { __typename?: 'Geo'; endpoint: string };
     };
-    platform: {
-      __typename?: 'PlatformLocations';
-      environment: string;
-      domain: string;
-      about: string;
-      feedback: string;
-      privacy: string;
-      security: string;
-      support: string;
-      terms: string;
-      impact: string;
-      foundation: string;
-      opensource: string;
-      inspiration: string;
-      innovationLibrary: string;
-      releases: string;
-      help: string;
-      community: string;
-      newuser: string;
-      tips: string;
-      aup: string;
-      featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
-    };
-    sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
-    apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-    geo: { __typename?: 'Geo'; endpoint: string };
   };
 };
 
@@ -28001,10 +28015,13 @@ export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ServerMetadataQuery = {
   __typename?: 'Query';
-  metadata: {
-    __typename?: 'Metadata';
-    metrics: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>;
-    services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
+  platform: {
+    __typename?: 'Platform';
+    metadata: {
+      __typename?: 'Metadata';
+      metrics: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>;
+      services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
+    };
   };
 };
 
@@ -29084,17 +29101,15 @@ export type PlatformStorageConfigQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    storageBucket?:
-      | {
-          __typename?: 'StorageBucket';
-          id: string;
-          allowedMimeTypes: Array<string>;
-          maxFileSize: number;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
+    storageBucket: {
+      __typename?: 'StorageBucket';
+      id: string;
+      allowedMimeTypes: Array<string>;
+      maxFileSize: number;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
   };
 };
 

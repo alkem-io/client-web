@@ -27,7 +27,7 @@ const ServerMetadataProvider: FC<ServerMetadataProviderProps> = ({ url, children
   const [requestMetadata, loading, error] = useLoadingStateWithHandlers(
     async (url: string) => {
       const result = await queryRequest<ServerMetadataQuery>(url, ServerMetadataDocument);
-      setMetadata(result.data.data.metadata);
+      setMetadata(result.data.data.platform.metadata);
     },
     {
       onError: err => logger.error(err.message),

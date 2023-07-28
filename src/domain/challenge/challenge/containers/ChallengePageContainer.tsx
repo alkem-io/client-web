@@ -89,7 +89,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const challengePrivileges = _challenge?.space?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
-  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
+  const platformPrivileges = platformPrivilegesData?.platform.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
