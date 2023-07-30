@@ -14384,6 +14384,13 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
+        calendar: { __typename?: 'Calendar'; id: string };
+        calendarEvent: {
+          __typename?: 'CalendarEvent';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutDiscussionComment';
@@ -14459,6 +14466,19 @@ export type ActivityLogOnCollaborationQuery = {
               | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
+        };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+        reference: {
+          __typename?: 'Reference';
+          id: string;
+          name: string;
+          description?: string | undefined;
+          uri: string;
         };
       }
     | {
@@ -14958,8 +14978,6 @@ export type ActivityLogCalloutDiscussionCommentFragment = {
   };
 };
 
-export type ActivityLogUpdateSentFragment = { __typename?: 'ActivityLogEntryUpdateSent'; message: string };
-
 export type ActivityLogCalendarEventCreatedFragment = {
   __typename?: 'ActivityLogEntryCalendarEventCreated';
   calendar: { __typename?: 'Calendar'; id: string };
@@ -14970,6 +14988,8 @@ export type ActivityLogCalendarEventCreatedFragment = {
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };
+
+export type ActivityLogUpdateSentFragment = { __typename?: 'ActivityLogEntryUpdateSent'; message: string };
 
 export type UpdateCalloutsSortOrderMutationVariables = Exact<{
   collaborationId: Scalars['UUID'];

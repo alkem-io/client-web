@@ -9792,6 +9792,9 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryCalloutPostCreated {
         ...ActivityLogCalloutPostCreated
       }
+      ... on ActivityLogEntryCalloutLinkCreated {
+        ...ActivityLogCalloutLinkCreated
+      }
       ... on ActivityLogEntryCalloutPostComment {
         ...ActivityLogCalloutPostComment
       }
@@ -9810,18 +9813,23 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
       }
+      ... on ActivityLogEntryCalendarEventCreated {
+        ...ActivityLogCalendarEventCreated
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutLinkCreatedFragmentDoc}
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
+  ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
 
 /**
