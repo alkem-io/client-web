@@ -34,6 +34,33 @@ export type ActivityLogEntryFieldPolicy = {
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ActivityLogEntryCalendarEventCreatedKeySpecifier = (
+  | 'calendar'
+  | 'calendarEvent'
+  | 'child'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalendarEventCreatedKeySpecifier
+)[];
+export type ActivityLogEntryCalendarEventCreatedFieldPolicy = {
+  calendar?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityLogEntryCalloutDiscussionCommentKeySpecifier = (
   | 'callout'
   | 'child'
@@ -56,6 +83,33 @@ export type ActivityLogEntryCalloutDiscussionCommentFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryCalloutLinkCreatedKeySpecifier = (
+  | 'callout'
+  | 'child'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
+  | 'reference'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutLinkCreatedKeySpecifier
+)[];
+export type ActivityLogEntryCalloutLinkCreatedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  reference?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1224,6 +1278,7 @@ export type MutationKeySpecifier = (
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
+  | 'createLinkOnCallout'
   | 'createOpportunity'
   | 'createOrganization'
   | 'createPostOnCallout'
@@ -1372,6 +1427,7 @@ export type MutationFieldPolicy = {
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
+  createLinkOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2494,12 +2550,26 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ActivityLogEntryKeySpecifier | (() => undefined | ActivityLogEntryKeySpecifier);
     fields?: ActivityLogEntryFieldPolicy;
   };
+  ActivityLogEntryCalendarEventCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalendarEventCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalendarEventCreatedKeySpecifier);
+    fields?: ActivityLogEntryCalendarEventCreatedFieldPolicy;
+  };
   ActivityLogEntryCalloutDiscussionComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
       | ActivityLogEntryCalloutDiscussionCommentKeySpecifier
       | (() => undefined | ActivityLogEntryCalloutDiscussionCommentKeySpecifier);
     fields?: ActivityLogEntryCalloutDiscussionCommentFieldPolicy;
+  };
+  ActivityLogEntryCalloutLinkCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutLinkCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutLinkCreatedKeySpecifier);
+    fields?: ActivityLogEntryCalloutLinkCreatedFieldPolicy;
   };
   ActivityLogEntryCalloutPostComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

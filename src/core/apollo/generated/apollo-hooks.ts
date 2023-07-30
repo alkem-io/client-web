@@ -1237,8 +1237,8 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
     }
   }
 `;
-export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
-  fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutPostCreated {
+export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
     callout {
       id
       nameID
@@ -1259,8 +1259,26 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
     }
   }
 `;
-export const ActivityLogCalloutCardCommentFragmentDoc = gql`
-  fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutPostComment {
+export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    reference {
+      id
+      name
+      description
+      uri
+    }
+  }
+`;
+export const ActivityLogCalloutPostCommentFragmentDoc = gql`
+  fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
     callout {
       id
       nameID
@@ -1342,6 +1360,22 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     message
   }
 `;
+export const ActivityLogCalendarEventCreatedFragmentDoc = gql`
+  fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
+    calendar {
+      id
+    }
+    calendarEvent {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+  }
+`;
 export const ActivityLogOnCollaborationFragmentDoc = gql`
   fragment ActivityLogOnCollaboration on ActivityLogEntry {
     id
@@ -1382,10 +1416,13 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogCalloutPublished
     }
     ... on ActivityLogEntryCalloutPostCreated {
-      ...ActivityLogCalloutCardCreated
+      ...ActivityLogCalloutPostCreated
+    }
+    ... on ActivityLogEntryCalloutLinkCreated {
+      ...ActivityLogCalloutLinkCreated
     }
     ... on ActivityLogEntryCalloutPostComment {
-      ...ActivityLogCalloutCardComment
+      ...ActivityLogCalloutPostComment
     }
     ... on ActivityLogEntryCalloutWhiteboardCreated {
       ...ActivityLogCalloutWhiteboardCreated
@@ -1402,17 +1439,22 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     ... on ActivityLogEntryUpdateSent {
       ...ActivityLogUpdateSent
     }
+    ... on ActivityLogEntryCalendarEventCreated {
+      ...ActivityLogCalendarEventCreated
+    }
   }
   ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutLinkCreatedFragmentDoc}
+  ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
+  ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
 export const ProfileDisplayNameFragmentDoc = gql`
   fragment ProfileDisplayName on Profile {
@@ -9748,10 +9790,10 @@ export const ActivityLogOnCollaborationDocument = gql`
         ...ActivityLogCalloutPublished
       }
       ... on ActivityLogEntryCalloutPostCreated {
-        ...ActivityLogCalloutCardCreated
+        ...ActivityLogCalloutPostCreated
       }
       ... on ActivityLogEntryCalloutPostComment {
-        ...ActivityLogCalloutCardComment
+        ...ActivityLogCalloutPostComment
       }
       ... on ActivityLogEntryCalloutWhiteboardCreated {
         ...ActivityLogCalloutWhiteboardCreated
@@ -9773,8 +9815,8 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}

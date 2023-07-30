@@ -2,36 +2,36 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { buildWhiteboardUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
-import { Caption } from '../../../../../core/ui/typography';
+import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityWhiteboardCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
-  whiteboard: NameableEntity;
+export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps {
+  calendarEvent: NameableEntity;
+  calendarEventDescription: string;
 }
 
-export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProps> = ({
+export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedViewProps> = ({
   author,
   loading,
   createdDate,
   journeyTypeName,
   journeyLocation,
   journeyDisplayName,
-  callout,
-  whiteboard,
+  calendarEvent,
+  calendarEventDescription,
 }) => {
   const { t } = useTranslation();
 
-  const description = t('components.activity-log-view.activity-description.whiteboard-created', {
-    displayName: whiteboard.profile.displayName,
+  const description = t('components.activity-log-view.activity-description.calendar-event-created', {
+    eventDisplayName: calendarEvent.profile.displayName,
+    eventDescription: calendarEventDescription,
     interpolation: {
       escapeValue: false,
     },
   });
 
-  const url = buildWhiteboardUrl(callout.nameID, whiteboard.nameID, journeyLocation);
+  const url = ''; // todo: need to be able to create the URL for the calendar
 
   return (
     <ActivityBaseView
@@ -39,7 +39,7 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
       loading={loading}
       title={
         <ActivityDescriptionByType
-          activityType="whiteboard-created"
+          activityType="calendar-event-created"
           {...{
             author,
             createdDate,
@@ -47,7 +47,7 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              eventDisplayName: calendarEvent.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}
@@ -55,7 +55,7 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
       }
       url={url}
     >
-      <Caption>{description}</Caption>
+      <OneLineMarkdown>{description}</OneLineMarkdown>
     </ActivityBaseView>
   );
 };

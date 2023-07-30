@@ -8,13 +8,13 @@ import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityCardCommentCreatedViewProps extends ActivityViewProps {
+export interface ActivityCalloutPostCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   card: NameableEntity;
   description: string;
 }
 
-export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewProps> = ({
+export const ActivityCalloutPostCommentCreatedView: FC<ActivityCalloutPostCommentCreatedViewProps> = ({
   author,
   loading,
   createdDate,

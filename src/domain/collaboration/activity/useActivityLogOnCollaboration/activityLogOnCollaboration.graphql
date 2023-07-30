@@ -38,10 +38,10 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
       ...ActivityLogCalloutPublished
     }
     ... on ActivityLogEntryCalloutPostCreated {
-      ...ActivityLogCalloutCardCreated
+      ...ActivityLogCalloutPostCreated
     }
     ... on ActivityLogEntryCalloutPostComment {
-      ...ActivityLogCalloutCardComment
+      ...ActivityLogCalloutPostComment
     }
     ... on ActivityLogEntryCalloutWhiteboardCreated {
       ...ActivityLogCalloutWhiteboardCreated
@@ -102,7 +102,7 @@ fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
   }
 }
 
-fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutPostCreated {
+fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
   callout {
     id
     nameID
@@ -123,7 +123,24 @@ fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutPostCreated {
   }
 }
 
-fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutPostComment {
+fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
+  callout {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+  reference {
+    id
+    name
+    description
+    uri
+  }
+}
+
+fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
   callout {
     id
     nameID
@@ -198,4 +215,20 @@ fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussio
 
 fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
   message
+}
+
+
+fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
+  calendar {
+    id
+  }
+  calendarEvent {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+    }
+  }
 }
