@@ -15882,6 +15882,21 @@ export type RemoveCommentFromCalloutMutationVariables = Exact<{
 
 export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
+export type CreateLinkOnCalloutMutationVariables = Exact<{
+  input: CreateLinkOnCalloutInput;
+}>;
+
+export type CreateLinkOnCalloutMutation = {
+  __typename?: 'Mutation';
+  createLinkOnCallout: {
+    __typename?: 'Reference';
+    id: string;
+    name: string;
+    uri: string;
+    description?: string | undefined;
+  };
+};
+
 export type CalloutsQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
   includeSpace?: InputMaybe<Scalars['Boolean']>;
