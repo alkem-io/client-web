@@ -1237,8 +1237,8 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
     }
   }
 `;
-export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
-  fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutPostCreated {
+export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
     callout {
       id
       nameID
@@ -1259,8 +1259,26 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
     }
   }
 `;
-export const ActivityLogCalloutCardCommentFragmentDoc = gql`
-  fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutPostComment {
+export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    reference {
+      id
+      name
+      description
+      uri
+    }
+  }
+`;
+export const ActivityLogCalloutPostCommentFragmentDoc = gql`
+  fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
     callout {
       id
       nameID
@@ -1342,6 +1360,22 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     message
   }
 `;
+export const ActivityLogCalendarEventCreatedFragmentDoc = gql`
+  fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
+    calendar {
+      id
+    }
+    calendarEvent {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+  }
+`;
 export const ActivityLogOnCollaborationFragmentDoc = gql`
   fragment ActivityLogOnCollaboration on ActivityLogEntry {
     id
@@ -1382,10 +1416,13 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogCalloutPublished
     }
     ... on ActivityLogEntryCalloutPostCreated {
-      ...ActivityLogCalloutCardCreated
+      ...ActivityLogCalloutPostCreated
+    }
+    ... on ActivityLogEntryCalloutLinkCreated {
+      ...ActivityLogCalloutLinkCreated
     }
     ... on ActivityLogEntryCalloutPostComment {
-      ...ActivityLogCalloutCardComment
+      ...ActivityLogCalloutPostComment
     }
     ... on ActivityLogEntryCalloutWhiteboardCreated {
       ...ActivityLogCalloutWhiteboardCreated
@@ -1402,17 +1439,22 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     ... on ActivityLogEntryUpdateSent {
       ...ActivityLogUpdateSent
     }
+    ... on ActivityLogEntryCalendarEventCreated {
+      ...ActivityLogCalendarEventCreated
+    }
   }
   ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutLinkCreatedFragmentDoc}
+  ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
+  ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
 export const ProfileDisplayNameFragmentDoc = gql`
   fragment ProfileDisplayName on Profile {
@@ -9748,10 +9790,13 @@ export const ActivityLogOnCollaborationDocument = gql`
         ...ActivityLogCalloutPublished
       }
       ... on ActivityLogEntryCalloutPostCreated {
-        ...ActivityLogCalloutCardCreated
+        ...ActivityLogCalloutPostCreated
+      }
+      ... on ActivityLogEntryCalloutLinkCreated {
+        ...ActivityLogCalloutLinkCreated
       }
       ... on ActivityLogEntryCalloutPostComment {
-        ...ActivityLogCalloutCardComment
+        ...ActivityLogCalloutPostComment
       }
       ... on ActivityLogEntryCalloutWhiteboardCreated {
         ...ActivityLogCalloutWhiteboardCreated
@@ -9768,18 +9813,23 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
       }
+      ... on ActivityLogEntryCalendarEventCreated {
+        ...ActivityLogCalendarEventCreated
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutLinkCreatedFragmentDoc}
+  ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
+  ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
 
 /**
@@ -10783,6 +10833,55 @@ export type RemoveCommentFromCalloutMutationResult =
 export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveCommentFromCalloutMutation,
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
+>;
+export const CreateLinkOnCalloutDocument = gql`
+  mutation createLinkOnCallout($input: CreateLinkOnCalloutInput!) {
+    createLinkOnCallout(linkData: $input) {
+      ...ReferenceDetails
+    }
+  }
+  ${ReferenceDetailsFragmentDoc}
+`;
+export type CreateLinkOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateLinkOnCalloutMutation,
+  SchemaTypes.CreateLinkOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreateLinkOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreateLinkOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLinkOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLinkOnCalloutMutation, { data, loading, error }] = useCreateLinkOnCalloutMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateLinkOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateLinkOnCalloutMutation,
+    SchemaTypes.CreateLinkOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateLinkOnCalloutMutation, SchemaTypes.CreateLinkOnCalloutMutationVariables>(
+    CreateLinkOnCalloutDocument,
+    options
+  );
+}
+
+export type CreateLinkOnCalloutMutationHookResult = ReturnType<typeof useCreateLinkOnCalloutMutation>;
+export type CreateLinkOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateLinkOnCalloutMutation>;
+export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateLinkOnCalloutMutation,
+  SchemaTypes.CreateLinkOnCalloutMutationVariables
 >;
 export const CalloutsDocument = gql`
   query Callouts(

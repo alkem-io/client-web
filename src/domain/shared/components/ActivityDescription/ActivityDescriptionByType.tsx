@@ -9,6 +9,8 @@ interface ActivityDescriptionByTypeProps extends Omit<ActivityDescriptionProps, 
     | 'post-comment-created'
     | 'post-created'
     | 'whiteboard-created'
+    | 'callout-link-created'
+    | 'calendar-event-created'
     | 'opportunity-created'
     | 'update-sent';
 }
