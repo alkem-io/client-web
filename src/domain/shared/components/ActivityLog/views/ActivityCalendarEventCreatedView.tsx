@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { buildEventUrl } from '../../../../../common/utils/urlBuilders';
 
 export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps {
   calendarEvent: NameableEntity;
@@ -31,8 +32,6 @@ export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedVi
     },
   });
 
-  const url = ''; // todo: need to be able to create the URL for the calendar
-
   return (
     <ActivityBaseView
       author={author}
@@ -53,7 +52,7 @@ export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedVi
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }
-      url={url}
+      url={buildEventUrl(calendarEvent.nameID, journeyLocation)}
     >
       <OneLineMarkdown>{description}</OneLineMarkdown>
     </ActivityBaseView>
