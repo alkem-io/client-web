@@ -62,7 +62,7 @@ const InnovationPackBanner = ({
         <ContributorCardHorizontal
           profile={{
             displayName: providerDisplayName,
-            visual: {
+            avatar: {
               uri: providerVisualUri,
             },
           }}
