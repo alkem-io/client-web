@@ -264,8 +264,12 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
         uri
         name
       }
+      tagsets {
+        ...TagsetDetails
+      }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const EntityDashboardCommunityFragmentDoc = gql`
   fragment EntityDashboardCommunity on Community {
@@ -1543,6 +1547,9 @@ export const CalloutFragmentDoc = gql`
       }
       references {
         ...ReferenceDetails
+      }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
       }
     }
     state
@@ -5157,15 +5164,17 @@ export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMem
 
 export const CommunityFeedbackTemplatesDocument = gql`
   query communityFeedbackTemplates {
-    configuration {
-      template {
-        challenges {
-          feedback {
-            name
-            questions {
-              question
-              required
-              sortOrder
+    platform {
+      configuration {
+        template {
+          challenges {
+            feedback {
+              name
+              questions {
+                question
+                required
+                sortOrder
+              }
             }
           }
         }
@@ -13016,9 +13025,11 @@ export function refetchSpaceWhiteboardsQuery(variables: SchemaTypes.SpaceWhitebo
 
 export const WhiteboardWithValueDocument = gql`
   query whiteboardWithValue($whiteboardId: UUID!) {
-    whiteboard(ID: $whiteboardId) {
-      ...WhiteboardDetails
-      ...WhiteboardValue
+    lookup {
+      whiteboard(ID: $whiteboardId) {
+        ...WhiteboardDetails
+        ...WhiteboardValue
+      }
     }
   }
   ${WhiteboardDetailsFragmentDoc}
@@ -19491,8 +19502,10 @@ export function refetchMessagingUserDetailsQuery(variables: SchemaTypes.Messagin
 
 export const PlatformLevelAuthorizationDocument = gql`
   query PlatformLevelAuthorization {
-    authorization {
-      ...MyPrivileges
+    platform {
+      authorization {
+        ...MyPrivileges
+      }
     }
   }
   ${MyPrivilegesFragmentDoc}
@@ -20368,8 +20381,10 @@ export const UserProfileDocument = gql`
       id
       ...UserRolesDetails
     }
-    authorization {
-      ...MyPrivileges
+    platform {
+      authorization {
+        ...MyPrivileges
+      }
     }
   }
   ${UserDetailsFragmentDoc}
@@ -24667,8 +24682,10 @@ export type DeleteWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions
 >;
 export const ConfigurationDocument = gql`
   query configuration {
-    configuration {
-      ...Configuration
+    platform {
+      configuration {
+        ...Configuration
+      }
     }
   }
   ${ConfigurationFragmentDoc}
@@ -24721,15 +24738,17 @@ export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQ
 
 export const ServerMetadataDocument = gql`
   query serverMetadata {
-    metadata {
-      metrics {
-        id
-        name
-        value
-      }
-      services {
-        name
-        version
+    platform {
+      metadata {
+        metrics {
+          id
+          name
+          value
+        }
+        services {
+          name
+          version
+        }
       }
     }
   }

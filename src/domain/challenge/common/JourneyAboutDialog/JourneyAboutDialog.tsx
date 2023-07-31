@@ -50,6 +50,7 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   who: string | undefined;
   impact: string | undefined;
   loading: boolean;
+  leftColumnChildren?: ReactNode;
 }
 
 interface DialogHeaderItemProps extends BoxProps {
@@ -95,6 +96,7 @@ const JourneyAboutDialog = ({
   loading,
   startButton,
   endButton,
+  leftColumnChildren,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
@@ -178,19 +180,19 @@ const JourneyAboutDialog = ({
             )}
             {background && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t('context.space.background.title')} />
+                <PageContentBlockHeader title={t(`context.${journeyTypeName}.background.title` as const)} />
                 <WrapperMarkdown>{background}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {impact && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t('context.space.impact.title')} />
+                <PageContentBlockHeader title={t(`context.${journeyTypeName}.impact.title` as const)} />
                 <WrapperMarkdown>{impact}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {who && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t('context.space.who.title')} />
+                <PageContentBlockHeader title={t(`context.${journeyTypeName}.who.title` as const)} />
                 <WrapperMarkdown>{who}</WrapperMarkdown>
               </PageContentBlock>
             )}
@@ -198,7 +200,9 @@ const JourneyAboutDialog = ({
           <PageContentColumn columns={4}>
             <PageContentBlockSeamless disablePadding order={1}>
               <PageContentBlock>
-                <PageContentBlockHeader title={t('pages.space.sections.dashboard.activity')} />
+                <PageContentBlockHeader
+                  title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
+                />
                 <ActivityView activity={metricsItems} loading={loading} />
               </PageContentBlock>
               <PageContentBlock>
@@ -227,7 +231,7 @@ const JourneyAboutDialog = ({
                   />
                 </>
               )}
-              {isSpace && (
+              {hostOrganizations && (
                 <EntityDashboardLeadsSection
                   organizationsHeader={t('pages.space.sections.dashboard.organization')}
                   organizationsHeaderIcon={
@@ -260,6 +264,7 @@ const JourneyAboutDialog = ({
                 </EntityDashboardLeadsSection>
               )}
             </PageContentBlockSeamless>
+            {leftColumnChildren}
           </PageContentColumn>
         </Gutters>
       </Box>

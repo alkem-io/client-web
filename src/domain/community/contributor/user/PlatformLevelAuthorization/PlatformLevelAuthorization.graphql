@@ -1,5 +1,7 @@
 query PlatformLevelAuthorization {
-  authorization {
-    ...MyPrivileges
+  platform {
+    authorization {
+      ...MyPrivileges
+    }
   }
 }

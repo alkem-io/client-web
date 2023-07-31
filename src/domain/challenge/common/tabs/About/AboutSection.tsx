@@ -173,7 +173,9 @@ export const AboutSection: FC<AboutSectionProps> = ({
           )}
           {!communityReadAccess && (
             <PageContentBlock halfWidth>
-              <PageContentBlockHeader title={t('pages.space.sections.dashboard.activity')} />
+              <PageContentBlockHeader
+                title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
+              />
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
@@ -214,7 +216,9 @@ export const AboutSection: FC<AboutSectionProps> = ({
           </PageContentBlock>
           {communityReadAccess && (
             <PageContentBlock halfWidth>
-              <PageContentBlockHeader title={t('pages.space.sections.dashboard.activity')} />
+              <PageContentBlockHeader
+                title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
+              />
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}

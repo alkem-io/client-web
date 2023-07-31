@@ -85,7 +85,7 @@ export interface CalloutFormProps {
   calloutType: CalloutType;
   callout: CalloutFormInput;
   editMode?: boolean;
-  canChangeCalloutGroup?: boolean;
+  canChangeCalloutLocation?: boolean;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
@@ -98,7 +98,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   callout,
   calloutNames,
   editMode = false,
-  canChangeCalloutGroup,
+  canChangeCalloutLocation,
   onChange,
   onStatusChanged,
   journeyTypeName,
@@ -232,7 +232,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
     newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.Whiteboard,
-    groupChange: editMode && Boolean(canChangeCalloutGroup),
+    locationChange: editMode && Boolean(canChangeCalloutLocation),
     whiteboard: calloutType === CalloutType.Whiteboard,
   };
 
@@ -281,7 +281,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {formConfiguration.postTemplate && <PostTemplatesChooser name="postTemplateData" />}
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
-            {formConfiguration.groupChange && (
+            {formConfiguration.locationChange && (
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"
