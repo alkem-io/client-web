@@ -3342,6 +3342,58 @@ export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskCh
   return { query: AskChatGuidanceQuestionDocument, variables: variables };
 }
 
+export const AssignUserAsBetaTesterDocument = gql`
+  mutation assignUserAsBetaTester($input: GrantAuthorizationCredentialInput!) {
+    grantCredentialToUser(grantCredentialData: $input) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type AssignUserAsBetaTesterMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsBetaTesterMutation,
+  SchemaTypes.AssignUserAsBetaTesterMutationVariables
+>;
+
+/**
+ * __useAssignUserAsBetaTesterMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsBetaTesterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsBetaTesterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsBetaTesterMutation, { data, loading, error }] = useAssignUserAsBetaTesterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsBetaTesterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsBetaTesterMutation,
+    SchemaTypes.AssignUserAsBetaTesterMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsBetaTesterMutation,
+    SchemaTypes.AssignUserAsBetaTesterMutationVariables
+  >(AssignUserAsBetaTesterDocument, options);
+}
+
+export type AssignUserAsBetaTesterMutationHookResult = ReturnType<typeof useAssignUserAsBetaTesterMutation>;
+export type AssignUserAsBetaTesterMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsBetaTesterMutation>;
+export type AssignUserAsBetaTesterMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsBetaTesterMutation,
+  SchemaTypes.AssignUserAsBetaTesterMutationVariables
+>;
 export const AssignUserAsGlobalAdminDocument = gql`
   mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
     assignUserAsGlobalAdmin(membershipData: $input) {
@@ -3558,6 +3610,58 @@ export type AssignUserAsOrganizationOwnerMutationResult =
 export type AssignUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsOrganizationOwnerMutation,
   SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
+>;
+export const RemoveUserAsBetaTesterDocument = gql`
+  mutation removeUserAsBetaTester($input: RevokeAuthorizationCredentialInput!) {
+    revokeCredentialFromUser(revokeCredentialData: $input) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type RemoveUserAsBetaTesterMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsBetaTesterMutation,
+  SchemaTypes.RemoveUserAsBetaTesterMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsBetaTesterMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsBetaTesterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsBetaTesterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsBetaTesterMutation, { data, loading, error }] = useRemoveUserAsBetaTesterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsBetaTesterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsBetaTesterMutation,
+    SchemaTypes.RemoveUserAsBetaTesterMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsBetaTesterMutation,
+    SchemaTypes.RemoveUserAsBetaTesterMutationVariables
+  >(RemoveUserAsBetaTesterDocument, options);
+}
+
+export type RemoveUserAsBetaTesterMutationHookResult = ReturnType<typeof useRemoveUserAsBetaTesterMutation>;
+export type RemoveUserAsBetaTesterMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsBetaTesterMutation>;
+export type RemoveUserAsBetaTesterMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsBetaTesterMutation,
+  SchemaTypes.RemoveUserAsBetaTesterMutationVariables
 >;
 export const RemoveUserAsGlobalAdminDocument = gql`
   mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
