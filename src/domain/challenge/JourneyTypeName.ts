@@ -1,13 +1,14 @@
+import { JourneyLocation } from '../../common/utils/urlBuilders';
+
 export type JourneyTypeName = 'space' | 'challenge' | 'opportunity';
 
-export const getJourneyTypeName = (
-  challengeId: string | undefined,
-  opportunityId: string | undefined
-): JourneyTypeName => {
-  if (opportunityId) {
+type ChildJourneyLocation = Pick<JourneyLocation, 'challengeNameId' | 'opportunityNameId'>;
+
+export const getJourneyTypeName = (journeyLocation: ChildJourneyLocation): JourneyTypeName => {
+  if (journeyLocation.opportunityNameId) {
     return 'opportunity';
   }
-  if (challengeId) {
+  if (journeyLocation.challengeNameId) {
     return 'challenge';
   }
   return 'space';

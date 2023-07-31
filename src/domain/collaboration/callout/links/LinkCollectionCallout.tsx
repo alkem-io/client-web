@@ -13,7 +13,7 @@ import CreateReferencesDialog, {
 } from '../../../shared/components/References/CreateReferencesDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
-  useCreateReferenceOnProfileMutation,
+  useCreateLinkOnCalloutMutation,
   useDeleteReferenceMutation,
   useUpdateCalloutMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -41,7 +41,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     ref
   ) => {
     const { t } = useTranslation();
-    const [createReference] = useCreateReferenceOnProfileMutation();
+    const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
     const [updateReferences] = useUpdateCalloutMutation();
     const [deleteReference] = useDeleteReferenceMutation();
 
@@ -59,10 +59,10 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
 
     // New References:
     const getNewReferenceId = useCallback(async () => {
-      const { data } = await createReference({
+      const { data } = await createLinkOnCallout({
         variables: {
           input: {
-            profileID: callout.profile.id,
+            calloutID: callout.id,
             // References names have to be unique, if everything goes well this name will never be shown:
             name: t('callout.link-collection.new-temporary-reference', {
               temp: nanoid(4),
@@ -72,11 +72,11 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           },
         },
       });
-      if (!data?.createReferenceOnProfile.id) {
+      if (!data?.createLinkOnCallout.id) {
         throw new Error('Error creating the new Link');
       }
-      return data.createReferenceOnProfile.id;
-    }, [createReference, callout]);
+      return data.createLinkOnCallout.id;
+    }, [createLinkOnCallout, callout]);
 
     const removeNewReference = (referenceId: string) =>
       deleteReference({
