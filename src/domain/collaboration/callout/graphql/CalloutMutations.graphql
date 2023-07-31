@@ -20,3 +20,9 @@ mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
 mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
   removeMessageOnRoom(messageData: $messageData)
 }
+
+mutation createLinkOnCallout($input: CreateLinkOnCalloutInput!) {
+  createLinkOnCallout(linkData: $input) {
+    ...ReferenceDetails
+  }
+}

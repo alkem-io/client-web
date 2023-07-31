@@ -2,36 +2,41 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { buildWhiteboardUrl } from '../../../../../common/utils/urlBuilders';
+import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
+import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
+import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
-import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityWhiteboardCreatedViewProps extends ActivityViewProps {
+export interface ActivityCalloutPostCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
-  whiteboard: NameableEntity;
+  card: NameableEntity;
+  description: string;
 }
 
-export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProps> = ({
+export const ActivityCalloutPostCommentCreatedView: FC<ActivityCalloutPostCommentCreatedViewProps> = ({
   author,
   loading,
   createdDate,
   journeyTypeName,
   journeyLocation,
   journeyDisplayName,
+  card,
   callout,
-  whiteboard,
+  description,
 }) => {
   const { t } = useTranslation();
 
-  const description = t('components.activity-log-view.activity-description.whiteboard-created', {
-    displayName: whiteboard.profile.displayName,
+  const comment = replaceQuotesInOldDescription(description);
+  const translatedDescription = t('components.activity-log-view.activity-description.post-comment-created', {
+    postDisplayName: card.profile.displayName,
+    comment,
     interpolation: {
       escapeValue: false,
     },
   });
 
-  const url = buildWhiteboardUrl(callout.nameID, whiteboard.nameID, journeyLocation);
+  const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
 
   return (
     <ActivityBaseView
@@ -39,7 +44,7 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
       loading={loading}
       title={
         <ActivityDescriptionByType
-          activityType="whiteboard-created"
+          activityType="post-comment-created"
           {...{
             author,
             createdDate,
@@ -47,7 +52,7 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              postDisplayName: card.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}
@@ -55,7 +60,7 @@ export const ActivityWhiteboardCreatedView: FC<ActivityWhiteboardCreatedViewProp
       }
       url={url}
     >
-      <Caption>{description}</Caption>
+      <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
     </ActivityBaseView>
   );
 };

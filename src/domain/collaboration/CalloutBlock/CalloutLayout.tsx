@@ -163,11 +163,6 @@ const CalloutLayout = ({
     return null;
   }
 
-  // TODO: For now callout moving is only enabled for spaces.
-  // In the future check this in a cleaner way, maybe there is a privilege for this...
-  // or just remove all canChangeCalloutGroup properties
-  const canChangeCalloutLocation = !Boolean(challengeNameId) && !Boolean(opportunityNameId);
-
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
   const handleMove = (callback?: (id: string) => void) => () => {
@@ -307,7 +302,7 @@ const CalloutLayout = ({
           callout={callout}
           onCalloutEdit={handleCalloutEdit}
           onDelete={onCalloutDelete}
-          canChangeCalloutLocation={canChangeCalloutLocation}
+          canChangeCalloutLocation
           calloutNames={calloutNames}
           templates={templates}
           journeyTypeName={journeyTypeName}
