@@ -1,6 +1,8 @@
 query configuration {
-  configuration {
-    ...Configuration
+  platform {
+    configuration {
+      ...Configuration
+  }
   }
 }
 

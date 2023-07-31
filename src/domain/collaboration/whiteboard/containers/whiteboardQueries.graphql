@@ -145,9 +145,11 @@ query spaceWhiteboards($spaceId: UUID_NAMEID!) {
 }
 
 query whiteboardWithValue($whiteboardId: UUID!) {
-  whiteboard(ID: $whiteboardId) {
-    ...WhiteboardDetails
-    ...WhiteboardValue
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
+      ...WhiteboardValue
+    }
   }
 }
 

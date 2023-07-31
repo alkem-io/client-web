@@ -1122,6 +1122,33 @@ export type LocationFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LookupQueryResultsKeySpecifier = (
+  | 'callout'
+  | 'collaboration'
+  | 'community'
+  | 'context'
+  | 'innovationFlow'
+  | 'innovationFlowTemplate'
+  | 'post'
+  | 'profile'
+  | 'room'
+  | 'whiteboard'
+  | 'whiteboardTemplate'
+  | LookupQueryResultsKeySpecifier
+)[];
+export type LookupQueryResultsFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  community?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  post?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MeQueryResultsKeySpecifier = (
   | 'applications'
   | 'invitations'
@@ -1575,20 +1602,24 @@ export type PaginatedUsersFieldPolicy = {
 export type PlatformKeySpecifier = (
   | 'authorization'
   | 'communication'
+  | 'configuration'
   | 'id'
   | 'innovationHub'
   | 'innovationHubs'
   | 'library'
+  | 'metadata'
   | 'storageBucket'
   | PlatformKeySpecifier
 )[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  configuration?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformLocationsKeySpecifier = (
@@ -1744,14 +1775,9 @@ export type QueryKeySpecifier = (
   | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
-  | 'authorization'
-  | 'collaboration'
-  | 'community'
-  | 'configuration'
-  | 'context'
   | 'getSupportedVerifiedCredentialMetadata'
+  | 'lookup'
   | 'me'
-  | 'metadata'
   | 'organization'
   | 'organizations'
   | 'organizationsPaginated'
@@ -1767,21 +1793,15 @@ export type QueryKeySpecifier = (
   | 'usersById'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
-  | 'whiteboard'
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
-  community?: FieldPolicy<any> | FieldReadFunction<any>;
-  configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  context?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
-  metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1797,7 +1817,6 @@ export type QueryFieldPolicy = {
   usersById?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QuestionKeySpecifier = ('id' | 'name' | 'value' | QuestionKeySpecifier)[];
 export type QuestionFieldPolicy = {
@@ -2799,6 +2818,10 @@ export type StrictTypedTypePolicies = {
   Location?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LocationKeySpecifier | (() => undefined | LocationKeySpecifier);
     fields?: LocationFieldPolicy;
+  };
+  LookupQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);
+    fields?: LookupQueryResultsFieldPolicy;
   };
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);

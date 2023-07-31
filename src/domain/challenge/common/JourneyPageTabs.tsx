@@ -59,6 +59,7 @@ export interface EntityPageTabsProps {
   shareUrl: string;
   mobile?: boolean;
   actions?: ActionDefinition[];
+  hideAbout?: boolean;
 }
 
 enum NavigationActions {
@@ -72,6 +73,7 @@ interface ShareCapableNavigator extends Navigator {
 }
 
 // TODO make configurable, render within SpacePageTabs
+// TODO make configurable instead of hideAbout
 const JourneyPageTabs: FC<EntityPageTabsProps> = ({
   currentTab,
   showSettings,
@@ -82,6 +84,7 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
   shareUrl,
   mobile,
   actions,
+  hideAbout = false,
 }) => {
   const { t } = useTranslation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -165,7 +168,13 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
                 disabled={subEntityTab.disabled}
               />
             )}
-            <BottomNavigationAction value={EntityPageSection.About} label={t('common.about')} icon={<InfoOutlined />} />
+            {!hideAbout && (
+              <BottomNavigationAction
+                value={EntityPageSection.About}
+                label={t('common.about')}
+                icon={<InfoOutlined />}
+              />
+            )}
             {!showSettings && shareUrl && (
               <BottomNavigationAction
                 value={NavigationActions.Share}
@@ -267,11 +276,13 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
             disabled={subEntityTab.disabled}
           />
         )}
-        <HeaderNavigationTab
-          label={t('common.about')}
-          value={EntityPageSection.About}
-          to={`${rootUrl}/${EntityPageSection.About}`}
-        />
+        {!hideAbout && (
+          <HeaderNavigationTab
+            label={t('common.about')}
+            value={EntityPageSection.About}
+            to={`${rootUrl}/${EntityPageSection.About}`}
+          />
+        )}
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />
         ))}

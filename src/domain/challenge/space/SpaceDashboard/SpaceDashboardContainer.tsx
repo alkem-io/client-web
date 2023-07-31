@@ -94,7 +94,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   const spacePrivileges = _space?.space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
-  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
+  const platformPrivileges = platformPrivilegesData?.platform.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: spacePrivileges.includes(AuthorizationPrivilege.Update),

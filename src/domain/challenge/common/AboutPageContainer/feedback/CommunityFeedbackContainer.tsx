@@ -66,7 +66,7 @@ const CommunityFeedbackContainer: FC<CommunityFeedbackContainerProps> = ({ child
     navigate(-1);
   };
 
-  const templates = templateQuery?.configuration?.template?.challenges?.[0]?.feedback ?? [];
+  const templates = templateQuery?.platform.configuration.template?.challenges?.[0]?.feedback ?? [];
 
   const error = templateError ?? submitError;
 
