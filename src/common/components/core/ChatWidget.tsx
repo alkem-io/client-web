@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { addResponseMessage, Widget } from 'react-chat-widget';
+import { addResponseMessage, addLinkSnippet, Widget } from 'react-chat-widget';
 import { useAskChatGuidanceQuestionQuery } from '../../../core/apollo/generated/apollo-hooks';
 
 import logo from './favicon-16x16.png';
@@ -21,9 +21,22 @@ const ChatWidget = () => {
   const guidanceEnabled: boolean = isFeatureEnabled(FEATURE_GUIDANCE_ENGINE);
   const { user: currentUser } = useUserContext();
   const enableWidget = currentUser?.permissions.canAccessInteractiveGuidance && guidanceEnabled;
+
   useEffect(() => {
     if (data && !loading) {
-      addResponseMessage(data.askChatGuidanceQuestion.answer);
+      addResponseMessage(`Answer: ${data.askChatGuidanceQuestion.answer}`);
+      addResponseMessage(`Sources: ${data.askChatGuidanceQuestion.sources}`);
+
+      const regex = /metadata={'(\w+)': '([^']*)('})/g;
+      let match;
+      const sources: { title: string; link: string }[] = [];
+      while ((match = regex.exec(data.askChatGuidanceQuestion.sources)) !== null) {
+        sources.push({ title: match[1], link: match[2] });
+      }
+
+      sources.forEach(source => {
+        addLinkSnippet(source);
+      });
     }
   }, [data, loading]);
 
