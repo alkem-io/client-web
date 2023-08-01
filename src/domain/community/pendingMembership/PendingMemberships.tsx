@@ -7,9 +7,9 @@ import {
   usePendingMembershipsUserQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName, getJourneyTypeName } from '../../challenge/JourneyTypeName';
-import { PendingMembershipsQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useUserContext } from '../contributor/user';
 import { Visual } from '../../common/visual/Visual';
+import { PendingMembershipsQuery } from '../../../core/apollo/generated/graphql-schema';
 
 interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
@@ -31,8 +31,8 @@ interface ApplicationWithMeta extends JourneyDetails {
 }
 
 interface UsePendingMembershipsProvided {
-  applications: PendingMembershipsQuery['rolesUser']['applications'];
-  invitations: PendingMembershipsQuery['rolesUser']['invitations'];
+  applications: PendingMembershipsQuery['me']['applications'] | undefined;
+  invitations: PendingMembershipsQuery['me']['invitations'] | undefined;
   refetchPendingMemberships: () => void;
 }
 
@@ -42,15 +42,12 @@ export const usePendingMemberships = (): UsePendingMembershipsProvided => {
   const { user } = useUserContext();
 
   const { data, refetch: refetchPendingMemberships } = usePendingMembershipsQuery({
-    variables: {
-      userId: user?.user.id!,
-    },
     skip: !user?.user.id,
   });
 
   const invitations = useMemo(
     () =>
-      data?.rolesUser.invitations?.filter(({ state }) => {
+      data?.me.invitations?.filter(({ state }) => {
         return VISIBLE_STATES.includes(state);
       }),
     [data]
@@ -58,7 +55,7 @@ export const usePendingMemberships = (): UsePendingMembershipsProvided => {
 
   const applications = useMemo(
     () =>
-      data?.rolesUser.applications?.filter(({ state }) => {
+      data?.me.applications?.filter(({ state }) => {
         return VISIBLE_STATES.includes(state);
       }),
     [data]
@@ -76,7 +73,7 @@ interface InvitationHydratorProvided {
 }
 
 interface InvitationHydratorProps {
-  invitation: NonNullable<PendingMembershipsQuery['rolesUser']['invitations']>[number];
+  invitation: NonNullable<PendingMembershipsQuery['me']['invitations']>[number];
   withJourneyDetails?: boolean;
   children: (provided: InvitationHydratorProvided) => ReactNode;
 }
@@ -146,7 +143,7 @@ interface ApplicationHydratorProvided {
 }
 
 interface ApplicationHydratorProps {
-  application: NonNullable<PendingMembershipsQuery['rolesUser']['applications']>[number];
+  application: NonNullable<PendingMembershipsQuery['me']['applications']>[number];
   children: (provided: ApplicationHydratorProvided) => ReactNode;
 }
 

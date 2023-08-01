@@ -4,7 +4,6 @@ import { useOpportunity } from '../hooks/useOpportunity';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   useOpportunityPageQuery,
-  usePlatformLevelAuthorizationQuery,
   useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -122,9 +121,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
-  const platformPrivileges = platformPrivilegesData?.platform.authorization?.myPrivileges ?? NO_PRIVILEGES;
-
   const permissions = useMemo(() => {
     return {
       canEdit: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
@@ -135,9 +131,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       removeRelations: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       opportunityReadAccess: opportunityPrivileges?.includes(AuthorizationPrivilege.Read),
-      readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+      readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
     };
-  }, [opportunityPrivileges, communityPrivileges, platformPrivileges]);
+  }, [opportunityPrivileges, communityPrivileges, user]);
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
     skipCondition: !permissions.opportunityReadAccess || !permissions.readUsers,

@@ -9,6 +9,7 @@ import { SettingsSection } from '../../../../platform/admin/layout/EntitySetting
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserMetadata } from '../hooks/useUserMetadata';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface UserOrganizationsPageProps extends PageProps {}
 
@@ -27,7 +28,9 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
         <Grid item xs={12}>
           <AssociatedOrganizationsLazilyFetched
             enableLeave
-            canCreateOrganization={userMetadata?.permissions?.canCreateOrganization}
+            canCreateOrganization={
+              userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.CreateOrganization) ?? false
+            }
             organizationNameIDs={userMetadata?.organizationNameIDs || []}
             title={t('pages.user-profile.associated-organizations.title')}
             helpText={t('pages.user-profile.associated-organizations.help')}

@@ -20477,8 +20477,8 @@ export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryV
 }
 
 export const UserProfileApplicationsDocument = gql`
-  query userProfileApplications($input: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
+  query userProfileApplications {
+    me {
       applications {
         id
         state
@@ -20503,12 +20503,11 @@ export const UserProfileApplicationsDocument = gql`
  * @example
  * const { data, loading, error } = useUserProfileApplicationsQuery({
  *   variables: {
- *      input: // value for 'input'
  *   },
  * });
  */
 export function useUserProfileApplicationsQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.UserProfileApplicationsQuery,
     SchemaTypes.UserProfileApplicationsQueryVariables
   >
@@ -20539,7 +20538,7 @@ export type UserProfileApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserProfileApplicationsQuery,
   SchemaTypes.UserProfileApplicationsQueryVariables
 >;
-export function refetchUserProfileApplicationsQuery(variables: SchemaTypes.UserProfileApplicationsQueryVariables) {
+export function refetchUserProfileApplicationsQuery(variables?: SchemaTypes.UserProfileApplicationsQueryVariables) {
   return { query: UserProfileApplicationsDocument, variables: variables };
 }
 
@@ -20692,6 +20691,29 @@ export const MeDocument = gql`
       user {
         ...UserDetails
         ...UserAgent
+      }
+      applications {
+        id
+        communityID
+        displayName
+        state
+        spaceID
+        challengeID
+        opportunityID
+      }
+      invitations {
+        id
+        spaceID
+        challengeID
+        opportunityID
+        welcomeMessage
+        createdBy
+        createdDate
+        state
+      }
+      spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+        id
+        nameID
       }
     }
   }
@@ -21048,8 +21070,8 @@ export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutationVariables
 >;
 export const PendingMembershipsDocument = gql`
-  query PendingMemberships($userId: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $userId }) {
+  query PendingMemberships {
+    me {
       invitations {
         id
         spaceID
@@ -21083,12 +21105,11 @@ export const PendingMembershipsDocument = gql`
  * @example
  * const { data, loading, error } = usePendingMembershipsQuery({
  *   variables: {
- *      userId: // value for 'userId'
  *   },
  * });
  */
 export function usePendingMembershipsQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.PendingMembershipsQuery,
     SchemaTypes.PendingMembershipsQueryVariables
   >
@@ -21119,7 +21140,7 @@ export type PendingMembershipsQueryResult = Apollo.QueryResult<
   SchemaTypes.PendingMembershipsQuery,
   SchemaTypes.PendingMembershipsQueryVariables
 >;
-export function refetchPendingMembershipsQuery(variables: SchemaTypes.PendingMembershipsQueryVariables) {
+export function refetchPendingMembershipsQuery(variables?: SchemaTypes.PendingMembershipsQueryVariables) {
   return { query: PendingMembershipsDocument, variables: variables };
 }
 

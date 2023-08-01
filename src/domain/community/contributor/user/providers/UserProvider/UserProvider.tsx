@@ -7,7 +7,11 @@ import {
   useRolesUserQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '../../../../../../core/pages/Errors/ErrorPage';
-import { User } from '../../../../../../core/apollo/generated/graphql-schema';
+import {
+  ApplicationForRoleResult,
+  InvitationForRoleResult,
+  User,
+} from '../../../../../../core/apollo/generated/graphql-schema';
 import { UserRolesInEntity } from './UserRolesInEntity';
 import { useAuthenticationContext } from '../../../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
@@ -70,7 +74,15 @@ const UserProvider: FC<{}> = ({ children }) => {
 
   const wrappedMe = useMemo(
     () =>
-      meData?.me ? toUserMetadata(meData.me.user as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined,
+      meData?.me
+        ? toUserMetadata(
+            meData.me.user as User,
+            meData.me.applications as ApplicationForRoleResult[],
+            meData.me.invitations as InvitationForRoleResult[],
+            rolesData?.rolesUser,
+            platformLevelAuthorization
+          )
+        : undefined,
     [meData, rolesData, platformLevelAuthorization]
   );
 

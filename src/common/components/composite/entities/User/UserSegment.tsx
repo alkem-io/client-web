@@ -24,6 +24,7 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
 import PendingMembershipsUserMenuItem from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 import { HdrStrongOutlined } from '@mui/icons-material';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 
 const PREFIX = 'UserSegment';
 
@@ -52,11 +53,11 @@ const UserSegment = <El extends ElementType>({
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, permissions } = userMetadata;
+  const { user } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef<HTMLButtonElement>(null);
 
-  const isAdmin = permissions.isPlatformAdmin;
+  const isAdmin = userMetadata.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
