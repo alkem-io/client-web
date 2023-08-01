@@ -147,7 +147,7 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
   parentNameID: Scalars['NameID'];
-  /** The Post that was created. */
+  /** The Reference that was created. */
   reference: Reference;
   /** The user that triggered this Activity. */
   triggeredBy: User;
