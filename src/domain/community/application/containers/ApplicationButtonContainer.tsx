@@ -46,7 +46,6 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const { communityId, myMembershipStatus } = useCommunityContext();
   const { data: memberShip, loading: membershipLoading } = useUserApplicationsQuery({
-    variables: { input: userId },
     skip: !userId,
   });
 
@@ -61,13 +60,13 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   });
 
   // todo: refactor logic or use entity privileges
-  const userApplication = memberShip?.rolesUser.applications?.find(
+  const userApplication = memberShip?.me.applications?.find(
     x => x.spaceID === spaceId && (challengeId ? x.challengeID === challengeId : true) && !x.opportunityID
   );
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = memberShip?.rolesUser.applications?.find(
+  const parentApplication = memberShip?.me.applications?.find(
     x => x.spaceID === spaceId && !x.challengeID && !x.opportunityID && challengeId
   );
 

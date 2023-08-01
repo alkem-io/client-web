@@ -1,5 +1,5 @@
-query userApplications($input: UUID_NAMEID_EMAIL!) {
-  rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
+query userApplications {
+  me {
     applications {
       id
       state

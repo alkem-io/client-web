@@ -2542,15 +2542,6 @@ export const UserRolesDetailsFragmentDoc = gql`
       }
       roles
     }
-    applications {
-      id
-      communityID
-      displayName
-      state
-      spaceID
-      challengeID
-      opportunityID
-    }
   }
 `;
 export const PendingMembershipsJourneyProfileFragmentDoc = gql`
@@ -20220,8 +20211,8 @@ export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
 }
 
 export const UserApplicationsDocument = gql`
-  query userApplications($input: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
+  query userApplications {
+    me {
       applications {
         id
         state
@@ -20248,12 +20239,11 @@ export const UserApplicationsDocument = gql`
  * @example
  * const { data, loading, error } = useUserApplicationsQuery({
  *   variables: {
- *      input: // value for 'input'
  *   },
  * });
  */
 export function useUserApplicationsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UserApplicationsQuery, SchemaTypes.UserApplicationsQueryVariables>(
@@ -20281,7 +20271,7 @@ export type UserApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserApplicationsQuery,
   SchemaTypes.UserApplicationsQueryVariables
 >;
-export function refetchUserApplicationsQuery(variables: SchemaTypes.UserApplicationsQueryVariables) {
+export function refetchUserApplicationsQuery(variables?: SchemaTypes.UserApplicationsQueryVariables) {
   return { query: UserApplicationsDocument, variables: variables };
 }
 

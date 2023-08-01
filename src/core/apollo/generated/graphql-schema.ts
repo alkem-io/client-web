@@ -1184,6 +1184,14 @@ export type ContributorRoles = {
   spaces: Array<RolesResultSpace>;
 };
 
+export type ContributorRolesApplicationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type ContributorRolesInvitationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type ConvertChallengeToSpaceInput = {
   /** The Challenge to be promoted to be a new Space. Note: the original Challenge will no longer exist after the conversion.  */
   challengeID: Scalars['UUID_NAMEID'];
@@ -24899,18 +24907,6 @@ export type UserRolesDetailsFragment = {
     roles: Array<string>;
     userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
   }>;
-  applications?:
-    | Array<{
-        __typename?: 'ApplicationForRoleResult';
-        id: string;
-        communityID: string;
-        displayName: string;
-        state: string;
-        spaceID: string;
-        challengeID?: string | undefined;
-        opportunityID?: string | undefined;
-      }>
-    | undefined;
 };
 
 export type AssignUserToGroupMutationVariables = Exact<{
@@ -25244,18 +25240,6 @@ export type RolesUserQuery = {
       roles: Array<string>;
       userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          communityID: string;
-          displayName: string;
-          state: string;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
   };
 };
 
@@ -25324,27 +25308,23 @@ export type UserQuery = {
   };
 };
 
-export type UserApplicationsQueryVariables = Exact<{
-  input: Scalars['UUID_NAMEID_EMAIL'];
-}>;
+export type UserApplicationsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserApplicationsQuery = {
   __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          state: string;
-          communityID: string;
-          displayName: string;
-          createdDate: Date;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
+  me: {
+    __typename?: 'MeQueryResults';
+    applications: Array<{
+      __typename?: 'ApplicationForRoleResult';
+      id: string;
+      state: string;
+      communityID: string;
+      displayName: string;
+      createdDate: Date;
+      spaceID: string;
+      challengeID?: string | undefined;
+      opportunityID?: string | undefined;
+    }>;
   };
 };
 
@@ -25504,18 +25484,6 @@ export type UserProfileQuery = {
       roles: Array<string>;
       userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          communityID: string;
-          displayName: string;
-          state: string;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
   };
   platform: {
     __typename?: 'Platform';
