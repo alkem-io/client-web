@@ -20466,72 +20466,6 @@ export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryV
   return { query: UserProfileDocument, variables: variables };
 }
 
-export const UserProfileApplicationsDocument = gql`
-  query userProfileApplications {
-    me {
-      applications {
-        id
-        state
-        displayName
-        spaceID
-        challengeID
-        opportunityID
-      }
-    }
-  }
-`;
-
-/**
- * __useUserProfileApplicationsQuery__
- *
- * To run a query within a React component, call `useUserProfileApplicationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserProfileApplicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserProfileApplicationsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUserProfileApplicationsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.UserProfileApplicationsQuery,
-    SchemaTypes.UserProfileApplicationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserProfileApplicationsQuery, SchemaTypes.UserProfileApplicationsQueryVariables>(
-    UserProfileApplicationsDocument,
-    options
-  );
-}
-
-export function useUserProfileApplicationsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserProfileApplicationsQuery,
-    SchemaTypes.UserProfileApplicationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.UserProfileApplicationsQuery,
-    SchemaTypes.UserProfileApplicationsQueryVariables
-  >(UserProfileApplicationsDocument, options);
-}
-
-export type UserProfileApplicationsQueryHookResult = ReturnType<typeof useUserProfileApplicationsQuery>;
-export type UserProfileApplicationsLazyQueryHookResult = ReturnType<typeof useUserProfileApplicationsLazyQuery>;
-export type UserProfileApplicationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserProfileApplicationsQuery,
-  SchemaTypes.UserProfileApplicationsQueryVariables
->;
-export function refetchUserProfileApplicationsQuery(variables?: SchemaTypes.UserProfileApplicationsQueryVariables) {
-  return { query: UserProfileApplicationsDocument, variables: variables };
-}
-
 export const UsersWithCredentialsDocument = gql`
   query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
@@ -20682,7 +20616,7 @@ export const MeDocument = gql`
         ...UserDetails
         ...UserAgent
       }
-      applications {
+      applications(states: ["new"]) {
         id
         communityID
         displayName
@@ -20691,7 +20625,7 @@ export const MeDocument = gql`
         challengeID
         opportunityID
       }
-      invitations {
+      invitations(states: ["invited"]) {
         id
         spaceID
         challengeID
@@ -21059,81 +20993,6 @@ export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutation,
   SchemaTypes.InviteExternalUserMutationVariables
 >;
-export const PendingMembershipsDocument = gql`
-  query PendingMemberships {
-    me {
-      invitations {
-        id
-        spaceID
-        challengeID
-        opportunityID
-        welcomeMessage
-        createdBy
-        createdDate
-        state
-      }
-      applications {
-        id
-        spaceID
-        challengeID
-        opportunityID
-        state
-      }
-    }
-  }
-`;
-
-/**
- * __usePendingMembershipsQuery__
- *
- * To run a query within a React component, call `usePendingMembershipsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePendingMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePendingMembershipsQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePendingMembershipsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PendingMembershipsQuery,
-    SchemaTypes.PendingMembershipsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PendingMembershipsQuery, SchemaTypes.PendingMembershipsQueryVariables>(
-    PendingMembershipsDocument,
-    options
-  );
-}
-
-export function usePendingMembershipsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PendingMembershipsQuery,
-    SchemaTypes.PendingMembershipsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PendingMembershipsQuery, SchemaTypes.PendingMembershipsQueryVariables>(
-    PendingMembershipsDocument,
-    options
-  );
-}
-
-export type PendingMembershipsQueryHookResult = ReturnType<typeof usePendingMembershipsQuery>;
-export type PendingMembershipsLazyQueryHookResult = ReturnType<typeof usePendingMembershipsLazyQuery>;
-export type PendingMembershipsQueryResult = Apollo.QueryResult<
-  SchemaTypes.PendingMembershipsQuery,
-  SchemaTypes.PendingMembershipsQueryVariables
->;
-export function refetchPendingMembershipsQuery(variables?: SchemaTypes.PendingMembershipsQueryVariables) {
-  return { query: PendingMembershipsDocument, variables: variables };
-}
-
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
     space(ID: $spaceId) {

@@ -1,25 +1,3 @@
-query PendingMemberships {
-  me {
-    invitations {
-      id
-      spaceID
-      challengeID
-      opportunityID
-      welcomeMessage
-      createdBy
-      createdDate
-      state
-    }
-    applications {
-      id
-      spaceID
-      challengeID
-      opportunityID
-      state
-    }
-  }
-}
-
 query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
   space(ID: $spaceId) {
     id

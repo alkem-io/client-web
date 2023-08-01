@@ -9,6 +9,7 @@ import {
   UserRolesDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { RoleType } from '../constants/RoleType';
+import { InvitationItem } from '../providers/UserProvider/InvitationItem';
 
 export interface UserMetadata {
   user: User;
@@ -24,7 +25,7 @@ export interface UserMetadata {
   skills: string[];
   contributions: ContributionItem[];
   pendingApplications: ContributionItem[];
-  pendingInvitations: ContributionItem[];
+  pendingInvitations: InvitationItem[];
   organizationNameIDs: string[];
 }
 
@@ -35,12 +36,14 @@ const getContributions = (membershipData?: UserRolesDetailsFragment) => {
 
   const spaces = membershipData.spaces.map<ContributionItem>(e => ({
     spaceId: e.spaceID,
+    id: e.id,
   }));
 
   const challenges = membershipData.spaces.flatMap<ContributionItem>(e =>
     e.challenges.map(c => ({
       spaceId: e.nameID,
       challengeId: c.nameID,
+      id: c.id,
     }))
   );
 
@@ -48,6 +51,7 @@ const getContributions = (membershipData?: UserRolesDetailsFragment) => {
     e.opportunities.map(o => ({
       spaceId: e.nameID,
       opportunityId: o.nameID,
+      id: o.id,
     }))
   );
   return [...spaces, ...challenges, ...opportunities];
@@ -59,16 +63,21 @@ const getPendingApplications = (applicationsData: ApplicationForRoleResult[]) =>
       spaceId: a.spaceID,
       challengeId: a.challengeID,
       opportunityId: a.opportunityID,
+      id: a.id,
     })) || []
   );
 };
 
 const getPendingInvitations = (invitationsData: InvitationForRoleResult[]) => {
   return (
-    invitationsData.map<ContributionItem>(a => ({
+    invitationsData.map<InvitationItem>(a => ({
       spaceId: a.spaceID,
       challengeId: a.challengeID,
       opportunityId: a.opportunityID,
+      welcomeMessage: a.welcomeMessage || '',
+      createdBy: a.createdBy,
+      createdDate: a.createdDate,
+      id: a.id,
     })) || []
   );
 };

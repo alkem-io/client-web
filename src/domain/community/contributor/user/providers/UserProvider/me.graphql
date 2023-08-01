@@ -4,7 +4,7 @@ query me {
       ...UserDetails
       ...UserAgent
     }
-    applications {
+    applications(states: ["new"]) {
       id
       communityID
       displayName
@@ -13,7 +13,7 @@ query me {
       challengeID
       opportunityID
     }
-    invitations {
+    invitations(states: ["invited"]) {
       id
       spaceID
       challengeID

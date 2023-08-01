@@ -25493,24 +25493,6 @@ export type UserProfileQuery = {
   };
 };
 
-export type UserProfileApplicationsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserProfileApplicationsQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
-      id: string;
-      state: string;
-      displayName: string;
-      spaceID: string;
-      challengeID?: string | undefined;
-      opportunityID?: string | undefined;
-    }>;
-  };
-};
-
 export type UsersWithCredentialsQueryVariables = Exact<{
   input: UsersWithAuthorizationCredentialInput;
 }>;
@@ -25723,34 +25705,6 @@ export type InviteExternalUserMutationVariables = Exact<{
 export type InviteExternalUserMutation = {
   __typename?: 'Mutation';
   inviteExternalUserForCommunityMembership: { __typename?: 'InvitationExternal'; id: string };
-};
-
-export type PendingMembershipsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PendingMembershipsQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    invitations: Array<{
-      __typename?: 'InvitationForRoleResult';
-      id: string;
-      spaceID: string;
-      challengeID?: string | undefined;
-      opportunityID?: string | undefined;
-      welcomeMessage?: string | undefined;
-      createdBy: string;
-      createdDate: Date;
-      state: string;
-    }>;
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
-      id: string;
-      spaceID: string;
-      challengeID?: string | undefined;
-      opportunityID?: string | undefined;
-      state: string;
-    }>;
-  };
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
