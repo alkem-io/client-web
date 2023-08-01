@@ -19,6 +19,7 @@ export interface UserPermissions {
   canCreateOrganization: boolean;
   isPlatformAdmin: boolean; // has any GLOBAL admin privilege
   isAdmin: boolean; // has any admin privilege
+  canAccessGuidance: boolean;
 }
 
 export interface UserMetadata {
@@ -113,6 +114,7 @@ export const toUserMetadata = (
     canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
     isPlatformAdmin: myPrivileges.includes(AuthorizationPrivilege.PlatformAdmin),
     isAdmin: myPrivileges.includes(AuthorizationPrivilege.Admin),
+    canAccessGuidance: myPrivileges.includes(AuthorizationPrivilege.AccessInteractiveGuidance),
   };
 
   return {
