@@ -147,7 +147,7 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
   parentNameID: Scalars['NameID'];
-  /** The Post that was created. */
+  /** The Reference that was created. */
   reference: Reference;
   /** The user that triggered this Activity. */
   triggeredBy: User;
@@ -549,6 +549,7 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
+  BetaTester = 'BETA_TESTER',
   ChallengeAdmin = 'CHALLENGE_ADMIN',
   ChallengeHost = 'CHALLENGE_HOST',
   ChallengeLead = 'CHALLENGE_LEAD',
@@ -596,6 +597,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
