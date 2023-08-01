@@ -13,7 +13,7 @@ import { AdminSection } from '../layout/toplevel/constants';
 
 const GlobalBetaTesterAuthorizationPage: FC = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
-  const { role: credential = AuthorizationCredential.GlobalAdminSpaces } = useUrlParams();
+  const { role: credential = AuthorizationCredential.BetaTester } = useUrlParams();
 
   const [grant, { loading: addingMember }] = useAssignUserAsBetaTesterMutation({});
 
