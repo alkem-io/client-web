@@ -127,7 +127,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
 
   const creator = post?.createdBy;
-  const creatorAvatar = creator?.profile.visual?.uri;
+  const creatorAvatar = creator?.profile.avatar?.uri;
   const creatorName = creator?.profile.displayName;
   const createdDate = post?.createdDate.toString();
 

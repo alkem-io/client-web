@@ -18000,7 +18000,7 @@ export type SpacePostQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
-                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               tagsets?:
                                 | Array<{
                                     __typename?: 'Tagset';
@@ -18145,7 +18145,7 @@ export type ChallengePostQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{
                                       __typename?: 'Tagset';
@@ -18291,7 +18291,7 @@ export type OpportunityPostQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{
                                       __typename?: 'Tagset';
@@ -18421,7 +18421,7 @@ export type PostDashboardDataFragment = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       tagsets?:
                         | Array<{
                             __typename?: 'Tagset';
@@ -18531,7 +18531,7 @@ export type PostDashboardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
