@@ -9,6 +9,7 @@ import { useConfig } from '../../../../domain/platform/config/useConfig';
 import { useUserContext } from '../../../../domain/community/contributor/user';
 import 'react-chat-widget/lib/styles.css';
 import './styles.css';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 const ChatWidget = () => {
   const [newMessage, setNewMessage] = useState(null);
@@ -22,7 +23,8 @@ const ChatWidget = () => {
   const { isFeatureEnabled } = useConfig();
   const guidanceEnabled: boolean = isFeatureEnabled(FEATURE_GUIDANCE_ENGINE);
   const { user: currentUser } = useUserContext();
-  const enableWidget = currentUser?.permissions.canAccessInteractiveGuidance && guidanceEnabled;
+  const enableWidget =
+    currentUser?.hasPlatformPrivilege(AuthorizationPrivilege.AccessInteractiveGuidance) && guidanceEnabled;
 
   useEffect(() => {
     if (data && !loading) {
