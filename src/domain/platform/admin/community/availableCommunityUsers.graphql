@@ -1,11 +1,3 @@
-query SpaceAvailableLeadUsers($spaceId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
-  space(ID: $spaceId) {
-    community {
-      ...CommunityAvailableLeadUsers
-    }
-  }
-}
-
 query SpaceAvailableMemberUsers($spaceId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   space(ID: $spaceId) {
     community {
