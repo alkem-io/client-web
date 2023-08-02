@@ -18,8 +18,7 @@ import { AuthenticationProvider } from './core/auth/authentication/context/Authe
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
 import { SearchContextProvider } from './domain/platform/search/SearchContext';
-import 'react-chat-widget/lib/styles.css';
-import ChatWidget from './common/components/core/ChatWidget';
+import ChatWidget from './common/components/core/ChatWidget/ChatWidget';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {

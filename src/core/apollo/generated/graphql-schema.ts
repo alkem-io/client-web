@@ -855,20 +855,14 @@ export type ChatGuidanceInput = {
   question: Scalars['String'];
 };
 
-export type ChatGuidanceQueryResult = {
-  __typename?: 'ChatGuidanceQueryResult';
+export type ChatGuidanceResult = {
+  __typename?: 'ChatGuidanceResult';
   /** The answer to the question */
   answer: Scalars['String'];
   /** The original question */
   question: Scalars['String'];
   /** The sources used to answer the question */
   sources: Scalars['String'];
-};
-
-export type ChatGuidanceResult = {
-  __typename?: 'ChatGuidanceResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
 };
 
 export type Collaboration = {
@@ -1182,6 +1176,14 @@ export type ContributorRoles = {
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships */
   spaces: Array<RolesResultSpace>;
+};
+
+export type ContributorRolesApplicationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type ContributorRolesInvitationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type ConvertChallengeToSpaceInput = {
@@ -2088,9 +2090,9 @@ export type LookupQueryResultsWhiteboardTemplateArgs = {
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** The applications of the current authenticated user */
-  applications: Array<Application>;
+  applications: Array<ApplicationForRoleResult>;
   /** The invitations of the current authenticated user */
-  invitations: Array<Invitation>;
+  invitations: Array<InvitationForRoleResult>;
   /** The applications of the current authenticated user */
   spaceMemberships: Array<Space>;
   /** The current authenticated User;  null if not yet registered on the platform */
@@ -2331,7 +2333,7 @@ export type Mutation = {
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
-  ingest: ChatGuidanceResult;
+  ingest: Scalars['Boolean'];
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
@@ -2365,7 +2367,7 @@ export type Mutation = {
   /** Removes a User as a member of the specified Organization. */
   removeUserFromOrganization: Organization;
   /** Resets the interaction with the chat engine. */
-  resetChatGuidance: ChatGuidanceResult;
+  resetChatGuidance: Scalars['Boolean'];
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
   /** Sends a reply to a message from the specified Room. */
@@ -3442,7 +3444,7 @@ export type Query = {
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Ask the chat engine for guidance. */
-  askChatGuidanceQuestion: ChatGuidanceQueryResult;
+  askChatGuidanceQuestion: ChatGuidanceResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -4965,12 +4967,7 @@ export type AskChatGuidanceQuestionQueryVariables = Exact<{
 
 export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
-  askChatGuidanceQuestion: {
-    __typename?: 'ChatGuidanceQueryResult';
-    answer: string;
-    question: string;
-    sources: string;
-  };
+  askChatGuidanceQuestion: { __typename?: 'ChatGuidanceResult'; answer: string; question: string; sources: string };
 };
 
 export type MyPrivilegesFragment = {

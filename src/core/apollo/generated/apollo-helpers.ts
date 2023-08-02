@@ -630,20 +630,11 @@ export type ChallengeTemplateFieldPolicy = {
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ChatGuidanceQueryResultKeySpecifier = (
-  | 'answer'
-  | 'question'
-  | 'sources'
-  | ChatGuidanceQueryResultKeySpecifier
-)[];
-export type ChatGuidanceQueryResultFieldPolicy = {
+export type ChatGuidanceResultKeySpecifier = ('answer' | 'question' | 'sources' | ChatGuidanceResultKeySpecifier)[];
+export type ChatGuidanceResultFieldPolicy = {
   answer?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   sources?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ChatGuidanceResultKeySpecifier = ('answer' | ChatGuidanceResultKeySpecifier)[];
-export type ChatGuidanceResultFieldPolicy = {
-  answer?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CollaborationKeySpecifier = (
   | 'authorization'
@@ -2745,10 +2736,6 @@ export type StrictTypedTypePolicies = {
   ChallengeTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeTemplateKeySpecifier | (() => undefined | ChallengeTemplateKeySpecifier);
     fields?: ChallengeTemplateFieldPolicy;
-  };
-  ChatGuidanceQueryResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ChatGuidanceQueryResultKeySpecifier | (() => undefined | ChatGuidanceQueryResultKeySpecifier);
-    fields?: ChatGuidanceQueryResultFieldPolicy;
   };
   ChatGuidanceResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChatGuidanceResultKeySpecifier | (() => undefined | ChatGuidanceResultKeySpecifier);
