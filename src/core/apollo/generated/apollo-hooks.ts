@@ -1660,7 +1660,7 @@ export const PostDashboardFragmentDoc = gql`
       profile {
         id
         displayName
-        visual(type: BANNER) {
+        avatar: visual(type: AVATAR) {
           id
           uri
         }

@@ -147,7 +147,7 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
   parentNameID: Scalars['NameID'];
-  /** The Post that was created. */
+  /** The Reference that was created. */
   reference: Reference;
   /** The user that triggered this Activity. */
   triggeredBy: User;
@@ -1161,6 +1161,14 @@ export type ContributorRoles = {
   spaces: Array<RolesResultSpace>;
 };
 
+export type ContributorRolesApplicationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type ContributorRolesInvitationsArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type ConvertChallengeToSpaceInput = {
   /** The Challenge to be promoted to be a new Space. Note: the original Challenge will no longer exist after the conversion.  */
   challengeID: Scalars['UUID_NAMEID'];
@@ -2065,9 +2073,9 @@ export type LookupQueryResultsWhiteboardTemplateArgs = {
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** The applications of the current authenticated user */
-  applications: Array<Application>;
+  applications: Array<ApplicationForRoleResult>;
   /** The invitations of the current authenticated user */
-  invitations: Array<Invitation>;
+  invitations: Array<InvitationForRoleResult>;
   /** The applications of the current authenticated user */
   spaceMemberships: Array<Space>;
   /** The current authenticated User;  null if not yet registered on the platform */
@@ -17930,7 +17938,7 @@ export type SpacePostQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
-                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               tagsets?:
                                 | Array<{
                                     __typename?: 'Tagset';
@@ -18075,7 +18083,7 @@ export type ChallengePostQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{
                                       __typename?: 'Tagset';
@@ -18221,7 +18229,7 @@ export type OpportunityPostQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{
                                       __typename?: 'Tagset';
@@ -18351,7 +18359,7 @@ export type PostDashboardDataFragment = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       tagsets?:
                         | Array<{
                             __typename?: 'Tagset';
@@ -18461,7 +18469,7 @@ export type PostDashboardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
