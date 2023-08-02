@@ -10,6 +10,9 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { RoleType } from '../constants/RoleType';
 import { InvitationItem } from '../providers/UserProvider/InvitationItem';
+import { Stateful } from '../../../../shared/types/Stateful';
+
+export interface PendingApplication extends ContributionItem, Stateful {}
 
 export interface UserMetadata {
   user: User;
@@ -24,7 +27,7 @@ export interface UserMetadata {
   keywords: string[];
   skills: string[];
   contributions: ContributionItem[];
-  pendingApplications: ContributionItem[];
+  pendingApplications: PendingApplication[];
   pendingInvitations: InvitationItem[];
   organizationNameIDs: string[];
 }
@@ -59,11 +62,12 @@ const getContributions = (membershipData?: UserRolesDetailsFragment) => {
 
 const getPendingApplications = (applicationsData: ApplicationForRoleResult[]) => {
   return (
-    applicationsData.map<ContributionItem>(a => ({
+    applicationsData.map<PendingApplication>(a => ({
       spaceId: a.spaceID,
       challengeId: a.challengeID,
       opportunityId: a.opportunityID,
       id: a.id,
+      state: a.state,
     })) || []
   );
 };

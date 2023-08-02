@@ -131,7 +131,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       removeRelations: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       opportunityReadAccess: opportunityPrivileges?.includes(AuthorizationPrivilege.Read),
-      readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
+      readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
     };
   }, [opportunityPrivileges, communityPrivileges, user]);
 

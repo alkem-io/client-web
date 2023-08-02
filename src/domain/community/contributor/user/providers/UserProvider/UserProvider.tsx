@@ -72,7 +72,7 @@ const UserProvider: FC<{}> = ({ children }) => {
 
   const loadingMeAndParentQueries = loadingAuthentication || loadingMe;
 
-  const wrappedMe = useMemo(
+  const userMetadata = useMemo(
     () =>
       meData?.me
         ? toUserMetadata(
@@ -88,14 +88,14 @@ const UserProvider: FC<{}> = ({ children }) => {
 
   const providedValue = useMemo<UserContextValue>(
     () => ({
-      user: wrappedMe,
+      user: userMetadata,
       userSpaceRoles: rolesData?.rolesUser.spaces,
       loading,
       loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
     }),
-    [wrappedMe, rolesData, loading, loadingMeAndParentQueries, verified, isAuthenticated]
+    [userMetadata, rolesData, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );
 
   if (error) return <ErrorPage error={error} />;

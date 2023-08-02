@@ -549,7 +549,6 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
-  BetaTester = 'BETA_TESTER',
   ChallengeAdmin = 'CHALLENGE_ADMIN',
   ChallengeHost = 'CHALLENGE_HOST',
   ChallengeLead = 'CHALLENGE_LEAD',
@@ -597,7 +596,6 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
-  AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
@@ -848,27 +846,6 @@ export type ChallengeTemplate = {
   feedback?: Maybe<Array<FeedbackTemplate>>;
   /** Challenge template name. */
   name: Scalars['String'];
-};
-
-export type ChatGuidanceInput = {
-  /** The question that is being asked. */
-  question: Scalars['String'];
-};
-
-export type ChatGuidanceQueryResult = {
-  __typename?: 'ChatGuidanceQueryResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources: Scalars['String'];
-};
-
-export type ChatGuidanceResult = {
-  __typename?: 'ChatGuidanceResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
 };
 
 export type Collaboration = {
@@ -2338,8 +2315,6 @@ export type Mutation = {
   eventOnWhiteboardCheckout: WhiteboardCheckout;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Resets the interaction with the chat engine. */
-  ingest: ChatGuidanceResult;
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
@@ -2372,8 +2347,6 @@ export type Mutation = {
   removeUserFromGroup: UserGroup;
   /** Removes a User as a member of the specified Organization. */
   removeUserFromOrganization: Organization;
-  /** Resets the interaction with the chat engine. */
-  resetChatGuidance: ChatGuidanceResult;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
   /** Sends a reply to a message from the specified Room. */
@@ -3449,8 +3422,6 @@ export type Query = {
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
-  /** Ask the chat engine for guidance. */
-  askChatGuidanceQuestion: ChatGuidanceQueryResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -3495,10 +3466,6 @@ export type QueryActivityLogOnCollaborationArgs = {
 
 export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
-};
-
-export type QueryAskChatGuidanceQuestionArgs = {
-  chatData: ChatGuidanceInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -25305,26 +25272,6 @@ export type UserQuery = {
           }>
         | undefined;
     };
-  };
-};
-
-export type UserApplicationsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserApplicationsQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
-      id: string;
-      state: string;
-      communityID: string;
-      displayName: string;
-      createdDate: Date;
-      spaceID: string;
-      challengeID?: string | undefined;
-      opportunityID?: string | undefined;
-    }>;
   };
 };
 
