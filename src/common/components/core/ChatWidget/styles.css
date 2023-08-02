@@ -1,0 +1,17 @@
+.rcw-launcher {
+  background-color: #065f6b;
+}
+
+.rcw-conversation-container .rcw-header {
+  background-color: #065f6b;
+}
+
+.rcw-conversation-container .rcw-close-button {
+  background-color: #065f6b;
+}
+
+.rcw-client > .rcw-message-text {
+  background-color: #065f6b;
+  color: white;
+}
+
