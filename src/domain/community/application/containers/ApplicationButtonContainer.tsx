@@ -5,7 +5,6 @@ import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
-  useUserApplicationsQuery,
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -37,7 +36,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   children,
 }) => {
   const { isAuthenticated } = useAuthenticationContext();
-  const { user } = useUserContext();
+  const { user, loadingMe: membershipLoading } = useUserContext();
   const userId = user?.user?.id ?? '';
 
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
@@ -45,10 +44,6 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const { spaceId, spaceNameId, profile: spaceProfile, refetchSpace } = useSpace();
 
   const { communityId, myMembershipStatus } = useCommunityContext();
-  const { data: memberShip, loading: membershipLoading } = useUserApplicationsQuery({
-    variables: { input: userId },
-    skip: !userId,
-  });
 
   const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
     variables: { spaceNameId, communityId },
@@ -61,14 +56,14 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   });
 
   // todo: refactor logic or use entity privileges
-  const userApplication = memberShip?.rolesUser.applications?.find(
-    x => x.spaceID === spaceId && (challengeId ? x.challengeID === challengeId : true) && !x.opportunityID
+  const userApplication = user?.pendingApplications?.find(
+    x => x.spaceId === spaceId && (challengeId ? x.challengeId === challengeId : true) && !x.opportunityId
   );
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = memberShip?.rolesUser.applications?.find(
-    x => x.spaceID === spaceId && !x.challengeID && !x.opportunityID && challengeId
+  const parentApplication = user?.pendingApplications?.find(
+    x => x.spaceId === spaceId && !x.challengeId && !x.opportunityId && challengeId
   );
 
   const isMember = myMembershipStatus === CommunityMembershipStatus.Member;

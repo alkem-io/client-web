@@ -1,7 +1,11 @@
 import { Grid, Box } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Preference, UserPreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  Preference,
+  UserPreferenceType,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../../core/container/view';
 import { useUserContext } from '../hooks/useUserContext';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
@@ -30,14 +34,14 @@ export interface UserNotificationsPageViewProps
 const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entities, actions, state }) => {
   const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
-  const isAnyGlobalAdmin = userMetadata?.permissions.isPlatformAdmin;
+  const isPlatformAdmin = userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
 
   const { preferences } = entities;
   const { updatePreference } = actions;
   const { loading } = state;
 
   const generalGroup = preferences.filter(x => x.definition.group === 'Notification');
-  const adminGroup = isAnyGlobalAdmin ? preferences.filter(x => x.definition.group === 'NotificationGlobalAdmin') : [];
+  const adminGroup = isPlatformAdmin ? preferences.filter(x => x.definition.group === 'NotificationGlobalAdmin') : [];
   // TODO hide when a user doesn't administer any community
   const communityGroup = preferences.filter(x => x.definition.group === 'NotificationCommunityAdmin');
   const communicationGroup = preferences.filter(x => x.definition.group === 'NotificationCommunication');

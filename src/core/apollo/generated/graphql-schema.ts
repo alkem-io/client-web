@@ -24936,18 +24936,6 @@ export type UserRolesDetailsFragment = {
     roles: Array<string>;
     userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
   }>;
-  applications?:
-    | Array<{
-        __typename?: 'ApplicationForRoleResult';
-        id: string;
-        communityID: string;
-        displayName: string;
-        state: string;
-        spaceID: string;
-        challengeID?: string | undefined;
-        opportunityID?: string | undefined;
-      }>
-    | undefined;
 };
 
 export type AssignUserToGroupMutationVariables = Exact<{
@@ -25281,18 +25269,6 @@ export type RolesUserQuery = {
       roles: Array<string>;
       userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          communityID: string;
-          displayName: string;
-          state: string;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
   };
 };
 
@@ -25358,30 +25334,6 @@ export type UserQuery = {
           }>
         | undefined;
     };
-  };
-};
-
-export type UserApplicationsQueryVariables = Exact<{
-  input: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type UserApplicationsQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          state: string;
-          communityID: string;
-          displayName: string;
-          createdDate: Date;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
   };
 };
 
@@ -25541,45 +25493,11 @@ export type UserProfileQuery = {
       roles: Array<string>;
       userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          communityID: string;
-          displayName: string;
-          state: string;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
   };
   platform: {
     __typename?: 'Platform';
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  };
-};
-
-export type UserProfileApplicationsQueryVariables = Exact<{
-  input: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type UserProfileApplicationsQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          state: string;
-          displayName: string;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
       | undefined;
   };
 };
@@ -25693,6 +25611,28 @@ export type MeQuery = {
           };
         }
       | undefined;
+    applications: Array<{
+      __typename?: 'ApplicationForRoleResult';
+      id: string;
+      communityID: string;
+      displayName: string;
+      state: string;
+      spaceID: string;
+      challengeID?: string | undefined;
+      opportunityID?: string | undefined;
+    }>;
+    invitations: Array<{
+      __typename?: 'InvitationForRoleResult';
+      id: string;
+      spaceID: string;
+      challengeID?: string | undefined;
+      opportunityID?: string | undefined;
+      welcomeMessage?: string | undefined;
+      createdBy: string;
+      createdDate: Date;
+      state: string;
+    }>;
+    spaceMemberships: Array<{ __typename?: 'Space'; id: string; nameID: string }>;
   };
 };
 
@@ -25774,40 +25714,6 @@ export type InviteExternalUserMutationVariables = Exact<{
 export type InviteExternalUserMutation = {
   __typename?: 'Mutation';
   inviteExternalUserForCommunityMembership: { __typename?: 'InvitationExternal'; id: string };
-};
-
-export type PendingMembershipsQueryVariables = Exact<{
-  userId: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type PendingMembershipsQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    invitations?:
-      | Array<{
-          __typename?: 'InvitationForRoleResult';
-          id: string;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-          welcomeMessage?: string | undefined;
-          createdBy: string;
-          createdDate: Date;
-          state: string;
-        }>
-      | undefined;
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          spaceID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-          state: string;
-        }>
-      | undefined;
-  };
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
