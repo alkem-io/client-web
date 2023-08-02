@@ -7,7 +7,11 @@ import {
   useRolesUserQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '../../../../../../core/pages/Errors/ErrorPage';
-import { User } from '../../../../../../core/apollo/generated/graphql-schema';
+import {
+  ApplicationForRoleResult,
+  InvitationForRoleResult,
+  User,
+} from '../../../../../../core/apollo/generated/graphql-schema';
 import { UserRolesInEntity } from './UserRolesInEntity';
 import { useAuthenticationContext } from '../../../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
@@ -68,22 +72,30 @@ const UserProvider: FC<{}> = ({ children }) => {
 
   const loadingMeAndParentQueries = loadingAuthentication || loadingMe;
 
-  const wrappedMe = useMemo(
+  const userMetadata = useMemo(
     () =>
-      meData?.me ? toUserMetadata(meData.me.user as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined,
+      meData?.me
+        ? toUserMetadata(
+            meData.me.user as User,
+            meData.me.applications as ApplicationForRoleResult[],
+            meData.me.invitations as InvitationForRoleResult[],
+            rolesData?.rolesUser,
+            platformLevelAuthorization
+          )
+        : undefined,
     [meData, rolesData, platformLevelAuthorization]
   );
 
   const providedValue = useMemo<UserContextValue>(
     () => ({
-      user: wrappedMe,
+      user: userMetadata,
       userSpaceRoles: rolesData?.rolesUser.spaces,
       loading,
       loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
     }),
-    [wrappedMe, rolesData, loading, loadingMeAndParentQueries, verified, isAuthenticated]
+    [userMetadata, rolesData, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );
 
   if (error) return <ErrorPage error={error} />;
