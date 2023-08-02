@@ -82,52 +82,6 @@ export const Header: FC<HeaderProps> = ({
   );
 };
 
-const useSubHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
-  header: {
-    color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutralMedium.main} !important`,
-  },
-}));
-
-export const SubHeader: FC<HeaderProps> = ({ text, svg, className, children, classes = {} }) => {
-  const styles = useSubHeaderStyles(classes);
-
-  return (
-    <>
-      {(text || svg) && (
-        <WrapperTypography
-          as="h3"
-          variant="h3"
-          color="inherit"
-          weight="regular"
-          className={clsx(styles.header, className)}
-        >
-          {text || svg}
-        </WrapperTypography>
-      )}
-      {children}
-    </>
-  );
-};
-
-const useBodyStyles = makeStyles(() => ({
-  bodyWrap: {},
-}));
-
-export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes }) => {
-  const styles = useBodyStyles(classes);
-
-  return (
-    <div className={clsx(styles.bodyWrap, className)}>
-      {(text || svg) && (
-        <WrapperTypography as="p" variant="body1" color="neutral" weight="medium">
-          {text || svg}
-        </WrapperTypography>
-      )}
-      {children}
-    </div>
-  );
-};
-
 const useContentStyles = makeStyles(theme => ({
   gutters: {
     padding: theme.spacing(4),
