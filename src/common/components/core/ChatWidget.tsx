@@ -25,7 +25,6 @@ const ChatWidget = () => {
   useEffect(() => {
     if (data && !loading) {
       addResponseMessage(`Answer: ${data.askChatGuidanceQuestion.answer}`);
-      addResponseMessage(`Sources: ${data.askChatGuidanceQuestion.sources}`);
 
       const regex = /metadata={'(\w+)': '([^']*)('})/g;
       let match;
