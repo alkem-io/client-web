@@ -13,7 +13,7 @@ import ActivityDescription from '../../shared/components/ActivityDescription/Act
 import { Actions } from '../../../core/ui/actions/Actions';
 import { Identifiable } from '../../shared/types/Identifiable';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
+import { refetchMeQuery, useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
 import { buildJourneyUrl } from '../../../common/utils/urlBuilders';
@@ -61,19 +61,20 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
     });
   };
 
-  const { invitations, applications, refetchPendingMemberships } = usePendingMemberships();
+  const { invitations, applications } = usePendingMemberships();
 
   const currentInvitation =
     openDialog?.type === DialogType.InvitationView
       ? invitations?.find(invitation => invitation.id === openDialog.invitationId)
       : undefined;
 
-  const [invitationStateEventMutation] = useInvitationStateEventMutation();
+  const [invitationStateEventMutation] = useInvitationStateEventMutation({
+    refetchQueries: [refetchMeQuery()],
+  });
 
   const [changeInvitationState, isChangingInvitationState] = useLoadingState(
     async (...args: Parameters<typeof invitationStateEventMutation>) => {
       await invitationStateEventMutation(...args);
-      await refetchPendingMemberships();
       setOpenDialog({ type: DialogType.PendingMembershipsList });
     }
   );
@@ -154,9 +155,9 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                           banner={hydratedApplication.journeyCardBanner}
                           journeyUri={
                             buildJourneyUrl({
-                              spaceNameId: application.spaceID,
-                              challengeNameId: application.challengeID,
-                              opportunityNameId: application.opportunityID,
+                              spaceNameId: application.spaceId,
+                              challengeNameId: application.challengeId,
+                              opportunityNameId: application.opportunityId,
                             }) ?? ''
                           }
                         >

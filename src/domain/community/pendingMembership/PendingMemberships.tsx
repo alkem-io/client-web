@@ -2,14 +2,14 @@ import { ReactNode, useMemo } from 'react';
 import {
   usePendingMembershipsChallengeQuery,
   usePendingMembershipsOpportunityQuery,
-  usePendingMembershipsQuery,
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName, getJourneyTypeName } from '../../challenge/JourneyTypeName';
-import { PendingMembershipsQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useUserContext } from '../contributor/user';
 import { Visual } from '../../common/visual/Visual';
+import { ContributionItem } from '../contributor/contribution';
+import { InvitationItem } from '../contributor/user/providers/UserProvider/InvitationItem';
 
 interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
@@ -31,43 +31,16 @@ interface ApplicationWithMeta extends JourneyDetails {
 }
 
 interface UsePendingMembershipsProvided {
-  applications: PendingMembershipsQuery['rolesUser']['applications'];
-  invitations: PendingMembershipsQuery['rolesUser']['invitations'];
-  refetchPendingMemberships: () => void;
+  applications: ContributionItem[] | undefined;
+  invitations: InvitationItem[] | undefined;
 }
-
-const VISIBLE_STATES = ['invited', 'new'];
 
 export const usePendingMemberships = (): UsePendingMembershipsProvided => {
   const { user } = useUserContext();
 
-  const { data, refetch: refetchPendingMemberships } = usePendingMembershipsQuery({
-    variables: {
-      userId: user?.user.id!,
-    },
-    skip: !user?.user.id,
-  });
-
-  const invitations = useMemo(
-    () =>
-      data?.rolesUser.invitations?.filter(({ state }) => {
-        return VISIBLE_STATES.includes(state);
-      }),
-    [data]
-  );
-
-  const applications = useMemo(
-    () =>
-      data?.rolesUser.applications?.filter(({ state }) => {
-        return VISIBLE_STATES.includes(state);
-      }),
-    [data]
-  );
-
   return {
-    invitations,
-    applications,
-    refetchPendingMemberships,
+    invitations: user?.pendingInvitations,
+    applications: user?.pendingApplications,
   };
 };
 
@@ -76,7 +49,7 @@ interface InvitationHydratorProvided {
 }
 
 interface InvitationHydratorProps {
-  invitation: NonNullable<PendingMembershipsQuery['rolesUser']['invitations']>[number];
+  invitation: InvitationItem;
   withJourneyDetails?: boolean;
   children: (provided: InvitationHydratorProvided) => ReactNode;
 }
@@ -84,28 +57,28 @@ interface InvitationHydratorProps {
 export const InvitationHydrator = ({ invitation, withJourneyDetails = false, children }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.spaceID,
+      spaceId: invitation.spaceId,
       fetchDetails: withJourneyDetails,
     },
-    skip: Boolean(invitation.challengeID || invitation.opportunityID),
+    skip: Boolean(invitation.challengeId || invitation.opportunityId),
   });
 
   const { data: challengeData } = usePendingMembershipsChallengeQuery({
     variables: {
-      spaceId: invitation.spaceID,
-      challengeId: invitation.challengeID!,
+      spaceId: invitation.spaceId,
+      challengeId: invitation.challengeId!,
       fetchDetails: withJourneyDetails,
     },
-    skip: !invitation.challengeID,
+    skip: !invitation.challengeId,
   });
 
   const { data: opportunityData } = usePendingMembershipsOpportunityQuery({
     variables: {
-      spaceId: invitation.spaceID,
-      opportunityId: invitation.opportunityID!,
+      spaceId: invitation.spaceId,
+      opportunityId: invitation.opportunityId!,
       fetchDetails: withJourneyDetails,
     },
-    skip: !invitation.opportunityID,
+    skip: !invitation.opportunityId,
   });
 
   const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
@@ -129,8 +102,8 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       userDisplayName: createdBy.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
       journeyTypeName: getJourneyTypeName({
-        challengeNameId: invitation.challengeID,
-        opportunityNameId: invitation.opportunityID,
+        challengeNameId: invitation.challengeId,
+        opportunityNameId: invitation.opportunityId,
       }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
@@ -146,35 +119,35 @@ interface ApplicationHydratorProvided {
 }
 
 interface ApplicationHydratorProps {
-  application: NonNullable<PendingMembershipsQuery['rolesUser']['applications']>[number];
+  application: ContributionItem;
   children: (provided: ApplicationHydratorProvided) => ReactNode;
 }
 
 export const ApplicationHydrator = ({ application, children }: ApplicationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: application.spaceID,
+      spaceId: application.spaceId,
       fetchDetails: true,
     },
-    skip: Boolean(application.challengeID || application.opportunityID),
+    skip: Boolean(application.challengeId || application.opportunityId),
   });
 
   const { data: challengeData } = usePendingMembershipsChallengeQuery({
     variables: {
-      spaceId: application.spaceID,
-      challengeId: application.challengeID!,
+      spaceId: application.spaceId,
+      challengeId: application.challengeId!,
       fetchDetails: true,
     },
-    skip: !application.challengeID,
+    skip: !application.challengeId,
   });
 
   const { data: opportunityData } = usePendingMembershipsOpportunityQuery({
     variables: {
-      spaceId: application.spaceID,
-      opportunityId: application.opportunityID!,
+      spaceId: application.spaceId,
+      opportunityId: application.opportunityId!,
       fetchDetails: true,
     },
-    skip: !application.opportunityID,
+    skip: !application.opportunityId,
   });
 
   const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
@@ -187,8 +160,8 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
       id: application.id,
       journeyDisplayName: journey.profile.displayName,
       journeyTypeName: getJourneyTypeName({
-        challengeNameId: application.challengeID,
-        opportunityNameId: application.opportunityID,
+        challengeNameId: application.challengeId,
+        opportunityNameId: application.opportunityId,
       }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,

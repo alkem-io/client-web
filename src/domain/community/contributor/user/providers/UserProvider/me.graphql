@@ -4,5 +4,28 @@ query me {
       ...UserDetails
       ...UserAgent
     }
+    applications(states: ["new"]) {
+      id
+      communityID
+      displayName
+      state
+      spaceID
+      challengeID
+      opportunityID
+    }
+    invitations(states: ["invited"]) {
+      id
+      spaceID
+      challengeID
+      opportunityID
+      welcomeMessage
+      createdBy
+      createdDate
+      state
+    }
+    spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+      id
+      nameID
+    }
   }
 }

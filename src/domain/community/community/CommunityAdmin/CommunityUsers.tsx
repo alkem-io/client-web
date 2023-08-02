@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, IconButton, Link, TextField, Tooltip } from '@mui/material';
+import { Box, Button, IconButton, Link, TextField } from '@mui/material';
 import {
   GridColDef,
   GridFilterModel,
@@ -17,7 +17,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { useUserContext } from '../../contributor/user';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
@@ -71,7 +70,6 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
   communityPolicy,
   loading,
 }) => {
-  const { user: currentUser } = useUserContext();
   const { t } = useTranslation();
   const { canAddLeadUser, canRemoveLeadUser } = useCommunityPolicyChecker(communityPolicy, users);
 
@@ -161,23 +159,11 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
               {
                 name: 'edit',
                 render: ({ row }: { row: CommunityMemberUserFragmentWithRoles }) => {
-                  if (currentUser && row.id !== currentUser?.user.id) {
-                    return (
-                      <IconButton onClick={() => setEditingUser(row)}>
-                        <EditIcon color="primary" />
-                      </IconButton>
-                    );
-                  } else {
-                    return (
-                      <Tooltip title={t('community.unauthorizedPermissionsChange')}>
-                        <Box>
-                          <IconButton disabled>
-                            <EditIcon color="disabled" />
-                          </IconButton>
-                        </Box>
-                      </Tooltip>
-                    );
-                  }
+                  return (
+                    <IconButton onClick={() => setEditingUser(row)}>
+                      <EditIcon color="primary" />
+                    </IconButton>
+                  );
                 },
               },
             ]}
