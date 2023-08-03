@@ -33,17 +33,17 @@ export interface ApmCustomContext {
   window?: {
     width: number;
     height: number;
-  }
+  };
 }
 
 export const useApm = (): ApmBase | undefined => {
   const userObject = useUserObject();
   const customContext = useCustomContext();
-  const { apm: apmConfig, platform: platformConfig } = useConfig();
+  const { /*apm: apmConfig,*/ platform: platformConfig } = useConfig();
   const [apm, setApm] = useState<ApmBase | undefined>();
 
   const rumEnabled = true; // apmConfig?.rumEnabled ?? false;
-  const endpoint = 'https://sandbox-apm.alkem.io';// apmConfig?.endpoint;
+  const endpoint = 'https://sandbox-apm.alkem.io'; // apmConfig?.endpoint;
   const environment = platformConfig?.environment;
 
   useEffect(() => {
@@ -142,13 +142,22 @@ const useCustomContext = () => {
     context.window = getWindowSize();
 
     return context;
-  }, [userGeoData, userGeoLoading, userGeoError, userLoading, isAuthenticated, user?.email, getWindowSize, getScreenInfo]);
+  }, [
+    userGeoData,
+    userGeoLoading,
+    userGeoError,
+    userLoading,
+    isAuthenticated,
+    user?.email,
+    getWindowSize,
+    getScreenInfo,
+  ]);
 };
 
 const getWindowSize = () => {
   const body = document.getElementsByTagName('body')[0];
   const width = window.innerWidth || document.documentElement.clientWidth || body.clientWidth;
-  const height = window.innerHeight|| document.documentElement.clientHeight|| body.clientHeight;
+  const height = window.innerHeight || document.documentElement.clientHeight || body.clientHeight;
 
   return { width, height };
 };
