@@ -29,16 +29,23 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const { spaceNameId, opportunityNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
-    useCallouts({
-      spaceNameId,
-      opportunityNameId,
-      displayLocations: [
-        CalloutDisplayLocation.HomeTop,
-        CalloutDisplayLocation.HomeLeft,
-        CalloutDisplayLocation.HomeRight,
-      ],
-    });
+  const {
+    groupedCallouts,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+    canCreateCallout,
+  } = useCallouts({
+    spaceNameId,
+    opportunityNameId,
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
+  });
 
   const { t } = useTranslation();
 
@@ -102,6 +109,34 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />
                 )
+              }
+              childrenLeft={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+                  spaceId={spaceNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="opportunity"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  displayLocation={CalloutDisplayLocation.HomeLeft}
+                />
+              }
+              childrenRight={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeRight]}
+                  spaceId={spaceNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="opportunity"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  displayLocation={CalloutDisplayLocation.HomeRight}
+                />
               }
             />
             <CommunityUpdatesDialog

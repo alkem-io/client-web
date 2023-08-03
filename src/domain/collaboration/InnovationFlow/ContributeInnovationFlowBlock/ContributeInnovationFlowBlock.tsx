@@ -19,7 +19,7 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
   const { t } = useTranslation();
 
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-  const journeyTypeName = getJourneyTypeName(challengeNameId, opportunityNameId);
+  const journeyTypeName = getJourneyTypeName({ challengeNameId, opportunityNameId });
 
   const { data, loading } = useInnovationFlowBlockQuery({
     variables: {

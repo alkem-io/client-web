@@ -2,41 +2,39 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
-import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
-import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
+import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
+import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityCardCommentCreatedViewProps extends ActivityViewProps {
+export interface ActivityCalloutLinkCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
-  card: NameableEntity;
-  description: string;
+  linkName: string;
+  linkDescription: string;
 }
 
-export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewProps> = ({
+export const ActivityCalloutLinkCreatedView: FC<ActivityCalloutLinkCreatedViewProps> = ({
   author,
   loading,
   createdDate,
   journeyTypeName,
   journeyLocation,
   journeyDisplayName,
-  card,
   callout,
-  description,
+  linkName,
+  linkDescription,
 }) => {
   const { t } = useTranslation();
 
-  const comment = replaceQuotesInOldDescription(description);
-  const translatedDescription = t('components.activity-log-view.activity-description.post-comment-created', {
-    postDisplayName: card.profile.displayName,
-    comment,
+  const description = t('components.activity-log-view.activity-description.callout-link-created', {
+    linkName: linkName,
+    linkDescription: linkDescription,
     interpolation: {
       escapeValue: false,
     },
   });
 
-  const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
+  const url = buildCalloutUrl(callout.nameID, journeyLocation);
 
   return (
     <ActivityBaseView
@@ -44,7 +42,7 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
       loading={loading}
       title={
         <ActivityDescriptionByType
-          activityType="post-comment-created"
+          activityType="callout-link-created"
           {...{
             author,
             createdDate,
@@ -52,7 +50,7 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
             journeyLocation,
             journeyDisplayName,
             values: {
-              postDisplayName: card.profile.displayName,
+              calloutDisplayName: callout.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}
@@ -60,7 +58,7 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
       }
       url={url}
     >
-      <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
+      <OneLineMarkdown>{description}</OneLineMarkdown>
     </ActivityBaseView>
   );
 };

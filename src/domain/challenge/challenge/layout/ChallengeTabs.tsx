@@ -29,6 +29,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
         section: EntityPageSection.Opportunities,
         icon: <OpportunityIcon />,
       }}
+      hideAbout
     />
   );
 };

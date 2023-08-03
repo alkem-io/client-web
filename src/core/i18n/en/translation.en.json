@@ -1,4 +1,8 @@
 {
+  "chatbot": {
+    "title": "Alkemio Helpdesk",
+    "subtitle": "Ask your questions here."
+  },
   "notifications": {
     "releaseUpdates": {
       "icon": "🎉",
@@ -770,6 +774,9 @@
     "journeyPageBannerCard": {
       "parentJourney": "Part of: <journeyicon /> {{journey}}"
     },
+    "journeyMetrics": {
+      "title": "{{journey}} statistics"
+    },
     "dashboardNavigation": {
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
@@ -885,8 +892,10 @@
         "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.opportunity)",
         "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{postDisplayName}}'",
         "post-created": "{{time}} '<userlink>{{user}}</userlink>' added a Post to '{{calloutDisplayName}}'",
+        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' added a Link to '{{calloutDisplayName}}'",
         "update-sent": "{{time}} '<userlink>{{user}}</userlink>' shared a new $t(common.update)",
-        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'"
+        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'",
+        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' added a new calendar event '{{eventDisplayName}}'"
       },
       "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
       "activity-description": {
@@ -897,8 +906,10 @@
         "opportunity-created": "{{displayName}}",
         "post-comment-created": "{{comment}}",
         "post-created": "{{postDisplayName}} - {{postDescription}}",
+        "callout-link-created": "{{linkName}} - {{linkDescription}}",
         "update-sent": "{{update}}",
-        "whiteboard-created": "{{displayName}}"
+        "whiteboard-created": "{{displayName}}",
+        "calendar-event-created": "{{eventDescription}}"
       }
     },
     "lifecycle": {
@@ -1829,7 +1840,6 @@
           "hostTooltip": "The host is the organization responsible for the creation of the Space.",
           "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
           "leadingOrganizations": "Leading Organizations",
-          "activity": "Space statistics",
           "community": "Community"
         },
         "challenges": {
@@ -1854,10 +1864,6 @@
       },
       "sections": {
         "dashboard": {
-          "statistics": {
-            "title": "Challenge statistics",
-            "help-text": "Challenge statistics"
-          },
           "projects": {
             "title": "Projects",
             "help-text": "Projects related to this challenge"
@@ -1872,10 +1878,6 @@
       "title": "Opportunity",
       "sections": {
         "dashboard": {
-          "statistics": {
-            "title": "Opportunity statistics",
-            "help-text": "Opportunity statistics"
-          },
           "projects": {
             "title": "Projects",
             "help-text": "Projects related to this opportunity"
@@ -2153,9 +2155,10 @@
       "generic": "An error occurred",
       "generic-with-code": "An error occurred with code {{code}}",
       "ENTITY_NOT_FOUND": "Entity not found",
+      "COMMUNITY_MEMBERSHIP": "Community membership error: {{message}}",
       "FORMAT_NOT_SUPPORTED": "Format not supported",
-      "BAD_USER_INPUT": "Bad user input",
-      "NOT_SUPPORTED": "Not supported",
+      "BAD_USER_INPUT": "Bad user input: {{message}}",
+      "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}"
     }
   },

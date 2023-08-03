@@ -4,9 +4,9 @@ import {
   AssociatedOrganizationDetailsFragment,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
+  Reference,
   SpaceVisibility,
   SpaceWelcomeBlockContributorProfileFragment,
-  Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import {
   buildCalloutUrl,
@@ -32,8 +32,7 @@ import DashboardCalendarSection from '../../../shared/components/DashboardSectio
 import { Caption } from '../../../../core/ui/typography/components';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { Button, ButtonProps, IconButton, Theme } from '@mui/material';
-import { ButtonTypeMap } from '@mui/material/Button/Button';
+import { IconButton, Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
@@ -48,6 +47,7 @@ import DashboardMemberIcon from '../../../community/membership/DashboardMemberIc
 import { DashboardNavigationItem } from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation from '../SpaceDashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -88,13 +88,6 @@ interface SpaceDashboardViewProps<ChildEntity extends Identifiable> extends Part
   childrenRight?: ReactNode;
   loading: boolean;
 }
-
-const FullWidthButton = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
-  sx,
-  ...props
-}: ButtonProps<D, P>) => {
-  return <Button {...props} sx={{ ...sx, width: '100%' }} />;
-};
 
 const SpaceDashboardView = <ChildEntity extends Identifiable>({
   vision = '',

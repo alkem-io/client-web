@@ -2,42 +2,35 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { buildEventUrl } from '../../../../../common/utils/urlBuilders';
 
-export interface ActivityCardCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
-  card: NameableEntity;
-  postType: string;
-  postDescription: string;
+export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps {
+  calendarEvent: NameableEntity;
+  calendarEventDescription: string;
 }
 
-export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = ({
+export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedViewProps> = ({
   author,
   loading,
   createdDate,
   journeyTypeName,
   journeyLocation,
   journeyDisplayName,
-  callout,
-  card,
-  postType,
-  postDescription,
+  calendarEvent,
+  calendarEventDescription,
 }) => {
   const { t } = useTranslation();
 
-  const description = t('components.activity-log-view.activity-description.post-created', {
-    postDisplayName: card.profile.displayName,
-    postType: postType,
-    postDescription: postDescription,
+  const description = t('components.activity-log-view.activity-description.calendar-event-created', {
+    eventDisplayName: calendarEvent.profile.displayName,
+    eventDescription: calendarEventDescription,
     interpolation: {
       escapeValue: false,
     },
   });
-
-  const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
 
   return (
     <ActivityBaseView
@@ -45,7 +38,7 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = ({
       loading={loading}
       title={
         <ActivityDescriptionByType
-          activityType="post-created"
+          activityType="calendar-event-created"
           {...{
             author,
             createdDate,
@@ -53,13 +46,13 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = ({
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              eventDisplayName: calendarEvent.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }
-      url={url}
+      url={buildEventUrl(calendarEvent.nameID, journeyLocation)}
     >
       <OneLineMarkdown>{description}</OneLineMarkdown>
     </ActivityBaseView>

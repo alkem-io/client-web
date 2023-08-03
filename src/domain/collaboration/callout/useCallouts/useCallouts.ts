@@ -24,6 +24,7 @@ import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import { Tagset } from '../../../common/profile/Profile';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
+import { getJourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 interface CalloutChildTypePropName {
   [CalloutType.PostCollection]: 'posts';
@@ -111,17 +112,15 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
  * If you need Callouts without a group, don't specify displayLocations at all.
  */
 const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
-  const includeSpace = !params.challengeNameId && !params.opportunityNameId;
-  const includeChallenge = !!params.challengeNameId;
-  const includeOpportunity = !!params.opportunityNameId;
+  const journeyTypeName = getJourneyTypeName(params);
 
   const variables = {
     spaceNameId: params.spaceNameId!,
     challengeNameId: params.challengeNameId,
     opportunityNameId: params.opportunityNameId,
-    includeSpace,
-    includeChallenge,
-    includeOpportunity,
+    includeSpace: journeyTypeName === 'space',
+    includeChallenge: journeyTypeName === 'challenge',
+    includeOpportunity: journeyTypeName === 'opportunity',
     displayLocations: params.displayLocations,
   };
 

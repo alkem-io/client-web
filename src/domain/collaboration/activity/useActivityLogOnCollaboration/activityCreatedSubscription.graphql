@@ -45,10 +45,13 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
     ...ActivityLogCalloutPublished
   }
   ... on ActivityLogEntryCalloutPostCreated {
-    ...ActivityLogCalloutCardCreated
+    ...ActivityLogCalloutPostCreated
+  }
+  ... on ActivityLogEntryCalloutLinkCreated {
+    ...ActivityLogCalloutLinkCreated
   }
   ... on ActivityLogEntryCalloutPostComment {
-    ...ActivityLogCalloutCardComment
+    ...ActivityLogCalloutPostComment
   }
   ... on ActivityLogEntryCalloutWhiteboardCreated {
     ...ActivityLogCalloutWhiteboardCreated
@@ -64,5 +67,8 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   }
   ... on ActivityLogEntryUpdateSent {
     ...ActivityLogUpdateSent
+  }
+  ... on ActivityLogEntryCalendarEventCreated {
+    ...ActivityLogCalendarEventCreated
   }
 }

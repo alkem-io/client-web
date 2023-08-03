@@ -72,7 +72,7 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
     },
   });
 
-  const whiteboard = whiteboardWithValueData?.whiteboard;
+  const whiteboard = whiteboardWithValueData?.lookup.whiteboard;
 
   useEffect(() => {
     if (whiteboard) {
@@ -82,7 +82,7 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
 
   const skipWhiteboardSubscription = !whiteboardId || whiteboard?.checkout?.lockedBy === userId;
 
-  useSubscribeToWhiteboard(whiteboardWithValueData, data => data?.whiteboard, subscribeToWhiteboard, {
+  useSubscribeToWhiteboard(whiteboardWithValueData, data => data?.lookup.whiteboard, subscribeToWhiteboard, {
     skip: skipWhiteboardSubscription,
   });
 
