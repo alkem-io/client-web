@@ -32,7 +32,7 @@ query PendingMembershipsOpportunity($spaceId: UUID_NAMEID!, $opportunityId: UUID
 }
 
 query PendingMembershipsUser($userId: UUID!) {
-  usersById(IDs: [$userId]) {
+  users(IDs: [$userId]) {
     id
     profile {
       id
