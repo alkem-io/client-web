@@ -32,16 +32,3 @@ fragment ProfileDisplayName on Profile {
   id
   displayName
 }
-
-query WhiteboardTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
-      id
-      whiteboardTemplate(ID: $id) {
-        id
-        value
-      }
-    }
-  }
-}

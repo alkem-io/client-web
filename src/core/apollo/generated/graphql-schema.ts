@@ -8977,39 +8977,6 @@ export type OpportunityProfileInfoQuery = {
   };
 };
 
-export type OpportunityRelationsQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityRelationsQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            relations?:
-              | Array<{
-                  __typename?: 'Relation';
-                  id: string;
-                  actorRole: string;
-                  actorName: string;
-                  actorType: string;
-                  description: string;
-                  type: string;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
 export type SpaceCommunityPageQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
 }>;
@@ -14897,26 +14864,6 @@ export type WhiteboardTemplatesOnCalloutCreationQuery = {
 
 export type ProfileDisplayNameFragment = { __typename?: 'Profile'; id: string; displayName: string };
 
-export type WhiteboardTemplateValueQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  id: Scalars['UUID'];
-}>;
-
-export type WhiteboardTemplateValueQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          whiteboardTemplate?: { __typename?: 'WhiteboardTemplate'; id: string; value: string } | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type CreateCalloutMutationVariables = Exact<{
   calloutData: CreateCalloutOnCollaborationInput;
 }>;
@@ -18695,37 +18642,6 @@ export type PostCardFragment = {
   };
 };
 
-export type CreatePostMutationVariables = Exact<{
-  postData: CreatePostOnCalloutInput;
-}>;
-
-export type CreatePostMutation = {
-  __typename?: 'Mutation';
-  createPostOnCallout: {
-    __typename?: 'Post';
-    id: string;
-    nameID: string;
-    type: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      description?: string | undefined;
-      displayName: string;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-    };
-  };
-};
-
 export type DeletePostMutationVariables = Exact<{
   input: DeletePostInput;
 }>;
@@ -21223,15 +21139,6 @@ export type ApplyForCommunityMembershipMutation = {
   applyForCommunityMembership: { __typename?: 'Application'; id: string };
 };
 
-export type DeleteUserApplicationMutationVariables = Exact<{
-  input: DeleteApplicationInput;
-}>;
-
-export type DeleteUserApplicationMutation = {
-  __typename?: 'Mutation';
-  deleteUserApplication: { __typename?: 'Application'; id: string };
-};
-
 export type EventOnApplicationMutationVariables = Exact<{
   input: ApplicationEventInput;
 }>;
@@ -21265,26 +21172,6 @@ export type EventOnChallengeMutation = {
   };
 };
 
-export type ApplicationBySpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  appId: Scalars['UUID'];
-}>;
-
-export type ApplicationBySpaceQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    application: {
-      __typename?: 'Application';
-      id: string;
-      createdDate: Date;
-      updatedDate: Date;
-      questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
-    };
-  };
-};
-
 export type ChallengeApplicationQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -21301,42 +21188,6 @@ export type ChallengeApplicationQuery = {
       profile: { __typename?: 'Profile'; id: string; displayName: string };
       community?: { __typename?: 'Community'; id: string } | undefined;
     };
-  };
-};
-
-export type SpaceNameIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-}>;
-
-export type SpaceNameIdQuery = { __typename?: 'Query'; space: { __typename?: 'Space'; id: string; nameID: string } };
-
-export type ChallengeNameIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeNameIdQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    challenge: { __typename?: 'Challenge'; id: string; nameID: string };
-  };
-};
-
-export type OpportunityNameIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityNameIdQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; parentNameID?: string | undefined };
   };
 };
 
@@ -28624,15 +28475,6 @@ export type ReferenceDetailsFragment = {
   name: string;
   uri: string;
   description?: string | undefined;
-};
-
-export type CreateRelationMutationVariables = Exact<{
-  input: CreateRelationOnCollaborationInput;
-}>;
-
-export type CreateRelationMutation = {
-  __typename?: 'Mutation';
-  createRelationOnCollaboration: { __typename?: 'Relation'; id: string };
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{

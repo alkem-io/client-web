@@ -3353,6 +3353,7 @@ export function useAssignUserAsGlobalAdminMutation(
   >(AssignUserAsGlobalAdminDocument, options);
 }
 
+export type AssignUserAsGlobalAdminMutationHookResult = ReturnType<typeof useAssignUserAsGlobalAdminMutation>;
 export type AssignUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalAdminMutation>;
 export type AssignUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsGlobalAdminMutation,
@@ -3569,6 +3570,7 @@ export function useRemoveUserAsGlobalAdminMutation(
   >(RemoveUserAsGlobalAdminDocument, options);
 }
 
+export type RemoveUserAsGlobalAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalAdminMutation>;
 export type RemoveUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalAdminMutation>;
 export type RemoveUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsGlobalAdminMutation,
@@ -3783,6 +3785,7 @@ export function useUploadFileOnReferenceMutation(
   >(UploadFileOnReferenceDocument, options);
 }
 
+export type UploadFileOnReferenceMutationHookResult = ReturnType<typeof useUploadFileOnReferenceMutation>;
 export type UploadFileOnReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnReferenceMutation>;
 export type UploadFileOnReferenceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileOnReferenceMutation,
@@ -3826,6 +3829,7 @@ export function useUploadFileMutation(
   );
 }
 
+export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
 export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
 export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileMutation,
@@ -3880,6 +3884,8 @@ export function useChallengePageLazyQuery(
   );
 }
 
+export type ChallengePageQueryHookResult = ReturnType<typeof useChallengePageQuery>;
+export type ChallengePageLazyQueryHookResult = ReturnType<typeof useChallengePageLazyQuery>;
 export type ChallengePageQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengePageQuery,
   SchemaTypes.ChallengePageQueryVariables
@@ -3951,6 +3957,7 @@ export function useChallengeDashboardReferencesLazyQuery(
   >(ChallengeDashboardReferencesDocument, options);
 }
 
+export type ChallengeDashboardReferencesQueryHookResult = ReturnType<typeof useChallengeDashboardReferencesQuery>;
 export type ChallengeDashboardReferencesLazyQueryHookResult = ReturnType<
   typeof useChallengeDashboardReferencesLazyQuery
 >;
@@ -4007,6 +4014,7 @@ export function useCreateChallengeMutation(
   );
 }
 
+export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
 export type CreateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.CreateChallengeMutation>;
 export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
@@ -4055,6 +4063,7 @@ export function useDeleteChallengeMutation(
   );
 }
 
+export type DeleteChallengeMutationHookResult = ReturnType<typeof useDeleteChallengeMutation>;
 export type DeleteChallengeMutationResult = Apollo.MutationResult<SchemaTypes.DeleteChallengeMutation>;
 export type DeleteChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteChallengeMutation,
@@ -4107,6 +4116,7 @@ export function useUpdateChallengeMutation(
   );
 }
 
+export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
 export type UpdateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.UpdateChallengeMutation>;
 export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
@@ -4234,6 +4244,7 @@ export function useChallengeApplicationTemplateLazyQuery(
   >(ChallengeApplicationTemplateDocument, options);
 }
 
+export type ChallengeApplicationTemplateQueryHookResult = ReturnType<typeof useChallengeApplicationTemplateQuery>;
 export type ChallengeApplicationTemplateLazyQueryHookResult = ReturnType<
   typeof useChallengeApplicationTemplateLazyQuery
 >;
@@ -4295,6 +4306,8 @@ export function useChallengeCardsLazyQuery(
   );
 }
 
+export type ChallengeCardsQueryHookResult = ReturnType<typeof useChallengeCardsQuery>;
+export type ChallengeCardsLazyQueryHookResult = ReturnType<typeof useChallengeCardsLazyQuery>;
 export type ChallengeCardsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCardsQuery,
   SchemaTypes.ChallengeCardsQueryVariables
@@ -4353,6 +4366,8 @@ export function useChallengeInfoLazyQuery(
   );
 }
 
+export type ChallengeInfoQueryHookResult = ReturnType<typeof useChallengeInfoQuery>;
+export type ChallengeInfoLazyQueryHookResult = ReturnType<typeof useChallengeInfoLazyQuery>;
 export type ChallengeInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeInfoQuery,
   SchemaTypes.ChallengeInfoQueryVariables
@@ -4426,6 +4441,8 @@ export function useChallengeLifecycleLazyQuery(
   );
 }
 
+export type ChallengeLifecycleQueryHookResult = ReturnType<typeof useChallengeLifecycleQuery>;
+export type ChallengeLifecycleLazyQueryHookResult = ReturnType<typeof useChallengeLifecycleLazyQuery>;
 export type ChallengeLifecycleQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeLifecycleQuery,
   SchemaTypes.ChallengeLifecycleQueryVariables
@@ -4488,6 +4505,8 @@ export function useChallengeNameLazyQuery(
   );
 }
 
+export type ChallengeNameQueryHookResult = ReturnType<typeof useChallengeNameQuery>;
+export type ChallengeNameLazyQueryHookResult = ReturnType<typeof useChallengeNameLazyQuery>;
 export type ChallengeNameQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameQuery,
   SchemaTypes.ChallengeNameQueryVariables
@@ -4582,6 +4601,8 @@ export function useChallengeProfileInfoLazyQuery(
   );
 }
 
+export type ChallengeProfileInfoQueryHookResult = ReturnType<typeof useChallengeProfileInfoQuery>;
+export type ChallengeProfileInfoLazyQueryHookResult = ReturnType<typeof useChallengeProfileInfoLazyQuery>;
 export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileInfoQuery,
   SchemaTypes.ChallengeProfileInfoQueryVariables
@@ -4861,6 +4882,8 @@ export function useAboutPageNonMembersLazyQuery(
   );
 }
 
+export type AboutPageNonMembersQueryHookResult = ReturnType<typeof useAboutPageNonMembersQuery>;
+export type AboutPageNonMembersLazyQueryHookResult = ReturnType<typeof useAboutPageNonMembersLazyQuery>;
 export type AboutPageNonMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.AboutPageNonMembersQuery,
   SchemaTypes.AboutPageNonMembersQueryVariables
@@ -4969,6 +4992,8 @@ export function useAboutPageMembersLazyQuery(
   );
 }
 
+export type AboutPageMembersQueryHookResult = ReturnType<typeof useAboutPageMembersQuery>;
+export type AboutPageMembersLazyQueryHookResult = ReturnType<typeof useAboutPageMembersLazyQuery>;
 export type AboutPageMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.AboutPageMembersQuery,
   SchemaTypes.AboutPageMembersQueryVariables
@@ -5039,6 +5064,8 @@ export function useCommunityFeedbackTemplatesLazyQuery(
   >(CommunityFeedbackTemplatesDocument, options);
 }
 
+export type CommunityFeedbackTemplatesQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesQuery>;
+export type CommunityFeedbackTemplatesLazyQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesLazyQuery>;
 export type CommunityFeedbackTemplatesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityFeedbackTemplatesQuery,
   SchemaTypes.CommunityFeedbackTemplatesQueryVariables
@@ -5189,6 +5216,8 @@ export function useJourneyCommunityPrivilegesLazyQuery(
   >(JourneyCommunityPrivilegesDocument, options);
 }
 
+export type JourneyCommunityPrivilegesQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesQuery>;
+export type JourneyCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesLazyQuery>;
 export type JourneyCommunityPrivilegesQueryResult = Apollo.QueryResult<
   SchemaTypes.JourneyCommunityPrivilegesQuery,
   SchemaTypes.JourneyCommunityPrivilegesQueryVariables
@@ -5309,6 +5338,8 @@ export function useJourneyDataLazyQuery(
   );
 }
 
+export type JourneyDataQueryHookResult = ReturnType<typeof useJourneyDataQuery>;
+export type JourneyDataLazyQueryHookResult = ReturnType<typeof useJourneyDataLazyQuery>;
 export type JourneyDataQueryResult = Apollo.QueryResult<
   SchemaTypes.JourneyDataQuery,
   SchemaTypes.JourneyDataQueryVariables
@@ -5396,6 +5427,8 @@ export function useJourneyPrivilegesLazyQuery(
   );
 }
 
+export type JourneyPrivilegesQueryHookResult = ReturnType<typeof useJourneyPrivilegesQuery>;
+export type JourneyPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyPrivilegesLazyQuery>;
 export type JourneyPrivilegesQueryResult = Apollo.QueryResult<
   SchemaTypes.JourneyPrivilegesQuery,
   SchemaTypes.JourneyPrivilegesQueryVariables
@@ -5453,6 +5486,8 @@ export function useOpportunityPageLazyQuery(
   );
 }
 
+export type OpportunityPageQueryHookResult = ReturnType<typeof useOpportunityPageQuery>;
+export type OpportunityPageLazyQueryHookResult = ReturnType<typeof useOpportunityPageLazyQuery>;
 export type OpportunityPageQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityPageQuery,
   SchemaTypes.OpportunityPageQueryVariables
@@ -5509,6 +5544,7 @@ export function useEventOnOpportunityMutation(
   );
 }
 
+export type EventOnOpportunityMutationHookResult = ReturnType<typeof useEventOnOpportunityMutation>;
 export type EventOnOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.EventOnOpportunityMutation>;
 export type EventOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnOpportunityMutation,
@@ -5570,6 +5606,8 @@ export function useOpportunityProviderLazyQuery(
   );
 }
 
+export type OpportunityProviderQueryHookResult = ReturnType<typeof useOpportunityProviderQuery>;
+export type OpportunityProviderLazyQueryHookResult = ReturnType<typeof useOpportunityProviderLazyQuery>;
 export type OpportunityProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProviderQuery,
   SchemaTypes.OpportunityProviderQueryVariables
@@ -5621,6 +5659,7 @@ export function useCreateOpportunityMutation(
   );
 }
 
+export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
 export type CreateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateOpportunityMutation>;
 export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateOpportunityMutation,
@@ -5669,6 +5708,7 @@ export function useDeleteOpportunityMutation(
   );
 }
 
+export type DeleteOpportunityMutationHookResult = ReturnType<typeof useDeleteOpportunityMutation>;
 export type DeleteOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOpportunityMutation>;
 export type DeleteOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOpportunityMutation,
@@ -5720,6 +5760,7 @@ export function useUpdateOpportunityMutation(
   );
 }
 
+export type UpdateOpportunityMutationHookResult = ReturnType<typeof useUpdateOpportunityMutation>;
 export type UpdateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOpportunityMutation>;
 export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOpportunityMutation,
@@ -5836,6 +5877,8 @@ export function useOpportunitiesLazyQuery(
   );
 }
 
+export type OpportunitiesQueryHookResult = ReturnType<typeof useOpportunitiesQuery>;
+export type OpportunitiesLazyQueryHookResult = ReturnType<typeof useOpportunitiesLazyQuery>;
 export type OpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunitiesQuery,
   SchemaTypes.OpportunitiesQueryVariables
@@ -5899,6 +5942,8 @@ export function useOpportunityCardsLazyQuery(
   );
 }
 
+export type OpportunityCardsQueryHookResult = ReturnType<typeof useOpportunityCardsQuery>;
+export type OpportunityCardsLazyQueryHookResult = ReturnType<typeof useOpportunityCardsLazyQuery>;
 export type OpportunityCardsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCardsQuery,
   SchemaTypes.OpportunityCardsQueryVariables
@@ -5972,6 +6017,8 @@ export function useOpportunityLifecycleLazyQuery(
   );
 }
 
+export type OpportunityLifecycleQueryHookResult = ReturnType<typeof useOpportunityLifecycleQuery>;
+export type OpportunityLifecycleLazyQueryHookResult = ReturnType<typeof useOpportunityLifecycleLazyQuery>;
 export type OpportunityLifecycleQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityLifecycleQuery,
   SchemaTypes.OpportunityLifecycleQueryVariables
@@ -6032,6 +6079,8 @@ export function useOpportunityNameLazyQuery(
   );
 }
 
+export type OpportunityNameQueryHookResult = ReturnType<typeof useOpportunityNameQuery>;
+export type OpportunityNameLazyQueryHookResult = ReturnType<typeof useOpportunityNameLazyQuery>;
 export type OpportunityNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameQuery,
   SchemaTypes.OpportunityNameQueryVariables
@@ -6126,84 +6175,14 @@ export function useOpportunityProfileInfoLazyQuery(
   );
 }
 
+export type OpportunityProfileInfoQueryHookResult = ReturnType<typeof useOpportunityProfileInfoQuery>;
+export type OpportunityProfileInfoLazyQueryHookResult = ReturnType<typeof useOpportunityProfileInfoLazyQuery>;
 export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileInfoQuery,
   SchemaTypes.OpportunityProfileInfoQueryVariables
 >;
 export function refetchOpportunityProfileInfoQuery(variables: SchemaTypes.OpportunityProfileInfoQueryVariables) {
   return { query: OpportunityProfileInfoDocument, variables: variables };
-}
-
-export const OpportunityRelationsDocument = gql`
-  query opportunityRelations($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      opportunity(ID: $opportunityId) {
-        collaboration {
-          id
-          relations {
-            id
-            actorRole
-            actorName
-            actorType
-            description
-            type
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOpportunityRelationsQuery__
- *
- * To run a query within a React component, call `useOpportunityRelationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityRelationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityRelationsQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityRelationsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityRelationsQuery,
-    SchemaTypes.OpportunityRelationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityRelationsQuery, SchemaTypes.OpportunityRelationsQueryVariables>(
-    OpportunityRelationsDocument,
-    options
-  );
-}
-
-export function useOpportunityRelationsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityRelationsQuery,
-    SchemaTypes.OpportunityRelationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityRelationsQuery, SchemaTypes.OpportunityRelationsQueryVariables>(
-    OpportunityRelationsDocument,
-    options
-  );
-}
-
-export type OpportunityRelationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityRelationsQuery,
-  SchemaTypes.OpportunityRelationsQueryVariables
->;
-export function refetchOpportunityRelationsQuery(variables: SchemaTypes.OpportunityRelationsQueryVariables) {
-  return { query: OpportunityRelationsDocument, variables: variables };
 }
 
 export const SpaceCommunityPageDocument = gql`
@@ -6267,6 +6246,8 @@ export function useSpaceCommunityPageLazyQuery(
   );
 }
 
+export type SpaceCommunityPageQueryHookResult = ReturnType<typeof useSpaceCommunityPageQuery>;
+export type SpaceCommunityPageLazyQueryHookResult = ReturnType<typeof useSpaceCommunityPageLazyQuery>;
 export type SpaceCommunityPageQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceCommunityPageQuery,
   SchemaTypes.SpaceCommunityPageQueryVariables
@@ -6320,6 +6301,8 @@ export function useSpaceProviderLazyQuery(
   );
 }
 
+export type SpaceProviderQueryHookResult = ReturnType<typeof useSpaceProviderQuery>;
+export type SpaceProviderLazyQueryHookResult = ReturnType<typeof useSpaceProviderLazyQuery>;
 export type SpaceProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceProviderQuery,
   SchemaTypes.SpaceProviderQueryVariables
@@ -6377,6 +6360,8 @@ export function useSpaceHostLazyQuery(
   );
 }
 
+export type SpaceHostQueryHookResult = ReturnType<typeof useSpaceHostQuery>;
+export type SpaceHostLazyQueryHookResult = ReturnType<typeof useSpaceHostLazyQuery>;
 export type SpaceHostQueryResult = Apollo.QueryResult<SchemaTypes.SpaceHostQuery, SchemaTypes.SpaceHostQueryVariables>;
 export function refetchSpaceHostQuery(variables: SchemaTypes.SpaceHostQueryVariables) {
   return { query: SpaceHostDocument, variables: variables };
@@ -6424,6 +6409,8 @@ export function useSpacePageLazyQuery(
   );
 }
 
+export type SpacePageQueryHookResult = ReturnType<typeof useSpacePageQuery>;
+export type SpacePageLazyQueryHookResult = ReturnType<typeof useSpacePageLazyQuery>;
 export type SpacePageQueryResult = Apollo.QueryResult<SchemaTypes.SpacePageQuery, SchemaTypes.SpacePageQueryVariables>;
 export function refetchSpacePageQuery(variables: SchemaTypes.SpacePageQueryVariables) {
   return { query: SpacePageDocument, variables: variables };
@@ -6488,6 +6475,8 @@ export function useSpaceDashboardReferencesLazyQuery(
   >(SpaceDashboardReferencesDocument, options);
 }
 
+export type SpaceDashboardReferencesQueryHookResult = ReturnType<typeof useSpaceDashboardReferencesQuery>;
+export type SpaceDashboardReferencesLazyQueryHookResult = ReturnType<typeof useSpaceDashboardReferencesLazyQuery>;
 export type SpaceDashboardReferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceDashboardReferencesQuery,
   SchemaTypes.SpaceDashboardReferencesQueryVariables
@@ -6740,6 +6729,7 @@ export function useCalloutFormTemplatesFromSpaceLazyQuery(
   >(CalloutFormTemplatesFromSpaceDocument, options);
 }
 
+export type CalloutFormTemplatesFromSpaceQueryHookResult = ReturnType<typeof useCalloutFormTemplatesFromSpaceQuery>;
 export type CalloutFormTemplatesFromSpaceLazyQueryHookResult = ReturnType<
   typeof useCalloutFormTemplatesFromSpaceLazyQuery
 >;
@@ -6810,6 +6800,7 @@ export function useWhiteboardTemplatesFromSpaceLazyQuery(
   >(WhiteboardTemplatesFromSpaceDocument, options);
 }
 
+export type WhiteboardTemplatesFromSpaceQueryHookResult = ReturnType<typeof useWhiteboardTemplatesFromSpaceQuery>;
 export type WhiteboardTemplatesFromSpaceLazyQueryHookResult = ReturnType<
   typeof useWhiteboardTemplatesFromSpaceLazyQuery
 >;
@@ -7010,6 +7001,7 @@ export function useCreateSpaceMutation(
   );
 }
 
+export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
 export type CreateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSpaceMutation>;
 export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateSpaceMutation,
@@ -7055,6 +7047,7 @@ export function useDeleteSpaceMutation(
   );
 }
 
+export type DeleteSpaceMutationHookResult = ReturnType<typeof useDeleteSpaceMutation>;
 export type DeleteSpaceMutationResult = Apollo.MutationResult<SchemaTypes.DeleteSpaceMutation>;
 export type DeleteSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteSpaceMutation,
@@ -7100,6 +7093,7 @@ export function useUpdateSpaceMutation(
   );
 }
 
+export type UpdateSpaceMutationHookResult = ReturnType<typeof useUpdateSpaceMutation>;
 export type UpdateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateSpaceMutation>;
 export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateSpaceMutation,
@@ -7169,6 +7163,8 @@ export function useSpaceApplicationTemplateLazyQuery(
   >(SpaceApplicationTemplateDocument, options);
 }
 
+export type SpaceApplicationTemplateQueryHookResult = ReturnType<typeof useSpaceApplicationTemplateQuery>;
+export type SpaceApplicationTemplateLazyQueryHookResult = ReturnType<typeof useSpaceApplicationTemplateLazyQuery>;
 export type SpaceApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceApplicationTemplateQuery,
   SchemaTypes.SpaceApplicationTemplateQueryVariables
@@ -7219,6 +7215,8 @@ export function useSpaceCardLazyQuery(
   );
 }
 
+export type SpaceCardQueryHookResult = ReturnType<typeof useSpaceCardQuery>;
+export type SpaceCardLazyQueryHookResult = ReturnType<typeof useSpaceCardLazyQuery>;
 export type SpaceCardQueryResult = Apollo.QueryResult<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables>;
 export function refetchSpaceCardQuery(variables: SchemaTypes.SpaceCardQueryVariables) {
   return { query: SpaceCardDocument, variables: variables };
@@ -7273,6 +7271,8 @@ export function useSpaceGroupLazyQuery(
   );
 }
 
+export type SpaceGroupQueryHookResult = ReturnType<typeof useSpaceGroupQuery>;
+export type SpaceGroupLazyQueryHookResult = ReturnType<typeof useSpaceGroupLazyQuery>;
 export type SpaceGroupQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceGroupQuery,
   SchemaTypes.SpaceGroupQueryVariables
@@ -7343,6 +7343,7 @@ export function useSpaceInnovationFlowTemplatesLazyQuery(
   >(SpaceInnovationFlowTemplatesDocument, options);
 }
 
+export type SpaceInnovationFlowTemplatesQueryHookResult = ReturnType<typeof useSpaceInnovationFlowTemplatesQuery>;
 export type SpaceInnovationFlowTemplatesLazyQueryHookResult = ReturnType<
   typeof useSpaceInnovationFlowTemplatesLazyQuery
 >;
@@ -7398,6 +7399,8 @@ export function useSpaceNameLazyQuery(
   );
 }
 
+export type SpaceNameQueryHookResult = ReturnType<typeof useSpaceNameQuery>;
+export type SpaceNameLazyQueryHookResult = ReturnType<typeof useSpaceNameLazyQuery>;
 export type SpaceNameQueryResult = Apollo.QueryResult<SchemaTypes.SpaceNameQuery, SchemaTypes.SpaceNameQueryVariables>;
 export function refetchSpaceNameQuery(variables: SchemaTypes.SpaceNameQueryVariables) {
   return { query: SpaceNameDocument, variables: variables };
@@ -7442,6 +7445,8 @@ export function useSpacesLazyQuery(
   return Apollo.useLazyQuery<SchemaTypes.SpacesQuery, SchemaTypes.SpacesQueryVariables>(SpacesDocument, options);
 }
 
+export type SpacesQueryHookResult = ReturnType<typeof useSpacesQuery>;
+export type SpacesLazyQueryHookResult = ReturnType<typeof useSpacesLazyQuery>;
 export type SpacesQueryResult = Apollo.QueryResult<SchemaTypes.SpacesQuery, SchemaTypes.SpacesQueryVariables>;
 export function refetchSpacesQuery(variables?: SchemaTypes.SpacesQueryVariables) {
   return { query: SpacesDocument, variables: variables };
@@ -7549,6 +7554,8 @@ export function useBannerInnovationHubLazyQuery(
   );
 }
 
+export type BannerInnovationHubQueryHookResult = ReturnType<typeof useBannerInnovationHubQuery>;
+export type BannerInnovationHubLazyQueryHookResult = ReturnType<typeof useBannerInnovationHubLazyQuery>;
 export type BannerInnovationHubQueryResult = Apollo.QueryResult<
   SchemaTypes.BannerInnovationHubQuery,
   SchemaTypes.BannerInnovationHubQueryVariables
@@ -7608,6 +7615,8 @@ export function useSpaceDisplayNameLazyQuery(
   );
 }
 
+export type SpaceDisplayNameQueryHookResult = ReturnType<typeof useSpaceDisplayNameQuery>;
+export type SpaceDisplayNameLazyQueryHookResult = ReturnType<typeof useSpaceDisplayNameLazyQuery>;
 export type SpaceDisplayNameQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceDisplayNameQuery,
   SchemaTypes.SpaceDisplayNameQueryVariables
@@ -7681,6 +7690,7 @@ export function useSpaceApplicationsInvitationsLazyQuery(
   >(SpaceApplicationsInvitationsDocument, options);
 }
 
+export type SpaceApplicationsInvitationsQueryHookResult = ReturnType<typeof useSpaceApplicationsInvitationsQuery>;
 export type SpaceApplicationsInvitationsLazyQueryHookResult = ReturnType<
   typeof useSpaceApplicationsInvitationsLazyQuery
 >;
@@ -7783,6 +7793,8 @@ export function useCalloutPageCalloutLazyQuery(
   );
 }
 
+export type CalloutPageCalloutQueryHookResult = ReturnType<typeof useCalloutPageCalloutQuery>;
+export type CalloutPageCalloutLazyQueryHookResult = ReturnType<typeof useCalloutPageCalloutLazyQuery>;
 export type CalloutPageCalloutQueryResult = Apollo.QueryResult<
   SchemaTypes.CalloutPageCalloutQuery,
   SchemaTypes.CalloutPageCalloutQueryVariables
@@ -7885,6 +7897,8 @@ export function useInnovationFlowBlockLazyQuery(
   );
 }
 
+export type InnovationFlowBlockQueryHookResult = ReturnType<typeof useInnovationFlowBlockQuery>;
+export type InnovationFlowBlockLazyQueryHookResult = ReturnType<typeof useInnovationFlowBlockLazyQuery>;
 export type InnovationFlowBlockQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationFlowBlockQuery,
   SchemaTypes.InnovationFlowBlockQueryVariables
@@ -7936,6 +7950,7 @@ export function useChallengeInnovationFlowEventMutation(
   >(ChallengeInnovationFlowEventDocument, options);
 }
 
+export type ChallengeInnovationFlowEventMutationHookResult = ReturnType<typeof useChallengeInnovationFlowEventMutation>;
 export type ChallengeInnovationFlowEventMutationResult =
   Apollo.MutationResult<SchemaTypes.ChallengeInnovationFlowEventMutation>;
 export type ChallengeInnovationFlowEventMutationOptions = Apollo.BaseMutationOptions<
@@ -8091,6 +8106,8 @@ export function useInnovationFlowSettingsLazyQuery(
   );
 }
 
+export type InnovationFlowSettingsQueryHookResult = ReturnType<typeof useInnovationFlowSettingsQuery>;
+export type InnovationFlowSettingsLazyQueryHookResult = ReturnType<typeof useInnovationFlowSettingsLazyQuery>;
 export type InnovationFlowSettingsQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationFlowSettingsQuery,
   SchemaTypes.InnovationFlowSettingsQueryVariables
@@ -8141,6 +8158,7 @@ export function useUpdateInnovationFlowMutation(
   >(UpdateInnovationFlowDocument, options);
 }
 
+export type UpdateInnovationFlowMutationHookResult = ReturnType<typeof useUpdateInnovationFlowMutation>;
 export type UpdateInnovationFlowMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowMutation>;
 export type UpdateInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowMutation,
@@ -8200,6 +8218,7 @@ export function useUpdateCalloutFlowStateMutation(
   >(UpdateCalloutFlowStateDocument, options);
 }
 
+export type UpdateCalloutFlowStateMutationHookResult = ReturnType<typeof useUpdateCalloutFlowStateMutation>;
 export type UpdateCalloutFlowStateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutFlowStateMutation>;
 export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutation,
@@ -8460,6 +8479,8 @@ export function useInnovationPackProfilePageLazyQuery(
   >(InnovationPackProfilePageDocument, options);
 }
 
+export type InnovationPackProfilePageQueryHookResult = ReturnType<typeof useInnovationPackProfilePageQuery>;
+export type InnovationPackProfilePageLazyQueryHookResult = ReturnType<typeof useInnovationPackProfilePageLazyQuery>;
 export type InnovationPackProfilePageQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationPackProfilePageQuery,
   SchemaTypes.InnovationPackProfilePageQueryVariables
@@ -8635,6 +8656,8 @@ export function useActivityLogOnCollaborationLazyQuery(
   >(ActivityLogOnCollaborationDocument, options);
 }
 
+export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
+export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
 export type ActivityLogOnCollaborationQueryResult = Apollo.QueryResult<
   SchemaTypes.ActivityLogOnCollaborationQuery,
   SchemaTypes.ActivityLogOnCollaborationQueryVariables
@@ -8689,6 +8712,7 @@ export function useUpdateCalloutsSortOrderMutation(
   >(UpdateCalloutsSortOrderDocument, options);
 }
 
+export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
 export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
 export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutsSortOrderMutation,
@@ -8754,6 +8778,7 @@ export function usePostTemplatesOnCalloutCreationLazyQuery(
   >(PostTemplatesOnCalloutCreationDocument, options);
 }
 
+export type PostTemplatesOnCalloutCreationQueryHookResult = ReturnType<typeof usePostTemplatesOnCalloutCreationQuery>;
 export type PostTemplatesOnCalloutCreationLazyQueryHookResult = ReturnType<
   typeof usePostTemplatesOnCalloutCreationLazyQuery
 >;
@@ -8843,72 +8868,6 @@ export function refetchWhiteboardTemplatesOnCalloutCreationQuery(
   return { query: WhiteboardTemplatesOnCalloutCreationDocument, variables: variables };
 }
 
-export const WhiteboardTemplateValueDocument = gql`
-  query WhiteboardTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
-    space(ID: $spaceId) {
-      id
-      templates {
-        id
-        whiteboardTemplate(ID: $id) {
-          id
-          value
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useWhiteboardTemplateValueQuery__
- *
- * To run a query within a React component, call `useWhiteboardTemplateValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardTemplateValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWhiteboardTemplateValueQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useWhiteboardTemplateValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardTemplateValueQuery,
-    SchemaTypes.WhiteboardTemplateValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.WhiteboardTemplateValueQuery, SchemaTypes.WhiteboardTemplateValueQueryVariables>(
-    WhiteboardTemplateValueDocument,
-    options
-  );
-}
-
-export function useWhiteboardTemplateValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardTemplateValueQuery,
-    SchemaTypes.WhiteboardTemplateValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.WhiteboardTemplateValueQuery,
-    SchemaTypes.WhiteboardTemplateValueQueryVariables
-  >(WhiteboardTemplateValueDocument, options);
-}
-
-export type WhiteboardTemplateValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardTemplateValueQuery,
-  SchemaTypes.WhiteboardTemplateValueQueryVariables
->;
-export function refetchWhiteboardTemplateValueQuery(variables: SchemaTypes.WhiteboardTemplateValueQueryVariables) {
-  return { query: WhiteboardTemplateValueDocument, variables: variables };
-}
-
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     createCalloutOnCollaboration(calloutData: $calloutData) {
@@ -8952,6 +8911,7 @@ export function useCreateCalloutMutation(
   );
 }
 
+export type CreateCalloutMutationHookResult = ReturnType<typeof useCreateCalloutMutation>;
 export type CreateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalloutMutation>;
 export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutation,
@@ -9010,6 +8970,8 @@ export function useSpaceCollaborationIdLazyQuery(
   );
 }
 
+export type SpaceCollaborationIdQueryHookResult = ReturnType<typeof useSpaceCollaborationIdQuery>;
+export type SpaceCollaborationIdLazyQueryHookResult = ReturnType<typeof useSpaceCollaborationIdLazyQuery>;
 export type SpaceCollaborationIdQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceCollaborationIdQuery,
   SchemaTypes.SpaceCollaborationIdQueryVariables
@@ -9075,6 +9037,8 @@ export function useChallengeCollaborationIdLazyQuery(
   >(ChallengeCollaborationIdDocument, options);
 }
 
+export type ChallengeCollaborationIdQueryHookResult = ReturnType<typeof useChallengeCollaborationIdQuery>;
+export type ChallengeCollaborationIdLazyQueryHookResult = ReturnType<typeof useChallengeCollaborationIdLazyQuery>;
 export type ChallengeCollaborationIdQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCollaborationIdQuery,
   SchemaTypes.ChallengeCollaborationIdQueryVariables
@@ -9140,6 +9104,8 @@ export function useOpportunityCollaborationIdLazyQuery(
   >(OpportunityCollaborationIdDocument, options);
 }
 
+export type OpportunityCollaborationIdQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdQuery>;
+export type OpportunityCollaborationIdLazyQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdLazyQuery>;
 export type OpportunityCollaborationIdQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCollaborationIdQuery,
   SchemaTypes.OpportunityCollaborationIdQueryVariables
@@ -9216,6 +9182,7 @@ export function useUpdateCalloutMutation(
   );
 }
 
+export type UpdateCalloutMutationHookResult = ReturnType<typeof useUpdateCalloutMutation>;
 export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutMutation>;
 export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutMutation,
@@ -9264,6 +9231,7 @@ export function useUpdateCalloutVisibilityMutation(
   >(UpdateCalloutVisibilityDocument, options);
 }
 
+export type UpdateCalloutVisibilityMutationHookResult = ReturnType<typeof useUpdateCalloutVisibilityMutation>;
 export type UpdateCalloutVisibilityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutVisibilityMutation>;
 export type UpdateCalloutVisibilityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutVisibilityMutation,
@@ -9311,6 +9279,7 @@ export function useDeleteCalloutMutation(
   );
 }
 
+export type DeleteCalloutMutationHookResult = ReturnType<typeof useDeleteCalloutMutation>;
 export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalloutMutation>;
 export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
@@ -9373,6 +9342,7 @@ export function useCreatePostFromContributeTabMutation(
   >(CreatePostFromContributeTabDocument, options);
 }
 
+export type CreatePostFromContributeTabMutationHookResult = ReturnType<typeof useCreatePostFromContributeTabMutation>;
 export type CreatePostFromContributeTabMutationResult =
   Apollo.MutationResult<SchemaTypes.CreatePostFromContributeTabMutation>;
 export type CreatePostFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
@@ -9419,6 +9389,7 @@ export function useRemoveCommentFromCalloutMutation(
   >(RemoveCommentFromCalloutDocument, options);
 }
 
+export type RemoveCommentFromCalloutMutationHookResult = ReturnType<typeof useRemoveCommentFromCalloutMutation>;
 export type RemoveCommentFromCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveCommentFromCalloutMutation>;
 export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -9468,6 +9439,7 @@ export function useCreateLinkOnCalloutMutation(
   );
 }
 
+export type CreateLinkOnCalloutMutationHookResult = ReturnType<typeof useCreateLinkOnCalloutMutation>;
 export type CreateLinkOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateLinkOnCalloutMutation>;
 export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateLinkOnCalloutMutation,
@@ -9550,6 +9522,8 @@ export function useCalloutsLazyQuery(
   return Apollo.useLazyQuery<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>(CalloutsDocument, options);
 }
 
+export type CalloutsQueryHookResult = ReturnType<typeof useCalloutsQuery>;
+export type CalloutsLazyQueryHookResult = ReturnType<typeof useCalloutsLazyQuery>;
 export type CalloutsQueryResult = Apollo.QueryResult<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>;
 export function refetchCalloutsQuery(variables: SchemaTypes.CalloutsQueryVariables) {
   return { query: CalloutsDocument, variables: variables };
@@ -9616,6 +9590,7 @@ export function useSpaceCalloutPostsSubscriptionLazyQuery(
   >(SpaceCalloutPostsSubscriptionDocument, options);
 }
 
+export type SpaceCalloutPostsSubscriptionQueryHookResult = ReturnType<typeof useSpaceCalloutPostsSubscriptionQuery>;
 export type SpaceCalloutPostsSubscriptionLazyQueryHookResult = ReturnType<
   typeof useSpaceCalloutPostsSubscriptionLazyQuery
 >;
@@ -9853,6 +9828,7 @@ export function usePrivilegesOnSpaceCollaborationLazyQuery(
   >(PrivilegesOnSpaceCollaborationDocument, options);
 }
 
+export type PrivilegesOnSpaceCollaborationQueryHookResult = ReturnType<typeof usePrivilegesOnSpaceCollaborationQuery>;
 export type PrivilegesOnSpaceCollaborationLazyQueryHookResult = ReturnType<
   typeof usePrivilegesOnSpaceCollaborationLazyQuery
 >;
@@ -10122,6 +10098,8 @@ export function useSpacePostTemplatesLibraryLazyQuery(
   >(SpacePostTemplatesLibraryDocument, options);
 }
 
+export type SpacePostTemplatesLibraryQueryHookResult = ReturnType<typeof useSpacePostTemplatesLibraryQuery>;
+export type SpacePostTemplatesLibraryLazyQueryHookResult = ReturnType<typeof useSpacePostTemplatesLibraryLazyQuery>;
 export type SpacePostTemplatesLibraryQueryResult = Apollo.QueryResult<
   SchemaTypes.SpacePostTemplatesLibraryQuery,
   SchemaTypes.SpacePostTemplatesLibraryQueryVariables
@@ -10204,6 +10182,7 @@ export function usePlatformPostTemplatesLibraryLazyQuery(
   >(PlatformPostTemplatesLibraryDocument, options);
 }
 
+export type PlatformPostTemplatesLibraryQueryHookResult = ReturnType<typeof usePlatformPostTemplatesLibraryQuery>;
 export type PlatformPostTemplatesLibraryLazyQueryHookResult = ReturnType<
   typeof usePlatformPostTemplatesLibraryLazyQuery
 >;
@@ -10264,6 +10243,8 @@ export function useSpacePostLazyQuery(
   );
 }
 
+export type SpacePostQueryHookResult = ReturnType<typeof useSpacePostQuery>;
+export type SpacePostLazyQueryHookResult = ReturnType<typeof useSpacePostLazyQuery>;
 export type SpacePostQueryResult = Apollo.QueryResult<SchemaTypes.SpacePostQuery, SchemaTypes.SpacePostQueryVariables>;
 export function refetchSpacePostQuery(variables: SchemaTypes.SpacePostQueryVariables) {
   return { query: SpacePostDocument, variables: variables };
@@ -10328,6 +10309,8 @@ export function useChallengePostLazyQuery(
   );
 }
 
+export type ChallengePostQueryHookResult = ReturnType<typeof useChallengePostQuery>;
+export type ChallengePostLazyQueryHookResult = ReturnType<typeof useChallengePostLazyQuery>;
 export type ChallengePostQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengePostQuery,
   SchemaTypes.ChallengePostQueryVariables
@@ -10395,6 +10378,8 @@ export function useOpportunityPostLazyQuery(
   );
 }
 
+export type OpportunityPostQueryHookResult = ReturnType<typeof useOpportunityPostQuery>;
+export type OpportunityPostLazyQueryHookResult = ReturnType<typeof useOpportunityPostLazyQuery>;
 export type OpportunityPostQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityPostQuery,
   SchemaTypes.OpportunityPostQueryVariables
@@ -10458,6 +10443,7 @@ export function useUpdatePostMutation(
   );
 }
 
+export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
 export type UpdatePostMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostMutation,
@@ -10519,6 +10505,8 @@ export function useSpacePostSettingsLazyQuery(
   );
 }
 
+export type SpacePostSettingsQueryHookResult = ReturnType<typeof useSpacePostSettingsQuery>;
+export type SpacePostSettingsLazyQueryHookResult = ReturnType<typeof useSpacePostSettingsLazyQuery>;
 export type SpacePostSettingsQueryResult = Apollo.QueryResult<
   SchemaTypes.SpacePostSettingsQuery,
   SchemaTypes.SpacePostSettingsQueryVariables
@@ -10595,6 +10583,8 @@ export function useChallengePostSettingsLazyQuery(
   );
 }
 
+export type ChallengePostSettingsQueryHookResult = ReturnType<typeof useChallengePostSettingsQuery>;
+export type ChallengePostSettingsLazyQueryHookResult = ReturnType<typeof useChallengePostSettingsLazyQuery>;
 export type ChallengePostSettingsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengePostSettingsQuery,
   SchemaTypes.ChallengePostSettingsQueryVariables
@@ -10671,6 +10661,8 @@ export function useOpportunityPostSettingsLazyQuery(
   >(OpportunityPostSettingsDocument, options);
 }
 
+export type OpportunityPostSettingsQueryHookResult = ReturnType<typeof useOpportunityPostSettingsQuery>;
+export type OpportunityPostSettingsLazyQueryHookResult = ReturnType<typeof useOpportunityPostSettingsLazyQuery>;
 export type OpportunityPostSettingsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityPostSettingsQuery,
   SchemaTypes.OpportunityPostSettingsQueryVariables
@@ -10732,6 +10724,8 @@ export function useSpacePostProviderLazyQuery(
   );
 }
 
+export type SpacePostProviderQueryHookResult = ReturnType<typeof useSpacePostProviderQuery>;
+export type SpacePostProviderLazyQueryHookResult = ReturnType<typeof useSpacePostProviderLazyQuery>;
 export type SpacePostProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.SpacePostProviderQuery,
   SchemaTypes.SpacePostProviderQueryVariables
@@ -10805,6 +10799,8 @@ export function useChallengePostProviderLazyQuery(
   );
 }
 
+export type ChallengePostProviderQueryHookResult = ReturnType<typeof useChallengePostProviderQuery>;
+export type ChallengePostProviderLazyQueryHookResult = ReturnType<typeof useChallengePostProviderLazyQuery>;
 export type ChallengePostProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengePostProviderQuery,
   SchemaTypes.ChallengePostProviderQueryVariables
@@ -10878,6 +10874,8 @@ export function useOpportunityPostProviderLazyQuery(
   >(OpportunityPostProviderDocument, options);
 }
 
+export type OpportunityPostProviderQueryHookResult = ReturnType<typeof useOpportunityPostProviderQuery>;
+export type OpportunityPostProviderLazyQueryHookResult = ReturnType<typeof useOpportunityPostProviderLazyQuery>;
 export type OpportunityPostProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityPostProviderQuery,
   SchemaTypes.OpportunityPostProviderQueryVariables
@@ -10886,65 +10884,6 @@ export function refetchOpportunityPostProviderQuery(variables: SchemaTypes.Oppor
   return { query: OpportunityPostProviderDocument, variables: variables };
 }
 
-export const CreatePostDocument = gql`
-  mutation CreatePost($postData: CreatePostOnCalloutInput!) {
-    createPostOnCallout(postData: $postData) {
-      id
-      nameID
-      type
-      profile {
-        id
-        description
-        displayName
-        tagset {
-          ...TagsetDetails
-        }
-        visuals {
-          ...VisualUri
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-`;
-export type CreatePostMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreatePostMutation,
-  SchemaTypes.CreatePostMutationVariables
->;
-
-/**
- * __useCreatePostMutation__
- *
- * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePostMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
- *   variables: {
- *      postData: // value for 'postData'
- *   },
- * });
- */
-export function useCreatePostMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreatePostMutation, SchemaTypes.CreatePostMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreatePostMutation, SchemaTypes.CreatePostMutationVariables>(
-    CreatePostDocument,
-    options
-  );
-}
-
-export type CreatePostMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostMutation>;
-export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreatePostMutation,
-  SchemaTypes.CreatePostMutationVariables
->;
 export const DeletePostDocument = gql`
   mutation deletePost($input: DeletePostInput!) {
     deletePost(deleteData: $input) {
@@ -10984,6 +10923,7 @@ export function useDeletePostMutation(
   );
 }
 
+export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostMutation,
@@ -11037,6 +10977,7 @@ export function useMovePostToCalloutMutation(
   );
 }
 
+export type MovePostToCalloutMutationHookResult = ReturnType<typeof useMovePostToCalloutMutation>;
 export type MovePostToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MovePostToCalloutMutation>;
 export type MovePostToCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MovePostToCalloutMutation,
@@ -11107,6 +11048,7 @@ export function useSpaceWhiteboardTemplatesLibraryLazyQuery(
   >(SpaceWhiteboardTemplatesLibraryDocument, options);
 }
 
+export type SpaceWhiteboardTemplatesLibraryQueryHookResult = ReturnType<typeof useSpaceWhiteboardTemplatesLibraryQuery>;
 export type SpaceWhiteboardTemplatesLibraryLazyQueryHookResult = ReturnType<
   typeof useSpaceWhiteboardTemplatesLibraryLazyQuery
 >;
@@ -11179,6 +11121,7 @@ export function useSpaceWhiteboardTemplateValueLazyQuery(
   >(SpaceWhiteboardTemplateValueDocument, options);
 }
 
+export type SpaceWhiteboardTemplateValueQueryHookResult = ReturnType<typeof useSpaceWhiteboardTemplateValueQuery>;
 export type SpaceWhiteboardTemplateValueLazyQueryHookResult = ReturnType<
   typeof useSpaceWhiteboardTemplateValueLazyQuery
 >;
@@ -11348,6 +11291,7 @@ export function usePlatformWhiteboardTemplateValueLazyQuery(
   >(PlatformWhiteboardTemplateValueDocument, options);
 }
 
+export type PlatformWhiteboardTemplateValueQueryHookResult = ReturnType<typeof usePlatformWhiteboardTemplateValueQuery>;
 export type PlatformWhiteboardTemplateValueLazyQueryHookResult = ReturnType<
   typeof usePlatformWhiteboardTemplateValueLazyQuery
 >;
@@ -11412,6 +11356,8 @@ export function useWhiteboardLockedByDetailsLazyQuery(
   >(WhiteboardLockedByDetailsDocument, options);
 }
 
+export type WhiteboardLockedByDetailsQueryHookResult = ReturnType<typeof useWhiteboardLockedByDetailsQuery>;
+export type WhiteboardLockedByDetailsLazyQueryHookResult = ReturnType<typeof useWhiteboardLockedByDetailsLazyQuery>;
 export type WhiteboardLockedByDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.WhiteboardLockedByDetailsQuery,
   SchemaTypes.WhiteboardLockedByDetailsQueryVariables
@@ -11477,6 +11423,8 @@ export function useWhiteboardTemplatesLazyQuery(
   );
 }
 
+export type WhiteboardTemplatesQueryHookResult = ReturnType<typeof useWhiteboardTemplatesQuery>;
+export type WhiteboardTemplatesLazyQueryHookResult = ReturnType<typeof useWhiteboardTemplatesLazyQuery>;
 export type WhiteboardTemplatesQueryResult = Apollo.QueryResult<
   SchemaTypes.WhiteboardTemplatesQuery,
   SchemaTypes.WhiteboardTemplatesQueryVariables
@@ -11541,6 +11489,8 @@ export function useSpaceWhiteboardFromCalloutLazyQuery(
   >(SpaceWhiteboardFromCalloutDocument, options);
 }
 
+export type SpaceWhiteboardFromCalloutQueryHookResult = ReturnType<typeof useSpaceWhiteboardFromCalloutQuery>;
+export type SpaceWhiteboardFromCalloutLazyQueryHookResult = ReturnType<typeof useSpaceWhiteboardFromCalloutLazyQuery>;
 export type SpaceWhiteboardFromCalloutQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceWhiteboardFromCalloutQuery,
   SchemaTypes.SpaceWhiteboardFromCalloutQueryVariables
@@ -11606,6 +11556,8 @@ export function useWhiteboardWithValueLazyQuery(
   );
 }
 
+export type WhiteboardWithValueQueryHookResult = ReturnType<typeof useWhiteboardWithValueQuery>;
+export type WhiteboardWithValueLazyQueryHookResult = ReturnType<typeof useWhiteboardWithValueLazyQuery>;
 export type WhiteboardWithValueQueryResult = Apollo.QueryResult<
   SchemaTypes.WhiteboardWithValueQuery,
   SchemaTypes.WhiteboardWithValueQueryVariables
@@ -11679,6 +11631,7 @@ export function useChallengeWhiteboardFromCalloutLazyQuery(
   >(ChallengeWhiteboardFromCalloutDocument, options);
 }
 
+export type ChallengeWhiteboardFromCalloutQueryHookResult = ReturnType<typeof useChallengeWhiteboardFromCalloutQuery>;
 export type ChallengeWhiteboardFromCalloutLazyQueryHookResult = ReturnType<
   typeof useChallengeWhiteboardFromCalloutLazyQuery
 >;
@@ -11835,6 +11788,7 @@ export function useSpaceTemplateWhiteboardValuesLazyQuery(
   >(SpaceTemplateWhiteboardValuesDocument, options);
 }
 
+export type SpaceTemplateWhiteboardValuesQueryHookResult = ReturnType<typeof useSpaceTemplateWhiteboardValuesQuery>;
 export type SpaceTemplateWhiteboardValuesLazyQueryHookResult = ReturnType<
   typeof useSpaceTemplateWhiteboardValuesLazyQuery
 >;
@@ -11974,6 +11928,7 @@ export function useCreateWhiteboardOnCalloutMutation(
   >(CreateWhiteboardOnCalloutDocument, options);
 }
 
+export type CreateWhiteboardOnCalloutMutationHookResult = ReturnType<typeof useCreateWhiteboardOnCalloutMutation>;
 export type CreateWhiteboardOnCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateWhiteboardOnCalloutMutation>;
 export type CreateWhiteboardOnCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -12022,6 +11977,7 @@ export function useDeleteWhiteboardMutation(
   );
 }
 
+export type DeleteWhiteboardMutationHookResult = ReturnType<typeof useDeleteWhiteboardMutation>;
 export type DeleteWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.DeleteWhiteboardMutation>;
 export type DeleteWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteWhiteboardMutation,
@@ -12074,6 +12030,7 @@ export function useUpdateWhiteboardMutation(
   );
 }
 
+export type UpdateWhiteboardMutationHookResult = ReturnType<typeof useUpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
@@ -12122,6 +12079,7 @@ export function useCheckoutWhiteboardMutation(
   );
 }
 
+export type CheckoutWhiteboardMutationHookResult = ReturnType<typeof useCheckoutWhiteboardMutation>;
 export type CheckoutWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutWhiteboardMutation>;
 export type CheckoutWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CheckoutWhiteboardMutation,
@@ -12275,6 +12233,8 @@ export function useChallengePreferencesLazyQuery(
   );
 }
 
+export type ChallengePreferencesQueryHookResult = ReturnType<typeof useChallengePreferencesQuery>;
+export type ChallengePreferencesLazyQueryHookResult = ReturnType<typeof useChallengePreferencesLazyQuery>;
 export type ChallengePreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengePreferencesQuery,
   SchemaTypes.ChallengePreferencesQueryVariables
@@ -12326,6 +12286,7 @@ export function useUpdatePreferenceOnChallengeMutation(
   >(UpdatePreferenceOnChallengeDocument, options);
 }
 
+export type UpdatePreferenceOnChallengeMutationHookResult = ReturnType<typeof useUpdatePreferenceOnChallengeMutation>;
 export type UpdatePreferenceOnChallengeMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnChallengeMutation>;
 export type UpdatePreferenceOnChallengeMutationOptions = Apollo.BaseMutationOptions<
@@ -12394,6 +12355,8 @@ export function useOrganizationPreferencesLazyQuery(
   >(OrganizationPreferencesDocument, options);
 }
 
+export type OrganizationPreferencesQueryHookResult = ReturnType<typeof useOrganizationPreferencesQuery>;
+export type OrganizationPreferencesLazyQueryHookResult = ReturnType<typeof useOrganizationPreferencesLazyQuery>;
 export type OrganizationPreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationPreferencesQuery,
   SchemaTypes.OrganizationPreferencesQueryVariables
@@ -12513,6 +12476,8 @@ export function useSpacePreferencesLazyQuery(
   );
 }
 
+export type SpacePreferencesQueryHookResult = ReturnType<typeof useSpacePreferencesQuery>;
+export type SpacePreferencesLazyQueryHookResult = ReturnType<typeof useSpacePreferencesLazyQuery>;
 export type SpacePreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.SpacePreferencesQuery,
   SchemaTypes.SpacePreferencesQueryVariables
@@ -12564,6 +12529,7 @@ export function useUpdatePreferenceOnSpaceMutation(
   >(UpdatePreferenceOnSpaceDocument, options);
 }
 
+export type UpdatePreferenceOnSpaceMutationHookResult = ReturnType<typeof useUpdatePreferenceOnSpaceMutation>;
 export type UpdatePreferenceOnSpaceMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnSpaceMutation>;
 export type UpdatePreferenceOnSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnSpaceMutation,
@@ -12612,6 +12578,7 @@ export function useCreateTagsetOnProfileMutation(
   >(CreateTagsetOnProfileDocument, options);
 }
 
+export type CreateTagsetOnProfileMutationHookResult = ReturnType<typeof useCreateTagsetOnProfileMutation>;
 export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateTagsetOnProfileMutation>;
 export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTagsetOnProfileMutation,
@@ -12659,6 +12626,7 @@ export function useUploadVisualMutation(
   );
 }
 
+export type UploadVisualMutationHookResult = ReturnType<typeof useUploadVisualMutation>;
 export type UploadVisualMutationResult = Apollo.MutationResult<SchemaTypes.UploadVisualMutation>;
 export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadVisualMutation,
@@ -12711,6 +12679,8 @@ export function useAuthorDetailsLazyQuery(
   );
 }
 
+export type AuthorDetailsQueryHookResult = ReturnType<typeof useAuthorDetailsQuery>;
+export type AuthorDetailsLazyQueryHookResult = ReturnType<typeof useAuthorDetailsLazyQuery>;
 export type AuthorDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.AuthorDetailsQuery,
   SchemaTypes.AuthorDetailsQueryVariables
@@ -12762,6 +12732,7 @@ export function useCreateDiscussionMutation(
   );
 }
 
+export type CreateDiscussionMutationHookResult = ReturnType<typeof useCreateDiscussionMutation>;
 export type CreateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.CreateDiscussionMutation>;
 export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateDiscussionMutation,
@@ -12809,6 +12780,7 @@ export function useDeleteDiscussionMutation(
   );
 }
 
+export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
 export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
 export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDiscussionMutation,
@@ -12901,6 +12873,8 @@ export function usePlatformDiscussionsLazyQuery(
   );
 }
 
+export type PlatformDiscussionsQueryHookResult = ReturnType<typeof usePlatformDiscussionsQuery>;
+export type PlatformDiscussionsLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionsLazyQuery>;
 export type PlatformDiscussionsQueryResult = Apollo.QueryResult<
   SchemaTypes.PlatformDiscussionsQuery,
   SchemaTypes.PlatformDiscussionsQueryVariables
@@ -12971,6 +12945,8 @@ export function usePlatformDiscussionLazyQuery(
   );
 }
 
+export type PlatformDiscussionQueryHookResult = ReturnType<typeof usePlatformDiscussionQuery>;
+export type PlatformDiscussionLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionLazyQuery>;
 export type PlatformDiscussionQueryResult = Apollo.QueryResult<
   SchemaTypes.PlatformDiscussionQuery,
   SchemaTypes.PlatformDiscussionQueryVariables
@@ -13079,6 +13055,7 @@ export function useSendMessageToUserMutation(
   );
 }
 
+export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
 export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
 export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendMessageToUserMutation,
@@ -13124,6 +13101,7 @@ export function useSendMessageToOrganizationMutation(
   >(SendMessageToOrganizationDocument, options);
 }
 
+export type SendMessageToOrganizationMutationHookResult = ReturnType<typeof useSendMessageToOrganizationMutation>;
 export type SendMessageToOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.SendMessageToOrganizationMutation>;
 export type SendMessageToOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -13170,6 +13148,7 @@ export function useSendMessageToCommunityLeadsMutation(
   >(SendMessageToCommunityLeadsDocument, options);
 }
 
+export type SendMessageToCommunityLeadsMutationHookResult = ReturnType<typeof useSendMessageToCommunityLeadsMutation>;
 export type SendMessageToCommunityLeadsMutationResult =
   Apollo.MutationResult<SchemaTypes.SendMessageToCommunityLeadsMutation>;
 export type SendMessageToCommunityLeadsMutationOptions = Apollo.BaseMutationOptions<
@@ -13223,6 +13202,7 @@ export function useAddReactionMutation(
   );
 }
 
+export type AddReactionMutationHookResult = ReturnType<typeof useAddReactionMutation>;
 export type AddReactionMutationResult = Apollo.MutationResult<SchemaTypes.AddReactionMutation>;
 export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddReactionMutation,
@@ -13269,6 +13249,7 @@ export function useRemoveReactionMutation(
   );
 }
 
+export type RemoveReactionMutationHookResult = ReturnType<typeof useRemoveReactionMutation>;
 export type RemoveReactionMutationResult = Apollo.MutationResult<SchemaTypes.RemoveReactionMutation>;
 export type RemoveReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveReactionMutation,
@@ -13323,6 +13304,7 @@ export function useReplyToMessageMutation(
   );
 }
 
+export type ReplyToMessageMutationHookResult = ReturnType<typeof useReplyToMessageMutation>;
 export type ReplyToMessageMutationResult = Apollo.MutationResult<SchemaTypes.ReplyToMessageMutation>;
 export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
@@ -13392,6 +13374,8 @@ export function useMentionableUsersLazyQuery(
   );
 }
 
+export type MentionableUsersQueryHookResult = ReturnType<typeof useMentionableUsersQuery>;
+export type MentionableUsersLazyQueryHookResult = ReturnType<typeof useMentionableUsersLazyQuery>;
 export type MentionableUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.MentionableUsersQuery,
   SchemaTypes.MentionableUsersQueryVariables
@@ -13447,6 +13431,7 @@ export function useSendMessageToRoomMutation(
   );
 }
 
+export type SendMessageToRoomMutationHookResult = ReturnType<typeof useSendMessageToRoomMutation>;
 export type SendMessageToRoomMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToRoomMutation>;
 export type SendMessageToRoomMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendMessageToRoomMutation,
@@ -13492,6 +13477,7 @@ export function useRemoveMessageOnRoomMutation(
   );
 }
 
+export type RemoveMessageOnRoomMutationHookResult = ReturnType<typeof useRemoveMessageOnRoomMutation>;
 export type RemoveMessageOnRoomMutationResult = Apollo.MutationResult<SchemaTypes.RemoveMessageOnRoomMutation>;
 export type RemoveMessageOnRoomMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveMessageOnRoomMutation,
@@ -13615,6 +13601,8 @@ export function useCommunityUpdatesLazyQuery(
   );
 }
 
+export type CommunityUpdatesQueryHookResult = ReturnType<typeof useCommunityUpdatesQuery>;
+export type CommunityUpdatesLazyQueryHookResult = ReturnType<typeof useCommunityUpdatesLazyQuery>;
 export type CommunityUpdatesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityUpdatesQuery,
   SchemaTypes.CommunityUpdatesQueryVariables
@@ -13678,6 +13666,8 @@ export function usePlatformUpdatesRoomLazyQuery(
   );
 }
 
+export type PlatformUpdatesRoomQueryHookResult = ReturnType<typeof usePlatformUpdatesRoomQuery>;
+export type PlatformUpdatesRoomLazyQueryHookResult = ReturnType<typeof usePlatformUpdatesRoomLazyQuery>;
 export type PlatformUpdatesRoomQueryResult = Apollo.QueryResult<
   SchemaTypes.PlatformUpdatesRoomQuery,
   SchemaTypes.PlatformUpdatesRoomQueryVariables
@@ -13751,6 +13741,8 @@ export function useCommunityUserPrivilegesLazyQuery(
   >(CommunityUserPrivilegesDocument, options);
 }
 
+export type CommunityUserPrivilegesQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesQuery>;
+export type CommunityUserPrivilegesLazyQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesLazyQuery>;
 export type CommunityUserPrivilegesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityUserPrivilegesQuery,
   SchemaTypes.CommunityUserPrivilegesQueryVariables
@@ -13801,6 +13793,7 @@ export function useJoinCommunityMutation(
   );
 }
 
+export type JoinCommunityMutationHookResult = ReturnType<typeof useJoinCommunityMutation>;
 export type JoinCommunityMutationResult = Apollo.MutationResult<SchemaTypes.JoinCommunityMutation>;
 export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinCommunityMutation,
@@ -13848,58 +13841,12 @@ export function useApplyForCommunityMembershipMutation(
   >(ApplyForCommunityMembershipDocument, options);
 }
 
+export type ApplyForCommunityMembershipMutationHookResult = ReturnType<typeof useApplyForCommunityMembershipMutation>;
 export type ApplyForCommunityMembershipMutationResult =
   Apollo.MutationResult<SchemaTypes.ApplyForCommunityMembershipMutation>;
 export type ApplyForCommunityMembershipMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ApplyForCommunityMembershipMutation,
   SchemaTypes.ApplyForCommunityMembershipMutationVariables
->;
-export const DeleteUserApplicationDocument = gql`
-  mutation deleteUserApplication($input: DeleteApplicationInput!) {
-    deleteUserApplication(deleteData: $input) {
-      id
-    }
-  }
-`;
-export type DeleteUserApplicationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteUserApplicationMutation,
-  SchemaTypes.DeleteUserApplicationMutationVariables
->;
-
-/**
- * __useDeleteUserApplicationMutation__
- *
- * To run a mutation, you first call `useDeleteUserApplicationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteUserApplicationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteUserApplicationMutation, { data, loading, error }] = useDeleteUserApplicationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteUserApplicationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteUserApplicationMutation,
-    SchemaTypes.DeleteUserApplicationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.DeleteUserApplicationMutation,
-    SchemaTypes.DeleteUserApplicationMutationVariables
-  >(DeleteUserApplicationDocument, options);
-}
-
-export type DeleteUserApplicationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserApplicationMutation>;
-export type DeleteUserApplicationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteUserApplicationMutation,
-  SchemaTypes.DeleteUserApplicationMutationVariables
 >;
 export const EventOnApplicationDocument = gql`
   mutation eventOnApplication($input: ApplicationEventInput!) {
@@ -13948,6 +13895,7 @@ export function useEventOnApplicationMutation(
   );
 }
 
+export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
 export type EventOnApplicationMutationResult = Apollo.MutationResult<SchemaTypes.EventOnApplicationMutation>;
 export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnApplicationMutation,
@@ -14000,80 +13948,12 @@ export function useEventOnChallengeMutation(
   );
 }
 
+export type EventOnChallengeMutationHookResult = ReturnType<typeof useEventOnChallengeMutation>;
 export type EventOnChallengeMutationResult = Apollo.MutationResult<SchemaTypes.EventOnChallengeMutation>;
 export type EventOnChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnChallengeMutation,
   SchemaTypes.EventOnChallengeMutationVariables
 >;
-export const ApplicationBySpaceDocument = gql`
-  query applicationBySpace($spaceId: UUID_NAMEID!, $appId: UUID!) {
-    space(ID: $spaceId) {
-      id
-      application(ID: $appId) {
-        id
-        createdDate
-        updatedDate
-        questions {
-          id
-          name
-          value
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useApplicationBySpaceQuery__
- *
- * To run a query within a React component, call `useApplicationBySpaceQuery` and pass it any options that fit your needs.
- * When your component renders, `useApplicationBySpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useApplicationBySpaceQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      appId: // value for 'appId'
- *   },
- * });
- */
-export function useApplicationBySpaceQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ApplicationBySpaceQuery,
-    SchemaTypes.ApplicationBySpaceQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ApplicationBySpaceQuery, SchemaTypes.ApplicationBySpaceQueryVariables>(
-    ApplicationBySpaceDocument,
-    options
-  );
-}
-
-export function useApplicationBySpaceLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ApplicationBySpaceQuery,
-    SchemaTypes.ApplicationBySpaceQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ApplicationBySpaceQuery, SchemaTypes.ApplicationBySpaceQueryVariables>(
-    ApplicationBySpaceDocument,
-    options
-  );
-}
-
-export type ApplicationBySpaceQueryResult = Apollo.QueryResult<
-  SchemaTypes.ApplicationBySpaceQuery,
-  SchemaTypes.ApplicationBySpaceQueryVariables
->;
-export function refetchApplicationBySpaceQuery(variables: SchemaTypes.ApplicationBySpaceQueryVariables) {
-  return { query: ApplicationBySpaceDocument, variables: variables };
-}
-
 export const ChallengeApplicationDocument = gql`
   query challengeApplication($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -14135,185 +14015,14 @@ export function useChallengeApplicationLazyQuery(
   );
 }
 
+export type ChallengeApplicationQueryHookResult = ReturnType<typeof useChallengeApplicationQuery>;
+export type ChallengeApplicationLazyQueryHookResult = ReturnType<typeof useChallengeApplicationLazyQuery>;
 export type ChallengeApplicationQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationQuery,
   SchemaTypes.ChallengeApplicationQueryVariables
 >;
 export function refetchChallengeApplicationQuery(variables: SchemaTypes.ChallengeApplicationQueryVariables) {
   return { query: ChallengeApplicationDocument, variables: variables };
-}
-
-export const SpaceNameIdDocument = gql`
-  query spaceNameId($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
-    }
-  }
-`;
-
-/**
- * __useSpaceNameIdQuery__
- *
- * To run a query within a React component, call `useSpaceNameIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceNameIdQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceNameIdQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceNameIdQuery, SchemaTypes.SpaceNameIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceNameIdQuery, SchemaTypes.SpaceNameIdQueryVariables>(
-    SpaceNameIdDocument,
-    options
-  );
-}
-
-export function useSpaceNameIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceNameIdQuery, SchemaTypes.SpaceNameIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceNameIdQuery, SchemaTypes.SpaceNameIdQueryVariables>(
-    SpaceNameIdDocument,
-    options
-  );
-}
-
-export type SpaceNameIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceNameIdQuery,
-  SchemaTypes.SpaceNameIdQueryVariables
->;
-export function refetchSpaceNameIdQuery(variables: SchemaTypes.SpaceNameIdQueryVariables) {
-  return { query: SpaceNameIdDocument, variables: variables };
-}
-
-export const ChallengeNameIdDocument = gql`
-  query challengeNameId($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
-      challenge(ID: $challengeId) {
-        id
-        nameID
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeNameIdQuery__
- *
- * To run a query within a React component, call `useChallengeNameIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeNameIdQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeNameIdQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>(
-    ChallengeNameIdDocument,
-    options
-  );
-}
-
-export function useChallengeNameIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeNameIdQuery, SchemaTypes.ChallengeNameIdQueryVariables>(
-    ChallengeNameIdDocument,
-    options
-  );
-}
-
-export type ChallengeNameIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeNameIdQuery,
-  SchemaTypes.ChallengeNameIdQueryVariables
->;
-export function refetchChallengeNameIdQuery(variables: SchemaTypes.ChallengeNameIdQueryVariables) {
-  return { query: ChallengeNameIdDocument, variables: variables };
-}
-
-export const OpportunityNameIdDocument = gql`
-  query opportunityNameId($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
-      opportunity(ID: $opportunityId) {
-        id
-        nameID
-        parentNameID
-      }
-    }
-  }
-`;
-
-/**
- * __useOpportunityNameIdQuery__
- *
- * To run a query within a React component, call `useOpportunityNameIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityNameIdQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityNameIdQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityNameIdQuery, SchemaTypes.OpportunityNameIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityNameIdQuery, SchemaTypes.OpportunityNameIdQueryVariables>(
-    OpportunityNameIdDocument,
-    options
-  );
-}
-
-export function useOpportunityNameIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityNameIdQuery,
-    SchemaTypes.OpportunityNameIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityNameIdQuery, SchemaTypes.OpportunityNameIdQueryVariables>(
-    OpportunityNameIdDocument,
-    options
-  );
-}
-
-export type OpportunityNameIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityNameIdQuery,
-  SchemaTypes.OpportunityNameIdQueryVariables
->;
-export function refetchOpportunityNameIdQuery(variables: SchemaTypes.OpportunityNameIdQueryVariables) {
-  return { query: OpportunityNameIdDocument, variables: variables };
 }
 
 export const SpaceApplicationDocument = gql`
@@ -14371,6 +14080,8 @@ export function useSpaceApplicationLazyQuery(
   );
 }
 
+export type SpaceApplicationQueryHookResult = ReturnType<typeof useSpaceApplicationQuery>;
+export type SpaceApplicationLazyQueryHookResult = ReturnType<typeof useSpaceApplicationLazyQuery>;
 export type SpaceApplicationQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceApplicationQuery,
   SchemaTypes.SpaceApplicationQueryVariables
@@ -14456,6 +14167,8 @@ export function useCommunityApplicationFormLazyQuery(
   >(CommunityApplicationFormDocument, options);
 }
 
+export type CommunityApplicationFormQueryHookResult = ReturnType<typeof useCommunityApplicationFormQuery>;
+export type CommunityApplicationFormLazyQueryHookResult = ReturnType<typeof useCommunityApplicationFormLazyQuery>;
 export type CommunityApplicationFormQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityApplicationFormQuery,
   SchemaTypes.CommunityApplicationFormQueryVariables
@@ -14576,6 +14289,8 @@ export function useChallengeCommunityLazyQuery(
   );
 }
 
+export type ChallengeCommunityQueryHookResult = ReturnType<typeof useChallengeCommunityQuery>;
+export type ChallengeCommunityLazyQueryHookResult = ReturnType<typeof useChallengeCommunityLazyQuery>;
 export type ChallengeCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityQuery,
   SchemaTypes.ChallengeCommunityQueryVariables
@@ -14644,6 +14359,8 @@ export function useOpportunityCommunityLazyQuery(
   );
 }
 
+export type OpportunityCommunityQueryHookResult = ReturnType<typeof useOpportunityCommunityQuery>;
+export type OpportunityCommunityLazyQueryHookResult = ReturnType<typeof useOpportunityCommunityLazyQuery>;
 export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityQuery,
   SchemaTypes.OpportunityCommunityQueryVariables
@@ -14702,6 +14419,8 @@ export function useSpaceCommunityLazyQuery(
   );
 }
 
+export type SpaceCommunityQueryHookResult = ReturnType<typeof useSpaceCommunityQuery>;
+export type SpaceCommunityLazyQueryHookResult = ReturnType<typeof useSpaceCommunityLazyQuery>;
 export type SpaceCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceCommunityQuery,
   SchemaTypes.SpaceCommunityQueryVariables
@@ -14777,6 +14496,8 @@ export function useSpaceCommunityContributorsLazyQuery(
   >(SpaceCommunityContributorsDocument, options);
 }
 
+export type SpaceCommunityContributorsQueryHookResult = ReturnType<typeof useSpaceCommunityContributorsQuery>;
+export type SpaceCommunityContributorsLazyQueryHookResult = ReturnType<typeof useSpaceCommunityContributorsLazyQuery>;
 export type SpaceCommunityContributorsQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceCommunityContributorsQuery,
   SchemaTypes.SpaceCommunityContributorsQueryVariables
@@ -14846,6 +14567,7 @@ export function useChallengeCommunityContributorsLazyQuery(
   >(ChallengeCommunityContributorsDocument, options);
 }
 
+export type ChallengeCommunityContributorsQueryHookResult = ReturnType<typeof useChallengeCommunityContributorsQuery>;
 export type ChallengeCommunityContributorsLazyQueryHookResult = ReturnType<
   typeof useChallengeCommunityContributorsLazyQuery
 >;
@@ -14995,6 +14717,8 @@ export function useContributingOrganizationsLazyQuery(
   >(ContributingOrganizationsDocument, options);
 }
 
+export type ContributingOrganizationsQueryHookResult = ReturnType<typeof useContributingOrganizationsQuery>;
+export type ContributingOrganizationsLazyQueryHookResult = ReturnType<typeof useContributingOrganizationsLazyQuery>;
 export type ContributingOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributingOrganizationsQuery,
   SchemaTypes.ContributingOrganizationsQueryVariables
@@ -15071,6 +14795,8 @@ export function useContributingUsersLazyQuery(
   );
 }
 
+export type ContributingUsersQueryHookResult = ReturnType<typeof useContributingUsersQuery>;
+export type ContributingUsersLazyQueryHookResult = ReturnType<typeof useContributingUsersLazyQuery>;
 export type ContributingUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributingUsersQuery,
   SchemaTypes.ContributingUsersQueryVariables
@@ -15122,6 +14848,7 @@ export function useCreateGroupOnCommunityMutation(
   >(CreateGroupOnCommunityDocument, options);
 }
 
+export type CreateGroupOnCommunityMutationHookResult = ReturnType<typeof useCreateGroupOnCommunityMutation>;
 export type CreateGroupOnCommunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateGroupOnCommunityMutation>;
 export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
@@ -15189,6 +14916,8 @@ export function useChallengesWithCommunityLazyQuery(
   >(ChallengesWithCommunityDocument, options);
 }
 
+export type ChallengesWithCommunityQueryHookResult = ReturnType<typeof useChallengesWithCommunityQuery>;
+export type ChallengesWithCommunityLazyQueryHookResult = ReturnType<typeof useChallengesWithCommunityLazyQuery>;
 export type ChallengesWithCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesWithCommunityQuery,
   SchemaTypes.ChallengesWithCommunityQueryVariables
@@ -15250,6 +14979,8 @@ export function useCommunityGroupsLazyQuery(
   );
 }
 
+export type CommunityGroupsQueryHookResult = ReturnType<typeof useCommunityGroupsQuery>;
+export type CommunityGroupsLazyQueryHookResult = ReturnType<typeof useCommunityGroupsLazyQuery>;
 export type CommunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityGroupsQuery,
   SchemaTypes.CommunityGroupsQueryVariables
@@ -15313,6 +15044,8 @@ export function useCommunityMembersLazyQuery(
   );
 }
 
+export type CommunityMembersQueryHookResult = ReturnType<typeof useCommunityMembersQuery>;
+export type CommunityMembersLazyQueryHookResult = ReturnType<typeof useCommunityMembersLazyQuery>;
 export type CommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityMembersQuery,
   SchemaTypes.CommunityMembersQueryVariables
@@ -15377,6 +15110,8 @@ export function useAvailableUsersLazyQuery(
   );
 }
 
+export type AvailableUsersQueryHookResult = ReturnType<typeof useAvailableUsersQuery>;
+export type AvailableUsersLazyQueryHookResult = ReturnType<typeof useAvailableUsersLazyQuery>;
 export type AvailableUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.AvailableUsersQuery,
   SchemaTypes.AvailableUsersQueryVariables
@@ -15441,6 +15176,8 @@ export function useAllOrganizationsLazyQuery(
   );
 }
 
+export type AllOrganizationsQueryHookResult = ReturnType<typeof useAllOrganizationsQuery>;
+export type AllOrganizationsLazyQueryHookResult = ReturnType<typeof useAllOrganizationsLazyQuery>;
 export type AllOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.AllOrganizationsQuery,
   SchemaTypes.AllOrganizationsQueryVariables
@@ -15520,6 +15257,8 @@ export function useChallengeCommunityMembersLazyQuery(
   >(ChallengeCommunityMembersDocument, options);
 }
 
+export type ChallengeCommunityMembersQueryHookResult = ReturnType<typeof useChallengeCommunityMembersQuery>;
+export type ChallengeCommunityMembersLazyQueryHookResult = ReturnType<typeof useChallengeCommunityMembersLazyQuery>;
 export type ChallengeCommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityMembersQuery,
   SchemaTypes.ChallengeCommunityMembersQueryVariables
@@ -15571,6 +15310,7 @@ export function useAssignUserAsCommunityMemberMutation(
   >(AssignUserAsCommunityMemberDocument, options);
 }
 
+export type AssignUserAsCommunityMemberMutationHookResult = ReturnType<typeof useAssignUserAsCommunityMemberMutation>;
 export type AssignUserAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityMemberMutation>;
 export type AssignUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
@@ -15620,6 +15360,7 @@ export function useAssignUserAsCommunityLeadMutation(
   >(AssignUserAsCommunityLeadDocument, options);
 }
 
+export type AssignUserAsCommunityLeadMutationHookResult = ReturnType<typeof useAssignUserAsCommunityLeadMutation>;
 export type AssignUserAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityLeadMutation>;
 export type AssignUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
@@ -15669,6 +15410,7 @@ export function useRemoveUserAsCommunityMemberMutation(
   >(RemoveUserAsCommunityMemberDocument, options);
 }
 
+export type RemoveUserAsCommunityMemberMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityMemberMutation>;
 export type RemoveUserAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityMemberMutation>;
 export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
@@ -15718,6 +15460,7 @@ export function useRemoveUserAsCommunityLeadMutation(
   >(RemoveUserAsCommunityLeadDocument, options);
 }
 
+export type RemoveUserAsCommunityLeadMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityLeadMutation>;
 export type RemoveUserAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityLeadMutation>;
 export type RemoveUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
@@ -15980,6 +15723,7 @@ export function useAssignUserAsSpaceAdminMutation(
   >(AssignUserAsSpaceAdminDocument, options);
 }
 
+export type AssignUserAsSpaceAdminMutationHookResult = ReturnType<typeof useAssignUserAsSpaceAdminMutation>;
 export type AssignUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsSpaceAdminMutation>;
 export type AssignUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsSpaceAdminMutation,
@@ -16027,6 +15771,7 @@ export function useRemoveUserAsSpaceAdminMutation(
   >(RemoveUserAsSpaceAdminDocument, options);
 }
 
+export type RemoveUserAsSpaceAdminMutationHookResult = ReturnType<typeof useRemoveUserAsSpaceAdminMutation>;
 export type RemoveUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsSpaceAdminMutation>;
 export type RemoveUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsSpaceAdminMutation,
@@ -16074,6 +15819,7 @@ export function useAssignUserAsChallengeAdminMutation(
   >(AssignUserAsChallengeAdminDocument, options);
 }
 
+export type AssignUserAsChallengeAdminMutationHookResult = ReturnType<typeof useAssignUserAsChallengeAdminMutation>;
 export type AssignUserAsChallengeAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsChallengeAdminMutation>;
 export type AssignUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16122,6 +15868,7 @@ export function useRemoveUserAsChallengeAdminMutation(
   >(RemoveUserAsChallengeAdminDocument, options);
 }
 
+export type RemoveUserAsChallengeAdminMutationHookResult = ReturnType<typeof useRemoveUserAsChallengeAdminMutation>;
 export type RemoveUserAsChallengeAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsChallengeAdminMutation>;
 export type RemoveUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16170,6 +15917,7 @@ export function useAssignUserAsOpportunityAdminMutation(
   >(AssignUserAsOpportunityAdminDocument, options);
 }
 
+export type AssignUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useAssignUserAsOpportunityAdminMutation>;
 export type AssignUserAsOpportunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsOpportunityAdminMutation>;
 export type AssignUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16218,6 +15966,7 @@ export function useRemoveUserAsOpportunityAdminMutation(
   >(RemoveUserAsOpportunityAdminDocument, options);
 }
 
+export type RemoveUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useRemoveUserAsOpportunityAdminMutation>;
 export type RemoveUserAsOpportunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsOpportunityAdminMutation>;
 export type RemoveUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16295,6 +16044,8 @@ export function useOpportunityCommunityMembersLazyQuery(
   >(OpportunityCommunityMembersDocument, options);
 }
 
+export type OpportunityCommunityMembersQueryHookResult = ReturnType<typeof useOpportunityCommunityMembersQuery>;
+export type OpportunityCommunityMembersLazyQueryHookResult = ReturnType<typeof useOpportunityCommunityMembersLazyQuery>;
 export type OpportunityCommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityMembersQuery,
   SchemaTypes.OpportunityCommunityMembersQueryVariables
@@ -16383,6 +16134,8 @@ export function useSpaceCommunityMembersLazyQuery(
   );
 }
 
+export type SpaceCommunityMembersQueryHookResult = ReturnType<typeof useSpaceCommunityMembersQuery>;
+export type SpaceCommunityMembersLazyQueryHookResult = ReturnType<typeof useSpaceCommunityMembersLazyQuery>;
 export type SpaceCommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceCommunityMembersQuery,
   SchemaTypes.SpaceCommunityMembersQueryVariables
@@ -16444,6 +16197,7 @@ export function useContributorsPageOrganizationsLazyQuery(
   >(ContributorsPageOrganizationsDocument, options);
 }
 
+export type ContributorsPageOrganizationsQueryHookResult = ReturnType<typeof useContributorsPageOrganizationsQuery>;
 export type ContributorsPageOrganizationsLazyQueryHookResult = ReturnType<
   typeof useContributorsPageOrganizationsLazyQuery
 >;
@@ -16510,6 +16264,8 @@ export function useContributorsPageUsersLazyQuery(
   );
 }
 
+export type ContributorsPageUsersQueryHookResult = ReturnType<typeof useContributorsPageUsersQuery>;
+export type ContributorsPageUsersLazyQueryHookResult = ReturnType<typeof useContributorsPageUsersLazyQuery>;
 export type ContributorsPageUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributorsPageUsersQuery,
   SchemaTypes.ContributorsPageUsersQueryVariables
@@ -16569,6 +16325,8 @@ export function useAssociatedOrganizationLazyQuery(
   );
 }
 
+export type AssociatedOrganizationQueryHookResult = ReturnType<typeof useAssociatedOrganizationQuery>;
+export type AssociatedOrganizationLazyQueryHookResult = ReturnType<typeof useAssociatedOrganizationLazyQuery>;
 export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
   SchemaTypes.AssociatedOrganizationQuery,
   SchemaTypes.AssociatedOrganizationQueryVariables
@@ -16626,6 +16384,8 @@ export function useUserOrganizationsLazyQuery(
   );
 }
 
+export type UserOrganizationsQueryHookResult = ReturnType<typeof useUserOrganizationsQuery>;
+export type UserOrganizationsLazyQueryHookResult = ReturnType<typeof useUserOrganizationsLazyQuery>;
 export type UserOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserOrganizationsQuery,
   SchemaTypes.UserOrganizationsQueryVariables
@@ -16680,6 +16440,7 @@ export function useAssignUserToOrganizationMutation(
   >(AssignUserToOrganizationDocument, options);
 }
 
+export type AssignUserToOrganizationMutationHookResult = ReturnType<typeof useAssignUserToOrganizationMutation>;
 export type AssignUserToOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserToOrganizationMutation>;
 export type AssignUserToOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -16732,6 +16493,7 @@ export function useRemoveUserFromOrganizationMutation(
   >(RemoveUserFromOrganizationDocument, options);
 }
 
+export type RemoveUserFromOrganizationMutationHookResult = ReturnType<typeof useRemoveUserFromOrganizationMutation>;
 export type RemoveUserFromOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserFromOrganizationMutation>;
 export type RemoveUserFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -16902,6 +16664,8 @@ export function useOrganizationAssociatesLazyQuery(
   );
 }
 
+export type OrganizationAssociatesQueryHookResult = ReturnType<typeof useOrganizationAssociatesQuery>;
+export type OrganizationAssociatesLazyQueryHookResult = ReturnType<typeof useOrganizationAssociatesLazyQuery>;
 export type OrganizationAssociatesQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationAssociatesQuery,
   SchemaTypes.OrganizationAssociatesQueryVariables
@@ -16970,6 +16734,8 @@ export function useRolesOrganizationLazyQuery(
   );
 }
 
+export type RolesOrganizationQueryHookResult = ReturnType<typeof useRolesOrganizationQuery>;
+export type RolesOrganizationLazyQueryHookResult = ReturnType<typeof useRolesOrganizationLazyQuery>;
 export type RolesOrganizationQueryResult = Apollo.QueryResult<
   SchemaTypes.RolesOrganizationQuery,
   SchemaTypes.RolesOrganizationQueryVariables
@@ -17027,6 +16793,8 @@ export function useOrganizationInfoLazyQuery(
   );
 }
 
+export type OrganizationInfoQueryHookResult = ReturnType<typeof useOrganizationInfoQuery>;
+export type OrganizationInfoLazyQueryHookResult = ReturnType<typeof useOrganizationInfoLazyQuery>;
 export type OrganizationInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationInfoQuery,
   SchemaTypes.OrganizationInfoQueryVariables
@@ -17078,6 +16846,7 @@ export function useCreateGroupOnOrganizationMutation(
   >(CreateGroupOnOrganizationDocument, options);
 }
 
+export type CreateGroupOnOrganizationMutationHookResult = ReturnType<typeof useCreateGroupOnOrganizationMutation>;
 export type CreateGroupOnOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateGroupOnOrganizationMutation>;
 export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -17131,6 +16900,7 @@ export function useCreateOrganizationMutation(
   );
 }
 
+export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
 export type CreateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.CreateOrganizationMutation>;
 export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateOrganizationMutation,
@@ -17178,6 +16948,7 @@ export function useDeleteOrganizationMutation(
   );
 }
 
+export type DeleteOrganizationMutationHookResult = ReturnType<typeof useDeleteOrganizationMutation>;
 export type DeleteOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOrganizationMutation>;
 export type DeleteOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOrganizationMutation,
@@ -17226,6 +16997,7 @@ export function useUpdateOrganizationMutation(
   );
 }
 
+export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
 export type UpdateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOrganizationMutation>;
 export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOrganizationMutation,
@@ -17287,6 +17059,8 @@ export function useOrganizationGroupLazyQuery(
   );
 }
 
+export type OrganizationGroupQueryHookResult = ReturnType<typeof useOrganizationGroupQuery>;
+export type OrganizationGroupLazyQueryHookResult = ReturnType<typeof useOrganizationGroupLazyQuery>;
 export type OrganizationGroupQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupQuery,
   SchemaTypes.OrganizationGroupQueryVariables
@@ -17349,6 +17123,8 @@ export function useOrganizationGroupsLazyQuery(
   );
 }
 
+export type OrganizationGroupsQueryHookResult = ReturnType<typeof useOrganizationGroupsQuery>;
+export type OrganizationGroupsLazyQueryHookResult = ReturnType<typeof useOrganizationGroupsLazyQuery>;
 export type OrganizationGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupsQuery,
   SchemaTypes.OrganizationGroupsQueryVariables
@@ -17408,6 +17184,8 @@ export function useOrganizationProfileInfoLazyQuery(
   >(OrganizationProfileInfoDocument, options);
 }
 
+export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
+export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
 export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationProfileInfoQuery,
   SchemaTypes.OrganizationProfileInfoQueryVariables
@@ -17474,6 +17252,8 @@ export function useOrganizationsListLazyQuery(
   );
 }
 
+export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganizationsListQuery>;
+export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganizationsListLazyQuery>;
 export type OrganizationsListQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationsListQuery,
   SchemaTypes.OrganizationsListQueryVariables
@@ -17536,6 +17316,7 @@ export function useMessagingAvailableRecipientsLazyQuery(
   >(MessagingAvailableRecipientsDocument, options);
 }
 
+export type MessagingAvailableRecipientsQueryHookResult = ReturnType<typeof useMessagingAvailableRecipientsQuery>;
 export type MessagingAvailableRecipientsLazyQueryHookResult = ReturnType<
   typeof useMessagingAvailableRecipientsLazyQuery
 >;
@@ -17600,6 +17381,8 @@ export function useMessagingUserDetailsLazyQuery(
   );
 }
 
+export type MessagingUserDetailsQueryHookResult = ReturnType<typeof useMessagingUserDetailsQuery>;
+export type MessagingUserDetailsLazyQueryHookResult = ReturnType<typeof useMessagingUserDetailsLazyQuery>;
 export type MessagingUserDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.MessagingUserDetailsQuery,
   SchemaTypes.MessagingUserDetailsQueryVariables
@@ -17660,6 +17443,8 @@ export function usePlatformLevelAuthorizationLazyQuery(
   >(PlatformLevelAuthorizationDocument, options);
 }
 
+export type PlatformLevelAuthorizationQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationQuery>;
+export type PlatformLevelAuthorizationLazyQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationLazyQuery>;
 export type PlatformLevelAuthorizationQueryResult = Apollo.QueryResult<
   SchemaTypes.PlatformLevelAuthorizationQuery,
   SchemaTypes.PlatformLevelAuthorizationQueryVariables
@@ -17731,6 +17516,8 @@ export function useUserAvatarsLazyQuery(
   );
 }
 
+export type UserAvatarsQueryHookResult = ReturnType<typeof useUserAvatarsQuery>;
+export type UserAvatarsLazyQueryHookResult = ReturnType<typeof useUserAvatarsLazyQuery>;
 export type UserAvatarsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserAvatarsQuery,
   SchemaTypes.UserAvatarsQueryVariables
@@ -17785,6 +17572,7 @@ export function useAssignUserToGroupMutation(
   );
 }
 
+export type AssignUserToGroupMutationHookResult = ReturnType<typeof useAssignUserToGroupMutation>;
 export type AssignUserToGroupMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserToGroupMutation>;
 export type AssignUserToGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserToGroupMutation,
@@ -17830,6 +17618,7 @@ export function useCreateUserMutation(
   );
 }
 
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<SchemaTypes.CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateUserMutation,
@@ -17877,6 +17666,7 @@ export function useCreateUserNewRegistrationMutation(
   >(CreateUserNewRegistrationDocument, options);
 }
 
+export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
 export type CreateUserNewRegistrationMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
 export type CreateUserNewRegistrationMutationOptions = Apollo.BaseMutationOptions<
@@ -17923,6 +17713,7 @@ export function useDeleteGroupMutation(
   );
 }
 
+export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
 export type DeleteGroupMutationResult = Apollo.MutationResult<SchemaTypes.DeleteGroupMutation>;
 export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteGroupMutation,
@@ -17967,6 +17758,7 @@ export function useDeleteUserMutation(
   );
 }
 
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
@@ -18019,6 +17811,7 @@ export function useRemoveUserFromGroupMutation(
   );
 }
 
+export type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
 export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserFromGroupMutation>;
 export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutation,
@@ -18081,6 +17874,7 @@ export function useUpdateGroupMutation(
   );
 }
 
+export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
 export type UpdateGroupMutationResult = Apollo.MutationResult<SchemaTypes.UpdateGroupMutation>;
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateGroupMutation,
@@ -18126,6 +17920,7 @@ export function useUpdateUserMutation(
   );
 }
 
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateUserMutation,
@@ -18174,6 +17969,7 @@ export function useUpdatePreferenceOnUserMutation(
   >(UpdatePreferenceOnUserDocument, options);
 }
 
+export type UpdatePreferenceOnUserMutationHookResult = ReturnType<typeof useUpdatePreferenceOnUserMutation>;
 export type UpdatePreferenceOnUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnUserMutation>;
 export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnUserMutation,
@@ -18222,6 +18018,8 @@ export function useRolesUserLazyQuery(
   );
 }
 
+export type RolesUserQueryHookResult = ReturnType<typeof useRolesUserQuery>;
+export type RolesUserLazyQueryHookResult = ReturnType<typeof useRolesUserLazyQuery>;
 export type RolesUserQueryResult = Apollo.QueryResult<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>;
 export function refetchRolesUserQuery(variables: SchemaTypes.RolesUserQueryVariables) {
   return { query: RolesUserDocument, variables: variables };
@@ -18268,6 +18066,8 @@ export function useUserLazyQuery(
   return Apollo.useLazyQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, options);
 }
 
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>;
 export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
@@ -18335,6 +18135,7 @@ export function useUserNotificationsPreferencesLazyQuery(
   >(UserNotificationsPreferencesDocument, options);
 }
 
+export type UserNotificationsPreferencesQueryHookResult = ReturnType<typeof useUserNotificationsPreferencesQuery>;
 export type UserNotificationsPreferencesLazyQueryHookResult = ReturnType<
   typeof useUserNotificationsPreferencesLazyQuery
 >;
@@ -18407,6 +18208,8 @@ export function useUserProfileLazyQuery(
   );
 }
 
+export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
+export type UserProfileLazyQueryHookResult = ReturnType<typeof useUserProfileLazyQuery>;
 export type UserProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.UserProfileQuery,
   SchemaTypes.UserProfileQueryVariables
@@ -18477,6 +18280,8 @@ export function useUsersWithCredentialsLazyQuery(
   );
 }
 
+export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
+export type UsersWithCredentialsLazyQueryHookResult = ReturnType<typeof useUsersWithCredentialsLazyQuery>;
 export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
   SchemaTypes.UsersWithCredentialsQuery,
   SchemaTypes.UsersWithCredentialsQueryVariables
@@ -18542,6 +18347,7 @@ export function useUsersWithCredentialsSimpleListLazyQuery(
   >(UsersWithCredentialsSimpleListDocument, options);
 }
 
+export type UsersWithCredentialsSimpleListQueryHookResult = ReturnType<typeof useUsersWithCredentialsSimpleListQuery>;
 export type UsersWithCredentialsSimpleListLazyQueryHookResult = ReturnType<
   typeof useUsersWithCredentialsSimpleListLazyQuery
 >;
@@ -18618,6 +18424,8 @@ export function useMeLazyQuery(
   return Apollo.useLazyQuery<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>(MeDocument, options);
 }
 
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>;
 export function refetchMeQuery(variables?: SchemaTypes.MeQueryVariables) {
   return { query: MeDocument, variables: variables };
@@ -18675,6 +18483,8 @@ export function useUserListLazyQuery(
   return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
 }
 
+export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
+export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
 export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
 export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
   return { query: UserListDocument, variables: variables };
@@ -18722,6 +18532,7 @@ export function useDeleteInvitationMutation(
   );
 }
 
+export type DeleteInvitationMutationHookResult = ReturnType<typeof useDeleteInvitationMutation>;
 export type DeleteInvitationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInvitationMutation>;
 export type DeleteInvitationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInvitationMutation,
@@ -18769,6 +18580,7 @@ export function useDeleteExternalInvitationMutation(
   >(DeleteExternalInvitationDocument, options);
 }
 
+export type DeleteExternalInvitationMutationHookResult = ReturnType<typeof useDeleteExternalInvitationMutation>;
 export type DeleteExternalInvitationMutationResult =
   Apollo.MutationResult<SchemaTypes.DeleteExternalInvitationMutation>;
 export type DeleteExternalInvitationMutationOptions = Apollo.BaseMutationOptions<
@@ -18823,6 +18635,7 @@ export function useInvitationStateEventMutation(
   >(InvitationStateEventDocument, options);
 }
 
+export type InvitationStateEventMutationHookResult = ReturnType<typeof useInvitationStateEventMutation>;
 export type InvitationStateEventMutationResult = Apollo.MutationResult<SchemaTypes.InvitationStateEventMutation>;
 export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutation,
@@ -18874,6 +18687,7 @@ export function useInviteExistingUserMutation(
   );
 }
 
+export type InviteExistingUserMutationHookResult = ReturnType<typeof useInviteExistingUserMutation>;
 export type InviteExistingUserMutationResult = Apollo.MutationResult<SchemaTypes.InviteExistingUserMutation>;
 export type InviteExistingUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExistingUserMutation,
@@ -18925,6 +18739,7 @@ export function useInviteExternalUserMutation(
   );
 }
 
+export type InviteExternalUserMutationHookResult = ReturnType<typeof useInviteExternalUserMutation>;
 export type InviteExternalUserMutationResult = Apollo.MutationResult<SchemaTypes.InviteExternalUserMutation>;
 export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutation,
@@ -18985,6 +18800,8 @@ export function usePendingMembershipsSpaceLazyQuery(
   >(PendingMembershipsSpaceDocument, options);
 }
 
+export type PendingMembershipsSpaceQueryHookResult = ReturnType<typeof usePendingMembershipsSpaceQuery>;
+export type PendingMembershipsSpaceLazyQueryHookResult = ReturnType<typeof usePendingMembershipsSpaceLazyQuery>;
 export type PendingMembershipsSpaceQueryResult = Apollo.QueryResult<
   SchemaTypes.PendingMembershipsSpaceQuery,
   SchemaTypes.PendingMembershipsSpaceQueryVariables
@@ -19056,6 +18873,8 @@ export function usePendingMembershipsChallengeLazyQuery(
   >(PendingMembershipsChallengeDocument, options);
 }
 
+export type PendingMembershipsChallengeQueryHookResult = ReturnType<typeof usePendingMembershipsChallengeQuery>;
+export type PendingMembershipsChallengeLazyQueryHookResult = ReturnType<typeof usePendingMembershipsChallengeLazyQuery>;
 export type PendingMembershipsChallengeQueryResult = Apollo.QueryResult<
   SchemaTypes.PendingMembershipsChallengeQuery,
   SchemaTypes.PendingMembershipsChallengeQueryVariables
@@ -19129,6 +18948,7 @@ export function usePendingMembershipsOpportunityLazyQuery(
   >(PendingMembershipsOpportunityDocument, options);
 }
 
+export type PendingMembershipsOpportunityQueryHookResult = ReturnType<typeof usePendingMembershipsOpportunityQuery>;
 export type PendingMembershipsOpportunityLazyQueryHookResult = ReturnType<
   typeof usePendingMembershipsOpportunityLazyQuery
 >;
@@ -19196,6 +19016,8 @@ export function usePendingMembershipsUserLazyQuery(
   );
 }
 
+export type PendingMembershipsUserQueryHookResult = ReturnType<typeof usePendingMembershipsUserQuery>;
+export type PendingMembershipsUserLazyQueryHookResult = ReturnType<typeof usePendingMembershipsUserLazyQuery>;
 export type PendingMembershipsUserQueryResult = Apollo.QueryResult<
   SchemaTypes.PendingMembershipsUserQuery,
   SchemaTypes.PendingMembershipsUserQueryVariables
@@ -19275,6 +19097,8 @@ export function useSpaceContributionDetailsLazyQuery(
   >(SpaceContributionDetailsDocument, options);
 }
 
+export type SpaceContributionDetailsQueryHookResult = ReturnType<typeof useSpaceContributionDetailsQuery>;
+export type SpaceContributionDetailsLazyQueryHookResult = ReturnType<typeof useSpaceContributionDetailsLazyQuery>;
 export type SpaceContributionDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceContributionDetailsQuery,
   SchemaTypes.SpaceContributionDetailsQueryVariables
@@ -19359,6 +19183,7 @@ export function useChallengeContributionDetailsLazyQuery(
   >(ChallengeContributionDetailsDocument, options);
 }
 
+export type ChallengeContributionDetailsQueryHookResult = ReturnType<typeof useChallengeContributionDetailsQuery>;
 export type ChallengeContributionDetailsLazyQueryHookResult = ReturnType<
   typeof useChallengeContributionDetailsLazyQuery
 >;
@@ -19449,6 +19274,7 @@ export function useOpportunityContributionDetailsLazyQuery(
   >(OpportunityContributionDetailsDocument, options);
 }
 
+export type OpportunityContributionDetailsQueryHookResult = ReturnType<typeof useOpportunityContributionDetailsQuery>;
 export type OpportunityContributionDetailsLazyQueryHookResult = ReturnType<
   typeof useOpportunityContributionDetailsLazyQuery
 >;
@@ -19509,6 +19335,8 @@ export function useInnovationHubLazyQuery(
   );
 }
 
+export type InnovationHubQueryHookResult = ReturnType<typeof useInnovationHubQuery>;
+export type InnovationHubLazyQueryHookResult = ReturnType<typeof useInnovationHubLazyQuery>;
 export type InnovationHubQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationHubQuery,
   SchemaTypes.InnovationHubQueryVariables
@@ -19592,6 +19420,8 @@ export function useHomePageSpacesLazyQuery(
   );
 }
 
+export type HomePageSpacesQueryHookResult = ReturnType<typeof useHomePageSpacesQuery>;
+export type HomePageSpacesLazyQueryHookResult = ReturnType<typeof useHomePageSpacesLazyQuery>;
 export type HomePageSpacesQueryResult = Apollo.QueryResult<
   SchemaTypes.HomePageSpacesQuery,
   SchemaTypes.HomePageSpacesQueryVariables
@@ -19658,6 +19488,8 @@ export function useAdminInnovationHubsListLazyQuery(
   >(AdminInnovationHubsListDocument, options);
 }
 
+export type AdminInnovationHubsListQueryHookResult = ReturnType<typeof useAdminInnovationHubsListQuery>;
+export type AdminInnovationHubsListLazyQueryHookResult = ReturnType<typeof useAdminInnovationHubsListLazyQuery>;
 export type AdminInnovationHubsListQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminInnovationHubsListQuery,
   SchemaTypes.AdminInnovationHubsListQueryVariables
@@ -19708,6 +19540,7 @@ export function useDeleteInnovationHubMutation(
   );
 }
 
+export type DeleteInnovationHubMutationHookResult = ReturnType<typeof useDeleteInnovationHubMutation>;
 export type DeleteInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInnovationHubMutation>;
 export type DeleteInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationHubMutation,
@@ -19791,6 +19624,8 @@ export function useAdminInnovationHubLazyQuery(
   );
 }
 
+export type AdminInnovationHubQueryHookResult = ReturnType<typeof useAdminInnovationHubQuery>;
+export type AdminInnovationHubLazyQueryHookResult = ReturnType<typeof useAdminInnovationHubLazyQuery>;
 export type AdminInnovationHubQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminInnovationHubQuery,
   SchemaTypes.AdminInnovationHubQueryVariables
@@ -19842,6 +19677,7 @@ export function useCreateInnovationHubMutation(
   );
 }
 
+export type CreateInnovationHubMutationHookResult = ReturnType<typeof useCreateInnovationHubMutation>;
 export type CreateInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.CreateInnovationHubMutation>;
 export type CreateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateInnovationHubMutation,
@@ -19890,6 +19726,7 @@ export function useUpdateInnovationHubMutation(
   );
 }
 
+export type UpdateInnovationHubMutationHookResult = ReturnType<typeof useUpdateInnovationHubMutation>;
 export type UpdateInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationHubMutation>;
 export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationHubMutation,
@@ -19948,6 +19785,8 @@ export function useInnovationLibraryLazyQuery(
   );
 }
 
+export type InnovationLibraryQueryHookResult = ReturnType<typeof useInnovationLibraryQuery>;
+export type InnovationLibraryLazyQueryHookResult = ReturnType<typeof useInnovationLibraryLazyQuery>;
 export type InnovationLibraryQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationLibraryQuery,
   SchemaTypes.InnovationLibraryQueryVariables
@@ -20013,6 +19852,8 @@ export function useChallengeExplorerPageLazyQuery(
   );
 }
 
+export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
+export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
 export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerPageQuery,
   SchemaTypes.ChallengeExplorerPageQueryVariables
@@ -20079,6 +19920,8 @@ export function useChallengeExplorerSearchLazyQuery(
   >(ChallengeExplorerSearchDocument, options);
 }
 
+export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
+export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
 export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerSearchQuery,
   SchemaTypes.ChallengeExplorerSearchQueryVariables
@@ -20167,6 +20010,8 @@ export function useChallengeExplorerDataLazyQuery(
   );
 }
 
+export type ChallengeExplorerDataQueryHookResult = ReturnType<typeof useChallengeExplorerDataQuery>;
+export type ChallengeExplorerDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerDataLazyQuery>;
 export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerDataQuery,
   SchemaTypes.ChallengeExplorerDataQueryVariables
@@ -20229,6 +20074,7 @@ export function useGetSupportedCredentialMetadataLazyQuery(
   >(GetSupportedCredentialMetadataDocument, options);
 }
 
+export type GetSupportedCredentialMetadataQueryHookResult = ReturnType<typeof useGetSupportedCredentialMetadataQuery>;
 export type GetSupportedCredentialMetadataLazyQueryHookResult = ReturnType<
   typeof useGetSupportedCredentialMetadataLazyQuery
 >;
@@ -20437,6 +20283,8 @@ export function useUserSsiLazyQuery(
   return Apollo.useLazyQuery<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>(UserSsiDocument, options);
 }
 
+export type UserSsiQueryHookResult = ReturnType<typeof useUserSsiQuery>;
+export type UserSsiLazyQueryHookResult = ReturnType<typeof useUserSsiLazyQuery>;
 export type UserSsiQueryResult = Apollo.QueryResult<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>;
 export function refetchUserSsiQuery(variables?: SchemaTypes.UserSsiQueryVariables) {
   return { query: UserSsiDocument, variables: variables };
@@ -20503,6 +20351,8 @@ export function useChallengeApplicationsLazyQuery(
   );
 }
 
+export type ChallengeApplicationsQueryHookResult = ReturnType<typeof useChallengeApplicationsQuery>;
+export type ChallengeApplicationsLazyQueryHookResult = ReturnType<typeof useChallengeApplicationsLazyQuery>;
 export type ChallengeApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationsQuery,
   SchemaTypes.ChallengeApplicationsQueryVariables
@@ -20567,6 +20417,8 @@ export function useSpaceAvailableMemberUsersLazyQuery(
   >(SpaceAvailableMemberUsersDocument, options);
 }
 
+export type SpaceAvailableMemberUsersQueryHookResult = ReturnType<typeof useSpaceAvailableMemberUsersQuery>;
+export type SpaceAvailableMemberUsersLazyQueryHookResult = ReturnType<typeof useSpaceAvailableMemberUsersLazyQuery>;
 export type SpaceAvailableMemberUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceAvailableMemberUsersQuery,
   SchemaTypes.SpaceAvailableMemberUsersQueryVariables
@@ -20640,6 +20492,8 @@ export function useChallengeAvailableLeadUsersLazyQuery(
   >(ChallengeAvailableLeadUsersDocument, options);
 }
 
+export type ChallengeAvailableLeadUsersQueryHookResult = ReturnType<typeof useChallengeAvailableLeadUsersQuery>;
+export type ChallengeAvailableLeadUsersLazyQueryHookResult = ReturnType<typeof useChallengeAvailableLeadUsersLazyQuery>;
 export type ChallengeAvailableLeadUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeAvailableLeadUsersQuery,
   SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
@@ -20715,6 +20569,7 @@ export function useChallengeAvailableMemberUsersLazyQuery(
   >(ChallengeAvailableMemberUsersDocument, options);
 }
 
+export type ChallengeAvailableMemberUsersQueryHookResult = ReturnType<typeof useChallengeAvailableMemberUsersQuery>;
 export type ChallengeAvailableMemberUsersLazyQueryHookResult = ReturnType<
   typeof useChallengeAvailableMemberUsersLazyQuery
 >;
@@ -20793,6 +20648,7 @@ export function useOpportunityAvailableLeadUsersLazyQuery(
   >(OpportunityAvailableLeadUsersDocument, options);
 }
 
+export type OpportunityAvailableLeadUsersQueryHookResult = ReturnType<typeof useOpportunityAvailableLeadUsersQuery>;
 export type OpportunityAvailableLeadUsersLazyQueryHookResult = ReturnType<
   typeof useOpportunityAvailableLeadUsersLazyQuery
 >;
@@ -20871,6 +20727,7 @@ export function useOpportunityAvailableMemberUsersLazyQuery(
   >(OpportunityAvailableMemberUsersDocument, options);
 }
 
+export type OpportunityAvailableMemberUsersQueryHookResult = ReturnType<typeof useOpportunityAvailableMemberUsersQuery>;
 export type OpportunityAvailableMemberUsersLazyQueryHookResult = ReturnType<
   typeof useOpportunityAvailableMemberUsersLazyQuery
 >;
@@ -20947,6 +20804,7 @@ export function useAdminGlobalOrganizationsListLazyQuery(
   >(AdminGlobalOrganizationsListDocument, options);
 }
 
+export type AdminGlobalOrganizationsListQueryHookResult = ReturnType<typeof useAdminGlobalOrganizationsListQuery>;
 export type AdminGlobalOrganizationsListLazyQueryHookResult = ReturnType<
   typeof useAdminGlobalOrganizationsListLazyQuery
 >;
@@ -21008,6 +20866,7 @@ export function useUpdateSpacePlatformSettingsMutation(
   >(UpdateSpacePlatformSettingsDocument, options);
 }
 
+export type UpdateSpacePlatformSettingsMutationHookResult = ReturnType<typeof useUpdateSpacePlatformSettingsMutation>;
 export type UpdateSpacePlatformSettingsMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateSpacePlatformSettingsMutation>;
 export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
@@ -21059,6 +20918,8 @@ export function useAdminSpacesListLazyQuery(
   );
 }
 
+export type AdminSpacesListQueryHookResult = ReturnType<typeof useAdminSpacesListQuery>;
+export type AdminSpacesListLazyQueryHookResult = ReturnType<typeof useAdminSpacesListLazyQuery>;
 export type AdminSpacesListQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminSpacesListQuery,
   SchemaTypes.AdminSpacesListQueryVariables
@@ -21141,6 +21002,8 @@ export function useSpaceStorageAdminLazyQuery(
   );
 }
 
+export type SpaceStorageAdminQueryHookResult = ReturnType<typeof useSpaceStorageAdminQuery>;
+export type SpaceStorageAdminLazyQueryHookResult = ReturnType<typeof useSpaceStorageAdminLazyQuery>;
 export type SpaceStorageAdminQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceStorageAdminQuery,
   SchemaTypes.SpaceStorageAdminQueryVariables
@@ -21191,6 +21054,7 @@ export function useDeleteDocumentMutation(
   );
 }
 
+export type DeleteDocumentMutationHookResult = ReturnType<typeof useDeleteDocumentMutation>;
 export type DeleteDocumentMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDocumentMutation>;
 export type DeleteDocumentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDocumentMutation,
@@ -21265,6 +21129,8 @@ export function useAdminSpaceTemplatesLazyQuery(
   );
 }
 
+export type AdminSpaceTemplatesQueryHookResult = ReturnType<typeof useAdminSpaceTemplatesQuery>;
+export type AdminSpaceTemplatesLazyQueryHookResult = ReturnType<typeof useAdminSpaceTemplatesLazyQuery>;
 export type AdminSpaceTemplatesQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminSpaceTemplatesQuery,
   SchemaTypes.AdminSpaceTemplatesQueryVariables
@@ -21420,6 +21286,8 @@ export function useInnovationPacksLazyQuery(
   );
 }
 
+export type InnovationPacksQueryHookResult = ReturnType<typeof useInnovationPacksQuery>;
+export type InnovationPacksLazyQueryHookResult = ReturnType<typeof useInnovationPacksLazyQuery>;
 export type InnovationPacksQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationPacksQuery,
   SchemaTypes.InnovationPacksQueryVariables
@@ -21646,6 +21514,8 @@ export function useAdminInnovationPacksListLazyQuery(
   >(AdminInnovationPacksListDocument, options);
 }
 
+export type AdminInnovationPacksListQueryHookResult = ReturnType<typeof useAdminInnovationPacksListQuery>;
+export type AdminInnovationPacksListLazyQueryHookResult = ReturnType<typeof useAdminInnovationPacksListLazyQuery>;
 export type AdminInnovationPacksListQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminInnovationPacksListQuery,
   SchemaTypes.AdminInnovationPacksListQueryVariables
@@ -21696,6 +21566,7 @@ export function useDeleteInnovationPackMutation(
   >(DeleteInnovationPackDocument, options);
 }
 
+export type DeleteInnovationPackMutationHookResult = ReturnType<typeof useDeleteInnovationPackMutation>;
 export type DeleteInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInnovationPackMutation>;
 export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationPackMutation,
@@ -21778,6 +21649,8 @@ export function useAdminInnovationPackLazyQuery(
   );
 }
 
+export type AdminInnovationPackQueryHookResult = ReturnType<typeof useAdminInnovationPackQuery>;
+export type AdminInnovationPackLazyQueryHookResult = ReturnType<typeof useAdminInnovationPackLazyQuery>;
 export type AdminInnovationPackQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminInnovationPackQuery,
   SchemaTypes.AdminInnovationPackQueryVariables
@@ -21829,6 +21702,7 @@ export function useCreateInnovationPackMutation(
   >(CreateInnovationPackDocument, options);
 }
 
+export type CreateInnovationPackMutationHookResult = ReturnType<typeof useCreateInnovationPackMutation>;
 export type CreateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.CreateInnovationPackMutation>;
 export type CreateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateInnovationPackMutation,
@@ -21877,6 +21751,7 @@ export function useUpdateInnovationPackMutation(
   >(UpdateInnovationPackDocument, options);
 }
 
+export type UpdateInnovationPackMutationHookResult = ReturnType<typeof useUpdateInnovationPackMutation>;
 export type UpdateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationPackMutation>;
 export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationPackMutation,
@@ -21932,6 +21807,7 @@ export function useUpdateInnovationFlowTemplateMutation(
   >(UpdateInnovationFlowTemplateDocument, options);
 }
 
+export type UpdateInnovationFlowTemplateMutationHookResult = ReturnType<typeof useUpdateInnovationFlowTemplateMutation>;
 export type UpdateInnovationFlowTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowTemplateMutation>;
 export type UpdateInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -21998,6 +21874,7 @@ export function useCreateInnovationFlowTemplateMutation(
   >(CreateInnovationFlowTemplateDocument, options);
 }
 
+export type CreateInnovationFlowTemplateMutationHookResult = ReturnType<typeof useCreateInnovationFlowTemplateMutation>;
 export type CreateInnovationFlowTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateInnovationFlowTemplateMutation>;
 export type CreateInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22046,6 +21923,7 @@ export function useDeleteInnovationFlowTemplateMutation(
   >(DeleteInnovationFlowTemplateDocument, options);
 }
 
+export type DeleteInnovationFlowTemplateMutationHookResult = ReturnType<typeof useDeleteInnovationFlowTemplateMutation>;
 export type DeleteInnovationFlowTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.DeleteInnovationFlowTemplateMutation>;
 export type DeleteInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22104,6 +21982,7 @@ export function useUpdatePostTemplateMutation(
   );
 }
 
+export type UpdatePostTemplateMutationHookResult = ReturnType<typeof useUpdatePostTemplateMutation>;
 export type UpdatePostTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostTemplateMutation>;
 export type UpdatePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostTemplateMutation,
@@ -22169,6 +22048,7 @@ export function useCreatePostTemplateMutation(
   );
 }
 
+export type CreatePostTemplateMutationHookResult = ReturnType<typeof useCreatePostTemplateMutation>;
 export type CreatePostTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostTemplateMutation>;
 export type CreatePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreatePostTemplateMutation,
@@ -22216,6 +22096,7 @@ export function useDeletePostTemplateMutation(
   );
 }
 
+export type DeletePostTemplateMutationHookResult = ReturnType<typeof useDeletePostTemplateMutation>;
 export type DeletePostTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostTemplateMutation>;
 export type DeletePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostTemplateMutation,
@@ -22271,6 +22152,7 @@ export function useUpdateWhiteboardTemplateMutation(
   >(UpdateWhiteboardTemplateDocument, options);
 }
 
+export type UpdateWhiteboardTemplateMutationHookResult = ReturnType<typeof useUpdateWhiteboardTemplateMutation>;
 export type UpdateWhiteboardTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateWhiteboardTemplateMutation>;
 export type UpdateWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22335,6 +22217,7 @@ export function useCreateWhiteboardTemplateMutation(
   >(CreateWhiteboardTemplateDocument, options);
 }
 
+export type CreateWhiteboardTemplateMutationHookResult = ReturnType<typeof useCreateWhiteboardTemplateMutation>;
 export type CreateWhiteboardTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateWhiteboardTemplateMutation>;
 export type CreateWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22383,6 +22266,7 @@ export function useDeleteWhiteboardTemplateMutation(
   >(DeleteWhiteboardTemplateDocument, options);
 }
 
+export type DeleteWhiteboardTemplateMutationHookResult = ReturnType<typeof useDeleteWhiteboardTemplateMutation>;
 export type DeleteWhiteboardTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.DeleteWhiteboardTemplateMutation>;
 export type DeleteWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22435,6 +22319,8 @@ export function useConfigurationLazyQuery(
   );
 }
 
+export type ConfigurationQueryHookResult = ReturnType<typeof useConfigurationQuery>;
+export type ConfigurationLazyQueryHookResult = ReturnType<typeof useConfigurationLazyQuery>;
 export type ConfigurationQueryResult = Apollo.QueryResult<
   SchemaTypes.ConfigurationQuery,
   SchemaTypes.ConfigurationQueryVariables
@@ -22496,6 +22382,8 @@ export function useServerMetadataLazyQuery(
   );
 }
 
+export type ServerMetadataQueryHookResult = ReturnType<typeof useServerMetadataQuery>;
+export type ServerMetadataLazyQueryHookResult = ReturnType<typeof useServerMetadataLazyQuery>;
 export type ServerMetadataQueryResult = Apollo.QueryResult<
   SchemaTypes.ServerMetadataQuery,
   SchemaTypes.ServerMetadataQueryVariables
@@ -22586,6 +22474,8 @@ export function useSearchLazyQuery(
   return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
 }
 
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
 export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
   return { query: SearchDocument, variables: variables };
@@ -22657,6 +22547,8 @@ export function useUserRolesSearchCardsLazyQuery(
   );
 }
 
+export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
+export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
 export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserRolesSearchCardsQuery,
   SchemaTypes.UserRolesSearchCardsQueryVariables
@@ -22745,6 +22637,8 @@ export function useJourneyStorageConfigLazyQuery(
   );
 }
 
+export type JourneyStorageConfigQueryHookResult = ReturnType<typeof useJourneyStorageConfigQuery>;
+export type JourneyStorageConfigLazyQueryHookResult = ReturnType<typeof useJourneyStorageConfigLazyQuery>;
 export type JourneyStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.JourneyStorageConfigQuery,
   SchemaTypes.JourneyStorageConfigQueryVariables
@@ -22835,6 +22729,8 @@ export function useCalloutStorageConfigLazyQuery(
   );
 }
 
+export type CalloutStorageConfigQueryHookResult = ReturnType<typeof useCalloutStorageConfigQuery>;
+export type CalloutStorageConfigLazyQueryHookResult = ReturnType<typeof useCalloutStorageConfigLazyQuery>;
 export type CalloutStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.CalloutStorageConfigQuery,
   SchemaTypes.CalloutStorageConfigQueryVariables
@@ -22927,6 +22823,8 @@ export function useCalloutPostStorageConfigLazyQuery(
   >(CalloutPostStorageConfigDocument, options);
 }
 
+export type CalloutPostStorageConfigQueryHookResult = ReturnType<typeof useCalloutPostStorageConfigQuery>;
+export type CalloutPostStorageConfigLazyQueryHookResult = ReturnType<typeof useCalloutPostStorageConfigLazyQuery>;
 export type CalloutPostStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.CalloutPostStorageConfigQuery,
   SchemaTypes.CalloutPostStorageConfigQueryVariables
@@ -22986,6 +22884,8 @@ export function useUserStorageConfigLazyQuery(
   );
 }
 
+export type UserStorageConfigQueryHookResult = ReturnType<typeof useUserStorageConfigQuery>;
+export type UserStorageConfigLazyQueryHookResult = ReturnType<typeof useUserStorageConfigLazyQuery>;
 export type UserStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.UserStorageConfigQuery,
   SchemaTypes.UserStorageConfigQueryVariables
@@ -23048,6 +22948,8 @@ export function useOrganizationStorageConfigLazyQuery(
   >(OrganizationStorageConfigDocument, options);
 }
 
+export type OrganizationStorageConfigQueryHookResult = ReturnType<typeof useOrganizationStorageConfigQuery>;
+export type OrganizationStorageConfigLazyQueryHookResult = ReturnType<typeof useOrganizationStorageConfigLazyQuery>;
 export type OrganizationStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationStorageConfigQuery,
   SchemaTypes.OrganizationStorageConfigQueryVariables
@@ -23116,6 +23018,8 @@ export function useInnovationPackStorageConfigLazyQuery(
   >(InnovationPackStorageConfigDocument, options);
 }
 
+export type InnovationPackStorageConfigQueryHookResult = ReturnType<typeof useInnovationPackStorageConfigQuery>;
+export type InnovationPackStorageConfigLazyQueryHookResult = ReturnType<typeof useInnovationPackStorageConfigLazyQuery>;
 export type InnovationPackStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationPackStorageConfigQuery,
   SchemaTypes.InnovationPackStorageConfigQueryVariables
@@ -23184,6 +23088,8 @@ export function usePlatformStorageConfigLazyQuery(
   );
 }
 
+export type PlatformStorageConfigQueryHookResult = ReturnType<typeof usePlatformStorageConfigQuery>;
+export type PlatformStorageConfigLazyQueryHookResult = ReturnType<typeof usePlatformStorageConfigLazyQuery>;
 export type PlatformStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.PlatformStorageConfigQuery,
   SchemaTypes.PlatformStorageConfigQueryVariables
@@ -23235,6 +23141,7 @@ export function useCreateReferenceOnProfileMutation(
   >(CreateReferenceOnProfileDocument, options);
 }
 
+export type CreateReferenceOnProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnProfileMutation>;
 export type CreateReferenceOnProfileMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateReferenceOnProfileMutation>;
 export type CreateReferenceOnProfileMutationOptions = Apollo.BaseMutationOptions<
@@ -23283,57 +23190,11 @@ export function useDeleteReferenceMutation(
   );
 }
 
+export type DeleteReferenceMutationHookResult = ReturnType<typeof useDeleteReferenceMutation>;
 export type DeleteReferenceMutationResult = Apollo.MutationResult<SchemaTypes.DeleteReferenceMutation>;
 export type DeleteReferenceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteReferenceMutation,
   SchemaTypes.DeleteReferenceMutationVariables
->;
-export const CreateRelationDocument = gql`
-  mutation createRelation($input: CreateRelationOnCollaborationInput!) {
-    createRelationOnCollaboration(relationData: $input) {
-      id
-    }
-  }
-`;
-export type CreateRelationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateRelationMutation,
-  SchemaTypes.CreateRelationMutationVariables
->;
-
-/**
- * __useCreateRelationMutation__
- *
- * To run a mutation, you first call `useCreateRelationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateRelationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createRelationMutation, { data, loading, error }] = useCreateRelationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateRelationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateRelationMutation,
-    SchemaTypes.CreateRelationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateRelationMutation, SchemaTypes.CreateRelationMutationVariables>(
-    CreateRelationDocument,
-    options
-  );
-}
-
-export type CreateRelationMutationResult = Apollo.MutationResult<SchemaTypes.CreateRelationMutation>;
-export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateRelationMutation,
-  SchemaTypes.CreateRelationMutationVariables
 >;
 export const ShareLinkWithUserDocument = gql`
   mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
@@ -23375,6 +23236,7 @@ export function useShareLinkWithUserMutation(
   );
 }
 
+export type ShareLinkWithUserMutationHookResult = ReturnType<typeof useShareLinkWithUserMutation>;
 export type ShareLinkWithUserMutationResult = Apollo.MutationResult<SchemaTypes.ShareLinkWithUserMutation>;
 export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ShareLinkWithUserMutation,
@@ -23441,6 +23303,7 @@ export function useSpaceDashboardCalendarEventsLazyQuery(
   >(SpaceDashboardCalendarEventsDocument, options);
 }
 
+export type SpaceDashboardCalendarEventsQueryHookResult = ReturnType<typeof useSpaceDashboardCalendarEventsQuery>;
 export type SpaceDashboardCalendarEventsLazyQueryHookResult = ReturnType<
   typeof useSpaceDashboardCalendarEventsLazyQuery
 >;
@@ -23518,6 +23381,8 @@ export function useSpaceCalendarEventsLazyQuery(
   );
 }
 
+export type SpaceCalendarEventsQueryHookResult = ReturnType<typeof useSpaceCalendarEventsQuery>;
+export type SpaceCalendarEventsLazyQueryHookResult = ReturnType<typeof useSpaceCalendarEventsLazyQuery>;
 export type SpaceCalendarEventsQueryResult = Apollo.QueryResult<
   SchemaTypes.SpaceCalendarEventsQuery,
   SchemaTypes.SpaceCalendarEventsQueryVariables
@@ -23587,6 +23452,8 @@ export function useCalendarEventDetailsLazyQuery(
   );
 }
 
+export type CalendarEventDetailsQueryHookResult = ReturnType<typeof useCalendarEventDetailsQuery>;
+export type CalendarEventDetailsLazyQueryHookResult = ReturnType<typeof useCalendarEventDetailsLazyQuery>;
 export type CalendarEventDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.CalendarEventDetailsQuery,
   SchemaTypes.CalendarEventDetailsQueryVariables
@@ -23638,6 +23505,7 @@ export function useCreateCalendarEventMutation(
   );
 }
 
+export type CreateCalendarEventMutationHookResult = ReturnType<typeof useCreateCalendarEventMutation>;
 export type CreateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalendarEventMutation>;
 export type CreateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalendarEventMutation,
@@ -23686,6 +23554,7 @@ export function useUpdateCalendarEventMutation(
   );
 }
 
+export type UpdateCalendarEventMutationHookResult = ReturnType<typeof useUpdateCalendarEventMutation>;
 export type UpdateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalendarEventMutation>;
 export type UpdateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalendarEventMutation,
@@ -23734,6 +23603,7 @@ export function useDeleteCalendarEventMutation(
   );
 }
 
+export type DeleteCalendarEventMutationHookResult = ReturnType<typeof useDeleteCalendarEventMutation>;
 export type DeleteCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalendarEventMutation>;
 export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
