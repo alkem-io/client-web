@@ -5,15 +5,17 @@ import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { styled } from '@mui/styles';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
-import { ContributingUsersProps } from './ContributingUsers';
 import DashboardContributingUsers, {
   DashboardContributingUsersProps,
 } from '../EntityDashboardContributorsSection/DashboardContributingUsers';
 import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
+import { Identifiable } from '../../../shared/types/Identifiable';
+import { UserCardProps } from '../../../../common/components/composite/common/cards';
 
-export interface CommunityContributorsViewProps extends ContributingOrganizationsProps, ContributingUsersProps {
+export interface CommunityContributorsViewProps extends ContributingOrganizationsProps {
   loading?: boolean;
   organizationsCount: number | undefined;
+  users: (Identifiable & UserCardProps)[] | undefined;
   usersCount: number | undefined; // TODO display or remove prop
   usersComponent?: ComponentType<DashboardContributingUsersProps>;
 }
