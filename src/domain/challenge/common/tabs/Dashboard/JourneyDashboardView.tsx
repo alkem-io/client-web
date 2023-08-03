@@ -12,7 +12,7 @@ import DashboardUpdatesSection from '../../../../shared/components/DashboardSect
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { ActivityComponent, ActivityLogResultType } from '../../../../shared/components/ActivityLog';
+import { ActivityComponent, ActivityLogResultType } from '../../../../shared/components/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';

@@ -16,7 +16,7 @@ import {
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { ActivityComponent } from '../../../shared/components/ActivityLog';
+import { ActivityComponent } from '../../../shared/components/ActivityLog/ActivityComponent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';

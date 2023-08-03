@@ -160,16 +160,3 @@ export const AddProjectsCard: FC<ProjectCardProps> = ({ onSelect, title }) => {
     </ProjectCard>
   );
 };
-
-export const SwitchCardComponent = ({ type }) => {
-  switch (type) {
-    case 'more':
-      return MoreProjectsCard;
-    case 'add':
-      return AddProjectsCard;
-    case 'display':
-      return ProjectCard;
-    default:
-      return ProjectCard;
-  }
-};

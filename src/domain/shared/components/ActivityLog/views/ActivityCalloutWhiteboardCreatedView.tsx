@@ -7,7 +7,7 @@ import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityCalloutWhiteboardCreatedViewProps extends ActivityViewProps {
+interface ActivityCalloutWhiteboardCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   whiteboard: NameableEntity;
 }
