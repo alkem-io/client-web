@@ -53,7 +53,7 @@ const EntityDashboardLeadsSection = ({
       fullName: user.profile.displayName,
       city: user.profile.location?.city,
       country: user.profile.location?.country,
-      avatarUrl: user.profile.visual?.uri,
+      avatarUrl: user.profile.avatar?.uri,
       tags: user.profile.tagsets?.flatMap(({ tags }) => tags),
     }));
   }, [leadUsers]);

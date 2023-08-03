@@ -196,7 +196,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
                     sendMessage('user', {
                       id: user.id,
                       displayName: user.profile.displayName,
-                      avatarUri: user.profile.visual?.uri,
+                      avatarUri: user.profile.avatar?.uri,
                       country: user.profile.location?.country,
                       city: user.profile.location?.city,
                     });
