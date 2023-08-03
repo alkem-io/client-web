@@ -10,7 +10,7 @@ import {
   MetricsItemFragment,
   ReferenceDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { MetricItem } from '../../../../../common/components/composite/common/MetricsPanel/Metrics';
+import { MetricItem } from '../../../../platform/metrics/views/Metrics';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -29,12 +29,6 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   lifecycle?: LifecycleContextTabFragment;
   loading?: boolean;
   error?: ApolloError;
-}
-
-export interface JourneyAboutWithHost
-  extends Omit<AboutSectionProps, 'journeyTypeName' | 'metricsItems' | 'leadOrganizations' | 'lifecycle'> {
-  metrics: MetricsItemFragment[] | undefined;
-  hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
 }
 
 export interface JourneyAboutWithLead extends Omit<AboutSectionProps, 'journeyTypeName' | 'metricsItems'> {

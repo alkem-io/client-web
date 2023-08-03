@@ -1,6 +1,4 @@
 import { Box } from '@mui/material';
-import HourglassEmptyOutlined from '@mui/icons-material/HourglassEmptyOutlined';
-import Add from '@mui/icons-material/Add';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
@@ -118,45 +116,5 @@ export const ProjectCard: FC<ProjectCardProps> = ({
       )}
       {blank && <>{children}</>}
     </Card>
-  );
-};
-
-const useAdditionalCardStyles = makeStyles(theme => ({
-  activeCard: {
-    color: theme.palette.primary.main,
-
-    '&:hover': {
-      opacity: 0.7,
-      cursor: 'pointer',
-      background: theme.palette.primary.main,
-      color: theme.palette.background.paper,
-
-      '& > .alkemio-card-body': {
-        background: 'transparent',
-        color: theme.palette.background.paper,
-      },
-    },
-  },
-}));
-
-export const MoreProjectsCard: FC<ProjectCardProps> = ({ title }) => {
-  return (
-    <ProjectCard title={title} blank>
-      <Box display={'flex'} flexGrow={1} flexDirection={'column-reverse'}>
-        <HourglassEmptyOutlined color="primary" sx={{ fontSize: 120 }} />
-      </Box>
-    </ProjectCard>
-  );
-};
-
-export const AddProjectsCard: FC<ProjectCardProps> = ({ onSelect, title }) => {
-  const styles = useAdditionalCardStyles();
-
-  return (
-    <ProjectCard title={title} blank onClick={onSelect} className={styles.activeCard}>
-      <Box display={'flex'} flexGrow={1} alignItems={'center'} justifyContent={'center'}>
-        <Add color="inherit" fontSize="large" />
-      </Box>
-    </ProjectCard>
   );
 };

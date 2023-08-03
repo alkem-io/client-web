@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import AdminUsersPage from '../AdminUsers/AdminUsersPage';
-import { UserPage } from '../pages/UserPage';
+import UserPage from '../pages/UserPage';
 import { nameOfUrl } from '../../../../../core/routing/urlParams';
 
 export const UsersRoute: FC = () => {

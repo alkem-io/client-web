@@ -1,8 +1,8 @@
 import { Grid, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
-import WrapperTypography from '../../../core/WrapperTypography';
-import { MetricType } from '../../../../../domain/platform/metrics/MetricType';
-import MetricCircleView from '../../../../../domain/platform/metrics/MetricCircleView';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
+import MetricCircleView from '../MetricCircleView';
+import { MetricType } from '../MetricType';
 
 export interface MetricItem {
   name: ReactNode;
