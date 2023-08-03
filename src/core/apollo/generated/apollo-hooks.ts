@@ -3353,7 +3353,6 @@ export function useAssignUserAsGlobalAdminMutation(
   >(AssignUserAsGlobalAdminDocument, options);
 }
 
-export type AssignUserAsGlobalAdminMutationHookResult = ReturnType<typeof useAssignUserAsGlobalAdminMutation>;
 export type AssignUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalAdminMutation>;
 export type AssignUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsGlobalAdminMutation,
@@ -3570,7 +3569,6 @@ export function useRemoveUserAsGlobalAdminMutation(
   >(RemoveUserAsGlobalAdminDocument, options);
 }
 
-export type RemoveUserAsGlobalAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalAdminMutation>;
 export type RemoveUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalAdminMutation>;
 export type RemoveUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsGlobalAdminMutation,
@@ -3785,7 +3783,6 @@ export function useUploadFileOnReferenceMutation(
   >(UploadFileOnReferenceDocument, options);
 }
 
-export type UploadFileOnReferenceMutationHookResult = ReturnType<typeof useUploadFileOnReferenceMutation>;
 export type UploadFileOnReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnReferenceMutation>;
 export type UploadFileOnReferenceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileOnReferenceMutation,
@@ -3829,7 +3826,6 @@ export function useUploadFileMutation(
   );
 }
 
-export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
 export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
 export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileMutation,
@@ -4014,7 +4010,6 @@ export function useCreateChallengeMutation(
   );
 }
 
-export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
 export type CreateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.CreateChallengeMutation>;
 export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
@@ -4063,7 +4058,6 @@ export function useDeleteChallengeMutation(
   );
 }
 
-export type DeleteChallengeMutationHookResult = ReturnType<typeof useDeleteChallengeMutation>;
 export type DeleteChallengeMutationResult = Apollo.MutationResult<SchemaTypes.DeleteChallengeMutation>;
 export type DeleteChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteChallengeMutation,
@@ -4116,7 +4110,6 @@ export function useUpdateChallengeMutation(
   );
 }
 
-export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
 export type UpdateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.UpdateChallengeMutation>;
 export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
@@ -5544,7 +5537,6 @@ export function useEventOnOpportunityMutation(
   );
 }
 
-export type EventOnOpportunityMutationHookResult = ReturnType<typeof useEventOnOpportunityMutation>;
 export type EventOnOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.EventOnOpportunityMutation>;
 export type EventOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnOpportunityMutation,
@@ -5659,7 +5651,6 @@ export function useCreateOpportunityMutation(
   );
 }
 
-export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
 export type CreateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateOpportunityMutation>;
 export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateOpportunityMutation,
@@ -5708,7 +5699,6 @@ export function useDeleteOpportunityMutation(
   );
 }
 
-export type DeleteOpportunityMutationHookResult = ReturnType<typeof useDeleteOpportunityMutation>;
 export type DeleteOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOpportunityMutation>;
 export type DeleteOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOpportunityMutation,
@@ -5760,7 +5750,6 @@ export function useUpdateOpportunityMutation(
   );
 }
 
-export type UpdateOpportunityMutationHookResult = ReturnType<typeof useUpdateOpportunityMutation>;
 export type UpdateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOpportunityMutation>;
 export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOpportunityMutation,
@@ -7075,7 +7064,6 @@ export function useCreateSpaceMutation(
   );
 }
 
-export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
 export type CreateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSpaceMutation>;
 export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateSpaceMutation,
@@ -7121,7 +7109,6 @@ export function useDeleteSpaceMutation(
   );
 }
 
-export type DeleteSpaceMutationHookResult = ReturnType<typeof useDeleteSpaceMutation>;
 export type DeleteSpaceMutationResult = Apollo.MutationResult<SchemaTypes.DeleteSpaceMutation>;
 export type DeleteSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteSpaceMutation,
@@ -7167,7 +7154,6 @@ export function useUpdateSpaceMutation(
   );
 }
 
-export type UpdateSpaceMutationHookResult = ReturnType<typeof useUpdateSpaceMutation>;
 export type UpdateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateSpaceMutation>;
 export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateSpaceMutation,
@@ -8024,7 +8010,6 @@ export function useChallengeInnovationFlowEventMutation(
   >(ChallengeInnovationFlowEventDocument, options);
 }
 
-export type ChallengeInnovationFlowEventMutationHookResult = ReturnType<typeof useChallengeInnovationFlowEventMutation>;
 export type ChallengeInnovationFlowEventMutationResult =
   Apollo.MutationResult<SchemaTypes.ChallengeInnovationFlowEventMutation>;
 export type ChallengeInnovationFlowEventMutationOptions = Apollo.BaseMutationOptions<
@@ -8232,7 +8217,6 @@ export function useUpdateInnovationFlowMutation(
   >(UpdateInnovationFlowDocument, options);
 }
 
-export type UpdateInnovationFlowMutationHookResult = ReturnType<typeof useUpdateInnovationFlowMutation>;
 export type UpdateInnovationFlowMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowMutation>;
 export type UpdateInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowMutation,
@@ -8292,7 +8276,6 @@ export function useUpdateCalloutFlowStateMutation(
   >(UpdateCalloutFlowStateDocument, options);
 }
 
-export type UpdateCalloutFlowStateMutationHookResult = ReturnType<typeof useUpdateCalloutFlowStateMutation>;
 export type UpdateCalloutFlowStateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutFlowStateMutation>;
 export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutation,
@@ -8786,7 +8769,6 @@ export function useUpdateCalloutsSortOrderMutation(
   >(UpdateCalloutsSortOrderDocument, options);
 }
 
-export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
 export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
 export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutsSortOrderMutation,
@@ -9053,7 +9035,6 @@ export function useCreateCalloutMutation(
   );
 }
 
-export type CreateCalloutMutationHookResult = ReturnType<typeof useCreateCalloutMutation>;
 export type CreateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalloutMutation>;
 export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutation,
@@ -9324,7 +9305,6 @@ export function useUpdateCalloutMutation(
   );
 }
 
-export type UpdateCalloutMutationHookResult = ReturnType<typeof useUpdateCalloutMutation>;
 export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutMutation>;
 export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutMutation,
@@ -9373,7 +9353,6 @@ export function useUpdateCalloutVisibilityMutation(
   >(UpdateCalloutVisibilityDocument, options);
 }
 
-export type UpdateCalloutVisibilityMutationHookResult = ReturnType<typeof useUpdateCalloutVisibilityMutation>;
 export type UpdateCalloutVisibilityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutVisibilityMutation>;
 export type UpdateCalloutVisibilityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutVisibilityMutation,
@@ -9421,7 +9400,6 @@ export function useDeleteCalloutMutation(
   );
 }
 
-export type DeleteCalloutMutationHookResult = ReturnType<typeof useDeleteCalloutMutation>;
 export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalloutMutation>;
 export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
@@ -9484,7 +9462,6 @@ export function useCreatePostFromContributeTabMutation(
   >(CreatePostFromContributeTabDocument, options);
 }
 
-export type CreatePostFromContributeTabMutationHookResult = ReturnType<typeof useCreatePostFromContributeTabMutation>;
 export type CreatePostFromContributeTabMutationResult =
   Apollo.MutationResult<SchemaTypes.CreatePostFromContributeTabMutation>;
 export type CreatePostFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
@@ -9531,7 +9508,6 @@ export function useRemoveCommentFromCalloutMutation(
   >(RemoveCommentFromCalloutDocument, options);
 }
 
-export type RemoveCommentFromCalloutMutationHookResult = ReturnType<typeof useRemoveCommentFromCalloutMutation>;
 export type RemoveCommentFromCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveCommentFromCalloutMutation>;
 export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -9581,7 +9557,6 @@ export function useCreateLinkOnCalloutMutation(
   );
 }
 
-export type CreateLinkOnCalloutMutationHookResult = ReturnType<typeof useCreateLinkOnCalloutMutation>;
 export type CreateLinkOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateLinkOnCalloutMutation>;
 export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateLinkOnCalloutMutation,
@@ -10585,7 +10560,6 @@ export function useUpdatePostMutation(
   );
 }
 
-export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
 export type UpdatePostMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostMutation,
@@ -11080,7 +11054,6 @@ export function useCreatePostMutation(
   );
 }
 
-export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
 export type CreatePostMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostMutation>;
 export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreatePostMutation,
@@ -11125,7 +11098,6 @@ export function useDeletePostMutation(
   );
 }
 
-export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostMutation,
@@ -11179,7 +11151,6 @@ export function useMovePostToCalloutMutation(
   );
 }
 
-export type MovePostToCalloutMutationHookResult = ReturnType<typeof useMovePostToCalloutMutation>;
 export type MovePostToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MovePostToCalloutMutation>;
 export type MovePostToCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MovePostToCalloutMutation,
@@ -12130,7 +12101,6 @@ export function useCreateWhiteboardOnCalloutMutation(
   >(CreateWhiteboardOnCalloutDocument, options);
 }
 
-export type CreateWhiteboardOnCalloutMutationHookResult = ReturnType<typeof useCreateWhiteboardOnCalloutMutation>;
 export type CreateWhiteboardOnCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateWhiteboardOnCalloutMutation>;
 export type CreateWhiteboardOnCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -12179,7 +12149,6 @@ export function useDeleteWhiteboardMutation(
   );
 }
 
-export type DeleteWhiteboardMutationHookResult = ReturnType<typeof useDeleteWhiteboardMutation>;
 export type DeleteWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.DeleteWhiteboardMutation>;
 export type DeleteWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteWhiteboardMutation,
@@ -12232,7 +12201,6 @@ export function useUpdateWhiteboardMutation(
   );
 }
 
-export type UpdateWhiteboardMutationHookResult = ReturnType<typeof useUpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
@@ -12281,7 +12249,6 @@ export function useCheckoutWhiteboardMutation(
   );
 }
 
-export type CheckoutWhiteboardMutationHookResult = ReturnType<typeof useCheckoutWhiteboardMutation>;
 export type CheckoutWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutWhiteboardMutation>;
 export type CheckoutWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CheckoutWhiteboardMutation,
@@ -12488,7 +12455,6 @@ export function useUpdatePreferenceOnChallengeMutation(
   >(UpdatePreferenceOnChallengeDocument, options);
 }
 
-export type UpdatePreferenceOnChallengeMutationHookResult = ReturnType<typeof useUpdatePreferenceOnChallengeMutation>;
 export type UpdatePreferenceOnChallengeMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnChallengeMutation>;
 export type UpdatePreferenceOnChallengeMutationOptions = Apollo.BaseMutationOptions<
@@ -12731,7 +12697,6 @@ export function useUpdatePreferenceOnSpaceMutation(
   >(UpdatePreferenceOnSpaceDocument, options);
 }
 
-export type UpdatePreferenceOnSpaceMutationHookResult = ReturnType<typeof useUpdatePreferenceOnSpaceMutation>;
 export type UpdatePreferenceOnSpaceMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnSpaceMutation>;
 export type UpdatePreferenceOnSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnSpaceMutation,
@@ -12780,7 +12745,6 @@ export function useCreateTagsetOnProfileMutation(
   >(CreateTagsetOnProfileDocument, options);
 }
 
-export type CreateTagsetOnProfileMutationHookResult = ReturnType<typeof useCreateTagsetOnProfileMutation>;
 export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateTagsetOnProfileMutation>;
 export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTagsetOnProfileMutation,
@@ -12828,7 +12792,6 @@ export function useUploadVisualMutation(
   );
 }
 
-export type UploadVisualMutationHookResult = ReturnType<typeof useUploadVisualMutation>;
 export type UploadVisualMutationResult = Apollo.MutationResult<SchemaTypes.UploadVisualMutation>;
 export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadVisualMutation,
@@ -12934,7 +12897,6 @@ export function useCreateDiscussionMutation(
   );
 }
 
-export type CreateDiscussionMutationHookResult = ReturnType<typeof useCreateDiscussionMutation>;
 export type CreateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.CreateDiscussionMutation>;
 export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateDiscussionMutation,
@@ -12982,7 +12944,6 @@ export function useDeleteDiscussionMutation(
   );
 }
 
-export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
 export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
 export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDiscussionMutation,
@@ -13257,7 +13218,6 @@ export function useSendMessageToUserMutation(
   );
 }
 
-export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
 export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
 export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendMessageToUserMutation,
@@ -13303,7 +13263,6 @@ export function useSendMessageToOrganizationMutation(
   >(SendMessageToOrganizationDocument, options);
 }
 
-export type SendMessageToOrganizationMutationHookResult = ReturnType<typeof useSendMessageToOrganizationMutation>;
 export type SendMessageToOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.SendMessageToOrganizationMutation>;
 export type SendMessageToOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -13350,7 +13309,6 @@ export function useSendMessageToCommunityLeadsMutation(
   >(SendMessageToCommunityLeadsDocument, options);
 }
 
-export type SendMessageToCommunityLeadsMutationHookResult = ReturnType<typeof useSendMessageToCommunityLeadsMutation>;
 export type SendMessageToCommunityLeadsMutationResult =
   Apollo.MutationResult<SchemaTypes.SendMessageToCommunityLeadsMutation>;
 export type SendMessageToCommunityLeadsMutationOptions = Apollo.BaseMutationOptions<
@@ -13404,7 +13362,6 @@ export function useAddReactionMutation(
   );
 }
 
-export type AddReactionMutationHookResult = ReturnType<typeof useAddReactionMutation>;
 export type AddReactionMutationResult = Apollo.MutationResult<SchemaTypes.AddReactionMutation>;
 export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddReactionMutation,
@@ -13451,7 +13408,6 @@ export function useRemoveReactionMutation(
   );
 }
 
-export type RemoveReactionMutationHookResult = ReturnType<typeof useRemoveReactionMutation>;
 export type RemoveReactionMutationResult = Apollo.MutationResult<SchemaTypes.RemoveReactionMutation>;
 export type RemoveReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveReactionMutation,
@@ -13506,7 +13462,6 @@ export function useReplyToMessageMutation(
   );
 }
 
-export type ReplyToMessageMutationHookResult = ReturnType<typeof useReplyToMessageMutation>;
 export type ReplyToMessageMutationResult = Apollo.MutationResult<SchemaTypes.ReplyToMessageMutation>;
 export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
@@ -13633,7 +13588,6 @@ export function useSendMessageToRoomMutation(
   );
 }
 
-export type SendMessageToRoomMutationHookResult = ReturnType<typeof useSendMessageToRoomMutation>;
 export type SendMessageToRoomMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToRoomMutation>;
 export type SendMessageToRoomMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendMessageToRoomMutation,
@@ -13679,7 +13633,6 @@ export function useRemoveMessageOnRoomMutation(
   );
 }
 
-export type RemoveMessageOnRoomMutationHookResult = ReturnType<typeof useRemoveMessageOnRoomMutation>;
 export type RemoveMessageOnRoomMutationResult = Apollo.MutationResult<SchemaTypes.RemoveMessageOnRoomMutation>;
 export type RemoveMessageOnRoomMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveMessageOnRoomMutation,
@@ -13995,7 +13948,6 @@ export function useJoinCommunityMutation(
   );
 }
 
-export type JoinCommunityMutationHookResult = ReturnType<typeof useJoinCommunityMutation>;
 export type JoinCommunityMutationResult = Apollo.MutationResult<SchemaTypes.JoinCommunityMutation>;
 export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinCommunityMutation,
@@ -14043,7 +13995,6 @@ export function useApplyForCommunityMembershipMutation(
   >(ApplyForCommunityMembershipDocument, options);
 }
 
-export type ApplyForCommunityMembershipMutationHookResult = ReturnType<typeof useApplyForCommunityMembershipMutation>;
 export type ApplyForCommunityMembershipMutationResult =
   Apollo.MutationResult<SchemaTypes.ApplyForCommunityMembershipMutation>;
 export type ApplyForCommunityMembershipMutationOptions = Apollo.BaseMutationOptions<
@@ -14092,7 +14043,6 @@ export function useDeleteUserApplicationMutation(
   >(DeleteUserApplicationDocument, options);
 }
 
-export type DeleteUserApplicationMutationHookResult = ReturnType<typeof useDeleteUserApplicationMutation>;
 export type DeleteUserApplicationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserApplicationMutation>;
 export type DeleteUserApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserApplicationMutation,
@@ -14145,7 +14095,6 @@ export function useEventOnApplicationMutation(
   );
 }
 
-export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
 export type EventOnApplicationMutationResult = Apollo.MutationResult<SchemaTypes.EventOnApplicationMutation>;
 export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnApplicationMutation,
@@ -14198,7 +14147,6 @@ export function useEventOnChallengeMutation(
   );
 }
 
-export type EventOnChallengeMutationHookResult = ReturnType<typeof useEventOnChallengeMutation>;
 export type EventOnChallengeMutationResult = Apollo.MutationResult<SchemaTypes.EventOnChallengeMutation>;
 export type EventOnChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnChallengeMutation,
@@ -15348,7 +15296,6 @@ export function useCreateGroupOnCommunityMutation(
   >(CreateGroupOnCommunityDocument, options);
 }
 
-export type CreateGroupOnCommunityMutationHookResult = ReturnType<typeof useCreateGroupOnCommunityMutation>;
 export type CreateGroupOnCommunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateGroupOnCommunityMutation>;
 export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
@@ -15810,7 +15757,6 @@ export function useAssignUserAsCommunityMemberMutation(
   >(AssignUserAsCommunityMemberDocument, options);
 }
 
-export type AssignUserAsCommunityMemberMutationHookResult = ReturnType<typeof useAssignUserAsCommunityMemberMutation>;
 export type AssignUserAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityMemberMutation>;
 export type AssignUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
@@ -15860,7 +15806,6 @@ export function useAssignUserAsCommunityLeadMutation(
   >(AssignUserAsCommunityLeadDocument, options);
 }
 
-export type AssignUserAsCommunityLeadMutationHookResult = ReturnType<typeof useAssignUserAsCommunityLeadMutation>;
 export type AssignUserAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityLeadMutation>;
 export type AssignUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
@@ -15910,7 +15855,6 @@ export function useRemoveUserAsCommunityMemberMutation(
   >(RemoveUserAsCommunityMemberDocument, options);
 }
 
-export type RemoveUserAsCommunityMemberMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityMemberMutation>;
 export type RemoveUserAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityMemberMutation>;
 export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
@@ -15960,7 +15904,6 @@ export function useRemoveUserAsCommunityLeadMutation(
   >(RemoveUserAsCommunityLeadDocument, options);
 }
 
-export type RemoveUserAsCommunityLeadMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityLeadMutation>;
 export type RemoveUserAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityLeadMutation>;
 export type RemoveUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
@@ -16223,7 +16166,6 @@ export function useAssignUserAsSpaceAdminMutation(
   >(AssignUserAsSpaceAdminDocument, options);
 }
 
-export type AssignUserAsSpaceAdminMutationHookResult = ReturnType<typeof useAssignUserAsSpaceAdminMutation>;
 export type AssignUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsSpaceAdminMutation>;
 export type AssignUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsSpaceAdminMutation,
@@ -16271,7 +16213,6 @@ export function useRemoveUserAsSpaceAdminMutation(
   >(RemoveUserAsSpaceAdminDocument, options);
 }
 
-export type RemoveUserAsSpaceAdminMutationHookResult = ReturnType<typeof useRemoveUserAsSpaceAdminMutation>;
 export type RemoveUserAsSpaceAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsSpaceAdminMutation>;
 export type RemoveUserAsSpaceAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsSpaceAdminMutation,
@@ -16319,7 +16260,6 @@ export function useAssignUserAsChallengeAdminMutation(
   >(AssignUserAsChallengeAdminDocument, options);
 }
 
-export type AssignUserAsChallengeAdminMutationHookResult = ReturnType<typeof useAssignUserAsChallengeAdminMutation>;
 export type AssignUserAsChallengeAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsChallengeAdminMutation>;
 export type AssignUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16368,7 +16308,6 @@ export function useRemoveUserAsChallengeAdminMutation(
   >(RemoveUserAsChallengeAdminDocument, options);
 }
 
-export type RemoveUserAsChallengeAdminMutationHookResult = ReturnType<typeof useRemoveUserAsChallengeAdminMutation>;
 export type RemoveUserAsChallengeAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsChallengeAdminMutation>;
 export type RemoveUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16417,7 +16356,6 @@ export function useAssignUserAsOpportunityAdminMutation(
   >(AssignUserAsOpportunityAdminDocument, options);
 }
 
-export type AssignUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useAssignUserAsOpportunityAdminMutation>;
 export type AssignUserAsOpportunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsOpportunityAdminMutation>;
 export type AssignUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16466,7 +16404,6 @@ export function useRemoveUserAsOpportunityAdminMutation(
   >(RemoveUserAsOpportunityAdminDocument, options);
 }
 
-export type RemoveUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useRemoveUserAsOpportunityAdminMutation>;
 export type RemoveUserAsOpportunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsOpportunityAdminMutation>;
 export type RemoveUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
@@ -16940,7 +16877,6 @@ export function useAssignUserToOrganizationMutation(
   >(AssignUserToOrganizationDocument, options);
 }
 
-export type AssignUserToOrganizationMutationHookResult = ReturnType<typeof useAssignUserToOrganizationMutation>;
 export type AssignUserToOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserToOrganizationMutation>;
 export type AssignUserToOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -16993,7 +16929,6 @@ export function useRemoveUserFromOrganizationMutation(
   >(RemoveUserFromOrganizationDocument, options);
 }
 
-export type RemoveUserFromOrganizationMutationHookResult = ReturnType<typeof useRemoveUserFromOrganizationMutation>;
 export type RemoveUserFromOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserFromOrganizationMutation>;
 export type RemoveUserFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -17346,7 +17281,6 @@ export function useCreateGroupOnOrganizationMutation(
   >(CreateGroupOnOrganizationDocument, options);
 }
 
-export type CreateGroupOnOrganizationMutationHookResult = ReturnType<typeof useCreateGroupOnOrganizationMutation>;
 export type CreateGroupOnOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateGroupOnOrganizationMutation>;
 export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -17400,7 +17334,6 @@ export function useCreateOrganizationMutation(
   );
 }
 
-export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
 export type CreateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.CreateOrganizationMutation>;
 export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateOrganizationMutation,
@@ -17448,7 +17381,6 @@ export function useDeleteOrganizationMutation(
   );
 }
 
-export type DeleteOrganizationMutationHookResult = ReturnType<typeof useDeleteOrganizationMutation>;
 export type DeleteOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOrganizationMutation>;
 export type DeleteOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOrganizationMutation,
@@ -17497,7 +17429,6 @@ export function useUpdateOrganizationMutation(
   );
 }
 
-export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
 export type UpdateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOrganizationMutation>;
 export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOrganizationMutation,
@@ -18072,7 +18003,6 @@ export function useAssignUserToGroupMutation(
   );
 }
 
-export type AssignUserToGroupMutationHookResult = ReturnType<typeof useAssignUserToGroupMutation>;
 export type AssignUserToGroupMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserToGroupMutation>;
 export type AssignUserToGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserToGroupMutation,
@@ -18118,7 +18048,6 @@ export function useCreateUserMutation(
   );
 }
 
-export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<SchemaTypes.CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateUserMutation,
@@ -18166,7 +18095,6 @@ export function useCreateUserNewRegistrationMutation(
   >(CreateUserNewRegistrationDocument, options);
 }
 
-export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
 export type CreateUserNewRegistrationMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
 export type CreateUserNewRegistrationMutationOptions = Apollo.BaseMutationOptions<
@@ -18213,7 +18141,6 @@ export function useDeleteGroupMutation(
   );
 }
 
-export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
 export type DeleteGroupMutationResult = Apollo.MutationResult<SchemaTypes.DeleteGroupMutation>;
 export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteGroupMutation,
@@ -18258,7 +18185,6 @@ export function useDeleteUserMutation(
   );
 }
 
-export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
@@ -18311,7 +18237,6 @@ export function useRemoveUserFromGroupMutation(
   );
 }
 
-export type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
 export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserFromGroupMutation>;
 export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutation,
@@ -18374,7 +18299,6 @@ export function useUpdateGroupMutation(
   );
 }
 
-export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
 export type UpdateGroupMutationResult = Apollo.MutationResult<SchemaTypes.UpdateGroupMutation>;
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateGroupMutation,
@@ -18420,7 +18344,6 @@ export function useUpdateUserMutation(
   );
 }
 
-export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateUserMutation,
@@ -18469,7 +18392,6 @@ export function useUpdatePreferenceOnUserMutation(
   >(UpdatePreferenceOnUserDocument, options);
 }
 
-export type UpdatePreferenceOnUserMutationHookResult = ReturnType<typeof useUpdatePreferenceOnUserMutation>;
 export type UpdatePreferenceOnUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnUserMutation>;
 export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnUserMutation,
@@ -19032,7 +18954,6 @@ export function useDeleteInvitationMutation(
   );
 }
 
-export type DeleteInvitationMutationHookResult = ReturnType<typeof useDeleteInvitationMutation>;
 export type DeleteInvitationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInvitationMutation>;
 export type DeleteInvitationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInvitationMutation,
@@ -19080,7 +19001,6 @@ export function useDeleteExternalInvitationMutation(
   >(DeleteExternalInvitationDocument, options);
 }
 
-export type DeleteExternalInvitationMutationHookResult = ReturnType<typeof useDeleteExternalInvitationMutation>;
 export type DeleteExternalInvitationMutationResult =
   Apollo.MutationResult<SchemaTypes.DeleteExternalInvitationMutation>;
 export type DeleteExternalInvitationMutationOptions = Apollo.BaseMutationOptions<
@@ -19135,7 +19055,6 @@ export function useInvitationStateEventMutation(
   >(InvitationStateEventDocument, options);
 }
 
-export type InvitationStateEventMutationHookResult = ReturnType<typeof useInvitationStateEventMutation>;
 export type InvitationStateEventMutationResult = Apollo.MutationResult<SchemaTypes.InvitationStateEventMutation>;
 export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutation,
@@ -19187,7 +19106,6 @@ export function useInviteExistingUserMutation(
   );
 }
 
-export type InviteExistingUserMutationHookResult = ReturnType<typeof useInviteExistingUserMutation>;
 export type InviteExistingUserMutationResult = Apollo.MutationResult<SchemaTypes.InviteExistingUserMutation>;
 export type InviteExistingUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExistingUserMutation,
@@ -19239,7 +19157,6 @@ export function useInviteExternalUserMutation(
   );
 }
 
-export type InviteExternalUserMutationHookResult = ReturnType<typeof useInviteExternalUserMutation>;
 export type InviteExternalUserMutationResult = Apollo.MutationResult<SchemaTypes.InviteExternalUserMutation>;
 export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutation,
@@ -20040,7 +19957,6 @@ export function useDeleteInnovationHubMutation(
   );
 }
 
-export type DeleteInnovationHubMutationHookResult = ReturnType<typeof useDeleteInnovationHubMutation>;
 export type DeleteInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInnovationHubMutation>;
 export type DeleteInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationHubMutation,
@@ -20177,7 +20093,6 @@ export function useCreateInnovationHubMutation(
   );
 }
 
-export type CreateInnovationHubMutationHookResult = ReturnType<typeof useCreateInnovationHubMutation>;
 export type CreateInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.CreateInnovationHubMutation>;
 export type CreateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateInnovationHubMutation,
@@ -20226,7 +20141,6 @@ export function useUpdateInnovationHubMutation(
   );
 }
 
-export type UpdateInnovationHubMutationHookResult = ReturnType<typeof useUpdateInnovationHubMutation>;
 export type UpdateInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationHubMutation>;
 export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationHubMutation,
@@ -21366,7 +21280,6 @@ export function useUpdateSpacePlatformSettingsMutation(
   >(UpdateSpacePlatformSettingsDocument, options);
 }
 
-export type UpdateSpacePlatformSettingsMutationHookResult = ReturnType<typeof useUpdateSpacePlatformSettingsMutation>;
 export type UpdateSpacePlatformSettingsMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateSpacePlatformSettingsMutation>;
 export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
@@ -21554,7 +21467,6 @@ export function useDeleteDocumentMutation(
   );
 }
 
-export type DeleteDocumentMutationHookResult = ReturnType<typeof useDeleteDocumentMutation>;
 export type DeleteDocumentMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDocumentMutation>;
 export type DeleteDocumentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDocumentMutation,
@@ -22066,7 +21978,6 @@ export function useDeleteInnovationPackMutation(
   >(DeleteInnovationPackDocument, options);
 }
 
-export type DeleteInnovationPackMutationHookResult = ReturnType<typeof useDeleteInnovationPackMutation>;
 export type DeleteInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInnovationPackMutation>;
 export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationPackMutation,
@@ -22202,7 +22113,6 @@ export function useCreateInnovationPackMutation(
   >(CreateInnovationPackDocument, options);
 }
 
-export type CreateInnovationPackMutationHookResult = ReturnType<typeof useCreateInnovationPackMutation>;
 export type CreateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.CreateInnovationPackMutation>;
 export type CreateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateInnovationPackMutation,
@@ -22251,7 +22161,6 @@ export function useUpdateInnovationPackMutation(
   >(UpdateInnovationPackDocument, options);
 }
 
-export type UpdateInnovationPackMutationHookResult = ReturnType<typeof useUpdateInnovationPackMutation>;
 export type UpdateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationPackMutation>;
 export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationPackMutation,
@@ -22307,7 +22216,6 @@ export function useUpdateInnovationFlowTemplateMutation(
   >(UpdateInnovationFlowTemplateDocument, options);
 }
 
-export type UpdateInnovationFlowTemplateMutationHookResult = ReturnType<typeof useUpdateInnovationFlowTemplateMutation>;
 export type UpdateInnovationFlowTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowTemplateMutation>;
 export type UpdateInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22374,7 +22282,6 @@ export function useCreateInnovationFlowTemplateMutation(
   >(CreateInnovationFlowTemplateDocument, options);
 }
 
-export type CreateInnovationFlowTemplateMutationHookResult = ReturnType<typeof useCreateInnovationFlowTemplateMutation>;
 export type CreateInnovationFlowTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateInnovationFlowTemplateMutation>;
 export type CreateInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22423,7 +22330,6 @@ export function useDeleteInnovationFlowTemplateMutation(
   >(DeleteInnovationFlowTemplateDocument, options);
 }
 
-export type DeleteInnovationFlowTemplateMutationHookResult = ReturnType<typeof useDeleteInnovationFlowTemplateMutation>;
 export type DeleteInnovationFlowTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.DeleteInnovationFlowTemplateMutation>;
 export type DeleteInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22482,7 +22388,6 @@ export function useUpdatePostTemplateMutation(
   );
 }
 
-export type UpdatePostTemplateMutationHookResult = ReturnType<typeof useUpdatePostTemplateMutation>;
 export type UpdatePostTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostTemplateMutation>;
 export type UpdatePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostTemplateMutation,
@@ -22548,7 +22453,6 @@ export function useCreatePostTemplateMutation(
   );
 }
 
-export type CreatePostTemplateMutationHookResult = ReturnType<typeof useCreatePostTemplateMutation>;
 export type CreatePostTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostTemplateMutation>;
 export type CreatePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreatePostTemplateMutation,
@@ -22596,7 +22500,6 @@ export function useDeletePostTemplateMutation(
   );
 }
 
-export type DeletePostTemplateMutationHookResult = ReturnType<typeof useDeletePostTemplateMutation>;
 export type DeletePostTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostTemplateMutation>;
 export type DeletePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostTemplateMutation,
@@ -22652,7 +22555,6 @@ export function useUpdateWhiteboardTemplateMutation(
   >(UpdateWhiteboardTemplateDocument, options);
 }
 
-export type UpdateWhiteboardTemplateMutationHookResult = ReturnType<typeof useUpdateWhiteboardTemplateMutation>;
 export type UpdateWhiteboardTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateWhiteboardTemplateMutation>;
 export type UpdateWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22717,7 +22619,6 @@ export function useCreateWhiteboardTemplateMutation(
   >(CreateWhiteboardTemplateDocument, options);
 }
 
-export type CreateWhiteboardTemplateMutationHookResult = ReturnType<typeof useCreateWhiteboardTemplateMutation>;
 export type CreateWhiteboardTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateWhiteboardTemplateMutation>;
 export type CreateWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -22766,7 +22667,6 @@ export function useDeleteWhiteboardTemplateMutation(
   >(DeleteWhiteboardTemplateDocument, options);
 }
 
-export type DeleteWhiteboardTemplateMutationHookResult = ReturnType<typeof useDeleteWhiteboardTemplateMutation>;
 export type DeleteWhiteboardTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.DeleteWhiteboardTemplateMutation>;
 export type DeleteWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -23641,7 +23541,6 @@ export function useCreateReferenceOnProfileMutation(
   >(CreateReferenceOnProfileDocument, options);
 }
 
-export type CreateReferenceOnProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnProfileMutation>;
 export type CreateReferenceOnProfileMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateReferenceOnProfileMutation>;
 export type CreateReferenceOnProfileMutationOptions = Apollo.BaseMutationOptions<
@@ -23690,7 +23589,6 @@ export function useDeleteReferenceMutation(
   );
 }
 
-export type DeleteReferenceMutationHookResult = ReturnType<typeof useDeleteReferenceMutation>;
 export type DeleteReferenceMutationResult = Apollo.MutationResult<SchemaTypes.DeleteReferenceMutation>;
 export type DeleteReferenceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteReferenceMutation,
@@ -23738,7 +23636,6 @@ export function useCreateRelationMutation(
   );
 }
 
-export type CreateRelationMutationHookResult = ReturnType<typeof useCreateRelationMutation>;
 export type CreateRelationMutationResult = Apollo.MutationResult<SchemaTypes.CreateRelationMutation>;
 export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutation,
@@ -23784,7 +23681,6 @@ export function useShareLinkWithUserMutation(
   );
 }
 
-export type ShareLinkWithUserMutationHookResult = ReturnType<typeof useShareLinkWithUserMutation>;
 export type ShareLinkWithUserMutationResult = Apollo.MutationResult<SchemaTypes.ShareLinkWithUserMutation>;
 export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ShareLinkWithUserMutation,
@@ -24053,7 +23949,6 @@ export function useCreateCalendarEventMutation(
   );
 }
 
-export type CreateCalendarEventMutationHookResult = ReturnType<typeof useCreateCalendarEventMutation>;
 export type CreateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalendarEventMutation>;
 export type CreateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalendarEventMutation,
@@ -24102,7 +23997,6 @@ export function useUpdateCalendarEventMutation(
   );
 }
 
-export type UpdateCalendarEventMutationHookResult = ReturnType<typeof useUpdateCalendarEventMutation>;
 export type UpdateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalendarEventMutation>;
 export type UpdateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalendarEventMutation,
@@ -24151,7 +24045,6 @@ export function useDeleteCalendarEventMutation(
   );
 }
 
-export type DeleteCalendarEventMutationHookResult = ReturnType<typeof useDeleteCalendarEventMutation>;
 export type DeleteCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalendarEventMutation>;
 export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,

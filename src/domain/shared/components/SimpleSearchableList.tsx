@@ -24,14 +24,6 @@ export interface SearchableListProps<Item extends SearchableListItem> {
   hasMore: boolean | undefined;
 }
 
-export const searchableListItemMapper =
-  (editSuffix?: string) =>
-  (item: { id: string; displayName: string; nameID?: string }): SearchableListItem => ({
-    id: item.id,
-    value: item.displayName,
-    url: `${item.nameID ?? item.id}${editSuffix ?? ''}`,
-  });
-
 export interface SearchableListItem {
   id: string;
   value: string;

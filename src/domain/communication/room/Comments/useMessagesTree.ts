@@ -4,8 +4,7 @@ import { Message } from '../models/Message';
 
 const ROOT_THREAD = Symbol('root');
 
-export const useMessagesTree = (messages: Message[] | undefined) =>
-  useMemo(() => buildMessagesTree(messages), [messages]);
+const useMessagesTree = (messages: Message[] | undefined) => useMemo(() => buildMessagesTree(messages), [messages]);
 
 const buildMessagesTree = (messages: Message[] | undefined) => {
   const groupedMessages = groupBy(messages, m => m.threadID ?? ROOT_THREAD) as unknown as

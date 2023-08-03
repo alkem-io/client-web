@@ -2,8 +2,7 @@ import { Button, ButtonProps, DialogContent, DialogProps, Skeleton } from '@mui/
 import Dialog from '@mui/material/Dialog';
 import React, { cloneElement, ComponentType, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogActions } from '../../../../../common/components/core/dialog';
-import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
+import { DialogActions, DialogTitleWithIcon } from '../../../../../common/components/core/dialog';
 import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
 import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';

@@ -38,12 +38,6 @@ export interface Configuration {
   };
 }
 
-export interface PostTemplate {
-  type: string;
-  defaultDescription: string;
-  typeDescription: string;
-}
-
 interface AuthenticationProvider {
   name: string;
   label: string;

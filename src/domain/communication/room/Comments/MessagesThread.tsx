@@ -5,7 +5,7 @@ import MessageView, { MessageViewProps } from './MessageView';
 import MessageWithRepliesView from './MessageWithRepliesView';
 import { Message } from '../models/Message';
 import { useTranslation } from 'react-i18next';
-import { useMessagesTree } from './useMessagesTree';
+import useMessagesTree from './useMessagesTree';
 
 interface MessagesThreadProps {
   messages: Message[] | undefined;
