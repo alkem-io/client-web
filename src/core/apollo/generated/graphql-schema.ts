@@ -5418,7 +5418,7 @@ export type ChallengePageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -5831,7 +5831,7 @@ export type ChallengeProfileFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -6973,7 +6973,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -7087,7 +7087,7 @@ export type AboutPageMembersQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -7202,7 +7202,7 @@ export type AboutPageMembersQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -7442,7 +7442,7 @@ export type JourneyDataQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -7540,7 +7540,7 @@ export type JourneyDataQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -7620,7 +7620,7 @@ export type JourneyDataQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -7699,7 +7699,7 @@ export type JourneyCommunityFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           tagsets?:
             | Array<{
@@ -8039,7 +8039,7 @@ export type OpportunityPageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -8382,7 +8382,7 @@ export type OpportunityPageFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -9352,7 +9352,7 @@ export type SpaceCommunityPageQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -9456,7 +9456,7 @@ export type CommunityPageCommunityFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           tagsets?:
             | Array<{
@@ -9990,7 +9990,7 @@ export type SpacePageQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -10395,7 +10395,7 @@ export type SpacePageFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -22726,7 +22726,7 @@ export type EntityDashboardCommunityFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           tagsets?:
             | Array<{
@@ -22867,7 +22867,7 @@ export type DashboardLeadUserFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
     tagsets?:
       | Array<{
