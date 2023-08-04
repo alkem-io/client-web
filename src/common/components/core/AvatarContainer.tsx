@@ -2,12 +2,11 @@ import { Theme } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
 import { makeStyles } from '@mui/styles';
-import { agnosticFunctor } from '../../utils/functor';
 import WrapperTypography from './WrapperTypography';
 
 const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   container: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background.default,
+    background: props => props.background ?? theme.palette.background.default,
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
     flexGrow: 1,

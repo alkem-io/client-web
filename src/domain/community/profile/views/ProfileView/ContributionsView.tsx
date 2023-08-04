@@ -10,7 +10,7 @@ import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBl
 import ContributionDetailsCard from '../../ContributionDetails/ContributionDetailsCard';
 import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 
-export interface ContributionViewProps {
+interface ContributionViewProps {
   title: string;
   subtitle?: string;
   helpText?: string; // TODO it's unused: either find a way to use or remove

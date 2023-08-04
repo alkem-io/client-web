@@ -1,7 +1,7 @@
 import { alpha, Paper, Tooltip } from '@mui/material';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import React, { forwardRef } from 'react';
-import { Metrics, MetricItem } from '../../../common/components/composite/common/MetricsPanel/Metrics';
+import { Metrics, MetricItem } from './views/Metrics';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';

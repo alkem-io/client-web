@@ -1,5 +1,6 @@
 import { Box, BoxProps } from '@mui/material';
-import { LINE_HEIGHT } from './Constants';
+
+export const LINE_HEIGHT = 4;
 
 interface ParagraphProps extends BoxProps<'p'> {}
 

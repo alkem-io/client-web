@@ -32,7 +32,7 @@ import { getJourneyLocationKey, JourneyLocation } from '../../../../common/utils
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
-import { ActivityCalloutLinkCreatedView } from './views/ActivityCalloutLinkCreatedView';
+import { ActivityCalloutLinkCreatedView } from './views';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 
 const Root = styled(Box)(({ theme }) => ({
