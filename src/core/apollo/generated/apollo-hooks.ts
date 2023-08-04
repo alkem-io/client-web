@@ -11477,7 +11477,7 @@ export function refetchPlatformWhiteboardTemplateValueQuery(
 
 export const WhiteboardLockedByDetailsDocument = gql`
   query WhiteboardLockedByDetails($ids: [UUID!]!) {
-    usersById(IDs: $ids) {
+    users(IDs: $ids) {
       ...LockedByDetails
     }
   }
@@ -12804,7 +12804,7 @@ export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AuthorDetailsDocument = gql`
   query authorDetails($ids: [UUID!]!) {
-    usersById(IDs: $ids) {
+    users(IDs: $ids) {
       ...UserCard
       firstName
       lastName
@@ -17627,7 +17627,7 @@ export function refetchPlatformLevelAuthorizationQuery(
 
 export const UserAvatarsDocument = gql`
   query userAvatars($ids: [UUID!]!) {
-    usersById(IDs: $ids) {
+    users(IDs: $ids) {
       id
       nameID
       profile {
@@ -19134,7 +19134,7 @@ export function refetchPendingMembershipsOpportunityQuery(
 
 export const PendingMembershipsUserDocument = gql`
   query PendingMembershipsUser($userId: UUID!) {
-    usersById(IDs: [$userId]) {
+    users(IDs: [$userId]) {
       id
       profile {
         id

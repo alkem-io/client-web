@@ -89,7 +89,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
     },
   });
 
-  const createdBy = userData?.usersById.find(user => user.id === invitation.createdBy);
+  const createdBy = userData?.users.find(user => user.id === invitation.createdBy);
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
     if (!invitation || !journey || !createdBy) {

@@ -3475,8 +3475,6 @@ export type Query = {
   userAuthorizationPrivileges: Array<AuthorizationPrivilege>;
   /** The users who have profiles on this platform */
   users: Array<User>;
-  /** The users filtered by list of IDs. */
-  usersById: Array<User>;
   /** The users who have profiles on this platform */
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
@@ -3543,13 +3541,10 @@ export type QueryUserAuthorizationPrivilegesArgs = {
 };
 
 export type QueryUsersArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type QueryUsersByIdArgs = {
-  IDs: Array<Scalars['UUID']>;
 };
 
 export type QueryUsersPaginatedArgs = {
@@ -19027,7 +19022,7 @@ export type WhiteboardLockedByDetailsQueryVariables = Exact<{
 
 export type WhiteboardLockedByDetailsQuery = {
   __typename?: 'Query';
-  usersById: Array<{
+  users: Array<{
     __typename?: 'User';
     id: string;
     profile: {
@@ -20425,7 +20420,7 @@ export type AuthorDetailsQueryVariables = Exact<{
 
 export type AuthorDetailsQuery = {
   __typename?: 'Query';
-  usersById: Array<{
+  users: Array<{
     __typename?: 'User';
     firstName: string;
     lastName: string;
@@ -23743,7 +23738,7 @@ export type UserAvatarsQueryVariables = Exact<{
 
 export type UserAvatarsQuery = {
   __typename?: 'Query';
-  usersById: Array<{
+  users: Array<{
     __typename?: 'User';
     id: string;
     nameID: string;
@@ -24783,7 +24778,7 @@ export type PendingMembershipsUserQueryVariables = Exact<{
 
 export type PendingMembershipsUserQuery = {
   __typename?: 'Query';
-  usersById: Array<{
+  users: Array<{
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };

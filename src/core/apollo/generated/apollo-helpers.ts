@@ -1857,7 +1857,6 @@ export type QueryKeySpecifier = (
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
-  | 'usersById'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | QueryKeySpecifier
@@ -1882,7 +1881,6 @@ export type QueryFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
-  usersById?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };

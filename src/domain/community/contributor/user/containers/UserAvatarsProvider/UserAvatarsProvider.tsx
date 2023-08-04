@@ -26,5 +26,5 @@ export const UserAvatarsProvider: FC<UserAvatarsProviderProps> = ({ users = [], 
     return <>{children([])}</>;
   }
 
-  return <>{children(data?.usersById as User[])}</>;
+  return <>{children(data?.users as User[])}</>;
 };
