@@ -1,4 +1,8 @@
 {
+  "chatbot": {
+    "title": "Alkemio Helpdesk",
+    "subtitle": "Ask your questions here."
+  },
   "notifications": {
     "releaseUpdates": {
       "icon": "🎉",
@@ -2151,9 +2155,10 @@
       "generic": "An error occurred",
       "generic-with-code": "An error occurred with code {{code}}",
       "ENTITY_NOT_FOUND": "Entity not found",
+      "COMMUNITY_MEMBERSHIP": "Community membership error: {{message}}",
       "FORMAT_NOT_SUPPORTED": "Format not supported",
-      "BAD_USER_INPUT": "Bad user input",
-      "NOT_SUPPORTED": "Not supported",
+      "BAD_USER_INPUT": "Bad user input: {{message}}",
+      "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}"
     }
   },

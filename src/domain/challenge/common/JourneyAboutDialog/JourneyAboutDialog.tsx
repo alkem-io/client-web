@@ -123,7 +123,7 @@ const JourneyAboutDialog = ({
         displayName: user.profile.displayName,
         country: user.profile.location?.country,
         city: user.profile.location?.city,
-        avatarUri: user.profile.visual?.uri,
+        avatarUri: user.profile.avatar?.uri,
       })),
     [leadUsers]
   );
