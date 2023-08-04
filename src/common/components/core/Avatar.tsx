@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../composite/dialogs/UserPopUp';
 import Image from '../../../domain/shared/components/Image';
 import WrapperTypography from './WrapperTypography';
@@ -51,13 +50,13 @@ export const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
     ...avatarSizeCSSRules,
   },
   dark: {
-    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.neutralMedium.main,
+    background: props => props.background ?? theme.palette.neutralMedium.main,
     color: theme.palette.background.paper,
     alignItems: 'center',
     placeContent: 'center',
   },
   light: {
-    background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.background.paper,
+    background: props => props.background ?? theme.palette.background.paper,
     color: theme.palette.neutralMedium.main,
     alignItems: 'center',
     placeContent: 'center',

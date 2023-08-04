@@ -4,7 +4,7 @@ import { Breakpoints, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { agnosticFunctor } from '../../utils/functor';
+import { functor } from '../../utils/functor';
 import Tag from './Tag';
 import WrapperTypography from './WrapperTypography';
 
@@ -27,7 +27,7 @@ const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
     flexWrap: 'wrap',
     gap: theme.spacing(2),
     alignItems: 'center',
-    color: props => `${agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral.main} !important`,
+    color: props => `${functor(props.color)(theme, {}) || theme.palette.neutral.main} !important`,
   },
   tagOffset: {
     marginLeft: theme.spacing(2),
@@ -107,9 +107,9 @@ const Content: FC<{ gutters?: boolean; classes?: ClassProps }> = ({ children, cl
 };
 
 interface ClassProps {
-  background?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
-  padding?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
-  color?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
+  background?: string | ((theme: Theme, media: Partial<Record<keyof Breakpoints, boolean>>) => string);
+  padding?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string);
+  color?: string | ((theme: Theme, media: Partial<Record<keyof Breakpoints, boolean>>) => string);
 }
 
 interface SectionProps {
@@ -128,15 +128,14 @@ interface SectionProps {
 }
 
 interface SectionClassProps extends ClassProps {
-  coverBackground?: string | ((theme: Theme, media: Record<keyof Breakpoints, boolean>) => string | boolean);
+  coverBackground?: string | ((theme: Theme, media: Partial<Record<keyof Breakpoints, boolean>>) => string);
 }
 
 const useSectionStyles = makeStyles<Theme, SectionClassProps>(theme => ({
   root: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    background: (props: SectionClassProps) =>
-      agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
+    background: (props: SectionClassProps) => functor(props.background)(theme, {}) || theme.palette.background.paper,
     position: 'relative',
   },
   avatar: {
@@ -159,7 +158,7 @@ const useSectionStyles = makeStyles<Theme, SectionClassProps>(theme => ({
     right: 0,
     bottom: 0,
     zIndex: 0,
-    background: props => agnosticFunctor(props.coverBackground)(theme, {}) || 'transparent',
+    background: props => functor(props.coverBackground)(theme, {}) || 'transparent',
   },
   content: {
     zIndex: 1,
