@@ -6579,6 +6579,18 @@ export type ChallengeProfileInfoQuery = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
       };
       innovationFlow?:
         | {

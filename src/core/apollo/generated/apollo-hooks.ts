@@ -4836,6 +4836,9 @@ export const ChallengeProfileInfoDocument = gql`
             uri
             description
           }
+          location {
+            ...fullLocation
+          }
         }
         innovationFlow {
           id
@@ -4852,6 +4855,7 @@ export const ChallengeProfileInfoDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 
