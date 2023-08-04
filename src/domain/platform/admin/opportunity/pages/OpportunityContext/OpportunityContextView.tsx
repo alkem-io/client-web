@@ -1,6 +1,5 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { updateContextInput } from '../../../../../../common/utils/buildContext';
 import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
@@ -39,7 +38,11 @@ const OpportunityContextView: FC = () => {
     await updateOpportunity({
       variables: {
         input: {
-          context: updateContextInput(values),
+          context: {
+            impact: values.impact,
+            vision: values.vision,
+            who: values.who,
+          },
           profileData: {
             description: values.background,
           },

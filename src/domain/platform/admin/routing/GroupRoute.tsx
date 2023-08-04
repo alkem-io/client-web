@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { GroupPage } from '../components';
+import GroupPage from '../components/Group/GroupPage';
 import { WithCommunity } from '../components/Community/CommunityTypes';
 import EditMembersPage from '../components/Group/EditMembersPage';
 import { Loading } from '../../../../common/components/core';

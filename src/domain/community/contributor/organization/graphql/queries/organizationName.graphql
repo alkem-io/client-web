@@ -1,9 +1,0 @@
-query organizationName($id: UUID_NAMEID!) {
-  organization(ID: $id) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

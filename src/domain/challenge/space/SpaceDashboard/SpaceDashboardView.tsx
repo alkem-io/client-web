@@ -16,7 +16,7 @@ import {
 } from '../../../../common/utils/urlBuilders';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
-import { ActivityComponent, ActivityLogResultType } from '../../../shared/components/ActivityLog';
+import { ActivityComponent, ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';

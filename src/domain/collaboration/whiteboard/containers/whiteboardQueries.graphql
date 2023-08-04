@@ -135,15 +135,6 @@ query spaceWhiteboardFromCallout($spaceId: UUID_NAMEID!, $calloutId: UUID_NAMEID
   }
 }
 
-query spaceWhiteboards($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
-      ...CollaborationWithWhiteboardDetails
-    }
-  }
-}
-
 query whiteboardWithValue($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {

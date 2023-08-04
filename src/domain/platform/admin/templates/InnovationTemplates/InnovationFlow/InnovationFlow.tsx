@@ -2,7 +2,7 @@ import { Button, Tooltip } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../../core/apollo/generated/graphql-schema';
-import { LifecycleModal } from '../../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
+import { LifecycleModal } from './LifecycleModal';
 import { ReactComponent as LifecycleStateIcon } from './InnovationFlowIcon.svg';
 import RootThemeProvider from '../../../../../../core/ui/themes/RootThemeProvider';
 

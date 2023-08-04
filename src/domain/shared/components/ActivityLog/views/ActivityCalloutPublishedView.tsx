@@ -7,7 +7,7 @@ import { ActivityViewProps } from './ActivityViewProps';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
+interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   calloutType: string;
 }
