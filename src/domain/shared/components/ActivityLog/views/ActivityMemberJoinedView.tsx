@@ -7,7 +7,7 @@ import { Author } from '../../AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityMemberJoinedViewProps extends ActivityViewProps {
+interface ActivityMemberJoinedViewProps extends ActivityViewProps {
   member: Author;
   community: Community;
   communityType: string;

@@ -22,10 +22,6 @@ interface WhiteboardProviderProps extends WhiteboardLocation {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
 
-export type TemplateQuery = {
-  [key in 'challengeId' | 'opportunityId']?: string;
-} & { spaceId: string };
-
 export interface IProvidedEntities {
   whiteboard: WhiteboardDetailsFragment | undefined;
   templates: CreateWhiteboardWhiteboardTemplateFragment[];

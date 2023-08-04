@@ -18,7 +18,3 @@ export const useUpdateNavigation = ({ currentPaths }: UseUpdateNavigationOptions
     }
   }, [currentPaths, set]);
 };
-
-export const useNavigation = () => {
-  return useContext(NavigationContext);
-};

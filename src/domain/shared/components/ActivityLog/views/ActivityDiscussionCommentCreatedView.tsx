@@ -8,7 +8,7 @@ import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
+interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   description: string;
 }

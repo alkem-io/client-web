@@ -1,9 +1,0 @@
-query spaceGroupsList($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    groups {
-      id
-      name
-    }
-  }
-}

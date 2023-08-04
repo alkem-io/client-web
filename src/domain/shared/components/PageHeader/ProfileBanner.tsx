@@ -6,7 +6,7 @@ import { Location } from '../../../../core/apollo/generated/graphql-schema';
 import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../common/location/LocationView';
 import { formatLocation } from '../../../common/location/LocationUtils';
-import { ContactDetail } from '../ContactDetails/ContactDetails';
+import { ContactDetail } from '../ContactDetails/ContactDetail';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';

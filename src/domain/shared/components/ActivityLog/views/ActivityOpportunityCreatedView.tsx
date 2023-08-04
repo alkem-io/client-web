@@ -7,7 +7,7 @@ import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
+interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
   opportunity: NameableEntity;
 }
 

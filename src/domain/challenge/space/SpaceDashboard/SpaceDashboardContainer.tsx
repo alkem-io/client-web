@@ -21,7 +21,7 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
 import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
-import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
+import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 
 export interface SpaceContainerEntities {

@@ -7,7 +7,7 @@ import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
+interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
   challenge: NameableEntity;
 }
 

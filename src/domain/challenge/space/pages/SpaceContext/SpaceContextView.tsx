@@ -3,7 +3,6 @@ import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { useUpdateSpaceMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container, Grid } from '@mui/material';
 import SpaceContextForm, { SpaceEditFormValuesType } from '../../../../platform/admin/components/SpaceContextForm';
 
@@ -25,7 +24,11 @@ export const SpaceContextView: FC = () => {
     updateSpace({
       variables: {
         input: {
-          context: updateContextInput({ ...values }),
+          context: {
+            impact: values.impact,
+            vision: values.vision,
+            who: values.who,
+          },
           profileData: {
             description: values.background,
           },

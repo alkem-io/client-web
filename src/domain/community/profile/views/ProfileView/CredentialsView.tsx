@@ -8,7 +8,7 @@ import ProfileCard, {
 import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import UserCredentialsContainer from '../../../../platform/VerifiedCredentials/UserCredentialsContainer';
 
-export interface CredentialsViewProps extends ProfileCardProps {
+interface CredentialsViewProps extends ProfileCardProps {
   userID: string;
   loading?: boolean;
 }
