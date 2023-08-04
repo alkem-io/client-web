@@ -65,22 +65,17 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
+  const myPrivileges = data?.space.collaboration?.timeline?.calendar.authorization?.myPrivileges;
 
   const privileges = {
-    canCreateEvents: (data?.space.timeline?.calendar.authorization?.myPrivileges ?? []).some(
-      p => p === AuthorizationPrivilege.Create
-    ),
-    canEditEvents: (data?.space.timeline?.calendar.authorization?.myPrivileges ?? []).some(
-      p => p === AuthorizationPrivilege.Update
-    ),
-    canDeleteEvents: (data?.space.timeline?.calendar.authorization?.myPrivileges ?? []).some(
-      p => p === AuthorizationPrivilege.Delete
-    ),
+    canCreateEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Create),
+    canEditEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Update),
+    canDeleteEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Delete),
   };
 
-  const events = data?.space.timeline?.calendar.events ?? [];
+  const events = data?.space.collaboration?.timeline?.calendar.events ?? [];
 
-  const calendarId = data?.space.timeline?.calendar.id;
+  const calendarId = data?.space.collaboration?.timeline?.calendar.id;
 
   const [createCalendarEvent, { loading: creatingCalendarEvent }] = useCreateCalendarEventMutation();
 

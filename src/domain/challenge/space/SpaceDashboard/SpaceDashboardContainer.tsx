@@ -84,7 +84,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     x => x === AuthorizationPrivilege.Read
   );
 
-  const timelineReadAccess = (_space?.space?.timeline?.authorization?.myPrivileges ?? []).some(
+  const timelineReadAccess = (_space?.space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).some(
     x => x === AuthorizationPrivilege.Read
   );
 

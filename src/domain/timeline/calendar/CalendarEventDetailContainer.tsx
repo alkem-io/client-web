@@ -56,12 +56,12 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ s
     loading: loadingEvent,
     error,
   } = useCalendarEventDetailsQuery({
-    variables: { spaceId: spaceNameId, eventId: eventId! },
+    variables: { eventId: eventId! },
     skip: !spaceNameId || !eventId,
     fetchPolicy: 'cache-and-network',
   });
   const loading = !eventId || loadingEvent;
-  const event = data?.space.timeline?.calendar.event;
+  const event = data?.lookup.calendarEvent;
 
   const roomId = event?.comments.id;
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);

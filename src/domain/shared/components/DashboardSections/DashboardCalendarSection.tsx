@@ -52,7 +52,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   // TODO: Move this to serverside
   const allEvents = useMemo(
-    () => sortBy(data?.space.timeline?.calendar.events ?? [], event => event.startDate),
+    () => sortBy(data?.space.collaboration?.timeline?.calendar.events ?? [], event => event.startDate),
     [data]
   );
   const events = useMemo(() => {

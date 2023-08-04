@@ -885,6 +885,14 @@ export const SpacePageFragmentDoc = gql`
     }
     collaboration {
       ...DashboardTopCallouts
+      timeline {
+        id
+        authorization {
+          id
+          anonymousReadAccess
+          myPrivileges
+        }
+      }
     }
     community {
       ...EntityDashboardCommunity
@@ -896,14 +904,6 @@ export const SpacePageFragmentDoc = gql`
     }
     challenges(limit: 3, shuffle: true) {
       ...ChallengeCard
-    }
-    timeline {
-      id
-      authorization {
-        id
-        anonymousReadAccess
-        myPrivileges
-      }
     }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
@@ -23416,12 +23416,14 @@ export const SpaceDashboardCalendarEventsDocument = gql`
   query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
     space(ID: $spaceId) {
       id
-      timeline {
-        id
-        calendar {
+      collaboration {
+        timeline {
           id
-          events(limit: $limit) {
-            ...CalendarEventInfo
+          calendar {
+            id
+            events(limit: $limit) {
+              ...CalendarEventInfo
+            }
           }
         }
       }
@@ -23491,16 +23493,18 @@ export const SpaceCalendarEventsDocument = gql`
   query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      timeline {
-        id
-        calendar {
+      collaboration {
+        timeline {
           id
-          authorization {
+          calendar {
             id
-            myPrivileges
-          }
-          events {
-            ...CalendarEventDetails
+            authorization {
+              id
+              myPrivileges
+            }
+            events {
+              ...CalendarEventDetails
+            }
           }
         }
       }
@@ -23562,17 +23566,10 @@ export function refetchSpaceCalendarEventsQuery(variables: SchemaTypes.SpaceCale
 }
 
 export const CalendarEventDetailsDocument = gql`
-  query calendarEventDetails($spaceId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      timeline {
-        id
-        calendar {
-          id
-          event(ID: $eventId) {
-            ...CalendarEventDetails
-          }
-        }
+  query calendarEventDetails($eventId: UUID!) {
+    lookup {
+      calendarEvent(ID: $eventId) {
+        ...CalendarEventDetails
       }
     }
   }
@@ -23591,7 +23588,6 @@ export const CalendarEventDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useCalendarEventDetailsQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      eventId: // value for 'eventId'
  *   },
  * });

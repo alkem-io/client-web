@@ -1,12 +1,14 @@
 query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
   space(ID: $spaceId) {
     id
-    timeline {
-      id
-      calendar {
+    collaboration {
+      timeline {
         id
-        events(limit: $limit) {
-          ...CalendarEventInfo
+        calendar {
+          id
+          events(limit: $limit) {
+            ...CalendarEventInfo
+          }
         }
       }
     }
@@ -29,33 +31,28 @@ fragment CalendarEventInfo on CalendarEvent {
 query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    timeline {
-      id
-      calendar {
+    collaboration {
+      timeline {
         id
-        authorization {
+        calendar {
           id
-          myPrivileges
-        }
-        events {
-          ...CalendarEventDetails
+          authorization {
+            id
+            myPrivileges
+          }
+          events {
+            ...CalendarEventDetails
+          }
         }
       }
     }
   }
 }
 
-query calendarEventDetails($spaceId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    timeline {
-      id
-      calendar {
-        id
-        event(ID: $eventId) {
-          ...CalendarEventDetails
-        }
-      }
+query calendarEventDetails($eventId: UUID!) {
+  lookup {
+    calendarEvent(ID: $eventId) {
+      ...CalendarEventDetails
     }
   }
 }
