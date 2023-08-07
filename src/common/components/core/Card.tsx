@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Breakpoint, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { agnosticFunctor } from '../../utils/functor';
+import { functor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
 import WrapperTypography from './WrapperTypography';
 import hexToRGBA from '../../utils/hexToRGBA';
@@ -26,7 +26,7 @@ const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
     whiteSpace: 'pre-wrap',
     minHeight: '58px',
     padding: props =>
-      agnosticFunctor(props.color)(theme, {}) ||
+      functor(props.color)(theme, {}) ||
       `${theme.spacing(2)} ${theme.spacing(6)} ${theme.spacing(2)} ${theme.spacing(4)}`,
 
     '& span': {
@@ -59,10 +59,10 @@ const usePrimaryTextStyles = makeStyles<Theme, ClassProps>(theme => ({
     wordBreak: 'break-word',
     whiteSpace: 'pre-wrap',
     textTransform: 'uppercase',
-    lineHeight: props => agnosticFunctor(props.lineHeight)(theme, {}),
+    lineHeight: props => functor(props.lineHeight)(theme, {}),
   },
   primaryTextWrapper: {
-    color: props => agnosticFunctor(props.color)(theme, {}) || theme.palette.neutral.main,
+    color: props => functor(props.color)(theme, {}) || theme.palette.neutral.main,
     display: 'flex',
     flexBasis: '60px',
   },
@@ -146,8 +146,8 @@ const useTagStyles = makeStyles<Theme, ClassProps>(theme => ({
     alignItems: 'center',
     position: 'absolute',
     top: 0,
-    right: props => (props.actions ? agnosticFunctor(props.actions)(theme, {}) * 25 + 15 : 0),
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.positive.main,
+    right: props => (props.actions ? functor(props.actions)(theme, {}) * 25 + 15 : 0),
+    background: props => functor(props.background)(theme, {}) || theme.palette.positive.main,
   },
 }));
 
@@ -227,31 +227,31 @@ const useBodyStyles = makeStyles<Theme, ClassProps>(theme => ({
     width: '100%',
     flexDirection: 'column',
     flexGrow: 1,
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight.main,
+    background: props => functor(props.background)(theme, {}) || theme.palette.neutralLight.main,
     padding: props =>
-      agnosticFunctor(props.padding)(theme, {}) || `${theme.spacing(3)} ${theme.spacing(3)} ${theme.spacing(1)}`,
+      functor(props.padding)(theme, {}) || `${theme.spacing(3)} ${theme.spacing(3)} ${theme.spacing(1)}`,
 
     [theme.breakpoints.down('xl')]: {
-      background: props => agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight.main,
-      padding: props => agnosticFunctor(props.padding)(theme, { md: true }) || theme.spacing(3),
+      background: props => functor(props.background)(theme, { md: true }) || theme.palette.neutralLight.main,
+      padding: props => functor(props.padding)(theme, { md: true }) || theme.spacing(3),
     },
     [theme.breakpoints.down('lg')]: {
-      background: props => agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight.main,
-      padding: props => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.spacing(3),
+      background: props => functor(props.background)(theme, { sm: true }) || theme.palette.neutralLight.main,
+      padding: props => functor(props.padding)(theme, { sm: true }) || theme.spacing(3),
     },
     [theme.breakpoints.down('md')]: {
-      background: props => agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight.main,
-      padding: props => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.spacing(3),
+      background: props => functor(props.background)(theme, { xs: true }) || theme.palette.neutralLight.main,
+      padding: props => functor(props.padding)(theme, { xs: true }) || theme.spacing(3),
     },
   },
 }));
 
 export interface ClassProps {
-  background?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
-  padding?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
-  color?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
-  lineHeight?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
-  actions?: number | ((theme: Theme, media: Record<Breakpoint, boolean>) => number | boolean);
+  background?: string | ((theme: Theme, media: Partial<Record<Breakpoint, boolean>>) => string);
+  padding?: string | ((theme: Theme, media: Partial<Record<Breakpoint, boolean>>) => string);
+  color?: string | ((theme: Theme, media: Partial<Record<Breakpoint, boolean>>) => string);
+  lineHeight?: string | ((theme: Theme, media: Partial<Record<Breakpoint, boolean>>) => string);
+  actions?: number | ((theme: Theme, media: Partial<Record<Breakpoint, boolean>>) => number);
 }
 
 interface BodyProps {
@@ -313,7 +313,7 @@ const useCardStyles = makeStyles<Theme, ClassProps>(theme => ({
     display: 'flex',
     width: '100%',
     flexDirection: 'column',
-    background: props => agnosticFunctor(props.background)(theme, {}) || 'none',
+    background: props => functor(props.background)(theme, {}) || 'none',
   },
   clickable: {
     cursor: 'pointer',

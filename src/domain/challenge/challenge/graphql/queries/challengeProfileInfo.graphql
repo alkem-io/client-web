@@ -21,6 +21,9 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
           uri
           description
         }
+        location {
+          ...fullLocation
+        }
       }
       innovationFlow {
         id

@@ -18,7 +18,6 @@ export type NotificationsContext = {
 export type NotificationsEvent =
   | { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
   | { type: typeof CLEAR_NOTIFICATION; payload: { id: string } };
-export type LoginNavigationState = { value: 'visible'; context: {} } | { value: 'hidden'; context: {} };
 
 export const notificationMachine = createMachine<NotificationsContext, NotificationsEvent>({
   id: 'notification',

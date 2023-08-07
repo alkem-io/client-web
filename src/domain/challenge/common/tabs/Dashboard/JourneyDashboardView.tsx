@@ -12,7 +12,7 @@ import DashboardUpdatesSection from '../../../../shared/components/DashboardSect
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { ActivityComponent, ActivityLogResultType } from '../../../../shared/components/ActivityLog';
+import { ActivityComponent, ActivityLogResultType } from '../../../../shared/components/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
@@ -125,7 +125,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
         displayName: user.profile.displayName,
         country: user.profile.location?.country,
         city: user.profile.location?.city,
-        avatarUri: user.profile.visual?.uri,
+        avatarUri: user.profile.avatar?.uri,
       })),
     [leadUsers]
   );

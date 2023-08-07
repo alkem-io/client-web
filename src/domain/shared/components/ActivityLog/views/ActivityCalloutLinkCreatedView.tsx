@@ -7,7 +7,7 @@ import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityCalloutLinkCreatedViewProps extends ActivityViewProps {
+interface ActivityCalloutLinkCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   linkName: string;
   linkDescription: string;

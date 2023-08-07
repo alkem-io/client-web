@@ -4,6 +4,3 @@ export const getCardCallout = <A extends { nameID: string }, T extends { type: C
   callouts: T[] | undefined,
   postNameID: string
 ) => callouts?.find(x => x.type === CalloutType.PostCollection && x.posts?.some(x => x.nameID === postNameID));
-
-export const getCardCallouts = <T extends { type: CalloutType }>(callouts: T[] | undefined) =>
-  callouts?.filter(x => x.type === CalloutType.PostCollection);

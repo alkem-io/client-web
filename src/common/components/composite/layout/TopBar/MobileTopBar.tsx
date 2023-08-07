@@ -35,6 +35,7 @@ import HelpDialog from '../../../../../core/help/dialog/HelpDialog';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
 import PendingMembershipsUserMenuItem from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 
 export const MobileTopBarHeightGutters = 3;
 
@@ -107,7 +108,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
   const { isAuthenticated, user: userMetadata } = useUserContext();
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const user = userMetadata?.user;
-  const isAdmin = userMetadata?.permissions.isAdmin;
+  const isPlatformAdmin = userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
 
   const [languageOpen, setLanguageOpen] = React.useState(false);
   const [selectedLang, setSelectedLang] = React.useState(i18n.language);
@@ -204,7 +205,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             )}
           </PendingMembershipsUserMenuItem>
         )}
-        {isAdmin && (
+        {isPlatformAdmin && (
           <MenuItem component={RouterLink} to="/admin">
             <ListItemIcon>
               <SettingsOutlinedIcon />

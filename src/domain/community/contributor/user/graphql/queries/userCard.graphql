@@ -1,5 +1,0 @@
-query userCard($id: UUID_NAMEID_EMAIL!) {
-  user(ID: $id) {
-   ...UserCard
-  }
-}

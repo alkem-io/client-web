@@ -630,6 +630,12 @@ export type ChallengeTemplateFieldPolicy = {
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ChatGuidanceResultKeySpecifier = ('answer' | 'question' | 'sources' | ChatGuidanceResultKeySpecifier)[];
+export type ChatGuidanceResultFieldPolicy = {
+  answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  sources?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CollaborationKeySpecifier = (
   | 'authorization'
   | 'callouts'
@@ -1326,6 +1332,7 @@ export type MutationKeySpecifier = (
   | 'eventOnProject'
   | 'eventOnWhiteboardCheckout'
   | 'grantCredentialToUser'
+  | 'ingest'
   | 'inviteExistingUserForCommunityMembership'
   | 'inviteExternalUserForCommunityMembership'
   | 'joinCommunity'
@@ -1342,6 +1349,7 @@ export type MutationKeySpecifier = (
   | 'removeUserAsOrganizationOwner'
   | 'removeUserFromGroup'
   | 'removeUserFromOrganization'
+  | 'resetChatGuidance'
   | 'revokeCredentialFromUser'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
@@ -1475,6 +1483,7 @@ export type MutationFieldPolicy = {
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnWhiteboardCheckout?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  ingest?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteExternalUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1491,6 +1500,7 @@ export type MutationFieldPolicy = {
   removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1831,6 +1841,7 @@ export type QueryKeySpecifier = (
   | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
+  | 'askChatGuidanceQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'lookup'
   | 'me'
@@ -1846,7 +1857,6 @@ export type QueryKeySpecifier = (
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
-  | 'usersById'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | QueryKeySpecifier
@@ -1855,6 +1865,7 @@ export type QueryFieldPolicy = {
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
+  askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1870,7 +1881,6 @@ export type QueryFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
-  usersById?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2724,6 +2734,10 @@ export type StrictTypedTypePolicies = {
   ChallengeTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeTemplateKeySpecifier | (() => undefined | ChallengeTemplateKeySpecifier);
     fields?: ChallengeTemplateFieldPolicy;
+  };
+  ChatGuidanceResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ChatGuidanceResultKeySpecifier | (() => undefined | ChatGuidanceResultKeySpecifier);
+    fields?: ChatGuidanceResultFieldPolicy;
   };
   Collaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CollaborationKeySpecifier | (() => undefined | CollaborationKeySpecifier);

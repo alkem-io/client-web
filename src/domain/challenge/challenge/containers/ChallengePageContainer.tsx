@@ -6,7 +6,6 @@ import { useChallenge } from '../hooks/useChallenge';
 import {
   useChallengeDashboardReferencesQuery,
   useChallengePageQuery,
-  usePlatformLevelAuthorizationQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -88,16 +87,13 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const challengePrivileges = _challenge?.space?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
-  const platformPrivileges = platformPrivilegesData?.platform.authorization?.myPrivileges ?? NO_PRIVILEGES;
-
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
     communityReadAccess: (_challenge?.space?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
     challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {

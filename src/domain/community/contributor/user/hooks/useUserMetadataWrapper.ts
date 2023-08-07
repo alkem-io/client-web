@@ -1,29 +1,22 @@
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../../common/tags/tagset.constants';
 import { ContributionItem } from '../../contribution';
 import {
+  ApplicationForRoleResult,
   AuthorizationPrivilege,
+  InvitationForRoleResult,
   MyPrivilegesFragment,
   User,
   UserRolesDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { RoleType } from '../constants/RoleType';
+import { InvitationItem } from '../providers/UserProvider/InvitationItem';
+import { Stateful } from '../../../../shared/types/Stateful';
 
-export interface UserPermissions {
-  canCreate: boolean;
-  canGrant: boolean;
-  canRead: boolean;
-  canUpdate: boolean;
-  canDelete: boolean;
-  canReadUsers: boolean;
-  canCreateSpace: boolean;
-  canCreateOrganization: boolean;
-  isPlatformAdmin: boolean; // has any GLOBAL admin privilege
-  isAdmin: boolean; // has any admin privilege
-}
+export interface PendingApplication extends ContributionItem, Stateful {}
 
 export interface UserMetadata {
   user: User;
-  // hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
+  hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean;
   ofChallenge: (id: string) => boolean;
   ofSpace: (id: string) => boolean;
   ofOpportunity: (id: string) => boolean;
@@ -34,9 +27,9 @@ export interface UserMetadata {
   keywords: string[];
   skills: string[];
   contributions: ContributionItem[];
-  pendingApplications: ContributionItem[];
+  pendingApplications: PendingApplication[];
+  pendingInvitations: InvitationItem[];
   organizationNameIDs: string[];
-  permissions: UserPermissions;
 }
 
 const getDisplayName = (i: { displayName: string }) => i.displayName;
@@ -46,12 +39,14 @@ const getContributions = (membershipData?: UserRolesDetailsFragment) => {
 
   const spaces = membershipData.spaces.map<ContributionItem>(e => ({
     spaceId: e.spaceID,
+    id: e.id,
   }));
 
   const challenges = membershipData.spaces.flatMap<ContributionItem>(e =>
     e.challenges.map(c => ({
       spaceId: e.nameID,
       challengeId: c.nameID,
+      id: c.id,
     }))
   );
 
@@ -59,25 +54,42 @@ const getContributions = (membershipData?: UserRolesDetailsFragment) => {
     e.opportunities.map(o => ({
       spaceId: e.nameID,
       opportunityId: o.nameID,
+      id: o.id,
     }))
   );
   return [...spaces, ...challenges, ...opportunities];
 };
 
-const getPendingApplications = (membershipData?: UserRolesDetailsFragment) => {
-  if (!membershipData) return [];
-
+const getPendingApplications = (applicationsData: ApplicationForRoleResult[]) => {
   return (
-    membershipData.applications?.map<ContributionItem>(a => ({
+    applicationsData.map<PendingApplication>(a => ({
       spaceId: a.spaceID,
       challengeId: a.challengeID,
       opportunityId: a.opportunityID,
+      id: a.id,
+      state: a.state,
+    })) || []
+  );
+};
+
+const getPendingInvitations = (invitationsData: InvitationForRoleResult[]) => {
+  return (
+    invitationsData.map<InvitationItem>(a => ({
+      spaceId: a.spaceID,
+      challengeId: a.challengeID,
+      opportunityId: a.opportunityID,
+      welcomeMessage: a.welcomeMessage || '',
+      createdBy: a.createdBy,
+      createdDate: a.createdDate,
+      id: a.id,
     })) || []
   );
 };
 
 export const toUserMetadata = (
   user: Omit<User, 'agent'> | undefined,
+  applications: ApplicationForRoleResult[],
+  invitations: InvitationForRoleResult[],
   membershipData: UserRolesDetailsFragment | undefined,
   platformLevelAuthorization: MyPrivilegesFragment | undefined
 ): UserMetadata | undefined => {
@@ -95,6 +107,10 @@ export const toUserMetadata = (
     });
   };
 
+  const hasPlatformPrivilege = (myPrivileges: AuthorizationPrivilege[]) => (privilege: AuthorizationPrivilege) => {
+    return myPrivileges.includes(privilege);
+  };
+
   const challengeDisplayNames = challengeMemberships.map(getDisplayName);
   const opportunityDisplayNames = opportunityMemberships.map(getDisplayName);
   const organizationDisplayNames = membershipData?.organizations.map(getDisplayName) ?? [];
@@ -102,21 +118,10 @@ export const toUserMetadata = (
   const groups = membershipData?.spaces.flatMap(e => e.userGroups.map(getDisplayName)) || [];
 
   const myPrivileges = platformLevelAuthorization?.myPrivileges ?? [];
-  const permissions: UserPermissions = {
-    canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
-    canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
-    canGrant: myPrivileges.includes(AuthorizationPrivilege.Grant),
-    canDelete: myPrivileges.includes(AuthorizationPrivilege.Delete),
-    canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
-    canCreateSpace: myPrivileges.includes(AuthorizationPrivilege.CreateSpace),
-    canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
-    canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
-    isPlatformAdmin: myPrivileges.includes(AuthorizationPrivilege.PlatformAdmin),
-    isAdmin: myPrivileges.includes(AuthorizationPrivilege.Admin),
-  };
 
   return {
     user,
+    hasPlatformPrivilege: hasPlatformPrivilege(myPrivileges),
     ofChallenge: IsJourneyMember(challengeMemberships),
     ofSpace: IsJourneyMember(spaceMemberships),
     ofOpportunity: IsJourneyMember(opportunityMemberships),
@@ -127,8 +132,8 @@ export const toUserMetadata = (
     keywords: user.profile.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
     skills: user.profile.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
     contributions: getContributions(membershipData),
-    pendingApplications: getPendingApplications(membershipData),
+    pendingApplications: getPendingApplications(applications),
+    pendingInvitations: getPendingInvitations(invitations),
     organizationNameIDs,
-    permissions,
   };
 };

@@ -5,7 +5,6 @@ import { useUserContext } from '../../../community/contributor/user';
 import {
   useSpaceDashboardReferencesQuery,
   useSpacePageQuery,
-  usePlatformLevelAuthorizationQuery,
   useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -22,7 +21,7 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
 import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
-import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
+import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 
 export interface SpaceContainerEntities {
@@ -93,15 +92,12 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const spacePrivileges = _space?.space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
-  const platformPrivileges = platformPrivilegesData?.platform.authorization?.myPrivileges ?? NO_PRIVILEGES;
-
   const permissions = {
     canEdit: spacePrivileges.includes(AuthorizationPrivilege.Update),
     communityReadAccess,
     timelineReadAccess,
     spaceReadAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
   const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);

@@ -7,6 +7,7 @@ import GlobalCommunityAuthorizationPage from '../authorization/GlobalCommunityAu
 import GlobalSpacesAdminAuthorizationPage from '../authorization/GlobalSpacesAdminAuthorizationPage';
 import { nameOfUrl } from '../../../../core/routing/urlParams';
 import AuthorizationRouteProps from './AuthorizationRouteProps';
+import GlobalBetaTesterAuthorizationPage from '../authorization/GlobalBetaTesterAuthorizationPage';
 
 const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = () => {
   return (
@@ -15,6 +16,7 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = () => {
       <Route path={`:${nameOfUrl.role}`} element={<GlobalAuthorizationPage />} />
       <Route path={`global-community/:${nameOfUrl.role}`} element={<GlobalCommunityAuthorizationPage />} />
       <Route path={`global-spaces/:${nameOfUrl.role}`} element={<GlobalSpacesAdminAuthorizationPage />} />
+      <Route path={`beta-tester/:${nameOfUrl.role}`} element={<GlobalBetaTesterAuthorizationPage />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

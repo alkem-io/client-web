@@ -16,17 +16,3 @@ export interface OrganizationInput {
   verified: OrganizationVerificationEnum;
   references: Reference[];
 }
-
-export interface CreateOrganizationInput {
-  name: string | undefined;
-  nameID: string;
-  description: string | undefined;
-  location: Location;
-  tagsets: Tagset[];
-  contactEmail: string | undefined;
-  domain: string | undefined;
-  legalEntityName: string | undefined;
-  website: string | undefined;
-  verified: OrganizationVerificationEnum;
-  references: Reference[];
-}
