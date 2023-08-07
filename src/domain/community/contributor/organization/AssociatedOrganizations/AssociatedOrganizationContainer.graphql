@@ -9,10 +9,20 @@ fragment AssociatedOrganizationDetails on Organization {
   nameID
   profile {
     id
+    tagline
     displayName
     description
-    visual(type: AVATAR) {
+    location {
+      id
+      city
+      country
+    }
+    avatar: visual(type: AVATAR) {
       ...VisualUri
+    }
+    tagsets {
+      id
+      tags
     }
   }
   verification {

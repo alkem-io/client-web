@@ -1,24 +1,26 @@
-import React, { FC, ReactNode, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Box, styled } from '@mui/material';
 import {
   ActivityEventType,
   ActivityLogCalloutWhiteboardCreatedFragment,
-  ActivityLogCalloutCardCommentFragment,
-  ActivityLogCalloutCardCreatedFragment,
   ActivityLogCalloutDiscussionCommentFragment,
   ActivityLogCalloutPublishedFragment,
+  ActivityLogCalloutLinkCreatedFragment,
+  ActivityLogCalloutPostCreatedFragment,
+  ActivityLogCalloutPostCommentFragment,
   ActivityLogChallengeCreatedFragment,
   ActivityLogEntry,
   ActivityLogMemberJoinedFragment,
   ActivityLogOpportunityCreatedFragment,
   ActivityLogUpdateSentFragment,
+  ActivityLogCalendarEventCreatedFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { LATEST_ACTIVITIES_COUNT } from './constants';
 import {
   ActivityCalloutPublishedView,
-  ActivityWhiteboardCreatedView,
-  ActivityCardCommentCreatedView,
-  ActivityCardCreatedView,
+  ActivityCalloutWhiteboardCreatedView,
+  ActivityCalloutPostCommentCreatedView,
+  ActivityCalloutPostCreatedView,
   ActivityChallengeCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
@@ -30,7 +32,8 @@ import { getJourneyLocationKey, JourneyLocation } from '../../../../common/utils
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
-import journeyIcon from '../JourneyIcon/JourneyIcon';
+import { ActivityCalloutLinkCreatedView } from './views';
+import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -45,18 +48,20 @@ const Root = styled(Box)(({ theme }) => ({
   },
 }));
 
-export type ActivityLogResult<T> = T & ActivityLogEntry;
+export type ActivityLogResult<T> = T & Omit<ActivityLogEntry, 'parentDisplayName'> & { journeyDisplayName: string };
 
 export type ActivityLogResultType = ActivityLogResult<
   | ActivityLogMemberJoinedFragment
   | ActivityLogCalloutWhiteboardCreatedFragment
-  | ActivityLogCalloutCardCreatedFragment
-  | ActivityLogCalloutCardCommentFragment
+  | ActivityLogCalloutPostCreatedFragment
+  | ActivityLogCalloutLinkCreatedFragment
+  | ActivityLogCalloutPostCommentFragment
   | ActivityLogCalloutDiscussionCommentFragment
   | ActivityLogCalloutPublishedFragment
   | ActivityLogChallengeCreatedFragment
   | ActivityLogOpportunityCreatedFragment
   | ActivityLogUpdateSentFragment
+  | ActivityLogCalendarEventCreatedFragment
 >;
 
 export interface ActivityLogComponentProps {
@@ -87,7 +92,6 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
       <>
         {activities.map(activity => {
           const activityOriginJourneyTypeName = getActivityOriginJourneyTypeName(activity, journeyLocation);
-          const ActivityOriginJourneyIcon = activityOriginJourneyTypeName && journeyIcon[activityOriginJourneyTypeName];
           const activityOriginJourneyLocation = activityOriginJourneyTypeName
             ? {
                 ...journeyLocation,
@@ -98,13 +102,9 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
           return (
             <ActivityViewChooser
               activity={activity}
+              journeyTypeName={activityOriginJourneyTypeName}
               journeyLocation={activityOriginJourneyLocation}
               key={activity.id}
-              activityOriginJourneyIcon={
-                ActivityOriginJourneyIcon && (
-                  <ActivityOriginJourneyIcon sx={{ verticalAlign: 'bottom' }} fontSize="small" />
-                )
-              }
             />
           );
         })}
@@ -115,10 +115,8 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
   return <Root>{display ?? <ActivityLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };
 
-interface ActivityViewChooserProps {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyLocation'> {
   activity: ActivityLogResultType;
-  journeyLocation: JourneyLocation;
-  activityOriginJourneyIcon?: ReactNode;
 }
 
 const ActivityViewChooser = ({
@@ -139,11 +137,11 @@ const ActivityViewChooser = ({
           {...rest}
         />
       );
-    case ActivityEventType.WhiteboardCreated:
+    case ActivityEventType.CalloutWhiteboardCreated:
       const activityCalloutWhiteboardCreated =
         activity as ActivityLogResult<ActivityLogCalloutWhiteboardCreatedFragment>;
       return (
-        <ActivityWhiteboardCreatedView
+        <ActivityCalloutWhiteboardCreatedView
           callout={activityCalloutWhiteboardCreated.callout}
           whiteboard={activityCalloutWhiteboardCreated.whiteboard}
           author={author}
@@ -151,10 +149,10 @@ const ActivityViewChooser = ({
           {...rest}
         />
       );
-    case ActivityEventType.PostComment:
-      const activityCalloutCardComment = activity as ActivityLogResult<ActivityLogCalloutCardCommentFragment>;
+    case ActivityEventType.CalloutPostComment:
+      const activityCalloutCardComment = activity as ActivityLogResult<ActivityLogCalloutPostCommentFragment>;
       return (
-        <ActivityCardCommentCreatedView
+        <ActivityCalloutPostCommentCreatedView
           callout={activityCalloutCardComment.callout}
           card={activityCalloutCardComment.post}
           author={author}
@@ -162,15 +160,27 @@ const ActivityViewChooser = ({
           {...rest}
         />
       );
-    case ActivityEventType.PostCreated:
-      const activityCalloutCardCreated = activity as ActivityLogResult<ActivityLogCalloutCardCreatedFragment>;
+    case ActivityEventType.CalloutPostCreated:
+      const activityCalloutPostCreated = activity as ActivityLogResult<ActivityLogCalloutPostCreatedFragment>;
       return (
-        <ActivityCardCreatedView
-          callout={activityCalloutCardCreated.callout}
-          card={activityCalloutCardCreated.post}
+        <ActivityCalloutPostCreatedView
+          callout={activityCalloutPostCreated.callout}
+          post={activityCalloutPostCreated.post}
           author={author}
-          postType={activityCalloutCardCreated.post.type}
-          postDescription={activityCalloutCardCreated.post.profile.description!}
+          postType={activityCalloutPostCreated.post.type}
+          postDescription={activityCalloutPostCreated.post.profile.description!}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.CalloutLinkCreated:
+      const activityCalloutLinkCreated = activity as ActivityLogResult<ActivityLogCalloutLinkCreatedFragment>;
+      return (
+        <ActivityCalloutLinkCreatedView
+          callout={activityCalloutLinkCreated.callout}
+          author={author}
+          linkName={activityCalloutLinkCreated.reference.name}
+          linkDescription={activityCalloutLinkCreated.reference.description!}
           {...activity}
           {...rest}
         />
@@ -214,6 +224,17 @@ const ActivityViewChooser = ({
       return (
         <ActivityOpportunityCreatedView
           opportunity={activityOpportunityCreated.opportunity}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.CalendarEventCreated:
+      const activityCalendarEventCreated = activity as ActivityLogResult<ActivityLogCalendarEventCreatedFragment>;
+      return (
+        <ActivityCalendarEventCreatedView
+          calendarEvent={activityCalendarEventCreated.calendarEvent}
+          calendarEventDescription={activityCalendarEventCreated.calendarEvent.profile.description || ''}
           author={author}
           {...activity}
           {...rest}

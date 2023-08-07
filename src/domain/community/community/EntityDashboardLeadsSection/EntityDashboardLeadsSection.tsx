@@ -1,24 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import OrganizationCardHorizontal, {
-  OrganizationCardProps,
-} from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
-import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../contributor/user';
-import { mapToAssociatedOrganization } from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganization';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import LeadOrganizationCard, { LeadOrganizationCardProps } from '../LeadCards/LeadOrganizationCard';
+import { SvgIconProps } from '@mui/material';
 
-const OrganizationCardTransparent = (props: OrganizationCardProps) => (
-  <OrganizationCardHorizontal {...props} transparent />
-);
+const OrganizationCardTransparent = (props: LeadOrganizationCardProps) => <LeadOrganizationCard {...props} />;
 
 interface EntityDashboardLeadsProps extends EntityDashboardLeads {
   organizationsHeader: string;
-  usersHeader: string;
+  organizationsHeaderIcon?: ReactElement<SvgIconProps>;
+  usersHeader?: string;
 }
 
 const EntityDashboardLeadsSection = ({
@@ -26,14 +23,27 @@ const EntityDashboardLeadsSection = ({
   leadOrganizations,
   usersHeader,
   organizationsHeader,
-}: EntityDashboardLeadsProps) => {
+  organizationsHeaderIcon,
+  children,
+}: PropsWithChildren<EntityDashboardLeadsProps>) => {
   const { t } = useTranslation();
 
   const { user } = useUserContext();
 
   const leadOrganizationsMapped = useMemo(
-    () => leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id)),
-    [leadOrganizations, t, user?.user]
+    () =>
+      leadOrganizations?.map(org => ({
+        key: org.id,
+        id: org.id,
+        organizationUrl: buildOrganizationUrl(org.nameID),
+        avatarSrc: org.profile.avatar?.uri,
+        displayName: org.profile.displayName,
+        city: org.profile.location?.city,
+        country: org.profile.location?.country,
+        tagline: org.profile.tagline,
+        tags: org.profile.tagsets?.flatMap(({ tags }) => tags),
+      })),
+    [leadOrganizations, user?.user]
   );
 
   const leadUsersMapped = useMemo(() => {
@@ -43,22 +53,23 @@ const EntityDashboardLeadsSection = ({
       fullName: user.profile.displayName,
       city: user.profile.location?.city,
       country: user.profile.location?.country,
-      avatarUrl: user.profile.visual?.uri,
+      avatarUrl: user.profile.avatar?.uri,
       tags: user.profile.tagsets?.flatMap(({ tags }) => tags),
     }));
   }, [leadUsers]);
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={organizationsHeader} />
+      {!!leadUsersMapped && leadUsersMapped.length > 0 && usersHeader && (
+        <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
+      )}
+      <PageContentBlockHeader title={organizationsHeader}>{organizationsHeaderIcon}</PageContentBlockHeader>
       <AssociatedOrganizationsView
         organizations={leadOrganizationsMapped}
         organizationCardComponent={OrganizationCardTransparent}
         entityName={t('community.leading-organizations')}
       />
-      {!!leadUsersMapped && leadUsersMapped.length > 0 && (
-        <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
-      )}
+      {children}
     </PageContentBlock>
   );
 };

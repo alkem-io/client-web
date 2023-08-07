@@ -1,0 +1,9 @@
+mutation removeUserAsBetaTester($input: RevokeAuthorizationCredentialInput!) {
+  revokeCredentialFromUser(revokeCredentialData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

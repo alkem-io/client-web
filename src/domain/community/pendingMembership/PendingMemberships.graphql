@@ -1,0 +1,80 @@
+query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      ...PendingMembershipsJourneyProfile
+    }
+  }
+}
+
+query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+    }
+  }
+}
+
+query PendingMembershipsOpportunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  space(ID: $spaceId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+    }
+  }
+}
+
+query PendingMembershipsUser($userId: UUID!) {
+  users(IDs: [$userId]) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment PendingMembershipsJourneyProfile on Profile {
+  id
+  displayName
+  ... on Profile @include(if: $fetchDetails) {
+    tagline
+    tagset {
+      id
+      tags
+    }
+    cardBanner: visual(type: CARD) {
+      id
+      uri
+    }
+  }
+}
+
+fragment PendingMembershipsMemberships on Community {
+  id
+  applications {
+    id
+  }
+  invitations {
+    ...PendingMembershipInvitation
+  }
+}
+
+fragment PendingMembershipInvitation on Invitation {
+  id
+  welcomeMessage
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

@@ -9,7 +9,7 @@ import CardTags from '../../../../core/ui/card/CardTags';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import MessageCounter from '../../../../core/ui/card/MessageCounter';
-import { ContributeTabPostFragment, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { ContributeTabPostFragment, Room, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 import { gutters } from '../../../../core/ui/grid/utils';
 
@@ -18,7 +18,7 @@ type NeededFields = 'id' | 'nameID' | 'profile' | 'type';
 export type PostCardPost = Pick<ContributeTabPostFragment, NeededFields> & {
   bannerNarrow?: VisualUriFragment;
   createdBy?: { profile: { displayName: string } };
-  comments?: { commentsCount?: number };
+  comments?: Pick<Room, 'messagesCount'>;
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
 
@@ -55,7 +55,7 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
       </CardDetails>
       <CardFooter>
         {post.createdDate && <CardFooterDate date={post.createdDate} />}
-        <MessageCounter commentsCount={post.comments?.commentsCount} />
+        <MessageCounter commentsCount={post.comments?.messagesCount} />
       </CardFooter>
     </ContributeCard>
   );

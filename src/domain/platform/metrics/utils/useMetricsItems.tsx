@@ -1,6 +1,6 @@
 import getMetricCount, { Metric } from './getMetricCount';
 import { useTranslation } from 'react-i18next';
-import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
+import { MetricItem } from '../views/Metrics';
 import { useMemo } from 'react';
 import { MetricType } from '../MetricType';
 import TranslationKey from '../../../../types/TranslationKey';

@@ -1,13 +1,15 @@
 query communityFeedbackTemplates {
-  configuration {
-    template {
-      challenges {
-        feedback {
-          name
-          questions {
-            question
-            required
-            sortOrder
+  platform {
+    configuration {
+      template {
+        challenges {
+          feedback {
+            name
+            questions {
+              question
+              required
+              sortOrder
+            }
           }
         }
       }

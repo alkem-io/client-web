@@ -36,6 +36,15 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
+    <script type="text/javascript">
+      if (_env_.REACT_APP_IN_CONTEXT_TRANSLATION === 'true') {
+        var _jipt = [];
+        _jipt.push(['project', 'alkemio']);
+        var script = document.createElement("script");
+        script.setAttribute("src", "//cdn.crowdin.com/jipt/jipt.js");
+        document.getElementsByTagName("head")[0].appendChild(script);
+      }
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

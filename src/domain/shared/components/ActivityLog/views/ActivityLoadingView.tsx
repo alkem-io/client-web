@@ -10,14 +10,7 @@ export const ActivityLoadingView: FC<ActivityLoadingViewProps> = ({ rows }) => {
   return (
     <>
       {times(rows, i => (
-        <ActivityBaseView
-          key={`_activity_log_loading_view_row_${i}`}
-          loading
-          author={undefined}
-          createdDate=""
-          action=""
-          parentDisplayName=""
-        />
+        <ActivityBaseView key={`_activity_log_loading_view_row_${i}`} loading author={undefined} title="" />
       ))}
     </>
   );

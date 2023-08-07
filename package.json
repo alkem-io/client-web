@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.40.1",
+  "version": "0.42.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "license": "EUPL-1.2",
   "scripts": {
-    "start": "vite",
+    "start": "vite --host --port 3000",
     "build": "cross-env NODE_ENV=production && vite build",
     "test": "cross-env NODE_ENV=test node buildConfiguration && react-scripts test --transformIgnorePatterns \"node_modules/(?!unified)/\"",
     "test:cov": "npm run test -- --coverage --watchAll=false",
@@ -20,7 +20,8 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
     "@alkemio/excalidraw": "^0.15.2-alkemio-2",
@@ -78,7 +79,9 @@
     "nanoid": "^3.3.6",
     "qrcode": "^1.5.0",
     "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.1",
     "react-calendar": "^4.0.0",
+    "react-chat-widget": "^3.1.4",
     "react-cookie": "^4.1.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",
@@ -150,6 +153,7 @@
     "@types/react-mentions": "^4.1.8",
     "@types/uuid": "^8.3.1",
     "@vitejs/plugin-react": "^4.0.2",
+    "@types/react-beautiful-dnd": "^13.1.4",
     "coveralls": "^3.1.1",
     "eslint": "8.22.0",
     "eslint-config-prettier": "^8.3.0",
@@ -161,7 +165,8 @@
     "vite": "^4.4.2",
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "^4.2.0",
-    "webpack": "^5.66.0"
+    "source-map-explorer": "^2.5.3",
+    "webpack": "^5.88.1"
   },
   "husky": {
     "hooks": {

@@ -4,7 +4,7 @@ fragment DashboardLeadUser on User {
   profile {
     id
     displayName
-    visual(type: AVATAR) {
+    avatar: visual(type: AVATAR) {
       ...VisualUri
     }
     location {
@@ -13,8 +13,7 @@ fragment DashboardLeadUser on User {
       city
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
   }
 }

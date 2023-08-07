@@ -1,21 +1,19 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useUserContext } from '../../../community/contributor/user';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import { useChallenge } from '../hooks/useChallenge';
 import {
   useChallengeDashboardReferencesQuery,
   useChallengePageQuery,
-  usePlatformLevelAuthorizationQuery,
-  useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   AuthorizationPrivilege,
   ChallengeProfileFragment,
   DashboardTopCalloutFragment,
-  SpaceVisibility,
   Reference,
+  SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
@@ -33,6 +31,7 @@ import {
 } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
+import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   spaceId: string;
@@ -88,16 +87,13 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const challengePrivileges = _challenge?.space?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
-  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
-
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
     communityReadAccess: (_challenge?.space?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
     challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
@@ -139,20 +135,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const communityId = _challenge?.space.challenge.community?.id ?? '';
 
-  const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
-  const handleSendMessageToCommunityLeads = useCallback(
-    async (messageText: string) => {
-      await sendMessageToCommunityLeads({
-        variables: {
-          messageData: {
-            message: messageText,
-            communityId: communityId,
-          },
-        },
-      });
-    },
-    [sendMessageToCommunityLeads, communityId]
-  );
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   return (
     <>
@@ -175,7 +158,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           ...contributors,
           activities,
           topCallouts,
-          sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
+          sendMessageToCommunityLeads,
         },
         { loading: loading || loadingProfile || loadingSpaceContext, activityLoading },
         {}

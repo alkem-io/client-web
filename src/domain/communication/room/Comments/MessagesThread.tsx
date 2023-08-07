@@ -5,7 +5,7 @@ import MessageView, { MessageViewProps } from './MessageView';
 import MessageWithRepliesView from './MessageWithRepliesView';
 import { Message } from '../models/Message';
 import { useTranslation } from 'react-i18next';
-import { useMessagesTree } from './useMessagesTree';
+import useMessagesTree from './useMessagesTree';
 
 interface MessagesThreadProps {
   messages: Message[] | undefined;
@@ -14,6 +14,7 @@ interface MessagesThreadProps {
   onReply: (reply: { threadId: string; messageText: string }) => void;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   onDeleteMessage: MessageViewProps['onDelete'];
+  canAddReaction: MessageViewProps['canAddReaction'];
   addReaction: MessageViewProps['addReaction'];
   removeReaction: MessageViewProps['removeReaction'];
 }
@@ -25,6 +26,7 @@ const MessagesThread = ({
   onReply,
   canDeleteMessage,
   onDeleteMessage,
+  canAddReaction,
   addReaction,
   removeReaction,
 }: MessagesThreadProps) => {
@@ -40,6 +42,7 @@ const MessagesThread = ({
           message={message}
           canDelete={canDeleteMessage(message.author?.id)}
           onDelete={onDeleteMessage}
+          canAddReaction={canAddReaction}
           addReaction={addReaction}
           removeReaction={removeReaction}
           reply={
@@ -65,6 +68,7 @@ const MessagesThread = ({
               message={message}
               canDelete={canDeleteMessage(message.author?.id)}
               onDelete={onDeleteMessage}
+              canAddReaction={canAddReaction}
               addReaction={addReaction}
               removeReaction={removeReaction}
             />

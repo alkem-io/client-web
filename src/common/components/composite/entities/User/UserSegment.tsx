@@ -22,6 +22,9 @@ import { UserMetadata } from '../../../../../domain/community/contributor/user/h
 import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { AUTH_LOGOUT_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
+import PendingMembershipsUserMenuItem from '../../../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
+import { HdrStrongOutlined } from '@mui/icons-material';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 
 const PREFIX = 'UserSegment';
 
@@ -50,11 +53,11 @@ const UserSegment = <El extends ElementType>({
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, permissions } = userMetadata;
+  const { user, hasPlatformPrivilege } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef<HTMLButtonElement>(null);
 
-  const isAdmin = permissions.isPlatformAdmin;
+  const isAdmin = hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin);
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
@@ -90,6 +93,7 @@ const UserSegment = <El extends ElementType>({
           vertical: 'top',
           horizontal: 'center',
         }}
+        keepMounted
       >
         <PopoverRoot>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
@@ -114,6 +118,21 @@ const UserSegment = <El extends ElementType>({
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.my-profile')} />
               </ListItemButton>
+              <PendingMembershipsUserMenuItem>
+                {({ header, openDialog }) => (
+                  <ListItemButton
+                    onClick={() => {
+                      openDialog();
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <HdrStrongOutlined />
+                    </ListItemIcon>
+                    <ListItemText primary={header} />
+                  </ListItemButton>
+                )}
+              </PendingMembershipsUserMenuItem>
               {isAdmin && (
                 <ListItemButton
                   onClick={() => {

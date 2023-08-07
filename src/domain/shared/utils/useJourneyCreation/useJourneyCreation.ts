@@ -10,6 +10,7 @@ import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
+import { TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface ChallengeCreationInput {
   spaceID: string;
@@ -147,6 +148,8 @@ export const useJourneyCreation = () => {
                 id: '-1',
                 name: 'default',
                 tags: value.tags ?? [],
+                allowedValues: [],
+                type: TagsetType.Freeform,
               },
             },
           },
@@ -210,6 +213,8 @@ export const useJourneyCreation = () => {
                 id: '-1',
                 name: 'default',
                 tags: value.tags ?? [],
+                allowedValues: [],
+                type: TagsetType.Freeform,
               },
             },
           },

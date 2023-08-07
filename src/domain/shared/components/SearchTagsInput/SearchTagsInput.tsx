@@ -4,11 +4,6 @@ import TextField from '@mui/material/TextField';
 import { Chip } from '@mui/material';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
 
-export type ValueType = {
-  id: string;
-  values: string[];
-};
-
 export interface SearchTagsInputProps {
   value: string[];
   availableTags?: string[];

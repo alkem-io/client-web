@@ -4,7 +4,7 @@ import GridItem from '../grid/GridItem';
 import { AddCircleOutlineOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-const AddContentButton = ({ sx, ...props }: ButtonProps) => {
+const AddContentButton = ({ sx, children, ...props }: ButtonProps) => {
   const { t } = useTranslation();
 
   return (
@@ -15,7 +15,7 @@ const AddContentButton = ({ sx, ...props }: ButtonProps) => {
         {...props}
         sx={{ backgroundColor: 'background.paper', ...sx }}
       >
-        {t('common.add')}
+        {children ?? t('common.add')}
       </Button>
     </GridItem>
   );

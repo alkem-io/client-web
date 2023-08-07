@@ -151,6 +151,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
     const spaceContributions = spacesHosting.map<ContributionItem>(x => ({
       spaceId: x.id,
+      id: x.id,
     }));
 
     // Loop over spaces, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
@@ -161,6 +162,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
           .map<ContributionItem>(c => ({
             spaceId: h.id,
             challengeId: c.id,
+            id: c.id,
           }))
       ) || [];
 

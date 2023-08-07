@@ -35,13 +35,4 @@ fragment UserRolesDetails on ContributorRoles {
     }
     roles
   }
-  applications {
-    id
-    communityID
-    displayName
-    state
-    spaceID
-    challengeID
-    opportunityID
-  }
 }

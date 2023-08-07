@@ -10,9 +10,7 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
         tagline
         description
         tagset {
-          id
-          name
-          tags
+          ...TagsetDetails
         }
         visuals {
           ...VisualFull
@@ -22,6 +20,9 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
           name
           uri
           description
+        }
+        location {
+          ...fullLocation
         }
       }
       innovationFlow {

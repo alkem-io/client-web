@@ -14,7 +14,7 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   type
   child
   parentNameID
-  parentDisplayName
+  journeyDisplayName: parentDisplayName
   __typename
   triggeredBy {
     id
@@ -29,8 +29,7 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
         uri
       }
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
       location {
         id
@@ -46,10 +45,13 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
     ...ActivityLogCalloutPublished
   }
   ... on ActivityLogEntryCalloutPostCreated {
-    ...ActivityLogCalloutCardCreated
+    ...ActivityLogCalloutPostCreated
+  }
+  ... on ActivityLogEntryCalloutLinkCreated {
+    ...ActivityLogCalloutLinkCreated
   }
   ... on ActivityLogEntryCalloutPostComment {
-    ...ActivityLogCalloutCardComment
+    ...ActivityLogCalloutPostComment
   }
   ... on ActivityLogEntryCalloutWhiteboardCreated {
     ...ActivityLogCalloutWhiteboardCreated
@@ -65,5 +67,8 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   }
   ... on ActivityLogEntryUpdateSent {
     ...ActivityLogUpdateSent
+  }
+  ... on ActivityLogEntryCalendarEventCreated {
+    ...ActivityLogCalendarEventCreated
   }
 }

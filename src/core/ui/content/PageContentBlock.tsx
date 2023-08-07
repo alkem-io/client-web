@@ -5,8 +5,9 @@ import { gutters, useGridItem } from '../grid/utils';
 import GridProvider from '../grid/GridProvider';
 import SwapColors from '../palette/SwapColors';
 import { useDeclaredColumns } from '../grid/GridContext';
+import { DroppableProvidedProps } from 'react-beautiful-dnd';
 
-export interface PageContentBlockProps extends PaperProps {
+export interface PageContentBlockProps extends PaperProps, Partial<DroppableProvidedProps> {
   accent?: boolean;
   disablePadding?: boolean;
   disableGap?: boolean;

@@ -6,7 +6,7 @@ query challengeApplications($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) 
       community {
         id
         applications {
-          ...ApplicationInfo
+          ...AdminSpaceCommunityApplication
         }
       }
     }

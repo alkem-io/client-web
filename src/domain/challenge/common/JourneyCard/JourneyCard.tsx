@@ -13,17 +13,14 @@ import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter'
 import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMemberIcon';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
+import { JourneyCardBanner } from './Banner';
 
 export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
-  tagline: string;
-  banner?: {
-    uri: string;
-    alternativeText?: string;
-  };
+  banner?: JourneyCardBanner;
   tags: string[];
-  journeyUri: string;
+  journeyUri?: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
   ribbon?: ReactNode;
@@ -36,7 +33,6 @@ export interface JourneyCardProps extends ContributeCardProps {
 const JourneyCard = ({
   iconComponent: Icon,
   header,
-  tagline,
   banner,
   tags,
   journeyUri,
@@ -59,9 +55,16 @@ const JourneyCard = ({
 
   const Tags = matchedTerms ? CardMatchedTerms : CardTags;
 
+  const wrapperProps = journeyUri
+    ? ({
+        component: RouterLink,
+        to: journeyUri,
+      } as const)
+    : {};
+
   return (
     <ContributeCard {...containerProps}>
-      <Box component={RouterLink} to={journeyUri}>
+      <Box {...wrapperProps}>
         <CardBanner
           src={banner?.uri}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}

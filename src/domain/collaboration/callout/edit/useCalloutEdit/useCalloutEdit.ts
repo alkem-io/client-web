@@ -50,11 +50,11 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
               tagsets: callout.profile.tagsets?.map(tagset => ({
                 ID: tagset.id || '',
                 name: tagset.name,
-                tags: tagset.tags,
+                tags: tagset.tags ?? [],
               })),
             },
             state: callout.state,
-            group: callout.group,
+            displayLocation: callout.displayLocation,
             postTemplate: callout.postTemplate
               ? {
                   type: callout.postTemplate.type,

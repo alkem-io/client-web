@@ -6,22 +6,25 @@ import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
+interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
+  description: string;
 }
 
 export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentCreatedViewProps> = ({
+  author,
+  loading,
+  createdDate,
+  journeyTypeName,
+  journeyLocation,
+  journeyDisplayName,
   callout,
   description,
-  journeyLocation,
-  ...baseProps
 }) => {
   const { t } = useTranslation();
 
-  const action = t('components.activity-log-view.actions.discussion-comment-created', {
-    calloutDisplayName: callout.profile.displayName,
-  });
   const comment = replaceQuotesInOldDescription(description);
   const translatedDescription = t('components.activity-log-view.activity-description.discussion-comment-created', {
     comment,
@@ -33,7 +36,27 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
   const url = buildCalloutUrl(callout.nameID, journeyLocation);
 
   return (
-    <ActivityBaseView {...baseProps} action={action} url={url}>
+    <ActivityBaseView
+      author={author}
+      loading={loading}
+      title={
+        <ActivityDescriptionByType
+          activityType="discussion-comment-created"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            journeyDisplayName,
+            values: {
+              calloutDisplayName: callout.profile.displayName,
+            },
+          }}
+          withLinkToParent={Boolean(journeyTypeName)}
+        />
+      }
+      url={url}
+    >
       <OneLineMarkdown>{translatedDescription}</OneLineMarkdown>
     </ActivityBaseView>
   );

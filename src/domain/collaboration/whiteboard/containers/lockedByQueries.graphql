@@ -1,5 +1,5 @@
 query WhiteboardLockedByDetails($ids: [UUID!]!) {
-  usersById(IDs: $ids) {
+  users(IDs: $ids) {
     ...LockedByDetails
   }
 }

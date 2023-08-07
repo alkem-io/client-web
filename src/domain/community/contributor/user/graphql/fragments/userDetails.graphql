@@ -32,9 +32,7 @@ fragment UserDetails on User {
       description
     }
     tagsets {
-      id
-      name
-      tags
+        ...TagsetDetails
     }
   }
 }

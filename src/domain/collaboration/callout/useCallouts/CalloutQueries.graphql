@@ -5,7 +5,7 @@ query Callouts(
   $includeOpportunity: Boolean = false
   $challengeNameId: UUID_NAMEID = "mockid"
   $opportunityNameId: UUID_NAMEID = "mockid"
-  $calloutGroups: [String!]
+  $displayLocations: [CalloutDisplayLocation!]
   $calloutIds: [UUID_NAMEID!]
 ) {
   space(ID: $spaceNameId) {
@@ -140,7 +140,7 @@ fragment CollaborationWithCallouts on Collaboration {
     id
     myPrivileges
   }
-  callouts(groups: $calloutGroups, IDs: $calloutIds) {
+  callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
     ...Callout
   }
 }
@@ -149,17 +149,21 @@ fragment Callout on Callout {
   id
   nameID
   type
-  group
   profile {
     id
     displayName
     description
     tagset {
-      id
-      tags
+      ...TagsetDetails
+    }
+    tagsets {
+      ...TagsetDetails
     }
     references {
       ...ReferenceDetails
+    }
+    displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+      ...TagsetDetails
     }
   }
   state
@@ -187,8 +191,7 @@ fragment CalloutPostTemplate on Callout {
     defaultDescription
     profile {
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
       visual(type: CARD) {
         id
@@ -207,8 +210,7 @@ fragment CalloutWhiteboardTemplate on Callout {
       displayName
       description
       tagset {
-        id
-        tags
+        ...TagsetDetails
       }
       visual(type: CARD) {
         id

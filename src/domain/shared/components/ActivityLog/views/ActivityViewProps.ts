@@ -1,10 +1,10 @@
 import { JourneyLocation } from '../../../../../common/utils/urlBuilders';
-import { Author } from '../../AuthorAvatar/models/author';
+import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
 import { ActivityBaseViewProps } from './ActivityBaseView';
 
-export interface ActivityViewProps
-  extends Pick<ActivityBaseViewProps, 'createdDate' | 'url' | 'activityOriginJourneyIcon' | 'parentDisplayName'> {
+export interface ActivityViewProps extends Pick<ActivityBaseViewProps, 'author' | 'loading'> {
+  createdDate: Date | string;
+  journeyTypeName: JourneyTypeName | undefined;
   journeyLocation: JourneyLocation;
-  author: Author;
-  description: string;
+  journeyDisplayName: string | undefined;
 }

@@ -1,0 +1,8 @@
+query askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
+  askChatGuidanceQuestion(chatData: $chatData)
+  {
+    answer
+    question
+    sources
+  }
+}

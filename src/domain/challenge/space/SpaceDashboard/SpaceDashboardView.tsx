@@ -1,13 +1,12 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import References from '../../../shared/components/References/References';
 import {
   AssociatedOrganizationDetailsFragment,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
+  Reference,
   SpaceVisibility,
   SpaceWelcomeBlockContributorProfileFragment,
-  Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import {
   buildCalloutUrl,
@@ -17,7 +16,7 @@ import {
 } from '../../../../common/utils/urlBuilders';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
-import { ActivityComponent, ActivityLogResultType } from '../../../shared/components/ActivityLog';
+import { ActivityComponent, ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -33,8 +32,7 @@ import DashboardCalendarSection from '../../../shared/components/DashboardSectio
 import { Caption } from '../../../../core/ui/typography/components';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { Button, ButtonProps, IconButton, Theme } from '@mui/material';
-import { ButtonTypeMap } from '@mui/material/Button/Button';
+import { IconButton, Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
@@ -49,6 +47,7 @@ import DashboardMemberIcon from '../../../community/membership/DashboardMemberIc
 import { DashboardNavigationItem } from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation from '../SpaceDashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -68,6 +67,7 @@ interface SpaceDashboardViewProps<ChildEntity extends Identifiable> extends Part
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
+  hostOrganizations: (SpaceWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
   leadOrganizations: (SpaceWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
   leadUsers: (SpaceWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
   communityReadAccess: boolean;
@@ -88,13 +88,6 @@ interface SpaceDashboardViewProps<ChildEntity extends Identifiable> extends Part
   childrenRight?: ReactNode;
   loading: boolean;
 }
-
-const FullWidthButton = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
-  sx,
-  ...props
-}: ButtonProps<D, P>) => {
-  return <Button {...props} sx={{ ...sx, width: '100%' }} />;
-};
 
 const SpaceDashboardView = <ChildEntity extends Identifiable>({
   vision = '',
@@ -118,6 +111,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
   timelineReadAccess = false,
   entityReadAccess,
   readUsersAccess,
+  hostOrganizations,
   leadOrganizations,
   leadUsers,
   activities,
@@ -202,7 +196,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
                     sendMessage('user', {
                       id: user.id,
                       displayName: user.profile.displayName,
-                      avatarUri: user.profile.visual?.uri,
+                      avatarUri: user.profile.avatar?.uri,
                       country: user.profile.location?.country,
                       city: user.profile.location?.city,
                     });
@@ -211,7 +205,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
               ))}
             </Gutters>
             <Gutters row disablePadding>
-              {leadOrganizations?.slice(0, 2).map(org => (
+              {hostOrganizations?.slice(0, 2).map(org => (
                 <ContributorCardHorizontal
                   key={org.id}
                   profile={org.profile}
@@ -220,7 +214,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
                     sendMessage('organization', {
                       id: org.id,
                       displayName: org.profile.displayName,
-                      avatarUri: org.profile.visual?.uri,
+                      avatarUri: org.profile.avatar?.uri,
                       country: org.profile.location?.country,
                       city: org.profile.location?.city,
                     });
@@ -240,11 +234,6 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
             loading={dashboardNavigationLoading}
           />
           {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
-          <PageContentBlock>
-            <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-            <References references={references} />
-            {/* TODO figure out the URL for references */}
-          </PageContentBlock>
           {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
           {childrenLeft}
         </PageContentColumn>
@@ -312,6 +301,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
         journeyTypeName="space"
         displayName={displayName}
         tagline={tagline}
+        references={references}
         sendMessageToCommunityLeads={sendMessageToCommunityLeads}
         metrics={metrics}
         description={vision}
@@ -320,6 +310,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
         impact={impact}
         loading={loading}
         leadUsers={leadUsers}
+        hostOrganizations={hostOrganizations}
         leadOrganizations={leadOrganizations}
         endButton={
           <IconButton onClick={() => setIsAboutDialogOpen(false)}>

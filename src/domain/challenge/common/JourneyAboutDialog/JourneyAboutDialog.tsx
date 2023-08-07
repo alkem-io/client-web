@@ -1,9 +1,9 @@
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { TopBarHeightGutters } from '../../../../common/components/composite/layout/TopBar/TopBar';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, Link, Tooltip } from '@mui/material';
 import React, { ReactNode, useMemo, useState } from 'react';
-import { PageTitle, Tagline } from '../../../../core/ui/typography';
+import { Caption, PageTitle, Tagline } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -28,12 +28,18 @@ import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import References from '../../../shared/components/References/References';
+import { Reference } from '../../../../core/apollo/generated/graphql-schema';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   journeyTypeName: JourneyTypeName;
   displayName: ReactNode;
   tagline: ReactNode;
+  references: Reference[] | undefined;
   ribbon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;
@@ -44,6 +50,7 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   who: string | undefined;
   impact: string | undefined;
   loading: boolean;
+  leftColumnChildren?: ReactNode;
 }
 
 interface DialogHeaderItemProps extends BoxProps {
@@ -74,10 +81,12 @@ const JourneyAboutDialog = ({
   open,
   displayName,
   tagline,
+  references,
   ribbon,
   journeyTypeName,
   leadUsers,
   leadOrganizations,
+  hostOrganizations,
   sendMessageToCommunityLeads,
   metrics,
   description,
@@ -87,14 +96,15 @@ const JourneyAboutDialog = ({
   loading,
   startButton,
   endButton,
+  leftColumnChildren,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
   const isSpace = journeyTypeName === 'space';
   const leadOrganizationsHeader = isSpace
-    ? 'pages.space.sections.dashboard.organization'
+    ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';
-  const leadUsersHeader = isSpace ? 'community.host' : 'community.leads';
+  const leadUsersHeader = 'community.leads';
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
 
@@ -113,7 +123,7 @@ const JourneyAboutDialog = ({
         displayName: user.profile.displayName,
         country: user.profile.location?.country,
         city: user.profile.location?.city,
-        avatarUri: user.profile.visual?.uri,
+        avatarUri: user.profile.avatar?.uri,
       })),
     [leadUsers]
   );
@@ -125,6 +135,10 @@ const JourneyAboutDialog = ({
   const breakpoint = useCurrentBreakpoint();
 
   const isMobile = breakpoint === 'xs';
+
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
 
   return (
     <DialogWithGrid
@@ -166,28 +180,34 @@ const JourneyAboutDialog = ({
             )}
             {background && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t('context.space.background.title')} />
+                <PageContentBlockHeader title={t(`context.${journeyTypeName}.background.title` as const)} />
                 <WrapperMarkdown>{background}</WrapperMarkdown>
+              </PageContentBlock>
+            )}
+            {impact && (
+              <PageContentBlock>
+                <PageContentBlockHeader title={t(`context.${journeyTypeName}.impact.title` as const)} />
+                <WrapperMarkdown>{impact}</WrapperMarkdown>
+              </PageContentBlock>
+            )}
+            {who && (
+              <PageContentBlock>
+                <PageContentBlockHeader title={t(`context.${journeyTypeName}.who.title` as const)} />
+                <WrapperMarkdown>{who}</WrapperMarkdown>
               </PageContentBlock>
             )}
           </PageContentColumn>
           <PageContentColumn columns={4}>
             <PageContentBlockSeamless disablePadding order={1}>
-              {impact && (
-                <PageContentBlock>
-                  <PageContentBlockHeader title={t('context.space.impact.title')} />
-                  <WrapperMarkdown>{impact}</WrapperMarkdown>
-                </PageContentBlock>
-              )}
-              {who && (
-                <PageContentBlock>
-                  <PageContentBlockHeader title={t('context.space.who.title')} />
-                  <WrapperMarkdown>{who}</WrapperMarkdown>
-                </PageContentBlock>
-              )}
               <PageContentBlock>
-                <PageContentBlockHeader title={t('pages.space.sections.dashboard.activity')} />
+                <PageContentBlockHeader
+                  title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
+                />
                 <ActivityView activity={metricsItems} loading={loading} />
+              </PageContentBlock>
+              <PageContentBlock>
+                <PageContentBlockHeader title={t('components.referenceSegment.title')} />
+                <References references={references} />
               </PageContentBlock>
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding order={isMobile ? 1 : 0}>
@@ -211,7 +231,40 @@ const JourneyAboutDialog = ({
                   />
                 </>
               )}
+              {hostOrganizations && (
+                <EntityDashboardLeadsSection
+                  organizationsHeader={t('pages.space.sections.dashboard.organization')}
+                  organizationsHeaderIcon={
+                    <Tooltip title={t('pages.space.sections.dashboard.hostTooltip')} arrow>
+                      <InfoOutlinedIcon color="primary" />
+                    </Tooltip>
+                  }
+                  leadOrganizations={hostOrganizations}
+                  leadUsers={undefined}
+                >
+                  {hostOrganizations && hostOrganizations.length > 0 && (
+                    <Caption
+                      component={Link}
+                      onClick={() =>
+                        sendMessage('organization', {
+                          id: hostOrganizations[0].id,
+                          displayName: hostOrganizations[0].profile.displayName,
+                          avatarUri: hostOrganizations[0].profile.avatar?.uri,
+                          country: hostOrganizations[0].profile.location?.country,
+                          city: hostOrganizations[0].profile.location?.city,
+                        })
+                      }
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <MailOutlineIcon color="primary" sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />
+                      {t('pages.space.sections.dashboard.hostContact')}
+                    </Caption>
+                  )}
+                  {directMessageDialog}
+                </EntityDashboardLeadsSection>
+              )}
             </PageContentBlockSeamless>
+            {leftColumnChildren}
           </PageContentColumn>
         </Gutters>
       </Box>

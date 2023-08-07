@@ -15,7 +15,7 @@ export const useAuthorsDetails = (authorIds: string[]) => {
 
   const authors = useMemo(
     () =>
-      authorData?.usersById.map<Author>(author => {
+      authorData?.users.map<Author>(author => {
         return {
           id: author.id,
           displayName: author.profile.displayName,

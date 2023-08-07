@@ -10,6 +10,7 @@ import {
   OrganizationVerificationEnum,
   UpdateOrganizationInput,
   CreateOrganizationInput,
+  TagsetType,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
@@ -175,7 +176,14 @@ export const OrganizationForm: FC<Props> = ({
             description,
             tagline,
             references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
-            tagsets: updatedTagsets.map(r => ({ ...r, ID: r.id, id: undefined })),
+            tagsets: updatedTagsets.map(r => ({
+              ...r,
+              ID: r.id,
+              id: undefined,
+              allowedValues: [],
+              type: TagsetType.Freeform,
+              tags: r.tags ?? [],
+            })),
             location: {
               city: location.city,
               country: location.country?.code,

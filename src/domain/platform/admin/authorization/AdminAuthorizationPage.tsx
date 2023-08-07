@@ -20,6 +20,10 @@ const buttons = [
     description: 'Global Spaces Admins',
     url: `authorization/global-spaces/${AuthorizationCredential.GlobalAdminSpaces}`,
   },
+  {
+    description: 'Beta Testers',
+    url: `authorization/beta-tester/${AuthorizationCredential.BetaTester}`,
+  },
 ];
 
 const AdminAuthorizationPage: FC = () => {

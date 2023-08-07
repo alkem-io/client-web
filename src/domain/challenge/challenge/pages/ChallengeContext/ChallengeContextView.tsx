@@ -7,7 +7,6 @@ import {
   useChallengeProfileInfoQuery,
   useUpdateChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { updateContextInput } from '../../../../../common/utils/buildContext';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
 import { ChallengeContextSegment } from '../../../../platform/admin/challenge/ChallengeContextSegment';
@@ -36,7 +35,11 @@ const ChallengeContextView: FC = () => {
       variables: {
         input: {
           ID: challengeId,
-          context: updateContextInput(values),
+          context: {
+            impact: values.impact,
+            vision: values.vision,
+            who: values.who,
+          },
           profileData: {
             description: values.background,
           },

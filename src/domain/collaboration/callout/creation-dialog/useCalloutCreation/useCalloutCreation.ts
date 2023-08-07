@@ -7,7 +7,13 @@ import {
   useOpportunityCollaborationIdQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { CalloutState, CalloutType, CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutDisplayLocation,
+  CalloutState,
+  CalloutType,
+  CreateCalloutMutation,
+  CreateTagsetInput,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
@@ -18,6 +24,7 @@ export interface CalloutCreationType {
     description: string;
     displayName: string;
     referencesData: Reference[];
+    tagsets?: CreateTagsetInput[];
   };
   tags?: string[];
   type: CalloutType;
@@ -25,7 +32,7 @@ export interface CalloutCreationType {
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
-  group?: string;
+  displayLocation?: CalloutDisplayLocation;
 }
 
 export interface CalloutCreationUtils {

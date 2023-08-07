@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useOrganizationInfoQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import useHasPlatformLevelPrivilege from '../../user/PlatformLevelAuthorization/useHasPlatformLevelPrivilege';
+import { useUserContext } from '../../user/hooks/useUserContext';
 
 interface OrganizationContextProps {
   organization?: OrganizationInfoFragment;
@@ -23,14 +23,14 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 
 const OrganizationProvider: FC = ({ children }) => {
   const { organizationNameId: organizationId = '' } = useUrlParams();
-  const [canReadUsers] = useHasPlatformLevelPrivilege(AuthorizationPrivilege.ReadUsers);
-  const { data, loading } = useOrganizationInfoQuery({
+  const { user } = useUserContext();
+  const { data, loading: loadingOrganization } = useOrganizationInfoQuery({
     variables: {
       organizationId,
-      includeAssociates: canReadUsers,
+      includeAssociates: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
     },
     errorPolicy: 'all',
-    skip: typeof canReadUsers === 'undefined',
+    skip: typeof user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) === 'undefined',
   });
   const organization = data?.organization;
   const displayName = organization?.profile.displayName || '';
@@ -41,9 +41,9 @@ const OrganizationProvider: FC = ({ children }) => {
         organization,
         organizationId: organization?.id || '',
         organizationNameId: organization?.nameID || organizationId,
-        canReadUsers: canReadUsers ?? false,
+        canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
         displayName,
-        loading,
+        loading: loadingOrganization,
       }}
     >
       {children}

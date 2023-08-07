@@ -9,9 +9,7 @@ fragment SpaceDetailsProvider on Space {
       ...VisualUri
     }
     tagset {
-      id
-      name
-      tags
+      ...TagsetDetails
     }
   }
   authorization {

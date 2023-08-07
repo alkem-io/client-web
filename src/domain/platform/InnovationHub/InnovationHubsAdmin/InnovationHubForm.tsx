@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Tagset, Visual } from '../../../../core/apollo/generated/graphql-schema';
+import { Tagset, TagsetType, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import { NameSegment, nameSegmentSchema } from '../../admin/components/Common/NameSegment';
 import FormikAutocomplete from '../../../../common/components/composite/forms/FormikAutocomplete';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -23,7 +23,7 @@ export interface InnovationHubFormValues {
     displayName: string;
     description: string;
     tagline: string;
-    tagsets: Pick<Tagset, 'id' | 'tags' | 'name'>[];
+    tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
   };
   hostId: string;
 }
@@ -37,7 +37,7 @@ interface InnovationHubFormProps {
     displayName?: string;
     description?: string;
     tagline?: string;
-    tagset?: { id: string; name: string; tags: string[] };
+    tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
     visual?: Visual;
   };
   hostId?: string;
@@ -70,7 +70,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
       tagline: profile?.tagline ?? '',
-      tagsets: [profile?.tagset ?? { id: '', name: 'Tags', tags: [] }],
+      tagsets: [profile?.tagset ?? { id: '', name: 'Tags', tags: [], allowedValues: [], type: TagsetType.Freeform }],
     },
     hostId: hostId ?? '',
   };

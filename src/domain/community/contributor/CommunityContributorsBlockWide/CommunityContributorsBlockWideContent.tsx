@@ -21,7 +21,14 @@ interface CommunityContributorsBlockWideContentProps {
 }
 
 const filterFn = (filter: string[]) => (element: ContributorCardSquareProps) => {
-  return filter.length === 0 || filter.some(term => element.displayName.toLowerCase().includes(term.toLowerCase()));
+  return (
+    filter.length === 0 ||
+    filter.some(
+      term =>
+        element.displayName.toLowerCase().includes(term.toLowerCase()) ||
+        element.tooltip?.tags.map(tag => tag.toLowerCase()).includes(term.toLowerCase())
+    )
+  );
 };
 
 const CommunityContributorsBlockWideContent = ({

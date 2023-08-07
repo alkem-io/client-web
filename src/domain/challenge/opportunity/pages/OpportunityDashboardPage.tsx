@@ -9,7 +9,6 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
@@ -17,6 +16,7 @@ import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboard
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
+import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -29,12 +29,23 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const { spaceNameId, opportunityNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
-    useCallouts({
-      spaceNameId,
-      opportunityNameId,
-      calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
-    });
+  const {
+    groupedCallouts,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+    canCreateCallout,
+  } = useCallouts({
+    spaceNameId,
+    opportunityNameId,
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
+  });
 
   const { t } = useTranslation();
 
@@ -82,9 +93,9 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               topCallouts={entities.topCallouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               recommendations={
-                groupedCallouts[CalloutsGroup.HomeTop] && (
+                groupedCallouts[CalloutDisplayLocation.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutsGroup.HomeTop]}
+                    callouts={groupedCallouts[CalloutDisplayLocation.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
                     loading={loading}
@@ -93,11 +104,39 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    group={CalloutsGroup.HomeTop}
+                    displayLocation={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
                   />
                 )
+              }
+              childrenLeft={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+                  spaceId={spaceNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="opportunity"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  displayLocation={CalloutDisplayLocation.HomeLeft}
+                />
+              }
+              childrenRight={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutDisplayLocation.HomeRight]}
+                  spaceId={spaceNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  journeyTypeName="opportunity"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  displayLocation={CalloutDisplayLocation.HomeRight}
+                />
               }
             />
             <CommunityUpdatesDialog

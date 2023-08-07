@@ -27,9 +27,7 @@ fragment InnovationPackProfile on Profile {
   description
   tagline
   tagset {
-    id
-    name
-    tags
+    ...TagsetDetails
   }
   references {
     id

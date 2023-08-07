@@ -15,6 +15,8 @@ export const toOrganizationCardProps = (org: OrganizationCardFragment): Organiza
     name: org.profile.displayName,
     avatar: org.profile.visual?.uri,
     description: org.profile.description,
+    city: org.profile.location?.city,
+    country: org.profile.location?.country,
     associatesCount: getMetricCount(org.metrics ?? [], MetricType.Associate),
     verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
     url: buildOrganizationUrl(org.nameID),

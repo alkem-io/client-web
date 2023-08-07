@@ -12,6 +12,7 @@ import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutF
 import {
   CalloutType,
   PostTemplateCardFragment,
+  TagsetType,
   WhiteboardTemplateCardFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
@@ -21,6 +22,9 @@ import {
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
+import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLocationValue';
+import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
+import { StorageConfigContextProvider } from '../../../../platform/storage/StorageBucket/StorageConfigContext';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -29,9 +33,10 @@ export interface CalloutEditDialogProps {
   onClose: () => void;
   onDelete: (callout: CalloutDeleteType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
-  canChangeCalloutGroup?: boolean;
+  canChangeCalloutLocation?: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
+  journeyTypeName: JourneyTypeName;
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
@@ -41,12 +46,18 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onClose,
   onDelete,
   onCalloutEdit,
-  canChangeCalloutGroup,
+  canChangeCalloutLocation,
   calloutNames,
   templates,
+  journeyTypeName,
 }) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space route.');
+  }
+
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
@@ -71,7 +82,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
-    group: callout.group,
+    displayLocation: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
@@ -94,12 +105,20 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         displayName: newCallout.displayName,
         description: newCallout.description,
         references: newCallout.references,
-        tagsets: [{ id: callout.profile.tagset?.id, name: 'default', tags: newCallout.tags }],
+        tagsets: [
+          {
+            id: callout.profile.tagset?.id,
+            name: 'default',
+            tags: newCallout.tags,
+            allowedValues: [],
+            type: TagsetType.Freeform,
+          },
+        ],
       },
       state: newCallout.state,
       postTemplate: newCallout.postTemplateData,
       whiteboardTemplate: newCallout.whiteboardTemplateData,
-      group: newCallout.group,
+      displayLocation: newCallout.displayLocation,
     });
     setLoading(false);
   }, [
@@ -154,15 +173,23 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           </Box>
         </DialogHeader>
         <DialogContent dividers>
-          <CalloutForm
-            calloutType={calloutType}
-            callout={initialValues}
-            calloutNames={calloutNames}
-            editMode
-            onStatusChanged={handleStatusChanged}
-            onChange={handleChange}
-            canChangeCalloutGroup={canChangeCalloutGroup}
-          />
+          <StorageConfigContextProvider
+            locationType="callout"
+            journeyTypeName={journeyTypeName}
+            {...{ spaceNameId, challengeNameId, opportunityNameId }}
+            calloutId={callout.nameID}
+          >
+            <CalloutForm
+              calloutType={calloutType}
+              callout={initialValues}
+              calloutNames={calloutNames}
+              editMode
+              onStatusChanged={handleStatusChanged}
+              onChange={handleChange}
+              canChangeCalloutLocation={canChangeCalloutLocation}
+              journeyTypeName={journeyTypeName}
+            />
+          </StorageConfigContextProvider>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
           <LoadingButton loading={loading} disabled={loading} variant="outlined" onClick={handleDialogDelete}>

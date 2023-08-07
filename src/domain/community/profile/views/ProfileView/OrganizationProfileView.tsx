@@ -19,7 +19,7 @@ export interface OrganizationProfileViewEntity {
   verified?: boolean;
 }
 
-export interface OrganizationProfileViewProps {
+interface OrganizationProfileViewProps {
   entity: OrganizationProfileViewEntity;
   permissions: {
     canEdit: boolean;

@@ -22,8 +22,7 @@ fragment CommunityPageMembers on User {
     }
     description
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
   }
 }

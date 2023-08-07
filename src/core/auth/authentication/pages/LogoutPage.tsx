@@ -7,7 +7,7 @@ import { useUpdateNavigation } from '../../../routing/useNavigation';
 
 interface LogoutPageProps {}
 
-export const LogoutPage: FC<LogoutPageProps> = () => {
+const LogoutPage: FC<LogoutPageProps> = () => {
   const { t } = useTranslation();
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });

@@ -15,8 +15,7 @@ fragment DashboardContributingUser on User {
       uri
     }
     tagsets {
-      id
-      tags
+      ...TagsetDetails
     }
   }
 }
@@ -31,6 +30,9 @@ fragment DashboardContributingOrganization on Organization {
       id
       uri
       name
+    }
+    tagsets {
+      ...TagsetDetails
     }
   }
 }

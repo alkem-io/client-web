@@ -8,6 +8,7 @@ import {
   WhiteboardTemplateCardFragment,
   CalloutVisibility,
   Callout,
+  CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -31,6 +32,8 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
+import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -43,6 +46,7 @@ export type CalloutCreationDialogFields = {
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   profileId?: string;
+  flowState?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -57,7 +61,9 @@ export interface CalloutCreationDialogProps {
   isCreating: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
-  group: string;
+  displayLocation: CalloutDisplayLocation;
+  flowState?: string;
+  journeyTypeName: JourneyTypeName;
 }
 
 export interface TemplateProfile {
@@ -92,7 +98,9 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   isCreating,
   calloutNames,
   templates,
-  group,
+  displayLocation,
+  flowState,
+  journeyTypeName,
 }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
@@ -145,6 +153,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         displayName: callout.displayName!,
         description: callout.description!,
         referencesData: callout.references!,
+        tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
       },
       tags: callout.tags,
       type: callout.type!,
@@ -152,7 +161,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
       whiteboardTemplate:
         callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
-      group,
+      displayLocation,
       whiteboard: callout.whiteboard,
     };
 
@@ -200,6 +209,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             calloutNames={calloutNames}
             onChange={handleValueChange}
             onStatusChanged={handleStatusChange}
+            journeyTypeName={journeyTypeName}
           />
           <Actions padding={gutters()}>
             <Button onClick={handleClose}>{t('buttons.cancel')}</Button>

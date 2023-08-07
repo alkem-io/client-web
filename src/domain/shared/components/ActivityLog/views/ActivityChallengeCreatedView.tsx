@@ -1,30 +1,54 @@
 import React, { FC } from 'react';
-import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
+import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
+import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
-export interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
+interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
   challenge: NameableEntity;
 }
 
-export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps> = props => {
+export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps> = ({
+  author,
+  loading,
+  createdDate,
+  journeyTypeName,
+  journeyLocation,
+  journeyDisplayName,
+  challenge,
+}) => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.challenge-created');
-  const url = buildChallengeUrl(props.journeyLocation.spaceNameId, props.challenge.nameID!);
+
   const description = t('components.activity-log-view.activity-description.challenge-created', {
-    displayName: props.challenge.profile.displayName,
+    displayName: challenge.profile.displayName,
     interpolation: {
       escapeValue: false,
     },
   });
-
-  const resultProps: ActivityBaseViewProps = { ...props, action, url };
+  const url = buildChallengeUrl(journeyLocation.spaceNameId, challenge.nameID!);
 
   return (
-    <ActivityBaseView {...resultProps}>
+    <ActivityBaseView
+      author={author}
+      loading={loading}
+      title={
+        <ActivityDescriptionByType
+          activityType="challenge-created"
+          {...{
+            author,
+            createdDate,
+            journeyTypeName,
+            journeyLocation,
+            journeyDisplayName,
+          }}
+          withLinkToParent={Boolean(journeyTypeName)}
+        />
+      }
+      url={url}
+    >
       <Caption>{description}</Caption>
     </ActivityBaseView>
   );

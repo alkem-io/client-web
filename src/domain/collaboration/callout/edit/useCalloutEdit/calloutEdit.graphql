@@ -6,8 +6,10 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
       description
       displayName
       tagset {
-        id
-        tags
+        ...TagsetDetails
+      }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
       }
       references {
         id
@@ -16,7 +18,6 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
       }
     }
     state
-    group
     type
     visibility
     ...CalloutPostTemplate

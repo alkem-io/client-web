@@ -1,7 +1,14 @@
 {
+  "chatbot": {
+    "title": "Alkemio Helpdesk",
+    "subtitle": "Ask your questions here."
+  },
   "notifications": {
-    "release-updates": {
-      "text": "New release out! <clickhere>Click here</clickhere> to read all about the latest changes."
+    "releaseUpdates": {
+      "icon": "🎉",
+      "title": "We have exciting news, a new release full of interesting functionalities is out!",
+      "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! <b><clickhere>Click here</clickhere></b> to read all about the latest changes.",
+      "url": "https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20"
     }
   },
   "cookie": {
@@ -20,7 +27,8 @@
     "bg": "Bulgarian",
     "ua": "Ukranian",
     "de": "German",
-    "fr": "French"
+    "fr": "French",
+    "inContextTool": "In context translation"
   },
   "fields": {
     "displayName": "Title",
@@ -164,6 +172,7 @@
     "remove": "Remove",
     "callout": "Callout",
     "callouts": "Callouts",
+    "collaborationTools": "Collaboration Tools",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Calendar",
@@ -212,6 +221,7 @@
     "interests": "Interests",
     "project": "Project",
     "role": "Role",
+    "agreement": "Agreement",
     "agreements": "Agreements",
     "templates": "Templates",
     "template": "Template",
@@ -284,11 +294,29 @@
       "male": "male",
       "female": "female"
     },
+    "journeyTypes": {
+      "space": "$t(common.space)",
+      "space_plural": "$t(common.spaces)",
+      "challenge": "$t(common.challenge)",
+      "challenge_plural": "$t(common.challenges)",
+      "opportunity": "$t(common.opportunity)",
+      "opportunity_plural": "$t(common.opportunities)",
+      "agreement": "$t(common.agreement)",
+      "agreement_plural": "$t(common.agreements)"
+    },
     "verified-status": {
       "verified": "Verified",
       "not-verified": ""
     },
     "enums": {
+      "innovationFlowState": {
+        "new": "New",
+        "beingRefined": "Being Refined",
+        "inProgress": "In Progress",
+        "complete": "Complete",
+        "abandoned": "Abandoned",
+        "archived": "Archived"
+      },
       "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
@@ -416,6 +444,21 @@
     "blocks": {
       "users-contributing": "users that are contributing",
       "all-contributing-users": "all contributing users"
+    },
+    "time": {
+      "timeAgo": "{{time}} ago",
+      "second": "{{count}} second",
+      "second_plural": "{{count}} seconds",
+      "minute": "{{count}} minute",
+      "minute_plural": "{{count}} minutes",
+      "hour": "{{count}} hour",
+      "hour_plural": "{{count}} hours",
+      "day": "{{count}} day",
+      "day_plural": "{{count}} days",
+      "month": "{{count}} month",
+      "month_plural": "{{count}} months",
+      "year": "{{count}} year",
+      "year_plural": "{{count}} years"
     }
   },
   "community": {
@@ -446,9 +489,40 @@
       "applicationRejected": "Application Rejected",
       "applicationArchived": "Application Archived"
     },
+    "invitationStatus": {
+      "invited": "Invited",
+      "accepted": "Invitation Accepted",
+      "rejected": "Invitation Rejected"
+    },
+    "invitationExternalStatus": {
+      "invited": "Invited to join Alkemio & this Space"
+    },
     "confirmDeleteApplication": {
       "title": "Deleting application from {{user}}",
       "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+    },
+    "confirmDeleteInvitation": {
+      "title": "Deleting invitation from {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "confirmDeleteInvitationExternal": {
+      "title": "Deleting invitation from {{user}}",
+      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    },
+    "pendingMembership": {
+      "pendingMemberships": "Pending Memberships",
+      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
+      "invitationsSectionTitle": "Invitations",
+      "applicationsSectionTitle": "Open applications",
+      "invitationDialog": {
+        "title": "Pending Membership: {{journey}}",
+        "actions": {
+          "hide": "Hide this invitation",
+          "reject": "Decline",
+          "accept": "Join"
+        }
+      },
+      "invitationTitle": "{{time}} {{user}} invited you to <journeyicon /> {{journey}}"
     },
     "memberSettings": {
       "title": "Member Settings",
@@ -464,6 +538,7 @@
     }
   },
   "callout": {
+    "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
@@ -493,14 +568,18 @@
       "clickToSee": "Click to see the full whiteboard"
     },
     "callout-groups": {
-      "HomeTop": "Dashboard Recommendations",
-      "HomeLeft": "Dashboard Left",
-      "HomeRight": "Dashboard Right",
-      "CommunityLeft": "Community Left",
-      "CommunityRight": "Community Right",
-      "ChallengesLeft": "Challenges Left",
-      "ChallengesRight": "Challenges Right",
-      "KnowledgeBase": "Knowledge Base"
+      "HOME_TOP": "Dashboard Recommendations",
+      "HOME_LEFT": "Dashboard Left",
+      "HOME_RIGHT": "Dashboard Right",
+      "CONTRIBUTE_LEFT": "Contribute Left",
+      "CONTRIBUTE_RIGHT": "Contribute Right",
+      "COMMUNITY_LEFT": "Community Left",
+      "COMMUNITY_RIGHT": "Community Right",
+      "CHALLENGES_LEFT": "Challenges Left",
+      "CHALLENGES_RIGHT": "Challenges Right",
+      "OPPORTUNITIES_LEFT": "Opportunities Left",
+      "OPPORTUNITIES_RIGHT": "Opportunities Right",
+      "KNOWLEDGE": "Knowledge Base"
     }
   },
   "journey-creation": {
@@ -692,10 +771,33 @@
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
+    "journeyPageBannerCard": {
+      "parentJourney": "Part of: <journeyicon /> {{journey}}"
+    },
+    "journeyMetrics": {
+      "title": "{{journey}} statistics"
+    },
     "dashboardNavigation": {
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
+    },
+    "innovationFlowStateSelector": {
+      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
+    },
+    "invitations": {
+      "inviteExistingUser": "Invite Alkemio users",
+      "inviteExternalUser": "Send email invitation",
+      "inviteByURL": "Copy magic \u2028URL",
+      "inviteOrganizations": "Invite Organizations",
+      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "inviteExistingUserDialog": {
+        "title": "Invite other Alkemio users to join this Space",
+        "subtitle": "You can search for Alkemio users below and attach a personalized message."
+      },
+      "inviteExternalUserDialog": {
+        "title": "Send an email invitation"
+      }
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -783,30 +885,36 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "published a new $t(common.callout)",
-        "whiteboard-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
-        "post-comment-created": "commented on '{{postDisplayName}}'",
-        "post-created": "added a Post to '{{calloutDisplayName}}'",
-        "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "joined the {{journeyType}} '{{journeyDisplayName}}'",
-        "challenge-created": "created a new $t(common.challenge)",
-        "opportunity-created": "created a new $t(common.opportunity)",
-        "update-sent": "shared a new $t(common.update)"
+        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' published a new $t(common.callout)",
+        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.challenge)",
+        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{calloutDisplayName}}'",
+        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' joined the {{communityType}} '{{communityDisplayName}}'",
+        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.opportunity)",
+        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{postDisplayName}}'",
+        "post-created": "{{time}} '<userlink>{{user}}</userlink>' added a Post to '{{calloutDisplayName}}'",
+        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' added a Link to '{{calloutDisplayName}}'",
+        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' shared a new $t(common.update)",
+        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'",
+        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' added a new calendar event '{{eventDisplayName}}'"
       },
+      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
       "activity-description": {
         "callout-published": "{{displayName}}",
-        "whiteboard-created": "{{displayName}}",
+        "challenge-created": "{{displayName}}",
+        "discussion-comment-created": "{{comment}}",
+        "member-joined": "{{user}}",
+        "opportunity-created": "{{displayName}}",
         "post-comment-created": "{{comment}}",
         "post-created": "{{postDisplayName}} - {{postDescription}}",
-        "discussion-comment-created": "{{comment}}",
-        "member-joined": "{{userDisplayName}}",
-        "challenge-created": "{{displayName}}",
-        "opportunity-created": "{{displayName}}",
-        "update-sent": "{{update}}"
-      },
-      "parent-details": "in {{displayName}}"
+        "callout-link-created": "{{linkName}} - {{linkDescription}}",
+        "update-sent": "{{update}}",
+        "whiteboard-created": "{{displayName}}",
+        "calendar-event-created": "{{eventDescription}}"
+      }
     },
-    "lifecycle-visualizer": {
+    "lifecycle": {
+      "currentState": "Current State:",
+      "changeState": "Change State to:",
       "error": "The definition was not able to be visualized"
     },
     "activity-tooltip": {
@@ -1329,6 +1437,10 @@
     },
     "contribute": {
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
+      "innovationFlow": {
+        "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
+        "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
+      },
       "no-posts": "No Posts found"
     },
     "innovationLibrary": {
@@ -1663,10 +1775,6 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Empowering society. The platform to succeed in working on challenges, together.",
-          "impact": "<impact>Purpose Driven</impact>",
-          "foundation": "<foundation>Innovation</foundation>",
-          "opensource": "<opensource>Open Source</opensource>",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
@@ -1728,8 +1836,10 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Facilitating organization",
-          "activity": "Space statistics",
+          "organization": "Hosted by",
+          "hostTooltip": "The host is the organization responsible for the creation of the Space.",
+          "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
+          "leadingOrganizations": "Leading Organizations",
           "community": "Community"
         },
         "challenges": {
@@ -1754,10 +1864,6 @@
       },
       "sections": {
         "dashboard": {
-          "statistics": {
-            "title": "Challenge statistics",
-            "help-text": "Challenge statistics"
-          },
           "projects": {
             "title": "Projects",
             "help-text": "Projects related to this challenge"
@@ -1772,10 +1878,6 @@
       "title": "Opportunity",
       "sections": {
         "dashboard": {
-          "statistics": {
-            "title": "Opportunity statistics",
-            "help-text": "Opportunity statistics"
-          },
           "projects": {
             "title": "Projects",
             "help-text": "Projects related to this opportunity"
@@ -2053,9 +2155,10 @@
       "generic": "An error occurred",
       "generic-with-code": "An error occurred with code {{code}}",
       "ENTITY_NOT_FOUND": "Entity not found",
+      "COMMUNITY_MEMBERSHIP": "Community membership error: {{message}}",
       "FORMAT_NOT_SUPPORTED": "Format not supported",
-      "BAD_USER_INPUT": "Bad user input",
-      "NOT_SUPPORTED": "Not supported",
+      "BAD_USER_INPUT": "Bad user input: {{message}}",
+      "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}"
     }
   },
@@ -2085,6 +2188,10 @@
       "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved Post to the new Callout.",
       "error": "Something went wrong when moving the Post, please try again."
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this Post?",
+      "description": "This action cannot be undone"
     }
   },
   "innovation-edit": {

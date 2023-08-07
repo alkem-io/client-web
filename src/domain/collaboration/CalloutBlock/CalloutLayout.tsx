@@ -40,7 +40,6 @@ import { ExpandContentIcon } from '../../../core/ui/content/ExpandContent';
 import { Reference, Tagset } from '../../common/profile/Profile';
 import References from '../../shared/components/References/References';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import { StorageConfigContextProvider } from '../../platform/storage/StorageBucket/StorageConfigContext';
 import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
@@ -53,10 +52,10 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       description?: string;
       references?: Reference[];
       tagset?: Tagset;
+      displayLocationTagset?: Tagset;
     };
     type: CalloutType;
     state: CalloutState;
-    group?: string;
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
@@ -101,7 +100,7 @@ const CalloutLayout = ({
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId } = useUrlParams();
 
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
@@ -162,11 +161,6 @@ const CalloutLayout = ({
   if (dontShow) {
     return null;
   }
-
-  // TODO: For now callout moving is only enabled for spaces.
-  // In the future check this in a cleaner way, maybe there is a privilege for this...
-  // or just remove all canChangeCalloutGroup properties
-  const canChangeCalloutGroup = !Boolean(challengeNameId) && !Boolean(opportunityNameId);
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
@@ -294,24 +288,18 @@ const CalloutLayout = ({
       >
         <CalloutSummary callout={callout} />
       </CalloutVisibilityChangeDialog>
-      <StorageConfigContextProvider
-        locationType="callout"
+      <CalloutEditDialog
+        open={editDialogOpened}
+        onClose={handleEditDialogClosed}
+        calloutType={callout.type}
+        callout={callout}
+        onCalloutEdit={handleCalloutEdit}
+        onDelete={onCalloutDelete}
+        canChangeCalloutLocation
+        calloutNames={calloutNames}
+        templates={templates}
         journeyTypeName={journeyTypeName}
-        {...{ spaceNameId, challengeNameId, opportunityNameId }}
-        calloutId={callout.nameID}
-      >
-        <CalloutEditDialog
-          open={editDialogOpened}
-          onClose={handleEditDialogClosed}
-          calloutType={callout.type}
-          callout={callout}
-          onCalloutEdit={handleCalloutEdit}
-          onDelete={onCalloutDelete}
-          canChangeCalloutGroup={canChangeCalloutGroup}
-          calloutNames={calloutNames}
-          templates={templates}
-        />
-      </StorageConfigContextProvider>
+      />
     </>
   );
 };

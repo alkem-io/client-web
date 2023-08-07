@@ -23,18 +23,6 @@ export type PostCreationDialogProps = {
   isCreating: boolean;
 } & CoreEntityIdTypes;
 
-export interface CardCreationPostTemplateProfile {
-  tags: string[] | undefined;
-  visualUri: string | undefined;
-}
-
-export interface CardCreationPostTemplate {
-  type: string | undefined;
-  defaultDescription: string | undefined;
-  tags: string[] | undefined;
-  visualUri: string | undefined;
-}
-
 const PostCreationDialog: FC<PostCreationDialogProps> = ({
   open,
   postNames,

@@ -9,8 +9,7 @@ fragment WhiteboardProfile on Profile {
     ...VisualFull
   }
   tagset {
-    id
-    tags
+    ...TagsetDetails
   }
 }
 
@@ -136,19 +135,12 @@ query spaceWhiteboardFromCallout($spaceId: UUID_NAMEID!, $calloutId: UUID_NAMEID
   }
 }
 
-query spaceWhiteboards($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
-      ...CollaborationWithWhiteboardDetails
-    }
-  }
-}
-
 query whiteboardWithValue($whiteboardId: UUID!) {
-  whiteboard(ID: $whiteboardId) {
-    ...WhiteboardDetails
-    ...WhiteboardValue
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
+      ...WhiteboardValue
+    }
   }
 }
 

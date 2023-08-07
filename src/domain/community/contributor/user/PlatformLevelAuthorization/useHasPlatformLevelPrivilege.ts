@@ -11,7 +11,7 @@ type UseHasPlatformLevelPrivilegeProvided = [hasPrivilege: boolean | undefined, 
 
 const useHasPlatformLevelPrivilege = (privilege: AuthorizationPrivilege): UseHasPlatformLevelPrivilegeProvided => {
   const { data, loading, error } = usePlatformLevelAuthorizationQuery();
-  const myPrivileges = data?.authorization.myPrivileges;
+  const myPrivileges = data?.platform.authorization?.myPrivileges;
   const hasPrivilege = myPrivileges?.includes(privilege);
   return [hasPrivilege, { loading, error }];
 };
