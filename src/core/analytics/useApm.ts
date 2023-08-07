@@ -39,11 +39,11 @@ export interface ApmCustomContext {
 export const useApm = (): ApmBase | undefined => {
   const userObject = useUserObject();
   const customContext = useCustomContext();
-  const { /*apm: apmConfig,*/ platform: platformConfig } = useConfig();
+  const { apm: apmConfig, platform: platformConfig } = useConfig();
   const [apm, setApm] = useState<ApmBase | undefined>();
 
-  const rumEnabled = true; // apmConfig?.rumEnabled ?? false;
-  const endpoint = 'https://sandbox-apm.alkem.io'; // apmConfig?.endpoint;
+  const rumEnabled = apmConfig?.rumEnabled ?? false;
+  const endpoint = apmConfig?.endpoint;
   const environment = platformConfig?.environment;
 
   useEffect(() => {
