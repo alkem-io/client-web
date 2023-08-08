@@ -79,6 +79,7 @@ const JourneyPageBannerCard = ({
             return (
               <>
                 <RouterLink
+                  key={index}
                   to={buildJourneyUrl(parentJourney.journeyLocation) ?? ''}
                   style={{ marginLeft: gutters(0.5)(theme) }}
                 >
