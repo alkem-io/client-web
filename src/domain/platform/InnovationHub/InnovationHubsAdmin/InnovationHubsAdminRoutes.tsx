@@ -5,17 +5,20 @@ import AdminInnovationHubsPage from './AdminInnovationHubsPage';
 import AdminNewInnovationHubPage from './AdminNewInnovationHubPage';
 import { nameOfUrl } from '../../../../core/routing/urlParams';
 import AdminInnovationHubPage from './AdminInnovationHubPage';
+import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 
 const AdminInnovationHubsRoutes: FC = () => {
   return (
-    <Routes>
-      <Route path="/">
-        <Route index element={<AdminInnovationHubsPage />} />
-        <Route path="new" element={<AdminNewInnovationHubPage />} />
-        <Route path={`:${nameOfUrl.innovationHubNameId}`} element={<AdminInnovationHubPage />} />
-        <Route path="*" element={<Error404 />} />
-      </Route>
-    </Routes>
+    <StorageConfigContextProvider locationType="platform">
+      <Routes>
+        <Route path="/">
+          <Route index element={<AdminInnovationHubsPage />} />
+          <Route path="new" element={<AdminNewInnovationHubPage />} />
+          <Route path={`:${nameOfUrl.innovationHubNameId}`} element={<AdminInnovationHubPage />} />
+          <Route path="*" element={<Error404 />} />
+        </Route>
+      </Routes>
+    </StorageConfigContextProvider>
   );
 };
 

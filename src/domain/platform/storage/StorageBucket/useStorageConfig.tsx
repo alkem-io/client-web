@@ -23,6 +23,7 @@ type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | '
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
+  skip?: boolean;
 }
 
 interface UseStorageConfigOptionsJourney extends UseStorageConfigOptionsBase, JourneyLocation {
@@ -85,7 +86,7 @@ const isEveryJourneyIdPresent = (journeyLocation: JourneyLocation, journeyTypeNa
   return journeyTypeName && requiredIds[journeyTypeName].every(idAttr => journeyLocation[idAttr]);
 };
 
-const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): StorageConfigProvided => {
+const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptions): StorageConfigProvided => {
   const journeyTypeName = 'journeyTypeName' in options ? options.journeyTypeName : undefined;
 
   const journeyOptions = options as UseStorageConfigOptionsJourney;
@@ -98,7 +99,7 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: locationType !== 'journey' || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
+    skip: skip || locationType !== 'journey' || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
   const calloutOptions = options as UseStorageConfigOptionsCallout;
@@ -112,7 +113,7 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: locationType !== 'callout' || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
+    skip: skip || locationType !== 'callout' || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
   const postOptions = options as UseStorageConfigOptionsPost;
@@ -127,13 +128,17 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: locationType !== 'post' || !postOptions.postId || !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
+    skip:
+      skip ||
+      locationType !== 'post' ||
+      !postOptions.postId ||
+      !isEveryJourneyIdPresent(journeyOptions, journeyTypeName),
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
   const { data: userStorageConfigData } = useUserStorageConfigQuery({
     variables: userOptions,
-    skip: locationType !== 'user',
+    skip: skip || locationType !== 'user',
   });
 
   const organizationOptions = options as UseStorageConfigOptionsOrganization;
@@ -141,7 +146,7 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     variables: {
       organizationId: organizationOptions.organizationId!, // presence ensured by skip
     },
-    skip: locationType !== 'organization' || !organizationOptions.organizationId,
+    skip: skip || locationType !== 'organization' || !organizationOptions.organizationId,
   });
 
   const innovationPackOptions = options as UseStorageConfigOptionsInnovationPack;
@@ -149,11 +154,11 @@ const useStorageConfig = ({ locationType, ...options }: StorageConfigOptions): S
     variables: {
       innovationPackId: innovationPackOptions.innovationPackId!, // presence ensured by skip
     },
-    skip: locationType !== 'innovationPack' || !innovationPackOptions.innovationPackId,
+    skip: skip || locationType !== 'innovationPack' || !innovationPackOptions.innovationPackId,
   });
 
   const { data: platformStorageConfigData } = usePlatformStorageConfigQuery({
-    skip: locationType !== 'platform',
+    skip: skip || locationType !== 'platform',
   });
 
   const journey =
