@@ -169,7 +169,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
   );
 
   return (
-    <StorageConfigContextProvider spaceNameId={spaceId} locationType={'journey'} journeyTypeName={'space'}>
+    <StorageConfigContextProvider spaceNameId={spaceId} locationType="journey" journeyTypeName="space">
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },
