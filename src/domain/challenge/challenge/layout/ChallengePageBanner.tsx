@@ -27,8 +27,13 @@ const ChallengePageBanner: FC = () => {
       journeyTags={challenge?.profile.tagset?.tags}
       journeyDisplayName={challenge?.profile.displayName ?? ''}
       journeyTagline={challenge?.profile.tagline ?? ''}
-      parentJourneyDisplayName={spaceProfile.displayName}
-      parentJourneyLocation={{ spaceNameId }}
+      parentJourneys={[
+        {
+          displayName: spaceProfile.displayName,
+          journeyLocation: { spaceNameId },
+          journeyTypeName: 'space',
+        },
+      ]}
     />
   );
 };
