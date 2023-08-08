@@ -1,7 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { EntityPageLayout } from '../../common/EntityPageLayout';
-import SpacePageBanner from '../layout/SpacePageBanner';
-import SpaceTabs from '../layout/SpaceTabs';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -25,6 +22,7 @@ import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/us
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
+import SpacePageLayout from '../layout/SpacePageLayout';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -77,12 +75,7 @@ const SpaceCommunityPage = () => {
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.space.community?.id);
 
   return (
-    <EntityPageLayout
-      pageBannerComponent={SpacePageBanner}
-      tabsComponent={SpaceTabs}
-      currentSection={EntityPageSection.Community}
-      entityTypeName="space"
-    >
+    <SpacePageLayout currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer spaceNameId={spaceNameId}>
         {({ callouts }) => (
           <PageContent>
@@ -138,7 +131,7 @@ const SpaceCommunityPage = () => {
           </PageContent>
         )}
       </SpaceCommunityContainer>
-    </EntityPageLayout>
+    </SpacePageLayout>
   );
 };
 

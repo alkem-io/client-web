@@ -8,6 +8,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildSpaceUrl } from '../../../../common/utils/urlBuilders';
 import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
@@ -32,6 +33,9 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <SpaceDashboardPage />;
     case CalloutDisplayLocation.ChallengesLeft:
       return <SpaceChallengesPage />;
+    case CalloutDisplayLocation.CommunityLeft:
+    case CalloutDisplayLocation.CommunityRight:
+      return <SpaceCommunityPage />;
     default:
       return <KnowedgeBasePage journeyTypeName="space" />;
   }
