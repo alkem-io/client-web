@@ -34,6 +34,7 @@ export interface ApmCustomContext {
     width: number;
     height: number;
   };
+  language: string;
 }
 
 export const useApm = (): ApmBase | undefined => {
@@ -140,6 +141,7 @@ const useCustomContext = () => {
 
     context.screen = getScreenInfo();
     context.window = getWindowSize();
+    context.language = getLanguage();
 
     return context;
   }, [
@@ -166,4 +168,8 @@ const getScreenInfo = () => {
   const { width, height, orientation } = window.screen;
 
   return { width, height, orientation: orientation.type };
+};
+
+const getLanguage = () => {
+  return navigator.language;
 };
