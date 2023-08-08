@@ -9,12 +9,11 @@
   },
   "license": "EUPL-1.2",
   "scripts": {
-    "start": "vite --host --port 3000",
+    "start": "vite --host",
     "build": "cross-env NODE_ENV=production && vite build",
     "test": "cross-env NODE_ENV=test node buildConfiguration && react-scripts test --transformIgnorePatterns \"node_modules/(?!unified)/\"",
     "test:cov": "npm run test -- --coverage --watchAll=false",
     "test:coverage": "npm run test -- --coverage && cat ./coverage/lcov.info | coveralls",
-    "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.yml",
     "format": "prettier --write src/**/*.ts{,x}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
