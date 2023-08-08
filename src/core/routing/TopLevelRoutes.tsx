@@ -29,11 +29,14 @@ import InnovationLibraryPage from '../../domain/platform/TopLevelPages/Innovatio
 import InnovationPackRoute from '../../domain/collaboration/InnovationPack/InnovationPackRoute';
 import { innovationPacksPath } from '../../domain/collaboration/InnovationPack/urlBuilders';
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
+import useRedirectToIdentityDomain from '../auth/authentication/routing/useRedirectToIdentityDomain';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
 
   const paths = useMemo(() => [{ value: '/', name: t('common.home'), real: true }], [t]);
+
+  useRedirectToIdentityDomain();
 
   return (
     <Routes>
