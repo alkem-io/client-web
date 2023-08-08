@@ -161,6 +161,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           spaceNameId={calloutLayoutProps.spaceNameId}
           challengeNameId={calloutLayoutProps.challengeNameId}
           opportunityNameId={calloutLayoutProps.opportunityNameId}
+          skip={!addNewReferenceDialogOpen && !Boolean(editReference)}
         >
           <CalloutLayout
             callout={callout}
