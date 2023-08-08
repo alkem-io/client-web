@@ -13,7 +13,7 @@ import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRou
 import SpaceContextPage from '../../../../challenge/space/pages/SpaceContext/SpaceContextPage';
 import SpaceStorageAdminPage from '../storage/SpaceStorageAdminPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import SpaceCommunityPage from '../../../../challenge/space/pages/SpaceCommunity/SpaceCommunityPage';
+import AdminSpaceCommunityPage from '../../../../challenge/space/pages/SpaceCommunity/AdminSpaceCommunityPage';
 
 export const SpaceRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -26,7 +26,7 @@ export const SpaceRoute: FC = () => {
         <Route path="profile" element={<SpaceProfilePage />} />
         <Route path="settings" element={<SpaceSettingsPage />} />
         <Route path="context" element={<SpaceContextPage />} />
-        <Route path="community" element={<SpaceCommunityPage />} />
+        <Route path="community" element={<AdminSpaceCommunityPage />} />
         <Route path="communications" element={<SpaceCommunicationsPage communityId={communityId} />} />
         <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
         <Route path="storage" element={<SpaceStorageAdminPage spaceId={spaceId} />} />

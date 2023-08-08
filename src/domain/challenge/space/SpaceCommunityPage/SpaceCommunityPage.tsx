@@ -5,7 +5,6 @@ import SpaceTabs from '../layout/SpaceTabs';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
@@ -25,6 +24,7 @@ import useActivityOnCollaboration from '../../../collaboration/activity/useActiv
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import SpaceCommunityContainer from './SpaceCommunityContainer';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -34,19 +34,6 @@ const SpaceCommunityPage = () => {
   if (!spaceNameId) {
     throw new TypeError('Must be within a Space');
   }
-
-  const {
-    groupedCallouts,
-    canCreateCallout,
-    calloutNames,
-    loading,
-    calloutsSortOrder,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-  } = useCallouts({
-    spaceNameId,
-    displayLocations: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
-  });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
   const openContactLeadsDialog = () => {
@@ -96,57 +83,61 @@ const SpaceCommunityPage = () => {
       currentSection={EntityPageSection.Community}
       entityTypeName="space"
     >
-      <PageContent>
-        <PageContentColumn columns={4}>
-          <EntityDashboardLeadsSection
-            usersHeader={t('community.host')}
-            organizationsHeader={t('pages.space.sections.dashboard.organization')}
-            leadUsers={leadUsers}
-            leadOrganizations={hostOrganizations}
-          />
-          <ContactLeadsButton onClick={openContactLeadsDialog}>
-            {t('buttons.contact-leads', { contact: t('community.host') })}
-          </ContactLeadsButton>
-          <DirectMessageDialog
-            title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
-            open={isContactLeadUsersDialogOpen}
-            onClose={closeContactLeadsDialog}
-            onSendMessage={sendMessageToCommunityLeads}
-            messageReceivers={messageReceivers}
-          />
-          <CalloutsGroupView
-            callouts={groupedCallouts[CalloutDisplayLocation.CommunityLeft]}
-            spaceId={spaceNameId!}
-            canCreateCallout={canCreateCallout}
-            loading={loading}
-            journeyTypeName="space"
-            sortOrder={calloutsSortOrder}
-            calloutNames={calloutNames}
-            onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={refetchCallout}
-            displayLocation={CalloutDisplayLocation.CommunityLeft}
-          />
-        </PageContentColumn>
-        <PageContentColumn columns={8}>
-          <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
-          <PageContentBlock>
-            <PageContentBlockHeader title={t('common.activity')} />
-            <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-          </PageContentBlock>
-          <CalloutsGroupView
-            callouts={groupedCallouts[CalloutDisplayLocation.CommunityRight]}
-            spaceId={spaceNameId!}
-            canCreateCallout={canCreateCallout}
-            loading={loading}
-            journeyTypeName="space"
-            sortOrder={calloutsSortOrder}
-            calloutNames={calloutNames}
-            onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={refetchCallout}
-            displayLocation={CalloutDisplayLocation.CommunityRight}
-          />
-        </PageContentColumn>
-      </PageContent>
+      <SpaceCommunityContainer spaceNameId={spaceNameId}>
+        {({ callouts }) => (
+          <PageContent>
+            <PageContentColumn columns={4}>
+              <EntityDashboardLeadsSection
+                usersHeader={t('community.host')}
+                organizationsHeader={t('pages.space.sections.dashboard.organization')}
+                leadUsers={leadUsers}
+                leadOrganizations={hostOrganizations}
+              />
+              <ContactLeadsButton onClick={openContactLeadsDialog}>
+                {t('buttons.contact-leads', { contact: t('community.host') })}
+              </ContactLeadsButton>
+              <DirectMessageDialog
+                title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
+                open={isContactLeadUsersDialogOpen}
+                onClose={closeContactLeadsDialog}
+                onSendMessage={sendMessageToCommunityLeads}
+                messageReceivers={messageReceivers}
+              />
+              <CalloutsGroupView
+                callouts={callouts.groupedCallouts[CalloutDisplayLocation.CommunityLeft]}
+                spaceId={spaceNameId!}
+                canCreateCallout={callouts.canCreateCallout}
+                loading={callouts.loading}
+                journeyTypeName="space"
+                sortOrder={callouts.calloutsSortOrder}
+                calloutNames={callouts.calloutNames}
+                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                onCalloutUpdate={callouts.refetchCallout}
+                displayLocation={CalloutDisplayLocation.CommunityLeft}
+              />
+            </PageContentColumn>
+            <PageContentColumn columns={8}>
+              <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
+              <PageContentBlock>
+                <PageContentBlockHeader title={t('common.activity')} />
+                <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+              </PageContentBlock>
+              <CalloutsGroupView
+                callouts={callouts.groupedCallouts[CalloutDisplayLocation.CommunityRight]}
+                spaceId={spaceNameId!}
+                canCreateCallout={callouts.canCreateCallout}
+                loading={callouts.loading}
+                journeyTypeName="space"
+                sortOrder={callouts.calloutsSortOrder}
+                calloutNames={callouts.calloutNames}
+                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                onCalloutUpdate={callouts.refetchCallout}
+                displayLocation={CalloutDisplayLocation.CommunityRight}
+              />
+            </PageContentColumn>
+          </PageContent>
+        )}
+      </SpaceCommunityContainer>
     </EntityPageLayout>
   );
 };

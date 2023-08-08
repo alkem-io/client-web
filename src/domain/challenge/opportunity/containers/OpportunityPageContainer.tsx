@@ -9,6 +9,7 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   AuthorizationPrivilege,
+  CalloutDisplayLocation,
   DashboardTopCalloutFragment,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
@@ -24,8 +25,9 @@ import {
   getPostsFromPublishedCallouts,
   getWhiteboardsFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import {
+import useCallouts, {
   PostFragmentWithCallout,
+  UseCalloutsProvided,
   WhiteboardFragmentWithCallout,
 } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -73,6 +75,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  callouts: UseCalloutsProvided;
 }
 
 export interface OpportunityContainerActions {
@@ -191,6 +194,16 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     [sendMessageToCommunityLeads, communityId]
   );
 
+  const callouts = useCallouts({
+    spaceNameId,
+    opportunityNameId,
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
+  });
+
   return (
     <>
       {children(
@@ -226,6 +239,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           activities,
           topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
+          callouts,
         },
         {
           loading: loadingOpportunity,

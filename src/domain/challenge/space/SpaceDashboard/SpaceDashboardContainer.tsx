@@ -16,6 +16,7 @@ import {
   DashboardTopCalloutFragment,
   SpacePageFragment,
   Reference,
+  CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
@@ -23,6 +24,7 @@ import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
 import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
+import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
@@ -46,6 +48,7 @@ export interface SpaceContainerEntities {
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  callouts: UseCalloutsProvided;
 }
 
 export interface SpaceContainerActions {}
@@ -136,6 +139,15 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     [sendMessageToCommunityLeads, communityId]
   );
 
+  const callouts = useCallouts({
+    spaceNameId,
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
+  });
+
   return (
     <>
       {children(
@@ -155,6 +167,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
           hostOrganizations,
           topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
+          callouts,
         },
         {
           loading: loadingSpaceQuery || loadingSpace,
