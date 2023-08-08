@@ -20,7 +20,7 @@ type ChildJourneyTypeName = Exclude<JourneyTypeName, 'space'>;
 type StickSide = 'left';
 
 export interface JourneyPageBannerCardProps extends BoxProps {
-  parentJourneys: {
+  parentJourneys?: {
     displayName: string;
     journeyTypeName: JourneyTypeName;
     journeyLocation: JourneyLocation;
@@ -71,36 +71,38 @@ const JourneyPageBannerCard = ({
       }}
       {...boxProps}
     >
-      <CardText color="primary">
-        {t('components.journeyPageBannerCard.parentJourney')}
-        {parentJourneys.map((parentJourney, index) => {
-          const ParentJourneyIcon = journeyIcon[parentJourney.journeyTypeName];
-          return (
-            <>
-              <RouterLink
-                to={buildJourneyUrl(parentJourney.journeyLocation) ?? ''}
-                style={{ marginLeft: gutters(0.5)(theme) }}
-              >
-                <ParentJourneyIcon
-                  fontSize="inherit"
-                  sx={{
-                    marginX: theme => theme.spacing(0.25),
-                    verticalAlign: 'middle',
-                  }}
-                />
-                {parentJourney.displayName}
-              </RouterLink>
-              {index < parentJourneys.length - 1 && (
-                <KeyboardArrowRightIcon
-                  color="primary"
-                  fontSize="small"
-                  sx={{ marginLeft: gutters(0.5), verticalAlign: 'bottom' }}
-                />
-              )}
-            </>
-          );
-        })}
-      </CardText>
+      {parentJourneys && parentJourneys.length && (
+        <CardText color="primary">
+          {t('components.journeyPageBannerCard.parentJourney')}
+          {parentJourneys.map((parentJourney, index) => {
+            const ParentJourneyIcon = journeyIcon[parentJourney.journeyTypeName];
+            return (
+              <>
+                <RouterLink
+                  to={buildJourneyUrl(parentJourney.journeyLocation) ?? ''}
+                  style={{ marginLeft: gutters(0.5)(theme) }}
+                >
+                  <ParentJourneyIcon
+                    fontSize="inherit"
+                    sx={{
+                      marginX: theme => theme.spacing(0.25),
+                      verticalAlign: 'middle',
+                    }}
+                  />
+                  {parentJourney.displayName}
+                </RouterLink>
+                {index < parentJourneys.length - 1 && (
+                  <KeyboardArrowRightIcon
+                    color="primary"
+                    fontSize="small"
+                    sx={{ marginLeft: gutters(0.5), verticalAlign: 'bottom' }}
+                  />
+                )}
+              </>
+            );
+          })}
+        </CardText>
+      )}
       <BadgeCardView
         visual={
           <JourneyAvatar
