@@ -29,8 +29,18 @@ const OpportunityPageBanner: FC = () => {
       journeyTags={opportunity?.profile.tagset?.tags}
       journeyDisplayName={opportunity?.profile.displayName ?? ''}
       journeyTagline={opportunity?.profile.tagline ?? ''}
-      parentJourneyDisplayName={challengeProfile.displayName}
-      parentJourneyLocation={{ spaceNameId, challengeNameId }}
+      parentJourneys={[
+        {
+          displayName: spaceProfile.displayName,
+          journeyLocation: { spaceNameId },
+          journeyTypeName: 'space',
+        },
+        {
+          displayName: challengeProfile.displayName,
+          journeyLocation: { spaceNameId, challengeNameId },
+          journeyTypeName: 'challenge',
+        },
+      ]}
     />
   );
 };
