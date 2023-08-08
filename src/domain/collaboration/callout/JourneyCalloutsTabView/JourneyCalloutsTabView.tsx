@@ -32,7 +32,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     throw new Error('Must be within a Space');
   }
 
-  const { innovationFlowStates, currentInnovationFlowState } = useInnovationFlowStates({
+  const { innovationFlowStates, currentInnovationFlowState, canEdit } = useInnovationFlowStates({
     spaceId: spaceNameId,
     challengeId: challengeNameId!,
     opportunityId: opportunityNameId,
@@ -69,6 +69,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   const { t } = useTranslation();
 
   const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
+  const showInnovationFlowStatesSettingsDialog = canEdit;
 
   return (
     <>
@@ -124,7 +125,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
                 selectedState={selectedInnovationFlowState}
                 states={innovationFlowStates}
                 onSelectState={handleSelectInnovationFlowState}
-                showSettings
+                showSettings={showInnovationFlowStatesSettingsDialog}
               />
             )}
             <CalloutsGroupView

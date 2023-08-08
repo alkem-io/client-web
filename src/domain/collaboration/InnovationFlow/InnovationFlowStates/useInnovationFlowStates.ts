@@ -1,5 +1,6 @@
 import { useChallengeInnovationFlowStatesAllowedValuesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useOpportunityInnovationFlowStatesAllowedValuesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 interface UseInnovationFlowStatesParams {
   spaceId: string;
   challengeId: string | undefined;
@@ -11,6 +12,7 @@ export const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
 interface UseInnovationFlowStatesProvided {
   innovationFlowStates: string[] | undefined;
   currentInnovationFlowState: string | undefined;
+  canEdit: boolean;
 }
 
 const useInnovationFlowStates = ({
@@ -22,6 +24,7 @@ const useInnovationFlowStates = ({
     throw new Error('You need to provide either challenge or opportunity id!');
   }
 
+  let canEdit = false;
   const skipChallenge: boolean = !(challengeId && !opportunityId);
   const challengeFlowStates = useChallengeInnovationFlowStatesAllowedValuesQuery({
     variables: {
@@ -46,6 +49,8 @@ const useInnovationFlowStates = ({
       tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
     );
     currentInnovationFlowState = flowStatesData?.space.challenge.innovationFlow?.lifecycle?.state;
+    const myPrivilleges = flowStatesData?.space.challenge.innovationFlow?.authorization?.myPrivileges;
+    canEdit = myPrivilleges?.includes(AuthorizationPrivilege.Update);
   }
 
   if (opportunityId) {
@@ -54,6 +59,8 @@ const useInnovationFlowStates = ({
       tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
     );
     currentInnovationFlowState = flowStatesData?.space.opportunity.innovationFlow?.lifecycle?.state;
+    const myPrivilleges = flowStatesData?.space.opportunity.innovationFlow?.authorization?.myPrivileges;
+    canEdit = myPrivilleges?.includes(AuthorizationPrivilege.Update);
   }
 
   const flowStates = flowStatesTagset?.allowedValues;
@@ -61,6 +68,7 @@ const useInnovationFlowStates = ({
   return {
     innovationFlowStates: flowStates,
     currentInnovationFlowState,
+    canEdit: canEdit,
   };
 };
 
