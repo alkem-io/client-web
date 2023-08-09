@@ -190,16 +190,6 @@
       "<rootDir>/src/generated",
       "<rootDir>/src/sentry"
     ],
-    "transformIgnorePatterns": [
-      "/node_modules/(?!(uuid|unified|react-markdown)/)"
-    ],
-    "moduleNameMapper": {
-      "^.+\\.svg": "<rootDir>/tests/mocks/svgMock.tsx",
-      "^uuid$": "<rootDir>/node_modules/uuid/dist/index.js",
-      "^unified$": "<rootDir>/node_modules/unified/lib/index.js",
-      "^react-markdown$": "<rootDir>/node_modules/react-markdown/index.js",
-      "^./lib/uri-transformer.js$": "<rootDir>/node_modules/react-markdown/lib/uri-transformer.js"
-    },
     "testEnvironment": "jsdom"
   },
   "babel": {
