@@ -13,7 +13,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'react', 'jest'],
-  extends: ['prettier', 'prettier/prettier'],
+  extends: ['react-app', 'react-app/jest', 'prettier', 'prettier/prettier'],
   env: {
     browser: true,
     es6: true,
