@@ -12692,6 +12692,9 @@ export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
             __typename?: 'InnovationFlow';
             id: string;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -12723,6 +12726,9 @@ export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
             __typename?: 'InnovationFlow';
             id: string;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;

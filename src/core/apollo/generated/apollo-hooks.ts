@@ -8406,6 +8406,10 @@ export const ChallengeInnovationFlowStatesAllowedValuesDocument = gql`
             id
             state
           }
+          authorization {
+            id
+            myPrivileges
+          }
           profile {
             id
             tagsets {
@@ -8490,6 +8494,10 @@ export const OpportunityInnovationFlowStatesAllowedValuesDocument = gql`
           lifecycle {
             id
             state
+          }
+          authorization {
+            id
+            myPrivileges
           }
           profile {
             id
