@@ -34,7 +34,7 @@ export interface ApmCustomContext {
     width: number;
     height: number;
   };
-  language: string;
+  language?: string;
 }
 
 export const useApm = (): ApmBase | undefined => {
