@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Caption, CardText, PageTitle } from '../../../../../core/ui/typography';
@@ -7,20 +7,24 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import React from 'react';
 import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
-import { Box, BoxProps, SxProps } from '@mui/material';
+import { Box, BoxProps, SxProps, useTheme } from '@mui/material';
 import JourneyAvatar from '../../JourneyAvatar/JourneyAvatar';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { Visual } from '../../../../common/visual/Visual';
 import { alpha } from '@mui/material/styles';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 type ChildJourneyTypeName = Exclude<JourneyTypeName, 'space'>;
 
 type StickSide = 'left';
 
 export interface JourneyPageBannerCardProps extends BoxProps {
-  parentJourneyDisplayName: string;
-  parentJourneyLocation: JourneyLocation;
+  parentJourneys?: {
+    displayName: string;
+    journeyTypeName: JourneyTypeName;
+    journeyLocation: JourneyLocation;
+  }[];
   journeyTypeName: ChildJourneyTypeName;
   journeyDisplayName: string;
   journeyTagline: string;
@@ -28,17 +32,6 @@ export interface JourneyPageBannerCardProps extends BoxProps {
   journeyTags: string[] | undefined;
   stick?: StickSide;
 }
-
-const getParentJourneyTypeName = (journeyTypeName: ChildJourneyTypeName): JourneyTypeName => {
-  switch (journeyTypeName) {
-    case 'challenge': {
-      return 'space';
-    }
-    case 'opportunity': {
-      return 'challenge';
-    }
-  }
-};
 
 const getBorderRadiusOverride = (stickSide?: StickSide): SxProps => {
   switch (stickSide) {
@@ -58,18 +51,14 @@ const JourneyPageBannerCard = ({
   journeyTypeName,
   journeyAvatar,
   journeyTags = [],
-  parentJourneyDisplayName,
-  parentJourneyLocation,
+  parentJourneys,
   stick,
   ...boxProps
 }: JourneyPageBannerCardProps) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const JourneyIcon = journeyIcon[journeyTypeName];
-
-  const parentJourneyTypeName = getParentJourneyTypeName(journeyTypeName);
-
-  const ParentJourneyIcon = journeyIcon[parentJourneyTypeName];
 
   return (
     <Gutters
@@ -82,26 +71,39 @@ const JourneyPageBannerCard = ({
       }}
       {...boxProps}
     >
-      <CardText>
-        <RouterLink to={buildJourneyUrl(parentJourneyLocation) ?? ''}>
-          <Trans
-            i18nKey="components.journeyPageBannerCard.parentJourney"
-            values={{ journey: parentJourneyDisplayName }}
-            components={{
-              journeyicon: (
-                <ParentJourneyIcon
-                  fontSize="inherit"
-                  sx={{
-                    marginX: theme => theme.spacing(0.25),
-                    verticalAlign: 'middle',
-                  }}
-                />
-              ),
-            }}
-            t={t}
-          />
-        </RouterLink>
-      </CardText>
+      {parentJourneys && parentJourneys.length && (
+        <CardText color="primary">
+          {t('components.journeyPageBannerCard.parentJourney')}
+          {parentJourneys.map((parentJourney, index) => {
+            const ParentJourneyIcon = journeyIcon[parentJourney.journeyTypeName];
+            return (
+              <>
+                <RouterLink
+                  key={index}
+                  to={buildJourneyUrl(parentJourney.journeyLocation) ?? ''}
+                  style={{ marginLeft: gutters(0.5)(theme) }}
+                >
+                  <ParentJourneyIcon
+                    fontSize="inherit"
+                    sx={{
+                      marginX: theme => theme.spacing(0.25),
+                      verticalAlign: 'middle',
+                    }}
+                  />
+                  {parentJourney.displayName}
+                </RouterLink>
+                {index < parentJourneys.length - 1 && (
+                  <KeyboardArrowRightIcon
+                    color="primary"
+                    fontSize="small"
+                    sx={{ marginLeft: gutters(0.5), verticalAlign: 'bottom' }}
+                  />
+                )}
+              </>
+            );
+          })}
+        </CardText>
+      )}
       <BadgeCardView
         visual={
           <JourneyAvatar
