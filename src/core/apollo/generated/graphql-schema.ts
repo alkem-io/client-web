@@ -12698,6 +12698,9 @@ export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
             __typename?: 'InnovationFlow';
             id: string;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -12729,6 +12732,9 @@ export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
             __typename?: 'InnovationFlow';
             id: string;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -24715,6 +24721,7 @@ export type PendingMembershipsSpaceQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    nameID: string;
     profile: {
       __typename?: 'Profile';
       tagline: string;
@@ -24737,9 +24744,11 @@ export type PendingMembershipsChallengeQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    nameID: string;
     challenge: {
       __typename?: 'Challenge';
       id: string;
+      nameID: string;
       profile: {
         __typename?: 'Profile';
         tagline: string;
@@ -24763,9 +24772,12 @@ export type PendingMembershipsOpportunityQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    nameID: string;
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
+      nameID: string;
+      parentNameID?: string | undefined;
       profile: {
         __typename?: 'Profile';
         tagline: string;

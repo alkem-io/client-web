@@ -37,8 +37,8 @@ const InvitationOptionsBlock = ({
   return (
     <>
       <PageContentBlock>
-        <PageContentBlockHeader title="Invite users" />
-        <Gutters row disablePadding>
+        <PageContentBlockHeader title={t('components.invitations.inviteOthers')} />
+        <Gutters row disablePadding flexWrap="wrap">
           <RadioButton
             value=""
             iconComponent={AssignmentIndOutlinedIcon}

@@ -8406,6 +8406,10 @@ export const ChallengeInnovationFlowStatesAllowedValuesDocument = gql`
             id
             state
           }
+          authorization {
+            id
+            myPrivileges
+          }
           profile {
             id
             tagsets {
@@ -8490,6 +8494,10 @@ export const OpportunityInnovationFlowStatesAllowedValuesDocument = gql`
           lifecycle {
             id
             state
+          }
+          authorization {
+            id
+            myPrivileges
           }
           profile {
             id
@@ -18919,6 +18927,7 @@ export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
     space(ID: $spaceId) {
       id
+      nameID
       profile {
         ...PendingMembershipsJourneyProfile
       }
@@ -18988,8 +18997,10 @@ export const PendingMembershipsChallengeDocument = gql`
   ) {
     space(ID: $spaceId) {
       id
+      nameID
       challenge(ID: $challengeId) {
         id
+        nameID
         profile {
           ...PendingMembershipsJourneyProfile
         }
@@ -19063,8 +19074,11 @@ export const PendingMembershipsOpportunityDocument = gql`
   ) {
     space(ID: $spaceId) {
       id
+      nameID
       opportunity(ID: $opportunityId) {
         id
+        nameID
+        parentNameID
         profile {
           ...PendingMembershipsJourneyProfile
         }

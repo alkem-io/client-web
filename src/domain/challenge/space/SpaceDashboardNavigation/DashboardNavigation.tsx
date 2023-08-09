@@ -75,7 +75,7 @@ const DashboardNavigation = ({
         <Gutters disablePadding>
           {dashboardNavigation?.map(({ id, nameId: challengeNameId, visual, ...challenge }) => {
             if (!spaceNameId) {
-              return <Skeleton />;
+              return <Skeleton key={id} />;
             }
             const challengeUrl = buildChallengeUrl(spaceNameId, challengeNameId);
             const spaceUrl = buildSpaceUrl(spaceNameId);

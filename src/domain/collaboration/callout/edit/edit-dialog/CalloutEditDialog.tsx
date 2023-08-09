@@ -24,6 +24,7 @@ import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
 import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLocationValue';
 import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
+import { StorageConfigContextProvider } from '../../../../platform/storage/StorageBucket/StorageConfigContext';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -51,7 +52,12 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space route.');
+  }
+
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
@@ -167,16 +173,23 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           </Box>
         </DialogHeader>
         <DialogContent dividers>
-          <CalloutForm
-            calloutType={calloutType}
-            callout={initialValues}
-            calloutNames={calloutNames}
-            editMode
-            onStatusChanged={handleStatusChanged}
-            onChange={handleChange}
-            canChangeCalloutLocation={canChangeCalloutLocation}
+          <StorageConfigContextProvider
+            locationType="callout"
             journeyTypeName={journeyTypeName}
-          />
+            {...{ spaceNameId, challengeNameId, opportunityNameId }}
+            calloutId={callout.nameID}
+          >
+            <CalloutForm
+              calloutType={calloutType}
+              callout={initialValues}
+              calloutNames={calloutNames}
+              editMode
+              onStatusChanged={handleStatusChanged}
+              onChange={handleChange}
+              canChangeCalloutLocation={canChangeCalloutLocation}
+              journeyTypeName={journeyTypeName}
+            />
+          </StorageConfigContextProvider>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
           <LoadingButton loading={loading} disabled={loading} variant="outlined" onClick={handleDialogDelete}>

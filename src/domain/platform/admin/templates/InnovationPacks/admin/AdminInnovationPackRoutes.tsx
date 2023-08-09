@@ -3,16 +3,19 @@ import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../../../core/pages/Errors/Error404';
 import AdminInnovationPacksPage from './AdminInnovationPacksPage';
 import AdminNewInnovationPackPage from './AdminNewInnovationPackPage';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 const AdminInnovationPacksRoutes: FC = () => {
   return (
-    <Routes>
-      <Route path="/">
-        <Route index element={<AdminInnovationPacksPage />} />
-        <Route path="new" element={<AdminNewInnovationPackPage />} />
-        <Route path="*" element={<Error404 />} />
-      </Route>
-    </Routes>
+    <StorageConfigContextProvider locationType="platform">
+      <Routes>
+        <Route path="/">
+          <Route index element={<AdminInnovationPacksPage />} />
+          <Route path="new" element={<AdminNewInnovationPackPage />} />
+          <Route path="*" element={<Error404 />} />
+        </Route>
+      </Routes>
+    </StorageConfigContextProvider>
   );
 };
 
