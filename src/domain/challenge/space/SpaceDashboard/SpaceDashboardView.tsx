@@ -205,7 +205,7 @@ const SpaceDashboardView = <ChildEntity extends Identifiable>({
               ))}
             </Gutters>
             <Gutters row disablePadding>
-              {hostOrganizations?.slice(0, 2).map(org => (
+              {leadOrganizations?.slice(0, 2).map(org => (
                 <ContributorCardHorizontal
                   key={org.id}
                   profile={org.profile}

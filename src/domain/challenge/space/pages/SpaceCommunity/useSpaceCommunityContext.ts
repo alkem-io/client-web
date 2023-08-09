@@ -37,6 +37,7 @@ const buildUserFilterObject = (filter: string | undefined) =>
         firstName: filter,
         lastName: filter,
         email: filter,
+        displayName: filter,
       }
     : undefined;
 
