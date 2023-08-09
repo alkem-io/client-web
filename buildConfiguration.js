@@ -1,5 +1,5 @@
 const dotenvFlow = require('dotenv-flow');
-const dotenvExpand = require('dotenv-expand');
+const dotenvExpand = require('dotenv-expand').expand;
 const { createWriteStream } = require('fs');
 const { writeFile } = require('fs/promises');
 const path = require('path');
