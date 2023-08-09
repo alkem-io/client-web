@@ -1,5 +1,4 @@
 import { without } from 'lodash';
-import { Identifiable } from '../../domain/shared/types/Identifiable';
 
 export interface OrderUpdate {
   (ids: string[]): string[];
@@ -20,12 +19,38 @@ const UpdateOrder = (setItems: (update: OrderUpdate) => void) => (insert: Insert
 
 export default UpdateOrder;
 
+interface CalloutWithDisplayLocation {
+  id: string;
+  profile: {
+    displayLocationTagset?: {
+      tags?: string[];
+    };
+  };
+}
 // Finding the item which will be 'prev' or 'next' item for the one with the provided ID.
-export const findTargetItemIndex = (position: 'prev' | 'next', items: Identifiable[], id: string) => {
-  const indexDelta = position === 'prev' ? -1 : 1;
-  const targetCalloutIndex = items?.findIndex((callout, i) => items[i - indexDelta]?.id === id);
-  if (targetCalloutIndex === -1) {
+/**
+ * We need to find the callout that we are moving in the list of all callouts loaded.
+ * Then see its position between the callouts in the same group.
+ * Find the previous or next callout in that group. And then find the position of that one in the list of all callouts.
+ */
+export const findTargetItemIndex = (
+  position: 'prev' | 'next',
+  allCallouts: CalloutWithDisplayLocation[] | undefined,
+  nextIds: string[],
+  id: string
+) => {
+  const group = allCallouts?.find(callout => callout.id === id)?.profile.displayLocationTagset?.tags?.[0];
+  const calloutsInGroup = allCallouts?.filter(c => c.profile.displayLocationTagset?.tags?.[0] === group);
+  const indexInGroup = calloutsInGroup?.findIndex(c => c.id === id) ?? -1;
+  if (!calloutsInGroup || indexInGroup === -1) {
     throw new Error(`Can't find ${position} item`);
   }
-  return targetCalloutIndex;
+  if (position === 'prev') {
+    const prevCalloutId = calloutsInGroup[indexInGroup - 1].id;
+    return nextIds.findIndex(id => id === prevCalloutId);
+  } else if (position === 'next') {
+    const nextCalloutId = calloutsInGroup[indexInGroup + 1].id;
+    return nextIds.findIndex(id => id === nextCalloutId) + 1;
+  }
+  throw new Error(`Can't find ${position} item`);
 };

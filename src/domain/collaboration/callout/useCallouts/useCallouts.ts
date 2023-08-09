@@ -188,7 +188,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       if (!collaboration) {
         throw new Error('Collaboration is not loaded yet.');
       }
-      return runUpdateCalloutsSortOrderMutation({
+      return updateCalloutsSortOrderMutation({
         variables: {
           collaborationId: collaboration.id,
           calloutIds,
@@ -229,7 +229,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     ) as Record<CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP, TypedCallout[] | undefined>;
   }, [sortedCallouts]);
 
-  const [runUpdateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
+  const [updateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
 
   return {
     callouts,

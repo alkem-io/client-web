@@ -85,12 +85,12 @@ const CalloutsView = ({
     // the moved one can be from another group. Such "moving" would not result in anything visible,
     // therefore on move up we must find the closest callout above that is from the same group.
     onMoveUp: updateOrder((nextIds, id) => {
-      const prevCalloutIndex = findTargetItemIndex('prev', callouts!, id);
-      return nextIds.splice(prevCalloutIndex, 0, id);
+      const targetIndex = findTargetItemIndex('prev', callouts, nextIds, id);
+      return nextIds.splice(targetIndex, 0, id);
     }),
     onMoveDown: updateOrder((nextIds, id) => {
-      const nextCalloutIndex = findTargetItemIndex('next', callouts!, id);
-      return nextIds.splice(nextCalloutIndex + 1, 0, id);
+      const targetIndex = findTargetItemIndex('next', callouts, nextIds, id);
+      return nextIds.splice(targetIndex, 0, id);
     }),
   };
 
