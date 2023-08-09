@@ -18927,6 +18927,7 @@ export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
     space(ID: $spaceId) {
       id
+      nameID
       profile {
         ...PendingMembershipsJourneyProfile
       }
@@ -18996,8 +18997,10 @@ export const PendingMembershipsChallengeDocument = gql`
   ) {
     space(ID: $spaceId) {
       id
+      nameID
       challenge(ID: $challengeId) {
         id
+        nameID
         profile {
           ...PendingMembershipsJourneyProfile
         }
@@ -19071,8 +19074,11 @@ export const PendingMembershipsOpportunityDocument = gql`
   ) {
     space(ID: $spaceId) {
       id
+      nameID
       opportunity(ID: $opportunityId) {
         id
+        nameID
+        parentNameID
         profile {
           ...PendingMembershipsJourneyProfile
         }

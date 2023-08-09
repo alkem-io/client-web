@@ -24715,6 +24715,7 @@ export type PendingMembershipsSpaceQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    nameID: string;
     profile: {
       __typename?: 'Profile';
       tagline: string;
@@ -24737,9 +24738,11 @@ export type PendingMembershipsChallengeQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    nameID: string;
     challenge: {
       __typename?: 'Challenge';
       id: string;
+      nameID: string;
       profile: {
         __typename?: 'Profile';
         tagline: string;
@@ -24763,9 +24766,12 @@ export type PendingMembershipsOpportunityQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    nameID: string;
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
+      nameID: string;
+      parentNameID?: string | undefined;
       profile: {
         __typename?: 'Profile';
         tagline: string;
