@@ -10,7 +10,7 @@ export interface LogoComponentProps extends BoxProps {
   url?: string;
 }
 
-const Logo = styled(LogoImage)(() => ({
+const Logo = styled(props => <LogoImage {...props} />)(() => ({
   height: '100%',
 }));
 

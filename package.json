@@ -164,6 +164,7 @@
     "eslint-plugin-jest": "^25.3.4",
     "husky": "^4.3.7",
     "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2",
     "lint-staged": "^13.0.3",
     "prettier": "^2.5.1",
     "sass": "^1.52.1",
@@ -188,7 +189,18 @@
       "<rootDir>/src/graphql",
       "<rootDir>/src/generated",
       "<rootDir>/src/sentry"
-    ]
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(uuid|unified|react-markdown)/)"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.svg": "<rootDir>/tests/mocks/svgMock.tsx",
+      "^uuid$": "<rootDir>/node_modules/uuid/dist/index.js",
+      "^unified$": "<rootDir>/node_modules/unified/lib/index.js",
+      "^react-markdown$": "<rootDir>/node_modules/react-markdown/index.js",
+      "^./lib/uri-transformer.js$": "<rootDir>/node_modules/react-markdown/lib/uri-transformer.js"
+    },
+    "testEnvironment": "jsdom"
   },
   "babel": {
     "env": {
