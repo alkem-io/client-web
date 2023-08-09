@@ -9,6 +9,10 @@ query ChallengeInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challe
           id
           state
         }
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           id
           tagsets {
@@ -22,7 +26,7 @@ query ChallengeInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challe
   }
 }
 
-query OpportunityInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!,  $opportunityId: UUID_NAMEID!) {
+query OpportunityInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     opportunity(ID: $opportunityId) {
@@ -32,6 +36,10 @@ query OpportunityInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!,  $opp
         lifecycle {
           id
           state
+        }
+        authorization {
+          id
+          myPrivileges
         }
         profile {
           id
