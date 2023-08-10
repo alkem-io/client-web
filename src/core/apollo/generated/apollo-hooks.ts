@@ -612,6 +612,13 @@ export const OpportunityPageFragmentDoc = gql`
     }
     collaboration {
       id
+      timeline {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
       relations {
         id
         type
@@ -3286,6 +3293,25 @@ export const CalendarEventInfoFragmentDoc = gql`
     }
   }
   ${EventProfileFragmentDoc}
+`;
+export const CollaborationTimelineInfoFragmentDoc = gql`
+  fragment CollaborationTimelineInfo on Collaboration {
+    id
+    timeline {
+      id
+      calendar {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        events(limit: $limit) {
+          ...CalendarEventInfo
+        }
+      }
+    }
+  }
+  ${CalendarEventInfoFragmentDoc}
 `;
 export const CalendarEventDetailsFragmentDoc = gql`
   fragment CalendarEventDetails on CalendarEvent {
@@ -23505,19 +23531,11 @@ export const SpaceDashboardCalendarEventsDocument = gql`
     space(ID: $spaceId) {
       id
       collaboration {
-        timeline {
-          id
-          calendar {
-            id
-            events(limit: $limit) {
-              ...CalendarEventInfo
-            }
-          }
-        }
+        ...CollaborationTimelineInfo
       }
     }
   }
-  ${CalendarEventInfoFragmentDoc}
+  ${CollaborationTimelineInfoFragmentDoc}
 `;
 
 /**
@@ -23584,20 +23602,12 @@ export const ChallengeDashboardCalendarEventsDocument = gql`
       challenge(ID: $challengeId) {
         id
         collaboration {
-          timeline {
-            id
-            calendar {
-              id
-              events(limit: $limit) {
-                ...CalendarEventInfo
-              }
-            }
-          }
+          ...CollaborationTimelineInfo
         }
       }
     }
   }
-  ${CalendarEventInfoFragmentDoc}
+  ${CollaborationTimelineInfoFragmentDoc}
 `;
 
 /**
@@ -23660,28 +23670,91 @@ export function refetchChallengeDashboardCalendarEventsQuery(
   return { query: ChallengeDashboardCalendarEventsDocument, variables: variables };
 }
 
-export const SpaceCalendarEventsDocument = gql`
-  query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
+export const OpportunityDashboardCalendarEventsDocument = gql`
+  query opportunityDashboardCalendarEvents($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $limit: Float) {
     space(ID: $spaceId) {
       id
-      collaboration {
-        timeline {
-          id
-          calendar {
-            id
-            authorization {
-              id
-              myPrivileges
-            }
-            events {
-              ...CalendarEventDetails
-            }
-          }
+      opportunity(ID: $opportunityId) {
+        id
+        collaboration {
+          ...CollaborationTimelineInfo
         }
       }
     }
   }
-  ${CalendarEventDetailsFragmentDoc}
+  ${CollaborationTimelineInfoFragmentDoc}
+`;
+
+/**
+ * __useOpportunityDashboardCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityDashboardCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityDashboardCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityDashboardCalendarEventsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      opportunityId: // value for 'opportunityId'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useOpportunityDashboardCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityDashboardCalendarEventsQuery,
+    SchemaTypes.OpportunityDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityDashboardCalendarEventsQuery,
+    SchemaTypes.OpportunityDashboardCalendarEventsQueryVariables
+  >(OpportunityDashboardCalendarEventsDocument, options);
+}
+
+export function useOpportunityDashboardCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityDashboardCalendarEventsQuery,
+    SchemaTypes.OpportunityDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityDashboardCalendarEventsQuery,
+    SchemaTypes.OpportunityDashboardCalendarEventsQueryVariables
+  >(OpportunityDashboardCalendarEventsDocument, options);
+}
+
+export type OpportunityDashboardCalendarEventsQueryHookResult = ReturnType<
+  typeof useOpportunityDashboardCalendarEventsQuery
+>;
+export type OpportunityDashboardCalendarEventsLazyQueryHookResult = ReturnType<
+  typeof useOpportunityDashboardCalendarEventsLazyQuery
+>;
+export type OpportunityDashboardCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityDashboardCalendarEventsQuery,
+  SchemaTypes.OpportunityDashboardCalendarEventsQueryVariables
+>;
+export function refetchOpportunityDashboardCalendarEventsQuery(
+  variables: SchemaTypes.OpportunityDashboardCalendarEventsQueryVariables
+) {
+  return { query: OpportunityDashboardCalendarEventsDocument, variables: variables };
+}
+
+export const SpaceCalendarEventsDocument = gql`
+  query spaceCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        ...CollaborationTimelineInfo
+      }
+    }
+  }
+  ${CollaborationTimelineInfoFragmentDoc}
 `;
 
 /**
@@ -23697,6 +23770,7 @@ export const SpaceCalendarEventsDocument = gql`
  * const { data, loading, error } = useSpaceCalendarEventsQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
@@ -23737,30 +23811,18 @@ export function refetchSpaceCalendarEventsQuery(variables: SchemaTypes.SpaceCale
 }
 
 export const ChallengeCalendarEventsDocument = gql`
-  query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $limit: Float) {
     space(ID: $spaceId) {
       id
       challenge(ID: $challengeId) {
         id
         collaboration {
-          timeline {
-            id
-            calendar {
-              id
-              authorization {
-                id
-                myPrivileges
-              }
-              events {
-                ...CalendarEventDetails
-              }
-            }
-          }
+          ...CollaborationTimelineInfo
         }
       }
     }
   }
-  ${CalendarEventDetailsFragmentDoc}
+  ${CollaborationTimelineInfoFragmentDoc}
 `;
 
 /**
@@ -23777,6 +23839,7 @@ export const ChallengeCalendarEventsDocument = gql`
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      challengeId: // value for 'challengeId'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
@@ -23814,6 +23877,75 @@ export type ChallengeCalendarEventsQueryResult = Apollo.QueryResult<
 >;
 export function refetchChallengeCalendarEventsQuery(variables: SchemaTypes.ChallengeCalendarEventsQueryVariables) {
   return { query: ChallengeCalendarEventsDocument, variables: variables };
+}
+
+export const OpportunityCalendarEventsDocument = gql`
+  query opportunityCalendarEvents($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $limit: Float) {
+    space(ID: $spaceId) {
+      id
+      opportunity(ID: $opportunityId) {
+        id
+        collaboration {
+          ...CollaborationTimelineInfo
+        }
+      }
+    }
+  }
+  ${CollaborationTimelineInfoFragmentDoc}
+`;
+
+/**
+ * __useOpportunityCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCalendarEventsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      opportunityId: // value for 'opportunityId'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useOpportunityCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityCalendarEventsQuery,
+    SchemaTypes.OpportunityCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityCalendarEventsQuery,
+    SchemaTypes.OpportunityCalendarEventsQueryVariables
+  >(OpportunityCalendarEventsDocument, options);
+}
+
+export function useOpportunityCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityCalendarEventsQuery,
+    SchemaTypes.OpportunityCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityCalendarEventsQuery,
+    SchemaTypes.OpportunityCalendarEventsQueryVariables
+  >(OpportunityCalendarEventsDocument, options);
+}
+
+export type OpportunityCalendarEventsQueryHookResult = ReturnType<typeof useOpportunityCalendarEventsQuery>;
+export type OpportunityCalendarEventsLazyQueryHookResult = ReturnType<typeof useOpportunityCalendarEventsLazyQuery>;
+export type OpportunityCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityCalendarEventsQuery,
+  SchemaTypes.OpportunityCalendarEventsQueryVariables
+>;
+export function refetchOpportunityCalendarEventsQuery(variables: SchemaTypes.OpportunityCalendarEventsQueryVariables) {
+  return { query: OpportunityCalendarEventsDocument, variables: variables };
 }
 
 export const CalendarEventDetailsDocument = gql`

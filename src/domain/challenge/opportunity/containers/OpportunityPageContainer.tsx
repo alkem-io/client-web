@@ -54,6 +54,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     communityReadAccess: boolean;
     opportunityReadAccess: boolean;
     readUsers: boolean;
+    timelineReadAccess: boolean;
   };
   hideMeme: boolean;
   showInterestModal: boolean;
@@ -123,7 +124,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const collaborationID = opportunity?.collaboration?.id;
   const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
-
+  const timelineReadAccess = (
+    query?.space.opportunity?.collaboration?.timeline?.authorization?.myPrivileges ?? []
+  ).includes(AuthorizationPrivilege.Read);
   const permissions = useMemo(() => {
     return {
       canEdit: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
@@ -135,6 +138,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       opportunityReadAccess: opportunityPrivileges?.includes(AuthorizationPrivilege.Read),
       readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
+      timelineReadAccess,
     };
   }, [opportunityPrivileges, communityPrivileges, user]);
 

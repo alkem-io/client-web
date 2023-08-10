@@ -7,6 +7,7 @@ import { groupBy, sortBy, times } from 'lodash';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import {
   useChallengeDashboardCalendarEventsQuery,
+  useOpportunityDashboardCalendarEventsQuery,
   useSpaceDashboardCalendarEventsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -58,10 +59,21 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
     skip: !journeyLocation || !journeyLocation.spaceNameId || !journeyLocation.challengeNameId,
   });
 
-  const activeResults = journeyLocation?.challengeNameId ? challengeResults : spaceResults;
+  const opportunityResults = useOpportunityDashboardCalendarEventsQuery({
+    variables: { spaceId: journeyLocation?.spaceNameId!, opportunityId: journeyLocation?.opportunityNameId! },
+    skip: !journeyLocation || !journeyLocation.spaceNameId || !journeyLocation.opportunityNameId,
+  });
+
+  const activeResults = journeyLocation?.opportunityNameId
+    ? opportunityResults
+    : journeyLocation?.challengeNameId
+    ? challengeResults
+    : spaceResults;
   const { data, loading } = activeResults;
   let collaboration;
-  if (journeyLocation?.challengeNameId) {
+  if (journeyLocation?.opportunityNameId) {
+    collaboration = opportunityResults.data?.space.opportunity?.collaboration;
+  } else if (journeyLocation?.challengeNameId) {
     collaboration = challengeResults.data?.space.challenge?.collaboration;
   } else {
     collaboration = spaceResults.data?.space.collaboration;

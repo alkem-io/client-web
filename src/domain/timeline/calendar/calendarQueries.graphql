@@ -2,15 +2,7 @@ query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
   space(ID: $spaceId) {
     id
     collaboration {
-      timeline {
-        id
-        calendar {
-          id
-          events(limit: $limit) {
-            ...CalendarEventInfo
-          }
-        }
-      }
+      ...CollaborationTimelineInfo
     }
   }
 }
@@ -21,15 +13,36 @@ query challengeDashboardCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUI
     challenge(ID: $challengeId) {
       id
       collaboration {
-        timeline {
-          id
-          calendar {
-            id
-            events(limit: $limit) {
-              ...CalendarEventInfo
-            }
-          }
-        }
+        ...CollaborationTimelineInfo
+      }
+    }
+  }
+}
+
+query opportunityDashboardCalendarEvents($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $limit: Float) {
+  space(ID: $spaceId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      collaboration {
+        ...CollaborationTimelineInfo
+      }
+    }
+  }
+}
+
+fragment CollaborationTimelineInfo on Collaboration {
+  id
+  timeline {
+    id
+    calendar {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      events(limit: $limit) {
+        ...CalendarEventInfo
       }
     }
   }
@@ -48,46 +61,34 @@ fragment CalendarEventInfo on CalendarEvent {
   }
 }
 
-query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
+query spaceCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
   space(ID: $spaceId) {
     id
     collaboration {
-      timeline {
-        id
-        calendar {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          events {
-            ...CalendarEventDetails
-          }
-        }
-      }
+      ...CollaborationTimelineInfo
     }
   }
 }
 
-query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $limit: Float) {
   space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {
       id
       collaboration {
-        timeline {
-          id
-          calendar {
-            id
-            authorization {
-              id
-              myPrivileges
-            }
-            events {
-              ...CalendarEventDetails
-            }
-          }
-        }
+        ...CollaborationTimelineInfo
+      }
+    }
+  }
+}
+
+query opportunityCalendarEvents($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $limit: Float) {
+  space(ID: $spaceId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      collaboration {
+        ...CollaborationTimelineInfo
       }
     }
   }

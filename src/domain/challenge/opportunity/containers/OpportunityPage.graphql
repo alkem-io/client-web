@@ -37,7 +37,7 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  innovationFlow{
+  innovationFlow {
     lifecycle {
       id
       machineDef
@@ -48,6 +48,13 @@ fragment OpportunityPage on Opportunity {
   }
   collaboration {
     id
+    timeline {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
     relations {
       id
       type

@@ -93,7 +93,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const timelineReadAccess = (
     _challenge?.space.challenge?.collaboration?.timeline?.authorization?.myPrivileges ?? []
-  ).some(x => x === AuthorizationPrivilege.Read);
+  ).includes(AuthorizationPrivilege.Read);
 
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),

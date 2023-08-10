@@ -1,10 +1,15 @@
 import React, { FC, useCallback } from 'react';
 import {
+  refetchChallengeCalendarEventsQuery,
+  refetchChallengeDashboardCalendarEventsQuery,
+  refetchOpportunityCalendarEventsQuery,
+  refetchOpportunityDashboardCalendarEventsQuery,
   refetchSpaceCalendarEventsQuery,
   refetchSpaceDashboardCalendarEventsQuery,
   useChallengeCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
+  useOpportunityCalendarEventsQuery,
   useSpaceCalendarEventsQuery,
   useUpdateCalendarEventMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -12,9 +17,11 @@ import {
   AuthorizationPrivilege,
   CalendarEvent,
   CalendarEventDetailsFragment,
+  Exact,
   Profile,
 } from '../../../core/apollo/generated/graphql-schema';
 import { StorageConfigContextProvider } from '../../platform/storage/StorageBucket/StorageConfigContext';
+import { DocumentNode } from 'graphql';
 
 export interface CalendarEventFormData
   extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
@@ -27,6 +34,7 @@ export interface CalendarEventFormData
 export interface CalendarEventsContainerProps {
   spaceId: string;
   challengeId: string | undefined;
+  opportunityId: string | undefined;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -62,21 +70,33 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spaceId, challengeId, children }) => {
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({
+  spaceId,
+  challengeId,
+  opportunityId,
+  children,
+}) => {
+  const opportunityResults = useOpportunityCalendarEventsQuery({
+    variables: { spaceId: spaceId!, opportunityId: opportunityId! },
+    skip: !opportunityId || !spaceId,
+  });
+
   const challengeResults = useChallengeCalendarEventsQuery({
     variables: { spaceId: spaceId!, challengeId: challengeId! },
-    skip: !challengeId || !spaceId,
+    skip: !!opportunityId || !challengeId || !spaceId,
   });
 
   const spaceResults = useSpaceCalendarEventsQuery({
     variables: { spaceId: spaceId! },
-    skip: !!challengeId || !spaceId,
+    skip: !!opportunityId || !!challengeId || !spaceId,
   });
 
-  const activeResults = challengeId ? challengeResults : spaceResults;
+  const activeResults = opportunityId ? opportunityResults : challengeId ? challengeResults : spaceResults;
   const { loading } = activeResults;
   let collaboration;
-  if (challengeId) {
+  if (opportunityId) {
+    collaboration = opportunityResults.data?.space.opportunity.collaboration;
+  } else if (challengeId) {
     collaboration = challengeResults.data?.space.challenge?.collaboration;
   } else {
     collaboration = spaceResults.data?.space.collaboration;
@@ -85,9 +105,9 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
   const myPrivileges = collaboration?.timeline?.calendar.authorization?.myPrivileges;
 
   const privileges = {
-    canCreateEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Create),
-    canEditEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Update),
-    canDeleteEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Delete),
+    canCreateEvents: (myPrivileges ?? []).includes(AuthorizationPrivilege.Create),
+    canEditEvents: (myPrivileges ?? []).includes(AuthorizationPrivilege.Update),
+    canDeleteEvents: (myPrivileges ?? []).includes(AuthorizationPrivilege.Delete),
   };
 
   const events = collaboration?.timeline?.calendar.events ?? [];
@@ -100,24 +120,32 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
 
   const [deleteCalendarEvent, { loading: deletingCalendarEvent }] = useDeleteCalendarEventMutation();
 
+  let refetchQueriesList: {
+    query: DocumentNode;
+    variables: Exact<{ spaceId: string; challengeId?: string; limit?: number | undefined }>;
+  }[] = [];
+
+  if (opportunityId) {
+    refetchQueriesList = [
+      refetchOpportunityCalendarEventsQuery({ spaceId, opportunityId }),
+      refetchOpportunityDashboardCalendarEventsQuery({ spaceId, opportunityId }),
+    ];
+  } else if (challengeId) {
+    refetchQueriesList = [
+      refetchChallengeCalendarEventsQuery({ spaceId, challengeId }),
+      refetchChallengeDashboardCalendarEventsQuery({ spaceId, challengeId }),
+    ];
+  } else {
+    refetchQueriesList = [
+      refetchSpaceCalendarEventsQuery({ spaceId }),
+      refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
+    ];
+  }
+
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {
       const { startDate, description, tags, references, displayName, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
-
-      // let refetchQueriesList = [];
-
-      // if (challengeId) {
-      //   refetchQueriesList = [
-      //     refetchChallengeCalendarEventsQuery({ spaceId, challengeId }),
-      //     refetchChallengeDashboardCalendarEventsQuery({ spaceId }),
-      //   ];
-      // } else {
-      //   refetchQueriesList = [
-      //     refetchSpaceCalendarEventsQuery({ spaceId }),
-      //     refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
-      //   ];
-      // }
 
       return createCalendarEvent({
         variables: {
@@ -132,10 +160,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
             },
           },
         },
-        refetchQueries: [
-          refetchSpaceCalendarEventsQuery({ spaceId }),
-          refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
-        ],
+        refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
       }).then(result => result.data?.createEventOnCalendar?.nameID);
     },
@@ -166,10 +191,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
             },
           },
         },
-        refetchQueries: [
-          refetchSpaceCalendarEventsQuery({ spaceId }),
-          refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
-        ],
+        refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
       }).then(result => result.data?.updateCalendarEvent?.nameID);
     },
@@ -184,10 +206,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
             ID: eventId,
           },
         },
-        refetchQueries: [
-          refetchSpaceCalendarEventsQuery({ spaceId }),
-          refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
-        ],
+        refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
       }).then(result => result.data?.deleteCalendarEvent?.nameID);
     },
