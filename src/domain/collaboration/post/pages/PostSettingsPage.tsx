@@ -15,7 +15,7 @@ import {
   Visual,
   VisualType,
 } from '../../../../core/apollo/generated/graphql-schema';
-import EditVisualsView from '../../../common/visual/views/EditVisualsView';
+import EditVisualsView from '../../../common/visual/EditVisuals/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
