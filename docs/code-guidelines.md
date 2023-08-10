@@ -27,7 +27,7 @@ Examples:
 
 > :warning: There can be exceptions to minimize pollution of top-level folders, e.g. instead of putting component common for all Journey types directly under `domain/Challenge`, a subfolder can be created such as `domain/Challenge/common`.
 
-> :information*source: If the file path contains a segment that is an entity **name**, such as `Challenge`, the segment should be in \_CamelCase*. If the segment denotes a component/utility **type**, it should be in _lowercase_: `ui/button`, `Challenge/pages`.
+> :information*source: If the file path contains a segment that is an entity **name**, such as `Challenge`, the segment should be in *CamelCase*. If the segment denotes a component/utility **type**, it should be in \_lowercase*: `ui/button`, `Challenge/pages`.
 
 > :warning: We shouldn't try to bring deep structures just to "initially create a proper order".
 > E.g.: instead of `Challenge/pages/ChallengeDashboard`, just use `Challenge/ChallengeDashboard`. If we are specific enough in domain-based structuring there shouldn't usually be too many files in any specific folder and hence no need for functional file separation.
