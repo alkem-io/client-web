@@ -9,7 +9,7 @@ import {
 import { useSpace } from '../../SpaceContext/useSpace';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { Box, Container } from '@mui/material';
-import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
+import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import { sortBy } from 'lodash';
 

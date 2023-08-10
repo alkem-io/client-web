@@ -1660,11 +1660,11 @@
         }
       }
     },
-    "visual-edit": {
+    "visualEdit": {
       "avatar": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "??",
+        "description2": "Usage: Journey card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "banner": {
@@ -1673,7 +1673,7 @@
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "banner-narrow": {
+      "bannerNarrow": {
         "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on cards",
