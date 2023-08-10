@@ -45,7 +45,7 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
   const myPrivileges = data?.lookup.innovationFlow?.authorization?.myPrivileges;
 
   const privileges = {
-    canUpdate: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.UpdateInnovationFlow),
+    canUpdate: (myPrivileges ?? []).includes(AuthorizationPrivilege.UpdateInnovationFlow),
   };
 
   let wiredSubmit;
