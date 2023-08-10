@@ -17,9 +17,9 @@ import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import SpaceSearchPage from '../pages/SpaceSearchPage';
-import SpaceCollaborationPage from '../SpaceCollaborationPage/SpaceCollaborationPage';
+import SpaceCalloutPage from '../SpaceCollaborationPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
-import KnowledgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
+import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 
 export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
@@ -41,10 +41,10 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
           <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
           <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
           <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />
-          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCollaborationPage />} />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCalloutPage />} />
           <Route
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-            element={<SpaceCollaborationPage>{props => <CalloutRoute {...props} />}</SpaceCollaborationPage>}
+            element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
           />
           <Route path={`${routes.Dashboard}/calendar`} element={<SpaceDashboardPage dialog="calendar" />} />
           <Route

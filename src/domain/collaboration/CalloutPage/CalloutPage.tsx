@@ -31,6 +31,15 @@ export interface LocationStateCachedCallout {
   [LocationStateKeyCachedCallout]?: TypedCallout;
 }
 
+/**
+ *
+ * @param journeyTypeName
+ * @param parentRoute
+ * @param renderPage - defines what page is to be rendered behind the Callout dialog
+ * @param children - Typical usage for the children fn is to render nested dialog/routes
+ *                   (such as routes for Post/Whiteboard dialogs).
+ * @constructor
+ */
 const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
   const { calloutNameId, spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 

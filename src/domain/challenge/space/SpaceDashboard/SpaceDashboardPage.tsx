@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildSpaceUrl } from '../../../../common/utils/urlBuilders';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
-import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
@@ -37,23 +36,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     throw new Error('Param :spaceNameId is missing');
   }
 
-  const {
-    groupedCallouts,
-    canCreateCallout,
-    calloutNames,
-    loading,
-    calloutsSortOrder,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-  } = useCallouts({
-    spaceNameId,
-    displayLocations: [
-      CalloutDisplayLocation.HomeTop,
-      CalloutDisplayLocation.HomeLeft,
-      CalloutDisplayLocation.HomeRight,
-    ],
-  });
-
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
     spaceId: spaceNameId,
   });
@@ -61,7 +43,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer>
-        {(entities, state) => (
+        {({ callouts, ...entities }, state) => (
           <>
             <SpaceDashboardView
               vision={entities.space?.context?.vision}
@@ -110,17 +92,17 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               journeyTypeName="space"
               childEntityTitle={t('common.challenges')}
               recommendations={
-                groupedCallouts[CalloutDisplayLocation.HomeTop] && (
+                callouts.groupedCallouts[CalloutDisplayLocation.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocation.HomeTop]}
+                    callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
-                    loading={loading}
+                    loading={callouts.loading}
                     journeyTypeName="space"
-                    sortOrder={calloutsSortOrder}
-                    calloutNames={calloutNames}
-                    onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                    onCalloutUpdate={refetchCallout}
+                    sortOrder={callouts.calloutsSortOrder}
+                    calloutNames={callouts.calloutNames}
+                    onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={callouts.refetchCallout}
                     displayLocation={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
@@ -129,29 +111,29 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               }
               childrenLeft={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+                  callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
                   spaceId={spaceNameId!}
-                  canCreateCallout={canCreateCallout}
-                  loading={loading}
+                  canCreateCallout={callouts.canCreateCallout}
+                  loading={callouts.loading}
                   journeyTypeName="space"
-                  sortOrder={calloutsSortOrder}
-                  calloutNames={calloutNames}
-                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={refetchCallout}
+                  sortOrder={callouts.calloutsSortOrder}
+                  calloutNames={callouts.calloutNames}
+                  onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={callouts.refetchCallout}
                   displayLocation={CalloutDisplayLocation.HomeLeft}
                 />
               }
               childrenRight={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocation.HomeRight]}
+                  callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
                   spaceId={spaceNameId!}
-                  canCreateCallout={canCreateCallout}
-                  loading={loading}
+                  canCreateCallout={callouts.canCreateCallout}
+                  loading={callouts.loading}
                   journeyTypeName="space"
-                  sortOrder={calloutsSortOrder}
-                  calloutNames={calloutNames}
-                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={refetchCallout}
+                  sortOrder={callouts.calloutsSortOrder}
+                  calloutNames={callouts.calloutNames}
+                  onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={callouts.refetchCallout}
                   displayLocation={CalloutDisplayLocation.HomeRight}
                 />
               }

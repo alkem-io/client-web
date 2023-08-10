@@ -11,7 +11,7 @@ import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHea
 import LinksList from '../../../core/ui/list/LinksList';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
-import useCallouts, { TypedCallout } from '../callout/useCallouts/useCallouts';
+import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
 import { useCalloutCreationWithPreviewImages } from '../callout/creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
@@ -24,6 +24,7 @@ import { CalloutDisplayLocation, CalloutVisibility } from '../../../core/apollo/
 import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creation-dialog/CalloutCreationDialog';
+import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -37,22 +38,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
-
-  const {
-    groupedCallouts,
-    canCreateCallout,
-    canReadCallout,
-    calloutNames,
-    loading,
-    calloutsSortOrder,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-  } = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
-    displayLocations: [CalloutDisplayLocation.Knowledge],
-  });
 
   const { t } = useTranslation();
 
@@ -97,65 +82,86 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
 
   return (
     <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
-      <MembershipBackdrop show={!loading && !canReadCallout} blockName={t(`common.${journeyTypeName}` as const)}>
-        <PageContent>
-          <PageContentColumn columns={4}>
-            <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
-            <PageContentBlock>
-              <PageContentBlockHeader
-                title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
-              />
-              <LinksList
-                items={groupedCallouts[CalloutDisplayLocation.Knowledge]?.map(callout => {
-                  const CalloutIcon = calloutIcons[callout.type];
-                  return {
-                    id: callout.id,
-                    title: buildCalloutTitle(callout),
-                    icon: <CalloutIcon />,
-                    uri: buildCalloutUrl(callout.nameID, {
-                      spaceNameId,
-                      challengeNameId,
-                      opportunityNameId,
-                    }),
-                  };
-                })}
-                emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                  entities: t('common.callouts'),
-                  parentEntity: t(`common.${journeyTypeName}` as const),
-                })}
-                loading={loading}
-              />
-            </PageContentBlock>
-          </PageContentColumn>
+      <KnowledgeBaseContainer
+        spaceNameId={spaceNameId}
+        challengeNameId={challengeNameId}
+        opportunityNameId={opportunityNameId}
+      >
+        {({
+          callouts: {
+            loading,
+            canReadCallout,
+            canCreateCallout,
+            groupedCallouts,
+            calloutsSortOrder,
+            calloutNames,
+            onCalloutsSortOrderUpdate,
+            refetchCallout,
+          },
+        }) => (
+          <>
+            <MembershipBackdrop show={!loading && !canReadCallout} blockName={t(`common.${journeyTypeName}` as const)}>
+              <PageContent>
+                <PageContentColumn columns={4}>
+                  <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
+                  <PageContentBlock>
+                    <PageContentBlockHeader
+                      title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
+                    />
+                    <LinksList
+                      items={groupedCallouts[CalloutDisplayLocation.Knowledge]?.map(callout => {
+                        const CalloutIcon = calloutIcons[callout.type];
+                        return {
+                          id: callout.id,
+                          title: buildCalloutTitle(callout),
+                          icon: <CalloutIcon />,
+                          uri: buildCalloutUrl(callout.nameID, {
+                            spaceNameId,
+                            challengeNameId,
+                            opportunityNameId,
+                          }),
+                        };
+                      })}
+                      emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
+                        entities: t('common.callouts'),
+                        parentEntity: t(`common.${journeyTypeName}` as const),
+                      })}
+                      loading={loading}
+                    />
+                  </PageContentBlock>
+                </PageContentColumn>
 
-          <PageContentColumn columns={8}>
-            <CalloutsGroupView
-              callouts={groupedCallouts[CalloutDisplayLocation.Knowledge]}
-              spaceId={spaceNameId!}
-              canCreateCallout={canCreateCallout}
-              loading={loading}
-              journeyTypeName={journeyTypeName}
-              sortOrder={calloutsSortOrder}
+                <PageContentColumn columns={8}>
+                  <CalloutsGroupView
+                    callouts={groupedCallouts[CalloutDisplayLocation.Knowledge]}
+                    spaceId={spaceNameId!}
+                    canCreateCallout={canCreateCallout}
+                    loading={loading}
+                    journeyTypeName={journeyTypeName}
+                    sortOrder={calloutsSortOrder}
+                    calloutNames={calloutNames}
+                    onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={refetchCallout}
+                    scrollToCallout={scrollToCallout}
+                    displayLocation={CalloutDisplayLocation.Knowledge}
+                  />
+                </PageContentColumn>
+              </PageContent>
+            </MembershipBackdrop>
+            <CalloutCreationDialog
+              open={isCalloutCreationDialogOpen}
+              onClose={handleCreateCalloutClosed}
+              onSaveAsDraft={handleCreateCallout}
+              onVisibilityChange={handleVisibilityChange}
+              isCreating={isCreating}
               calloutNames={calloutNames}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={refetchCallout}
-              scrollToCallout={scrollToCallout}
+              templates={templates}
               displayLocation={CalloutDisplayLocation.Knowledge}
+              journeyTypeName={journeyTypeName}
             />
-          </PageContentColumn>
-        </PageContent>
-      </MembershipBackdrop>
-      <CalloutCreationDialog
-        open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
-        onSaveAsDraft={handleCreateCallout}
-        onVisibilityChange={handleVisibilityChange}
-        isCreating={isCreating}
-        calloutNames={calloutNames}
-        templates={templates}
-        displayLocation={CalloutDisplayLocation.Knowledge}
-        journeyTypeName={journeyTypeName}
-      />
+          </>
+        )}
+      </KnowledgeBaseContainer>
     </PageLayout>
   );
 };

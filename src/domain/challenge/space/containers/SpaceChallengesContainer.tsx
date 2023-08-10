@@ -3,10 +3,12 @@ import React, { FC } from 'react';
 import useChallengeCreatedSubscription from '../hooks/useChallengeCreatedSubscription';
 import { useChallengeCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface ChallengesCardContainerEntities {
   challenges: ChallengeCardFragment[];
+  callouts: UseCalloutsProvided;
 }
 
 export interface ChallengesCardContainerActions {}
@@ -16,7 +18,7 @@ export interface ChallengesCardContainerState {
   error?: ApolloError;
 }
 
-export interface ChallengesCardContainerProps
+export interface SpaceChallengesContainerProps
   extends ContainerChildProps<
     ChallengesCardContainerEntities,
     ChallengesCardContainerActions,
@@ -25,7 +27,7 @@ export interface ChallengesCardContainerProps
   spaceNameId: string;
 }
 
-export const ChallengesCardContainer: FC<ChallengesCardContainerProps> = ({ spaceNameId, children }) => {
+export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ spaceNameId, children }) => {
   const { data, error, loading, subscribeToMore } = useChallengeCardsQuery({
     variables: { spaceId: spaceNameId },
     skip: !spaceNameId,
@@ -35,7 +37,12 @@ export const ChallengesCardContainer: FC<ChallengesCardContainerProps> = ({ spac
 
   const challenges = data?.space?.challenges ?? [];
 
-  return <>{children({ challenges }, { loading, error }, {})}</>;
+  const callouts = useCallouts({
+    spaceNameId,
+    displayLocations: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
+  });
+
+  return <>{children({ challenges, callouts }, { loading, error }, {})}</>;
 };
 
-export default ChallengesCardContainer;
+export default SpaceChallengesContainer;
