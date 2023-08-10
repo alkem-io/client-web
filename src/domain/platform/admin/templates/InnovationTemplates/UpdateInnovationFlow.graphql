@@ -1,0 +1,10 @@
+query innovationFlowAuthorization($innovationFlowId: UUID!) {
+  lookup {
+    innovationFlow(ID: $innovationFlowId) {
+      id
+      authorization {
+        myPrivileges
+      }
+    }
+  }
+}

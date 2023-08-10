@@ -1,13 +1,14 @@
 import React, { FC, useCallback, useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 import SelectInnovationFlowDialog, {
   InnovationFlowTemplate,
   SelectInnovationFlowFormValuesType,
 } from './SelectInnovationFlowDialog';
 import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDialog';
+import { useInnovationFlowAuthorizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 interface EditLifecycleProps {
   lifecycle: Lifecycle | undefined;
@@ -37,6 +38,15 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
   const innovationFlowTemplate = innovationFlowTemplates?.find(
     template => lifecycle && lifecycle.templateName && template.definition.includes(lifecycle.templateName)
   );
+  const { data } = useInnovationFlowAuthorizationQuery({
+    variables: { innovationFlowId: entityId! },
+    skip: !entityId,
+  });
+  const myPrivileges = data?.lookup.innovationFlow?.authorization?.myPrivileges;
+
+  const privileges = {
+    canUpdate: (myPrivileges ?? []).includes(AuthorizationPrivilege.UpdateInnovationFlow),
+  };
 
   let wiredSubmit;
 
@@ -67,7 +77,7 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
         </Typography>
       )}
       {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}
-      {nextEvents && (
+      {nextEvents && privileges.canUpdate && (
         <>
           <Grid container>
             <Grid item xs>

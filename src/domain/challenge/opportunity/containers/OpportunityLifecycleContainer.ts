@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import {
   useEventOnOpportunityMutation,
-  useOpportunityLifecycleQuery,
+  useOpportunityInnovationFlowQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Lifecycle } from '../../../../core/apollo/generated/graphql-schema';
 import {
@@ -25,7 +25,7 @@ const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
   opportunityNameId,
   ...rendered
 }) => {
-  const { data, loading } = useOpportunityLifecycleQuery({
+  const { data, loading } = useOpportunityInnovationFlowQuery({
     variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',

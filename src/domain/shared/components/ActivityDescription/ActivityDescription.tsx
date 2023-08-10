@@ -94,7 +94,7 @@ const ActivityDescription = ({
         i18nKey={i18nKey as any}
         {...props}
       />
-      {withLinkToParent && <Trans i18nKey="components.activity-log-view.parent-link" {...props} />}
+      {withLinkToParent && <Trans i18nKey="components.activity-log-view.parent-link" {...props} shouldUnescape />}
     </>
   );
 };

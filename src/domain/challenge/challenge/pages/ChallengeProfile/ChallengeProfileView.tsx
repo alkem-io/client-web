@@ -15,7 +15,7 @@ import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/components/composite/forms/ProfileForm';
-import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
+import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../core/apollo/generated/graphql-schema';

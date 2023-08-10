@@ -125,7 +125,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
                 <BlockSectionTitle>{t('components.visualSegment.banner')}</BlockSectionTitle>
                 <VisualUpload
                   visual={banner}
-                  altText={t('pages.visual-edit.banner.description', {
+                  altText={t('pages.visualEdit.banner.description', {
                     alternativeText: banner?.alternativeText,
                     interpolation: {
                       escapeValue: false,
