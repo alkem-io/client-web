@@ -63,6 +63,7 @@ const useInnovationFlowSettings = ({
       includeChallenge: isChallenge,
       includeOpportunity: !isChallenge,
     },
+    fetchPolicy: 'network-only',
     skip: !spaceNameId || (!challengeNameId && !opportunityNameId),
   });
 
