@@ -173,7 +173,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             memberUsersCount={memberUsersCount}
             memberOrganizations={memberOrganizations}
             memberOrganizationsCount={memberOrganizationsCount}
-          />
+          >
+            <SeeMore subject={t('common.contributors')} to={`${EntityPageSection.Dashboard}/contributors`} />
+          </EntityDashboardContributorsSection>
         )}
         {childrenLeft}
       </PageContentColumn>

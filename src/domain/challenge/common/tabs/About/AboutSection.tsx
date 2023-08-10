@@ -34,6 +34,8 @@ import DialogTitle from '../../../../../common/components/core/dialog/DialogTitl
 import useScrollToElement from '../../../../shared/utils/scroll/useScrollToElement';
 import { useChallenge } from '../../../challenge/hooks/useChallenge';
 import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
+import SeeMore from '../../../../../core/ui/content/SeeMore';
+import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -169,7 +171,9 @@ export const AboutSection: FC<AboutSectionProps> = ({
               memberUsersCount={memberUsersCount}
               memberOrganizations={memberOrganizations}
               memberOrganizationsCount={memberOrganizationsCount}
-            />
+            >
+              <SeeMore subject={t('common.contributors')} to={`${EntityPageSection.Dashboard}/contributors`} />
+            </EntityDashboardContributorsSection>
           )}
           {!communityReadAccess && (
             <PageContentBlock halfWidth>
