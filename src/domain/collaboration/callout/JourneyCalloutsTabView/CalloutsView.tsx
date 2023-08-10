@@ -9,7 +9,7 @@ import { Caption } from '../../../../core/ui/typography';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { compact } from 'lodash';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
-import UpdateOrder, { findTargetItemIndex, OrderUpdate } from '../../../../core/utils/UpdateOrder';
+import UpdateOrder, { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import CalloutView, { CalloutViewProps } from '../CalloutView/CalloutView';
 import { useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
@@ -19,6 +19,38 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import { gutters } from '../../../../core/ui/grid/utils';
+
+interface CalloutWithDisplayLocation {
+  id: string;
+  profile: {
+    displayLocationTagset?: {
+      tags?: string[];
+    };
+  };
+}
+/**
+ * Find the callout that we are moving in the list of all callouts loaded.
+ * Then see its position between the callouts in the same group.
+ * Find the previous or next callout in that group and return its Id
+ */
+const findTargetItem = (
+  position: 'prev' | 'next',
+  allCallouts: CalloutWithDisplayLocation[] | undefined,
+  id: string
+) => {
+  const group = allCallouts?.find(callout => callout.id === id)?.profile.displayLocationTagset?.tags?.[0];
+  const calloutsInGroup = allCallouts?.filter(c => c.profile.displayLocationTagset?.tags?.[0] === group);
+  const indexInGroup = calloutsInGroup?.findIndex(c => c.id === id) ?? -1;
+  if (!calloutsInGroup || indexInGroup === -1) {
+    throw new Error(`Can't find ${position} item`);
+  }
+  if (position === 'prev') {
+    return calloutsInGroup[indexInGroup - 1].id;
+  } else if (position === 'next') {
+    return calloutsInGroup[indexInGroup + 1].id;
+  }
+  throw new Error(`Can't find ${position} item`);
+};
 
 const CalloutsViewSkeleton = () => (
   <PageContentBlock>
@@ -85,11 +117,13 @@ const CalloutsView = ({
     // the moved one can be from another group. Such "moving" would not result in anything visible,
     // therefore on move up we must find the closest callout above that is from the same group.
     onMoveUp: updateOrder((nextIds, id) => {
-      const targetIndex = findTargetItemIndex('prev', callouts, nextIds, id);
+      const prevCalloutId = findTargetItem('prev', callouts, id);
+      const targetIndex = nextIds.findIndex(id => id === prevCalloutId); // no +1 to put it just before the previous callout
       return nextIds.splice(targetIndex, 0, id);
     }),
     onMoveDown: updateOrder((nextIds, id) => {
-      const targetIndex = findTargetItemIndex('next', callouts, nextIds, id);
+      const nextCalloutId = findTargetItem('next', callouts, id);
+      const targetIndex = nextIds.findIndex(id => id === nextCalloutId) + 1; // +1 to put it under the next callout
       return nextIds.splice(targetIndex, 0, id);
     }),
   };
