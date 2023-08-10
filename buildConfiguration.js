@@ -21,7 +21,7 @@ async function buildConfiguration() {
   console.info(`Building for : '${nodeEnv}'`);
 
   Object.keys(env).forEach(function (key) {
-    if (key.startsWith('REACT_APP')) {
+    if (key.startsWith('VITE')) {
       configuration[key] = env[key];
       console.info(`${key}: ${env[key]}`);
     }
