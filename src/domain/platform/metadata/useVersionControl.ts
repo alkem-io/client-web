@@ -8,7 +8,22 @@ interface ReleaseNotificationData {
 
 const useVersionControl = () => {
   const currentClientVersion = process.env.REACT_APP_VERSION ?? '';
-  const [isCurrentVersionViewed, setCurrentVersionViewed] = useState(false);
+
+  const checkLastVersionViewed = () => {
+    const data = localStorage.getItem(LOCALSTORAGE_VERSIONCONTROL_KEY);
+    if (!data) {
+      return false;
+    }
+    try {
+      const { prevClientVersion } = JSON.parse(data) as ReleaseNotificationData;
+      if (prevClientVersion === currentClientVersion) {
+        return true;
+      }
+    } catch {}
+    return false;
+  };
+
+  const [isCurrentVersionViewed, setCurrentVersionViewed] = useState(() => checkLastVersionViewed());
 
   const saveCurrentVersionViewed = () => {
     const data: ReleaseNotificationData = {
@@ -19,23 +34,15 @@ const useVersionControl = () => {
   };
 
   useEffect(() => {
-    const data = localStorage.getItem(LOCALSTORAGE_VERSIONCONTROL_KEY);
-    if (!data) {
-      setCurrentVersionViewed(false);
-      return;
-    }
-    try {
-      const { prevClientVersion } = JSON.parse(data) as ReleaseNotificationData;
-      if (prevClientVersion === currentClientVersion) {
-        setCurrentVersionViewed(true);
-      } else {
-        setCurrentVersionViewed(false);
-      }
-    } catch {
-      setCurrentVersionViewed(false);
-      return;
-    }
-  }, [process.env.REACT_APP_VERSION]);
+    // Detect value changes on other tabs:
+    const onStorageChange = () => {
+      setCurrentVersionViewed(checkLastVersionViewed());
+    };
+    window.addEventListener('storage', onStorageChange);
+    return () => {
+      window.removeEventListener('storage', onStorageChange);
+    };
+  }, []);
 
   return {
     currentClientVersion,
