@@ -4,20 +4,39 @@ import ContributePage from '../../../collaboration/contribute/ContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
+import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
     case CalloutDisplayLocation.HomeTop:
+    case CalloutDisplayLocation.HomeLeft:
+    case CalloutDisplayLocation.HomeRight:
       return <OpportunityDashboardPage />;
+    case CalloutDisplayLocation.ContributeLeft:
+    case CalloutDisplayLocation.ContributeRight:
+      return <ContributePage journeyTypeName="opportunity" />;
     default:
       return <ContributePage journeyTypeName="opportunity" />;
   }
 };
 
-const OpportunityCollaborationPage = (props: CollaborationPageProps) => {
+const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
+  switch (calloutGroup) {
+    case CalloutDisplayLocation.HomeTop:
+    case CalloutDisplayLocation.HomeLeft:
+    case CalloutDisplayLocation.HomeRight:
+      return EntityPageSection.Dashboard;
+    case CalloutDisplayLocation.ContributeLeft:
+    case CalloutDisplayLocation.ContributeRight:
+      return EntityPageSection.Contribute;
+    default:
+      return EntityPageSection.Contribute;
+  }
+};
+
+const OpportunityCalloutPage = (props: JourneyCalloutDialogProps) => {
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   if (!spaceNameId || !challengeNameId || !opportunityNameId) {
@@ -25,15 +44,10 @@ const OpportunityCollaborationPage = (props: CollaborationPageProps) => {
   }
 
   const getPageRoute = (calloutGroup: string | undefined) => {
-    switch (calloutGroup) {
-      default:
-        return `${buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}/${
-          EntityPageSection.Contribute
-        }`;
-    }
+    return `${buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}/${getPageSection(calloutGroup)}`;
   };
 
   return <CalloutPage journeyTypeName="opportunity" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
-export default OpportunityCollaborationPage;
+export default OpportunityCalloutPage;

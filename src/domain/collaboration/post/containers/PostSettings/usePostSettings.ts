@@ -1,12 +1,11 @@
 import { ApolloError } from '@apollo/client';
-import { ContainerHook } from '../../../../../core/container/container';
 import { PushFunc, RemoveFunc, useEditReference } from '../../../../shared/Reference/useEditReference';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
   useChallengePostSettingsQuery,
   useDeletePostMutation,
-  useSpacePostSettingsQuery,
   useOpportunityPostSettingsQuery,
+  useSpacePostSettingsQuery,
   useUpdatePostMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -56,12 +55,15 @@ export interface PostSettingsContainerProps {
   calloutNameId: string;
 }
 
-const usePostSettings: ContainerHook<
-  PostSettingsContainerProps,
-  PostSettingsContainerEntities,
-  PostSettingsContainerActions,
-  PostSettingsContainerState
-> = ({ spaceNameId, postNameId, challengeNameId, opportunityNameId, calloutNameId }) => {
+const usePostSettings = ({
+  spaceNameId,
+  postNameId,
+  challengeNameId,
+  opportunityNameId,
+  calloutNameId,
+}: PostSettingsContainerProps): PostSettingsContainerEntities &
+  PostSettingsContainerActions &
+  PostSettingsContainerState => {
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
   const isPostDefined = postNameId && spaceNameId;
@@ -171,9 +173,18 @@ const usePostSettings: ContainerHook<
   };
 
   return {
-    entities: { post, postsNames: parentCalloutPostNames, parentCallout },
-    state: { loading, error, updating, deleting, updateError },
-    actions: { handleUpdate, handleAddReference, handleRemoveReference, handleDelete },
+    post,
+    postsNames: parentCalloutPostNames,
+    parentCallout,
+    loading,
+    error,
+    updating,
+    deleting,
+    updateError,
+    handleUpdate,
+    handleAddReference,
+    handleRemoveReference,
+    handleDelete,
   };
 };
 

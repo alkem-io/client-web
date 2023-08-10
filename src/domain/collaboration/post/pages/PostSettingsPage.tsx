@@ -57,7 +57,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
   const postIndex = resolved.pathname.indexOf('/posts');
   const contributeUrl = resolved.pathname.substring(0, postIndex);
 
-  const { entities, state, actions } = usePostSettings({
+  const postSettings = usePostSettings({
     postNameId,
     spaceNameId,
     challengeNameId,
@@ -67,17 +67,17 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const notify = useNotification();
 
-  const canMoveCard = entities.post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.MovePost);
+  const canMoveCard = postSettings.post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.MovePost);
 
   const [movePostToCallout, { loading: isMovingPost }] = useMovePostToCalloutMutation({});
 
-  const [targetCalloutId, setTargetCalloutId] = useState(entities.parentCallout?.id);
+  const [targetCalloutId, setTargetCalloutId] = useState(postSettings.parentCallout?.id);
 
   useEffect(() => {
-    setTargetCalloutId(entities.parentCallout?.id);
-  }, [entities.parentCallout]);
+    setTargetCalloutId(postSettings.parentCallout?.id);
+  }, [postSettings.parentCallout]);
 
-  const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== entities.parentCallout?.id;
+  const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== postSettings.parentCallout?.id;
 
   const { callouts, refetchCallouts } = useCallouts({
     spaceNameId,
@@ -89,26 +89,28 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
-  const visuals = (entities.post ? entities.post.profile.visuals : []) as Visual[];
-  const isPostLoaded = Boolean(post && entities.post && !state.updating && !state.deleting && !isMovingPost);
+  const visuals = (postSettings.post ? postSettings.post.profile.visuals : []) as Visual[];
+  const isPostLoaded = Boolean(
+    post && postSettings.post && !postSettings.updating && !postSettings.deleting && !isMovingPost
+  );
 
   const handleDelete = async () => {
-    if (!entities.post || !post) {
+    if (!postSettings.post || !post) {
       return;
     }
 
-    await actions.handleDelete(entities.post.id);
+    await postSettings.handleDelete(postSettings.post.id);
     navigate(contributeUrl);
   };
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
-    if (!entities.post || !post) {
+    if (!postSettings.post || !post) {
       return;
     }
 
     if (shouldUpdate) {
-      await actions.handleUpdate({
-        id: entities.post.id,
+      await postSettings.handleUpdate({
+        id: postSettings.post.id,
         displayName: post.displayName,
         type: post.type,
         description: post.description,
@@ -120,7 +122,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     if (isMoveEnabled) {
       const { data, errors } = await movePostToCallout({
         variables: {
-          postId: entities.post.id,
+          postId: postSettings.post.id,
           calloutId: targetCalloutId!, // ensured by isMoveEnabled
         },
       });
@@ -154,13 +156,13 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       >
         <PostForm
           edit
-          loading={state.loading || state.updating || isMovingPost}
-          post={toPostFormInput(entities.post)}
-          postNames={entities.postsNames}
+          loading={postSettings.loading || postSettings.updating || isMovingPost}
+          post={toPostFormInput(postSettings.post)}
+          postNames={postSettings.postsNames}
           onChange={setPost}
-          onAddReference={actions.handleAddReference}
-          onRemoveReference={actions.handleRemoveReference}
-          tags={entities.post?.profile.tagset?.tags}
+          onAddReference={postSettings.handleAddReference}
+          onRemoveReference={postSettings.handleRemoveReference}
+          tags={postSettings.post?.profile.tagset?.tags}
         >
           {({ isValid, dirty }) => {
             const canSave = isPostLoaded && dirty && isValid;

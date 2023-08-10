@@ -2,11 +2,13 @@ import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useOpportunityCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { OpportunityCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, OpportunityCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
+import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface OpportunityCardsContainerEntities {
   opportunities: OpportunityCardFragment[];
+  callouts: UseCalloutsProvided;
 }
 
 export interface OpportunityCardsContainerActions {}
@@ -16,7 +18,7 @@ export interface OpportunityCardsContainerState {
   error?: ApolloError;
 }
 
-export interface OpportunityCardsContainerProps
+export interface ChallengeOpportunitiesContainerProps
   extends ContainerChildProps<
     OpportunityCardsContainerEntities,
     OpportunityCardsContainerActions,
@@ -26,7 +28,7 @@ export interface OpportunityCardsContainerProps
   challengeNameId: string;
 }
 
-export const OpportunityCardsContainer: FC<OpportunityCardsContainerProps> = ({
+export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainerProps> = ({
   spaceNameId,
   challengeNameId,
   children,
@@ -45,11 +47,18 @@ export const OpportunityCardsContainer: FC<OpportunityCardsContainerProps> = ({
 
   useOpportunityCreatedSubscription(_challenge, data => data?.space?.challenge, subscribeToMore);
 
+  const callouts = useCallouts({
+    spaceNameId,
+    challengeNameId,
+    displayLocations: [CalloutDisplayLocation.OpportunitiesLeft, CalloutDisplayLocation.OpportunitiesRight],
+  });
+
   return (
     <>
       {children(
         {
           opportunities: _challenge?.space.challenge.opportunities ?? [],
+          callouts,
         },
         { loading },
         {}
@@ -58,4 +67,4 @@ export const OpportunityCardsContainer: FC<OpportunityCardsContainerProps> = ({
   );
 };
 
-export default OpportunityCardsContainer;
+export default ChallengeOpportunitiesContainer;
