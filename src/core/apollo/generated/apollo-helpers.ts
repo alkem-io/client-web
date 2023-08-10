@@ -642,6 +642,7 @@ export type CollaborationKeySpecifier = (
   | 'id'
   | 'relations'
   | 'tagsetTemplates'
+  | 'timeline'
   | CollaborationKeySpecifier
 )[];
 export type CollaborationFieldPolicy = {
@@ -650,6 +651,7 @@ export type CollaborationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  timeline?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
@@ -1183,6 +1185,8 @@ export type LocationFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupQueryResultsKeySpecifier = (
+  | 'calendar'
+  | 'calendarEvent'
   | 'callout'
   | 'collaboration'
   | 'community'
@@ -1197,6 +1201,8 @@ export type LookupQueryResultsKeySpecifier = (
   | LookupQueryResultsKeySpecifier
 )[];
 export type LookupQueryResultsFieldPolicy = {
+  calendar?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2242,7 +2248,6 @@ export type SpaceKeySpecifier = (
   | 'projects'
   | 'storageBucket'
   | 'templates'
-  | 'timeline'
   | 'visibility'
   | SpaceKeySpecifier
 )[];
@@ -2269,7 +2274,6 @@ export type SpaceFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
-  timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageBucketKeySpecifier = (

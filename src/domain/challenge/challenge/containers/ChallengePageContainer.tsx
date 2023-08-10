@@ -10,6 +10,7 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   AuthorizationPrivilege,
+  CalloutDisplayLocation,
   ChallengeProfileFragment,
   DashboardTopCalloutFragment,
   Reference,
@@ -25,8 +26,9 @@ import {
   getPostsFromPublishedCallouts,
   getWhiteboardsFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import {
+import useCallouts, {
   PostFragmentWithCallout,
+  UseCalloutsProvided,
   WhiteboardFragmentWithCallout,
 } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
@@ -56,6 +58,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  callouts: UseCalloutsProvided;
 }
 
 export interface ChallengeContainerActions {}
@@ -137,6 +140,16 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
+  const callouts = useCallouts({
+    spaceNameId,
+    challengeNameId,
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
+  });
+
   return (
     <>
       {children(
@@ -159,6 +172,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           activities,
           topCallouts,
           sendMessageToCommunityLeads,
+          callouts,
         },
         { loading: loading || loadingProfile || loadingSpaceContext, activityLoading },
         {}

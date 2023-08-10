@@ -885,6 +885,14 @@ export const SpacePageFragmentDoc = gql`
     }
     collaboration {
       ...DashboardTopCallouts
+      timeline {
+        id
+        authorization {
+          id
+          anonymousReadAccess
+          myPrivileges
+        }
+      }
     }
     community {
       ...EntityDashboardCommunity
@@ -896,14 +904,6 @@ export const SpacePageFragmentDoc = gql`
     }
     challenges(limit: 3, shuffle: true) {
       ...ChallengeCard
-    }
-    timeline {
-      id
-      authorization {
-        id
-        anonymousReadAccess
-        myPrivileges
-      }
     }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
@@ -4542,8 +4542,8 @@ export function refetchChallengeInfoQuery(variables: SchemaTypes.ChallengeInfoQu
   return { query: ChallengeInfoDocument, variables: variables };
 }
 
-export const ChallengeLifecycleDocument = gql`
-  query challengeLifecycle($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+export const ChallengeInnovationFlowDocument = gql`
+  query challengeInnovationFlow($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
       challenge(ID: $challengeId) {
@@ -4565,56 +4565,56 @@ export const ChallengeLifecycleDocument = gql`
 `;
 
 /**
- * __useChallengeLifecycleQuery__
+ * __useChallengeInnovationFlowQuery__
  *
- * To run a query within a React component, call `useChallengeLifecycleQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeLifecycleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useChallengeInnovationFlowQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeInnovationFlowQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeLifecycleQuery({
+ * const { data, loading, error } = useChallengeInnovationFlowQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
-export function useChallengeLifecycleQuery(
+export function useChallengeInnovationFlowQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeLifecycleQuery,
-    SchemaTypes.ChallengeLifecycleQueryVariables
+    SchemaTypes.ChallengeInnovationFlowQuery,
+    SchemaTypes.ChallengeInnovationFlowQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeLifecycleQuery, SchemaTypes.ChallengeLifecycleQueryVariables>(
-    ChallengeLifecycleDocument,
+  return Apollo.useQuery<SchemaTypes.ChallengeInnovationFlowQuery, SchemaTypes.ChallengeInnovationFlowQueryVariables>(
+    ChallengeInnovationFlowDocument,
     options
   );
 }
 
-export function useChallengeLifecycleLazyQuery(
+export function useChallengeInnovationFlowLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeLifecycleQuery,
-    SchemaTypes.ChallengeLifecycleQueryVariables
+    SchemaTypes.ChallengeInnovationFlowQuery,
+    SchemaTypes.ChallengeInnovationFlowQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeLifecycleQuery, SchemaTypes.ChallengeLifecycleQueryVariables>(
-    ChallengeLifecycleDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeInnovationFlowQuery,
+    SchemaTypes.ChallengeInnovationFlowQueryVariables
+  >(ChallengeInnovationFlowDocument, options);
 }
 
-export type ChallengeLifecycleQueryHookResult = ReturnType<typeof useChallengeLifecycleQuery>;
-export type ChallengeLifecycleLazyQueryHookResult = ReturnType<typeof useChallengeLifecycleLazyQuery>;
-export type ChallengeLifecycleQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeLifecycleQuery,
-  SchemaTypes.ChallengeLifecycleQueryVariables
+export type ChallengeInnovationFlowQueryHookResult = ReturnType<typeof useChallengeInnovationFlowQuery>;
+export type ChallengeInnovationFlowLazyQueryHookResult = ReturnType<typeof useChallengeInnovationFlowLazyQuery>;
+export type ChallengeInnovationFlowQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeInnovationFlowQuery,
+  SchemaTypes.ChallengeInnovationFlowQueryVariables
 >;
-export function refetchChallengeLifecycleQuery(variables: SchemaTypes.ChallengeLifecycleQueryVariables) {
-  return { query: ChallengeLifecycleDocument, variables: variables };
+export function refetchChallengeInnovationFlowQuery(variables: SchemaTypes.ChallengeInnovationFlowQueryVariables) {
+  return { query: ChallengeInnovationFlowDocument, variables: variables };
 }
 
 export const ChallengeNameDocument = gql`
@@ -6122,8 +6122,8 @@ export function refetchOpportunityCardsQuery(variables: SchemaTypes.OpportunityC
   return { query: OpportunityCardsDocument, variables: variables };
 }
 
-export const OpportunityLifecycleDocument = gql`
-  query opportunityLifecycle($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+export const OpportunityInnovationFlowDocument = gql`
+  query opportunityInnovationFlow($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
       opportunity(ID: $opportunityId) {
@@ -6145,56 +6145,56 @@ export const OpportunityLifecycleDocument = gql`
 `;
 
 /**
- * __useOpportunityLifecycleQuery__
+ * __useOpportunityInnovationFlowQuery__
  *
- * To run a query within a React component, call `useOpportunityLifecycleQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityLifecycleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useOpportunityInnovationFlowQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityInnovationFlowQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useOpportunityLifecycleQuery({
+ * const { data, loading, error } = useOpportunityInnovationFlowQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
  */
-export function useOpportunityLifecycleQuery(
+export function useOpportunityInnovationFlowQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityLifecycleQuery,
-    SchemaTypes.OpportunityLifecycleQueryVariables
+    SchemaTypes.OpportunityInnovationFlowQuery,
+    SchemaTypes.OpportunityInnovationFlowQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityLifecycleQuery, SchemaTypes.OpportunityLifecycleQueryVariables>(
-    OpportunityLifecycleDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityInnovationFlowQuery,
+    SchemaTypes.OpportunityInnovationFlowQueryVariables
+  >(OpportunityInnovationFlowDocument, options);
 }
 
-export function useOpportunityLifecycleLazyQuery(
+export function useOpportunityInnovationFlowLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityLifecycleQuery,
-    SchemaTypes.OpportunityLifecycleQueryVariables
+    SchemaTypes.OpportunityInnovationFlowQuery,
+    SchemaTypes.OpportunityInnovationFlowQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityLifecycleQuery, SchemaTypes.OpportunityLifecycleQueryVariables>(
-    OpportunityLifecycleDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityInnovationFlowQuery,
+    SchemaTypes.OpportunityInnovationFlowQueryVariables
+  >(OpportunityInnovationFlowDocument, options);
 }
 
-export type OpportunityLifecycleQueryHookResult = ReturnType<typeof useOpportunityLifecycleQuery>;
-export type OpportunityLifecycleLazyQueryHookResult = ReturnType<typeof useOpportunityLifecycleLazyQuery>;
-export type OpportunityLifecycleQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityLifecycleQuery,
-  SchemaTypes.OpportunityLifecycleQueryVariables
+export type OpportunityInnovationFlowQueryHookResult = ReturnType<typeof useOpportunityInnovationFlowQuery>;
+export type OpportunityInnovationFlowLazyQueryHookResult = ReturnType<typeof useOpportunityInnovationFlowLazyQuery>;
+export type OpportunityInnovationFlowQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityInnovationFlowQuery,
+  SchemaTypes.OpportunityInnovationFlowQueryVariables
 >;
-export function refetchOpportunityLifecycleQuery(variables: SchemaTypes.OpportunityLifecycleQueryVariables) {
-  return { query: OpportunityLifecycleDocument, variables: variables };
+export function refetchOpportunityInnovationFlowQuery(variables: SchemaTypes.OpportunityInnovationFlowQueryVariables) {
+  return { query: OpportunityInnovationFlowDocument, variables: variables };
 }
 
 export const OpportunityNameDocument = gql`
@@ -22114,6 +22114,73 @@ export type DeleteInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.DeleteInnovationFlowTemplateMutation,
   SchemaTypes.DeleteInnovationFlowTemplateMutationVariables
 >;
+export const InnovationFlowAuthorizationDocument = gql`
+  query innovationFlowAuthorization($innovationFlowId: UUID!) {
+    lookup {
+      innovationFlow(ID: $innovationFlowId) {
+        id
+        authorization {
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useInnovationFlowAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useInnovationFlowAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationFlowAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationFlowAuthorizationQuery({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *   },
+ * });
+ */
+export function useInnovationFlowAuthorizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >(InnovationFlowAuthorizationDocument, options);
+}
+
+export function useInnovationFlowAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >(InnovationFlowAuthorizationDocument, options);
+}
+
+export type InnovationFlowAuthorizationQueryHookResult = ReturnType<typeof useInnovationFlowAuthorizationQuery>;
+export type InnovationFlowAuthorizationLazyQueryHookResult = ReturnType<typeof useInnovationFlowAuthorizationLazyQuery>;
+export type InnovationFlowAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationFlowAuthorizationQuery,
+  SchemaTypes.InnovationFlowAuthorizationQueryVariables
+>;
+export function refetchInnovationFlowAuthorizationQuery(
+  variables: SchemaTypes.InnovationFlowAuthorizationQueryVariables
+) {
+  return { query: InnovationFlowAuthorizationDocument, variables: variables };
+}
+
 export const UpdatePostTemplateDocument = gql`
   mutation updatePostTemplate(
     $templateId: UUID!
@@ -23430,12 +23497,14 @@ export const SpaceDashboardCalendarEventsDocument = gql`
   query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
     space(ID: $spaceId) {
       id
-      timeline {
-        id
-        calendar {
+      collaboration {
+        timeline {
           id
-          events(limit: $limit) {
-            ...CalendarEventInfo
+          calendar {
+            id
+            events(limit: $limit) {
+              ...CalendarEventInfo
+            }
           }
         }
       }
@@ -23505,16 +23574,18 @@ export const SpaceCalendarEventsDocument = gql`
   query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      timeline {
-        id
-        calendar {
+      collaboration {
+        timeline {
           id
-          authorization {
+          calendar {
             id
-            myPrivileges
-          }
-          events {
-            ...CalendarEventDetails
+            authorization {
+              id
+              myPrivileges
+            }
+            events {
+              ...CalendarEventDetails
+            }
           }
         }
       }
@@ -23576,17 +23647,10 @@ export function refetchSpaceCalendarEventsQuery(variables: SchemaTypes.SpaceCale
 }
 
 export const CalendarEventDetailsDocument = gql`
-  query calendarEventDetails($spaceId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      timeline {
-        id
-        calendar {
-          id
-          event(ID: $eventId) {
-            ...CalendarEventDetails
-          }
-        }
+  query calendarEventDetails($eventId: UUID!) {
+    lookup {
+      calendarEvent(ID: $eventId) {
+        ...CalendarEventDetails
       }
     }
   }
@@ -23605,7 +23669,6 @@ export const CalendarEventDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useCalendarEventDetailsQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      eventId: // value for 'eventId'
  *   },
  * });

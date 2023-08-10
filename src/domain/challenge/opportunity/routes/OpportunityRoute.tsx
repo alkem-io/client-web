@@ -14,7 +14,7 @@ import OpportunityAboutPage from '../pages/OpportunityAboutPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import Redirect from '../../../../core/routing/Redirect';
-import OpportunityCollaborationPage from '../OpportunityCollaborationPage/OpportunityCollaborationPage';
+import OpportunityCalloutPage from '../OpportunityCollaborationPage/OpportunityCalloutPage';
 import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 
 interface OpportunityRootProps extends PageProps {}
@@ -51,15 +51,10 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
             element={<OpportunityDashboardPage dialog="contributors" />}
           />
           <Route path={routes.Contribute} element={<ContributePage journeyTypeName="opportunity" />} />
-          <Route
-            path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`}
-            element={<OpportunityCollaborationPage />}
-          />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<OpportunityCalloutPage />} />
           <Route
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-            element={
-              <OpportunityCollaborationPage>{props => <CalloutRoute {...props} />}</OpportunityCollaborationPage>
-            }
+            element={<OpportunityCalloutPage>{props => <CalloutRoute {...props} />}</OpportunityCalloutPage>}
           />
           <Route path={routes.About} element={<OpportunityAboutPage />} />
           <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
