@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
-  refetchOpportunityLifecycleQuery,
+  refetchOpportunityInnovationFlowQuery,
   useSpaceInnovationFlowTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateInnovationFlowLifecycleTemplateMutation,
@@ -33,7 +33,7 @@ const OpportunityInnovationFlowView: FC = () => {
   const innovationFlowID = opportunity?.innovationFlow?.id;
 
   const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowLifecycleTemplateMutation({
-    refetchQueries: [refetchOpportunityLifecycleQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [refetchOpportunityInnovationFlowQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
 

@@ -6421,12 +6421,12 @@ export type ChallengeInfoQuery = {
   };
 };
 
-export type ChallengeLifecycleQueryVariables = Exact<{
+export type ChallengeInnovationFlowQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeLifecycleQuery = {
+export type ChallengeInnovationFlowQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -8898,12 +8898,12 @@ export type OpportunityCardsQuery = {
   };
 };
 
-export type OpportunityLifecycleQueryVariables = Exact<{
+export type OpportunityInnovationFlowQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
-export type OpportunityLifecycleQuery = {
+export type OpportunityInnovationFlowQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -11181,9 +11181,6 @@ export type SpaceInnovationFlowTemplatesQuery = {
             definition: string;
             id: string;
             type: InnovationFlowType;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
