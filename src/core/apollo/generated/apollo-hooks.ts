@@ -7458,6 +7458,10 @@ export const SpaceInnovationFlowTemplatesDocument = gql`
       templates {
         id
         innovationFlowTemplates {
+          authorization {
+            id
+            myPrivileges
+          }
           definition
           id
           type
@@ -22114,6 +22118,73 @@ export type DeleteInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.DeleteInnovationFlowTemplateMutation,
   SchemaTypes.DeleteInnovationFlowTemplateMutationVariables
 >;
+export const InnovationFlowAuthorizationDocument = gql`
+  query innovationFlowAuthorization($innovationFlowId: UUID!) {
+    lookup {
+      innovationFlow(ID: $innovationFlowId) {
+        id
+        authorization {
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useInnovationFlowAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useInnovationFlowAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationFlowAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationFlowAuthorizationQuery({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *   },
+ * });
+ */
+export function useInnovationFlowAuthorizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >(InnovationFlowAuthorizationDocument, options);
+}
+
+export function useInnovationFlowAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationFlowAuthorizationQuery,
+    SchemaTypes.InnovationFlowAuthorizationQueryVariables
+  >(InnovationFlowAuthorizationDocument, options);
+}
+
+export type InnovationFlowAuthorizationQueryHookResult = ReturnType<typeof useInnovationFlowAuthorizationQuery>;
+export type InnovationFlowAuthorizationLazyQueryHookResult = ReturnType<typeof useInnovationFlowAuthorizationLazyQuery>;
+export type InnovationFlowAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationFlowAuthorizationQuery,
+  SchemaTypes.InnovationFlowAuthorizationQueryVariables
+>;
+export function refetchInnovationFlowAuthorizationQuery(
+  variables: SchemaTypes.InnovationFlowAuthorizationQueryVariables
+) {
+  return { query: InnovationFlowAuthorizationDocument, variables: variables };
+}
+
 export const UpdatePostTemplateDocument = gql`
   mutation updatePostTemplate(
     $templateId: UUID!

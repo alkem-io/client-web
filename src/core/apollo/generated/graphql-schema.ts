@@ -2021,6 +2021,8 @@ export type Location = {
 
 export type LookupQueryResults = {
   __typename?: 'LookupQueryResults';
+  /** Lookup the specified Calendar */
+  calendar?: Maybe<Calendar>;
   /** Lookup the specified CalendarEvent */
   calendarEvent?: Maybe<CalendarEvent>;
   /** Lookup the specified Callout */
@@ -2045,6 +2047,10 @@ export type LookupQueryResults = {
   whiteboard?: Maybe<Whiteboard>;
   /** Lookup the specified Whiteboard Template */
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
+};
+
+export type LookupQueryResultsCalendarArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCalendarEventArgs = {
@@ -11175,6 +11181,9 @@ export type SpaceInnovationFlowTemplatesQuery = {
             definition: string;
             id: string;
             type: InnovationFlowType;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
@@ -27155,6 +27164,26 @@ export type DeleteInnovationFlowTemplateMutationVariables = Exact<{
 export type DeleteInnovationFlowTemplateMutation = {
   __typename?: 'Mutation';
   deleteInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
+};
+
+export type InnovationFlowAuthorizationQueryVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+}>;
+
+export type InnovationFlowAuthorizationQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    innovationFlow?:
+      | {
+          __typename?: 'InnovationFlow';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type UpdatePostTemplateMutationVariables = Exact<{
