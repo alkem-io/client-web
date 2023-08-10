@@ -198,11 +198,11 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
               <Box>
                 <FormikInputField
                   title={t('common.description')}
-                  placeholder={t('pages.visual-edit.form.altText.placeholder')}
+                  placeholder={t('pages.visualEdit.form.altText.placeholder')}
                   name="altText"
                   withCounter
                   maxLength={ALT_TEXT_LENGTH}
-                  helpIconText={t('pages.visual-edit.form.altText.helpText')}
+                  helpIconText={t('pages.visualEdit.form.altText.helpText')}
                 />
               </Box>
               <Actions justifyContent="space-between">
