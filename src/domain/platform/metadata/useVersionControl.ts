@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const LOCALSTORATE_VERSIONCONTROL_KEY = 'releaseNotification';
+const LOCALSTORAGE_VERSIONCONTROL_KEY = 'releaseNotification';
 
 interface ReleaseNotificationData {
   prevClientVersion: string;
@@ -14,12 +14,12 @@ const useVersionControl = () => {
     const data: ReleaseNotificationData = {
       prevClientVersion: currentClientVersion,
     };
-    localStorage.setItem(LOCALSTORATE_VERSIONCONTROL_KEY, JSON.stringify(data));
+    localStorage.setItem(LOCALSTORAGE_VERSIONCONTROL_KEY, JSON.stringify(data));
     setCurrentVersionViewed(true);
   };
 
   useEffect(() => {
-    const data = localStorage.getItem(LOCALSTORATE_VERSIONCONTROL_KEY);
+    const data = localStorage.getItem(LOCALSTORAGE_VERSIONCONTROL_KEY);
     if (!data) {
       setCurrentVersionViewed(false);
       return;
