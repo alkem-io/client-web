@@ -123,7 +123,7 @@ const CalloutsView = ({
     }),
     onMoveDown: updateOrder((nextIds, id) => {
       const nextCalloutId = findTargetItem('next', callouts, id);
-      const targetIndex = nextIds.findIndex(id => id === nextCalloutId) + 1; // +1 to put it under the next callout
+      const targetIndex = nextIds.findIndex(id => id === nextCalloutId) + 1; // +1 to put it after the next callout
       return nextIds.splice(targetIndex, 0, id);
     }),
   };
