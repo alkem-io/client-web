@@ -5,7 +5,10 @@ import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { groupBy, sortBy, times } from 'lodash';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { useSpaceDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useChallengeDashboardCalendarEventsQuery,
+  useSpaceDashboardCalendarEventsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -45,14 +48,28 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const [isCalendarView, setCalendarView] = useState(false);
 
-  const { data, loading } = useSpaceDashboardCalendarEventsQuery({
+  const spaceResults = useSpaceDashboardCalendarEventsQuery({
     variables: { spaceId: journeyLocation?.spaceNameId! },
-    skip: !journeyLocation || !journeyLocation.spaceNameId,
+    skip: !journeyLocation || !journeyLocation.spaceNameId || !!journeyLocation.challengeNameId,
   });
+
+  const challengeResults = useChallengeDashboardCalendarEventsQuery({
+    variables: { spaceId: journeyLocation?.spaceNameId!, challengeId: journeyLocation?.challengeNameId! },
+    skip: !journeyLocation || !journeyLocation.spaceNameId || !journeyLocation.challengeNameId,
+  });
+
+  const activeResults = journeyLocation?.challengeNameId ? challengeResults : spaceResults;
+  const { data, loading } = activeResults;
+  let collaboration;
+  if (journeyLocation?.challengeNameId) {
+    collaboration = challengeResults.data?.space.challenge?.collaboration;
+  } else {
+    collaboration = spaceResults.data?.space.collaboration;
+  }
 
   // TODO: Move this to serverside
   const allEvents = useMemo(
-    () => sortBy(data?.space.collaboration?.timeline?.calendar.events ?? [], event => event.startDate),
+    () => sortBy(collaboration?.timeline?.calendar.events ?? [], event => event.startDate),
     [data]
   );
   const events = useMemo(() => {

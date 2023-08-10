@@ -15,6 +15,26 @@ query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
   }
 }
 
+query challengeDashboardCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $limit: Float) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      collaboration {
+        timeline {
+          id
+          calendar {
+            id
+            events(limit: $limit) {
+              ...CalendarEventInfo
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 fragment CalendarEventInfo on CalendarEvent {
   id
   nameID
@@ -42,6 +62,30 @@ query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
           }
           events {
             ...CalendarEventDetails
+          }
+        }
+      }
+    }
+  }
+}
+
+query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      collaboration {
+        timeline {
+          id
+          calendar {
+            id
+            authorization {
+              id
+              myPrivileges
+            }
+            events {
+              ...CalendarEventDetails
+            }
           }
         }
       }

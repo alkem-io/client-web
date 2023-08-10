@@ -50,6 +50,13 @@ fragment ChallengeProfile on Challenge {
     }
   }
   collaboration {
+    timeline {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
     ...DashboardTopCallouts
   }
   community {

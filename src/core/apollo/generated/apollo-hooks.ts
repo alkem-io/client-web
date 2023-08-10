@@ -401,6 +401,13 @@ export const ChallengeProfileFragmentDoc = gql`
       }
     }
     collaboration {
+      timeline {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
       ...DashboardTopCallouts
     }
     community {
@@ -23503,6 +23510,89 @@ export function refetchSpaceDashboardCalendarEventsQuery(
   return { query: SpaceDashboardCalendarEventsDocument, variables: variables };
 }
 
+export const ChallengeDashboardCalendarEventsDocument = gql`
+  query challengeDashboardCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $limit: Float) {
+    space(ID: $spaceId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        collaboration {
+          timeline {
+            id
+            calendar {
+              id
+              events(limit: $limit) {
+                ...CalendarEventInfo
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ${CalendarEventInfoFragmentDoc}
+`;
+
+/**
+ * __useChallengeDashboardCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useChallengeDashboardCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeDashboardCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeDashboardCalendarEventsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useChallengeDashboardCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeDashboardCalendarEventsQuery,
+    SchemaTypes.ChallengeDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeDashboardCalendarEventsQuery,
+    SchemaTypes.ChallengeDashboardCalendarEventsQueryVariables
+  >(ChallengeDashboardCalendarEventsDocument, options);
+}
+
+export function useChallengeDashboardCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeDashboardCalendarEventsQuery,
+    SchemaTypes.ChallengeDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeDashboardCalendarEventsQuery,
+    SchemaTypes.ChallengeDashboardCalendarEventsQueryVariables
+  >(ChallengeDashboardCalendarEventsDocument, options);
+}
+
+export type ChallengeDashboardCalendarEventsQueryHookResult = ReturnType<
+  typeof useChallengeDashboardCalendarEventsQuery
+>;
+export type ChallengeDashboardCalendarEventsLazyQueryHookResult = ReturnType<
+  typeof useChallengeDashboardCalendarEventsLazyQuery
+>;
+export type ChallengeDashboardCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeDashboardCalendarEventsQuery,
+  SchemaTypes.ChallengeDashboardCalendarEventsQueryVariables
+>;
+export function refetchChallengeDashboardCalendarEventsQuery(
+  variables: SchemaTypes.ChallengeDashboardCalendarEventsQueryVariables
+) {
+  return { query: ChallengeDashboardCalendarEventsDocument, variables: variables };
+}
+
 export const SpaceCalendarEventsDocument = gql`
   query spaceCalendarEvents($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -23577,6 +23667,86 @@ export type SpaceCalendarEventsQueryResult = Apollo.QueryResult<
 >;
 export function refetchSpaceCalendarEventsQuery(variables: SchemaTypes.SpaceCalendarEventsQueryVariables) {
   return { query: SpaceCalendarEventsDocument, variables: variables };
+}
+
+export const ChallengeCalendarEventsDocument = gql`
+  query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        collaboration {
+          timeline {
+            id
+            calendar {
+              id
+              authorization {
+                id
+                myPrivileges
+              }
+              events {
+                ...CalendarEventDetails
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ${CalendarEventDetailsFragmentDoc}
+`;
+
+/**
+ * __useChallengeCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useChallengeCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeCalendarEventsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeCalendarEventsQuery,
+    SchemaTypes.ChallengeCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeCalendarEventsQuery, SchemaTypes.ChallengeCalendarEventsQueryVariables>(
+    ChallengeCalendarEventsDocument,
+    options
+  );
+}
+
+export function useChallengeCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeCalendarEventsQuery,
+    SchemaTypes.ChallengeCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeCalendarEventsQuery,
+    SchemaTypes.ChallengeCalendarEventsQueryVariables
+  >(ChallengeCalendarEventsDocument, options);
+}
+
+export type ChallengeCalendarEventsQueryHookResult = ReturnType<typeof useChallengeCalendarEventsQuery>;
+export type ChallengeCalendarEventsLazyQueryHookResult = ReturnType<typeof useChallengeCalendarEventsLazyQuery>;
+export type ChallengeCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeCalendarEventsQuery,
+  SchemaTypes.ChallengeCalendarEventsQueryVariables
+>;
+export function refetchChallengeCalendarEventsQuery(variables: SchemaTypes.ChallengeCalendarEventsQueryVariables) {
+  return { query: ChallengeCalendarEventsDocument, variables: variables };
 }
 
 export const CalendarEventDetailsDocument = gql`

@@ -2,6 +2,7 @@ import React, { FC, useCallback } from 'react';
 import {
   refetchSpaceCalendarEventsQuery,
   refetchSpaceDashboardCalendarEventsQuery,
+  useChallengeCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
   useSpaceCalendarEventsQuery,
@@ -25,6 +26,7 @@ export interface CalendarEventFormData
 
 export interface CalendarEventsContainerProps {
   spaceId: string;
+  challengeId: string | undefined;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -60,12 +62,27 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spaceId, children }) => {
-  const { data, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: spaceId! },
-    skip: !spaceId,
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spaceId, challengeId, children }) => {
+  const challengeResults = useChallengeCalendarEventsQuery({
+    variables: { spaceId: spaceId!, challengeId: challengeId! },
+    skip: !challengeId || !spaceId,
   });
-  const myPrivileges = data?.space.collaboration?.timeline?.calendar.authorization?.myPrivileges;
+
+  const spaceResults = useSpaceCalendarEventsQuery({
+    variables: { spaceId: spaceId! },
+    skip: !!challengeId || !spaceId,
+  });
+
+  const activeResults = challengeId ? challengeResults : spaceResults;
+  const { loading } = activeResults;
+  let collaboration;
+  if (challengeId) {
+    collaboration = challengeResults.data?.space.challenge?.collaboration;
+  } else {
+    collaboration = spaceResults.data?.space.collaboration;
+  }
+
+  const myPrivileges = collaboration?.timeline?.calendar.authorization?.myPrivileges;
 
   const privileges = {
     canCreateEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Create),
@@ -73,9 +90,9 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
     canDeleteEvents: (myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Delete),
   };
 
-  const events = data?.space.collaboration?.timeline?.calendar.events ?? [];
+  const events = collaboration?.timeline?.calendar.events ?? [];
 
-  const calendarId = data?.space.collaboration?.timeline?.calendar.id;
+  const calendarId = collaboration?.timeline?.calendar.id;
 
   const [createCalendarEvent, { loading: creatingCalendarEvent }] = useCreateCalendarEventMutation();
 
@@ -87,6 +104,20 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ spac
     (event: CalendarEventFormData) => {
       const { startDate, description, tags, references, displayName, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
+
+      // let refetchQueriesList = [];
+
+      // if (challengeId) {
+      //   refetchQueriesList = [
+      //     refetchChallengeCalendarEventsQuery({ spaceId, challengeId }),
+      //     refetchChallengeDashboardCalendarEventsQuery({ spaceId }),
+      //   ];
+      // } else {
+      //   refetchQueriesList = [
+      //     refetchSpaceCalendarEventsQuery({ spaceId }),
+      //     refetchSpaceDashboardCalendarEventsQuery({ spaceId }),
+      //   ];
+      // }
 
       return createCalendarEvent({
         variables: {

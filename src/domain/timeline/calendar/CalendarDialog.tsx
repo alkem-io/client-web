@@ -29,10 +29,11 @@ export const HIGHLIGHT_PARAM_NAME = 'highlight';
 export interface CalendarDialogProps {
   open: boolean;
   spaceNameId: string | undefined;
+  challengeNameId?: string | undefined;
   onClose: () => void;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, spaceNameId, onClose }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({ open, spaceNameId, challengeNameId, onClose }) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useUrlParams();
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, spaceNameId, onClose })
     >
       {!spaceNameId && <Skeleton variant="rectangular" />}
       {spaceNameId && (
-        <CalendarEventsContainer spaceId={spaceNameId}>
+        <CalendarEventsContainer spaceId={spaceNameId} challengeId={challengeNameId}>
           {(
             { events, privileges },
             { createEvent, updateEvent, deleteEvent },
