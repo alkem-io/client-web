@@ -21,7 +21,7 @@ import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
-import ChallengeCollaborationPage from '../ChallengeCollaborationPage/ChallengeCollaborationPage';
+import ChallengeCalloutPage from '../ChallengeCollaborationPage/ChallengeCalloutPage';
 import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
 
 interface ChallengeRootProps extends PageProps {}
@@ -63,13 +63,10 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
           <Route path={routes.About} element={<ChallengeAboutPage />} />
           <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
-          <Route
-            path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`}
-            element={<ChallengeCollaborationPage />}
-          />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCalloutPage />} />
           <Route
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-            element={<ChallengeCollaborationPage>{props => <CalloutRoute {...props} />}</ChallengeCollaborationPage>}
+            element={<ChallengeCalloutPage>{props => <CalloutRoute {...props} />}</ChallengeCalloutPage>}
           />
         </Route>
         <Route

@@ -91,7 +91,7 @@ interface UseCalloutsParams extends OptionalCoreEntityIds {
   displayLocations?: CalloutDisplayLocation[];
 }
 
-interface UseCalloutsProvided {
+export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
   canCreateCallout: boolean;

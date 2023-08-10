@@ -2,12 +2,13 @@ import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpaceChallengesPage from '../pages/SpaceChallengesPage';
-import KnowedgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
+import KnowedgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildSpaceUrl } from '../../../../common/utils/urlBuilders';
-import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
+import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
@@ -32,12 +33,15 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <SpaceDashboardPage />;
     case CalloutDisplayLocation.ChallengesLeft:
       return <SpaceChallengesPage />;
+    case CalloutDisplayLocation.CommunityLeft:
+    case CalloutDisplayLocation.CommunityRight:
+      return <SpaceCommunityPage />;
     default:
       return <KnowedgeBasePage journeyTypeName="space" />;
   }
 };
 
-const SpaceCollaborationPage = (props: CollaborationPageProps) => {
+const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
   const { spaceNameId } = useUrlParams();
 
   if (!spaceNameId) {
@@ -51,4 +55,4 @@ const SpaceCollaborationPage = (props: CollaborationPageProps) => {
   return <CalloutPage journeyTypeName="space" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
-export default SpaceCollaborationPage;
+export default SpaceCalloutPage;

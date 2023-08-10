@@ -5,7 +5,7 @@ import { SettingsSection } from '../../../../platform/admin/layout/EntitySetting
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useSpace } from '../../SpaceContext/useSpace';
 
-const SpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, loading } = useSpace();
 
   if (!spaceId || loading) {
@@ -19,4 +19,4 @@ const SpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   );
 };
 
-export default SpaceCommunityPage;
+export default AdminSpaceCommunityPage;
