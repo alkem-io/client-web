@@ -6443,12 +6443,12 @@ export type ChallengeInfoQuery = {
   };
 };
 
-export type ChallengeLifecycleQueryVariables = Exact<{
+export type ChallengeInnovationFlowQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeLifecycleQuery = {
+export type ChallengeInnovationFlowQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -8920,12 +8920,12 @@ export type OpportunityCardsQuery = {
   };
 };
 
-export type OpportunityLifecycleQueryVariables = Exact<{
+export type OpportunityInnovationFlowQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
-export type OpportunityLifecycleQuery = {
+export type OpportunityInnovationFlowQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -27183,6 +27183,26 @@ export type DeleteInnovationFlowTemplateMutationVariables = Exact<{
 export type DeleteInnovationFlowTemplateMutation = {
   __typename?: 'Mutation';
   deleteInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
+};
+
+export type InnovationFlowAuthorizationQueryVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+}>;
+
+export type InnovationFlowAuthorizationQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    innovationFlow?:
+      | {
+          __typename?: 'InnovationFlow';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type UpdatePostTemplateMutationVariables = Exact<{

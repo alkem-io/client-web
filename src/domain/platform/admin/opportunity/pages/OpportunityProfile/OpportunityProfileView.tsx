@@ -14,7 +14,7 @@ import {
   useOpportunityProfileInfoQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToEdit';
-import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
+import EditVisualsView from '../../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import Gutters from '../../../../../../core/ui/grid/Gutters';
