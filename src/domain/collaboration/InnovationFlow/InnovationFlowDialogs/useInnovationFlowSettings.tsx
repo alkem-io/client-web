@@ -8,27 +8,12 @@ import {
   useUpdateInnovationFlowMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
-import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../InnovationFlowStates/useInnovationFlowStates';
 import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import { compact, uniq } from 'lodash';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
 interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
-
-const findFlowStateTagset = (tagsets: Tagset[] | undefined) =>
-  tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME);
-
-const findFlowState = (tagsets: Tagset[] | undefined) => {
-  const tagset = findFlowStateTagset(tagsets);
-  return tagset
-    ? {
-        tagsetId: tagset.id,
-        currentState: tagset.tags[0],
-        allowedValues: tagset.allowedValues,
-      }
-    : undefined;
-};
 
 export interface GrouppedCallout {
   id: string;
@@ -47,6 +32,16 @@ export interface GrouppedCallout {
       }
     | undefined;
 }
+
+const mapFlowState = (tagset: Tagset | undefined): GrouppedCallout['flowState'] => {
+  return tagset
+    ? {
+        tagsetId: tagset.id,
+        currentState: tagset.tags[0],
+        allowedValues: tagset.allowedValues,
+      }
+    : undefined;
+};
 
 const useInnovationFlowSettings = ({
   spaceNameId,
@@ -82,7 +77,7 @@ const useInnovationFlowSettings = ({
           type: callout.type,
           activity: callout.activity,
           sortOrder: callout.sortOrder,
-          flowState: findFlowState(callout.profile.tagsets),
+          flowState: mapFlowState(callout.profile.flowState),
         }))
         .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
     [collaboration?.callouts]
@@ -160,11 +155,12 @@ const useInnovationFlowSettings = ({
 
   const handleUpdateCalloutFlowState = async (calloutId: string, newState: string, insertIndex: number) => {
     const callout = collaboration?.callouts?.find(({ id }) => id === calloutId);
-    const flowStateTagset = callout && findFlowStateTagset(callout.profile.tagsets);
+    const flowStateTagset = callout?.profile.flowState;
     if (!collaboration || !callout || !flowStateTagset) {
       return;
     }
 
+    const flowStateTagsetId = flowStateTagset.id;
     const { optimisticSortOrder, sortedCalloutIds } = sortCallouts({
       callouts,
       movedCallout: { id: calloutId, newState, insertIndex },
@@ -173,7 +169,7 @@ const useInnovationFlowSettings = ({
     await updateCalloutFlowState({
       variables: {
         calloutId,
-        flowStateTagsetId: flowStateTagset?.id,
+        flowStateTagsetId,
         value: newState,
       },
       optimisticResponse: {
@@ -182,12 +178,10 @@ const useInnovationFlowSettings = ({
           sortOrder: optimisticSortOrder,
           profile: {
             ...callout.profile,
-            tagsets: [
-              {
-                ...flowStateTagset,
-                tags: [newState],
-              },
-            ],
+            flowState: {
+              ...flowStateTagset,
+              tags: [newState],
+            },
           },
         },
       },

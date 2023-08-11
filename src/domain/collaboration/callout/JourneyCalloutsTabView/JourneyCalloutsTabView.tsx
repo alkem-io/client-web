@@ -47,7 +47,6 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     canCreateCallout,
     calloutNames,
     loading,
-    calloutsSortOrder,
     onCalloutsSortOrderUpdate,
     refetchCallout,
   } = useCallouts({
@@ -108,7 +107,6 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               canCreateCallout={canCreateCallout}
               loading={loading}
               journeyTypeName={journeyTypeName}
-              sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
@@ -134,7 +132,6 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
               canCreateCallout={canCreateCallout}
               loading={loading}
               journeyTypeName={journeyTypeName}
-              sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}

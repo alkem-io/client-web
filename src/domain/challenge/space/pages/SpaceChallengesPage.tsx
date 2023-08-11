@@ -100,7 +100,6 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 journeyTypeName="space"
-                sortOrder={callouts.calloutsSortOrder}
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
@@ -114,7 +113,6 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 journeyTypeName="space"
-                sortOrder={callouts.calloutsSortOrder}
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
