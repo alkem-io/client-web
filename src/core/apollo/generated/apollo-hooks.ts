@@ -8395,9 +8395,8 @@ export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutationVariables
 >;
 export const ChallengeInnovationFlowStatesAllowedValuesDocument = gql`
-  query ChallengeInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
+  query ChallengeInnovationFlowStatesAllowedValues($challengeId: UUID!) {
+    lookup {
       challenge(ID: $challengeId) {
         id
         innovationFlow {
@@ -8436,7 +8435,6 @@ export const ChallengeInnovationFlowStatesAllowedValuesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeInnovationFlowStatesAllowedValuesQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -8484,9 +8482,8 @@ export function refetchChallengeInnovationFlowStatesAllowedValuesQuery(
 }
 
 export const OpportunityInnovationFlowStatesAllowedValuesDocument = gql`
-  query OpportunityInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
+  query OpportunityInnovationFlowStatesAllowedValues($opportunityId: UUID!) {
+    lookup {
       opportunity(ID: $opportunityId) {
         id
         innovationFlow {
@@ -8525,7 +8522,6 @@ export const OpportunityInnovationFlowStatesAllowedValuesDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityInnovationFlowStatesAllowedValuesQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -11824,14 +11820,8 @@ export function refetchChallengeWhiteboardFromCalloutQuery(
 }
 
 export const OpportunityWhiteboardFromCalloutDocument = gql`
-  query opportunityWhiteboardFromCallout(
-    $spaceId: UUID_NAMEID!
-    $opportunityId: UUID_NAMEID!
-    $calloutId: UUID_NAMEID!
-    $whiteboardId: UUID_NAMEID!
-  ) {
-    space(ID: $spaceId) {
-      id
+  query opportunityWhiteboardFromCallout($opportunityId: UUID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
+    lookup {
       opportunity(ID: $opportunityId) {
         id
         collaboration {
@@ -11855,7 +11845,6 @@ export const OpportunityWhiteboardFromCalloutDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityWhiteboardFromCalloutQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      opportunityId: // value for 'opportunityId'
  *      calloutId: // value for 'calloutId'
  *      whiteboardId: // value for 'whiteboardId'
@@ -11904,19 +11893,15 @@ export function refetchOpportunityWhiteboardFromCalloutQuery(
   return { query: OpportunityWhiteboardFromCalloutDocument, variables: variables };
 }
 
-export const SpaceTemplateWhiteboardValuesDocument = gql`
-  query spaceTemplateWhiteboardValues($spaceId: UUID_NAMEID!, $whiteboardId: UUID!) {
-    space(ID: $spaceId) {
-      id
-      templates {
+export const WhiteboardTemplateValueDocument = gql`
+  query whiteboardTemplateValue($whiteboardId: UUID!) {
+    lookup {
+      whiteboardTemplate(ID: $whiteboardId) {
         id
-        whiteboardTemplate(ID: $whiteboardId) {
-          id
-          profile {
-            ...WhiteboardProfile
-          }
-          value
+        profile {
+          ...WhiteboardProfile
         }
+        value
       }
     }
   }
@@ -11924,60 +11909,55 @@ export const SpaceTemplateWhiteboardValuesDocument = gql`
 `;
 
 /**
- * __useSpaceTemplateWhiteboardValuesQuery__
+ * __useWhiteboardTemplateValueQuery__
  *
- * To run a query within a React component, call `useSpaceTemplateWhiteboardValuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceTemplateWhiteboardValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useWhiteboardTemplateValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardTemplateValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceTemplateWhiteboardValuesQuery({
+ * const { data, loading, error } = useWhiteboardTemplateValueQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      whiteboardId: // value for 'whiteboardId'
  *   },
  * });
  */
-export function useSpaceTemplateWhiteboardValuesQuery(
+export function useWhiteboardTemplateValueQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceTemplateWhiteboardValuesQuery,
-    SchemaTypes.SpaceTemplateWhiteboardValuesQueryVariables
+    SchemaTypes.WhiteboardTemplateValueQuery,
+    SchemaTypes.WhiteboardTemplateValueQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceTemplateWhiteboardValuesQuery,
-    SchemaTypes.SpaceTemplateWhiteboardValuesQueryVariables
-  >(SpaceTemplateWhiteboardValuesDocument, options);
+  return Apollo.useQuery<SchemaTypes.WhiteboardTemplateValueQuery, SchemaTypes.WhiteboardTemplateValueQueryVariables>(
+    WhiteboardTemplateValueDocument,
+    options
+  );
 }
 
-export function useSpaceTemplateWhiteboardValuesLazyQuery(
+export function useWhiteboardTemplateValueLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceTemplateWhiteboardValuesQuery,
-    SchemaTypes.SpaceTemplateWhiteboardValuesQueryVariables
+    SchemaTypes.WhiteboardTemplateValueQuery,
+    SchemaTypes.WhiteboardTemplateValueQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.SpaceTemplateWhiteboardValuesQuery,
-    SchemaTypes.SpaceTemplateWhiteboardValuesQueryVariables
-  >(SpaceTemplateWhiteboardValuesDocument, options);
+    SchemaTypes.WhiteboardTemplateValueQuery,
+    SchemaTypes.WhiteboardTemplateValueQueryVariables
+  >(WhiteboardTemplateValueDocument, options);
 }
 
-export type SpaceTemplateWhiteboardValuesQueryHookResult = ReturnType<typeof useSpaceTemplateWhiteboardValuesQuery>;
-export type SpaceTemplateWhiteboardValuesLazyQueryHookResult = ReturnType<
-  typeof useSpaceTemplateWhiteboardValuesLazyQuery
+export type WhiteboardTemplateValueQueryHookResult = ReturnType<typeof useWhiteboardTemplateValueQuery>;
+export type WhiteboardTemplateValueLazyQueryHookResult = ReturnType<typeof useWhiteboardTemplateValueLazyQuery>;
+export type WhiteboardTemplateValueQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardTemplateValueQuery,
+  SchemaTypes.WhiteboardTemplateValueQueryVariables
 >;
-export type SpaceTemplateWhiteboardValuesQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceTemplateWhiteboardValuesQuery,
-  SchemaTypes.SpaceTemplateWhiteboardValuesQueryVariables
->;
-export function refetchSpaceTemplateWhiteboardValuesQuery(
-  variables: SchemaTypes.SpaceTemplateWhiteboardValuesQueryVariables
-) {
-  return { query: SpaceTemplateWhiteboardValuesDocument, variables: variables };
+export function refetchWhiteboardTemplateValueQuery(variables: SchemaTypes.WhiteboardTemplateValueQueryVariables) {
+  return { query: WhiteboardTemplateValueDocument, variables: variables };
 }
 
 export const PlatformTemplateWhiteboardValuesDocument = gql`
@@ -13716,9 +13696,8 @@ export function useRoomEventsSubscription(
 export type RoomEventsSubscriptionHookResult = ReturnType<typeof useRoomEventsSubscription>;
 export type RoomEventsSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.RoomEventsSubscription>;
 export const CommunityUpdatesDocument = gql`
-  query communityUpdates($spaceId: UUID_NAMEID!, $communityId: UUID!) {
-    space(ID: $spaceId) {
-      id
+  query communityUpdates($communityId: UUID!) {
+    lookup {
       community(ID: $communityId) {
         id
         displayName
@@ -13751,7 +13730,6 @@ export const CommunityUpdatesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityUpdatesQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -15105,9 +15083,8 @@ export function refetchChallengesWithCommunityQuery(variables: SchemaTypes.Chall
 }
 
 export const CommunityGroupsDocument = gql`
-  query communityGroups($spaceId: UUID_NAMEID!, $communityId: UUID!) {
-    space(ID: $spaceId) {
-      id
+  query communityGroups($communityId: UUID!) {
+    lookup {
       community(ID: $communityId) {
         id
         displayName
@@ -15132,7 +15109,6 @@ export const CommunityGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityGroupsQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -15168,9 +15144,8 @@ export function refetchCommunityGroupsQuery(variables: SchemaTypes.CommunityGrou
 }
 
 export const CommunityMembersDocument = gql`
-  query communityMembers($spaceId: UUID_NAMEID!, $communityId: UUID!) {
-    space(ID: $spaceId) {
-      id
+  query communityMembers($communityId: UUID!) {
+    lookup {
       community(ID: $communityId) {
         id
         memberUsers {
@@ -15194,7 +15169,6 @@ export const CommunityMembersDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityMembersQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      communityId: // value for 'communityId'
  *   },
  * });

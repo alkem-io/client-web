@@ -49,7 +49,7 @@ const useAllPossibleMemberUsers = (
     getPageInfo: data => data?.usersPaginated.pageInfo,
   });
 
-  const { spaceId, loading: loadingSpace } = useSpace();
+  const { loading: loadingSpace } = useSpace();
 
   const {
     data: _parentCommunityMembers,
@@ -58,15 +58,14 @@ const useAllPossibleMemberUsers = (
   } = useCommunityMembersQuery({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
-    skip: !spaceId || !parentCommunityId,
+    skip: !parentCommunityId,
     variables: {
-      spaceId,
       communityId: parentCommunityId!, // presence checked by skip condition
     },
   });
 
   const { data: filteredParentCommunityMembers, setSearchTerm: setParentCommunityMembersSearchTerm } = useLocalSearch({
-    data: _parentCommunityMembers?.space.community?.memberUsers,
+    data: _parentCommunityMembers?.lookup.community?.memberUsers,
     isMatch: (user, searchTerm) => user.profile.displayName.toLowerCase().includes(searchTerm.toLowerCase()),
   });
 
