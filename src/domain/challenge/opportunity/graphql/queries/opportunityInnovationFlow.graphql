@@ -1,9 +1,9 @@
-query challengeLifecycle($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query opportunityInnovationFlow($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    challenge(ID: $challengeId) {
+    opportunity(ID: $opportunityId) {
       id
-      innovationFlow{
+      innovationFlow {
         id
         lifecycle {
           id
