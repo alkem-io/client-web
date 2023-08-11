@@ -59,7 +59,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <PageContentBlock>
+      <PageContentBlock sx={{ minHeight: gutters(10) }}>
         <BlockTitle>{t('common.collaborationTools')}</BlockTitle>
         <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
           {flowStateAllowedValues.map(state => (
