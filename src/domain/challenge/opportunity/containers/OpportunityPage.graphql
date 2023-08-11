@@ -37,7 +37,7 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  innovationFlow{
+  innovationFlow {
     lifecycle {
       id
       machineDef
@@ -57,6 +57,7 @@ fragment OpportunityPage on Opportunity {
       description
     }
     ...DashboardTopCallouts
+    ...DashboardTimelineAuthorization
   }
   context {
     id
