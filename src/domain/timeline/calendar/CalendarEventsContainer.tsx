@@ -17,11 +17,10 @@ import {
   AuthorizationPrivilege,
   CalendarEvent,
   CalendarEventDetailsFragment,
-  Exact,
   Profile,
 } from '../../../core/apollo/generated/graphql-schema';
 import { StorageConfigContextProvider } from '../../platform/storage/StorageBucket/StorageConfigContext';
-import { DocumentNode } from 'graphql';
+import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
 
 export interface CalendarEventFormData
   extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
@@ -120,10 +119,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({
 
   const [deleteCalendarEvent, { loading: deletingCalendarEvent }] = useDeleteCalendarEventMutation();
 
-  let refetchQueriesList: {
-    query: DocumentNode;
-    variables: Exact<{ spaceId: string; challengeId?: string; limit?: number | undefined }>;
-  }[] = [];
+  let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
   if (opportunityId) {
     refetchQueriesList = [

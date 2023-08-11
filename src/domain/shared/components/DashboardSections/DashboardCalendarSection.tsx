@@ -51,7 +51,11 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const spaceResults = useSpaceDashboardCalendarEventsQuery({
     variables: { spaceId: journeyLocation?.spaceNameId! },
-    skip: !journeyLocation || !journeyLocation.spaceNameId || !!journeyLocation.challengeNameId,
+    skip:
+      !journeyLocation ||
+      !journeyLocation.spaceNameId ||
+      !!journeyLocation.challengeNameId ||
+      !!journeyLocation.opportunityNameId,
   });
 
   const challengeResults = useChallengeDashboardCalendarEventsQuery({
