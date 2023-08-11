@@ -16,14 +16,12 @@ const useVersionControl = () => {
     }
     try {
       const { prevClientVersion } = JSON.parse(data) as ReleaseNotificationData;
-      if (prevClientVersion === currentClientVersion) {
-        return true;
-      }
+      return prevClientVersion === currentClientVersion;
     } catch {}
     return false;
   };
 
-  const [isCurrentVersionViewed, setCurrentVersionViewed] = useState(() => checkLastVersionViewed());
+  const [isCurrentVersionViewed, setCurrentVersionViewed] = useState(checkLastVersionViewed);
 
   const saveCurrentVersionViewed = () => {
     const data: ReleaseNotificationData = {
