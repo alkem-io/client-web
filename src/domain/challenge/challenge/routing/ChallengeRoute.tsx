@@ -64,6 +64,12 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           <Route path={routes.About} element={<ChallengeAboutPage />} />
           <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCalloutPage />} />
+          <Route path={`${routes.Dashboard}/calendar`} element={<ChallengeDashboardPage dialog="calendar" />} />
+          <Route
+            path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
+            element={<ChallengeDashboardPage dialog="calendar" />}
+          />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCalloutPage />} />
           <Route
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
             element={<ChallengeCalloutPage>{props => <CalloutRoute {...props} />}</ChallengeCalloutPage>}

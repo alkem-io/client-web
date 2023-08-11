@@ -51,6 +51,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
     canEdit: boolean;
     communityReadAccess: boolean;
     challengeReadAccess: boolean;
+    timelineReadAccess: boolean;
     readUsers: boolean;
   };
   isAuthenticated: boolean;
@@ -90,12 +91,17 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const challengePrivileges = _challenge?.space?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
+  const timelineReadAccess = (
+    _challenge?.space.challenge?.collaboration?.timeline?.authorization?.myPrivileges ?? []
+  ).includes(AuthorizationPrivilege.Read);
+
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
     communityReadAccess: (_challenge?.space?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
     challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
+    timelineReadAccess,
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
