@@ -157,12 +157,22 @@ export const DashboardTopCalloutFragmentDoc = gql`
 `;
 export const DashboardTopCalloutsFragmentDoc = gql`
   fragment DashboardTopCallouts on Collaboration {
-    id
     callouts(sortByActivity: true) {
       ...DashboardTopCallout
     }
   }
   ${DashboardTopCalloutFragmentDoc}
+`;
+export const DashboardTimelineAuthorizationFragmentDoc = gql`
+  fragment DashboardTimelineAuthorization on Collaboration {
+    timeline {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
 `;
 export const VisualUriFragmentDoc = gql`
   fragment VisualUri on Visual {
@@ -401,14 +411,9 @@ export const ChallengeProfileFragmentDoc = gql`
       }
     }
     collaboration {
-      timeline {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
+      id
       ...DashboardTopCallouts
+      ...DashboardTimelineAuthorization
     }
     community {
       ...EntityDashboardCommunity
@@ -420,6 +425,7 @@ export const ChallengeProfileFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
+  ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
   ${OpportunityCardFragmentDoc}
 `;
@@ -612,13 +618,6 @@ export const OpportunityPageFragmentDoc = gql`
     }
     collaboration {
       id
-      timeline {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
       relations {
         id
         type
@@ -628,6 +627,7 @@ export const OpportunityPageFragmentDoc = gql`
         description
       }
       ...DashboardTopCallouts
+      ...DashboardTimelineAuthorization
     }
     context {
       id
@@ -645,6 +645,7 @@ export const OpportunityPageFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
+  ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
 `;
 export const OpportunityPageRelationsFragmentDoc = gql`
@@ -898,15 +899,9 @@ export const SpacePageFragmentDoc = gql`
       }
     }
     collaboration {
+      id
       ...DashboardTopCallouts
-      timeline {
-        id
-        authorization {
-          id
-          anonymousReadAccess
-          myPrivileges
-        }
-      }
+      ...DashboardTimelineAuthorization
     }
     community {
       ...EntityDashboardCommunity
@@ -925,6 +920,7 @@ export const SpacePageFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
+  ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;

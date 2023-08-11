@@ -5245,19 +5245,6 @@ export type ChallengePageQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            timeline?:
-              | {
-                  __typename?: 'Timeline';
-                  id: string;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
             callouts?:
               | Array<{
                   __typename?: 'Callout';
@@ -5422,6 +5409,19 @@ export type ChallengePageQuery = {
                       }>
                     | undefined;
                 }>
+              | undefined;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }
               | undefined;
           }
         | undefined;
@@ -5680,15 +5680,6 @@ export type ChallengeProfileFragment = {
     | {
         __typename?: 'Collaboration';
         id: string;
-        timeline?:
-          | {
-              __typename?: 'Timeline';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
         callouts?:
           | Array<{
               __typename?: 'Callout';
@@ -5844,6 +5835,15 @@ export type ChallengeProfileFragment = {
                   }>
                 | undefined;
             }>
+          | undefined;
+        timeline?:
+          | {
+              __typename?: 'Timeline';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       }
     | undefined;
@@ -7809,19 +7809,6 @@ export type OpportunityPageQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            timeline?:
-              | {
-                  __typename?: 'Timeline';
-                  id: string;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
             relations?:
               | Array<{
                   __typename?: 'Relation';
@@ -7997,6 +7984,19 @@ export type OpportunityPageQuery = {
                       }>
                     | undefined;
                 }>
+              | undefined;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }
               | undefined;
           }
         | undefined;
@@ -8174,15 +8174,6 @@ export type OpportunityPageFragment = {
     | {
         __typename?: 'Collaboration';
         id: string;
-        timeline?:
-          | {
-              __typename?: 'Timeline';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
         relations?:
           | Array<{
               __typename?: 'Relation';
@@ -8349,6 +8340,15 @@ export type OpportunityPageFragment = {
                   }>
                 | undefined;
             }>
+          | undefined;
+        timeline?:
+          | {
+              __typename?: 'Timeline';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       }
     | undefined;
@@ -9583,20 +9583,6 @@ export type SpacePageQuery = {
       | {
           __typename?: 'Collaboration';
           id: string;
-          timeline?:
-            | {
-                __typename?: 'Timeline';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      anonymousReadAccess: boolean;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
           callouts?:
             | Array<{
                 __typename?: 'Callout';
@@ -9752,6 +9738,19 @@ export type SpacePageQuery = {
                     }>
                   | undefined;
               }>
+            | undefined;
+          timeline?:
+            | {
+                __typename?: 'Timeline';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
             | undefined;
         }
       | undefined;
@@ -9988,20 +9987,6 @@ export type SpacePageFragment = {
     | {
         __typename?: 'Collaboration';
         id: string;
-        timeline?:
-          | {
-              __typename?: 'Timeline';
-              id: string;
-              authorization?:
-                | {
-                    __typename?: 'Authorization';
-                    id: string;
-                    anonymousReadAccess: boolean;
-                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  }
-                | undefined;
-            }
-          | undefined;
         callouts?:
           | Array<{
               __typename?: 'Callout';
@@ -10157,6 +10142,15 @@ export type SpacePageFragment = {
                   }>
                 | undefined;
             }>
+          | undefined;
+        timeline?:
+          | {
+              __typename?: 'Timeline';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       }
     | undefined;
@@ -14614,7 +14608,6 @@ export type UpdateCalloutsSortOrderMutation = {
 
 export type DashboardTopCalloutsFragment = {
   __typename?: 'Collaboration';
-  id: string;
   callouts?:
     | Array<{
         __typename?: 'Callout';
@@ -28900,6 +28893,19 @@ export type CollaborationTimelineInfoFragment = {
               }>
             | undefined;
         };
+      }
+    | undefined;
+};
+
+export type DashboardTimelineAuthorizationFragment = {
+  __typename?: 'Collaboration';
+  timeline?:
+    | {
+        __typename?: 'Timeline';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
       }
     | undefined;
 };

@@ -48,6 +48,16 @@ fragment CollaborationTimelineInfo on Collaboration {
   }
 }
 
+fragment DashboardTimelineAuthorization on Collaboration {
+  timeline {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+}
+
 fragment CalendarEventInfo on CalendarEvent {
   id
   nameID

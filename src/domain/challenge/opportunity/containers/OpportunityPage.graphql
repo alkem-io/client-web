@@ -48,13 +48,6 @@ fragment OpportunityPage on Opportunity {
   }
   collaboration {
     id
-    timeline {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
     relations {
       id
       type
@@ -64,6 +57,7 @@ fragment OpportunityPage on Opportunity {
       description
     }
     ...DashboardTopCallouts
+    ...DashboardTimelineAuthorization
   }
   context {
     id
