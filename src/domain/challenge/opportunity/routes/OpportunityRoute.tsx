@@ -52,6 +52,11 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
           />
           <Route path={routes.Contribute} element={<ContributePage journeyTypeName="opportunity" />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<OpportunityCalloutPage />} />
+          <Route path={`${routes.Dashboard}/calendar`} element={<OpportunityDashboardPage dialog="calendar" />} />
+          <Route
+            path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
+            element={<OpportunityDashboardPage dialog="calendar" />}
+          />
           <Route
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
             element={<OpportunityCalloutPage>{props => <CalloutRoute {...props} />}</OpportunityCalloutPage>}

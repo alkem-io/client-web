@@ -16,9 +16,10 @@ import DashboardMemberIcon from '../../../community/membership/DashboardMemberIc
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 
 export interface OpportunityDashboardPageProps {
-  dialog?: 'updates' | 'contributors';
+  dialog?: 'updates' | 'contributors' | 'calendar';
 }
 
 const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog }) => {
@@ -59,6 +60,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               opportunityNameId={entities.opportunity?.nameID}
               communityId={entities.opportunity?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
+              timelineReadAccess={entities.permissions.timelineReadAccess}
               entityReadAccess={entities.permissions.opportunityReadAccess}
               readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
@@ -131,6 +133,14 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               onClose={backToDashboard}
               dialogContent={OpportunityContributorsDialogContent}
             />
+            {entities.permissions.timelineReadAccess && (
+              <CalendarDialog
+                open={dialog === 'calendar'}
+                onClose={backToDashboard}
+                spaceNameId={spaceNameId}
+                opportunityNameId={entities.opportunity?.nameID}
+              />
+            )}
           </>
         )}
       </OpportunityPageContainer>
