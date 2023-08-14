@@ -51,14 +51,14 @@ A component should clearly belong to one of the following types:
 
 1. A View (dumb component), a function that receives props and returns a formatted result. It should never request the data by utilizing hooks etc. and should not render Containers. A View is unaware of how the App logic is organized or what context it's rendered in (e.g. test or prod environment). A View's props should be one of the following:
 
-   1.1. Data in the form of primitives, arrays and plain objects.
-   1.2. Callbacks to be attached as event handlers to the rendered elements.
-   1.3. Child elements (ReactElement, ReactNode) and child component implementations (ComponentType). Example: `{ listItemComponent: ComponentType<ItemProps> }` in a list component.
+   1. Data in the form of primitives, arrays and plain objects.
+   2. Callbacks to be attached as event handlers to the rendered elements.
+   3. Child elements (ReactElement, ReactNode) and child component implementations (ComponentType). Example: `{ listItemComponent: ComponentType<ItemProps> }` in a list component.
 
 2. A Controller (smart component), a component that does anything except data formatting/rendering:
-   2.1. Data fetching
-   2.2. Managing persistence in localStorage
-   2.3. Route matching
+   1. Data fetching
+   2. Managing persistence in localStorage
+   3. Route matching
 
 Views should not utilize React.Context much, except for some view-related utilities such as `useTranslation()` or `useColumns()`.
 
