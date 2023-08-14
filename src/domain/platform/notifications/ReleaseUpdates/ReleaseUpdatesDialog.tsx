@@ -4,28 +4,22 @@ import { BlockTitle } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import useVersionControl from '../../metadata/useVersionControl';
 
-interface ReleaseNotificationData {
-  prevClientVersion: string;
-}
 const Icon = props => <Box sx={{ display: 'inline', fontSize: '1.5em', marginRight: gutters(0.5) }} {...props} />;
 
-const PlatformUpdates: FC = () => {
+const ReleaseUpdatesDialog: FC = () => {
   const { t } = useTranslation();
-  const clientVersion = process.env.REACT_APP_VERSION || '';
   const theme = useTheme();
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);
+  const { isCurrentVersionViewed, saveCurrentVersionViewed } = useVersionControl();
 
   const handleCloseNotification = useCallback(() => {
-    const updatedReleaseNotificationData: ReleaseNotificationData = {
-      prevClientVersion: clientVersion,
-    };
-
     setIsNotificationVisible(false);
-    localStorage.setItem('releaseNotification', JSON.stringify(updatedReleaseNotificationData));
-  }, [setIsNotificationVisible, clientVersion]);
+    saveCurrentVersionViewed();
+  }, [setIsNotificationVisible]);
 
-  return (
+  return !isCurrentVersionViewed ? (
     <>
       {isNotificationVisible && (
         <Dialog open={isNotificationVisible} maxWidth="lg">
@@ -59,7 +53,7 @@ const PlatformUpdates: FC = () => {
         </Dialog>
       )}
     </>
-  );
+  ) : null;
 };
 
-export default PlatformUpdates;
+export default ReleaseUpdatesDialog;
