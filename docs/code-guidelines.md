@@ -127,7 +127,7 @@ We should avoid putting nested objects into props with the exception of view mod
 To simplify passing data into views, view models can have a similar structure to GraphQL models, but they should not be based on GraphQL definitions directly.
 It is important that only the values that are really consumed by a view are specified in its props.
 
-> :warning: Don't base View component props on GraphQL definitions. A _View_ should not have imports from `src/core/apollo`.
+> :warning: Don't base View component props on GraphQL definitions (see [Component Roles](#component-roles)). A _View_ should not have imports from `src/core/apollo`.
 > On the other hand, return types of _Containers/Hooks_ can (but not necessarily should) be based on GraphQL types.
 
 ### View models
