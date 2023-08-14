@@ -201,16 +201,16 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
 
   const calloutNames = useMemo(() => callouts?.map(c => c.profile.displayName) ?? [], [callouts]);
 
-  const sortedCallouts = useMemo(
-    () => callouts?.sort((a, b) => a.sortOrder - b.sortOrder),
-    [callouts]
-  );
+  const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
 
   const onCalloutsSortOrderUpdate = useCallback(
     (movedCalloutId: string) => {
-      const flowState = callouts?.find(callout => callout.id === movedCalloutId)?.flowStates?.[0] ?? '';
+      const flowState = callouts?.find(callout => callout.id === movedCalloutId)?.flowStates?.[0];
       const displayLocation = callouts?.find(callout => callout.id === movedCalloutId)?.displayLocation;
-      const relatedCallouts = callouts?.filter(callout => callout.flowStates?.includes(flowState) && callout.displayLocation === displayLocation);
+      const relatedCallouts = callouts?.filter(
+        callout =>
+          (!flowState || callout.flowStates?.includes(flowState)) && callout.displayLocation === displayLocation
+      );
       const relatedCalloutIds = relatedCallouts?.map(callout => callout.id) ?? [];
       return (update: OrderUpdate) => {
         const nextIds = update(relatedCalloutIds);
