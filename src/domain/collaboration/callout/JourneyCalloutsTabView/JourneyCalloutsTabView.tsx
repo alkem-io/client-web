@@ -14,10 +14,9 @@ import InnovationFlowStates, {
   InnovationFlowState,
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
-import { TypedCallout } from '../useCallouts/useCallouts';
+import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
-import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 
 interface JourneyCalloutsTabViewProps extends JourneyLocation {
   journeyTypeName: JourneyTypeName;
@@ -27,12 +26,11 @@ interface JourneyCalloutsTabViewProps extends JourneyLocation {
   canEditInnovationFlow: boolean | undefined;
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
-  calloutsSortOrder: string[];
   canCreateCallout: boolean;
   calloutNames: string[];
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
-  onCalloutsSortOrderUpdate: (update: OrderUpdate) => void;
+  onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
 }
 
 const JourneyCalloutsTabView = ({
@@ -46,7 +44,6 @@ const JourneyCalloutsTabView = ({
   canCreateCallout,
   calloutNames,
   loading,
-  calloutsSortOrder,
   onCalloutsSortOrderUpdate,
   refetchCallout,
   spaceNameId,
@@ -106,7 +103,6 @@ const JourneyCalloutsTabView = ({
               canCreateCallout={canCreateCallout}
               loading={loading}
               journeyTypeName={journeyTypeName}
-              sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
@@ -132,7 +128,6 @@ const JourneyCalloutsTabView = ({
               canCreateCallout={canCreateCallout}
               loading={loading}
               journeyTypeName={journeyTypeName}
-              sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
