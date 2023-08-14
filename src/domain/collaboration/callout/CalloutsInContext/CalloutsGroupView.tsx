@@ -1,15 +1,13 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '../../../../core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
-import {
-  useCalloutFormTemplatesFromSpaceLazyQuery,
-  useUpdateCalloutVisibilityMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { CalloutDisplayLocation, CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
+import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   spaceId: string;
@@ -36,6 +34,7 @@ const CalloutsGroupView = ({
     handleCreateCallout,
     isCreating,
   } = useCalloutCreationWithPreviewImages();
+  const { handleVisibilityChange } = useCalloutEdit();
 
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { spaceId: spaceId } });
@@ -48,25 +47,6 @@ const CalloutsGroupView = ({
     getTemplates();
     handleCreateCalloutOpened();
   };
-
-  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
-  const handleVisibilityChange = useCallback(
-    async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
-      await updateCalloutVisibility({
-        variables: {
-          calloutData: { calloutID: calloutId, visibility, sendNotification },
-        },
-        optimisticResponse: {
-          updateCalloutVisibility: {
-            __typename: 'Callout',
-            id: calloutId,
-            visibility,
-          },
-        },
-      });
-    },
-    [updateCalloutVisibility]
-  );
 
   const columns = useColumns();
 
