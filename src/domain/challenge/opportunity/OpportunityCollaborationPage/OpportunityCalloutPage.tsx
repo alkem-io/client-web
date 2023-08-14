@@ -1,6 +1,6 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
-import ContributePage from '../../../collaboration/contribute/ContributePage';
+import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
@@ -16,9 +16,9 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <OpportunityDashboardPage />;
     case CalloutDisplayLocation.ContributeLeft:
     case CalloutDisplayLocation.ContributeRight:
-      return <ContributePage journeyTypeName="opportunity" />;
+      return <JourneyContributePage journeyTypeName="opportunity" />;
     default:
-      return <ContributePage journeyTypeName="opportunity" />;
+      return <JourneyContributePage journeyTypeName="opportunity" />;
   }
 };
 
