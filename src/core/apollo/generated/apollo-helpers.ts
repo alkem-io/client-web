@@ -1185,14 +1185,18 @@ export type LocationFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupQueryResultsKeySpecifier = (
+  | 'application'
   | 'calendar'
   | 'calendarEvent'
   | 'callout'
+  | 'challenge'
   | 'collaboration'
   | 'community'
   | 'context'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
+  | 'invitation'
+  | 'opportunity'
   | 'post'
   | 'profile'
   | 'room'
@@ -1201,14 +1205,18 @@ export type LookupQueryResultsKeySpecifier = (
   | LookupQueryResultsKeySpecifier
 )[];
 export type LookupQueryResultsFieldPolicy = {
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
   calendar?: FieldPolicy<any> | FieldReadFunction<any>;
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2227,7 +2235,6 @@ export type ServiceMetadataFieldPolicy = {
 };
 export type SpaceKeySpecifier = (
   | 'agent'
-  | 'application'
   | 'authorization'
   | 'challenge'
   | 'challenges'
@@ -2253,7 +2260,6 @@ export type SpaceKeySpecifier = (
 )[];
 export type SpaceFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  application?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
