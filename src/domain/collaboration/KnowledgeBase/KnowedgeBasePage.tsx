@@ -75,6 +75,13 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
         variables: {
           calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
         },
+        optimisticResponse: {
+          updateCalloutVisibility: {
+            __typename: 'Callout',
+            id: calloutId,
+            visibility,
+          },
+        },
       });
     },
     [updateCalloutVisibility]
