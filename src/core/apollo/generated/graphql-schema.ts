@@ -1169,11 +1169,11 @@ export type ContributorFilterInput = {
 
 export type ContributorRoles = {
   __typename?: 'ContributorRoles';
-  /** Open applications for this contributor. */
-  applications?: Maybe<Array<ApplicationForRoleResult>>;
+  /** The applications for the specified user; only accessible for platform admins */
+  applications: Array<ApplicationForRoleResult>;
   id: Scalars['UUID'];
-  /** Open invitations for this contributor. */
-  invitations?: Maybe<Array<InvitationForRoleResult>>;
+  /** The invitations for the specified user; only accessible for platform admins */
+  invitations: Array<InvitationForRoleResult>;
   /** Details of the Organizations the User is a member of, with child memberships. */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships */
@@ -7337,6 +7337,24 @@ export type CreateFeedbackOnCommunityContextMutation = {
   createFeedbackOnCommunityContext: boolean;
 };
 
+export type JourneyIdentityQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  isChallenge?: InputMaybe<Scalars['Boolean']>;
+  isOpportunity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type JourneyIdentityQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    challenge?: { __typename?: 'Challenge'; id: string };
+    opportunity?: { __typename?: 'Opportunity'; id: string };
+  };
+};
+
 export type JourneyCommunityPrivilegesQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
   includeSpace?: InputMaybe<Scalars['Boolean']>;
@@ -12743,14 +12761,14 @@ export type UpdateCalloutFlowStateMutation = {
 };
 
 export type ChallengeInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
-  challengeId: Scalars['UUID'];
+  id: Scalars['UUID'];
 }>;
 
 export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    challenge?:
+    journey?:
       | {
           __typename?: 'Challenge';
           id: string;
@@ -12781,14 +12799,14 @@ export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
 };
 
 export type OpportunityInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
-  opportunityId: Scalars['UUID'];
+  id: Scalars['UUID'];
 }>;
 
 export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    opportunity?:
+    journey?:
       | {
           __typename?: 'Opportunity';
           id: string;
@@ -12815,6 +12833,20 @@ export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type JourneyInnovationFlowStatesAllowedValuesFragment = {
+  __typename?: 'InnovationFlow';
+  id: string;
+  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }> | undefined;
   };
 };
 

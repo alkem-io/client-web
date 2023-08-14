@@ -6,6 +6,7 @@ import {
   useSpaceInnovationFlowTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateInnovationFlowLifecycleTemplateMutation,
+  refetchInnovationFlowSettingsQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
@@ -33,7 +34,15 @@ const OpportunityInnovationFlowView: FC = () => {
   const innovationFlowID = opportunity?.innovationFlow?.id;
 
   const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowLifecycleTemplateMutation({
-    refetchQueries: [refetchOpportunityInnovationFlowQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [
+      refetchOpportunityInnovationFlowQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId }),
+      refetchInnovationFlowSettingsQuery({
+        spaceNameId,
+        opportunityNameId,
+        includeChallenge: false,
+        includeOpportunity: true,
+      }),
+    ],
     awaitRefetchQueries: true,
   });
 

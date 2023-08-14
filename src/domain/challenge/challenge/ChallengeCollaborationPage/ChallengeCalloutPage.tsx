@@ -1,6 +1,6 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
-import ContributePage from '../../../collaboration/contribute/ContributePage';
+import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
@@ -17,12 +17,12 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <ChallengeDashboardPage />;
     case CalloutDisplayLocation.ContributeLeft:
     case CalloutDisplayLocation.ContributeRight:
-      return <ContributePage journeyTypeName="challenge" />;
+      return <JourneyContributePage journeyTypeName="challenge" />;
     case CalloutDisplayLocation.OpportunitiesLeft:
     case CalloutDisplayLocation.OpportunitiesRight:
       return <ChallengeOpportunitiesPage />;
     default:
-      return <ContributePage journeyTypeName="challenge" />;
+      return <JourneyContributePage journeyTypeName="challenge" />;
   }
 };
 

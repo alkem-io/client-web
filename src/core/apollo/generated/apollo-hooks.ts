@@ -1202,6 +1202,27 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
+export const JourneyInnovationFlowStatesAllowedValuesFragmentDoc = gql`
+  fragment JourneyInnovationFlowStatesAllowedValues on InnovationFlow {
+    id
+    lifecycle {
+      id
+      state
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    profile {
+      id
+      tagsets {
+        id
+        name
+        allowedValues
+      }
+    }
+  }
+`;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     communityType
@@ -5324,6 +5345,76 @@ export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutatio
   SchemaTypes.CreateFeedbackOnCommunityContextMutation,
   SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
 >;
+export const JourneyIdentityDocument = gql`
+  query JourneyIdentity(
+    $spaceNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "_"
+    $opportunityNameId: UUID_NAMEID = "_"
+    $isChallenge: Boolean = false
+    $isOpportunity: Boolean = false
+  ) {
+    space(ID: $spaceNameId) {
+      id
+      challenge(ID: $challengeNameId) @include(if: $isChallenge) {
+        id
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useJourneyIdentityQuery__
+ *
+ * To run a query within a React component, call `useJourneyIdentityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyIdentityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyIdentityQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      isChallenge: // value for 'isChallenge'
+ *      isOpportunity: // value for 'isOpportunity'
+ *   },
+ * });
+ */
+export function useJourneyIdentityQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.JourneyIdentityQuery, SchemaTypes.JourneyIdentityQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.JourneyIdentityQuery, SchemaTypes.JourneyIdentityQueryVariables>(
+    JourneyIdentityDocument,
+    options
+  );
+}
+
+export function useJourneyIdentityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.JourneyIdentityQuery, SchemaTypes.JourneyIdentityQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.JourneyIdentityQuery, SchemaTypes.JourneyIdentityQueryVariables>(
+    JourneyIdentityDocument,
+    options
+  );
+}
+
+export type JourneyIdentityQueryHookResult = ReturnType<typeof useJourneyIdentityQuery>;
+export type JourneyIdentityLazyQueryHookResult = ReturnType<typeof useJourneyIdentityLazyQuery>;
+export type JourneyIdentityQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyIdentityQuery,
+  SchemaTypes.JourneyIdentityQueryVariables
+>;
+export function refetchJourneyIdentityQuery(variables: SchemaTypes.JourneyIdentityQueryVariables) {
+  return { query: JourneyIdentityDocument, variables: variables };
+}
+
 export const JourneyCommunityPrivilegesDocument = gql`
   query JourneyCommunityPrivileges(
     $spaceNameId: UUID_NAMEID!
@@ -8424,32 +8515,17 @@ export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutationVariables
 >;
 export const ChallengeInnovationFlowStatesAllowedValuesDocument = gql`
-  query ChallengeInnovationFlowStatesAllowedValues($challengeId: UUID!) {
+  query ChallengeInnovationFlowStatesAllowedValues($id: UUID!) {
     lookup {
-      challenge(ID: $challengeId) {
+      journey: challenge(ID: $id) {
         id
         innovationFlow {
-          id
-          lifecycle {
-            id
-            state
-          }
-          authorization {
-            id
-            myPrivileges
-          }
-          profile {
-            id
-            tagsets {
-              id
-              name
-              allowedValues
-            }
-          }
+          ...JourneyInnovationFlowStatesAllowedValues
         }
       }
     }
   }
+  ${JourneyInnovationFlowStatesAllowedValuesFragmentDoc}
 `;
 
 /**
@@ -8464,7 +8540,7 @@ export const ChallengeInnovationFlowStatesAllowedValuesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeInnovationFlowStatesAllowedValuesQuery({
  *   variables: {
- *      challengeId: // value for 'challengeId'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -8511,32 +8587,17 @@ export function refetchChallengeInnovationFlowStatesAllowedValuesQuery(
 }
 
 export const OpportunityInnovationFlowStatesAllowedValuesDocument = gql`
-  query OpportunityInnovationFlowStatesAllowedValues($opportunityId: UUID!) {
+  query OpportunityInnovationFlowStatesAllowedValues($id: UUID!) {
     lookup {
-      opportunity(ID: $opportunityId) {
+      journey: opportunity(ID: $id) {
         id
         innovationFlow {
-          id
-          lifecycle {
-            id
-            state
-          }
-          authorization {
-            id
-            myPrivileges
-          }
-          profile {
-            id
-            tagsets {
-              id
-              name
-              allowedValues
-            }
-          }
+          ...JourneyInnovationFlowStatesAllowedValues
         }
       }
     }
   }
+  ${JourneyInnovationFlowStatesAllowedValuesFragmentDoc}
 `;
 
 /**
@@ -8551,7 +8612,7 @@ export const OpportunityInnovationFlowStatesAllowedValuesDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityInnovationFlowStatesAllowedValuesQuery({
  *   variables: {
- *      opportunityId: // value for 'opportunityId'
+ *      id: // value for 'id'
  *   },
  * });
  */
