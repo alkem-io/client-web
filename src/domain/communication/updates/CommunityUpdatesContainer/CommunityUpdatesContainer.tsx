@@ -48,20 +48,19 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const { communityId, spaceId } = entities;
   const { data, loading } = useCommunityUpdatesQuery({
     variables: {
-      spaceId: spaceId!,
       communityId: communityId!,
     },
     skip: !spaceId || !communityId,
   });
-  useSubscribeOnRoomEvents(data?.space.community?.communication?.updates.id);
+  useSubscribeOnRoomEvents(data?.lookup.community?.communication?.updates.id);
 
-  const roomID = data?.space.community?.communication?.updates?.id;
+  const roomID = data?.lookup.community?.communication?.updates?.id;
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendMessageToRoomMutation({
     refetchQueries:
       isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !spaceId || !communityId
         ? []
-        : [refetchCommunityUpdatesQuery({ spaceId, communityId })],
+        : [refetchCommunityUpdatesQuery({ communityId })],
   });
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
@@ -86,7 +85,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       }
       const update = await removeUpdate({
         variables: { messageData: { messageID, roomID } },
-        refetchQueries: spaceId && communityId ? [refetchCommunityUpdatesQuery({ spaceId, communityId })] : [],
+        refetchQueries: spaceId && communityId ? [refetchCommunityUpdatesQuery({ communityId })] : [],
       });
       return update.data?.removeMessageOnRoom;
     },
@@ -96,7 +95,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const onLoadMore = () => {
     throw new Error('Not implemented');
   };
-  const messages = (data?.space.community?.communication?.updates?.messages as Message[]) || EMPTY;
+  const messages = (data?.lookup.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
   const authors: Author[] = [];
   for (const message of messages) {
