@@ -54,7 +54,14 @@ const CalloutsGroupView = ({
     async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
       await updateCalloutVisibility({
         variables: {
-          calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
+          calloutData: { calloutID: calloutId, visibility, sendNotification },
+        },
+        optimisticResponse: {
+          updateCalloutVisibility: {
+            __typename: 'Callout',
+            id: calloutId,
+            visibility,
+          },
         },
       });
     },
