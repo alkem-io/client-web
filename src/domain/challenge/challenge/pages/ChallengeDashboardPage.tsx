@@ -22,9 +22,10 @@ import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphq
 import { InfoOutlined } from '@mui/icons-material';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 
 export interface ChallengeDashboardPageProps {
-  dialog?: 'updates' | 'contributors';
+  dialog?: 'updates' | 'contributors' | 'calendar';
 }
 
 const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => {
@@ -79,6 +80,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               childEntities={entities.challenge?.opportunities ?? undefined}
               childEntitiesCount={entities.opportunitiesCount}
               communityReadAccess={entities.permissions.communityReadAccess}
+              timelineReadAccess={entities.permissions.timelineReadAccess}
               entityReadAccess={entities.permissions.challengeReadAccess}
               readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
@@ -167,6 +169,14 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               onClose={backToDashboard}
               dialogContent={ChallengeContributorsDialogContent}
             />
+            {entities.permissions.timelineReadAccess && (
+              <CalendarDialog
+                open={dialog === 'calendar'}
+                onClose={backToDashboard}
+                spaceNameId={spaceNameId}
+                challengeNameId={entities.challenge?.nameID}
+              />
+            )}
           </>
         )}
       </ChallengePageContainer>

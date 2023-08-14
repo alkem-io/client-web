@@ -1,5 +1,4 @@
 fragment DashboardTopCallouts on Collaboration {
-  id
   callouts(sortByActivity: true) {
     ...DashboardTopCallout
   }

@@ -50,7 +50,9 @@ fragment ChallengeProfile on Challenge {
     }
   }
   collaboration {
+    id
     ...DashboardTopCallouts
+    ...DashboardTimelineAuthorization
   }
   community {
     ...EntityDashboardCommunity
