@@ -145,7 +145,7 @@ interface CalloutsListViewProps {
 In this case `CalloutCardViewProps['callout']` becomes a view model that can be reused while keeping the reference to the view
 it's used in.
 
-If the number of props is too high for them to remain ungrouped, please group by domain, not per functional rote.
+If the number of props is too high for them to remain ungrouped, please group by domain, not per functional role.
 In this case it's both easier to directly pass hook exports as well as proxy those props to the child views.
 
 ```ts
