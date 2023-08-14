@@ -18,7 +18,7 @@ import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
-import ContributePage from '../../../collaboration/contribute/ContributePage';
+import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import ChallengeCalloutPage from '../ChallengeCollaborationPage/ChallengeCalloutPage';
@@ -60,7 +60,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
           <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
           <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
-          <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
+          <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="challenge" />} />
           <Route path={routes.About} element={<ChallengeAboutPage />} />
           <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCalloutPage />} />
