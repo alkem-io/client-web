@@ -3,7 +3,7 @@ import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
 import { Box, BoxProps, SvgIconProps } from '@mui/material';
-import { GrouppedCallout } from './useInnovationFlowSettings';
+import { GroupedCallout } from './useInnovationFlowSettings';
 import { groupBy } from 'lodash';
 import calloutIcons from '../../callout/utils/calloutIcons';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
@@ -14,7 +14,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
 
 interface InnovationFlowCollaborationToolsBlockProps {
-  callouts: GrouppedCallout[];
+  callouts: GroupedCallout[];
   flowStateAllowedValues: string[];
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
 }

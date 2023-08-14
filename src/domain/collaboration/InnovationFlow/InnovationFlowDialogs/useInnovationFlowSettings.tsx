@@ -15,7 +15,7 @@ import { useMemo } from 'react';
 
 interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
 
-export interface GrouppedCallout {
+export interface GroupedCallout {
   id: string;
   nameID: string;
   type: CalloutType;
@@ -33,7 +33,7 @@ export interface GrouppedCallout {
     | undefined;
 }
 
-const mapFlowState = (tagset: Tagset | undefined): GrouppedCallout['flowState'] => {
+const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] => {
   return tagset
     ? {
         tagsetId: tagset.id,
@@ -68,7 +68,7 @@ const useInnovationFlowSettings = ({
   const callouts = useMemo(
     () =>
       collaboration?.callouts
-        ?.map<GrouppedCallout>(callout => ({
+        ?.map<GroupedCallout>(callout => ({
           id: callout.id,
           nameID: callout.nameID,
           profile: {
