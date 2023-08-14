@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchChallengeInnovationFlowQuery,
+  refetchInnovationFlowSettingsQuery,
   useChallengeProfileInfoQuery,
   useSpaceInnovationFlowTemplatesQuery,
   useUpdateInnovationFlowLifecycleTemplateMutation,
@@ -32,7 +33,15 @@ const ChallengeInnovationFlowView: FC = () => {
   const innovationFlowID = challenge?.innovationFlow?.id;
 
   const [updateChallengeInnovationFlowTemplate] = useUpdateInnovationFlowLifecycleTemplateMutation({
-    refetchQueries: [refetchChallengeInnovationFlowQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
+    refetchQueries: [
+      refetchChallengeInnovationFlowQuery({ spaceId: spaceNameId, challengeId: challengeNameId }),
+      refetchInnovationFlowSettingsQuery({
+        spaceNameId,
+        challengeNameId,
+        includeChallenge: true,
+        includeOpportunity: false,
+      }),
+    ],
     awaitRefetchQueries: true,
   });
 
