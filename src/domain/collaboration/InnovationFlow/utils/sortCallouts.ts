@@ -33,16 +33,15 @@ export const sortCallouts = ({ callouts, movedCallout }: SortCalloutsParams): So
 
   const hasSiblings = !!calloutsByFlowState[newState];
 
-  const sortedCalloutIds = callouts.filter(callout => callout.flowState?.currentState === newState).map(({ id }) => id);
-
   if (!hasSiblings) {
     // If the Callout is the only one in the group, we don't really care about the sort order
     return {
       optimisticSortOrder: 0,
-      sortedCalloutIds,
+      sortedCalloutIds: [movedCallout.id],
     };
   }
 
+  const sortedCalloutIds = callouts.filter(callout => callout.flowState?.currentState === newState).map(({ id }) => id);
   const nextSibling = calloutsByFlowState[newState][insertIndex];
 
   pull(sortedCalloutIds, calloutId);
