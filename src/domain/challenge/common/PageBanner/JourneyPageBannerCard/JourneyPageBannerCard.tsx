@@ -77,9 +77,8 @@ const JourneyPageBannerCard = ({
           {parentJourneys.map((parentJourney, index) => {
             const ParentJourneyIcon = journeyIcon[parentJourney.journeyTypeName];
             return (
-              <>
+              <React.Fragment key={index}>
                 <RouterLink
-                  key={index}
                   to={buildJourneyUrl(parentJourney.journeyLocation) ?? ''}
                   style={{ marginLeft: gutters(0.5)(theme) }}
                 >
@@ -99,7 +98,7 @@ const JourneyPageBannerCard = ({
                     sx={{ marginLeft: gutters(0.5), verticalAlign: 'bottom' }}
                   />
                 )}
-              </>
+              </React.Fragment>
             );
           })}
         </CardText>
