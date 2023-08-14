@@ -6,7 +6,7 @@ enum FlowStates {
   B = 'B',
   C = 'C',
 }
-//
+
 const callouts: SortCalloutsParams['callouts'] = [
   { id: '1', sortOrder: 1, flowState: { currentState: FlowStates.A } },
   { id: '2', sortOrder: 5, flowState: { currentState: FlowStates.A } },
