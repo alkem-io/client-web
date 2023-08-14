@@ -16,7 +16,6 @@ interface UseInnovationFlowStatesProvided {
 }
 
 const useInnovationFlowStates = ({
-  spaceId,
   challengeId,
   opportunityId,
 }: UseInnovationFlowStatesParams): UseInnovationFlowStatesProvided => {
@@ -28,7 +27,6 @@ const useInnovationFlowStates = ({
   const skipChallenge: boolean = !(challengeId && !opportunityId);
   const challengeFlowStates = useChallengeInnovationFlowStatesAllowedValuesQuery({
     variables: {
-      spaceId,
       challengeId: challengeId!,
     },
     skip: skipChallenge,
@@ -36,7 +34,6 @@ const useInnovationFlowStates = ({
 
   const opportunityFlowStates = useOpportunityInnovationFlowStatesAllowedValuesQuery({
     variables: {
-      spaceId,
       opportunityId: opportunityId!,
     },
     skip: !opportunityId,

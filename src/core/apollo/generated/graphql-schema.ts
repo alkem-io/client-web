@@ -2021,12 +2021,16 @@ export type Location = {
 
 export type LookupQueryResults = {
   __typename?: 'LookupQueryResults';
+  /** Lookup the specified Application */
+  application?: Maybe<Application>;
   /** Lookup the specified Calendar */
   calendar?: Maybe<Calendar>;
   /** Lookup the specified CalendarEvent */
   calendarEvent?: Maybe<CalendarEvent>;
   /** Lookup the specified Callout */
   callout?: Maybe<Callout>;
+  /** Lookup the specified Challenge */
+  challenge?: Maybe<Challenge>;
   /** Lookup the specified Collaboration */
   collaboration?: Maybe<Collaboration>;
   /** Lookup the specified Community */
@@ -2037,6 +2041,10 @@ export type LookupQueryResults = {
   innovationFlow?: Maybe<InnovationFlow>;
   /** Lookup the specified InnovationFlow Template */
   innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
+  /** Lookup the specified Invitation */
+  invitation?: Maybe<Invitation>;
+  /** Lookup the specified Opportunity */
+  opportunity?: Maybe<Opportunity>;
   /** Lookup the specified Post */
   post?: Maybe<Post>;
   /** Lookup the specified Profile */
@@ -2049,6 +2057,10 @@ export type LookupQueryResults = {
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
 };
 
+export type LookupQueryResultsApplicationArgs = {
+  ID: Scalars['UUID'];
+};
+
 export type LookupQueryResultsCalendarArgs = {
   ID: Scalars['UUID'];
 };
@@ -2058,6 +2070,10 @@ export type LookupQueryResultsCalendarEventArgs = {
 };
 
 export type LookupQueryResultsCalloutArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsChallengeArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -2078,6 +2094,14 @@ export type LookupQueryResultsInnovationFlowArgs = {
 };
 
 export type LookupQueryResultsInnovationFlowTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsInvitationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsOpportunityArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -4049,8 +4073,6 @@ export type Space = {
   __typename?: 'Space';
   /** The Agent representing this Space. */
   agent?: Maybe<Agent>;
-  /** A particular User Application within this Space. */
-  application: Application;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** A particular Challenge, either by its ID or nameID */
@@ -4081,7 +4103,7 @@ export type Space = {
   opportunity: Opportunity;
   /** The preferences for this Space */
   preferences?: Maybe<Array<Preference>>;
-  /** The Profile for the  space. */
+  /** The Profile for the Space. */
   profile: Profile;
   /** A particular Project, identified by the ID */
   project: Project;
@@ -4093,10 +4115,6 @@ export type Space = {
   templates?: Maybe<TemplatesSet>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
-};
-
-export type SpaceApplicationArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type SpaceChallengeArgs = {
@@ -5410,6 +5428,19 @@ export type ChallengePageQuery = {
                     | undefined;
                 }>
               | undefined;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
           }
         | undefined;
       community?:
@@ -5822,6 +5853,15 @@ export type ChallengeProfileFragment = {
                   }>
                 | undefined;
             }>
+          | undefined;
+        timeline?:
+          | {
+              __typename?: 'Timeline';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       }
     | undefined;
@@ -7963,6 +8003,19 @@ export type OpportunityPageQuery = {
                     | undefined;
                 }>
               | undefined;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
           }
         | undefined;
       context?:
@@ -8305,6 +8358,15 @@ export type OpportunityPageFragment = {
                   }>
                 | undefined;
             }>
+          | undefined;
+        timeline?:
+          | {
+              __typename?: 'Timeline';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       }
     | undefined;
@@ -9539,20 +9601,6 @@ export type SpacePageQuery = {
       | {
           __typename?: 'Collaboration';
           id: string;
-          timeline?:
-            | {
-                __typename?: 'Timeline';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      anonymousReadAccess: boolean;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
           callouts?:
             | Array<{
                 __typename?: 'Callout';
@@ -9708,6 +9756,19 @@ export type SpacePageQuery = {
                     }>
                   | undefined;
               }>
+            | undefined;
+          timeline?:
+            | {
+                __typename?: 'Timeline';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
             | undefined;
         }
       | undefined;
@@ -9944,20 +10005,6 @@ export type SpacePageFragment = {
     | {
         __typename?: 'Collaboration';
         id: string;
-        timeline?:
-          | {
-              __typename?: 'Timeline';
-              id: string;
-              authorization?:
-                | {
-                    __typename?: 'Authorization';
-                    id: string;
-                    anonymousReadAccess: boolean;
-                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  }
-                | undefined;
-            }
-          | undefined;
         callouts?:
           | Array<{
               __typename?: 'Callout';
@@ -10113,6 +10160,15 @@ export type SpacePageFragment = {
                   }>
                 | undefined;
             }>
+          | undefined;
+        timeline?:
+          | {
+              __typename?: 'Timeline';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       }
     | undefined;
@@ -12687,70 +12743,78 @@ export type UpdateCalloutFlowStateMutation = {
 };
 
 export type ChallengeInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID'];
 }>;
 
 export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      innovationFlow?:
-        | {
-            __typename?: 'InnovationFlow';
-            id: string;
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              tagsets?:
-                | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
-                | undefined;
-            };
-          }
-        | undefined;
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          innovationFlow?:
+            | {
+                __typename?: 'InnovationFlow';
+                id: string;
+                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  tagsets?:
+                    | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
 export type OpportunityInnovationFlowStatesAllowedValuesQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID'];
 }>;
 
 export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      innovationFlow?:
-        | {
-            __typename?: 'InnovationFlow';
-            id: string;
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              tagsets?:
-                | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
-                | undefined;
-            };
-          }
-        | undefined;
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
+          id: string;
+          innovationFlow?:
+            | {
+                __typename?: 'InnovationFlow';
+                id: string;
+                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  tagsets?:
+                    | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -14570,7 +14634,6 @@ export type UpdateCalloutsSortOrderMutation = {
 
 export type DashboardTopCalloutsFragment = {
   __typename?: 'Collaboration';
-  id: string;
   callouts?:
     | Array<{
         __typename?: 'Callout';
@@ -19833,207 +19896,199 @@ export type ChallengeWhiteboardFromCalloutQuery = {
 };
 
 export type OpportunityWhiteboardFromCalloutQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID'];
   calloutId: Scalars['UUID_NAMEID'];
   whiteboardId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityWhiteboardFromCalloutQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  nameID: string;
-                  type: CalloutType;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        anonymousReadAccess: boolean;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                  whiteboards?:
-                    | Array<{
-                        __typename?: 'Whiteboard';
-                        id: string;
-                        nameID: string;
-                        createdDate: Date;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visual?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          preview?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                        };
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
+          id: string;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                id: string;
+                callouts?:
+                  | Array<{
+                      __typename?: 'Callout';
+                      id: string;
+                      nameID: string;
+                      type: CalloutType;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            anonymousReadAccess: boolean;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                      whiteboards?:
+                        | Array<{
+                            __typename?: 'Whiteboard';
+                            id: string;
+                            nameID: string;
+                            createdDate: Date;
+                            profile: {
+                              __typename?: 'Profile';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'WhiteboardCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: WhiteboardCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
-                                id: string;
-                                nextEvents?: Array<string> | undefined;
-                              };
-                              authorization?:
+                              displayName: string;
+                              description?: string | undefined;
+                              visual?:
                                 | {
-                                    __typename?: 'Authorization';
+                                    __typename?: 'Visual';
                                     id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    uri: string;
+                                    name: string;
+                                    allowedTypes: Array<string>;
+                                    aspectRatio: number;
+                                    maxHeight: number;
+                                    maxWidth: number;
+                                    minHeight: number;
+                                    minWidth: number;
+                                    alternativeText?: string | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              };
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
+                              preview?:
+                                | {
+                                    __typename?: 'Visual';
+                                    id: string;
+                                    uri: string;
+                                    name: string;
+                                    allowedTypes: Array<string>;
+                                    aspectRatio: number;
+                                    maxHeight: number;
+                                    maxWidth: number;
+                                    minHeight: number;
+                                    minWidth: number;
+                                    alternativeText?: string | undefined;
+                                  }
+                                | undefined;
+                              tagset?:
+                                | {
+                                    __typename?: 'Tagset';
+                                    id: string;
+                                    name: string;
+                                    tags: Array<string>;
+                                    allowedValues: Array<string>;
+                                    type: TagsetType;
+                                  }
+                                | undefined;
+                            };
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  anonymousReadAccess: boolean;
+                                }
+                              | undefined;
+                            checkout?:
+                              | {
+                                  __typename?: 'WhiteboardCheckout';
+                                  id: string;
+                                  lockedBy: string;
+                                  status: WhiteboardCheckoutStateEnum;
+                                  lifecycle: {
+                                    __typename?: 'Lifecycle';
+                                    id: string;
+                                    nextEvents?: Array<string> | undefined;
+                                  };
+                                  authorization?:
+                                    | {
+                                        __typename?: 'Authorization';
+                                        id: string;
+                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                      }
+                                    | undefined;
+                                }
+                              | undefined;
+                            createdBy?:
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  profile: {
+                                    __typename?: 'Profile';
+                                    id: string;
+                                    displayName: string;
+                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  };
+                                }
+                              | undefined;
+                          }>
+                        | undefined;
+                    }>
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
-export type SpaceTemplateWhiteboardValuesQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
+export type WhiteboardTemplateValueQueryVariables = Exact<{
   whiteboardId: Scalars['UUID'];
 }>;
 
-export type SpaceTemplateWhiteboardValuesQuery = {
+export type WhiteboardTemplateValueQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    templates?:
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboardTemplate?:
       | {
-          __typename?: 'TemplatesSet';
+          __typename?: 'WhiteboardTemplate';
           id: string;
-          whiteboardTemplate?:
-            | {
-                __typename?: 'WhiteboardTemplate';
-                id: string;
-                value: string;
-                profile: {
-                  __typename?: 'Profile';
+          value: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
                   id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  preview?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              }
-            | undefined;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
         }
       | undefined;
   };
@@ -21068,15 +21123,13 @@ export type RoomEventsSubscription = {
 };
 
 export type CommunityUpdatesQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityUpdatesQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
+  lookup: {
+    __typename?: 'LookupQueryResults';
     community?:
       | {
           __typename?: 'Community';
@@ -22188,15 +22241,13 @@ export type ChallengesWithCommunityQuery = {
 };
 
 export type CommunityGroupsQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityGroupsQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
+  lookup: {
+    __typename?: 'LookupQueryResults';
     community?:
       | {
           __typename?: 'Community';
@@ -22209,15 +22260,13 @@ export type CommunityGroupsQuery = {
 };
 
 export type CommunityMembersQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];
 }>;
 
 export type CommunityMembersQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
+  lookup: {
+    __typename?: 'LookupQueryResults';
     community?:
       | {
           __typename?: 'Community';
@@ -28589,6 +28638,7 @@ export type SpaceDashboardCalendarEventsQuery = {
     collaboration?:
       | {
           __typename?: 'Collaboration';
+          id: string;
           timeline?:
             | {
                 __typename?: 'Timeline';
@@ -28596,6 +28646,13 @@ export type SpaceDashboardCalendarEventsQuery = {
                 calendar: {
                   __typename?: 'Calendar';
                   id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   events?:
                     | Array<{
                         __typename?: 'CalendarEvent';
@@ -28639,6 +28696,230 @@ export type SpaceDashboardCalendarEventsQuery = {
         }
       | undefined;
   };
+};
+
+export type ChallengeDashboardCalendarEventsQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+export type ChallengeDashboardCalendarEventsQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  calendar: {
+                    __typename?: 'Calendar';
+                    id: string;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                    events?:
+                      | Array<{
+                          __typename?: 'CalendarEvent';
+                          id: string;
+                          nameID: string;
+                          startDate?: Date | undefined;
+                          durationDays?: number | undefined;
+                          durationMinutes: number;
+                          wholeDay: boolean;
+                          multipleDays: boolean;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            description?: string | undefined;
+                            tagset?:
+                              | {
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }
+                              | undefined;
+                            references?:
+                              | Array<{
+                                  __typename?: 'Reference';
+                                  id: string;
+                                  name: string;
+                                  uri: string;
+                                  description?: string | undefined;
+                                }>
+                              | undefined;
+                          };
+                        }>
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityDashboardCalendarEventsQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+export type OpportunityDashboardCalendarEventsQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  calendar: {
+                    __typename?: 'Calendar';
+                    id: string;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                    events?:
+                      | Array<{
+                          __typename?: 'CalendarEvent';
+                          id: string;
+                          nameID: string;
+                          startDate?: Date | undefined;
+                          durationDays?: number | undefined;
+                          durationMinutes: number;
+                          wholeDay: boolean;
+                          multipleDays: boolean;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            description?: string | undefined;
+                            tagset?:
+                              | {
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }
+                              | undefined;
+                            references?:
+                              | Array<{
+                                  __typename?: 'Reference';
+                                  id: string;
+                                  name: string;
+                                  uri: string;
+                                  description?: string | undefined;
+                                }>
+                              | undefined;
+                          };
+                        }>
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CollaborationTimelineInfoFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  timeline?:
+    | {
+        __typename?: 'Timeline';
+        id: string;
+        calendar: {
+          __typename?: 'Calendar';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          events?:
+            | Array<{
+                __typename?: 'CalendarEvent';
+                id: string;
+                nameID: string;
+                startDate?: Date | undefined;
+                durationDays?: number | undefined;
+                durationMinutes: number;
+                wholeDay: boolean;
+                multipleDays: boolean;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }>
+            | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type DashboardTimelineAuthorizationFragment = {
+  __typename?: 'Collaboration';
+  timeline?:
+    | {
+        __typename?: 'Timeline';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
+    | undefined;
 };
 
 export type CalendarEventInfoFragment = {
@@ -28673,6 +28954,7 @@ export type CalendarEventInfoFragment = {
 
 export type SpaceCalendarEventsQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  limit?: InputMaybe<Scalars['Float']>;
 }>;
 
 export type SpaceCalendarEventsQuery = {
@@ -28683,6 +28965,7 @@ export type SpaceCalendarEventsQuery = {
     collaboration?:
       | {
           __typename?: 'Collaboration';
+          id: string;
           timeline?:
             | {
                 __typename?: 'Timeline';
@@ -28700,8 +28983,6 @@ export type SpaceCalendarEventsQuery = {
                   events?:
                     | Array<{
                         __typename?: 'CalendarEvent';
-                        type: CalendarEventType;
-                        createdDate: Date;
                         id: string;
                         nameID: string;
                         startDate?: Date | undefined;
@@ -28709,84 +28990,6 @@ export type SpaceCalendarEventsQuery = {
                         durationMinutes: number;
                         wholeDay: boolean;
                         multipleDays: boolean;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                tagsets?:
-                                  | Array<{
-                                      __typename?: 'Tagset';
-                                      id: string;
-                                      name: string;
-                                      tags: Array<string>;
-                                      allowedValues: Array<string>;
-                                      type: TagsetType;
-                                    }>
-                                  | undefined;
-                              };
-                            }
-                          | undefined;
-                        comments: {
-                          __typename?: 'Room';
-                          id: string;
-                          messagesCount: number;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                anonymousReadAccess: boolean;
-                              }
-                            | undefined;
-                          messages: Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            threadID?: string | undefined;
-                            reactions: Array<{
-                              __typename?: 'Reaction';
-                              id: string;
-                              emoji: string;
-                              sender?:
-                                | { __typename?: 'User'; id: string; firstName: string; lastName: string }
-                                | undefined;
-                            }>;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{
-                                          __typename?: 'Tagset';
-                                          id: string;
-                                          name: string;
-                                          tags: Array<string>;
-                                          allowedValues: Array<string>;
-                                          type: TagsetType;
-                                        }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
-                              | undefined;
-                          }>;
-                        };
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -28819,6 +29022,162 @@ export type SpaceCalendarEventsQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type ChallengeCalendarEventsQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+export type ChallengeCalendarEventsQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  calendar: {
+                    __typename?: 'Calendar';
+                    id: string;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                    events?:
+                      | Array<{
+                          __typename?: 'CalendarEvent';
+                          id: string;
+                          nameID: string;
+                          startDate?: Date | undefined;
+                          durationDays?: number | undefined;
+                          durationMinutes: number;
+                          wholeDay: boolean;
+                          multipleDays: boolean;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            description?: string | undefined;
+                            tagset?:
+                              | {
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }
+                              | undefined;
+                            references?:
+                              | Array<{
+                                  __typename?: 'Reference';
+                                  id: string;
+                                  name: string;
+                                  uri: string;
+                                  description?: string | undefined;
+                                }>
+                              | undefined;
+                          };
+                        }>
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityCalendarEventsQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+export type OpportunityCalendarEventsQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            timeline?:
+              | {
+                  __typename?: 'Timeline';
+                  id: string;
+                  calendar: {
+                    __typename?: 'Calendar';
+                    id: string;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                    events?:
+                      | Array<{
+                          __typename?: 'CalendarEvent';
+                          id: string;
+                          nameID: string;
+                          startDate?: Date | undefined;
+                          durationDays?: number | undefined;
+                          durationMinutes: number;
+                          wholeDay: boolean;
+                          multipleDays: boolean;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            description?: string | undefined;
+                            tagset?:
+                              | {
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }
+                              | undefined;
+                            references?:
+                              | Array<{
+                                  __typename?: 'Reference';
+                                  id: string;
+                                  name: string;
+                                  uri: string;
+                                  description?: string | undefined;
+                                }>
+                              | undefined;
+                          };
+                        }>
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 

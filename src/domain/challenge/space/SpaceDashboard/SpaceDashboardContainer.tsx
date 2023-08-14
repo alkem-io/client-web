@@ -83,12 +83,12 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     skip: !_space?.space?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
   });
 
-  const communityReadAccess = (_space?.space?.community?.authorization?.myPrivileges ?? []).some(
-    x => x === AuthorizationPrivilege.Read
+  const communityReadAccess = (_space?.space?.community?.authorization?.myPrivileges ?? []).includes(
+    AuthorizationPrivilege.Read
   );
 
-  const timelineReadAccess = (_space?.space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).some(
-    x => x === AuthorizationPrivilege.Read
+  const timelineReadAccess = (_space?.space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
+    AuthorizationPrivilege.Read
   );
 
   const challengesCount = useMemo(() => getMetricCount(_space?.space.metrics, MetricType.Challenge), [_space]);
