@@ -97,27 +97,82 @@ Usages:
 3. If you create a component (`ComponentType`) to pass as a prop, always wrap into `useMemo()` to preserve the component identity. If the component identity changes, React will always remount (that basically disables incremental rendering for the component).
 
 ```js
-# Wrong
+// Wrong
 const MyComponent = ({ prop }) => {
   const Component = () => <Input color="prop" />;
 
   return <MyForm inputComponent={Component} />;
-}
+};
 
-# Correct
+// Correct
 const MyComponent = ({ prop }) => {
   const Component = useMemo(() => () => <Input color="prop" />, [prop]);
 
   return <MyForm inputComponent={Component} />;
-}
+};
 ```
 
 ### useCallback
 
-useCallback is actually a shorcut based on `useMemo()`. It's created for one particular reason: functions defined in your component body are always new instances, recreated on each render. If you pass them as props, the child components props always change. However if you wrap those functions in `useCallback`, the functions won't be redeclared unless their dependencies change.
+useCallback is actually a shortcut based on `useMemo()`. It's created for one particular reason: functions defined in your component body are always new instances, recreated on each render. If you pass them as props, the child components props always change. However if you wrap those functions in `useCallback`, the functions won't be redeclared unless their dependencies change.
 
 > :warning: **When not to use:**
 > Don't use `useCallback` for the functions that are used in the same component. Unless you pass those functions as props, there's no use in `useCallback`. It doesn't optimize anything about how the function executes.
+
+## Component prop types/interfaces
+
+### Structure/nesting
+
+We should avoid putting nested objects into props with the exception of view models, such as `props.callout` for a `CalloutView`.
+To simplify passing data into views, view models can have a similar structure to GraphQL models, but they should not be based on GraphQL definitions directly.
+It is important that only the values that are really consumed by a view are specified in its props.
+
+> :warning: Don't base View component props on GraphQL definitions. A _View_ should not have imports from `src/core/apollo`.
+> On the other hand, return types of _Containers/Hooks_ can (but not necessarily should) be based on GraphQL types.
+
+### View models
+
+As view models are often unique to the view (different views render different properties), there's often no use
+in _shared_ view models. To minimize code repetition you can export you view props and then refer to them in a parent view:
+
+```ts
+interface CalloutsListViewProps {
+  callouts: CalloutCardViewProps['callout'][];
+  //...
+}
+```
+
+In this case `CalloutCardViewProps['callout']` becomes a view model that can be reused while keeping the reference to the view
+it's used in.
+
+If the number of props is too high for them to remain ungrouped, please group by domain, not per functional rote.
+In this case it's both easier to directly pass hook exports as well as proxy those props to the child views.
+
+```ts
+// Wrong:
+interface PropsByRole {
+  entities: {
+    callouts: Callout[];
+    leadUsers: User[];
+  };
+  callbacks: {
+    updateCallout: () => void;
+    refetchLeads: () => void;
+  };
+}
+
+// Correct:
+interface PropsByDomain {
+  callouts: {
+    callouts: Callout[];
+    updateCallout: () => void;
+  };
+  community: {
+    leadUsers: User[];
+    refetchLeads: () => void;
+  };
+}
+```
 
 ## Containers vs hooks
 
