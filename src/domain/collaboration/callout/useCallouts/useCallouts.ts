@@ -205,7 +205,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
 
   const onCalloutsSortOrderUpdate = useCallback(
     (movedCalloutId: string) => {
-      const flowState = callouts?.find(callout => callout.id === movedCalloutId)?.flowStates?.[0] ?? '';
+      const flowState = callouts?.find(callout => callout.id === movedCalloutId)?.flowStates?.[0];
       const displayLocation = callouts?.find(callout => callout.id === movedCalloutId)?.displayLocation;
       const relatedCallouts = callouts?.filter(
         callout =>
