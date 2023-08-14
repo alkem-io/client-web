@@ -48,6 +48,7 @@ const DashboardSpacesSection: FC<DashboardSpaceSectionProps> = ({
       <ScrollableCardsLayoutContainer>
         {spaces.map(space => (
           <SpaceCard
+            key={space.id}
             banner={getVisualByType(VisualName.BANNERNARROW, space.profile.visuals)}
             spaceId={space.id}
             displayName={space.profile.displayName}

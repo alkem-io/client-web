@@ -6,7 +6,7 @@ import SpacesSection from '../../../challenge/space/DashboardSpaces/SpacesSectio
 import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
-import PlatformUpdates from '../../notifications/ReleaseUpdates/ReleaseUpdatesNotification';
+import ReleaseUpdatesDialog from '../../notifications/ReleaseUpdates/ReleaseUpdatesDialog';
 import HomePageLayout from './HomePageLayout';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -41,7 +41,7 @@ export const HomePage = () => {
 
   return (
     <HomePageLayout>
-      {!isFromLanding && <PlatformUpdates />}
+      <ReleaseUpdatesDialog />
       <PageContent>
         <PageContentColumn columns={12}>
           {!isFromLanding && (
