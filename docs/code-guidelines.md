@@ -133,7 +133,7 @@ It is important that only the values that are really consumed by a view are spec
 ### View models
 
 As view models are often unique to the view (different views render different properties), there's often no use
-in _shared_ view models. To minimize code repetition you can export you view props and then refer to them in a parent view:
+in _shared_ view models. To minimize code repetition you can export view props and then refer to them in a parent view:
 
 ```ts
 interface CalloutsListViewProps {
