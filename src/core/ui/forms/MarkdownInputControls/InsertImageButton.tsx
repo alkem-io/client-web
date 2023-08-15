@@ -11,6 +11,7 @@ import { Actions } from '../../actions/Actions';
 import DialogWithGrid from '../../dialog/DialogWithGrid';
 import { useNotification } from '../../notifications/useNotification';
 import { BlockTitle } from '../../typography';
+import FormikInputField from '../FormikInputField/FormikInputField';
 
 interface InsertImageButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -20,6 +21,7 @@ interface InsertImageButtonProps extends IconButtonProps {
 
 interface ImageProps {
   src: string;
+  alt: string;
 }
 
 const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertImageButtonProps) => {
@@ -50,6 +52,7 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
 
   const initialValues: ImageProps = {
     src: 'https://',
+    alt: '',
   };
 
   const { t } = useTranslation();
@@ -69,6 +72,7 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
           <Form>
             <Gutters>
               <FormikFileInput title={t('common.url')} name="src" />
+              <FormikInputField title={t('components.wysiwyg-editor.image.alternativeText')} name="alt" />
               <Actions justifyContent="space-between">
                 <Button onClick={closeDialog}>{t('buttons.cancel')}</Button>
                 <Button type="submit" variant="contained">

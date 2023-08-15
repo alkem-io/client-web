@@ -847,7 +847,8 @@
         "remove.remove": "Remove"
       },
       "image": {
-        "dialogHeader": "Insert Image"
+        "dialogHeader": "Insert Image",
+        "alternativeText": "Alternative Text"
       },
       "link": {
         "dialogHeader": "Convert selection to Hyperlink"
