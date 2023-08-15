@@ -80,7 +80,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
             canReadCallout,
             canCreateCallout,
             groupedCallouts,
-            calloutsSortOrder,
             calloutNames,
             onCalloutsSortOrderUpdate,
             refetchCallout,
@@ -125,7 +124,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                     canCreateCallout={canCreateCallout}
                     loading={loading}
                     journeyTypeName={journeyTypeName}
-                    sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}

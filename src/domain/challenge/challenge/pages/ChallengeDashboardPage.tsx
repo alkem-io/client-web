@@ -119,7 +119,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     canCreateCallout={false}
                     loading={callouts.loading}
                     journeyTypeName="challenge"
-                    sortOrder={callouts.calloutsSortOrder}
                     calloutNames={callouts.calloutNames}
                     onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                     onCalloutUpdate={callouts.refetchCallout}
@@ -136,7 +135,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   canCreateCallout={callouts.canCreateCallout}
                   loading={callouts.loading}
                   journeyTypeName="challenge"
-                  sortOrder={callouts.calloutsSortOrder}
                   calloutNames={callouts.calloutNames}
                   onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                   onCalloutUpdate={callouts.refetchCallout}
@@ -150,7 +148,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   canCreateCallout={callouts.canCreateCallout}
                   loading={callouts.loading}
                   journeyTypeName="challenge"
-                  sortOrder={callouts.calloutsSortOrder}
                   calloutNames={callouts.calloutNames}
                   onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                   onCalloutUpdate={callouts.refetchCallout}

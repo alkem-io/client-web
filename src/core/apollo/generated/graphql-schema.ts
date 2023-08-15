@@ -12532,15 +12532,15 @@ export type InnovationFlowSettingsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    tagsets?:
-                      | Array<{
+                    flowState?:
+                      | {
                           __typename?: 'Tagset';
                           id: string;
                           name: string;
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
-                        }>
+                        }
                       | undefined;
                   };
                 }>
@@ -12627,15 +12627,15 @@ export type InnovationFlowSettingsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    tagsets?:
-                      | Array<{
+                    flowState?:
+                      | {
                           __typename?: 'Tagset';
                           id: string;
                           name: string;
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
-                        }>
+                        }
                       | undefined;
                   };
                 }>
@@ -12707,15 +12707,15 @@ export type InnovationFlowCollaborationFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          tagsets?:
-            | Array<{
+          flowState?:
+            | {
                 __typename?: 'Tagset';
                 id: string;
                 name: string;
                 tags: Array<string>;
                 allowedValues: Array<string>;
                 type: TagsetType;
-              }>
+              }
             | undefined;
         };
       }>
@@ -12746,15 +12746,15 @@ export type UpdateCalloutFlowStateMutation = {
     profile: {
       __typename?: 'Profile';
       id: string;
-      tagsets?:
-        | Array<{
+      flowState?:
+        | {
             __typename?: 'Tagset';
             id: string;
             name: string;
             tags: Array<string>;
             allowedValues: Array<string>;
             type: TagsetType;
-          }>
+          }
         | undefined;
     };
   };

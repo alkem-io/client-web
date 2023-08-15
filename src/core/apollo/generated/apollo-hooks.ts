@@ -1185,7 +1185,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
     authorization {
       myPrivileges
     }
-    callouts {
+    callouts(displayLocations: CONTRIBUTE_RIGHT) {
       id
       nameID
       type
@@ -1194,7 +1194,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       profile {
         id
         displayName
-        tagsets {
+        flowState: tagset(tagsetName: FLOW_STATE) {
           ...TagsetDetails
         }
       }
@@ -8463,7 +8463,7 @@ export const UpdateCalloutFlowStateDocument = gql`
       sortOrder
       profile {
         id
-        tagsets {
+        flowState: tagset(tagsetName: FLOW_STATE) {
           ...TagsetDetails
         }
       }
