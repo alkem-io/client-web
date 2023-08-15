@@ -72,7 +72,7 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
           <Form>
             <Gutters>
               <FormikFileInput title={t('common.url')} name="src" />
-              <FormikInputField title={t('components.wysiwyg-editor.image.alternativeText')} name="alt" />
+              <FormikInputField title={t('common.description')} name="alt" />
               <Actions justifyContent="space-between">
                 <Button onClick={closeDialog}>{t('buttons.cancel')}</Button>
                 <Button type="submit" variant="contained">
