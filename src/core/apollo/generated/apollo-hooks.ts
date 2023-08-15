@@ -1185,7 +1185,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
     authorization {
       myPrivileges
     }
-    callouts(displayLocations: CONTRIBUTE_RIGHT) {
+    callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
       id
       nameID
       type
