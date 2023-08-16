@@ -1023,8 +1023,6 @@ export type Community = Groupable & {
   availableMemberUsers?: Maybe<PaginatedUsers>;
   /** The Communications for this Community. */
   communication?: Maybe<Communication>;
-  /** The displayName for this Community. */
-  displayName?: Maybe<Scalars['String']>;
   /** Groups of users related to a Community. */
   groups?: Maybe<Array<UserGroup>>;
   /** The ID of the entity */
@@ -21162,7 +21160,6 @@ export type CommunityUpdatesQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          displayName?: string | undefined;
           communication?:
             | {
                 __typename?: 'Communication';
@@ -22278,7 +22275,6 @@ export type CommunityGroupsQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          displayName?: string | undefined;
           groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
         }
       | undefined;

@@ -13785,7 +13785,6 @@ export const CommunityUpdatesDocument = gql`
     lookup {
       community(ID: $communityId) {
         id
-        displayName
         communication {
           id
           updates {
@@ -15179,7 +15178,6 @@ export const CommunityGroupsDocument = gql`
     lookup {
       community(ID: $communityId) {
         id
-        displayName
         groups {
           id
           name
