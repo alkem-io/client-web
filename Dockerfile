@@ -41,6 +41,7 @@ COPY --from=builder /app/build /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/.build/docker/env.sh .
+COPY --from=builder /app/.build/docker/.env.base .
 RUN chmod +x env.sh
 
 EXPOSE 80
