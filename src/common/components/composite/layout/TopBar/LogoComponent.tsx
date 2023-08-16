@@ -14,7 +14,7 @@ const Logo = styled(props => <LogoImage {...props} />)(() => ({
   height: '100%',
 }));
 
-const DEFAULT_URL = env?.REACT_APP_ALKEMIO_DOMAIN ? env.REACT_APP_ALKEMIO_DOMAIN + ROUTE_HOME : ROUTE_HOME;
+const DEFAULT_URL = env?.VITE_APP_ALKEMIO_DOMAIN ? env.VITE_APP_ALKEMIO_DOMAIN + ROUTE_HOME : ROUTE_HOME;
 
 const LogoComponent = ({ url = DEFAULT_URL, ...rest }: LogoComponentProps) => {
   return (

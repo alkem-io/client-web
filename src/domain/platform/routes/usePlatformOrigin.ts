@@ -5,7 +5,7 @@ const usePlatformOrigin = () => {
   const { platform, loading } = useConfig();
 
   if (import.meta.env.MODE === 'development') {
-    return env?.REACT_APP_ALKEMIO_DOMAIN;
+    return env?.VITE_APP_ALKEMIO_DOMAIN;
   }
 
   if (loading) {

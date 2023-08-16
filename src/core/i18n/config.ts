@@ -42,7 +42,7 @@ type Language = keyof typeof resources;
 
 export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua', 'de', 'fr'];
 
-if (env?.REACT_APP_IN_CONTEXT_TRANSLATION === 'true') {
+if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');
 }
 

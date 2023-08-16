@@ -13,8 +13,8 @@ import {
 } from '../../../common/utils/graphql-links';
 import { typePolicies } from '../config/typePolicies';
 
-const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
-const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');
+const enableQueryDebug = !!(env && env?.VITE_APP_DEBUG_QUERY === 'true');
+const enableErrorLogging = !!(env && env?.VITE_APP_LOG_ERRORS === 'true');
 
 export const useGraphQLClient = (
   graphQLEndpoint: string,
