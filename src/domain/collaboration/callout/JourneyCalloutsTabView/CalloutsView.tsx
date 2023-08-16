@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import { Caption } from '../../../../core/ui/typography';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import CalloutView, { CalloutViewProps } from '../CalloutView/CalloutView';
@@ -60,8 +57,6 @@ const CalloutsView = ({
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
-
-  const { t } = useTranslation();
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
@@ -126,16 +121,6 @@ const CalloutsView = ({
   return (
     <>
       {loading && <CalloutsViewSkeleton />}
-      {!loading && callouts?.length === 0 && (
-        <PageContentBlockSeamless textAlign="center">
-          <Caption>
-            {t('pages.generic.sections.subentities.empty', {
-              entities: t('common.callouts'),
-              parentEntity: t(`common.${journeyTypeName}` as const),
-            })}
-          </Caption>
-        </PageContentBlockSeamless>
-      )}
       {!loading &&
         sortedCallouts?.map((callout, index) => {
           const sortProps: CalloutSortProps = {
