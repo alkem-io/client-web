@@ -51,23 +51,23 @@ const CommunityContextProvider: FC = ({ children }) => {
   });
 
   const community =
-    spaceData?.space.community ||
-    challengeData?.space.challenge.community ||
+    spaceData?.space.community ??
+    challengeData?.space.challenge.community ??
     opportunityData?.space.opportunity.community;
 
   const communityName =
-    spaceData?.space.profile.displayName ||
-    challengeData?.space.challenge.profile.displayName ||
+    spaceData?.space.profile.displayName ??
+    challengeData?.space.challenge.profile.displayName ??
     opportunityData?.space.opportunity.profile.displayName;
 
   const isLoading = loadingSpace || loadingChallenge || loadingOpportunity;
 
   const providedValue = useMemo<CommunityContextValue>(
     () => ({
-      communityId: community?.id || '',
-      communityName: communityName || '',
-      communicationId: community?.communication?.id || '',
-      communicationPrivileges: community?.communication?.authorization?.myPrivileges || [],
+      communityId: community?.id ?? '',
+      communityName: communityName ?? '',
+      communicationId: community?.communication?.id ?? '',
+      communicationPrivileges: community?.communication?.authorization?.myPrivileges ?? [],
       loading: isLoading,
       myMembershipStatus: community?.myMembershipStatus,
     }),

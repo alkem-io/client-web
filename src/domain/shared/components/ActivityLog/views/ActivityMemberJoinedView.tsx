@@ -47,7 +47,6 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
             journeyDisplayName,
             values: {
               communityType,
-              communityDisplayName: journeyDisplayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}
