@@ -4,7 +4,7 @@
 
 ### Directory structure and file naming
 
-All code should be put either under `src/core` or under `src/domain`.
+All new code should be put under `src/core`, `src/domain` or `src/platform`.
 
 - `src/core` contains all components and utilities that are not directly connected to the App business domain. If a file can be potentially reused in another app with a different domain, it should be put into `core`. Examples:
   - `src/core/ui/button/FullWidthButton.tsx`
@@ -12,25 +12,68 @@ All code should be put either under `src/core` or under `src/domain`.
 - `src/domain` contains components and utilities that are connected with the App domain. Their path and filename should denote to which part of the app domain they belong:
   - `src/domain/Challenge/Challenge/ChallengeDashboardPage.tsx`
   - `src/domain/Collaboration/Callout/CalloutView/CalloutView.tsx`
+- `src/platform` contains the code that doesn't directly belong to the business domain but is specific to the app, like `PlatformFooter` or `TopLevelDesktopLayout` component:
+  - `src/platform/routes/RedirectToLanding.tsx`
+  - `src/platform/ui/PlatformFooter/PlatformFooter.tsx`
 
-Components and utilities that are specific to the platform but aren't really part of the business domain should be put under `src/domain/platform`.
-Examples:
+> :warning: Please keep in mind the difference between `src/platform` and `src/domain/platform`. The latter is for placing
+> the code related to entities that belong to the Platform domain of Alkemio.
 
-- `src/domain/platform/routes/RedirectToLanding.tsx`
+> :warning: All code built for Admin side should go under `src/platform/admin`.
 
-`src/domain/platform/ui` should be chosen for app-wise UI elements that aren't universal and can't be reused in another project.
-Examples:
+### Entity names
+As some similar entities of the App domain can reuse common components (but still specific to the union of those entities),
+instead of choosing locations such as `common` or `shared`, please pick a common term for those entities. For example,
+Space, Challenge and Opportunity are referred to using the common term Journey. Components that are reused for all 3 of those
+should be placed under `domain/journey`.
 
-- `src/domain/platform/ui/PlatformFooter/PlatformFooter.tsx`
+### Filename case
+Files and folders are named using *camelCase* or *PascalCase*.
+Folder names are always *camelCase*.
 
----
+A file usually inherits the name of its main exported constant. If the constant is a React component named `ComponentName`,
+one can expect the file to be named `ComponentName.tsx`.
 
-> :warning: There can be exceptions to minimize pollution of top-level folders, e.g. instead of putting component common for all Journey types directly under `domain/Challenge`, a subfolder can be created such as `domain/Challenge/common`.
+If a file doesn't have a "main" constant, try to create a descriptive common name, such as `userContext`, `sortingUtils` or `routeBuilder`.
 
-> :information*source: If the file path contains a segment that is an entity **name**, such as `Challenge`, the segment should be in *CamelCase*. If the segment denotes a component/utility **type**, it should be in \_lowercase*: `ui/button`, `Challenge/pages`.
+> :information_source: If the file path contains a segment that is an entity **name**, such as `Challenge`, the segment should be in *CamelCase*. If the segment denotes a component/utility **type**, it should be in *lowercase*: `ui/button`, `Challenge/pages`.
 
 > :warning: We shouldn't try to bring deep structures just to "initially create a proper order".
-> E.g.: instead of `Challenge/pages/ChallengeDashboard`, just use `Challenge/ChallengeDashboard`. If we are specific enough in domain-based structuring there shouldn't usually be too many files in any specific folder and hence no need for functional file separation.
+> E.g.: instead of `challenge/pages/challengeDashboard`, just use `challenge/challengeDashboard`.
+> If we are specific enough in domain-based structuring there shouldn't usually be too many files in any specific folder and hence no need for functional file separation.
+
+## Variable naming
+### Common conventions:
+As typical to Javascript/Typescript code, variables are named using
+- `camelCase` if they hold primitives or instances;
+- `PascalCase` if they hold classes or constructors (including React functional components).
+
+Constructor-like functions (ones that return an instance but can't be used with `new`)
+should be normal camelCase but they should have a prefix like `create` or `setup`
+(or `get` for pools/singletons).
+Examples:
+```tsx
+const createLocation: (lat: number, lng: number) => Location = //...
+```
+```tsx
+const getDatabaseConnection: () => DatabaseConnection = //...
+```
+
+Constants (shared values that are supposed to be immutable) should use `SCREAMING_SNAKE_CASE`.
+
+### React-related conventions:
+Variables in a tuple returned by `useState` should form a pair like that:
+`const [<variable>, set<variable>] = useState//...` with no exception even if they don't sound great.
+
+Local `boolean` variables should be prefixed with `is`.
+On the contrary, `boolean` props shouldn't have any prefix (this convention is derived from HTML boolean attributes).
+
+Example:
+```tsx
+const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+return <Dialog open={isDialogOpen} />;
+```
 
 ## Component naming: inheritance + postfixes
 
@@ -41,7 +84,10 @@ In React, we usually implement "inheritance by composition", i.e. we wrap a base
 - wrap the rendered result in extra markup
 - provide specific children for the underlying component to render
 
-I all cases above we modify or extend the behavior of the base component by providing some sort of customization. The name of the created component should reflect the meaning of that extension, e.g. a `Dialog` that allows to use `useColumns()` inside its children, can be named `DialogWithGrid`. If the extension suggests multiple unrelated additions to the original name, consider splitting it into several independent overrides.
+In all cases above we modify or extend the behavior of the base component by providing some sort of customization.
+The name of the created component should reflect the meaning of that extension, e.g. a `Dialog` that allows to use `useColumns()` inside its children, can be named `DialogWithGrid`. If the extension suggests multiple unrelated additions to the original name, consider splitting it into several independent overrides.
+
+> :warning: All classes, components and utils built for Admin side should be prefixed with `Admin`.
 
 ## Component Roles
 
@@ -186,6 +232,15 @@ Hooks were created to replace `Container` components or `High-Order Components (
 However, hooks have one limitation: they can't be called conditionally or appear in loops because React identifies hooks by the call order. For cases such
 as looping over list items and wrapping them into data fetching logic, we have to fall back to Containers or HOCs.
 
+> :warning: Containers that combine multiple functionalities, such as those that are used in Page components,
+> should be based on individual hooks, in which those functionalities are isolated/encapsulated.
+>
+> One good criteria to determine whether a Container should be based on (or get split into) multiple hooks is
+> the ability to give it a name derived from a single App domain area. If you can't come up with a clear name,
+> most likely it should be composed of hooks.
+
+> :warning: Please keep in mind that utility functions don't have to be React hooks unless they are include calls to other hooks.
+
 ## All-inclusive providers vs per-function providers
 
 Whenever you want to join together some data-fetching and data-manipulation functions, please make sure they belong to the same domain, e.g. `Callouts`. Don't combine multiple domains in one hook. The only exception is creating a `Container` component for a `Page`. Ideally, a `Container` consists of multiple per-domain hooks and/or some small queries too simple to abstract into their own hook.
@@ -213,7 +268,8 @@ const Page = () => {
 <Route path="/page" element={<Page />} />;
 ```
 
-One obvious downside of it should be that the whole Layout gets remounted when the Page changes even if the next Page renders the same type of Layout. However, we work around that limitation by "throwing" layout to the top of the tree, where it's rendered by the Layout Holder. For that technique to work, the following must be observed:
+One obvious downside of it should be that the whole Layout gets remounted when the Page changes even if the next Page renders the same type of Layout.
+However, we work around that limitation by "throwing" layout to the top of the tree, where it's rendered by the Layout Holder. For that technique to work, the following must be observed:
 
 1. There should be a `LayoutHolder` component rendered somewhere high in the tree, ideally above all routes. Please see `createLayoutHolder` in `src/core/ui/layout/LayoutHolder/LayoutHolder.tsx`
 2. The Layout rendered from a Page should be wrapped in a HOC `createLayout` (returned by `createLayoutHolder`).
@@ -223,9 +279,32 @@ That ensures that as long as the type of the returned Layout stays the same, onl
 
 > :information_source: For use within an index Route, use `createLayoutHolderWithOutlet` helper, which adapts `createLayoutHolder` to `react-router`.
 
-> :warning: One important side effect of the described architecture is that the hooks placed in the Page component body would not inherit this special behavior of Layout. They will keep the normal behavior of React hooks and will be reinstantiated on each route/page change. For efficient data loading it's key to keep all Apollo-related hooks in a `Container` and not place them directly into the `Page.`
+> :warning: One important side effect of the described architecture is that the hooks placed in the Page component body would not inherit this special behavior of Layout.
+> They will keep the normal behavior of React hooks and will be reinstantiated on each route/page change.
+> For efficient data loading it's key to keep all Apollo-related hooks in a `Container` and not place them directly into the `Page.`
+
+The name of a Container or a View for the given page should either
+- inherit the page name if its intended usage is exclusive to the Page it's built for;
+- have broader naming if they are or can be used in other pages or for other entities.
+
+Pseudocode example:
+```jsx
+const SpaceDashboardPage = () => {
+  return (
+    <JourneyLayout journeyTypeName="space"> // broader naming
+      <SpaceDashboardContainer> // specific to the entity/page
+        <JourneyDashboardView journeyTypeName="space" /> // generic entity yet specific to the page
+      </SpaceDashboardContainer>
+    </JourneyLayout>
+  );
+};
+```
 
 ## Component Library and Avoidance of code repetition
 
 Any component that represents a self-sufficient UI building block and/or contains CSS tweaks, should be considered a UI Library Component and put into `src/core/ui`.
 Domain-specific components should normally not include low-level markup (such as rendering `<div>` or `<Box>`) or CSS with the exception of one-time customization/an exclusive override for a specific page.
+
+## To be done:
+### Document actual React.Context usage
+### Monolithic page-tailored queries vs smaller reusable queries
