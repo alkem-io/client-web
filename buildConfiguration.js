@@ -13,7 +13,7 @@ async function buildConfiguration() {
   });
   dotenvExpand(initialConfig);
 
-  const env = import.meta.env;
+  const env = process.env;
 
   const configuration = {};
   const nodeEnv = env.MODE ? env.MODE : 'development';

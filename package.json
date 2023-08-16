@@ -9,8 +9,8 @@
   },
   "license": "EUPL-1.2",
   "scripts": {
-    "start": "vite --host",
-    "build": "cross-env NODE_ENV=production && vite build",
+    "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
+    "build": "cross-env NODE_ENV=production node buildConfiguration && vite build",
     "test": "cross-env NODE_ENV=test node buildConfiguration && jest",
     "test:cov": "npm run test -- --coverage --watchAll=false",
     "test:coverage": "npm run test -- --coverage && cat ./coverage/lcov.info | coveralls",
