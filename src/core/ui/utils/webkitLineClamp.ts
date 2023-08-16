@@ -8,8 +8,10 @@ interface Options {
 
 const webkitLineClamp = (lines: number, options: Options = {}): SxProps<Theme> => ({
   display: '-webkit-box',
-  '-webkit-line-clamp': `${lines}`,
-  '-webkit-box-orient': 'vertical',
+  WebkitLineClamp: `${lines}`,
+  lineClamp: `${lines}`,
+  WebkitBoxOrient: 'vertical',
+  boxOrient: 'vertical',
   overflow: 'hidden',
   minHeight: options.keepMinHeight ? gutters(lines) : undefined,
 });
