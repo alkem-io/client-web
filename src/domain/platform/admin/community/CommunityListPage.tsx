@@ -19,7 +19,6 @@ export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ commun
 
   const { data, loading } = useCommunityGroupsQuery({
     variables: {
-      spaceId,
       communityId,
     },
     skip: !spaceId,
@@ -27,7 +26,7 @@ export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ commun
 
   const { handleDelete } = useDeleteUserGroup();
 
-  const community = data?.space.community;
+  const community = data?.lookup.community;
   const groupsList = useMemo(
     () => community?.groups?.map(u => ({ id: u.id, value: u.name, url: `groups/${u.id}` })) || [],
     [community?.groups]

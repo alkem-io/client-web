@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { buildCalloutUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -14,48 +13,45 @@ import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeIn
 import InnovationFlowStates, {
   InnovationFlowState,
 } from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
-import useCallouts, { TypedCallout } from '../useCallouts/useCallouts';
+import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 
-interface JourneyCalloutsTabViewProps {
+interface JourneyCalloutsTabViewProps extends JourneyLocation {
   journeyTypeName: JourneyTypeName;
   scrollToCallout?: boolean;
+  innovationFlowStates: string[] | undefined;
+  currentInnovationFlowState: string | undefined;
+  canEditInnovationFlow: boolean | undefined;
+  callouts: TypedCallout[] | undefined;
+  groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
+  canCreateCallout: boolean;
+  calloutNames: string[];
+  loading: boolean;
+  refetchCallout: (calloutId: string) => void;
+  onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
 }
 
-const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCalloutsTabViewProps) => {
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
-
-  const { innovationFlowStates, currentInnovationFlowState, canEdit } = useInnovationFlowStates({
-    spaceId: spaceNameId,
-    challengeId: challengeNameId!,
-    opportunityId: opportunityNameId,
-  });
-
+const JourneyCalloutsTabView = ({
+  journeyTypeName,
+  innovationFlowStates,
+  currentInnovationFlowState,
+  canEditInnovationFlow,
+  scrollToCallout,
+  callouts: allCallouts,
+  groupedCallouts,
+  canCreateCallout,
+  calloutNames,
+  loading,
+  onCalloutsSortOrderUpdate,
+  refetchCallout,
+  spaceNameId,
+  challengeNameId,
+  opportunityNameId,
+}: JourneyCalloutsTabViewProps) => {
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
-
-  const {
-    callouts: allCallouts,
-    groupedCallouts,
-    canCreateCallout,
-    calloutNames,
-    loading,
-    calloutsSortOrder,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-  } = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
-    displayLocations: [CalloutDisplayLocation.ContributeLeft, CalloutDisplayLocation.ContributeRight],
-  });
 
   const filterCallouts = (callouts: TypedCallout[] | undefined) => {
     return callouts?.filter(callout => {
@@ -69,7 +65,6 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
   const { t } = useTranslation();
 
   const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
-  const showInnovationFlowStatesSettingsDialog = canEdit;
 
   return (
     <>
@@ -104,11 +99,10 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
             </PageContentBlock>
             <CalloutsGroupView
               callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeLeft])}
-              spaceId={spaceNameId!}
+              spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               loading={loading}
               journeyTypeName={journeyTypeName}
-              sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
@@ -125,16 +119,15 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
                 selectedState={selectedInnovationFlowState}
                 states={innovationFlowStates}
                 onSelectState={handleSelectInnovationFlowState}
-                showSettings={showInnovationFlowStatesSettingsDialog}
+                showSettings={canEditInnovationFlow}
               />
             )}
             <CalloutsGroupView
               callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeRight])}
-              spaceId={spaceNameId!}
+              spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               loading={loading}
               journeyTypeName={journeyTypeName}
-              sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}

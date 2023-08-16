@@ -1,55 +1,41 @@
-query ChallengeInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    challenge(ID: $challengeId) {
+query ChallengeInnovationFlowStatesAllowedValues($id: UUID!) {
+  lookup {
+    journey: challenge(ID: $id) {
       id
       innovationFlow {
-        id
-        lifecycle {
-          id
-          state
-        }
-        authorization {
-          id
-          myPrivileges
-        }
-        profile {
-          id
-          tagsets {
-            id
-            name
-            allowedValues
-          }
-        }
+        ...JourneyInnovationFlowStatesAllowedValues
       }
     }
   }
 }
 
-query OpportunityInnovationFlowStatesAllowedValues($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    opportunity(ID: $opportunityId) {
+query OpportunityInnovationFlowStatesAllowedValues($id: UUID!) {
+  lookup {
+    journey: opportunity(ID: $id) {
       id
       innovationFlow {
-        id
-        lifecycle {
-          id
-          state
-        }
-        authorization {
-          id
-          myPrivileges
-        }
-        profile {
-          id
-          tagsets {
-            id
-            name
-            allowedValues
-          }
-        }
+        ...JourneyInnovationFlowStatesAllowedValues
       }
+    }
+  }
+}
+
+fragment JourneyInnovationFlowStatesAllowedValues on InnovationFlow {
+  id
+  lifecycle {
+    id
+    state
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    id
+    tagsets {
+      id
+      name
+      allowedValues
     }
   }
 }

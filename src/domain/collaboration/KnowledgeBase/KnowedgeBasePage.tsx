@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback } from 'react';
+import React, { PropsWithChildren } from 'react';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
 import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
@@ -16,15 +16,13 @@ import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
 import { useCalloutCreationWithPreviewImages } from '../callout/creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useSpace } from '../../challenge/space/SpaceContext/useSpace';
-import {
-  useCalloutFormTemplatesFromSpaceLazyQuery,
-  useUpdateCalloutVisibilityMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { CalloutDisplayLocation, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
+import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { CalloutDisplayLocation } from '../../../core/apollo/generated/graphql-schema';
 import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creation-dialog/CalloutCreationDialog';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
+import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -52,6 +50,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     handleCreateCallout,
     isCreating,
   } = useCalloutCreationWithPreviewImages();
+  const { handleVisibilityChange } = useCalloutEdit();
 
   const { spaceId } = useSpace();
 
@@ -68,18 +67,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     handleCreateCalloutOpened();
   };
 
-  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
-  const handleVisibilityChange = useCallback(
-    async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
-      await updateCalloutVisibility({
-        variables: {
-          calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
-        },
-      });
-    },
-    [updateCalloutVisibility]
-  );
-
   return (
     <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
       <KnowledgeBaseContainer
@@ -93,7 +80,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
             canReadCallout,
             canCreateCallout,
             groupedCallouts,
-            calloutsSortOrder,
             calloutNames,
             onCalloutsSortOrderUpdate,
             refetchCallout,
@@ -138,7 +124,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                     canCreateCallout={canCreateCallout}
                     loading={loading}
                     journeyTypeName={journeyTypeName}
-                    sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}

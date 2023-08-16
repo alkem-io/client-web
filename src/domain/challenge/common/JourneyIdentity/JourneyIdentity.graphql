@@ -1,0 +1,17 @@
+query JourneyIdentity(
+  $spaceNameId: UUID_NAMEID!,
+  $challengeNameId: UUID_NAMEID = "_",
+  $opportunityNameId: UUID_NAMEID = "_",
+  $isChallenge: Boolean = false,
+  $isOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) @include(if: $isChallenge) {
+      id
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
+      id
+    }
+  }
+}

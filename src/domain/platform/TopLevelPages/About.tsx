@@ -4,6 +4,7 @@ import { Box, Button } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
 import WrapperTypography from '../../../common/components/core/WrapperTypography';
+import useVersionControl from '../metadata/useVersionControl';
 import useServerMetadata from '../metadata/useServerMetadata';
 import TopLevelDesktopLayout from '../ui/PageLayout/TopLevelDesktopLayout';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
@@ -51,6 +52,7 @@ const useAboutStyles = makeStyles(theme => ({
 
 export const AboutPage = () => {
   const styles = useAboutStyles();
+  const { currentClientVersion } = useVersionControl();
   const { services } = useServerMetadata();
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -67,7 +69,7 @@ export const AboutPage = () => {
           <div className={styles.content}>
             <div className={styles.version}>
               <img src="/logo.png" className={styles.logo} alt="Alkemio" />
-              <WrapperTypography color={'neutralMedium'}>v{import.meta.env.VITE_VERSION}</WrapperTypography>
+              <WrapperTypography color={'neutralMedium'}>v{currentClientVersion}</WrapperTypography>
             </div>
             {services.length >= 1 && (
               <Box marginBottom={4}>

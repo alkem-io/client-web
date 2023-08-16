@@ -12,7 +12,7 @@ import { routes } from './opportunityRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import OpportunityAboutPage from '../pages/OpportunityAboutPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
-import ContributePage from '../../../collaboration/contribute/ContributePage';
+import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import Redirect from '../../../../core/routing/Redirect';
 import OpportunityCalloutPage from '../OpportunityCollaborationPage/OpportunityCalloutPage';
 import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
@@ -50,8 +50,13 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
             path={`${routes.Dashboard}/contributors`}
             element={<OpportunityDashboardPage dialog="contributors" />}
           />
-          <Route path={routes.Contribute} element={<ContributePage journeyTypeName="opportunity" />} />
+          <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="opportunity" />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<OpportunityCalloutPage />} />
+          <Route path={`${routes.Dashboard}/calendar`} element={<OpportunityDashboardPage dialog="calendar" />} />
+          <Route
+            path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
+            element={<OpportunityDashboardPage dialog="calendar" />}
+          />
           <Route
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
             element={<OpportunityCalloutPage>{props => <CalloutRoute {...props} />}</OpportunityCalloutPage>}

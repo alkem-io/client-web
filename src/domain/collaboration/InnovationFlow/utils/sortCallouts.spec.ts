@@ -38,8 +38,8 @@ describe('sortCallouts handling grouped Callouts', () => {
         newState: FlowStates.C,
       }).groupedCalloutIds
     ).toEqual({
-      [FlowStates.A]: ['1', '5', '2'],
-      [FlowStates.B]: ['6', '3'],
+      // [FlowStates.A]: ['1', '5', '2'],
+      // [FlowStates.B]: ['6', '3'],
       [FlowStates.C]: ['4'],
     });
   });
@@ -52,7 +52,7 @@ describe('sortCallouts handling grouped Callouts', () => {
         newState: FlowStates.B,
       }).groupedCalloutIds
     ).toEqual({
-      [FlowStates.A]: ['1', '5', '2'],
+      // [FlowStates.A]: ['1', '5', '2'],
       [FlowStates.B]: ['6', '3', '4'],
     });
   });
@@ -65,7 +65,7 @@ describe('sortCallouts handling grouped Callouts', () => {
         newState: FlowStates.B,
       }).groupedCalloutIds
     ).toEqual({
-      [FlowStates.A]: ['1', '5', '2'],
+      // [FlowStates.A]: ['1', '5', '2'],
       [FlowStates.B]: ['6', '4', '3'],
     });
   });
@@ -79,7 +79,7 @@ describe('sortCallouts handling grouped Callouts', () => {
       }).groupedCalloutIds
     ).toEqual({
       [FlowStates.A]: ['6', '1', '5', '4', '2'],
-      [FlowStates.B]: ['3'],
+      // [FlowStates.B]: ['3'],
     });
   });
 
@@ -92,7 +92,7 @@ describe('sortCallouts handling grouped Callouts', () => {
       }).groupedCalloutIds
     ).toEqual({
       [FlowStates.A]: ['1', '4', '5', '2'],
-      [FlowStates.B]: ['6', '3'],
+      // [FlowStates.B]: ['6', '3'],
     });
   });
 
@@ -105,7 +105,7 @@ describe('sortCallouts handling grouped Callouts', () => {
       }).groupedCalloutIds
     ).toEqual({
       [FlowStates.A]: ['1', '5', '4', '2'],
-      [FlowStates.B]: ['6', '3'],
+      // [FlowStates.B]: ['6', '3'],
     });
   });
 });

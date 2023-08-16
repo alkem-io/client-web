@@ -102,7 +102,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 journeyTypeName="challenge"
-                sortOrder={callouts.calloutsSortOrder}
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
@@ -116,7 +115,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 journeyTypeName="challenge"
-                sortOrder={callouts.calloutsSortOrder}
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}

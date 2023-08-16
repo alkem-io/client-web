@@ -13,21 +13,21 @@ async function buildConfiguration() {
   });
   dotenvExpand(initialConfig);
 
-  const env = process.env;
+  const env = import.meta.env;
 
   const configuration = {};
-  const nodeEnv = env.NODE_ENV ? env.NODE_ENV : 'development';
+  const nodeEnv = env.MODE ? env.MODE : 'development';
 
   console.info(`Building for : '${nodeEnv}'`);
 
   Object.keys(env).forEach(function (key) {
-    if (key.startsWith('VITE')) {
+    if (key.startsWith('VITE_APP')) {
       configuration[key] = env[key];
       console.info(`${key}: ${env[key]}`);
     }
   });
 
-  configuration['REACT_APP_GRAPHQL_ENDPOINT'] = configuration['REACT_APP_GRAPHQL_ENDPOINT'] || '/graphql';
+  configuration['VITE_APP_GRAPHQL_ENDPOINT'] = configuration['VITE_APP_GRAPHQL_ENDPOINT'] || '/graphql';
 
   const envBasePath = path.join(__dirname, '.build', 'docker', '.env.base');
   const envBase = createWriteStream(envBasePath, { flags: 'w' });

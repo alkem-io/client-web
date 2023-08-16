@@ -1,4 +1,4 @@
-const env = (prod, dev) => (process.env.NODE_ENV === 'production' ? prod : dev);
+const env = (prod, dev) => (process.env.NODE_ENV  === 'production' ? prod : dev);
 
 module.exports = {
   root: true,

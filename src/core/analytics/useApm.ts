@@ -15,7 +15,7 @@ const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
 
-const skipOnLocal = process.env.NODE_ENV !== 'production';
+const skipOnLocal = import.meta.env.MODE !== 'production';
 
 export interface ApmCustomContext {
   authenticated?: boolean;
