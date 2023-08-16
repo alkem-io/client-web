@@ -57,7 +57,7 @@ export const useApm = (): ApmBase | undefined => {
     const apmInit = initApm({
       serviceName: APM_CLIENT_SERVICE_NAME,
       serverUrl: endpoint,
-      serviceVersion: require('../../../package.json').version,
+      serviceVersion: import.meta.env.VITE_APP_VERSION,
       environment,
       active: enabled,
     });
