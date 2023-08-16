@@ -25,7 +25,7 @@ interface UserPageProps {
   title?: string;
 }
 
-export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' }) => {
+const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();

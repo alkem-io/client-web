@@ -63,7 +63,9 @@ fragment SpacePage on Space {
     }
   }
   collaboration {
+    id
     ...DashboardTopCallouts
+    ...DashboardTimelineAuthorization
   }
   community {
     ...EntityDashboardCommunity
@@ -75,14 +77,6 @@ fragment SpacePage on Space {
   }
   challenges(limit: 3, shuffle: true) {
     ...ChallengeCard
-  }
-  timeline {
-    id
-    authorization {
-      id
-      anonymousReadAccess
-      myPrivileges
-    }
   }
 }
 

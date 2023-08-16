@@ -22,10 +22,6 @@ interface WhiteboardProviderProps extends WhiteboardLocation {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
 
-export type TemplateQuery = {
-  [key in 'challengeId' | 'opportunityId']?: string;
-} & { spaceId: string };
-
 export interface IProvidedEntities {
   whiteboard: WhiteboardDetailsFragment | undefined;
   templates: CreateWhiteboardWhiteboardTemplateFragment[];
@@ -65,7 +61,7 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityWhiteboardFromCalloutQuery({
-    variables: { spaceId, opportunityId, calloutId, whiteboardId },
+    variables: { opportunityId, calloutId, whiteboardId },
     skip: !opportunityId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
@@ -74,7 +70,7 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
   const callout =
     getWhiteboardCallout(spaceData?.space.collaboration?.callouts, calloutId) ??
     getWhiteboardCallout(challengeData?.space.challenge.collaboration?.callouts, calloutId) ??
-    getWhiteboardCallout(opportunityData?.space.opportunity.collaboration?.callouts, calloutId);
+    getWhiteboardCallout(opportunityData?.lookup.opportunity?.collaboration?.callouts, calloutId);
 
   const whiteboard =
     callout?.whiteboards?.find(whiteboard => whiteboard.nameID === whiteboardId || whiteboard.id === whiteboardId) ??

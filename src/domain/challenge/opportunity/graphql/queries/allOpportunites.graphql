@@ -1,9 +1,0 @@
-query allOpportunities($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    opportunities {
-      id
-      nameID
-    }
-  }
-}

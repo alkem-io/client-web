@@ -1,5 +1,5 @@
 query userAvatars($ids: [UUID!]!) {
-  usersById(IDs: $ids) {
+  users(IDs: $ids) {
     id
     nameID
     profile {

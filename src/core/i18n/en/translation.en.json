@@ -772,7 +772,7 @@
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
     "journeyPageBannerCard": {
-      "parentJourney": "Part of: <journeyicon /> {{journey}}"
+      "parentJourney": "Part of:"
     },
     "journeyMetrics": {
       "title": "{{journey}} statistics"
@@ -786,6 +786,7 @@
       "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
     },
     "invitations": {
+      "inviteOthers": "Invite others",
       "inviteExistingUser": "Invite Alkemio users",
       "inviteExternalUser": "Send email invitation",
       "inviteByURL": "Copy magic \u2028URL",
@@ -1659,11 +1660,11 @@
         }
       }
     },
-    "visual-edit": {
+    "visualEdit": {
       "avatar": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "??",
+        "description2": "Usage: Journey card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "banner": {
@@ -1672,7 +1673,7 @@
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "banner-narrow": {
+      "bannerNarrow": {
         "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on cards",

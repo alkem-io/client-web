@@ -1,6 +1,7 @@
 query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
   space(ID: $spaceId) {
     id
+    nameID
     profile {
       ...PendingMembershipsJourneyProfile
     }
@@ -10,8 +11,10 @@ query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = 
 query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
   space(ID: $spaceId) {
     id
+    nameID
     challenge(ID: $challengeId) {
       id
+      nameID
       profile {
         ...PendingMembershipsJourneyProfile
       }
@@ -19,11 +22,18 @@ query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAM
   }
 }
 
-query PendingMembershipsOpportunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+query PendingMembershipsOpportunity(
+  $spaceId: UUID_NAMEID!
+  $opportunityId: UUID_NAMEID!
+  $fetchDetails: Boolean! = false
+) {
   space(ID: $spaceId) {
     id
+    nameID
     opportunity(ID: $opportunityId) {
       id
+      nameID
+      parentNameID
       profile {
         ...PendingMembershipsJourneyProfile
       }
@@ -32,7 +42,7 @@ query PendingMembershipsOpportunity($spaceId: UUID_NAMEID!, $opportunityId: UUID
 }
 
 query PendingMembershipsUser($userId: UUID!) {
-  usersById(IDs: [$userId]) {
+  users(IDs: [$userId]) {
     id
     profile {
       id

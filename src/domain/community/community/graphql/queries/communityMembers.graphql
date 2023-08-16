@@ -1,6 +1,5 @@
-query communityMembers($spaceId: UUID_NAMEID!, $communityId: UUID!) {
-  space(ID: $spaceId) {
-    id
+query communityMembers($communityId: UUID!) {
+  lookup {
     community(ID: $communityId) {
       id
       memberUsers {

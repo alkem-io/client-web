@@ -1,6 +1,5 @@
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import React, { forwardRef, useCallback, useMemo, useState } from 'react';
-import { ReferencesFragmentWithCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { Caption, CaptionSmall } from '../../../../core/ui/typography';
@@ -24,9 +23,6 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
-
-type NeededFields = 'id' | 'calloutNameId';
-export type LinkCollectionCalloutData = Pick<ReferencesFragmentWithCallout, NeededFields>;
 
 const MAX_REFERENCES_NORMALVIEW = 3;
 
@@ -165,6 +161,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           spaceNameId={calloutLayoutProps.spaceNameId}
           challengeNameId={calloutLayoutProps.challengeNameId}
           opportunityNameId={calloutLayoutProps.opportunityNameId}
+          skip={!addNewReferenceDialogOpen && !editReference}
         >
           <CalloutLayout
             callout={callout}

@@ -9,6 +9,7 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   AuthorizationPrivilege,
+  CalloutDisplayLocation,
   DashboardTopCalloutFragment,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
@@ -24,8 +25,9 @@ import {
   getPostsFromPublishedCallouts,
   getWhiteboardsFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import {
+import useCallouts, {
   PostFragmentWithCallout,
+  UseCalloutsProvided,
   WhiteboardFragmentWithCallout,
 } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -52,6 +54,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     communityReadAccess: boolean;
     opportunityReadAccess: boolean;
     readUsers: boolean;
+    timelineReadAccess: boolean;
   };
   hideMeme: boolean;
   showInterestModal: boolean;
@@ -73,6 +76,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  callouts: UseCalloutsProvided;
 }
 
 export interface OpportunityContainerActions {
@@ -120,7 +124,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const collaborationID = opportunity?.collaboration?.id;
   const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
-
+  const timelineReadAccess = (
+    query?.space.opportunity?.collaboration?.timeline?.authorization?.myPrivileges ?? []
+  ).includes(AuthorizationPrivilege.Read);
   const permissions = useMemo(() => {
     return {
       canEdit: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
@@ -132,6 +138,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       opportunityReadAccess: opportunityPrivileges?.includes(AuthorizationPrivilege.Read),
       readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
+      timelineReadAccess,
     };
   }, [opportunityPrivileges, communityPrivileges, user]);
 
@@ -191,6 +198,16 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     [sendMessageToCommunityLeads, communityId]
   );
 
+  const callouts = useCallouts({
+    spaceNameId,
+    opportunityNameId,
+    displayLocations: [
+      CalloutDisplayLocation.HomeTop,
+      CalloutDisplayLocation.HomeLeft,
+      CalloutDisplayLocation.HomeRight,
+    ],
+  });
+
   return (
     <>
       {children(
@@ -226,6 +243,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           activities,
           topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
+          callouts,
         },
         {
           loading: loadingOpportunity,

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import {
-  useChallengeLifecycleQuery,
+  useChallengeInnovationFlowQuery,
   useEventOnChallengeMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Lifecycle } from '../../../../core/apollo/generated/graphql-schema';
@@ -25,7 +25,7 @@ const ChallengeLifecycleContainer: FC<ChallengeLifecycleContainerProps> = ({
   challengeNameId,
   ...rendered
 }) => {
-  const { data, loading } = useChallengeLifecycleQuery({
+  const { data, loading } = useChallengeInnovationFlowQuery({
     variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',

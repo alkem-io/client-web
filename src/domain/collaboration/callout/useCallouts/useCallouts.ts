@@ -18,9 +18,8 @@ import {
   CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { compact, groupBy, sortBy } from 'lodash';
-import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
+import { useCallback, useMemo } from 'react';
+import { groupBy } from 'lodash';
 import { Tagset } from '../../../common/profile/Profile';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
@@ -84,14 +83,19 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
     };
     draft: boolean;
     editable: boolean;
-    flowStates: string | undefined;
+    flowStates: string[] | undefined;
+    displayLocation: string;
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
   displayLocations?: CalloutDisplayLocation[];
 }
 
-interface UseCalloutsProvided {
+export interface OrderUpdate {
+  (relatedCalloutIds: string[]): string[];
+}
+
+export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
@@ -100,11 +104,8 @@ interface UseCalloutsProvided {
   loading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
-  calloutsSortOrder: string[];
-  onCalloutsSortOrderUpdate: (update: OrderUpdate) => void;
+  onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
 }
-
-const getSortedCalloutIds = (callouts?: TypedCallout[]) => sortBy(callouts, c => c.sortOrder).map(c => c.id);
 
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
 const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
@@ -188,7 +189,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       if (!collaboration) {
         throw new Error('Collaboration is not loaded yet.');
       }
-      return runUpdateCalloutsSortOrderMutation({
+      return updateCalloutsSortOrderMutation({
         variables: {
           collaborationId: collaboration.id,
           calloutIds,
@@ -200,24 +201,21 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
 
   const calloutNames = useMemo(() => callouts?.map(c => c.profile.displayName) ?? [], [callouts]);
 
-  const [calloutsSortOrder, setCalloutsSortOrder] = useState(getSortedCalloutIds(callouts));
-
-  useLayoutEffect(() => {
-    setCalloutsSortOrder(getSortedCalloutIds(callouts));
-  }, [callouts]);
-
-  const sortedCallouts = useMemo(
-    () => compact(calloutsSortOrder.map(id => callouts?.find(c => c.id === id))),
-    [calloutsSortOrder, callouts]
-  );
+  const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
 
   const onCalloutsSortOrderUpdate = useCallback(
-    (update: OrderUpdate) => {
-      setCalloutsSortOrder(ids => {
-        const nextIds = update(ids);
-        submitCalloutsSortOrder(nextIds);
-        return nextIds;
-      });
+    (movedCalloutId: string) => {
+      const flowState = callouts?.find(callout => callout.id === movedCalloutId)?.flowStates?.[0];
+      const displayLocation = callouts?.find(callout => callout.id === movedCalloutId)?.displayLocation;
+      const relatedCallouts = callouts?.filter(
+        callout =>
+          (!flowState || callout.flowStates?.includes(flowState)) && callout.displayLocation === displayLocation
+      );
+      const relatedCalloutIds = relatedCallouts?.map(callout => callout.id) ?? [];
+      return (update: OrderUpdate) => {
+        const nextIds = update(relatedCalloutIds);
+        return submitCalloutsSortOrder(nextIds);
+      };
     },
     [submitCalloutsSortOrder]
   );
@@ -229,7 +227,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     ) as Record<CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP, TypedCallout[] | undefined>;
   }, [sortedCallouts]);
 
-  const [runUpdateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
+  const [updateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
 
   return {
     callouts,
@@ -240,7 +238,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     loading: calloutsLoading,
     refetchCallouts,
     refetchCallout,
-    calloutsSortOrder,
     onCalloutsSortOrderUpdate,
   };
 };

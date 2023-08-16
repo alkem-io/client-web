@@ -1,24 +1,3 @@
-query TemplatesForCalloutCreation($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
-      id
-      postTemplates {
-        id
-        profile {
-          ...ProfileDisplayName
-        }
-      }
-      whiteboardTemplates {
-        id
-        profile {
-          ...ProfileDisplayName
-        }
-      }
-    }
-  }
-}
-
 query PostTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
@@ -52,38 +31,4 @@ query WhiteboardTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
 fragment ProfileDisplayName on Profile {
   id
   displayName
-}
-
-query PostTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
-      id
-      postTemplate(ID: $id) {
-        id
-        type
-        defaultDescription
-        profile {
-          id
-          description
-          tagset {
-            ...TagsetDetails
-          }
-        }
-      }
-    }
-  }
-}
-
-query WhiteboardTemplateValue($spaceId: UUID_NAMEID!, $id: UUID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
-      id
-      whiteboardTemplate(ID: $id) {
-        id
-        value
-      }
-    }
-  }
 }

@@ -10,6 +10,7 @@ import { useUserContext } from '../contributor/user';
 import { Visual } from '../../common/visual/Visual';
 import { ContributionItem } from '../contributor/contribution';
 import { InvitationItem } from '../contributor/user/providers/UserProvider/InvitationItem';
+import { buildJourneyUrl } from '../../../common/utils/urlBuilders';
 
 interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
@@ -17,6 +18,7 @@ interface JourneyDetails {
   journeyTagline: string | undefined;
   journeyTags: string[] | undefined;
   journeyCardBanner: Visual | undefined;
+  journeyUri: string | undefined;
 }
 
 export interface InvitationWithMeta extends JourneyDetails {
@@ -89,7 +91,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
     },
   });
 
-  const createdBy = userData?.usersById.find(user => user.id === invitation.createdBy);
+  const createdBy = userData?.users.find(user => user.id === invitation.createdBy);
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
     if (!invitation || !journey || !createdBy) {
@@ -104,6 +106,11 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       journeyTypeName: getJourneyTypeName({
         challengeNameId: invitation.challengeId,
         opportunityNameId: invitation.opportunityId,
+      }),
+      journeyUri: buildJourneyUrl({
+        spaceNameId: spaceData?.space.nameID ?? challengeData?.space.nameID ?? opportunityData?.space.nameID ?? '',
+        challengeNameId: challengeData?.space.challenge.nameID ?? opportunityData?.space.opportunity.parentNameID,
+        opportunityNameId: opportunityData?.space.opportunity.nameID,
       }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
@@ -163,11 +170,16 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
         challengeNameId: application.challengeId,
         opportunityNameId: application.opportunityId,
       }),
+      journeyUri: buildJourneyUrl({
+        spaceNameId: spaceData?.space.nameID ?? challengeData?.space.nameID ?? opportunityData?.space.nameID ?? '',
+        challengeNameId: challengeData?.space.challenge.nameID ?? opportunityData?.space.opportunity.parentNameID,
+        opportunityNameId: opportunityData?.space.opportunity.nameID,
+      }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
       journeyCardBanner: journey.profile.cardBanner,
     };
-  }, [application, journey]);
+  }, [application, journey, spaceData, challengeData, opportunityData]);
 
   return <>{children({ application: hydratedApplication })}</>;
 };

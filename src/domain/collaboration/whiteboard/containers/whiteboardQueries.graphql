@@ -135,15 +135,6 @@ query spaceWhiteboardFromCallout($spaceId: UUID_NAMEID!, $calloutId: UUID_NAMEID
   }
 }
 
-query spaceWhiteboards($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
-      ...CollaborationWithWhiteboardDetails
-    }
-  }
-}
-
 query whiteboardWithValue($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {
@@ -170,14 +161,8 @@ query challengeWhiteboardFromCallout(
   }
 }
 
-query opportunityWhiteboardFromCallout(
-  $spaceId: UUID_NAMEID!
-  $opportunityId: UUID_NAMEID!
-  $calloutId: UUID_NAMEID!
-  $whiteboardId: UUID_NAMEID!
-) {
-  space(ID: $spaceId) {
-    id
+query opportunityWhiteboardFromCallout($opportunityId: UUID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
       collaboration {
@@ -187,18 +172,14 @@ query opportunityWhiteboardFromCallout(
   }
 }
 
-query spaceTemplateWhiteboardValues($spaceId: UUID_NAMEID!, $whiteboardId: UUID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
+query whiteboardTemplateValue($whiteboardId: UUID!) {
+  lookup {
+    whiteboardTemplate(ID: $whiteboardId) {
       id
-      whiteboardTemplate(ID: $whiteboardId) {
-        id
-        profile {
-          ...WhiteboardProfile
-        }
-        value
+      profile {
+        ...WhiteboardProfile
       }
+      value
     }
   }
 }

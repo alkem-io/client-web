@@ -642,6 +642,7 @@ export type CollaborationKeySpecifier = (
   | 'id'
   | 'relations'
   | 'tagsetTemplates'
+  | 'timeline'
   | CollaborationKeySpecifier
 )[];
 export type CollaborationFieldPolicy = {
@@ -650,6 +651,7 @@ export type CollaborationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  timeline?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
@@ -1183,12 +1185,18 @@ export type LocationFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupQueryResultsKeySpecifier = (
+  | 'application'
+  | 'calendar'
+  | 'calendarEvent'
   | 'callout'
+  | 'challenge'
   | 'collaboration'
   | 'community'
   | 'context'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
+  | 'invitation'
+  | 'opportunity'
   | 'post'
   | 'profile'
   | 'room'
@@ -1197,12 +1205,18 @@ export type LookupQueryResultsKeySpecifier = (
   | LookupQueryResultsKeySpecifier
 )[];
 export type LookupQueryResultsFieldPolicy = {
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendar?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1857,7 +1871,6 @@ export type QueryKeySpecifier = (
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
-  | 'usersById'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | QueryKeySpecifier
@@ -1882,7 +1895,6 @@ export type QueryFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
-  usersById?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2223,7 +2235,6 @@ export type ServiceMetadataFieldPolicy = {
 };
 export type SpaceKeySpecifier = (
   | 'agent'
-  | 'application'
   | 'authorization'
   | 'challenge'
   | 'challenges'
@@ -2244,13 +2255,11 @@ export type SpaceKeySpecifier = (
   | 'projects'
   | 'storageBucket'
   | 'templates'
-  | 'timeline'
   | 'visibility'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  application?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2271,7 +2280,6 @@ export type SpaceFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
-  timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageBucketKeySpecifier = (

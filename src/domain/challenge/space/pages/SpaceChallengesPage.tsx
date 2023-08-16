@@ -15,10 +15,9 @@ import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
 import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
 import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
-import ChallengesCardContainer from '../containers/ChallengesCardContainer';
+import SpaceChallengesContainer from '../containers/SpaceChallengesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
@@ -55,23 +54,10 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
     [navigate, createChallenge, spaceNameId]
   );
 
-  const {
-    groupedCallouts,
-    canCreateCallout,
-    calloutNames,
-    loading,
-    calloutsSortOrder,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-  } = useCallouts({
-    spaceNameId,
-    displayLocations: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
-  });
-
   return (
     <SpacePageLayout currentSection={EntityPageSection.Challenges}>
-      <ChallengesCardContainer spaceNameId={spaceNameId}>
-        {(entities, state) => (
+      <SpaceChallengesContainer spaceNameId={spaceNameId}>
+        {({ callouts, ...entities }, state) => (
           <ChildJourneyView
             spaceNameId={spaceNameId}
             childEntities={entities.challenges}
@@ -109,35 +95,33 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocation.ChallengesLeft]}
+                callouts={callouts.groupedCallouts[CalloutDisplayLocation.ChallengesLeft]}
                 spaceId={spaceNameId}
-                canCreateCallout={canCreateCallout}
-                loading={loading}
+                canCreateCallout={callouts.canCreateCallout}
+                loading={callouts.loading}
                 journeyTypeName="space"
-                sortOrder={calloutsSortOrder}
-                calloutNames={calloutNames}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
+                calloutNames={callouts.calloutNames}
+                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                onCalloutUpdate={callouts.refetchCallout}
                 displayLocation={CalloutDisplayLocation.ChallengesLeft}
               />
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocation.ChallengesRight]}
+                callouts={callouts.groupedCallouts[CalloutDisplayLocation.ChallengesRight]}
                 spaceId={spaceNameId}
-                canCreateCallout={canCreateCallout}
-                loading={loading}
+                canCreateCallout={callouts.canCreateCallout}
+                loading={callouts.loading}
                 journeyTypeName="space"
-                sortOrder={calloutsSortOrder}
-                calloutNames={calloutNames}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
+                calloutNames={callouts.calloutNames}
+                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                onCalloutUpdate={callouts.refetchCallout}
                 displayLocation={CalloutDisplayLocation.ChallengesRight}
               />
             }
           />
         )}
-      </ChallengesCardContainer>
+      </SpaceChallengesContainer>
     </SpacePageLayout>
   );
 };

@@ -1,5 +1,0 @@
-mutation createRelation($input: CreateRelationOnCollaborationInput!) {
-  createRelationOnCollaboration(relationData: $input) {
-    id
-  }
-}

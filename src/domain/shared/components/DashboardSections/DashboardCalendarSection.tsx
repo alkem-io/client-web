@@ -5,7 +5,11 @@ import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { groupBy, sortBy, times } from 'lodash';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { useSpaceDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useChallengeDashboardCalendarEventsQuery,
+  useOpportunityDashboardCalendarEventsQuery,
+  useSpaceDashboardCalendarEventsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -45,14 +49,43 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const [isCalendarView, setCalendarView] = useState(false);
 
-  const { data, loading } = useSpaceDashboardCalendarEventsQuery({
+  const spaceResults = useSpaceDashboardCalendarEventsQuery({
     variables: { spaceId: journeyLocation?.spaceNameId! },
-    skip: !journeyLocation || !journeyLocation.spaceNameId,
+    skip:
+      !journeyLocation ||
+      !journeyLocation.spaceNameId ||
+      !!journeyLocation.challengeNameId ||
+      !!journeyLocation.opportunityNameId,
   });
+
+  const challengeResults = useChallengeDashboardCalendarEventsQuery({
+    variables: { spaceId: journeyLocation?.spaceNameId!, challengeId: journeyLocation?.challengeNameId! },
+    skip: !journeyLocation || !journeyLocation.spaceNameId || !journeyLocation.challengeNameId,
+  });
+
+  const opportunityResults = useOpportunityDashboardCalendarEventsQuery({
+    variables: { spaceId: journeyLocation?.spaceNameId!, opportunityId: journeyLocation?.opportunityNameId! },
+    skip: !journeyLocation || !journeyLocation.spaceNameId || !journeyLocation.opportunityNameId,
+  });
+
+  const activeResults = journeyLocation?.opportunityNameId
+    ? opportunityResults
+    : journeyLocation?.challengeNameId
+    ? challengeResults
+    : spaceResults;
+  const { data, loading } = activeResults;
+  let collaboration;
+  if (journeyLocation?.opportunityNameId) {
+    collaboration = opportunityResults.data?.space.opportunity?.collaboration;
+  } else if (journeyLocation?.challengeNameId) {
+    collaboration = challengeResults.data?.space.challenge?.collaboration;
+  } else {
+    collaboration = spaceResults.data?.space.collaboration;
+  }
 
   // TODO: Move this to serverside
   const allEvents = useMemo(
-    () => sortBy(data?.space.timeline?.calendar.events ?? [], event => event.startDate),
+    () => sortBy(collaboration?.timeline?.calendar.events ?? [], event => event.startDate),
     [data]
   );
   const events = useMemo(() => {

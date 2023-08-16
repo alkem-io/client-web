@@ -16,7 +16,6 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { refetchMeQuery, useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
-import { buildJourneyUrl } from '../../../common/utils/urlBuilders';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCardTagline from '../../challenge/common/JourneyCard/JourneyCardTagline';
 
@@ -153,13 +152,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                           header={hydratedApplication.journeyDisplayName}
                           tags={hydratedApplication.journeyTags ?? []}
                           banner={hydratedApplication.journeyCardBanner}
-                          journeyUri={
-                            buildJourneyUrl({
-                              spaceNameId: application.spaceId,
-                              challengeNameId: application.challengeId,
-                              opportunityNameId: application.opportunityId,
-                            }) ?? ''
-                          }
+                          journeyUri={hydratedApplication.journeyUri}
                         >
                           <JourneyCardTagline>{hydratedApplication.journeyTagline ?? ''}</JourneyCardTagline>
                         </JourneyCard>
@@ -199,6 +192,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                       header={invitation.journeyDisplayName}
                       tags={invitation.journeyTags ?? []}
                       banner={invitation.journeyCardBanner}
+                      journeyUri={invitation.journeyUri}
                     >
                       <JourneyCardTagline>{invitation.journeyTagline ?? ''}</JourneyCardTagline>
                     </JourneyCard>

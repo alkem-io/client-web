@@ -15,8 +15,7 @@ const useUsersSearch = (initialSearchTermValue = ''): UseUsersSearchResult => {
     }
 
     return {
-      firstName: searchTerm,
-      lastName: searchTerm,
+      displayName: searchTerm,
       email: searchTerm,
     };
   }, [searchTerm]);

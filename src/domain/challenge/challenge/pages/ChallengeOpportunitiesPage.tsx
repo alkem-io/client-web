@@ -16,13 +16,12 @@ import { useSpace } from '../../space/SpaceContext/useSpace';
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
-import OpportunityCardsContainer from '../containers/OpportunityCardsContainer';
+import ChallengeOpportunitiesContainer from '../containers/ChallengeOpportunitiesContainer';
 import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface ChallengeOpportunitiesPageProps {}
 
@@ -32,20 +31,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   const { spaceNameId, visibility } = useSpace();
   const { challengeId, challengeNameId, permissions } = useChallenge();
-
-  const {
-    groupedCallouts,
-    calloutNames,
-    loading,
-    calloutsSortOrder,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-    canCreateCallout,
-  } = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    displayLocations: [CalloutDisplayLocation.OpportunitiesLeft, CalloutDisplayLocation.OpportunitiesRight],
-  });
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -74,8 +59,8 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
-      <OpportunityCardsContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
-        {(entities, state) => (
+      <ChallengeOpportunitiesContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
+        {({ callouts, ...entities }, state) => (
           <ChildJourneyView
             spaceNameId={spaceNameId}
             childEntities={entities.opportunities ?? undefined}
@@ -112,35 +97,33 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocation.OpportunitiesLeft]}
+                callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesLeft]}
                 spaceId={spaceNameId!}
-                canCreateCallout={canCreateCallout}
-                loading={loading}
+                canCreateCallout={callouts.canCreateCallout}
+                loading={callouts.loading}
                 journeyTypeName="challenge"
-                sortOrder={calloutsSortOrder}
-                calloutNames={calloutNames}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
+                calloutNames={callouts.calloutNames}
+                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                onCalloutUpdate={callouts.refetchCallout}
                 displayLocation={CalloutDisplayLocation.OpportunitiesLeft}
               />
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={groupedCallouts[CalloutDisplayLocation.OpportunitiesRight]}
+                callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesRight]}
                 spaceId={spaceNameId!}
-                canCreateCallout={canCreateCallout}
-                loading={loading}
+                canCreateCallout={callouts.canCreateCallout}
+                loading={callouts.loading}
                 journeyTypeName="challenge"
-                sortOrder={calloutsSortOrder}
-                calloutNames={calloutNames}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
+                calloutNames={callouts.calloutNames}
+                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                onCalloutUpdate={callouts.refetchCallout}
                 displayLocation={CalloutDisplayLocation.OpportunitiesRight}
               />
             }
           />
         )}
-      </OpportunityCardsContainer>
+      </ChallengeOpportunitiesContainer>
     </ChallengePageLayout>
   );
 };

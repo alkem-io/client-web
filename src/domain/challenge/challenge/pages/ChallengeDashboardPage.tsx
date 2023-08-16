@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
-import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
@@ -23,9 +22,10 @@ import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphq
 import { InfoOutlined } from '@mui/icons-material';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 
 export interface ChallengeDashboardPageProps {
-  dialog?: 'updates' | 'contributors';
+  dialog?: 'updates' | 'contributors' | 'calendar';
 }
 
 const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => {
@@ -37,24 +37,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const { spaceNameId, challengeNameId } = useUrlParams();
 
-  const {
-    groupedCallouts,
-    calloutNames,
-    loading,
-    calloutsSortOrder,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-    canCreateCallout,
-  } = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    displayLocations: [
-      CalloutDisplayLocation.HomeTop,
-      CalloutDisplayLocation.HomeLeft,
-      CalloutDisplayLocation.HomeRight,
-    ],
-  });
-
   const journeyTypeName = 'challenge';
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
@@ -64,7 +46,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
       <ChallengePageContainer>
-        {(entities, state) => (
+        {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
               vision={
@@ -98,6 +80,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               childEntities={entities.challenge?.opportunities ?? undefined}
               childEntitiesCount={entities.opportunitiesCount}
               communityReadAccess={entities.permissions.communityReadAccess}
+              timelineReadAccess={entities.permissions.timelineReadAccess}
               entityReadAccess={entities.permissions.challengeReadAccess}
               readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
@@ -129,17 +112,16 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               journeyTypeName="challenge"
               childEntityTitle={t('common.opportunities')}
               recommendations={
-                groupedCallouts[CalloutDisplayLocation.HomeTop] && (
+                callouts.groupedCallouts[CalloutDisplayLocation.HomeTop] && (
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocation.HomeTop]}
+                    callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeTop]}
                     spaceId={spaceNameId!}
                     canCreateCallout={false}
-                    loading={loading}
+                    loading={callouts.loading}
                     journeyTypeName="challenge"
-                    sortOrder={calloutsSortOrder}
-                    calloutNames={calloutNames}
-                    onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                    onCalloutUpdate={refetchCallout}
+                    calloutNames={callouts.calloutNames}
+                    onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={callouts.refetchCallout}
                     displayLocation={CalloutDisplayLocation.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
@@ -148,29 +130,27 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               }
               childrenLeft={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+                  callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
                   spaceId={spaceNameId!}
-                  canCreateCallout={canCreateCallout}
-                  loading={loading}
+                  canCreateCallout={callouts.canCreateCallout}
+                  loading={callouts.loading}
                   journeyTypeName="challenge"
-                  sortOrder={calloutsSortOrder}
-                  calloutNames={calloutNames}
-                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={refetchCallout}
+                  calloutNames={callouts.calloutNames}
+                  onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={callouts.refetchCallout}
                   displayLocation={CalloutDisplayLocation.HomeLeft}
                 />
               }
               childrenRight={
                 <CalloutsGroupView
-                  callouts={groupedCallouts[CalloutDisplayLocation.HomeRight]}
+                  callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
                   spaceId={spaceNameId!}
-                  canCreateCallout={canCreateCallout}
-                  loading={loading}
+                  canCreateCallout={callouts.canCreateCallout}
+                  loading={callouts.loading}
                   journeyTypeName="challenge"
-                  sortOrder={calloutsSortOrder}
-                  calloutNames={calloutNames}
-                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={refetchCallout}
+                  calloutNames={callouts.calloutNames}
+                  onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={callouts.refetchCallout}
                   displayLocation={CalloutDisplayLocation.HomeRight}
                 />
               }
@@ -186,6 +166,14 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               onClose={backToDashboard}
               dialogContent={ChallengeContributorsDialogContent}
             />
+            {entities.permissions.timelineReadAccess && (
+              <CalendarDialog
+                open={dialog === 'calendar'}
+                onClose={backToDashboard}
+                spaceNameId={spaceNameId}
+                challengeNameId={entities.challenge?.nameID}
+              />
+            )}
           </>
         )}
       </ChallengePageContainer>

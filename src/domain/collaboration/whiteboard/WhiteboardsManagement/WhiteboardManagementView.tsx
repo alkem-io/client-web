@@ -104,7 +104,7 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
           <WhiteboardDialog
             entities={{
               whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
-              lockedBy: lockedByDetailsData?.usersById[0],
+              lockedBy: lockedByDetailsData?.users[0],
             }}
             actions={{
               onCancel: handleCancel,

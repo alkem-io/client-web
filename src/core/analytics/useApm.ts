@@ -4,7 +4,7 @@ import { ApmBase, init as initApm, UserObject } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
 import { error as logError } from '../../services/logging/sentry/log';
-import { useUserContext } from '../../domain/community/contributor/user';
+import { useUserContext } from '../../domain/community/contributor/user/hooks/useUserContext';
 import { useConfig } from '../../domain/platform/config/useConfig';
 import { useUserGeo } from '../../domain/community/contributor/user/hooks/useUserGeo';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../../domain/platform/cookies/useAlkemioCookies';
@@ -25,6 +25,16 @@ export interface ApmCustomContext {
     lon?: number;
   };
   domain?: string;
+  screen?: {
+    width: number;
+    height: number;
+    orientation: OrientationType;
+  };
+  window?: {
+    width: number;
+    height: number;
+  };
+  language?: string;
 }
 
 export const useApm = (): ApmBase | undefined => {
@@ -129,6 +139,37 @@ const useCustomContext = () => {
       context.domain = user?.email?.split('@')?.[1];
     }
 
+    context.screen = getScreenInfo();
+    context.window = getWindowSize();
+    context.language = getLanguage();
+
     return context;
-  }, [userGeoData, userGeoLoading, userGeoError, userLoading, isAuthenticated, user?.email]);
+  }, [
+    userGeoData,
+    userGeoLoading,
+    userGeoError,
+    userLoading,
+    isAuthenticated,
+    user?.email,
+    getWindowSize,
+    getScreenInfo,
+  ]);
+};
+
+const getWindowSize = () => {
+  const body = document.getElementsByTagName('body')[0];
+  const width = window.innerWidth || document.documentElement.clientWidth || body.clientWidth;
+  const height = window.innerHeight || document.documentElement.clientHeight || body.clientHeight;
+
+  return { width, height };
+};
+
+const getScreenInfo = () => {
+  const { width, height, orientation } = window.screen;
+
+  return { width, height, orientation: orientation.type };
+};
+
+const getLanguage = () => {
+  return navigator.language;
 };

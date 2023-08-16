@@ -77,7 +77,7 @@ fragment InnovationFlowCollaboration on Collaboration {
   authorization {
     myPrivileges
   }
-  callouts {
+  callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
     id
     nameID
     type
@@ -86,8 +86,7 @@ fragment InnovationFlowCollaboration on Collaboration {
     profile {
       id
       displayName
-      # TODO: This would be easier with a tagset(name:'flow-state')
-      tagsets {
+      flowState: tagset(tagsetName: FLOW_STATE) {
         ...TagsetDetails
       }
     }
@@ -108,8 +107,7 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
     sortOrder
     profile {
       id
-      # TODO: Retrieve only the 'flow-state' tagset
-      tagsets {
+      flowState: tagset(tagsetName: FLOW_STATE) {
         ...TagsetDetails
       }
     }

@@ -23,7 +23,7 @@ const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ ope
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>
-          <InnovationFlowIcon /> {t('common.innovation-flow')}
+          <InnovationFlowIcon style={{ verticalAlign: 'bottom' }} /> {t('common.innovation-flow')}
         </BlockTitle>
       </DialogHeader>
       <DialogContent sx={{ paddingTop: 0 }}>
