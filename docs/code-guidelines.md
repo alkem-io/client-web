@@ -10,11 +10,11 @@ All new code should be put under `src/core`, `src/domain` or `src/platform`.
   - `src/core/ui/button/FullWidthButton.tsx`
   - `src/core/ui/dialog/DialogWithGrid.tsx`
 - `src/domain` contains components and utilities that are connected with the App domain. Their path and filename should denote to which part of the app domain they belong:
-  - `src/domain/Challenge/Challenge/ChallengeDashboardPage.tsx`
-  - `src/domain/Collaboration/Callout/CalloutView/CalloutView.tsx`
+  - `src/domain/challenge/ChallengeDashboardPage.tsx`
+  - `src/domain/collaboration/callout/calloutView/CalloutView.tsx`
 - `src/platform` contains the code that doesn't directly belong to the business domain but is specific to the app, like `PlatformFooter` or `TopLevelDesktopLayout` component:
   - `src/platform/routes/RedirectToLanding.tsx`
-  - `src/platform/ui/PlatformFooter/PlatformFooter.tsx`
+  - `src/platform/ui/platformFooter/PlatformFooter.tsx`
 
 > :warning: Please keep in mind the difference between `src/platform` and `src/domain/platform`. The latter is for placing
 > the code related to entities that belong to the Platform domain of Alkemio.
