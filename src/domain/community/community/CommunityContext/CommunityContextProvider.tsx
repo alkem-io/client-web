@@ -55,12 +55,17 @@ const CommunityContextProvider: FC = ({ children }) => {
     challengeData?.space.challenge.community ||
     opportunityData?.space.opportunity.community;
 
+  const communityName =
+    spaceData?.space.profile.displayName ||
+    challengeData?.space.challenge.profile.displayName ||
+    opportunityData?.space.opportunity.profile.displayName;
+
   const isLoading = loadingSpace || loadingChallenge || loadingOpportunity;
 
   const providedValue = useMemo<CommunityContextValue>(
     () => ({
       communityId: community?.id || '',
-      communityName: community?.displayName || '',
+      communityName: communityName || '',
       communicationId: community?.communication?.id || '',
       communicationPrivileges: community?.communication?.authorization?.myPrivileges || [],
       loading: isLoading,

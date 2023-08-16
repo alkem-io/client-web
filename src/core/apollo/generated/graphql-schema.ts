@@ -13388,7 +13388,6 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
           user: {
             __typename?: 'User';
             id: string;
@@ -13887,7 +13886,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
   user: {
     __typename?: 'User';
     id: string;
@@ -14404,7 +14402,6 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
         user: {
           __typename?: 'User';
           id: string;
@@ -14513,7 +14510,6 @@ export type ActivityLogOnCollaborationQuery = {
 export type ActivityLogMemberJoinedFragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   communityType: string;
-  community: { __typename?: 'Community'; id: string; displayName?: string | undefined };
   user: {
     __typename?: 'User';
     id: string;
@@ -21346,7 +21342,7 @@ export type SpaceApplicationQuery = {
     __typename?: 'Space';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
-    community?: { __typename?: 'Community'; id: string; displayName?: string | undefined } | undefined;
+    community?: { __typename?: 'Community'; id: string } | undefined;
   };
 };
 
@@ -21448,11 +21444,11 @@ export type ChallengeCommunityQuery = {
     challenge: {
       __typename?: 'Challenge';
       id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
       community?:
         | {
             __typename?: 'Community';
             id: string;
-            displayName?: string | undefined;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
@@ -21476,7 +21472,6 @@ export type ChallengeCommunityQuery = {
 export type CommunityDetailsFragment = {
   __typename?: 'Community';
   id: string;
-  displayName?: string | undefined;
   myMembershipStatus?: CommunityMembershipStatus | undefined;
   communication?:
     | {
@@ -21503,11 +21498,11 @@ export type OpportunityCommunityQuery = {
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
       community?:
         | {
             __typename?: 'Community';
             id: string;
-            displayName?: string | undefined;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
@@ -21538,11 +21533,11 @@ export type SpaceCommunityQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     community?:
       | {
           __typename?: 'Community';
           id: string;
-          displayName?: string | undefined;
           myMembershipStatus?: CommunityMembershipStatus | undefined;
           communication?:
             | {
@@ -22251,11 +22246,11 @@ export type CreateGroupOnCommunityMutation = {
   createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
 };
 
-export type ChallengesWithCommunityQueryVariables = Exact<{
+export type ChallengesWithProfileQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengesWithCommunityQuery = {
+export type ChallengesWithProfileQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -22266,7 +22261,6 @@ export type ChallengesWithCommunityQuery = {
           id: string;
           nameID: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
-          community?: { __typename?: 'Community'; id: string; displayName?: string | undefined } | undefined;
         }>
       | undefined;
   };
