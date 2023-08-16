@@ -36,8 +36,6 @@ one can expect the file to be named `ComponentName.tsx`.
 
 If a file doesn't have a "main" constant, try to create a descriptive common name, such as `userContext`, `sortingUtils` or `routeBuilder`.
 
-> :information_source: If the file path contains a segment that is an entity **name**, such as `Challenge`, the segment should be in *CamelCase*. If the segment denotes a component/utility **type**, it should be in *lowercase*: `ui/button`, `Challenge/pages`.
-
 > :warning: We shouldn't try to bring deep structures just to "initially create a proper order".
 > E.g.: instead of `challenge/pages/challengeDashboard`, just use `challenge/challengeDashboard`.
 > If we are specific enough in domain-based structuring there shouldn't usually be too many files in any specific folder and hence no need for functional file separation.
