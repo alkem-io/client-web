@@ -6,9 +6,9 @@ import {
   useOpportunityCommunityQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
-import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 
 /**
  * @deprecated

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import { nameOfUrl } from '../../../../../core/routing/urlParams';
-import { ChallengeProvider } from '../../../../challenge/challenge/context/ChallengeProvider';
-import ChallengeListPage from '../../../../challenge/space/pages/SpaceChallenges/ChallengeListPage';
+import { nameOfUrl } from '../../../../../main/routing/urlParams';
+import { ChallengeProvider } from '../../../../journey/challenge/context/ChallengeProvider';
+import ChallengeListPage from '../../../../journey/space/pages/SpaceChallenges/ChallengeListPage';
 import { ChallengeRoute } from './ChallengeRoute';
 
 export const ChallengesRoute: FC = () => {

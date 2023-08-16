@@ -5,7 +5,7 @@ import QuizOutlinedIzon from '@mui/icons-material/QuizOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { DialogActions, DialogContent, DialogTitle } from '../../../common/components/core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../../ui/dialog/deprecated';
 import WrapperMarkdown from '../../ui/markdown/WrapperMarkdown';
 import { useConfig } from '../../../domain/platform/config/useConfig';
 

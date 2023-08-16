@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { OpportunityProvider } from '../../../../challenge/opportunity/context/OpportunityProvider';
+import { OpportunityProvider } from '../../../../journey/opportunity/context/OpportunityProvider';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import { nameOfUrl } from '../../../../../core/routing/urlParams';
+import { nameOfUrl } from '../../../../../main/routing/urlParams';
 import { OpportunityRoute } from './OpportunityRoute';
-import ChallengeOpportunitiesPage from '../../../../challenge/challenge/pages/ChallengeOpportunities/ChallengeOpportunitiesPage';
+import ChallengeOpportunitiesPage from '../../../../journey/challenge/pages/ChallengeOpportunities/ChallengeOpportunitiesPage';
 
 export const OpportunitiesRoute: FC = () => {
   return (

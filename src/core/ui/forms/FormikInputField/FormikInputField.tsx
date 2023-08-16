@@ -3,10 +3,10 @@ import { useField } from 'formik';
 import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
-import TranslationKey from '../../../../types/TranslationKey';
+import TranslationKey from '../../../i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
-import HelpButton from '../../../../common/components/core/HelpButton';
-import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
+import HelpButton from '../../button/HelpButton';
+import CharacterCounter from '../characterCounter/CharacterCounter';
 
 export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;

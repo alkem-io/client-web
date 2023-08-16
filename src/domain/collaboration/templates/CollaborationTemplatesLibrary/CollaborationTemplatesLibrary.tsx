@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogContent, Link } from '@mui/material';
 import { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
+import { LibraryIcon } from '../LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import CollaborationTemplatesLibraryGallery from './CollaborationTemplatesLibraryGallery';
 import CollaborationTemplatesLibraryPreview from './CollaborationTemplatesLibraryPreview';

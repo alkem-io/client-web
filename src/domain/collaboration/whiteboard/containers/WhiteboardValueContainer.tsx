@@ -11,7 +11,7 @@ import {
   WhiteboardValueFragment,
   SubscriptionWhiteboardContentUpdatedArgs,
 } from '../../../../core/apollo/generated/graphql-schema';
-import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 
 export interface WhiteboardWithValue extends Omit<WhiteboardValueFragment, 'id'>, Partial<WhiteboardDetailsFragment> {}
 

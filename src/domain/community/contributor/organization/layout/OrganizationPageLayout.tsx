@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../../challenge/common/EntityPageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
 import OrganizationPageBanner from './OrganizationPageBanner';
 import { PropsWithChildren } from 'react';
 import OrganizationTabs from './OrganizationTabs';

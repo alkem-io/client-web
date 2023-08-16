@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 
 interface FetchedMessage {
   id: string;

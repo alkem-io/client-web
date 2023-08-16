@@ -6,10 +6,10 @@ import {
   useContributingOrganizationsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
 import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
-import { WithId } from '../../../../types/WithId';
+import { WithId } from '../../../../core/utils/WithId';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 
 const MAX_ITEMS_TO_SHOW = 16;

@@ -1,7 +1,7 @@
 import { Box, BoxProps, Button, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
 import React, { FC, MouseEventHandler, useMemo, useState } from 'react';
-import WhiteboardWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/WhiteboardWhiteboard';
+import ExcalidrawWrapper from '../../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import WhiteboardDialog from '../../../../collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
@@ -66,7 +66,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
     >
       {!loading ? (
         <>
-          <WhiteboardWhiteboard
+          <ExcalidrawWrapper
             entities={{
               whiteboard: whiteboardFromTemplate,
             }}

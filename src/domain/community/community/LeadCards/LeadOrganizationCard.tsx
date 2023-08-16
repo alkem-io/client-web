@@ -1,4 +1,4 @@
-import Avatar from '../../../../common/components/core/Avatar';
+import Avatar from '../../../../core/ui/image/Avatar';
 import { Box } from '@mui/material';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import { styled } from '@mui/styles';

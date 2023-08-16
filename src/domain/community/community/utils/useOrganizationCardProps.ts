@@ -5,8 +5,8 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationCardProps } from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import { MetricType } from '../../../platform/metrics/MetricType';
 
 export const toOrganizationCardProps = (org: OrganizationCardFragment): OrganizationCardProps & Identifiable => {

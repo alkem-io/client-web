@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchableList, { SearchableListItem, SearchableListProps } from './SearchableList';
-import SearchableListLayout from '../../../shared/components/SearchableListLayout';
+import SearchableListLayout from '../../../shared/components/SearchableList/SearchableListLayout';
 import { ListItemLinkProps } from '../../../shared/components/SearchableList/ListItemLink';
 
 interface ListPageProps<

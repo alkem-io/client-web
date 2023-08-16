@@ -1,4 +1,4 @@
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import { compact, groupBy, sortBy } from 'lodash';
 import React, { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';

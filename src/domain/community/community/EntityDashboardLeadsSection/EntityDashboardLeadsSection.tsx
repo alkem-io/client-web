@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../contributor/user';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';

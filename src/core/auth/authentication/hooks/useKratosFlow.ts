@@ -9,7 +9,7 @@ import {
 import { AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useKratosClient } from './useKratosClient';
-import { error as logError } from '../../../../services/logging/sentry/log';
+import { error as logError } from '../../../logging/sentry/log';
 
 type FlowTypes =
   | SelfServiceLoginFlow

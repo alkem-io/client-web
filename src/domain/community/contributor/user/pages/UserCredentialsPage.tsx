@@ -5,12 +5,12 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
-import { CredentialCard } from '../../../../../common/components/composite/common/cards';
-import OfferAlkemioCommunityCredentialDialog from '../../../../../common/components/composite/dialogs/CredentialDialog.tsx/OfferAlkemioCommunityCredentialDialog';
-import RequestCredentialDialog from '../../../../../common/components/composite/dialogs/CredentialDialog.tsx/RequestCredentialDialog';
-import QRCodeDialog from '../../../../../common/components/composite/dialogs/QRCodeDialog/QRCodeDialog';
-import { Loading } from '../../../../../common/components/core';
-import UserCredentialsContainer from '../../../../platform/VerifiedCredentials/UserCredentialsContainer';
+import CredentialCard from '../../../../agent/credential/CredentialCard';
+import OfferAlkemioCommunityCredentialDialog from '../../../../agent/credential/OfferAlkemioCommunityCredentialDialog';
+import RequestCredentialDialog from '../../../../agent/credential/RequestCredentialDialog';
+import QRCodeDialog from '../../../../../core/ui/qrCode/QRCodeDialog';
+import Loading from '../../../../../core/ui/loading/Loading';
+import UserCredentialsContainer from '../../../../agent/credential/verifiedCredentials/UserCredentialsContainer';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {
@@ -21,7 +21,7 @@ import { PageProps } from '../../../../shared/types/PageProps';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
-import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/CardsLayout/CardsLayout';
+import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/cardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
 
 interface UserCredentialsPageProps extends PageProps {}

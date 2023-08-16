@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
 import { CalloutIcon } from '../../callout/icon/CalloutIcon';
-import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
+import { DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
 import { CreatePostOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
-import { CalloutPostTemplate } from '../../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutPostTemplate } from '../../callout/creationDialog/CalloutCreationDialog';
 
 export type PostCreationType = Partial<CreatePostOnCalloutInput>;
 export type PostCreationOutput = Omit<CreatePostOnCalloutInput, 'calloutID'>;

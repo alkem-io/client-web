@@ -1,14 +1,14 @@
 import React, { ChangeEvent, FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
-import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
-import TranslationKey from '../../../../types/TranslationKey';
+import CharacterCounter from '../characterCounter/CharacterCounter';
+import TranslationKey from '../../../i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
 import { gutters } from '../../grid/utils';
 import { MarkdownFieldMaxLength, TextFieldMaxLength } from '../field-length.constants';
-import { error as logError } from '../../../../services/logging/sentry/log';
+import { error as logError } from '../../../logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 
 interface MarkdownFieldProps extends InputProps {

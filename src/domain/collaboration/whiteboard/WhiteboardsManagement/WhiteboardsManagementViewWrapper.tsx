@@ -13,7 +13,7 @@ import WhiteboardManagementView, {
   ActiveWhiteboardIdHolder,
   WhiteboardNavigationMethods,
 } from './WhiteboardManagementView';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 export interface WhiteboardsManagementViewWrapperProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import PostDashboardPage from '../pages/PostDashboardPage';
 import PostSettingsPage from '../pages/PostSettingsPage';

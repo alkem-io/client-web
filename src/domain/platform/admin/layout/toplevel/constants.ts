@@ -2,7 +2,7 @@ import { TabDefinition } from '../EntitySettingsLayout/EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import { SpaceIcon } from '../../../../challenge/space/icon/SpaceIcon';
+import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';
 
 export enum AdminSection {
   Space = 'spaces',

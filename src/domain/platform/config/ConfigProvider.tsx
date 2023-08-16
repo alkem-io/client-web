@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import queryRequest from '../../../common/utils/query-request/query-request';
-import { Loading } from '../../../common/components/core';
+import queryRequest from '../../../core/http/queryRequest';
+import Loading from '../../../core/ui/loading/Loading';
 import { ConfigurationDocument } from '../../../core/apollo/generated/apollo-hooks';
 import { ConfigurationQuery } from '../../../core/apollo/generated/graphql-schema';
-import { logger } from '../../../services/logging/winston/logger';
+import { logger } from '../../../core/logging/winston/logger';
 import { Configuration } from './configuration';
 import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
 

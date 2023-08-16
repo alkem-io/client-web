@@ -1,6 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 import { gutters } from '../../../grid/utils';
-import { TopBarHeightGutters } from '../../../../../common/components/composite/layout/TopBar/TopBar';
+import { TopBarHeightGutters } from '../../../../../main/ui/layout/topBar/TopBar';
 
 const MuiDialog: Components<Theme>['MuiDialog'] = {
   styleOverrides: {

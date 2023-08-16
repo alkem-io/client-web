@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { from, InMemoryCache, NormalizedCacheObject, ApolloClient } from '@apollo/client';
 import { once } from 'lodash';
-import { env } from '../../../types/env';
+import { env } from '../../../main/env';
 import {
   omitTypenameLink,
   consoleLink,
@@ -10,7 +10,7 @@ import {
   redirectLink,
   httpLink,
   useErrorReporterLink,
-} from '../../../common/utils/graphql-links';
+} from '../graphqlLinks';
 import { typePolicies } from '../config/typePolicies';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');

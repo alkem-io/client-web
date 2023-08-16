@@ -8,7 +8,7 @@ import {
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../../../common/utils/containers/ComponentOrChildrenFn';
+} from '../../../../../core/container/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<

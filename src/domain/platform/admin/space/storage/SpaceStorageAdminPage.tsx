@@ -26,7 +26,7 @@ import {
   buildDocumentUrl,
   buildSpaceUrl,
   buildUserProfileUrl,
-} from '../../../../../common/utils/urlBuilders';
+} from '../../../../../main/routing/urlBuilders';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { compact, sortBy } from 'lodash';

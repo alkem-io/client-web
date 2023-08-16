@@ -3,8 +3,8 @@ import { CircularProgress } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
-import UploadButton from '../../../../common/components/core/UploadButton';
-import { StorageConfig } from '../../../../domain/platform/storage/StorageBucket/useStorageConfig';
+import UploadButton from '../../button/UploadButton';
+import { StorageConfig } from '../../../../domain/storage/StorageBucket/useStorageConfig';
 import { useUploadFileMutation, useUploadFileOnReferenceMutation } from '../../../apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 

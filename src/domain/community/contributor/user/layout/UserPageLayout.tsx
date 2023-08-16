@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../../challenge/common/EntityPageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
 import UserPageBanner from './UserPageBanner';
 import { PropsWithChildren } from 'react';
 import UserTabs from './UserTabs';

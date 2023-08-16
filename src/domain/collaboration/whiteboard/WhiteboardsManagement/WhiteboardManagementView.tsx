@@ -15,7 +15,7 @@ import {
 import { ViewProps } from '../../../../core/container/view';
 import { useWhiteboardLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
 
 export interface ActiveWhiteboardIdHolder {

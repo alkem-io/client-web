@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { buildCalloutUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { buildCalloutUrl, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../core/ui/list/LinksList';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';

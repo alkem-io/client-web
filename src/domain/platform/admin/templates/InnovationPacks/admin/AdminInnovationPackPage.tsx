@@ -14,10 +14,10 @@ import AdminInnovationTemplatesSection from '../../InnovationTemplates/AdminInno
 import AdminPostTemplatesSection from '../../PostTemplates/AdminPostTemplatesSection';
 import AdminWhiteboardTemplatesSection from '../../WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
-import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import { StorageConfigContextProvider } from '../../../../../storage/StorageBucket/StorageConfigContext';
 import { EntityPageSection } from '../../../../../shared/layout/EntityPageSection';
 import InnovationPackProfileLayout from '../../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfileLayout';
-import { buildOrganizationUrl } from '../../../../../../common/utils/urlBuilders';
+import { buildOrganizationUrl } from '../../../../../../main/routing/urlBuilders';
 import { buildInnovationPackUrl } from '../../../../../collaboration/InnovationPack/urlBuilders';
 import PageContentColumn from '../../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../../core/ui/content/PageContent';

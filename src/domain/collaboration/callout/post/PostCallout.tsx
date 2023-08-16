@@ -2,7 +2,7 @@ import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import PostCreationDialog from '../../post/PostCreationDialog/PostCreationDialog';
 import {
   PostCardFragmentDoc,
@@ -11,7 +11,7 @@ import {
 import { usePostCreatedOnCalloutSubscription } from '../usePostCreatedOnCalloutSubscription';
 import { CalloutState, CreatePostOnCalloutInput, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { buildPostUrl } from '../../../../common/utils/urlBuilders';
+import { buildPostUrl } from '../../../../main/routing/urlBuilders';
 import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';

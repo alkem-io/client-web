@@ -15,7 +15,7 @@ import useAvailableCommunityUsers, {
   UserFilterHolder,
 } from './useAvailableCommunityUsers';
 import { QueryHookOptions, QueryResult } from '@apollo/client/react/types/types';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import { PossiblyUndefinedProps } from '../../../shared/types/PossiblyUndefinedProps';
 
 type MemberTypes = 'member' | 'lead';

@@ -11,7 +11,7 @@ import {
   CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { getWhiteboardCallout } from './getWhiteboardCallout';
-import { JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 
 interface WhiteboardLocation extends JourneyLocation {
   calloutNameId: string;

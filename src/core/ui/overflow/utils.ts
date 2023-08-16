@@ -1,5 +1,5 @@
 import { Theme } from '@mui/material/styles';
-import hexToRGBA from '../../../common/utils/hexToRGBA';
+import hexToRGBA from '../../utils/hexToRGBA';
 
 export type BackgroundColor = keyof Theme['palette']['background'];
 

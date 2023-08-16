@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
-import { ApplicationButtonProps } from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
+import { ApplicationButtonProps } from '../applicationButton/ApplicationButton';
 import { useUserContext } from '../../contributor/user';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { buildChallengeApplyUrl, buildSpaceApplyUrl, buildSpaceUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeApplyUrl, buildSpaceApplyUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../shared/utils/apollo-cache/clearCacheForType';

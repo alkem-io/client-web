@@ -1,4 +1,4 @@
-import { WithId } from '../../../../types/WithId';
+import { WithId } from '../../../../core/utils/WithId';
 import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import {
   AssociatedOrganizationDetailsFragment,

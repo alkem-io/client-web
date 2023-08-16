@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Loading } from '../../../../../common/components/core';
+import Loading from '../../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';

@@ -4,7 +4,7 @@ import { useConfig } from '../../../../platform/config/useConfig';
 import { FEATURE_SSI } from '../../../../platform/config/features.constants';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import { EntityPageLayoutHolder } from '../../../../challenge/common/EntityPageLayout';
+import { EntityPageLayoutHolder } from '../../../../journey/common/EntityPageLayout';
 import EditUserProfilePage from '../pages/EditUserProfilePage';
 import UserCredentialsPage from '../pages/UserCredentialsPage';
 import UserMembershipPage from '../pages/UserMembershipPage';

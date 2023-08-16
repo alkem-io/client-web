@@ -8,7 +8,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../../core/container/view';
 import { useUserContext } from '../hooks/useUserContext';
-import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
+import PreferenceSection from '../../../../../main/ui/settings/PreferenceSection';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { GUTTER_MUI } from '../../../../../core/ui/grid/constants';
 

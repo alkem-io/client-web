@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useUserContext } from '../../contributor/user';
-import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 
 export const ProfileRoute: FC = () => {
   const { user, loading } = useUserContext();

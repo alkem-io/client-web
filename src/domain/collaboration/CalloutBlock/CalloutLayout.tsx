@@ -11,11 +11,11 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { CalloutSummary } from '../callout/CalloutSummary';
-import CalloutVisibilityChangeDialog from '../callout/edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
-import CalloutEditDialog from '../callout/edit/edit-dialog/CalloutEditDialog';
+import CalloutVisibilityChangeDialog from '../callout/edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
+import CalloutEditDialog from '../callout/edit/editDialog/CalloutEditDialog';
 import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import { CalloutPostTemplate, CalloutWhiteboardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutPostTemplate, CalloutWhiteboardTemplate } from '../callout/creationDialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
 import { CalloutLayoutEvents, CalloutSortProps } from '../callout/CalloutViewTypes';
@@ -40,7 +40,7 @@ import { ExpandContentIcon } from '../../../core/ui/content/ExpandContent';
 import { Reference, Tagset } from '../../common/profile/Profile';
 import References from '../../shared/components/References/References';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import { JourneyTypeName } from '../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {

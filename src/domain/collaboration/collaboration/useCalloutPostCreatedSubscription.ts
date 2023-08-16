@@ -4,7 +4,7 @@ import {
   CalloutPostCreatedSubscription,
   CalloutPostCreatedSubscriptionVariables,
 } from '../../../core/apollo/generated/graphql-schema';
-import createUseSubscriptionToSubEntityHook from '../../shared/subscriptions/useSubscriptionToSubEntity';
+import createUseSubscriptionToSubEntityHook from '../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 
 const useCalloutPostCreatedSubscription = createUseSubscriptionToSubEntityHook<
   PostsOnCalloutFragment,

@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { once } from 'lodash';
 import { useConfig } from '../../../../domain/platform/config/useConfig';
 import { AuthenticationProviderConfigUnion, OryConfig } from '../../../apollo/generated/graphql-schema';
-import { error as logError } from '../../../../services/logging/sentry/log';
+import { error as logError } from '../../../logging/sentry/log';
 
 export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryConfig {
   return (pet as OryConfig).__typename === 'OryConfig';
@@ -46,7 +46,7 @@ const getKratosErrorMessage = (requestError: AxiosError) => {
 const createAxiosClient = () => {
   const client = axios.create({
     withCredentials: true,
- });
+  });
   client.interceptors.response.use(
     value => {
       try {

@@ -1,5 +1,5 @@
 import { useConfig } from '../config/useConfig';
-import { env } from '../../../types/env';
+import { env } from '../../../main/env';
 
 const usePlatformOrigin = () => {
   const { platform, loading } = useConfig();

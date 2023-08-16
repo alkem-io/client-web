@@ -17,13 +17,13 @@ import {
   ReferenceDetailsFragment,
   CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
+import { CalloutPostTemplate } from '../creationDialog/CalloutCreationDialog';
 import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
 import { Tagset } from '../../../common/profile/Profile';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
-import { getJourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 
 interface CalloutChildTypePropName {
   [CalloutType.PostCollection]: 'posts';

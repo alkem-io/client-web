@@ -6,10 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Caption, PageTitle } from '../../../../../core/ui/typography/components';
-import CircleTag from '../../../../../common/components/core/CircleTag';
-import { VerifiedStatus } from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
+import CircleTag from '../../../../../core/ui/tags/CircleTag';
+import { OrganizationVerifiedStatus } from '../../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
 import OrganizationCardContainer from './OrganizationCardContainer';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../../core/ui/dialog/deprecated';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 
 interface OrganizationCardProps {
@@ -97,10 +97,10 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
             </Box>
             {loading ? (
               <Skeleton>
-                <VerifiedStatus verified={Boolean(verified)} />
+                <OrganizationVerifiedStatus verified={Boolean(verified)} />
               </Skeleton>
             ) : (
-              <VerifiedStatus verified={Boolean(verified)} />
+              <OrganizationVerifiedStatus verified={Boolean(verified)} />
             )}
           </Box>
         }

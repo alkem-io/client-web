@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
-import { UserForm } from '../../../../../common/components/composite/forms/UserForm';
-import { Loading } from '../../../../../common/components/core';
+import { UserForm } from '../../../user/userForm/UserForm';
+import Loading from '../../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
@@ -15,13 +15,13 @@ import {
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import { UserModel } from '../models/User';
-import { logger } from '../../../../../services/logging/winston/logger';
-import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
+import { logger } from '../../../../../core/logging/winston/logger';
+import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import { PageProps } from '../../../../shared/types/PageProps';
-import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
+import { getUpdateUserInput } from '../../../user/utils/getUpdateUserInput';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { StorageConfigContextProvider } from '../../../../platform/storage/StorageBucket/StorageConfigContext';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 interface EditUserProfilePageProps extends PageProps {}
 

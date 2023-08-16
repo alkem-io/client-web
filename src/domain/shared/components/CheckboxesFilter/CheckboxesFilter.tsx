@@ -1,6 +1,6 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { Button, Menu, MenuItem, Switch } from '@mui/material';
-import { Identifiable } from '../../types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import { uniqBy } from 'lodash';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 

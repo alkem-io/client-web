@@ -3,9 +3,9 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
-import CircleTag from '../../../../../common/components/core/CircleTag';
-import LinkCard from '../../../../../common/components/core/LinkCard/LinkCard';
-import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
+import CircleTag from '../../../../../core/ui/tags/CircleTag';
+import LinkCard from '../../../../../core/ui/card/LinkCard';
+import OrganizationVerifiedStatus from '../../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
 import LocationCaption from '../../../../../core/ui/location/LocationCaption';
 
 export interface OrganizationCardProps {
@@ -106,10 +106,10 @@ const OrganizationCardHorizontal: FC<OrganizationCardProps> = ({
             </Box>
             {loading ? (
               <Skeleton>
-                <VerifiedStatus verified={Boolean(verified)} />
+                <OrganizationVerifiedStatus verified={Boolean(verified)} />
               </Skeleton>
             ) : (
-              <VerifiedStatus verified={Boolean(verified)} />
+              <OrganizationVerifiedStatus verified={Boolean(verified)} />
             )}
           </Box>
         }

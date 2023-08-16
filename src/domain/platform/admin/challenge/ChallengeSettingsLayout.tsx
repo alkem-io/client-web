@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import ChallengePageBanner from '../../../challenge/challenge/layout/ChallengePageBanner';
-import ChallengeTabs from '../../../challenge/challenge/layout/ChallengeTabs';
+import ChallengePageBanner from '../../../journey/challenge/layout/ChallengePageBanner';
+import ChallengeTabs from '../../../journey/challenge/layout/ChallengeTabs';
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 
 interface ChallengeSettingsLayoutProps {

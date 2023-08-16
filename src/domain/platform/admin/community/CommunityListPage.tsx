@@ -1,13 +1,13 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { Loading } from '../../../../common/components/core';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import Loading from '../../../../core/ui/loading/Loading';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useDeleteUserGroup } from '../components/Group/useDeleteUserGroup';
 import { useCommunityGroupsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import SearchableList, { SearchableListItem } from '../components/SearchableList';
 import { Link } from 'react-router-dom';
-import WrapperButton from '../../../../common/components/core/WrapperButton';
+import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
 
 interface CommunityGroupListPageProps {
   communityId: string;

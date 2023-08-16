@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CountrySelect from './CountrySelect';
 import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormRow from '../../../common/components/FormLayout';
+import FormRow from '../../../core/ui/forms/FormRow';
 
 interface LocationSegmentProps {
   cols?: number;

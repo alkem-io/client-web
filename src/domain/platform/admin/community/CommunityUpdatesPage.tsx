@@ -2,7 +2,7 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import { WithCommunity } from '../components/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { CommunityUpdatesView } from '../../../community/community/views/CommunityUpdates/CommunityUpdatesView';
 
 interface CommunityUpdatesPageProps extends WithCommunity {}

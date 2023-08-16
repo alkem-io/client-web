@@ -1,7 +1,7 @@
 import { TextFieldMaxLength } from '../field-length.constants';
 import { string } from 'yup';
 import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '../../../../types/TranslationKey';
+import TranslationKey from '../../../i18n/utils/TranslationKey';
 import { ValidationMessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation/ValidationMessageWithPayload';
 
 const translationKey: TranslationKey = 'components.wysiwyg-editor.validation.maxLength';

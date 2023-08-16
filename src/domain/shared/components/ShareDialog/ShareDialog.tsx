@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
 import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
-import { DialogContent } from '../../../../common/components/core/dialog';
+import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;

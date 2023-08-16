@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { ComponentType, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
+import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 import {
   useInnovationPackProfilePageQuery,
   usePlatformWhiteboardTemplateValueQuery,

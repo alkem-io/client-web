@@ -18,7 +18,7 @@ import {
   toSocialNetworkEnum,
 } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import { AuthorizationPrivilege, OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import {
   ADMIN_TRANSLATION_KEY,

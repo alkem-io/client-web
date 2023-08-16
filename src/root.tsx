@@ -10,15 +10,15 @@ import ServerMetadataProvider from './domain/platform/metadata/ServerMetadataPro
 import RootThemeProvider from './core/ui/themes/RootThemeProvider';
 import { UserProvider } from './domain/community/contributor/user/providers/UserProvider/UserProvider';
 import './core/i18n/config';
-import { TopLevelRoutes } from './core/routing/TopLevelRoutes';
+import { TopLevelRoutes } from './main/routing/TopLevelRoutes';
 import ScrollToTop from './core/routing/ScrollToTop';
 import { CookiesProvider } from 'react-cookie';
-import { privateGraphQLEndpoint, publicGraphQLEndpoint } from './common/constants/endpoints';
+import { privateGraphQLEndpoint, publicGraphQLEndpoint } from './main/constants/endpoints';
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
 import { SearchContextProvider } from './domain/platform/search/SearchContext';
-import ChatWidget from './common/components/core/ChatWidget/ChatWidget';
+import ChatWidget from './main/guidance/chatWidget/ChatWidget';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {

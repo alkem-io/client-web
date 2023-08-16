@@ -4,7 +4,7 @@ import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import AdminUsersPage from '../AdminUsers/AdminUsersPage';
 import UserPage from '../pages/UserPage';
-import { nameOfUrl } from '../../../../../core/routing/urlParams';
+import { nameOfUrl } from '../../../../../main/routing/urlParams';
 
 export const UsersRoute: FC = () => {
   return (

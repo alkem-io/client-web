@@ -8,7 +8,7 @@ import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import ContributionDetailsCard from '../../ContributionDetails/ContributionDetailsCard';
-import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 
 interface ContributionViewProps {
   title: string;

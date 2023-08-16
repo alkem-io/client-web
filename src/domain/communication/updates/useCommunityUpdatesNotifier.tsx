@@ -4,7 +4,7 @@ import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloError
 import { useNotification } from '../../../core/ui/notifications/useNotification';
 import { usePlatformUpdatesRoomQuery, useRoomEventsSubscription } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
-import { logger } from '../../../services/logging/winston/logger';
+import { logger } from '../../../core/logging/winston/logger';
 import { MutationType } from '../../../core/apollo/generated/graphql-schema';
 
 const useCommunityUpdatesNotifier = () => {

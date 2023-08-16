@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
-import { Identifiable } from '../../../shared/types/Identifiable';
-import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import filterFn, { ValueType } from '../../../../core/utils/filtering/filterFn';
 import InnovationPacksView from './InnovationPacksView';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 

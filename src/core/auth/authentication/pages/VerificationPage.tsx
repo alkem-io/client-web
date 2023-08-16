@@ -1,7 +1,7 @@
 import React, { FC, MouseEventHandler, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
-import Loading from '../../../../common/components/core/Loading/Loading';
+import Loading from '../../../ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '@mui/styles';
-import { EntityTabsProps } from '../../challenge/common/EntityPageLayout';
+import { EntityTabsProps } from '../../journey/common/EntityPageLayout';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
@@ -8,10 +8,10 @@ import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { SettingsOutlined, ShareOutlined, SvgIconComponent } from '@mui/icons-material';
 import { EntityPageSection } from './EntityPageSection';
 import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
-import hexToRGBA from '../../../common/utils/hexToRGBA';
+import hexToRGBA from '../../../core/utils/hexToRGBA';
 import HeaderNavigationTabs from '../components/PageHeader/HeaderNavigationTabs';
-import { FloatingActionButtons } from '../../../common/components/core';
-import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
+import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
+import PlatformHelpButton from '../../../main/ui/helpButton/PlatformHelpButton';
 import useShare from '../../../core/utils/Share';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
@@ -90,7 +90,7 @@ const ProfileTabs = ({
             )}
           </BottomNavigation>
         </Paper>
-        <FloatingActionButtons bottom={theme => theme.spacing(10)} floatingActions={<HelpButton />} />
+        <FloatingActionButtons bottom={theme => theme.spacing(10)} floatingActions={<PlatformHelpButton />} />
         {shareDialog}
       </>
     );

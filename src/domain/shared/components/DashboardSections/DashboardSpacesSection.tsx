@@ -1,9 +1,9 @@
 import React, { FC, ReactNode } from 'react';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import SpaceCard, { SpaceCardProps } from '../../../challenge/space/SpaceCard/SpaceCard';
-import { buildSpaceUrl } from '../../../../common/utils/urlBuilders';
+import SpaceCard, { SpaceCardProps } from '../../../journey/space/SpaceCard/SpaceCard';
+import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';

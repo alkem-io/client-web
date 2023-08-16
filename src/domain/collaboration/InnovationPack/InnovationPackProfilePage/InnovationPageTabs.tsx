@@ -4,7 +4,7 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildInnovationPackSettingsUrl, buildInnovationPackUrl } from '../urlBuilders';
 import InnovationPackIcon from '../InnovationPackIcon';
-import { EntityTabsProps } from '../../../challenge/common/EntityPageLayout';
+import { EntityTabsProps } from '../../../journey/common/EntityPageLayout';
 
 export interface InnovationPageTabsProps extends EntityTabsProps {
   showSettings: boolean;

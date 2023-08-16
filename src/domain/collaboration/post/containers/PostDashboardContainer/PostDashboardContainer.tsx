@@ -17,10 +17,10 @@ import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFrom
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../../../common/utils/containers/ComponentOrChildrenFn';
+} from '../../../../../core/container/ComponentOrChildrenFn';
 import { getCardCallout } from '../getPostCallout';
-import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
-import { buildAuthorFromUser } from '../../../../../common/utils/buildAuthorFromUser';
+import { buildPostUrl } from '../../../../../main/routing/urlBuilders';
+import { buildAuthorFromUser } from '../../../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../../callout/useSubscribeOnRoomEvents';
 import { compact } from 'lodash';

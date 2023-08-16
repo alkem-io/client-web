@@ -13,14 +13,14 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import useLazyLoading from '../../shared/pagination/useLazyLoading';
 import ImageBackdrop from '../../shared/components/Backdrops/ImageBackdrop';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../common/utils/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../main/routing/urlBuilders';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
-import ScrollableCardsLayoutContainer from '../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import GridItem from '../../../core/ui/grid/GridItem';
 import { useColumns } from '../../../core/ui/grid/GridContext';
 import GridProvider from '../../../core/ui/grid/GridProvider';
-import { Identifiable } from '../../shared/types/Identifiable';
+import { Identifiable } from '../../../core/utils/Identifiable';
 
 const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 16;

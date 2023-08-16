@@ -8,10 +8,10 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { ContributionItem } from '../../contributor/contribution';
-import { buildChallengeUrl, buildSpaceUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl, buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export interface EntityDetailsContainerEntities {

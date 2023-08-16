@@ -7,11 +7,11 @@ import { debounce } from 'lodash';
 import { useUserContext } from './user';
 import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
-import TopLevelDesktopLayout from '../../platform/ui/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../main/ui/layout/TopLevelDesktopLayout';
 import { PageTitle, Text } from '../../../core/ui/typography';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
-import useInnovationHubOutsideRibbon from '../../platform/InnovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import useInnovationHubOutsideRibbon from '../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 
 export interface ContributorsPageProps {}
 
