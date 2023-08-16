@@ -1,0 +1,39 @@
+query CalloutId(
+  $calloutNameId: UUID_NAMEID!
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          id
+        }
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          id
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          id
+        }
+      }
+    }
+  }
+}

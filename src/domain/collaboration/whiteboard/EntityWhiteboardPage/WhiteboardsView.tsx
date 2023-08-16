@@ -4,6 +4,7 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 import { buildWhiteboardUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { useCalloutIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface WhiteboardsPageProps extends JourneyLocation {
   whiteboardNameId: string;
@@ -29,15 +30,26 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
     challengeNameId,
     opportunityNameId,
   });
+  const { data } = useCalloutIdQuery({
+    variables: {
+      calloutNameId,
+      spaceNameId,
+      challengeNameId,
+      opportunityNameId,
+      includeSpace: !challengeNameId && !opportunityNameId,
+      includeChallenge: !!challengeNameId && !opportunityNameId,
+      includeOpportunity: !!challengeNameId && !!opportunityNameId,
+    },
+    skip: !spaceNameId || !calloutNameId,
+  });
+
+  const calloutId =
+    data?.space.collaboration?.callouts?.[0].id ??
+    data?.space.challenge?.collaboration?.callouts?.[0].id ??
+    data?.space.opportunity?.collaboration?.callouts?.[0].id;
 
   return (
-    <WhiteboardProvider
-      whiteboardNameId={whiteboardNameId}
-      calloutNameId={calloutNameId}
-      spaceNameId={spaceNameId}
-      challengeNameId={challengeNameId}
-      opportunityNameId={opportunityNameId}
-    >
+    <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId} spaceId={spaceNameId}>
       {(entities, state) => (
         <WhiteboardsManagementViewWrapper
           whiteboardNameId={whiteboardNameId}
