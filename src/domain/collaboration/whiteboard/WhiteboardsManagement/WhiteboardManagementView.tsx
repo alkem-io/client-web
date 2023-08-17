@@ -88,8 +88,8 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
   const isWhiteboardAvailable = whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.Available;
 
   const { data: lockedByDetailsData } = useWhiteboardLockedByDetailsQuery({
-    variables: whiteboard?.checkout?.lockedBy ? { ids: [whiteboard?.checkout?.lockedBy] } : { ids: [] },
-    skip: isWhiteboardCheckedOutByMe,
+    variables: { ids: [whiteboard?.checkout?.lockedBy!] },
+    skip: !whiteboard?.checkout?.lockedBy,
   });
 
   const handleCancel = (whiteboard: WhiteboardDetailsFragment) => {
@@ -104,7 +104,9 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
           <WhiteboardDialog
             entities={{
               whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
-              lockedBy: lockedByDetailsData?.users[0],
+              lockedBy: isWhiteboardAvailable
+                ? undefined
+                : lockedByDetailsData?.users?.find(user => user.id === whiteboard?.checkout?.lockedBy),
             }}
             actions={{
               onCancel: handleCancel,

@@ -1,6 +1,7 @@
 import { FC, useCallback, useMemo } from 'react';
 import {
   WhiteboardDetailsFragmentDoc,
+  refetchWhiteboardFromCalloutQuery,
   useCheckoutWhiteboardMutation,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
@@ -35,9 +36,11 @@ export interface WhiteboardActionsContainerState {
 }
 
 export interface WhiteboardActionsContainerProps
-  extends ContainerChildProps<{}, IWhiteboardActions, WhiteboardActionsContainerState> {}
+  extends ContainerChildProps<{}, IWhiteboardActions, WhiteboardActionsContainerState> {
+  calloutId: string;
+}
 
-const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ children }) => {
+const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ calloutId, children }) => {
   const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({});
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
@@ -118,23 +121,6 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
       }
 
       await checkoutWhiteboard({
-        update: (cache, { data }) => {
-          cache.modify({
-            id: cache.identify({
-              id: whiteboard.id,
-              __typename: 'Whiteboard',
-            }),
-            fields: {
-              checkout(existingCheckout) {
-                const output = data?.eventOnWhiteboardCheckout;
-                if (output) {
-                  return output;
-                }
-                return existingCheckout;
-              },
-            },
-          });
-        },
         variables: {
           input: {
             whiteboardCheckoutID: whiteboard.checkout?.id,
@@ -142,6 +128,12 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
             errorOnFailedTransition: false,
           },
         },
+        refetchQueries: [
+          refetchWhiteboardFromCalloutQuery({
+            whiteboardId: whiteboard.id,
+            calloutId: calloutId,
+          }),
+        ],
       });
     };
 

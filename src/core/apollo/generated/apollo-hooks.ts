@@ -12302,6 +12302,81 @@ export function useWhiteboardContentUpdatedSubscription(
 export type WhiteboardContentUpdatedSubscriptionHookResult = ReturnType<typeof useWhiteboardContentUpdatedSubscription>;
 export type WhiteboardContentUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.WhiteboardContentUpdatedSubscription>;
+export const WhiteboardCheckoutStatusDocument = gql`
+  query whiteboardCheckoutStatus($whiteboardId: UUID!) {
+    lookup {
+      whiteboard(ID: $whiteboardId) {
+        id
+        checkout {
+          id
+          lockedBy
+          status
+          lifecycle {
+            id
+            nextEvents
+          }
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useWhiteboardCheckoutStatusQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardCheckoutStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardCheckoutStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardCheckoutStatusQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardCheckoutStatusQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardCheckoutStatusQuery,
+    SchemaTypes.WhiteboardCheckoutStatusQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardCheckoutStatusQuery, SchemaTypes.WhiteboardCheckoutStatusQueryVariables>(
+    WhiteboardCheckoutStatusDocument,
+    options
+  );
+}
+
+export function useWhiteboardCheckoutStatusLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardCheckoutStatusQuery,
+    SchemaTypes.WhiteboardCheckoutStatusQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardCheckoutStatusQuery,
+    SchemaTypes.WhiteboardCheckoutStatusQueryVariables
+  >(WhiteboardCheckoutStatusDocument, options);
+}
+
+export type WhiteboardCheckoutStatusQueryHookResult = ReturnType<typeof useWhiteboardCheckoutStatusQuery>;
+export type WhiteboardCheckoutStatusLazyQueryHookResult = ReturnType<typeof useWhiteboardCheckoutStatusLazyQuery>;
+export type WhiteboardCheckoutStatusQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardCheckoutStatusQuery,
+  SchemaTypes.WhiteboardCheckoutStatusQueryVariables
+>;
+export function refetchWhiteboardCheckoutStatusQuery(variables: SchemaTypes.WhiteboardCheckoutStatusQueryVariables) {
+  return { query: WhiteboardCheckoutStatusDocument, variables: variables };
+}
+
 export const ProfileVerifiedCredentialDocument = gql`
   subscription profileVerifiedCredential {
     profileVerifiedCredential {

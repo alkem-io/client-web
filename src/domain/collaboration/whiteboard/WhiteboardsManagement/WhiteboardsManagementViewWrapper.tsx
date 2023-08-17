@@ -62,7 +62,7 @@ const WhiteboardsManagementViewWrapper: FC<WhiteboardsManagementViewWrapperProps
   const hasUpdatePrivileges = authorization?.myPrivileges?.includes(updatePrivilege);
 
   return (
-    <WhiteboardActionsContainer>
+    <WhiteboardActionsContainer calloutId={calloutId}>
       {(_, actionsState, actions) => (
         <WhiteboardManagementView
           entities={{
