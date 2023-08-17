@@ -149,14 +149,14 @@ Usages:
 ```js
 // Wrong
 const MyComponent = ({ prop }) => {
-  const Component = () => <Input color="prop" />;
+  const Component = () => <Input color={prop} />;
 
   return <MyForm inputComponent={Component} />;
 };
 
 // Correct
 const MyComponent = ({ prop }) => {
-  const Component = useMemo(() => () => <Input color="prop" />, [prop]);
+  const Component = useMemo(() => () => <Input color={prop} />, [prop]);
 
   return <MyForm inputComponent={Component} />;
 };
