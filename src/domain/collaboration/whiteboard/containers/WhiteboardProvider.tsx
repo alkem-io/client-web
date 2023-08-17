@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
 import {
-  useChallengeWhiteboardFromCalloutQuery,
-  useSpaceWhiteboardFromCalloutQuery,
-  useOpportunityWhiteboardFromCalloutQuery,
+  useWhiteboardFromCalloutQuery,
   useWhiteboardTemplatesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -10,11 +8,10 @@ import {
   CollaborationWithWhiteboardDetailsFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { getWhiteboardCallout } from './getWhiteboardCallout';
-import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 
-interface WhiteboardLocation extends JourneyLocation {
-  calloutNameId: string;
+interface WhiteboardLocation {
+  calloutId: string | undefined;
+  spaceId: string;
   whiteboardNameId: string;
 }
 
@@ -35,10 +32,8 @@ export interface IProvidedEntitiesState {
 }
 
 const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
-  spaceNameId: spaceId,
-  challengeNameId: challengeId = '',
-  opportunityNameId: opportunityId = '',
-  calloutNameId: calloutId,
+  spaceId,
+  calloutId,
   whiteboardNameId: whiteboardId,
   children,
 }) => {
@@ -46,31 +41,14 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
     variables: { spaceId },
   });
 
-  const { data: spaceData, loading: loadingSpace } = useSpaceWhiteboardFromCalloutQuery({
-    variables: { spaceId, calloutId, whiteboardId },
-    skip: !!(challengeId || opportunityId),
+  const { data, loading } = useWhiteboardFromCalloutQuery({
+    variables: { calloutId: calloutId!, whiteboardId },
+    skip: !calloutId || !whiteboardId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: challengeData, loading: loadingChallenge } = useChallengeWhiteboardFromCalloutQuery({
-    variables: { spaceId, challengeId, calloutId, whiteboardId },
-    skip: !challengeId || !!opportunityId,
-    errorPolicy: 'all',
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityWhiteboardFromCalloutQuery({
-    variables: { opportunityId, calloutId, whiteboardId },
-    skip: !opportunityId,
-    errorPolicy: 'all',
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const callout =
-    getWhiteboardCallout(spaceData?.space.collaboration?.callouts, calloutId) ??
-    getWhiteboardCallout(challengeData?.space.challenge.collaboration?.callouts, calloutId) ??
-    getWhiteboardCallout(opportunityData?.lookup.opportunity?.collaboration?.callouts, calloutId);
+  const callout = data?.lookup.callout;
 
   const whiteboard =
     callout?.whiteboards?.find(whiteboard => whiteboard.nameID === whiteboardId || whiteboard.id === whiteboardId) ??
@@ -81,10 +59,7 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
 
   return (
     <>
-      {children(
-        { whiteboard, templates, calloutId, authorization },
-        { loadingWhiteboards: loadingSpace || loadingChallenge || loadingOpportunity, loadingTemplates }
-      )}
+      {children({ whiteboard, templates, calloutId, authorization }, { loadingWhiteboards: loading, loadingTemplates })}
     </>
   );
 };
