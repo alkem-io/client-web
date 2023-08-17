@@ -20,6 +20,7 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
   spaceNameId,
   challengeNameId,
   opportunityNameId,
+  journeyTypeName,
   ...props
 }) => {
   const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
@@ -30,15 +31,16 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
     challengeNameId,
     opportunityNameId,
   });
+
   const { data } = useCalloutIdQuery({
     variables: {
       calloutNameId,
       spaceNameId,
       challengeNameId,
       opportunityNameId,
-      includeSpace: !challengeNameId && !opportunityNameId,
-      includeChallenge: !!challengeNameId && !opportunityNameId,
-      includeOpportunity: !!challengeNameId && !!opportunityNameId,
+      isSpace: journeyTypeName === 'space',
+      isChallenge: journeyTypeName === 'challenge',
+      isOpportunity: journeyTypeName === 'opportunity',
     },
     skip: !spaceNameId || !calloutNameId,
   });
@@ -55,6 +57,7 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
           whiteboardNameId={whiteboardNameId}
           backToWhiteboards={backToWhiteboards}
           whiteboardShareUrl={whiteboardShareUrl}
+          journeyTypeName={journeyTypeName}
           {...entities}
           {...state}
           {...props}

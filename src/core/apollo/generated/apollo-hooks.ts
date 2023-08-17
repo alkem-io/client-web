@@ -9552,13 +9552,13 @@ export const CalloutIdDocument = gql`
     $spaceNameId: UUID_NAMEID!
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
-    $includeSpace: Boolean = false
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
+    $isSpace: Boolean = false
+    $isChallenge: Boolean = false
+    $isOpportunity: Boolean = false
   ) {
     space(ID: $spaceNameId) {
       id
-      ... on Space @include(if: $includeSpace) {
+      ... on Space @include(if: $isSpace) {
         collaboration {
           id
           callouts(IDs: [$calloutNameId]) {
@@ -9566,7 +9566,7 @@ export const CalloutIdDocument = gql`
           }
         }
       }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      challenge(ID: $challengeNameId) @include(if: $isChallenge) {
         id
         collaboration {
           id
@@ -9575,7 +9575,7 @@ export const CalloutIdDocument = gql`
           }
         }
       }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
         id
         collaboration {
           id
@@ -9604,9 +9604,9 @@ export const CalloutIdDocument = gql`
  *      spaceNameId: // value for 'spaceNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
- *      includeSpace: // value for 'includeSpace'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
+ *      isSpace: // value for 'isSpace'
+ *      isChallenge: // value for 'isChallenge'
+ *      isOpportunity: // value for 'isOpportunity'
  *   },
  * });
  */

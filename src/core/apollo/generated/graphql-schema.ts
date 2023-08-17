@@ -15422,9 +15422,9 @@ export type CalloutIdQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  includeSpace?: InputMaybe<Scalars['Boolean']>;
-  includeChallenge?: InputMaybe<Scalars['Boolean']>;
-  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+  isSpace?: InputMaybe<Scalars['Boolean']>;
+  isChallenge?: InputMaybe<Scalars['Boolean']>;
+  isOpportunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutIdQuery = {
