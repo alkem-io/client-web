@@ -12,24 +12,23 @@ All new code should be put under `src/core`, `src/domain` or `src/platform`.
 - `src/domain` contains components and utilities that are connected with the App domain. Their path and filename should denote to which part of the app domain they belong:
   - `src/domain/challenge/ChallengeDashboardPage.tsx`
   - `src/domain/collaboration/callout/calloutView/CalloutView.tsx`
-- `src/platform` contains the code that doesn't directly belong to the business domain but is specific to the app, like `PlatformFooter` or `TopLevelDesktopLayout` component:
-  - `src/platform/routes/RedirectToLanding.tsx`
-  - `src/platform/ui/platformFooter/PlatformFooter.tsx`
+- `src/main` contains the code that doesn't directly belong to the business domain but is specific to the app, like `PlatformFooter` or `TopLevelDesktopLayout` component:
+  - `src/main/routing/RedirectToLanding.tsx`
+  - `src/main/ui/platformFooter/PlatformFooter.tsx`
 
-> :warning: Please keep in mind the difference between `src/platform` and `src/domain/platform`. The latter is for placing
-> the code related to entities that belong to the Platform domain of Alkemio.
-
-> :warning: All code built for Admin side should go under `src/platform/admin`.
+> :warning: Top-level admin pages such as `/admin/spaces` should go under `src/main/admin`.
 
 ### Entity names
+
 As some similar entities of the App domain can reuse common components (but still specific to the union of those entities),
 instead of choosing locations such as `common` or `shared`, please pick a common term for those entities. For example,
 Space, Challenge and Opportunity are referred to using the common term Journey. Components that are reused for all 3 of those
 should be placed under `domain/journey`.
 
 ### Filename case
-Files and folders are named using *camelCase* or *PascalCase*.
-Folder names are always *camelCase*.
+
+Files and folders are named using _camelCase_ or _PascalCase_.
+Folder names are always _camelCase_.
 
 A file usually inherits the name of its main exported constant. If the constant is a React component named `ComponentName`,
 one can expect the file to be named `ComponentName.tsx`.
@@ -41,8 +40,11 @@ If a file doesn't have a "main" constant, try to create a descriptive common nam
 > If we are specific enough in domain-based structuring there shouldn't usually be too many files in any specific folder and hence no need for functional file separation.
 
 ## Variable naming
+
 ### Common conventions:
+
 As typical to Javascript/Typescript code, variables are named using
+
 - `camelCase` if they hold primitives or instances;
 - `PascalCase` if they hold classes or constructors (including React functional components).
 
@@ -50,9 +52,11 @@ Constructor-like functions (ones that return an instance but can't be used with 
 should be normal camelCase but they should have a prefix like `create` or `setup`
 (or `get` for pools/singletons).
 Examples:
+
 ```tsx
 const createLocation: (lat: number, lng: number) => Location = //...
 ```
+
 ```tsx
 const getDatabaseConnection: () => DatabaseConnection = //...
 ```
@@ -60,6 +64,7 @@ const getDatabaseConnection: () => DatabaseConnection = //...
 Constants (shared values that are supposed to be immutable) should use `SCREAMING_SNAKE_CASE`.
 
 ### React-related conventions:
+
 Variables in a tuple returned by `useState` should form a pair like that:
 `const [<variable>, set<variable>] = useState//...` with no exception even if they don't sound great.
 
@@ -67,6 +72,7 @@ Local `boolean` variables should be prefixed with `is`.
 On the contrary, `boolean` props shouldn't have any prefix (this convention is derived from HTML boolean attributes).
 
 Example:
+
 ```tsx
 const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -282,15 +288,21 @@ That ensures that as long as the type of the returned Layout stays the same, onl
 > For efficient data loading it's key to keep all Apollo-related hooks in a `Container` and not place them directly into the `Page.`
 
 The name of a Container or a View for the given page should either
+
 - inherit the page name if its intended usage is exclusive to the Page it's built for;
 - have broader naming if they are or can be used in other pages or for other entities.
 
 Pseudocode example:
+
 ```jsx
 const SpaceDashboardPage = () => {
   return (
-    <JourneyLayout journeyTypeName="space"> // broader naming
-      <SpaceDashboardContainer> // specific to the entity/page
+    <JourneyLayout journeyTypeName="space">
+      {' '}
+      // broader naming
+      <SpaceDashboardContainer>
+        {' '}
+        // specific to the entity/page
         <JourneyDashboardView journeyTypeName="space" /> // generic entity yet specific to the page
       </SpaceDashboardContainer>
     </JourneyLayout>
@@ -304,5 +316,7 @@ Any component that represents a self-sufficient UI building block and/or contain
 Domain-specific components should normally not include low-level markup (such as rendering `<div>` or `<Box>`) or CSS with the exception of one-time customization/an exclusive override for a specific page.
 
 ## To be done:
+
 ### Document actual React.Context usage
+
 ### Monolithic page-tailored queries vs smaller reusable queries
