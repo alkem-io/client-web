@@ -114,8 +114,10 @@ Views should not utilize React.Context much, except for some view-related utilit
 
 ## React Context: when to use and when not
 
-React Context is a convenient way to implement Singletons and Dependency Inversion in React without having to explicitly pass a dependency as a prop through parent components. Because a Context can access the parent Context, they are also irreplaceable for implicitl creation of inherited structures, such as nested grids.
-On the other hand, things passed as contexts are provided implicitly and you can't statically check their presence. If you don't know or can't tell the context where a view is rendered, you can't rely on the availability of a certain React.Context.
+React Context is a convenient way to implement Singletons and Dependency Inversion in React without having to explicitly pass a dependency as a prop through parent components.
+Because a Context can access the parent Context, they are also irreplaceable for implicit creation of inherited structures, such as nested grids.
+On the other hand, things passed as contexts are provided implicitly and you can't statically check their presence.
+If you don't know or can't tell the context where a view is rendered, you can't rely on the availability of a certain React.Context.
 The same Context can be mistakenly initialized multiple times (on multiple levels in the render tree) without giving any warnings, consuming extra memory and potentially requesting data multiple times.
 
 If a Context is used to provide a Singleton, such as Space (`useSpace()`), please make sure:
