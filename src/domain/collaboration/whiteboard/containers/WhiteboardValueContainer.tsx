@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import {
   WhiteboardContentUpdatedDocument,
   useWhiteboardWithValueQuery,

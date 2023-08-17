@@ -1,6 +1,6 @@
 import { Box, Grow } from '@mui/material';
 import React from 'react';
-import { useUserContext } from '../../../domain/community/contributor/user';
+import { useUserContext } from '../../../domain/community/user';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
 import HomePageFooter from './HomePageFooter';

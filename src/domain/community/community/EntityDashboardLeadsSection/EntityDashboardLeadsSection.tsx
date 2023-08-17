@@ -4,7 +4,7 @@ import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Type
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
-import { useUserContext } from '../../contributor/user';
+import { useUserContext } from '../../user';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import LeadOrganizationCard, { LeadOrganizationCardProps } from '../LeadCards/LeadOrganizationCard';

@@ -1,0 +1,58 @@
+import { Grid } from '@mui/material';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useConfig } from '../../../platform/config/useConfig';
+import { FEATURE_SSI } from '../../../platform/config/features.constants';
+import { ContributionsView, CredentialsView } from '../../profile/views/ProfileView';
+import UserProfileView, { UserProfileViewProps } from '../../profile/views/ProfileView/UserProfileView';
+import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+
+export interface UserProfileViewPageProps extends UserProfileViewProps {}
+
+export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) => {
+  const { t } = useTranslation();
+  const { contributions, pendingApplications, organizationNameIDs, user } = entities.userMetadata;
+  const { id } = user;
+
+  const { isFeatureEnabled } = useConfig();
+
+  return (
+    <PageContent>
+      <PageContentColumn columns={4}>
+        <UserProfileView entities={entities} />
+        <AssociatedOrganizationsLazilyFetched
+          organizationNameIDs={organizationNameIDs}
+          title={t('pages.user-profile.associated-organizations.title')}
+          helpText={t('pages.user-profile.associated-organizations.help')}
+        />
+        {isFeatureEnabled(FEATURE_SSI) && (
+          <Grid item>
+            <CredentialsView
+              userID={id}
+              title={t('pages.user-profile.verifiable-credentials.title')}
+              helpText={t('pages.user-profile.verifiable-credentials.help')}
+            />
+          </Grid>
+        )}
+      </PageContentColumn>
+      <PageContentColumn columns={8}>
+        <ContributionsView
+          title={t('pages.user-profile.communities.title')}
+          helpText={t('pages.user-profile.communities.help')}
+          contributions={contributions}
+          cards
+        />
+        <ContributionsView
+          title={t('pages.user-profile.pending-applications.title')}
+          helpText={t('pages.user-profile.pending-applications.help')}
+          contributions={pendingApplications}
+          cards
+        />
+      </PageContentColumn>
+    </PageContent>
+  );
+};
+
+export default UserProfilePageView;

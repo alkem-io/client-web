@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '../../../../core/ui/notifications/NotificationHandler';
-import { useUserContext } from '../../../../domain/community/contributor/user';
+import { useUserContext } from '../../../../domain/community/user';
 import { useUserScope } from '../../../../core/analytics/useSentry';
 import { useApm } from '../../../../core/analytics/useApm';
 import useServerMetadata from '../../../../domain/platform/metadata/useServerMetadata';

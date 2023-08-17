@@ -10,7 +10,7 @@ import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInpu
 import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import SendButton from '../../shared/components/SendButton';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { FormikUserSelector } from '../contributor/user/FormikUserSelector/FormikUserSelector';
+import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelector';
 import { InviteExistingUserData } from './useInviteUsers';
 
 interface MessageDialogProps {

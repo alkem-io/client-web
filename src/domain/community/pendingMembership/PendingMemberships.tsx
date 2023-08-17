@@ -6,10 +6,10 @@ import {
   usePendingMembershipsUserQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName, getJourneyTypeName } from '../../journey/JourneyTypeName';
-import { useUserContext } from '../contributor/user';
+import { useUserContext } from '../user';
 import { Visual } from '../../common/visual/Visual';
-import { ContributionItem } from '../contributor/contribution';
-import { InvitationItem } from '../contributor/user/providers/UserProvider/InvitationItem';
+import { ContributionItem } from '../user/contribution';
+import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { buildJourneyUrl } from '../../../main/routing/urlBuilders';
 
 interface JourneyDetails {

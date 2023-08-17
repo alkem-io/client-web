@@ -8,7 +8,7 @@ import useCommunityMembersAssignment, {
   MemberMutationHook,
   RefetchQuery,
 } from '../../../community/community/useCommunityAssignment/useCommunityMembersAssignment';
-import { Member } from '../../../community/contributor/user/models/User';
+import { Member } from '../../../community/user/models/User';
 import { PaginationVariables } from '../../../shared/pagination/usePaginatedQuery';
 import useAvailableCommunityUsers, {
   AvailableCommunityUsersOptions,

@@ -5,7 +5,7 @@ import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
 import WhiteboardValueContainer from '../containers/WhiteboardValueContainer';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import {
   WhiteboardCheckoutStateEnum,
   WhiteboardDetailsFragment,

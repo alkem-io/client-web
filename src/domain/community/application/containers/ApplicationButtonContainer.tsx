@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../applicationButton/ApplicationButton';
-import { useUserContext } from '../../contributor/user';
+import { useUserContext } from '../../user';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import {
   useCommunityUserPrivilegesQuery,

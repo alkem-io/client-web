@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { Box } from '@mui/material';
 import MySpacesSection from '../../../domain/journey/space/MySpaces/MySpacesSection';
-import { UserContextValue } from '../../../domain/community/contributor/user/providers/UserProvider/UserProvider';
+import { UserContextValue } from '../../../domain/community/user/providers/UserProvider/UserProvider';
 import { gutters } from '../../../core/ui/grid/utils';
 import { PageTitle } from '../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';

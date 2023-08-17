@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { UserAvatarsProvider } from '../../../../community/contributor/user/containers/UserAvatarsProvider/UserAvatarsProvider';
+import { UserAvatarsProvider } from '../../../../community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
 import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import Avatar from '../../../../../core/ui/image/Avatar';
 import GroupMembersDetailsAvatarContainer from './GroupMembersDetailsAvatarContainer';

@@ -4,9 +4,9 @@ import { ApmBase, init as initApm, UserObject } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
 import { error as logError } from '../logging/sentry/log';
-import { useUserContext } from '../../domain/community/contributor/user/hooks/useUserContext';
+import { useUserContext } from '../../domain/community/user/hooks/useUserContext';
 import { useConfig } from '../../domain/platform/config/useConfig';
-import { useUserGeo } from '../../domain/community/contributor/user/hooks/useUserGeo';
+import { useUserGeo } from '../../domain/community/user/hooks/useUserGeo';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../../main/cookies/useAlkemioCookies';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';

@@ -6,7 +6,7 @@ import DashboardSpacesSection, {
 } from '../../../shared/components/DashboardSections/DashboardSpacesSection';
 import { useSpacesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../core/ui/loading/Loading';
-import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
+import { UserRolesInEntity } from '../../../community/user/providers/UserProvider/UserRolesInEntity';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface MySpacesSectionProps {

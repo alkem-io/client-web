@@ -8,7 +8,7 @@ import { OrganizationProvider } from '../../domain/community/contributor/organiz
 import HomePage from '../topLevelPages/Home/HomePage';
 import AboutPage from '../topLevelPages/About';
 import { Error404 } from '../../core/pages/Errors/Error404';
-import ContributorsPage from '../../domain/community/contributor/ContributorsPage';
+import ContributorsPage from '../../domain/community/user/ContributorsPage';
 import { AdminRoute } from '../../domain/platform/admin/routing/AdminRoute';
 import OrganizationRoute from '../../domain/community/contributor/organization/routing/OrganizationRoute';
 import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
@@ -16,7 +16,7 @@ import { Restricted } from '../../core/routing/Restricted';
 import NoIdentityRedirect from '../../core/routing/NoIdentityRedirect';
 import { SearchRoute } from '../search/searchRoute';
 import { nameOfUrl } from './urlParams';
-import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
+import UserRoute from '../../domain/community/user/routing/UserRoute';
 import { SpaceRoute } from '../../domain/journey/space/routing/SpaceRoute';
 import { ChallengeExplorerPage } from '../topLevelPages/TopLevelChallenges/ChallengeExplorerPage';
 import { IdentityRoute } from '../../core/auth/authentication/routing/IdentityRoute';

@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer, {
   ContributionDetails,
 } from '../../community/profile/ContributionDetails/ContributionDetailsContainer';
-import { ContributionItem } from '../../community/contributor/contribution';
+import { ContributionItem } from '../../community/user/contribution';
 import { AgentBeginVerifiedCredentialOfferOutput } from '../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../core/i18n/utils/TranslationKey';
 import Loading from '../../../core/ui/loading/Loading';

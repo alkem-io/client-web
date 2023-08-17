@@ -6,7 +6,7 @@ import logo from './favicon-16x16.png';
 import { useTranslation } from 'react-i18next';
 import { FEATURE_GUIDANCE_ENGINE } from '../../../domain/platform/config/features.constants';
 import { useConfig } from '../../../domain/platform/config/useConfig';
-import { useUserContext } from '../../../domain/community/contributor/user';
+import { useUserContext } from '../../../domain/community/user';
 import 'react-chat-widget/lib/styles.css';
 import './styles.css';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
