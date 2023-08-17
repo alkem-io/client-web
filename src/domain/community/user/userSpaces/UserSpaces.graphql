@@ -16,7 +16,7 @@ query UserSpaces {
           uri
         }
       }
-    	context {
+      context {
         id
         vision
       }
