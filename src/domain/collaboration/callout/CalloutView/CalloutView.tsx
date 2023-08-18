@@ -7,6 +7,7 @@ import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
 import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
+import PostCalloutContainer from '../post/PostCalloutContainer';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCallout;
@@ -18,7 +19,16 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(({ callout, ...
   switch (callout.type) {
     case CalloutType.PostCollection:
       return (
-        <PostCallout ref={ref} callout={callout} canCreate={canCreate(AuthorizationPrivilege.CreatePost)} {...props} />
+        <PostCalloutContainer ref={ref} calloutId={callout.id}>
+          {containerProps => (
+            <PostCallout
+              callout={callout}
+              canCreate={canCreate(AuthorizationPrivilege.CreatePost)}
+              {...containerProps}
+              {...props}
+            />
+          )}
+        </PostCalloutContainer>
       );
     case CalloutType.WhiteboardCollection:
       return (
