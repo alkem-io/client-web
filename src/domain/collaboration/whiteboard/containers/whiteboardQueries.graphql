@@ -208,25 +208,3 @@ subscription whiteboardContentUpdated($whiteboardIDs: [UUID!]!) {
     value
   }
 }
-
-# TODO: Remove this, it's not used yet... But it was an attempt that SHOULD HAVE WORKED AND I DONT KNOW WHY IT DIDNT
-query whiteboardCheckoutStatus($whiteboardId: UUID!) {
-  lookup {
-    whiteboard(ID: $whiteboardId) {
-      id
-      checkout {
-        id
-        lockedBy
-        status
-        lifecycle {
-          id
-          nextEvents
-        }
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-  }
-}

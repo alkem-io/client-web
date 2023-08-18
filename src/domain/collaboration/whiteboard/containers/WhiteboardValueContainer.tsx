@@ -64,6 +64,7 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
     subscribeToMore: subscribeToWhiteboard,
   } = useWhiteboardWithValueQuery({
     errorPolicy: 'all',
+    // TODO: Check if these policies are really needed
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
     skip: skipWhiteboardQuery,

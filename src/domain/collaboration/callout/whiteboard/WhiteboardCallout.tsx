@@ -103,7 +103,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
             )}
           </CalloutLayout>
         </PageContentBlock>
-        <WhiteboardActionsContainer calloutId={callout.id}>
+        <WhiteboardActionsContainer>
           {(entities, actionsState, actions) => (
             <WhiteboardDialog
               entities={{

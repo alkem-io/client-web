@@ -1,7 +1,6 @@
 import { FC, useCallback, useMemo } from 'react';
 import {
   WhiteboardDetailsFragmentDoc,
-  refetchWhiteboardFromCalloutQuery,
   useCheckoutWhiteboardMutation,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
@@ -36,11 +35,9 @@ export interface WhiteboardActionsContainerState {
 }
 
 export interface WhiteboardActionsContainerProps
-  extends ContainerChildProps<{}, IWhiteboardActions, WhiteboardActionsContainerState> {
-  calloutId: string;
-}
+  extends ContainerChildProps<{}, IWhiteboardActions, WhiteboardActionsContainerState> {}
 
-const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ calloutId, children }) => {
+const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ children }) => {
   const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({});
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
@@ -128,12 +125,6 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ callo
             errorOnFailedTransition: false,
           },
         },
-        refetchQueries: [
-          refetchWhiteboardFromCalloutQuery({
-            whiteboardId: whiteboard.id,
-            calloutId: calloutId,
-          }),
-        ],
       });
     };
 

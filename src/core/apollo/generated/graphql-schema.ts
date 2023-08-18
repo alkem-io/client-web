@@ -20108,39 +20108,6 @@ export type WhiteboardContentUpdatedSubscription = {
   whiteboardContentUpdated: { __typename?: 'WhiteboardContentUpdated'; whiteboardID: string; value: string };
 };
 
-export type WhiteboardCheckoutStatusQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID'];
-}>;
-
-export type WhiteboardCheckoutStatusQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboard?:
-      | {
-          __typename?: 'Whiteboard';
-          id: string;
-          checkout?:
-            | {
-                __typename?: 'WhiteboardCheckout';
-                id: string;
-                lockedBy: string;
-                status: WhiteboardCheckoutStateEnum;
-                lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type ProfileVerifiedCredentialSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type ProfileVerifiedCredentialSubscription = {

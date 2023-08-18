@@ -81,12 +81,6 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
 
   const { user } = useUserContext();
 
-  const isWhiteboardCheckedOutByMe =
-    whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.CheckedOut &&
-    whiteboard.checkout.lockedBy === user?.user.id;
-
-  const isWhiteboardAvailable = whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.Available;
-
   const { data: lockedByDetailsData } = useWhiteboardLockedByDetailsQuery({
     variables: { ids: [whiteboard?.checkout?.lockedBy!] },
     skip: !whiteboard?.checkout?.lockedBy,
@@ -100,40 +94,47 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
   return (
     <>
       <WhiteboardValueContainer whiteboardId={whiteboard?.id}>
-        {entities => (
-          <WhiteboardDialog
-            entities={{
-              whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
-              lockedBy: isWhiteboardAvailable
-                ? undefined
-                : lockedByDetailsData?.users?.find(user => user.id === whiteboard?.checkout?.lockedBy),
-            }}
-            actions={{
-              onCancel: handleCancel,
-              onCheckin: actions.onCheckin,
-              onCheckout: actions.onCheckout,
-              onUpdate: actions.onUpdate,
-              onDelete: c =>
-                setWhiteboardBeingDeleted({ whiteboardId: c.id, displayName: c.profile.displayName, calloutId }),
-            }}
-            options={{
-              show: Boolean(whiteboardNameId),
-              canCheckout: isWhiteboardAvailable && options.canUpdate,
-              canEdit: isWhiteboardCheckedOutByMe && options.canUpdate,
-              canDelete: isWhiteboardAvailable && options.canDelete,
-              checkedOutByMe: isWhiteboardCheckedOutByMe,
-              fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
-                <BlockTitle display="flex" alignItems="center">
-                  {whiteboard?.profile.displayName}
-                </BlockTitle>
-              ),
-              headerActions: (
-                <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
-              ),
-            }}
-            state={state}
-          />
-        )}
+        {entities => {
+          const isWhiteboardCheckedOutByMe =
+            entities.whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.CheckedOut &&
+            entities.whiteboard.checkout.lockedBy === user?.user.id;
+          const isWhiteboardAvailable = entities.whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.Available;
+
+          return (
+            <WhiteboardDialog
+              entities={{
+                whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
+                lockedBy: isWhiteboardAvailable
+                  ? undefined
+                  : lockedByDetailsData?.users.find(user => user.id === entities.whiteboard?.checkout?.lockedBy),
+              }}
+              actions={{
+                onCancel: handleCancel,
+                onCheckin: actions.onCheckin,
+                onCheckout: actions.onCheckout,
+                onUpdate: actions.onUpdate,
+                onDelete: c =>
+                  setWhiteboardBeingDeleted({ whiteboardId: c.id, displayName: c.profile.displayName, calloutId }),
+              }}
+              options={{
+                show: Boolean(whiteboardNameId),
+                canCheckout: isWhiteboardAvailable && options.canUpdate,
+                canEdit: isWhiteboardCheckedOutByMe && options.canUpdate,
+                canDelete: isWhiteboardAvailable && options.canDelete,
+                checkedOutByMe: isWhiteboardCheckedOutByMe,
+                fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
+                  <BlockTitle display="flex" alignItems="center">
+                    {whiteboard?.profile.displayName}
+                  </BlockTitle>
+                ),
+                headerActions: (
+                  <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
+                ),
+              }}
+              state={state}
+            />
+          );
+        }}
       </WhiteboardValueContainer>
       <ConfirmationDialog
         actions={{
