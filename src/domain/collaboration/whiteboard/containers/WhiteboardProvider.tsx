@@ -44,9 +44,10 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, whiteboardId },
     skip: !calloutId || !whiteboardId,
+    errorPolicy: 'all',
     fetchPolicy: 'network-only', // TODO: Check if this is still required:
   });
-  console.log('WhiteboardProvider', data?.lookup.callout?.whiteboards);
+
   const callout = data?.lookup.callout;
 
   const whiteboard =
