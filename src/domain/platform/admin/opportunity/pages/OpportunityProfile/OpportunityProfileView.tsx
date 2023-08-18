@@ -2,9 +2,9 @@ import { Grid, Typography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import FormMode from '../../../components/FormMode';
-import ProfileForm, { ProfileFormValues } from '../../../../../../common/components/composite/forms/ProfileForm';
+import ProfileForm, { ProfileFormValues } from '../../../../../common/profile/ProfileForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import { useChallenge } from '../../../../../challenge/challenge/hooks/useChallenge';
+import { useChallenge } from '../../../../../journey/challenge/hooks/useChallenge';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
   useCreateOpportunityMutation,

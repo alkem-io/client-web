@@ -1,6 +1,6 @@
-import { SpaceIcon } from '../../../challenge/space/icon/SpaceIcon';
-import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
-import { OpportunityIcon } from '../../../challenge/opportunity/icon/OpportunityIcon';
+import { SpaceIcon } from '../../../journey/space/icon/SpaceIcon';
+import { ChallengeIcon } from '../../../journey/challenge/icon/ChallengeIcon';
+import { OpportunityIcon } from '../../../journey/opportunity/icon/OpportunityIcon';
 
 const journeyIcon = {
   space: SpaceIcon,

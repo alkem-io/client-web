@@ -1,7 +1,7 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import WhiteboardActionsContainer from '../../whiteboard/containers/WhiteboardActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import {
@@ -11,7 +11,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard from './WhiteboardCard';
-import { buildWhiteboardUrl } from '../../../../common/utils/urlBuilders';
+import { buildWhiteboardUrl } from '../../../../main/routing/urlBuilders';
 import { WhiteboardCardWhiteboard } from './types';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';

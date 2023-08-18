@@ -6,7 +6,7 @@ import {
   _AUTH_LOGIN_PATH,
   AUTH_SIGN_UP_PATH,
 } from '../../../../core/auth/authentication/constants/authentication.constants';
-import Image from '../Image';
+import ImageFadeIn from '../../../../core/ui/image/ImageFadeIn';
 import { Box, BoxProps, Button, styled, Typography, TypographyProps } from '@mui/material';
 
 const Root = styled(Box)(() => ({
@@ -14,7 +14,7 @@ const Root = styled(Box)(() => ({
   overflow: 'hidden',
 }));
 
-const Background = styled(Image)(() => ({
+const Background = styled(ImageFadeIn)(() => ({
   width: '100%',
   height: '100%',
 }));

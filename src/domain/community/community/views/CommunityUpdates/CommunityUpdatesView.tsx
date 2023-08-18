@@ -30,17 +30,18 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import Avatar from '../../../../../common/components/core/Avatar';
+import Avatar from '../../../../../core/ui/image/Avatar';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
-import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
-import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
+import { FontDownloadIcon } from './icons/FontDownloadIcon';
+import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
 import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import hexToRGBA from '../../../../../common/utils/hexToRGBA';
+import hexToRGBA from '../../../../../core/utils/hexToRGBA';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import UserPopUp from '../../../user/userPopUp/UserPopUp';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -224,7 +225,12 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 <CardHeader
                   avatar={
                     member && (
-                      <Avatar key={member.id} src={member.avatarUrl} userId={member.id} name={member.displayName} />
+                      <Avatar
+                        key={member.id}
+                        src={member.avatarUrl}
+                        name={member.displayName}
+                        renderPopup={({ open, onHide }) => open && <UserPopUp id={member.id} onHide={onHide} />}
+                      />
                     )
                   }
                   title={member?.displayName || m.sender}

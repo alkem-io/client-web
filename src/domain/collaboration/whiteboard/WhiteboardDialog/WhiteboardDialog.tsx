@@ -9,10 +9,10 @@ import LockClockIcon from '@mui/icons-material/LockClock';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import { LockedByDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import TranslationKey from '../../../../types/TranslationKey';
-import { Loading } from '../../../../common/components/core';
-import { DialogContent } from '../../../../common/components/core/dialog';
-import WhiteboardWhiteboard from '../../../../common/components/composite/entities/Whiteboard/WhiteboardWhiteboard';
+import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import Loading from '../../../../core/ui/loading/Loading';
+import { DialogContent } from '../../../../core/ui/dialog/deprecated';
+import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -28,7 +28,7 @@ import { PageTitle } from '../../../../core/ui/typography';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithValue } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import { error as logError } from '../../../../services/logging/sentry/log';
+import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { WhiteboardWithValue, WhiteboardWithoutValue } from '../containers/WhiteboardValueContainer';
 import {
@@ -284,7 +284,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardValue && whiteboard && (
-                <WhiteboardWhiteboard
+                <ExcalidrawWrapper
                   entities={{ whiteboard }}
                   ref={excalidrawApiRef}
                   options={{

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { Discussion } from '../models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
-import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
+import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
 import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import { formatLongDate } from '../../../../core/utils/time/utils';
 

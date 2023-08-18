@@ -1,12 +1,10 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CredentialCard } from '../../../../../common/components/composite/common/cards';
-import ProfileCard, {
-  ProfileCardProps,
-} from '../../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/CardsLayout/CardsLayout';
-import UserCredentialsContainer from '../../../../platform/VerifiedCredentials/UserCredentialsContainer';
+import CredentialCard from '../../../../agent/credential/CredentialCard';
+import CredentialProfileCard, { ProfileCardProps } from '../../../../agent/credential/CredentialProfileCard';
+import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/cardsLayout/CardsLayout';
+import UserCredentialsContainer from '../../../../agent/credential/verifiedCredentials/UserCredentialsContainer';
 
 interface CredentialsViewProps extends ProfileCardProps {
   userID: string;
@@ -40,7 +38,7 @@ export const CredentialsView: FC<CredentialsViewProps> = ({ userID, loading, ...
   return (
     <UserCredentialsContainer userID={userID}>
       {({ verifiedCredentials, credentialMetadata }, { getCredentialMetadataLoading, getUserCredentialsLoading }) => (
-        <ProfileCard {...rest}>
+        <CredentialProfileCard {...rest}>
           <CardLayoutContainer>
             {getUserCredentialsLoading && getCredentialMetadataLoading && (
               <>
@@ -76,7 +74,7 @@ export const CredentialsView: FC<CredentialsViewProps> = ({ userID, loading, ...
               </Grid>
             )}
           </CardLayoutContainer>
-        </ProfileCard>
+        </CredentialProfileCard>
       )}
     </UserCredentialsContainer>
   );

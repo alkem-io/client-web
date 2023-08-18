@@ -1,7 +1,7 @@
 import { FilterConfig, FilterDefinition } from './Filter';
 import React, { FC, ReactNode, useMemo } from 'react';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '../../../core/ui/card/CardsLayout/CardsLayout';
+import CardsLayout from '../../../core/ui/card/cardsLayout/CardsLayout';
 import SearchResultPostChooser from './SearchResultPostChooser';
 import { SearchResultMetaType } from './SearchView';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';

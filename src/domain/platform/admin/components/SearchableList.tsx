@@ -2,8 +2,8 @@ import { Button, FormControl, InputLabel, List, OutlinedInput } from '@mui/mater
 import Delete from '@mui/icons-material/Delete';
 import React, { ComponentType, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import IconButton from '../../../../common/components/core/IconButton';
-import RemoveModal from '../../../../common/components/core/RemoveModal';
+import SearchableListIconButton from '../../../shared/components/SearchableList/SearchableListIconButton';
+import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
 import LoadingListItem from '../../../shared/components/SearchableList/LoadingListItem';
 import ListItemLink, { ListItemLinkProps } from '../../../shared/components/SearchableList/ListItemLink';
 import { omit } from 'lodash';
@@ -112,9 +112,9 @@ export const SearchableList = <
               primary={item.value}
               icon={
                 onDelete && (
-                  <IconButton onClick={e => openModal(e, item)} size="large">
+                  <SearchableListIconButton onClick={e => openModal(e, item)} size="large">
                     <Delete color="error" fontSize="large" />
-                  </IconButton>
+                  </SearchableListIconButton>
                 )
               }
               {...omit(item, 'id', 'url', 'value')}

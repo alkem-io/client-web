@@ -11,7 +11,7 @@ import PostDashboardView from '../../../collaboration/post/views/PostDashboardVi
 import CalendarEventDetailContainer from '../CalendarEventDetailContainer';
 import EventCardHeader from './EventCardHeader';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { buildEventUrl } from '../../../../common/utils/urlBuilders';
+import { buildEventUrl } from '../../../../main/routing/urlBuilders';
 
 interface CalendarEventDetailProps {
   spaceNameId: string;

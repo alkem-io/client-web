@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { logger } from '../../../../services/logging/winston/logger';
+import { logger } from '../../../logging/winston/logger';
 import { useKratosClient } from './useKratosClient';
 
 export const useLogoutUrl = () => {

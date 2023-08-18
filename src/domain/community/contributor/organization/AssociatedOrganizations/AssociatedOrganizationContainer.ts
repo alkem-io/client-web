@@ -1,5 +1,5 @@
 import { FC, useCallback } from 'react';
-import { useUserContext } from '../../user';
+import { useUserContext } from '../../../user';
 import {
   refetchUserOrganizationsQuery,
   useAssociatedOrganizationQuery,
@@ -8,7 +8,7 @@ import {
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../../../common/utils/containers/ComponentOrChildrenFn';
+} from '../../../../../core/container/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<

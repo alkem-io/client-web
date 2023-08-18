@@ -1,7 +1,7 @@
 import { Box, BoxProps, Breadcrumbs, styled, Typography, useTheme } from '@mui/material';
 import React, { FC } from 'react';
-import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { useBreadcrumbs } from '../../../platform/breadcrumbs/useBreadcrumbs';
+import { RouterLink } from '../../../../core/ui/link/deprecated/RouterLink';
+import { useBreadcrumbs } from '../../../journey/common/journeyBreadcrumbs/useBreadcrumbs';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import getEntityColor from '../../utils/getEntityColor';
 

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import WhiteboardWhiteboard from '../../../../common/components/composite/entities/Whiteboard/WhiteboardWhiteboard';
+import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { TemplatePreviewBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { WhiteboardTemplateWithValue } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 
@@ -10,7 +10,7 @@ const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ templat
     return null;
   }
   return (
-    <WhiteboardWhiteboard
+    <ExcalidrawWrapper
       entities={{
         whiteboard: template,
       }}

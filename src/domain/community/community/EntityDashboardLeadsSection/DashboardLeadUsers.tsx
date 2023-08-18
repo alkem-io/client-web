@@ -1,6 +1,6 @@
 import React from 'react';
 import LeadUserCard, { LeadUserCardProps } from '../LeadCards/LeadUserCard';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 interface EntityDashboardLeadsSectionProps {

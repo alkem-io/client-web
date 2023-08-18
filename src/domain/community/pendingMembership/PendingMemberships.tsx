@@ -5,12 +5,12 @@ import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { JourneyTypeName, getJourneyTypeName } from '../../challenge/JourneyTypeName';
-import { useUserContext } from '../contributor/user';
+import { JourneyTypeName, getJourneyTypeName } from '../../journey/JourneyTypeName';
+import { useUserContext } from '../user';
 import { Visual } from '../../common/visual/Visual';
-import { ContributionItem } from '../contributor/contribution';
-import { InvitationItem } from '../contributor/user/providers/UserProvider/InvitationItem';
-import { buildJourneyUrl } from '../../../common/utils/urlBuilders';
+import { ContributionItem } from '../user/contribution';
+import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
+import { buildJourneyUrl } from '../../../main/routing/urlBuilders';
 
 interface JourneyDetails {
   journeyTypeName: JourneyTypeName;

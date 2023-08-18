@@ -1,6 +1,6 @@
 import React from 'react';
-import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CalloutCreationDialog from '../creationDialog/CalloutCreationDialog';
+import { useCalloutCreationWithPreviewImages } from '../creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '../../../../core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
 import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';

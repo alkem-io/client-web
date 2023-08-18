@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { groupBy, sortBy, times } from 'lodash';
-import { JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import {
   useChallengeDashboardCalendarEventsQuery,
   useOpportunityDashboardCalendarEventsQuery,

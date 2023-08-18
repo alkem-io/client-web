@@ -19,7 +19,7 @@ import {
   CalendarEventDetailsFragment,
   Profile,
 } from '../../../core/apollo/generated/graphql-schema';
-import { StorageConfigContextProvider } from '../../platform/storage/StorageBucket/StorageConfigContext';
+import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
 
 export interface CalendarEventFormData

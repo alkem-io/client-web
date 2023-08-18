@@ -9,7 +9,7 @@ import CardTags from '../../../../core/ui/card/CardTags';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
-import JourneyCardDescription from '../../../challenge/common/JourneyCard/JourneyCardDescription';
+import JourneyCardDescription from '../../../journey/common/JourneyCard/JourneyCardDescription';
 
 export interface ContributorCardProps extends ContributeCardProps {
   displayName: string;

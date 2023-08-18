@@ -5,7 +5,7 @@ import {
   OrganizationContainerState,
 } from '../OrganizationPageContainer/OrganizationPageContainer';
 import { OrganizationVerificationEnum } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildAdminOrganizationUrl } from '../../../../../common/utils/urlBuilders';
+import { buildAdminOrganizationUrl } from '../../../../../main/routing/urlBuilders';
 import {
   AssociatesView,
   ContributionsView,

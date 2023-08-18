@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import { Loading } from '../../../../../common/components/core';
-import { DialogTitle, DialogContent, DialogActions } from '../../../../../common/components/core/dialog';
+import WrapperButton from '../../../../../core/ui/button/deprecated/WrapperButton';
+import Loading from '../../../../../core/ui/loading/Loading';
+import { DialogTitle, DialogContent, DialogActions } from '../../../../../core/ui/dialog/deprecated';
 
 interface UserRemoveModalProps {
   show: boolean;

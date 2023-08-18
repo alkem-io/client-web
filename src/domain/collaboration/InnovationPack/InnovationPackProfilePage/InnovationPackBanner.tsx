@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
 import { DEFAULT_BANNER_URL } from '../../../shared/components/PageHeader/JourneyPageBanner';
-import hexToRGBA from '../../../../common/utils/hexToRGBA';
+import hexToRGBA from '../../../../core/utils/hexToRGBA';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';

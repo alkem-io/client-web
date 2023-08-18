@@ -1,12 +1,12 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
-import { EntityPageLayoutHolder } from '../../challenge/common/EntityPageLayout';
+import { EntityPageLayoutHolder } from '../../journey/common/EntityPageLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
 import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
 import AdminInnovationPackPage, {
   RoutePaths,
 } from '../../platform/admin/templates/InnovationPacks/admin/AdminInnovationPackPage';
-import { nameOfUrl } from '../../../core/routing/urlParams';
+import { nameOfUrl } from '../../../main/routing/urlParams';
 
 const InnovationPackRoute = () => {
   return (

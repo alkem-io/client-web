@@ -15,7 +15,7 @@ import {
   SearchResultUserFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import { useUserContext } from '../../community/contributor/user';
+import { useUserContext } from '../../community/user';
 import { SEARCH_TERMS_PARAM } from '../routes/constants';
 import { contributionFilterConfig, contributorFilterConfig, FilterConfig, FilterDefinition } from './Filter';
 import MultipleSelect from '../../../core/ui/search/MultipleSelect';
@@ -23,7 +23,7 @@ import SearchResultSection from './SearchResultSection';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import GridItem from '../../../core/ui/grid/GridItem';
 import SearchSuggestions from './SearchSuggestions';
-import { buildLoginUrl } from '../../../common/utils/urlBuilders';
+import { buildLoginUrl } from '../../../main/routing/urlBuilders';
 
 export const MAX_TERMS_SEARCH = 5;
 

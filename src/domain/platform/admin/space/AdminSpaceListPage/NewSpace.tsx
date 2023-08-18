@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SpaceEditForm, { SpaceEditFormValuesType } from '../../components/SpaceEditForm';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
-import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
+import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';

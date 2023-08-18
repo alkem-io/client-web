@@ -9,7 +9,7 @@ import {
 import { Community, Space, Message } from '../../../../core/apollo/generated/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
 
 export interface CommunityUpdatesContainerProps {

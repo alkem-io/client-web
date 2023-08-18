@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { FC, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
+import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 import { CommunityPolicyFragment, OrganizationDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';

@@ -1,18 +1,18 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
+import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
+import { useChallenge } from '../../../../journey/challenge/hooks/useChallenge';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import ChallengeCommunicationsPage from '../../../../challenge/challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
-import ChallengeProfilePage from '../../../../challenge/challenge/pages/ChallengeProfile/ChallengeProfilePage';
+import ChallengeCommunicationsPage from '../../../../journey/challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
+import ChallengeProfilePage from '../../../../journey/challenge/pages/ChallengeProfile/ChallengeProfilePage';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import { OpportunitiesRoute } from '../../opportunity/routing/OpportunitiesRoute';
 import ChallengeCommunityAdminPage from '../ChallengeCommunityAdminPage';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
-import ChallengeContextPage from '../../../../challenge/challenge/pages/ChallengeContext/ChallengeContextPage';
-import ChallengeInnovationFlowPage from '../../../../challenge/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import ChallengeContextPage from '../../../../journey/challenge/pages/ChallengeContext/ChallengeContextPage';
+import ChallengeInnovationFlowPage from '../../../../journey/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 export const ChallengeRoute: FC = () => {
   const { spaceId, communityId: spaceCommunityId } = useSpace();

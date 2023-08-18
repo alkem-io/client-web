@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import {
   WhiteboardContentUpdatedDocument,
   useWhiteboardLockedByDetailsQuery,
@@ -14,7 +14,7 @@ import {
   WhiteboardCheckoutStateEnum,
   WhiteboardLockedByDetailsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
-import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 
 export interface WhiteboardWithValue extends Omit<WhiteboardValueFragment, 'id'>, Partial<WhiteboardDetailsFragment> {}
 

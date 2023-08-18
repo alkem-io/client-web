@@ -2,7 +2,7 @@ import React, { ComponentType, useMemo } from 'react';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import { Template } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
-import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
+import CardsLayout from '../../../../../core/ui/card/cardsLayout/CardsLayout';
 import { Text } from '../../../../../core/ui/typography';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import { Skeleton } from '@mui/material';

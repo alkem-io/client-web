@@ -1,21 +1,21 @@
 import { Box, Link, Skeleton, styled, useTheme } from '@mui/material';
 import { FC, ReactNode, useState } from 'react';
-import hexToRGBA from '../../../../common/utils/hexToRGBA';
+import hexToRGBA from '../../../../core/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import getEntityColor from '../../utils/getEntityColor';
 import { Caption, PageTitle, Tagline } from '../../../../core/ui/typography';
 import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '../../../../core/ui/grid/constants';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
-import { env } from '../../../../types/env';
+import { env } from '../../../../main/env';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;

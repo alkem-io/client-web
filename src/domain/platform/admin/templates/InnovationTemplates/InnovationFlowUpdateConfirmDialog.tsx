@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { Button } from '@mui/material';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../../core/ui/dialog/deprecated';
 
 export interface SelectInnovationFlowDialogProps {
   isOpen: boolean;

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { MetricItem } from '../views/Metrics';
 import { useMemo } from 'react';
 import { MetricType } from '../MetricType';
-import TranslationKey from '../../../../types/TranslationKey';
+import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 
 export interface MetricsItemSpec {
   label: TranslationKey;

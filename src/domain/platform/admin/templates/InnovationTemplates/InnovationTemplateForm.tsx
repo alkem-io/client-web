@@ -8,7 +8,7 @@ import FormRows from '../../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
-import FormikSelect, { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
+import FormikSelect, { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
 import { LifecycleDataProvider } from '@alkemio/visualization';
 

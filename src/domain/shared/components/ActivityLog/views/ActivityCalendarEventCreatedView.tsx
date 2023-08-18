@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
-import { buildEventUrl } from '../../../../../common/utils/urlBuilders';
+import { buildEventUrl } from '../../../../../main/routing/urlBuilders';
 
 export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps {
   calendarEvent: NameableEntity;

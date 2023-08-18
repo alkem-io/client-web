@@ -1,8 +1,8 @@
 import { FC, ReactNode } from 'react';
 import { Box, BoxProps, styled } from '@mui/material';
-import Image from './Image';
+import ImageFadeIn from '../../../core/ui/image/ImageFadeIn';
 import { gutters } from '../../../core/ui/grid/utils';
-import hexToRGBA from '../../../common/utils/hexToRGBA';
+import hexToRGBA from '../../../core/utils/hexToRGBA';
 import { Caption } from '../../../core/ui/typography';
 import Centered from './Centered';
 
@@ -42,7 +42,7 @@ const ImageWithCaption: FC<ImageWithCaptionProps> = ({
   return (
     <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
       {!imgProps.src && defaultImage && <Centered>{defaultImage}</Centered>}
-      {imgProps.src && <Image sx={{ minHeight: '100%' }} {...imgProps} />}
+      {imgProps.src && <ImageFadeIn sx={{ minHeight: '100%' }} {...imgProps} />}
       <CaptionContainer
         sx={{
           top: captionPosition === 'top' ? 0 : undefined,

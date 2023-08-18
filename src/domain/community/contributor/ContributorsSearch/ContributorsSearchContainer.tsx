@@ -5,7 +5,7 @@ import {
   useContributorsPageUsersQuery,
   useContributorsPageOrganizationsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../user';
+import { useUserContext } from '../../user';
 import {
   ContributorsPageUsersQuery,
   ContributorsPageUsersQueryVariables,

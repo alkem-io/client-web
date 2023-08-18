@@ -4,7 +4,7 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 import * as yup from 'yup';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikCheckboxField from '../../../../../common/components/composite/forms/FormikCheckboxField';
+import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxField';
 import RoundedBadge from '../../../../../core/ui/icon/RoundedBadge';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/KeyboardArrowUp';

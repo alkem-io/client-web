@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Avatar, styled, AvatarProps, Tooltip, Link } from '@mui/material';
-import UserCard from '../../../../common/components/composite/common/cards/user-card/UserCard';
+import UserCard from '../../../community/user/userCard/UserCard';
 import { Author } from './models/author';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';

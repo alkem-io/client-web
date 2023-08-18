@@ -1,5 +1,5 @@
-import { JourneyLocation } from '../../../../../common/utils/urlBuilders';
-import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
+import { JourneyLocation } from '../../../../../main/routing/urlBuilders';
+import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { ActivityBaseViewProps } from './ActivityBaseView';
 
 export interface ActivityViewProps extends Pick<ActivityBaseViewProps, 'author' | 'loading'> {

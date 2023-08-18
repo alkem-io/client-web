@@ -9,7 +9,7 @@ import { UsersRoute } from '../user/routing/UsersRoute';
 import { SpacesRoute } from '../space/routing/SpacesRoute';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '../templates/InnovationPacks/admin/AdminInnovationPackRoutes';
-import AdminInnovationHubsRoutes from '../../InnovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
+import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });

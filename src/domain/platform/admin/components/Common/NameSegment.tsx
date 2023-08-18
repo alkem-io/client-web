@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormRow from '../../../../../common/components/FormLayout';
+import FormRow from '../../../../../core/ui/forms/FormRow';
 import FormikInputFieldField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { displayNameValidator, nameIdValidator } from '../../../../../common/utils/validator';
+import { displayNameValidator, nameIdValidator } from '../../../../../core/ui/forms/validator';
 
 export const nameSegmentSchema = yup.object().shape({
   name: displayNameValidator,
