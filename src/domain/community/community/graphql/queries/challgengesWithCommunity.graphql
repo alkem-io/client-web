@@ -1,14 +1,10 @@
-query challengesWithCommunity($spaceId: UUID_NAMEID!) {
+query challengesWithProfile($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     challenges {
       id
       nameID
       profile {
-        id
-        displayName
-      }
-      community {
         id
         displayName
       }

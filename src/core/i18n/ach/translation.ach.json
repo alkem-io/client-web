@@ -866,7 +866,7 @@
         "callout-published": "crwdns5125:0{{time}}crwdnd5125:0{{user}}crwdnd5125:0$t(common.callout)crwdne5125:0",
         "challenge-created": "crwdns5127:0{{time}}crwdnd5127:0{{user}}crwdnd5127:0$t(common.challenge)crwdne5127:0",
         "discussion-comment-created": "crwdns5129:0{{time}}crwdnd5129:0{{user}}crwdnd5129:0{{calloutDisplayName}}crwdne5129:0",
-        "member-joined": "crwdns5131:0{{time}}crwdnd5131:0{{user}}crwdnd5131:0{{communityType}}crwdnd5131:0{{communityDisplayName}}crwdne5131:0",
+        "member-joined": "crwdns5131:0{{time}}crwdnd5131:0{{user}}crwdnd5131:0{{communityType}}crwdnd5131:0{{journeyDisplayName}}crwdne5131:0",
         "opportunity-created": "crwdns5133:0{{time}}crwdnd5133:0{{user}}crwdnd5133:0$t(common.opportunity)crwdne5133:0",
         "post-comment-created": "crwdns5135:0{{time}}crwdnd5135:0{{user}}crwdnd5135:0{{postDisplayName}}crwdne5135:0",
         "post-created": "crwdns5137:0{{time}}crwdnd5137:0{{user}}crwdnd5137:0{{calloutDisplayName}}crwdne5137:0",
