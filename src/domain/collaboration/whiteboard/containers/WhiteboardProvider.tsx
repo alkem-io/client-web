@@ -45,7 +45,7 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
     variables: { calloutId: calloutId!, whiteboardId },
     skip: !calloutId || !whiteboardId,
     errorPolicy: 'all',
-    fetchPolicy: 'network-only', // TODO: Check if this is still needed
+    fetchPolicy: 'cache-and-network', // TODO: Check if this is still needed
   });
 
   const callout = data?.lookup.callout;
