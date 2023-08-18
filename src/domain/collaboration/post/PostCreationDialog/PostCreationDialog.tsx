@@ -20,7 +20,7 @@ export type PostCreationDialogProps = {
   calloutDisplayName: string;
   calloutId: string;
   postTemplate: CalloutPostTemplate | undefined;
-  isCreating: boolean;
+  creating: boolean;
 } & CoreEntityIdTypes;
 
 const PostCreationDialog: FC<PostCreationDialogProps> = ({
@@ -30,7 +30,7 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
   onCreate,
   calloutDisplayName,
   postTemplate,
-  isCreating,
+  creating,
 }) => {
   const { t } = useTranslation();
   const [post, setPost] = useState<PostCreationType>({});
@@ -69,7 +69,7 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
     return (
       <>
         <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
-        <Button onClick={handleCreate} variant="contained" disabled={!isFormValid || isCreating}>
+        <Button onClick={handleCreate} variant="contained" disabled={!isFormValid || creating}>
           {t('buttons.create')}
         </Button>
       </>
