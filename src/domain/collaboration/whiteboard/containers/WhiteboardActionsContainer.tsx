@@ -118,23 +118,6 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
       }
 
       await checkoutWhiteboard({
-        update: (cache, { data }) => {
-          cache.modify({
-            id: cache.identify({
-              id: whiteboard.id,
-              __typename: 'Whiteboard',
-            }),
-            fields: {
-              checkout(existingCheckout) {
-                const output = data?.eventOnWhiteboardCheckout;
-                if (output) {
-                  return output;
-                }
-                return existingCheckout;
-              },
-            },
-          });
-        },
         variables: {
           input: {
             whiteboardCheckoutID: whiteboard.checkout?.id,
