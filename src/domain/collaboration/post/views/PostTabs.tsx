@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Box, IconButton, Tabs } from '@mui/material';
 import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import NavigationTab from '../../../../common/components/core/NavigationTab/NavigationTab';
+import NavigationTab from '../../../../core/ui/tabs/NavigationTab';
 import { usePost } from '../context/PostProvider';
 import { PostDialogSection } from './PostDialogSection';
 import { styled } from '@mui/styles';

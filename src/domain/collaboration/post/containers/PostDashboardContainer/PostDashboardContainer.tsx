@@ -11,16 +11,16 @@ import {
   useOpportunityPostQuery,
   useRemoveMessageOnRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../../community/contributor/user';
+import { useUserContext } from '../../../../community/user';
 import { Message } from '../../../../communication/room/models/Message';
 import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../../../common/utils/containers/ComponentOrChildrenFn';
+} from '../../../../../core/container/ComponentOrChildrenFn';
 import { getCardCallout } from '../getPostCallout';
-import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
-import { buildAuthorFromUser } from '../../../../../common/utils/buildAuthorFromUser';
+import { buildPostUrl } from '../../../../../main/routing/urlBuilders';
+import { buildAuthorFromUser } from '../../../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../../callout/useSubscribeOnRoomEvents';
 import { compact } from 'lodash';

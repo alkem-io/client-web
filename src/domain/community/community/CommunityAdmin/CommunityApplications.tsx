@@ -14,7 +14,7 @@ import {
   AdminSpaceCommunityInvitationExternalFragment,
   AdminSpaceCommunityInvitationFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '../../../../core/utils/time/utils';

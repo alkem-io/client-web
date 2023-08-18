@@ -1,6 +1,6 @@
 import React from 'react';
 import { InvitationWithMeta } from '../../pendingMembership/PendingMemberships';
-import JourneyAvatar from '../../../challenge/common/JourneyAvatar/JourneyAvatar';
+import JourneyAvatar from '../../../journey/common/JourneyAvatar/JourneyAvatar';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';

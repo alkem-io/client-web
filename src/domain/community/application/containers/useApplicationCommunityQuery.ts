@@ -7,7 +7,7 @@ import {
   useSpaceApplicationTemplateQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
-import { buildChallengeUrl, buildSpaceUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   const { spaceNameId = '', challengeNameId = '' } = useUrlParams();

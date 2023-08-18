@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { DialogContent } from '../../../common/components/core/dialog';
+import { DialogContent } from '../../../core/ui/dialog/deprecated';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import { CalendarEventDetailsFragment, TagsetType } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';

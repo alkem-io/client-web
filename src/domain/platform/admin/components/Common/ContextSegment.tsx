@@ -6,7 +6,7 @@ import {
   SMALL_TEXT_LENGTH,
   VERY_LONG_TEXT_LENGTH,
 } from '../../../../../core/ui/forms/field-length.constants';
-import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import MarkdownInput from './MarkdownInput';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';

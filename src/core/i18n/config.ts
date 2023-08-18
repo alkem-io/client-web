@@ -9,7 +9,7 @@ import translationUa from './ua/translation.ua.json';
 import translationDe from './de/translation.de.json';
 import translationFr from './fr/translation.fr.json';
 import inContextTranslation from './ach/translation.ach.json';
-import { env } from '../../../src/types/env';
+import { env } from '../../main/env';
 
 export const resources = {
   en: {

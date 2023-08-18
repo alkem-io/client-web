@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Box, Card, styled, Typography } from '@mui/material';
-import Image from './Image';
+import ImageFadeIn from '../../../core/ui/image/ImageFadeIn';
 
 const DEFAULT_ICON = '/side-note-icon.png';
 
@@ -44,7 +44,7 @@ const IconWrapper = styled('span')(() => ({
   shapeOutside: 'radial-gradient(70px at 75% 100%, #000 100%,#0000)',
 }));
 
-const Icon = styled(Image)(({ theme }) => ({
+const Icon = styled(ImageFadeIn)(({ theme }) => ({
   width: theme.spacing(10),
 }));
 

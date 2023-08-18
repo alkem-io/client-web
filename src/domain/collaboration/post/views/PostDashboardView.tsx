@@ -12,8 +12,8 @@ import { Message } from '../../../communication/room/models/Message';
 import PostMessageToCommentsForm from '../../../communication/room/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../../shared/components/References/References';
-import TagLabel from '../../../../common/components/composite/common/TagLabel/TagLabel';
-import DashboardColumn from '../../../../common/components/composite/sections/DashboardSection/DashboardColumn';
+import PostDashboardTagLabel from './PostDashboardTagLabel';
+import DashboardColumn from './DashboardColumn';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
@@ -125,7 +125,7 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
           alwaysShowBanner
           bannerOverlay={bannerOverlay}
           headerText={displayName}
-          primaryAction={loading ? <Skeleton width={'30%'} /> : <TagLabel>{type}</TagLabel>}
+          primaryAction={loading ? <Skeleton width={'30%'} /> : <PostDashboardTagLabel>{type}</PostDashboardTagLabel>}
         >
           {loading ? (
             <>

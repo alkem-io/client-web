@@ -6,9 +6,9 @@ import {
   useOpportunityCommunityQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
-import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 
 /**
  * @deprecated
@@ -51,18 +51,23 @@ const CommunityContextProvider: FC = ({ children }) => {
   });
 
   const community =
-    spaceData?.space.community ||
-    challengeData?.space.challenge.community ||
+    spaceData?.space.community ??
+    challengeData?.space.challenge.community ??
     opportunityData?.space.opportunity.community;
+
+  const communityName =
+    spaceData?.space.profile.displayName ??
+    challengeData?.space.challenge.profile.displayName ??
+    opportunityData?.space.opportunity.profile.displayName;
 
   const isLoading = loadingSpace || loadingChallenge || loadingOpportunity;
 
   const providedValue = useMemo<CommunityContextValue>(
     () => ({
-      communityId: community?.id || '',
-      communityName: community?.displayName || '',
-      communicationId: community?.communication?.id || '',
-      communicationPrivileges: community?.communication?.authorization?.myPrivileges || [],
+      communityId: community?.id ?? '',
+      communityName: communityName ?? '',
+      communicationId: community?.communication?.id ?? '',
+      communicationPrivileges: community?.communication?.authorization?.myPrivileges ?? [],
       loading: isLoading,
       myMembershipStatus: community?.myMembershipStatus,
     }),

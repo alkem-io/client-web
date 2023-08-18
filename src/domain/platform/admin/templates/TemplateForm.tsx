@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { displayNameValidator } from '../../../../common/utils/validator';
+import { displayNameValidator } from '../../../../core/ui/forms/validator';
 import { Form, Formik, FormikProps } from 'formik';
 import { DialogActions, DialogContent } from '@mui/material';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';

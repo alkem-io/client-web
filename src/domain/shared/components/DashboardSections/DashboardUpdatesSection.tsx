@@ -6,7 +6,7 @@ import {
 } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import SingleUpdateView from '../../../communication/updates/views/SingleUpdateView';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 

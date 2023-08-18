@@ -8,7 +8,7 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { WhiteboardCardWhiteboard } from '../whiteboard/types';
 import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
 import WhiteboardsManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsManagementViewWrapper';
-import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
+import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
@@ -69,10 +69,8 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           {isWhiteboardDialogOpen && (
             <WhiteboardProvider
               {...{
-                spaceNameId,
-                challengeNameId,
-                opportunityNameId,
-                calloutNameId: callout.nameID,
+                spaceId: spaceNameId, // TODO: Should be spaceId in the future, but for now it works
+                calloutId: callout.id,
                 whiteboardNameId: firstWhiteboard.id,
               }}
             >

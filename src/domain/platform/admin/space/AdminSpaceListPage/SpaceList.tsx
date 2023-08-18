@@ -6,13 +6,13 @@ import {
   useDeleteSpaceMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import Loading from '../../../../../common/components/core/Loading/Loading';
+import Loading from '../../../../../core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
 import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { buildAdminSpaceUrl } from '../../../../../common/utils/urlBuilders';
+import { buildAdminSpaceUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 
 export const SpaceList: FC = () => {

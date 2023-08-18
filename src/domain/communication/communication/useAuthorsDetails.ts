@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { Author } from '../../shared/components/AuthorAvatar/models/author';
-import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../main/routing/urlBuilders';
 import { useAuthorDetailsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { uniq } from 'lodash';
 import { COUNTRIES_BY_CODE } from '../../common/location/countries.constants';

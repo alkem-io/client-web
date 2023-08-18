@@ -22,7 +22,7 @@ import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
-import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 const MAX_REFERENCES_NORMALVIEW = 3;
 

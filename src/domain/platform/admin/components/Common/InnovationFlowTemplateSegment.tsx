@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeInnovationFlowVisualizer } from '../../templates/InnovationTemplates/SafeInnovationFlowVisualizer';
-import FormikSelect, { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
+import FormikSelect, { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 
 interface InnovationFlowTemplateSegmentProps {
   innovationFlowTemplateOptions: FormikSelectValue[];

@@ -2,7 +2,7 @@ import { Box, InputBaseComponentProps, Paper, Popper, PopperProps, styled } from
 import React, { FC, forwardRef, PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionItem, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
-import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { useMentionableUsersLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';

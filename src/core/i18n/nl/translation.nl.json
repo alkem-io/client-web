@@ -868,7 +868,7 @@
         "callout-published": "'<userlink>{{user}}</userlink>' heeft {{time}} een nieuwe $t(common.callout) gepubliceerd",
         "challenge-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een nieuwe $t(common.challenge) aangemaakt",
         "discussion-comment-created": "'<userlink>{{user}}</userlink>' heeft {{time}} gereageerd op '{{calloutDisplayName}}'",
-        "member-joined": "'<userlink>{{user}}</userlink>' is {{time}} lid geworden van de {{communityType}} '{{communityDisplayName}}'",
+        "member-joined": "'<userlink>{{user}}</userlink>' is {{time}} lid geworden van de {{communityType}} '{{journeyDisplayName}}'",
         "opportunity-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een nieuwe $t(common.opportunity) aangemaakt",
         "post-comment-created": "'<userlink>{{user}}</userlink>' heeft {{time}} gereageerd op '{{postDisplayName}}'",
         "post-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een Post toegevoegd aan '{{calloutDisplayName}}'",

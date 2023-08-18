@@ -1,8 +1,8 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserRemoveModal from '../../components/User/UserRemoveModal';
-import UserForm from '../../../../../common/components/composite/forms/UserForm';
-import { Loading } from '../../../../../common/components/core/Loading/Loading';
+import UserForm from '../../../../community/user/userForm/UserForm';
+import { Loading } from '../../../../../core/ui/loading/Loading';
 import {
   useCreateTagsetOnProfileMutation,
   useCreateUserMutation,
@@ -13,10 +13,10 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { CreateUserInput } from '../../../../../core/apollo/generated/graphql-schema';
-import { UserModel } from '../../../../community/contributor/user/models/User';
-import { logger } from '../../../../../services/logging/winston/logger';
-import { createUserNameID } from '../../../../../common/utils/createUserNameId';
-import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
+import { UserModel } from '../../../../community/user/models/User';
+import { logger } from '../../../../../core/logging/winston/logger';
+import { createUserNameID } from '../../../../community/user/utils/createUserNameId';
+import { getUpdateUserInput } from '../../../../community/user/utils/getUpdateUserInput';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 

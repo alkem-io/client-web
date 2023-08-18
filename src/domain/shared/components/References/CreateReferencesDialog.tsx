@@ -15,7 +15,7 @@ import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import { newReferenceName } from '../../../../common/utils/newReferenceName';
+import { newReferenceName } from '../../../common/reference/newReferenceName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
 

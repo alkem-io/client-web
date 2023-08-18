@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { PushFunc, RemoveFunc, useEditReference } from '../../../../shared/Reference/useEditReference';
+import { PushFunc, RemoveFunc, useEditReference } from '../../../../common/reference/useEditReference';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
   useChallengePostSettingsQuery,
@@ -15,7 +15,7 @@ import {
   Profile,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { Reference } from '../../../../common/profile/Profile';
-import { newReferenceName } from '../../../../../common/utils/newReferenceName';
+import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getPostCallout';
 

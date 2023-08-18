@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import ChallengeAuthorizationPage from '../../../../challenge/challenge/pages/ChallengeAuthorization/ChallengeAuthorizationPage';
+import ChallengeAuthorizationPage from '../../../../journey/challenge/pages/ChallengeAuthorization/ChallengeAuthorizationPage';
 import AuthorizationRouteProps from '../../routing/AuthorizationRouteProps';
 
 const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ resourceId = '' }) => {

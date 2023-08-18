@@ -1,8 +1,8 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
-import RemoveModal from '../../../../common/components/core/RemoveModal';
-import { useUserContext } from '../../../community/contributor/user';
+import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
+import { useUserContext } from '../../../community/user';
 import DiscussionView from '../views/DiscussionView';
 import {
   refetchPlatformDiscussionQuery,
@@ -17,7 +17,7 @@ import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { Message } from '../../room/models/Message';
 import { Skeleton } from '@mui/material';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
 import { useNavigate } from 'react-router-dom';

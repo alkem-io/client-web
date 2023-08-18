@@ -6,10 +6,10 @@ import {
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
-import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface ChallengeCreationInput {

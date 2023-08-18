@@ -5,8 +5,8 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useInnovationFlowBlockQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { getJourneyTypeName } from '../../../challenge/JourneyTypeName';
-import Image from '../../../shared/components/Image';
+import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import ImageFadeIn from '../../../../core/ui/image/ImageFadeIn';
 import { Link, Skeleton } from '@mui/material';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import { Text } from '../../../../core/ui/typography';
@@ -49,7 +49,7 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
               })}
             </WrapperMarkdown>
             {innovationFlow?.profile.cardBanner?.uri && (
-              <Image
+              <ImageFadeIn
                 src={innovationFlow.profile.cardBanner.uri}
                 alt={innovationFlow.profile.cardBanner.alternativeText}
               />

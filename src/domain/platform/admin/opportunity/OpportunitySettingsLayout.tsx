@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
-import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
+import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import OpportunityPageBanner from '../../../challenge/opportunity/layout/OpportunityPageBanner';
-import OpportunityTabs from '../../../challenge/opportunity/layout/OpportunityTabs';
+import OpportunityPageBanner from '../../../journey/opportunity/layout/OpportunityPageBanner';
+import OpportunityTabs from '../../../journey/opportunity/layout/OpportunityTabs';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';

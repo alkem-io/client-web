@@ -7,7 +7,7 @@ import {
   MID_TEXT_LENGTH,
 } from '../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import FormRow from '../../../../../common/components/FormLayout';
+import FormRow from '../../../../../core/ui/forms/FormRow';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 

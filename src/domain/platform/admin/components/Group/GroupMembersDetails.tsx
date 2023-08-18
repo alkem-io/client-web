@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { UserAvatarsProvider } from '../../../../community/contributor/user/containers/UserAvatarsProvider/UserAvatarsProvider';
+import { UserAvatarsProvider } from '../../../../community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
 import { User } from '../../../../../core/apollo/generated/graphql-schema';
-import Avatar from '../../../../../common/components/core/Avatar';
-import AvatarContainer from '../../../../../common/components/core/AvatarContainer';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
+import Avatar from '../../../../../core/ui/image/Avatar';
+import GroupMembersDetailsAvatarContainer from './GroupMembersDetailsAvatarContainer';
+import WrapperButton from '../../../../../core/ui/button/deprecated/WrapperButton';
+import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
 import { useTranslation } from 'react-i18next';
+import UserPopUp from '../../../../community/user/userPopUp/UserPopUp';
 
 interface GroupMembersDetailsProps {
   members: User[];
@@ -23,11 +24,16 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           const avatars = populated;
           return (
             <>
-              <AvatarContainer title={''}>
+              <GroupMembersDetailsAvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar key={i} src={u.profile.visual?.uri} userId={u.id} name={u.profile.displayName} />
+                  <Avatar
+                    key={i}
+                    src={u.profile.visual?.uri}
+                    name={u.profile.displayName}
+                    renderPopup={({ open, onHide }) => open && <UserPopUp id={u.id} onHide={onHide} />}
+                  />
                 ))}
-              </AvatarContainer>
+              </GroupMembersDetailsAvatarContainer>
               <div style={{ flexBasis: '100%' }} />
               {members.length - populated.length > 0 && (
                 <WrapperTypography variant="h3" as="h3" color="positive">

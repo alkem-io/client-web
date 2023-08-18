@@ -1,4 +1,4 @@
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface TemplateBase extends Identifiable {
   description?: string;

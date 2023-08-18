@@ -5,14 +5,11 @@ import {
   useCalendarEventDetailsQuery,
   useRemoveMessageOnRoomMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
-import {
-  ContainerPropsWithProvided,
-  renderComponentOrChildrenFn,
-} from '../../../common/utils/containers/ComponentOrChildrenFn';
-import { useUserContext } from '../../community/contributor/user';
+import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '../../../core/container/ComponentOrChildrenFn';
+import { useUserContext } from '../../community/user';
 import { Message } from '../../communication/room/models/Message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
-import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
+import { buildAuthorFromUser } from '../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../collaboration/callout/useSubscribeOnRoomEvents';
 

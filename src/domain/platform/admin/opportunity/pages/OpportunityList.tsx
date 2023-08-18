@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import SearchableList, { SearchableListItem } from '../../components/SearchableList';
-import Loading from '../../../../../common/components/core/Loading/Loading';
+import Loading from '../../../../../core/ui/loading/Loading';
 import {
   refetchOpportunitiesQuery,
   useCreateOpportunityMutation,
@@ -13,14 +13,14 @@ import {
   useOpportunitiesQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
+import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
+import { useChallenge } from '../../../../journey/challenge/hooks/useChallenge';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
-import { CreateOpportunityForm } from '../../../../challenge/opportunity/forms/CreateOpportunityForm';
-import { buildAdminOpportunityUrl } from '../../../../../common/utils/urlBuilders';
+import { CreateOpportunityForm } from '../../../../journey/opportunity/forms/CreateOpportunityForm';
+import { buildAdminOpportunityUrl } from '../../../../../main/routing/urlBuilders';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
+import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();

@@ -1,6 +1,6 @@
 import { Grid, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
+import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
 import MetricCircleView from '../MetricCircleView';
 import { MetricType } from '../MetricType';
 

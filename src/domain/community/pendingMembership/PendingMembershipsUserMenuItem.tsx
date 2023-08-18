@@ -7,17 +7,17 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import { BlockSectionTitle, Caption, Text } from '../../../core/ui/typography';
 import { ApplicationHydrator, InvitationHydrator, usePendingMemberships } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
-import JourneyCard from '../../challenge/common/JourneyCard/JourneyCard';
+import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import ActivityDescription from '../../shared/components/ActivityDescription/ActivityDescription';
 import { Actions } from '../../../core/ui/actions/Actions';
-import { Identifiable } from '../../shared/types/Identifiable';
+import { Identifiable } from '../../../core/utils/Identifiable';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { refetchMeQuery, useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
-import ScrollableCardsLayoutContainer from '../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
-import JourneyCardTagline from '../../challenge/common/JourneyCard/JourneyCardTagline';
+import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 
 interface ButtonImplementationParams {
   header: ReactNode;

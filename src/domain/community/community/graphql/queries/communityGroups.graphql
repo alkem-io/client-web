@@ -2,7 +2,6 @@ query communityGroups($communityId: UUID!) {
   lookup {
     community(ID: $communityId) {
       id
-      displayName
       groups {
         id
         name

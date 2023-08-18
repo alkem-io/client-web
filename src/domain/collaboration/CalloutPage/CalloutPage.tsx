@@ -1,14 +1,14 @@
 import React, { ReactNode, useMemo } from 'react';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useCalloutPageCalloutQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { JourneyTypeName } from '../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
+import { buildCalloutUrl } from '../../../main/routing/urlBuilders';
 import useCanGoBack from '../../../core/routing/useCanGoBack';
 import { Theme, useMediaQuery } from '@mui/material';
 import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
