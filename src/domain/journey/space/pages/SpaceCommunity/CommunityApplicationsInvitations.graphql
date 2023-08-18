@@ -1,0 +1,72 @@
+query CommunityApplicationsInvitations($communityId: UUID!) {
+  lookup {
+    community(ID: $communityId) {
+      applications {
+        ...AdminCommunityApplication
+      }
+      invitations {
+        ...AdminCommunityInvitation
+      }
+      invitationsExternal {
+        ...AdminCommunityInvitationExternal
+      }
+    }
+  }
+}
+
+fragment AdminCommunityApplication on Application {
+  id
+  createdDate
+  updatedDate
+  lifecycle {
+    id
+    state
+    nextEvents
+  }
+  user {
+    ...AdminCommunityCandidateMember
+  }
+  questions {
+    id
+    name
+    value
+  }
+}
+
+fragment AdminCommunityInvitation on Invitation {
+  id
+  createdDate
+  updatedDate
+  lifecycle {
+    id
+    state
+    nextEvents
+  }
+  user {
+    ...AdminCommunityCandidateMember
+  }
+}
+
+fragment AdminCommunityInvitationExternal on InvitationExternal {
+  id
+  createdDate
+  email
+}
+
+fragment AdminCommunityCandidateMember on User {
+  id
+  nameID
+  email
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
+  }
+}

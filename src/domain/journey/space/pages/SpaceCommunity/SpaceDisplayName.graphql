@@ -1,9 +1,0 @@
-query SpaceDisplayName($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

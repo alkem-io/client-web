@@ -10,9 +10,9 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
-  AdminSpaceCommunityApplicationFragment,
-  AdminSpaceCommunityInvitationExternalFragment,
-  AdminSpaceCommunityInvitationFragment,
+  AdminCommunityApplicationFragment,
+  AdminCommunityInvitationExternalFragment,
+  AdminCommunityInvitationFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
@@ -27,9 +27,9 @@ enum CandidateType {
 }
 
 type TableItem =
-  | (AdminSpaceCommunityApplicationFragment & { type: CandidateType.Application })
-  | (AdminSpaceCommunityInvitationFragment & { type: CandidateType.Invitation })
-  | (AdminSpaceCommunityInvitationExternalFragment & {
+  | (AdminCommunityApplicationFragment & { type: CandidateType.Application })
+  | (AdminCommunityInvitationFragment & { type: CandidateType.Invitation })
+  | (AdminCommunityInvitationExternalFragment & {
       type: CandidateType.InvitationExternal;
       lifecycle?: undefined;
       user?: undefined;
@@ -106,9 +106,9 @@ const sortState = (state: string | undefined) => {
 };
 
 interface CommunityApplicationsProps {
-  applications: AdminSpaceCommunityApplicationFragment[] | undefined;
-  invitations: AdminSpaceCommunityInvitationFragment[] | undefined;
-  invitationsExternal: AdminSpaceCommunityInvitationExternalFragment[] | undefined;
+  applications: AdminCommunityApplicationFragment[] | undefined;
+  invitations: AdminCommunityInvitationFragment[] | undefined;
+  invitationsExternal: AdminCommunityInvitationExternalFragment[] | undefined;
   onApplicationStateChange: (applicationId: string, state: string) => Promise<unknown>;
   onInvitationStateChange: (invitationId: string, state: string) => Promise<unknown>;
   onDeleteInvitation: (invitationId: string) => Promise<unknown>;

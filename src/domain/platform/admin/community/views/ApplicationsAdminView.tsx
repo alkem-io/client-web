@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEventOnApplicationMutation } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AdminSpaceCommunityApplicationFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminCommunityApplicationFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { ApplicationDialog } from '../../../../community/application/dialogs/ApplicationDialog';
 import { Box } from '@mui/material';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
@@ -15,7 +15,7 @@ interface ApplicationViewmodel {
   state: string;
 }
 
-const toApplicationViewmodel = (applications: AdminSpaceCommunityApplicationFragment[]): ApplicationViewmodel[] =>
+const toApplicationViewmodel = (applications: AdminCommunityApplicationFragment[]): ApplicationViewmodel[] =>
   applications.map(x => ({
     id: x.id,
     username: x.user.profile.displayName,
@@ -24,7 +24,7 @@ const toApplicationViewmodel = (applications: AdminSpaceCommunityApplicationFrag
   }));
 
 interface ApplicationsAdminViewProps {
-  applications: AdminSpaceCommunityApplicationFragment[];
+  applications: AdminCommunityApplicationFragment[];
 }
 /**
  * @deprecated Use CommunityApplications. Stays for Challenges, but Spaces are already using CommunityApplications
@@ -32,7 +32,7 @@ interface ApplicationsAdminViewProps {
 export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applications }) => {
   const { t } = useTranslation();
 
-  const [appChosen, setAppChosen] = useState<AdminSpaceCommunityApplicationFragment | undefined>(undefined);
+  const [appChosen, setAppChosen] = useState<AdminCommunityApplicationFragment | undefined>(undefined);
 
   const applicationsVm = useMemo(() => toApplicationViewmodel(applications), [applications]);
 
