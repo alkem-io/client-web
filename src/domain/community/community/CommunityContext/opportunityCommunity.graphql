@@ -3,6 +3,10 @@ query opportunityCommunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!,
     id
     opportunity(ID: $opportunityId) {
       id
+      profile {
+        id
+        displayName
+      }
       community {
         id
         ...CommunityDetails @include(if: $includeDetails)

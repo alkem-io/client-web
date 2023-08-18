@@ -11,7 +11,6 @@ export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
   values?: Record<string, string | undefined>;
   components?: Record<string, ReactElement>;
-
   createdDate: Date | string;
   journeyDisplayName?: string; // Callout name or Journey name
   journeyLocation?: JourneyLocation;

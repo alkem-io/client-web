@@ -7,8 +7,8 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
 import Loading from '../../../../../core/ui/loading/Loading';
 import {
-  refetchChallengesWithCommunityQuery,
-  useChallengesWithCommunityQuery,
+  refetchChallengesWithProfileQuery,
+  useChallengesWithProfileQuery,
   useCreateChallengeMutation,
   useDeleteChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -27,7 +27,7 @@ export const ChallengeListView: FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({
+  const { data: challengesListQuery, loading } = useChallengesWithProfileQuery({
     variables: {
       spaceId: spaceNameId,
     },
@@ -42,7 +42,7 @@ export const ChallengeListView: FC = () => {
 
   const [deleteChallenge] = useDeleteChallengeMutation({
     refetchQueries: [
-      refetchChallengesWithCommunityQuery({
+      refetchChallengesWithProfileQuery({
         spaceId: spaceNameId,
       }),
     ],
@@ -64,7 +64,7 @@ export const ChallengeListView: FC = () => {
     onCompleted: () => {
       notify(t('pages.admin.challenge.notifications.challenge-created'), 'success');
     },
-    refetchQueries: [refetchChallengesWithCommunityQuery({ spaceId: spaceNameId })],
+    refetchQueries: [refetchChallengesWithProfileQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 

@@ -134,10 +134,6 @@ export const JourneyInnovationFlowStatesAllowedValuesFragmentDoc = gql`
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     communityType
-    community {
-      id
-      displayName
-    }
     user {
       id
       nameID
@@ -1031,7 +1027,6 @@ export const ApplicationFormFragmentDoc = gql`
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
-    displayName
     myMembershipStatus
     communication {
       id
@@ -9677,7 +9672,6 @@ export const CommunityUpdatesDocument = gql`
     lookup {
       community(ID: $communityId) {
         id
-        displayName
         communication {
           id
           updates {
@@ -10168,7 +10162,6 @@ export const SpaceApplicationDocument = gql`
       }
       community {
         id
-        displayName
       }
     }
   }
@@ -10368,6 +10361,10 @@ export const ChallengeCommunityDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
+        profile {
+          id
+          displayName
+        }
         community {
           id
           ...CommunityDetails @include(if: $includeDetails)
@@ -10438,6 +10435,10 @@ export const OpportunityCommunityDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         id
+        profile {
+          id
+          displayName
+        }
         community {
           id
           ...CommunityDetails @include(if: $includeDetails)
@@ -10506,6 +10507,10 @@ export const SpaceCommunityDocument = gql`
   query spaceCommunity($spaceId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     space(ID: $spaceId) {
       id
+      profile {
+        id
+        displayName
+      }
       community {
         id
         ...CommunityDetails @include(if: $includeDetails)
@@ -10987,8 +10992,8 @@ export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
 >;
-export const ChallengesWithCommunityDocument = gql`
-  query challengesWithCommunity($spaceId: UUID_NAMEID!) {
+export const ChallengesWithProfileDocument = gql`
+  query challengesWithProfile($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
       challenges {
@@ -10998,65 +11003,61 @@ export const ChallengesWithCommunityDocument = gql`
           id
           displayName
         }
-        community {
-          id
-          displayName
-        }
       }
     }
   }
 `;
 
 /**
- * __useChallengesWithCommunityQuery__
+ * __useChallengesWithProfileQuery__
  *
- * To run a query within a React component, call `useChallengesWithCommunityQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengesWithCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useChallengesWithProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengesWithProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengesWithCommunityQuery({
+ * const { data, loading, error } = useChallengesWithProfileQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useChallengesWithCommunityQuery(
+export function useChallengesWithProfileQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengesWithCommunityQuery,
-    SchemaTypes.ChallengesWithCommunityQueryVariables
+    SchemaTypes.ChallengesWithProfileQuery,
+    SchemaTypes.ChallengesWithProfileQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengesWithCommunityQuery, SchemaTypes.ChallengesWithCommunityQueryVariables>(
-    ChallengesWithCommunityDocument,
+  return Apollo.useQuery<SchemaTypes.ChallengesWithProfileQuery, SchemaTypes.ChallengesWithProfileQueryVariables>(
+    ChallengesWithProfileDocument,
     options
   );
 }
 
-export function useChallengesWithCommunityLazyQuery(
+export function useChallengesWithProfileLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengesWithCommunityQuery,
-    SchemaTypes.ChallengesWithCommunityQueryVariables
+    SchemaTypes.ChallengesWithProfileQuery,
+    SchemaTypes.ChallengesWithProfileQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengesWithCommunityQuery,
-    SchemaTypes.ChallengesWithCommunityQueryVariables
-  >(ChallengesWithCommunityDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.ChallengesWithProfileQuery, SchemaTypes.ChallengesWithProfileQueryVariables>(
+    ChallengesWithProfileDocument,
+    options
+  );
 }
 
-export type ChallengesWithCommunityQueryHookResult = ReturnType<typeof useChallengesWithCommunityQuery>;
-export type ChallengesWithCommunityLazyQueryHookResult = ReturnType<typeof useChallengesWithCommunityLazyQuery>;
-export type ChallengesWithCommunityQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengesWithCommunityQuery,
-  SchemaTypes.ChallengesWithCommunityQueryVariables
+export type ChallengesWithProfileQueryHookResult = ReturnType<typeof useChallengesWithProfileQuery>;
+export type ChallengesWithProfileLazyQueryHookResult = ReturnType<typeof useChallengesWithProfileLazyQuery>;
+export type ChallengesWithProfileQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengesWithProfileQuery,
+  SchemaTypes.ChallengesWithProfileQueryVariables
 >;
-export function refetchChallengesWithCommunityQuery(variables: SchemaTypes.ChallengesWithCommunityQueryVariables) {
-  return { query: ChallengesWithCommunityDocument, variables: variables };
+export function refetchChallengesWithProfileQuery(variables: SchemaTypes.ChallengesWithProfileQueryVariables) {
+  return { query: ChallengesWithProfileDocument, variables: variables };
 }
 
 export const CommunityGroupsDocument = gql`
@@ -11064,7 +11065,6 @@ export const CommunityGroupsDocument = gql`
     lookup {
       community(ID: $communityId) {
         id
-        displayName
         groups {
           id
           name

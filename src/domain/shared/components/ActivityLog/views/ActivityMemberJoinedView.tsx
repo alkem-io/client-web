@@ -2,14 +2,12 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { Community } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
 
 interface ActivityMemberJoinedViewProps extends ActivityViewProps {
   member: Author;
-  community: Community;
   communityType: string;
 }
 
@@ -18,9 +16,9 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
   loading,
   createdDate,
   journeyTypeName,
+  journeyDisplayName,
   journeyLocation,
   member,
-  community,
   communityType,
 }) => {
   const { t } = useTranslation();
@@ -46,10 +44,9 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
             createdDate,
             journeyTypeName,
             journeyLocation,
-            journeyDisplayName: community.displayName,
+            journeyDisplayName,
             values: {
               communityType,
-              communityDisplayName: community.displayName!,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}

@@ -7,7 +7,6 @@ query spaceApplication($spaceId: UUID_NAMEID!) {
     }
     community {
       id
-      displayName
     }
   }
 }

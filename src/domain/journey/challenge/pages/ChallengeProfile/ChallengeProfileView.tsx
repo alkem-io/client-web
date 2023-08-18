@@ -5,7 +5,7 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchChallengeProfileInfoQuery,
-  refetchChallengesWithCommunityQuery,
+  refetchChallengesWithProfileQuery,
   useChallengeProfileInfoQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
@@ -37,7 +37,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
       onSuccess('Successfully created');
       navigateToEdit(data.createChallenge.nameID);
     },
-    refetchQueries: [refetchChallengesWithCommunityQuery({ spaceId: spaceNameId })],
+    refetchQueries: [refetchChallengesWithProfileQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 

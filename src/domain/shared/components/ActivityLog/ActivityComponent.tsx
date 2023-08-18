@@ -202,7 +202,6 @@ const ActivityViewChooser = ({
       return (
         <ActivityMemberJoinedView
           member={userAuthor}
-          community={activityMemberJoined.community}
           communityType={activityMemberJoined.communityType}
           author={author}
           {...activity}
