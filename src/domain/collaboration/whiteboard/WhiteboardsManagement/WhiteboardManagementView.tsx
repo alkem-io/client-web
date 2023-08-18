@@ -5,15 +5,12 @@ import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
 import WhiteboardValueContainer from '../containers/WhiteboardValueContainer';
-import { useUserContext } from '../../../community/contributor/user';
 import {
-  WhiteboardCheckoutStateEnum,
   WhiteboardDetailsFragment,
   WhiteboardValueFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
-import { useWhiteboardLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
@@ -79,13 +76,6 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
   const { whiteboardNameId, calloutId, whiteboard } = entities;
   const [whiteboardBeingDeleted, setWhiteboardBeingDeleted] = useState<WhiteboardBeingDeleted | undefined>(undefined);
 
-  const { user } = useUserContext();
-
-  const { data: lockedByDetailsData } = useWhiteboardLockedByDetailsQuery({
-    variables: { ids: [whiteboard?.checkout?.lockedBy!] },
-    skip: !whiteboard?.checkout?.lockedBy,
-  });
-
   const handleCancel = (whiteboard: WhiteboardDetailsFragment) => {
     backToWhiteboards();
     actions.onCheckin(whiteboard);
@@ -95,18 +85,13 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
     <>
       <WhiteboardValueContainer whiteboardId={whiteboard?.id}>
         {entities => {
-          const isWhiteboardCheckedOutByMe =
-            entities.whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.CheckedOut &&
-            entities.whiteboard.checkout.lockedBy === user?.user.id;
-          const isWhiteboardAvailable = entities.whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.Available;
+          const { isWhiteboardCheckedOutByMe, isWhiteboardAvailable } = entities;
 
           return (
             <WhiteboardDialog
               entities={{
                 whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
-                lockedBy: isWhiteboardAvailable
-                  ? undefined
-                  : lockedByDetailsData?.users.find(user => user.id === entities.whiteboard?.checkout?.lockedBy),
+                lockedBy: entities.lockedBy,
               }}
               actions={{
                 onCancel: handleCancel,
