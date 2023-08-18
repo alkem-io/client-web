@@ -14,9 +14,9 @@ import {
   User,
   UserGroup,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { logger } from '../../../../../services/logging/winston/logger';
+import { logger } from '../../../../../core/logging/winston/logger';
 import GroupForm from './GroupForm/GroupForm';
-import { getUpdateProfileInput } from '../../../../../common/utils/getUpdateUserInput';
+import { getUpdateProfileInput } from '../../../../community/user/utils/getUpdateUserInput';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 

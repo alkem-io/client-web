@@ -1,8 +1,8 @@
 import React, { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import TranslationKey from '../../../../types/TranslationKey';
-import { buildJourneyUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import { buildJourneyUrl, JourneyLocation } from '../../../../main/routing/urlBuilders';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
 import { Link } from '@mui/material';
 import journeyIcon from '../JourneyIcon/JourneyIcon';
@@ -11,7 +11,6 @@ export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
   values?: Record<string, string | undefined>;
   components?: Record<string, ReactElement>;
-
   createdDate: Date | string;
   journeyDisplayName?: string; // Callout name or Journey name
   journeyLocation?: JourneyLocation;

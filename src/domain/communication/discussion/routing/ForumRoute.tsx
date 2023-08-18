@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import { nameOfUrl } from '../../../../core/routing/urlParams';
+import { nameOfUrl } from '../../../../main/routing/urlParams';
 import DiscussionPage from '../pages/DiscussionPage';
 import ForumPage from '../pages/ForumPage';
 

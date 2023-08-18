@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
-import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 import {
   CommunicationDiscussionUpdatedDocument,
   usePlatformDiscussionsQuery,
@@ -22,11 +22,11 @@ import {
 import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
-import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
-import useInnovationHubOutsideRibbon from '../../../platform/InnovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
-import { StorageConfigContextProvider } from '../../../platform/storage/StorageBucket/StorageConfigContext';
+import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
+import useInnovationHubOutsideRibbon from '../../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';

@@ -92,20 +92,17 @@ fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
   value
 }
 
-fragment CalloutWithWhiteboard on Collaboration {
+fragment CalloutWithWhiteboard on Callout {
   id
-  callouts(IDs: [$calloutId]) {
+  nameID
+  type
+  authorization {
     id
-    nameID
-    type
-    authorization {
-      id
-      anonymousReadAccess
-      myPrivileges
-    }
-    whiteboards(IDs: [$whiteboardId]) {
-      ...WhiteboardDetails
-    }
+    anonymousReadAccess
+    myPrivileges
+  }
+  whiteboards(IDs: [$whiteboardId]) {
+    ...WhiteboardDetails
   }
 }
 
@@ -126,10 +123,9 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
   }
 }
 
-query spaceWhiteboardFromCallout($spaceId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
+query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+  lookup {
+    callout(ID: $calloutId) {
       ...CalloutWithWhiteboard
     }
   }
@@ -140,34 +136,6 @@ query whiteboardWithValue($whiteboardId: UUID!) {
     whiteboard(ID: $whiteboardId) {
       ...WhiteboardDetails
       ...WhiteboardValue
-    }
-  }
-}
-
-query challengeWhiteboardFromCallout(
-  $spaceId: UUID_NAMEID!
-  $challengeId: UUID_NAMEID!
-  $calloutId: UUID_NAMEID!
-  $whiteboardId: UUID_NAMEID!
-) {
-  space(ID: $spaceId) {
-    id
-    challenge(ID: $challengeId) {
-      id
-      collaboration {
-        ...CalloutWithWhiteboard
-      }
-    }
-  }
-}
-
-query opportunityWhiteboardFromCallout($opportunityId: UUID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
-  lookup {
-    opportunity(ID: $opportunityId) {
-      id
-      collaboration {
-        ...CalloutWithWhiteboard
-      }
     }
   }
 }

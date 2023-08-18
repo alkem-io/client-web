@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 import React, { FC } from 'react';
 import { ErrorPage } from '../pages/Errors/ErrorPage';
-import sentryBootstrap from '../../services/logging/sentry/bootstrap';
+import sentryBootstrap from '../logging/sentry/bootstrap';
 import { useConfig } from '../../domain/platform/config/useConfig';
 
 const SentryErrorBoundaryProvider: FC = ({ children }) => {

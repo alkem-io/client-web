@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Avatar, Box, Skeleton } from '@mui/material';
 import { useNotification } from '../../notifications/useNotification';
 import { useUploadVisualMutation } from '../../../apollo/generated/apollo-hooks';
-import UploadButton from '../../../../common/components/core/UploadButton';
+import UploadButton from '../../button/UploadButton';
 import { Visual } from '../../../apollo/generated/graphql-schema';
 import { CropDialog } from './CropDialog';
 import ImageComponent from '../../../../domain/shared/components/ImageComponent';

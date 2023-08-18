@@ -2,13 +2,13 @@ import { Grid, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer from '../../ContributionDetails/ContributionDetailsContainer';
-import { ContributionItem } from '../../../contributor/contribution';
+import { ContributionItem } from '../../../user/contribution';
 import { Caption } from '../../../../../core/ui/typography';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import ContributionDetailsCard from '../../ContributionDetails/ContributionDetailsCard';
-import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 
 interface ContributionViewProps {
   title: string;

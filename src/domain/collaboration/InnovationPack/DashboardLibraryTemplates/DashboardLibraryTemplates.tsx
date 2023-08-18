@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
-import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
+import filterFn, { ValueType } from '../../../../core/utils/filtering/filterFn';
 
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { compact } from 'lodash';

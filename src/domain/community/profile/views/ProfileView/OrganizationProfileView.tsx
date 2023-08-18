@@ -3,7 +3,7 @@ import { Box, CardContent, Grid, Link, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
+import OrganizationVerifiedStatus from '../../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
 import { Location } from '../../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle } from '../../../../../core/ui/typography';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
@@ -40,7 +40,10 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
       <CardContent sx={{ position: 'relative' }}>
         <VerifiedBadge>
           {entity.verified !== undefined && (
-            <VerifiedStatus verified={entity.verified} helpText={t('pages.organization.verified-status.help')} />
+            <OrganizationVerifiedStatus
+              verified={entity.verified}
+              helpText={t('pages.organization.verified-status.help')}
+            />
           )}
         </VerifiedBadge>
         <Grid container spacing={2} direction="column">

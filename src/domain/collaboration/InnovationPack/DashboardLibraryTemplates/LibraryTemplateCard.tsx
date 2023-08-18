@@ -1,5 +1,5 @@
 import { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import PostTemplateCard, { PostTemplate } from '../../post/PostTemplateCard/PostTemplateCard';
 import { WhiteboardTemplate } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
 import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';

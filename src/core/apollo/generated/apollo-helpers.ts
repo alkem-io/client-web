@@ -731,7 +731,6 @@ export type CommunityKeySpecifier = (
   | 'availableLeadUsers'
   | 'availableMemberUsers'
   | 'communication'
-  | 'displayName'
   | 'groups'
   | 'id'
   | 'invitations'
@@ -750,7 +749,6 @@ export type CommunityFieldPolicy = {
   availableLeadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   availableMemberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;

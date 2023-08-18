@@ -12,7 +12,7 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import { BlockTitle, BlockSectionTitle } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
+import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
 import { useResolvedPath } from 'react-router-dom';
 import useCommentReactionsMutations from '../../room/Comments/useCommentReactionsMutations';
 import Gutters from '../../../../core/ui/grid/Gutters';

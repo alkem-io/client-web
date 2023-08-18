@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import WrapperButton from '../../../common/components/core/WrapperButton';
-import Section from '../../../common/components/core/Section';
-import WrapperTypography from '../../../common/components/core/WrapperTypography';
+import WrapperButton from '../../ui/button/deprecated/WrapperButton';
+import Section from '../../ui/content/deprecated/Section';
+import WrapperTypography from '../../ui/typography/deprecated/WrapperTypography';
 import { useUpdateNavigation } from '../../routing/useNavigation';
 import { useTranslation } from 'react-i18next';
 

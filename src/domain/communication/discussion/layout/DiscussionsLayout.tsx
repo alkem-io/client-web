@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Paper } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouterLink } from '../../../../common/components/core/RouterLink';
+import { RouterLink } from '../../../../core/ui/link/deprecated/RouterLink';
 import { PageTitle } from '../../../../core/ui/typography';
 import AddIcon from '@mui/icons-material/Add';
 import Gutters from '../../../../core/ui/grid/Gutters';

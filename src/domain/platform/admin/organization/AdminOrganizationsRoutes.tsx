@@ -4,7 +4,7 @@ import OrganizationPage from '../components/Organization/OrganizationPage';
 import { OrganizationProvider } from '../../../community/contributor/organization/context/OrganizationProvider';
 import { EditMode } from '../../../../core/ui/forms/editMode';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import { nameOfUrl } from '../../../../core/routing/urlParams';
+import { nameOfUrl } from '../../../../main/routing/urlParams';
 import OrganizationAdminRoutes from './OrganizationAdminRoutes';
 import AdminOrganizationsPage from '../../../community/contributor/organization/pages/AdminOrganizationsPage';
 import { useTranslation } from 'react-i18next';

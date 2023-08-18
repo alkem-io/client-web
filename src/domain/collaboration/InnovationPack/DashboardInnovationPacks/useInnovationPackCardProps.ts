@@ -1,6 +1,6 @@
 import { InnovationPackCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
 import { buildInnovationPackUrl } from '../urlBuilders';
 

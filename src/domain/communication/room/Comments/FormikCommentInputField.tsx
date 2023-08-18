@@ -17,8 +17,8 @@ import {
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
-import TranslationKey from '../../../../types/TranslationKey';
+import CharacterCounter from '../../../../core/ui/forms/characterCounter/CharacterCounter';
+import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '../../../shared/i18n/ValidationMessageTranslation';
 import { CommentInputField, MENTION_SYMBOL } from './CommentInputField';
 import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';

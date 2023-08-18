@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { privateGraphQLEndpoint } from '../../../common/constants/endpoints';
-import WrapperButton from '../../../common/components/core/WrapperButton';
-import Section from '../../../common/components/core/Section';
-import WrapperTypography from '../../../common/components/core/WrapperTypography';
+import { privateGraphQLEndpoint } from '../../../main/constants/endpoints';
+import WrapperButton from '../../ui/button/deprecated/WrapperButton';
+import Section from '../../ui/content/deprecated/Section';
+import WrapperTypography from '../../ui/typography/deprecated/WrapperTypography';
 
 export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
   const { t } = useTranslation();

@@ -868,7 +868,7 @@
         "callout-published": "{{time}} '<userlink>{{user}}</userlink>' ha publicado un nuevo $t(common.callout)",
         "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' creó un nuevo $t(common.challenge)",
         "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' comentó sobre '{{calloutDisplayName}}'",
-        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' se unió al {{communityType}} '{{communityDisplayName}}'",
+        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' se unió al {{communityType}} '{{journeyDisplayName}}'",
         "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' creó una nueva $t(common.opportunity)",
         "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un comentario en '{{postDisplayName}}'",
         "post-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un Post a '{{calloutDisplayName}}'",

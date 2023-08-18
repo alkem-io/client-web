@@ -4,10 +4,10 @@ import Dialog from '@mui/material/Dialog/Dialog';
 import { Formik } from 'formik';
 import { Box, Button } from '@mui/material';
 import * as yup from 'yup';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../../core/ui/dialog/deprecated';
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
-import { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
+import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface InnovationFlowTemplateProfile {

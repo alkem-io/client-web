@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
 import { CalloutIcon } from '../../callout/icon/CalloutIcon';
-import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
+import { DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
 import { CreatePostOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
-import { CalloutPostTemplate } from '../../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutPostTemplate } from '../../callout/creationDialog/CalloutCreationDialog';
 
 export type PostCreationType = Partial<CreatePostOnCalloutInput>;
 export type PostCreationOutput = Omit<CreatePostOnCalloutInput, 'calloutID'>;
@@ -20,7 +20,7 @@ export type PostCreationDialogProps = {
   calloutDisplayName: string;
   calloutId: string;
   postTemplate: CalloutPostTemplate | undefined;
-  isCreating: boolean;
+  creating: boolean;
 } & CoreEntityIdTypes;
 
 const PostCreationDialog: FC<PostCreationDialogProps> = ({
@@ -30,7 +30,7 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
   onCreate,
   calloutDisplayName,
   postTemplate,
-  isCreating,
+  creating,
 }) => {
   const { t } = useTranslation();
   const [post, setPost] = useState<PostCreationType>({});
@@ -69,7 +69,7 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
     return (
       <>
         <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
-        <Button onClick={handleCreate} variant="contained" disabled={!isFormValid || isCreating}>
+        <Button onClick={handleCreate} variant="contained" disabled={!isFormValid || creating}>
           {t('buttons.create')}
         </Button>
       </>

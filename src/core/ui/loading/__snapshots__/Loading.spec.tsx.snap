@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loading component render correctly WrapperTypography component 1`] = `
+<DocumentFragment>
+  <div
+    class="makeStyles-caption-6 makeStyles-primary-9"
+    style="font-weight: 500;"
+  />
+</DocumentFragment>
+`;
+
+exports[`Loading component render correctly loading component 1`] = `
+<DocumentFragment>
+  <div
+    class="makeStyles-container-20"
+  >
+    <div
+      class="MuiCircularProgress-root makeStyles-spinner-18 MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate"
+      role="progressbar"
+      style="width: 40px; height: 40px;"
+    >
+      <svg
+        class="MuiCircularProgress-svg"
+        viewBox="22 22 44 44"
+      >
+        <circle
+          class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate"
+          cx="44"
+          cy="44"
+          fill="none"
+          r="20.2"
+          stroke-width="3.6"
+        />
+      </svg>
+    </div>
+    <div
+      class="makeStyles-caption-26 makeStyles-primary-29 makeStyles-text-19"
+      style="font-weight: 500;"
+    >
+      <span>
+        Please wait
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;

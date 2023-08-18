@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
-import { useOpportunity } from '../../../../challenge/opportunity/hooks/useOpportunity';
+import { useChallenge } from '../../../../journey/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../../../journey/opportunity/hooks/useOpportunity';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OpportunityCommunityAdminPage from '../OpportunityCommunityAdminPage';
 import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/OpportunityCommunicationsPage';
@@ -10,8 +10,8 @@ import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfi
 import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 
 export const OpportunityRoute: FC = () => {
   const { spaceNameId } = useSpace();

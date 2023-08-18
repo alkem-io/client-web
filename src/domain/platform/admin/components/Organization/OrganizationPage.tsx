@@ -15,11 +15,11 @@ import {
   Organization,
   UpdateOrganizationInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { logger } from '../../../../../services/logging/winston/logger';
-import { Loading } from '../../../../../common/components/core';
+import { logger } from '../../../../../core/logging/winston/logger';
+import Loading from '../../../../../core/ui/loading/Loading';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 interface Props {
   title?: string;

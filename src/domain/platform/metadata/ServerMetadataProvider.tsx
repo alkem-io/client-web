@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Metadata, ServerMetadataQuery } from '../../../core/apollo/generated/graphql-schema';
 import { ServerMetadataDocument } from '../../../core/apollo/generated/apollo-hooks';
-import { logger } from '../../../services/logging/winston/logger';
-import queryRequest from '../../../common/utils/query-request/query-request';
+import { logger } from '../../../core/logging/winston/logger';
+import queryRequest from '../../../core/http/queryRequest';
 import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
 
 interface ServerMetadataContextProps {

@@ -8,14 +8,14 @@ import useCommunityMembersAssignment, {
   MemberMutationHook,
   RefetchQuery,
 } from '../../../community/community/useCommunityAssignment/useCommunityMembersAssignment';
-import { Member } from '../../../community/contributor/user/models/User';
+import { Member } from '../../../community/user/models/User';
 import { PaginationVariables } from '../../../shared/pagination/usePaginatedQuery';
 import useAvailableCommunityUsers, {
   AvailableCommunityUsersOptions,
   UserFilterHolder,
 } from './useAvailableCommunityUsers';
 import { QueryHookOptions, QueryResult } from '@apollo/client/react/types/types';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import { PossiblyUndefinedProps } from '../../../shared/types/PossiblyUndefinedProps';
 
 type MemberTypes = 'member' | 'lead';

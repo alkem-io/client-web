@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { useSpace } from '../../../challenge/space/SpaceContext/useSpace';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
@@ -10,10 +10,10 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import SpacePageBanner from '../../../challenge/space/layout/SpacePageBanner';
-import SpaceTabs from '../../../challenge/space/layout/SpaceTabs';
+import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
+import SpaceTabs from '../../../journey/space/layout/SpaceTabs';
 import SearchDialog from '../../search/SearchDialog';
-import { buildSpaceUrl } from '../../../../common/utils/urlBuilders';
+import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 
 interface SpaceSettingsLayoutProps {
   currentTab: SettingsSection;

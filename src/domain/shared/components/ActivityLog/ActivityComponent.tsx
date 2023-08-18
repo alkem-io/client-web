@@ -28,10 +28,10 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { getJourneyLocationKey, JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import { getJourneyLocationKey, JourneyLocation } from '../../../../main/routing/urlBuilders';
+import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { ActivityCalloutLinkCreatedView } from './views';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 
@@ -202,7 +202,6 @@ const ActivityViewChooser = ({
       return (
         <ActivityMemberJoinedView
           member={userAuthor}
-          community={activityMemberJoined.community}
           communityType={activityMemberJoined.communityType}
           author={author}
           {...activity}

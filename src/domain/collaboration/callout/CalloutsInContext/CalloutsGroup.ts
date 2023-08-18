@@ -1,5 +1,5 @@
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 export enum CalloutDisplayLocationValuesMap {
   HomeTop = 'HOME_0',

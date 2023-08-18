@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { Alert, Box, Button, DialogActions } from '@mui/material';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { FormikUserSelector } from '../../../../community/contributor/user/FormikUserSelector/FormikUserSelector';
+import { FormikUserSelector } from '../../../../community/user/FormikUserSelector/FormikUserSelector';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Caption, Text } from '../../../../../core/ui/typography';
 import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';

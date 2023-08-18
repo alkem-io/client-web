@@ -5,9 +5,9 @@ import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import ApplyPage from '../pages/ApplyPage';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
-import { EntityPageLayoutHolder } from '../../../challenge/common/EntityPageLayout';
-import { ChallengePageLayoutProps } from '../../../challenge/challenge/layout/ChallengePageLayout';
-import { SpacePageLayoutProps } from '../../../challenge/space/layout/SpacePageLayout';
+import { EntityPageLayoutHolder } from '../../../journey/common/EntityPageLayout';
+import { ChallengePageLayoutProps } from '../../../journey/challenge/layout/ChallengePageLayout';
+import { SpacePageLayoutProps } from '../../../journey/space/layout/SpacePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface Props extends PageProps {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import WhiteboardWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/WhiteboardWhiteboard';
+import ExcalidrawWrapper from '../../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import {
   AdminWhiteboardTemplateFragment,
   AdminWhiteboardTemplateValueFragment,
@@ -57,7 +57,7 @@ const WhiteboardTemplatePreview = ({
       </Box>
       <Box height={theme => theme.spacing(40)}>
         {templateValue?.value && (
-          <WhiteboardWhiteboard
+          <ExcalidrawWrapper
             entities={{
               whiteboard: whiteboardFromTemplate,
             }}

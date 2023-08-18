@@ -1,11 +1,11 @@
 import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import WrapperButton from '../../../common/components/core/WrapperButton';
-import Section from '../../../common/components/core/Section';
-import WrapperTypography from '../../../common/components/core/WrapperTypography';
+import WrapperButton from '../../ui/button/deprecated/WrapperButton';
+import Section from '../../ui/content/deprecated/Section';
+import WrapperTypography from '../../ui/typography/deprecated/WrapperTypography';
 import { useUpdateNavigation } from '../../routing/useNavigation';
-import { log404NotFound } from '../../../services/logging/sentry/log';
+import { log404NotFound } from '../../logging/sentry/log';
 
 const paths = { currentPaths: [] };
 
