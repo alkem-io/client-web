@@ -5,7 +5,7 @@ import SpaceChildJourneyCard, {
 import { ChallengeIcon } from '../icon/ChallengeIcon';
 import CardParentJourneySegment from '../../common/SpaceChildJourneyCard/CardParentJourneySegment';
 import { SpaceIcon } from '../../space/icon/SpaceIcon';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
 import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';

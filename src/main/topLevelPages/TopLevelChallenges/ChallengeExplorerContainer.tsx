@@ -6,7 +6,7 @@ import {
   useChallengeExplorerPageQuery,
   useChallengeExplorerSearchQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../domain/community/contributor/user';
+import { useUserContext } from '../../../domain/community/user';
 import { ValueType } from '../../../core/utils/filtering/filterFn';
 import { getVisualByType } from '../../../domain/common/visual/utils/visuals.utils';
 import { SpaceVisibility, SearchResultChallengeFragment } from '../../../core/apollo/generated/graphql-schema';

@@ -1,5 +1,5 @@
 import { useConfig } from '../../platform/config/useConfig';
-import { useUserContext } from '../../community/contributor/user';
+import { useUserContext } from '../../community/user';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
 import { usePlatformUpdatesRoomQuery, useRoomEventsSubscription } from '../../../core/apollo/generated/apollo-hooks';

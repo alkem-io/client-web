@@ -3,7 +3,7 @@ import { ButtonProps, useTheme } from '@mui/material';
 import { useSelector } from '@xstate/react';
 import { useLocation } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
-import { useUserContext } from '../../../../domain/community/contributor/user';
+import { useUserContext } from '../../../../domain/community/user';
 import { useGlobalState } from '../../../../core/state/useGlobalState';
 import UserSegment from '../../userSegment/UserSegment';
 import SignInIcon from './SignInIcon';

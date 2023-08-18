@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useUserContext } from '../../user';
+import { useUserContext } from '../../../user';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOrganizationAdminMutation,
@@ -14,7 +14,7 @@ import {
   Organization,
   UserDisplayNameFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { Member } from '../../user/models/User';
+import { Member } from '../../../user/models/User';
 import { useAvailableMembersWithCredential } from '../../../community/useAvailableMembersWithCredential';
 import { AvailableMembersResults } from '../../../community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 

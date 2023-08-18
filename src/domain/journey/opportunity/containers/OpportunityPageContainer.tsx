@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useOpportunity } from '../hooks/useOpportunity';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import {
   useOpportunityPageQuery,
   useSendMessageToCommunityLeadsMutation,

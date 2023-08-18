@@ -1,6 +1,6 @@
 import { Box, Grow } from '@mui/material';
 import React from 'react';
-import { useUserContext } from '../../../domain/community/contributor/user';
+import { useUserContext } from '../../../domain/community/user';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
 import HomePageFooter from './HomePageFooter';
@@ -16,8 +16,11 @@ import { useInnovationHubQuery } from '../../../core/apollo/generated/apollo-hoo
 import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
 import useInnovationHubAttrs from '../../../domain/innovationHub/InnovationHubHomePage/InnovationHubAttrs';
 import Loading from '../../../core/ui/loading/Loading';
+import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 
 export const HomePage = () => {
+  const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
+
   const user = useUserContext();
 
   const params = useQueryParams();
@@ -45,9 +48,13 @@ export const HomePage = () => {
       <PageContent>
         <PageContentColumn columns={12}>
           {!isFromLanding && (
-            <Grow in={!user.loading} appear>
+            <Grow in={!isLoadingAuthentication} appear>
               <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">
-                {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
+                {isAuthenticated ? (
+                  <AuthenticatedUserHome userName={user.user?.user.firstName} />
+                ) : (
+                  <AnonymousUserHome />
+                )}
               </Box>
             </Grow>
           )}

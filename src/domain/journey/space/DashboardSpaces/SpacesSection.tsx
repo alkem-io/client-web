@@ -9,7 +9,7 @@ import useServerMetadata from '../../../platform/metadata/useServerMetadata';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricItem } from '../../../platform/metrics/views/Metrics';
 import { keyBy } from 'lodash';
-import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
+import { UserRolesInEntity } from '../../../community/user/providers/UserProvider/UserRolesInEntity';
 import Loading from '../../../../core/ui/loading/Loading';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';

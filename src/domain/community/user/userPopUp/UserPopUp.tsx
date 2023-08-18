@@ -19,7 +19,7 @@ import { RouterLink } from '../../../../core/ui/link/deprecated/RouterLink';
 import Tag from '../../../../core/ui/tags/deprecated/Tag';
 import UserPopUpTagContainer from './UserPopUpTagContainer';
 import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
-import { useUserMetadata } from '../../contributor/user';
+import { useUserMetadata } from '../index';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {

@@ -7,7 +7,7 @@ import { EditMode } from '../../../../core/ui/forms/editMode';
 import { SocialNetworkEnum } from '../../../shared/components/SocialLinks/models/SocialNetworks';
 import { Visual } from '../../../../core/apollo/generated/graphql-schema';
 import { Reference } from '../../../common/profile/Profile';
-import { defaultUser, UserFormGenerated, UserModel } from '../../contributor/user/models/User';
+import { defaultUser, UserFormGenerated, UserModel } from '../models/User';
 import { logger } from '../../../../core/logging/winston/logger';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '../../../platform/admin/components/Common/ReferenceSegment';

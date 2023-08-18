@@ -6,7 +6,7 @@ import {
   useRemoveMessageOnRoomMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '../../../core/container/ComponentOrChildrenFn';
-import { useUserContext } from '../../community/contributor/user';
+import { useUserContext } from '../../community/user';
 import { Message } from '../../communication/room/models/Message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../community/user/utils/buildAuthorFromUser';

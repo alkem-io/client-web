@@ -2,7 +2,7 @@ import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLay
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
 import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import { useRemoveCommentFromCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
