@@ -1,33 +1,17 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { keyBy } from 'lodash';
 import DashboardSpacesSection, {
   DashboardSpaceSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardSpacesSection';
-import { useSpacesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUserSpacesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../core/ui/loading/Loading';
-import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
-import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
-interface MySpacesSectionProps {
-  userSpaceRoles: UserRolesInEntity[] | undefined;
-  loading?: boolean;
-}
-
-const MySpacesSection = ({ userSpaceRoles, loading }: MySpacesSectionProps) => {
+const MySpacesSection = () => {
   const { t } = useTranslation();
 
-  const { data: spacesData, loading: areSpacesLoading } = useSpacesQuery({
-    variables: { visibilities: [SpaceVisibility.Active, SpaceVisibility.Demo] },
-  });
+  const { data: userSpacesData, loading: areUserSpacesLoading } = useUserSpacesQuery();
 
-  const isLoading = loading || areSpacesLoading;
-
-  const spaceRolesBySpaceId = useMemo(() => keyBy(userSpaceRoles, 'id'), [userSpaceRoles]);
-  const spaces = useMemo(
-    () => spacesData?.spaces.filter(({ id }) => spaceRolesBySpaceId[id]) ?? [],
-    [spacesData, spaceRolesBySpaceId]
-  );
+  const spaces = userSpacesData?.me.spaceMemberships ?? [];
 
   // TODO other labels such as Lead etc.
   // const isLead = (spaceId: string) => spaceRolesBySpaceId[spaceId]?.roles.includes(USER_ROLE_HUB_LEAD);
@@ -39,7 +23,7 @@ const MySpacesSection = ({ userSpaceRoles, loading }: MySpacesSectionProps) => {
     };
   };
 
-  if (isLoading) {
+  if (areUserSpacesLoading) {
     return <Loading />;
   }
 
@@ -50,7 +34,7 @@ const MySpacesSection = ({ userSpaceRoles, loading }: MySpacesSectionProps) => {
   return (
     <DashboardSpacesSection
       headerText={t('pages.home.sections.my-spaces.header', { mySpacesCount: spaces.length })}
-      spaces={spaces}
+      spaces={spaces ?? []}
       getSpaceCardProps={getSpaceCardProps}
     />
   );

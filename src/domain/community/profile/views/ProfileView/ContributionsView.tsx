@@ -2,7 +2,7 @@ import { Grid, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer from '../../ContributionDetails/ContributionDetailsContainer';
-import { ContributionItem } from '../../../contributor/contribution';
+import { ContributionItem } from '../../../user/contribution';
 import { Caption } from '../../../../../core/ui/typography';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';

@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useSpace } from '../SpaceContext/useSpace';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import {
   useSpaceDashboardReferencesQuery,
   useSpacePageQuery,

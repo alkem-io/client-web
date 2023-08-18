@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import { useChallenge } from '../hooks/useChallenge';
 import {

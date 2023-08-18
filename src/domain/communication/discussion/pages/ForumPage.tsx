@@ -22,7 +22,7 @@ import {
 import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
 import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 import useInnovationHubOutsideRibbon from '../../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';

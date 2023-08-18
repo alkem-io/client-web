@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { buildUserProfileUrl } from '../../routing/urlBuilders';
 import Avatar from '../../../core/ui/image/Avatar';
 import UserSegmentAvatar from '../../../domain/community/user/userSegmentAvatar/UserSegmentAvatar';
-import { UserMetadata } from '../../../domain/community/contributor/user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../../domain/community/user/hooks/useUserMetadataWrapper';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { gutters } from '../../../core/ui/grid/utils';
 import { AUTH_LOGOUT_PATH } from '../../../core/auth/authentication/constants/authentication.constants';

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { shuffle } from 'lodash';
-import { useUserContext } from '../../contributor/user';
+import { useUserContext } from '../../user';
 import {
   useContributingUsersQuery,
   useContributingOrganizationsQuery,

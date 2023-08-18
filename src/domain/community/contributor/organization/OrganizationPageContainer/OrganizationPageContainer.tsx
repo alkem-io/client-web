@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
 import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
-import { RoleType } from '../../user/constants/RoleType';
+import { RoleType } from '../../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';
 import {
   useRolesOrganizationQuery,
@@ -11,7 +11,7 @@ import {
 import { COUNTRIES_BY_CODE } from '../../../../common/location/countries.constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../../../common/tags/tagset.constants';
 import { ContainerChildProps } from '../../../../../core/container/container';
-import { ContributionItem } from '../../contribution';
+import { ContributionItem } from '../../../user/contribution';
 import {
   isSocialNetworkSupported,
   SocialNetworkEnum,
@@ -24,7 +24,7 @@ import {
   ADMIN_TRANSLATION_KEY,
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
-} from '../../user/constants/translation.constants';
+} from '../../../user/constants/translation.constants';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;

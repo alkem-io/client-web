@@ -20,7 +20,7 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../platform/routes/constants';
 import { useConfig } from '../../platform/config/useConfig';
-import { useUserContext } from '../../community/contributor/user';
+import { useUserContext } from '../../community/user';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;

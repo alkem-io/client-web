@@ -1,5 +1,5 @@
 import { FC, useCallback } from 'react';
-import { useUserContext } from '../../user';
+import { useUserContext } from '../../../user';
 import {
   refetchUserOrganizationsQuery,
   useAssociatedOrganizationQuery,

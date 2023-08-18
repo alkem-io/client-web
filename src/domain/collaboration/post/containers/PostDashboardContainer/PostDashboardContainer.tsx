@@ -11,7 +11,7 @@ import {
   useOpportunityPostQuery,
   useRemoveMessageOnRoomMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../../community/contributor/user';
+import { useUserContext } from '../../../../community/user';
 import { Message } from '../../../../communication/room/models/Message';
 import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
 import {
