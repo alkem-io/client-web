@@ -5,15 +5,12 @@ import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
 import WhiteboardValueContainer from '../containers/WhiteboardValueContainer';
-import { useUserContext } from '../../../community/user';
 import {
-  WhiteboardCheckoutStateEnum,
   WhiteboardDetailsFragment,
   WhiteboardValueFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
-import { useWhiteboardLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
@@ -79,19 +76,6 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
   const { whiteboardNameId, calloutId, whiteboard } = entities;
   const [whiteboardBeingDeleted, setWhiteboardBeingDeleted] = useState<WhiteboardBeingDeleted | undefined>(undefined);
 
-  const { user } = useUserContext();
-
-  const isWhiteboardCheckedOutByMe =
-    whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.CheckedOut &&
-    whiteboard.checkout.lockedBy === user?.user.id;
-
-  const isWhiteboardAvailable = whiteboard?.checkout?.status === WhiteboardCheckoutStateEnum.Available;
-
-  const { data: lockedByDetailsData } = useWhiteboardLockedByDetailsQuery({
-    variables: whiteboard?.checkout?.lockedBy ? { ids: [whiteboard?.checkout?.lockedBy] } : { ids: [] },
-    skip: isWhiteboardCheckedOutByMe,
-  });
-
   const handleCancel = (whiteboard: WhiteboardDetailsFragment) => {
     backToWhiteboards();
     actions.onCheckin(whiteboard);
@@ -100,38 +84,42 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
   return (
     <>
       <WhiteboardValueContainer whiteboardId={whiteboard?.id}>
-        {entities => (
-          <WhiteboardDialog
-            entities={{
-              whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
-              lockedBy: lockedByDetailsData?.users[0],
-            }}
-            actions={{
-              onCancel: handleCancel,
-              onCheckin: actions.onCheckin,
-              onCheckout: actions.onCheckout,
-              onUpdate: actions.onUpdate,
-              onDelete: c =>
-                setWhiteboardBeingDeleted({ whiteboardId: c.id, displayName: c.profile.displayName, calloutId }),
-            }}
-            options={{
-              show: Boolean(whiteboardNameId),
-              canCheckout: isWhiteboardAvailable && options.canUpdate,
-              canEdit: isWhiteboardCheckedOutByMe && options.canUpdate,
-              canDelete: isWhiteboardAvailable && options.canDelete,
-              checkedOutByMe: isWhiteboardCheckedOutByMe,
-              fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
-                <BlockTitle display="flex" alignItems="center">
-                  {whiteboard?.profile.displayName}
-                </BlockTitle>
-              ),
-              headerActions: (
-                <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
-              ),
-            }}
-            state={state}
-          />
-        )}
+        {entities => {
+          const { isWhiteboardCheckedOutByMe, isWhiteboardAvailable } = entities;
+
+          return (
+            <WhiteboardDialog
+              entities={{
+                whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
+                lockedBy: entities.lockedBy,
+              }}
+              actions={{
+                onCancel: handleCancel,
+                onCheckin: actions.onCheckin,
+                onCheckout: actions.onCheckout,
+                onUpdate: actions.onUpdate,
+                onDelete: c =>
+                  setWhiteboardBeingDeleted({ whiteboardId: c.id, displayName: c.profile.displayName, calloutId }),
+              }}
+              options={{
+                show: Boolean(whiteboardNameId),
+                canCheckout: isWhiteboardAvailable && options.canUpdate,
+                canEdit: isWhiteboardCheckedOutByMe && options.canUpdate,
+                canDelete: isWhiteboardAvailable && options.canDelete,
+                checkedOutByMe: isWhiteboardCheckedOutByMe,
+                fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
+                  <BlockTitle display="flex" alignItems="center">
+                    {whiteboard?.profile.displayName}
+                  </BlockTitle>
+                ),
+                headerActions: (
+                  <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
+                ),
+              }}
+              state={state}
+            />
+          );
+        }}
       </WhiteboardValueContainer>
       <ConfirmationDialog
         actions={{

@@ -953,20 +953,17 @@ export const CreateWhiteboardWhiteboardTemplateFragmentDoc = gql`
   }
 `;
 export const CalloutWithWhiteboardFragmentDoc = gql`
-  fragment CalloutWithWhiteboard on Collaboration {
+  fragment CalloutWithWhiteboard on Callout {
     id
-    callouts(IDs: [$calloutId]) {
+    nameID
+    type
+    authorization {
       id
-      nameID
-      type
-      authorization {
-        id
-        anonymousReadAccess
-        myPrivileges
-      }
-      whiteboards(IDs: [$whiteboardId]) {
-        ...WhiteboardDetails
-      }
+      anonymousReadAccess
+      myPrivileges
+    }
+    whiteboards(IDs: [$whiteboardId]) {
+      ...WhiteboardDetails
     }
   }
   ${WhiteboardDetailsFragmentDoc}
@@ -5846,6 +5843,94 @@ export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
 >;
+export const CalloutIdDocument = gql`
+  query CalloutId(
+    $calloutNameId: UUID_NAMEID!
+    $spaceNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $isSpace: Boolean = false
+    $isChallenge: Boolean = false
+    $isOpportunity: Boolean = false
+  ) {
+    space(ID: $spaceNameId) {
+      id
+      ... on Space @include(if: $isSpace) {
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            id
+          }
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $isChallenge) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            id
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutIdQuery__
+ *
+ * To run a query within a React component, call `useCalloutIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutIdQuery({
+ *   variables: {
+ *      calloutNameId: // value for 'calloutNameId'
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      isSpace: // value for 'isSpace'
+ *      isChallenge: // value for 'isChallenge'
+ *      isOpportunity: // value for 'isOpportunity'
+ *   },
+ * });
+ */
+export function useCalloutIdQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>(CalloutIdDocument, options);
+}
+
+export function useCalloutIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>(
+    CalloutIdDocument,
+    options
+  );
+}
+
+export type CalloutIdQueryHookResult = ReturnType<typeof useCalloutIdQuery>;
+export type CalloutIdLazyQueryHookResult = ReturnType<typeof useCalloutIdLazyQuery>;
+export type CalloutIdQueryResult = Apollo.QueryResult<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>;
+export function refetchCalloutIdQuery(variables: SchemaTypes.CalloutIdQueryVariables) {
+  return { query: CalloutIdDocument, variables: variables };
+}
+
 export const CreatePostFromContributeTabDocument = gql`
   mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
     createPostOnCallout(postData: $postData) {
@@ -7599,11 +7684,10 @@ export function refetchWhiteboardTemplatesQuery(variables: SchemaTypes.Whiteboar
   return { query: WhiteboardTemplatesDocument, variables: variables };
 }
 
-export const SpaceWhiteboardFromCalloutDocument = gql`
-  query spaceWhiteboardFromCallout($spaceId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      collaboration {
+export const WhiteboardFromCalloutDocument = gql`
+  query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+    lookup {
+      callout(ID: $calloutId) {
         ...CalloutWithWhiteboard
       }
     }
@@ -7612,59 +7696,56 @@ export const SpaceWhiteboardFromCalloutDocument = gql`
 `;
 
 /**
- * __useSpaceWhiteboardFromCalloutQuery__
+ * __useWhiteboardFromCalloutQuery__
  *
- * To run a query within a React component, call `useSpaceWhiteboardFromCalloutQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceWhiteboardFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useWhiteboardFromCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceWhiteboardFromCalloutQuery({
+ * const { data, loading, error } = useWhiteboardFromCalloutQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      calloutId: // value for 'calloutId'
  *      whiteboardId: // value for 'whiteboardId'
  *   },
  * });
  */
-export function useSpaceWhiteboardFromCalloutQuery(
+export function useWhiteboardFromCalloutQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceWhiteboardFromCalloutQuery,
-    SchemaTypes.SpaceWhiteboardFromCalloutQueryVariables
+    SchemaTypes.WhiteboardFromCalloutQuery,
+    SchemaTypes.WhiteboardFromCalloutQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceWhiteboardFromCalloutQuery,
-    SchemaTypes.SpaceWhiteboardFromCalloutQueryVariables
-  >(SpaceWhiteboardFromCalloutDocument, options);
+  return Apollo.useQuery<SchemaTypes.WhiteboardFromCalloutQuery, SchemaTypes.WhiteboardFromCalloutQueryVariables>(
+    WhiteboardFromCalloutDocument,
+    options
+  );
 }
 
-export function useSpaceWhiteboardFromCalloutLazyQuery(
+export function useWhiteboardFromCalloutLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceWhiteboardFromCalloutQuery,
-    SchemaTypes.SpaceWhiteboardFromCalloutQueryVariables
+    SchemaTypes.WhiteboardFromCalloutQuery,
+    SchemaTypes.WhiteboardFromCalloutQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceWhiteboardFromCalloutQuery,
-    SchemaTypes.SpaceWhiteboardFromCalloutQueryVariables
-  >(SpaceWhiteboardFromCalloutDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.WhiteboardFromCalloutQuery, SchemaTypes.WhiteboardFromCalloutQueryVariables>(
+    WhiteboardFromCalloutDocument,
+    options
+  );
 }
 
-export type SpaceWhiteboardFromCalloutQueryHookResult = ReturnType<typeof useSpaceWhiteboardFromCalloutQuery>;
-export type SpaceWhiteboardFromCalloutLazyQueryHookResult = ReturnType<typeof useSpaceWhiteboardFromCalloutLazyQuery>;
-export type SpaceWhiteboardFromCalloutQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceWhiteboardFromCalloutQuery,
-  SchemaTypes.SpaceWhiteboardFromCalloutQueryVariables
+export type WhiteboardFromCalloutQueryHookResult = ReturnType<typeof useWhiteboardFromCalloutQuery>;
+export type WhiteboardFromCalloutLazyQueryHookResult = ReturnType<typeof useWhiteboardFromCalloutLazyQuery>;
+export type WhiteboardFromCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardFromCalloutQuery,
+  SchemaTypes.WhiteboardFromCalloutQueryVariables
 >;
-export function refetchSpaceWhiteboardFromCalloutQuery(
-  variables: SchemaTypes.SpaceWhiteboardFromCalloutQueryVariables
-) {
-  return { query: SpaceWhiteboardFromCalloutDocument, variables: variables };
+export function refetchWhiteboardFromCalloutQuery(variables: SchemaTypes.WhiteboardFromCalloutQueryVariables) {
+  return { query: WhiteboardFromCalloutDocument, variables: variables };
 }
 
 export const WhiteboardWithValueDocument = gql`
@@ -7730,159 +7811,6 @@ export type WhiteboardWithValueQueryResult = Apollo.QueryResult<
 >;
 export function refetchWhiteboardWithValueQuery(variables: SchemaTypes.WhiteboardWithValueQueryVariables) {
   return { query: WhiteboardWithValueDocument, variables: variables };
-}
-
-export const ChallengeWhiteboardFromCalloutDocument = gql`
-  query challengeWhiteboardFromCallout(
-    $spaceId: UUID_NAMEID!
-    $challengeId: UUID_NAMEID!
-    $calloutId: UUID_NAMEID!
-    $whiteboardId: UUID_NAMEID!
-  ) {
-    space(ID: $spaceId) {
-      id
-      challenge(ID: $challengeId) {
-        id
-        collaboration {
-          ...CalloutWithWhiteboard
-        }
-      }
-    }
-  }
-  ${CalloutWithWhiteboardFragmentDoc}
-`;
-
-/**
- * __useChallengeWhiteboardFromCalloutQuery__
- *
- * To run a query within a React component, call `useChallengeWhiteboardFromCalloutQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeWhiteboardFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeWhiteboardFromCalloutQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      challengeId: // value for 'challengeId'
- *      calloutId: // value for 'calloutId'
- *      whiteboardId: // value for 'whiteboardId'
- *   },
- * });
- */
-export function useChallengeWhiteboardFromCalloutQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeWhiteboardFromCalloutQuery,
-    SchemaTypes.ChallengeWhiteboardFromCalloutQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ChallengeWhiteboardFromCalloutQuery,
-    SchemaTypes.ChallengeWhiteboardFromCalloutQueryVariables
-  >(ChallengeWhiteboardFromCalloutDocument, options);
-}
-
-export function useChallengeWhiteboardFromCalloutLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeWhiteboardFromCalloutQuery,
-    SchemaTypes.ChallengeWhiteboardFromCalloutQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeWhiteboardFromCalloutQuery,
-    SchemaTypes.ChallengeWhiteboardFromCalloutQueryVariables
-  >(ChallengeWhiteboardFromCalloutDocument, options);
-}
-
-export type ChallengeWhiteboardFromCalloutQueryHookResult = ReturnType<typeof useChallengeWhiteboardFromCalloutQuery>;
-export type ChallengeWhiteboardFromCalloutLazyQueryHookResult = ReturnType<
-  typeof useChallengeWhiteboardFromCalloutLazyQuery
->;
-export type ChallengeWhiteboardFromCalloutQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeWhiteboardFromCalloutQuery,
-  SchemaTypes.ChallengeWhiteboardFromCalloutQueryVariables
->;
-export function refetchChallengeWhiteboardFromCalloutQuery(
-  variables: SchemaTypes.ChallengeWhiteboardFromCalloutQueryVariables
-) {
-  return { query: ChallengeWhiteboardFromCalloutDocument, variables: variables };
-}
-
-export const OpportunityWhiteboardFromCalloutDocument = gql`
-  query opportunityWhiteboardFromCallout($opportunityId: UUID!, $calloutId: UUID_NAMEID!, $whiteboardId: UUID_NAMEID!) {
-    lookup {
-      opportunity(ID: $opportunityId) {
-        id
-        collaboration {
-          ...CalloutWithWhiteboard
-        }
-      }
-    }
-  }
-  ${CalloutWithWhiteboardFragmentDoc}
-`;
-
-/**
- * __useOpportunityWhiteboardFromCalloutQuery__
- *
- * To run a query within a React component, call `useOpportunityWhiteboardFromCalloutQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityWhiteboardFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityWhiteboardFromCalloutQuery({
- *   variables: {
- *      opportunityId: // value for 'opportunityId'
- *      calloutId: // value for 'calloutId'
- *      whiteboardId: // value for 'whiteboardId'
- *   },
- * });
- */
-export function useOpportunityWhiteboardFromCalloutQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityWhiteboardFromCalloutQuery,
-    SchemaTypes.OpportunityWhiteboardFromCalloutQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.OpportunityWhiteboardFromCalloutQuery,
-    SchemaTypes.OpportunityWhiteboardFromCalloutQueryVariables
-  >(OpportunityWhiteboardFromCalloutDocument, options);
-}
-
-export function useOpportunityWhiteboardFromCalloutLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityWhiteboardFromCalloutQuery,
-    SchemaTypes.OpportunityWhiteboardFromCalloutQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityWhiteboardFromCalloutQuery,
-    SchemaTypes.OpportunityWhiteboardFromCalloutQueryVariables
-  >(OpportunityWhiteboardFromCalloutDocument, options);
-}
-
-export type OpportunityWhiteboardFromCalloutQueryHookResult = ReturnType<
-  typeof useOpportunityWhiteboardFromCalloutQuery
->;
-export type OpportunityWhiteboardFromCalloutLazyQueryHookResult = ReturnType<
-  typeof useOpportunityWhiteboardFromCalloutLazyQuery
->;
-export type OpportunityWhiteboardFromCalloutQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityWhiteboardFromCalloutQuery,
-  SchemaTypes.OpportunityWhiteboardFromCalloutQueryVariables
->;
-export function refetchOpportunityWhiteboardFromCalloutQuery(
-  variables: SchemaTypes.OpportunityWhiteboardFromCalloutQueryVariables
-) {
-  return { query: OpportunityWhiteboardFromCalloutDocument, variables: variables };
 }
 
 export const WhiteboardTemplateValueDocument = gql`

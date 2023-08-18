@@ -69,10 +69,8 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           {isWhiteboardDialogOpen && (
             <WhiteboardProvider
               {...{
-                spaceNameId,
-                challengeNameId,
-                opportunityNameId,
-                calloutNameId: callout.nameID,
+                spaceId: spaceNameId, // TODO: Should be spaceId in the future, but for now it works
+                calloutId: callout.id,
                 whiteboardNameId: firstWhiteboard.id,
               }}
             >
