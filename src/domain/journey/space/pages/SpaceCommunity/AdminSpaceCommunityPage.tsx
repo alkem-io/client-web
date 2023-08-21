@@ -7,14 +7,14 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import CommunityUsers from '../../../../community/community/CommunityAdmin/CommunityUsers';
-import useSpaceCommunityContext from './useSpaceCommunityContext';
+import useCommunityContext from './useCommunityContext';
 import CommunityOrganizations from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityApplications from '../../../../community/community/CommunityAdmin/CommunityApplications';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '../../../../community/invitations/InvitationOptionsBlock';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: loadingSpace } = useSpace();
+  const { spaceId, loading: loadingSpace, communityId } = useSpace();
 
   const {
     users,
@@ -41,7 +41,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useSpaceCommunityContext(spaceId);
+  } = useCommunityContext(communityId, spaceId, true); //!!
 
   if (!spaceId || loadingSpace) {
     return null;

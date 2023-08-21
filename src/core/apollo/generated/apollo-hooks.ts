@@ -11276,6 +11276,81 @@ export function refetchAvailableUsersQuery(variables: SchemaTypes.AvailableUsers
   return { query: AvailableUsersDocument, variables: variables };
 }
 
+export const CommunityMembersListDocument = gql`
+  query CommunityMembersList(
+    $communityId: UUID!
+    $spaceId: UUID_NAMEID = "mockid"
+    $includeSpaceHost: Boolean = false
+  ) {
+    space(ID: $spaceId) @include(if: $includeSpaceHost) {
+      host {
+        ...OrganizationDetails
+      }
+    }
+    lookup {
+      community(ID: $communityId) {
+        ...CommunityMembersDetails
+      }
+    }
+  }
+  ${OrganizationDetailsFragmentDoc}
+  ${CommunityMembersDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunityMembersListQuery__
+ *
+ * To run a query within a React component, call `useCommunityMembersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityMembersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityMembersListQuery({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      spaceId: // value for 'spaceId'
+ *      includeSpaceHost: // value for 'includeSpaceHost'
+ *   },
+ * });
+ */
+export function useCommunityMembersListQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityMembersListQuery,
+    SchemaTypes.CommunityMembersListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityMembersListQuery, SchemaTypes.CommunityMembersListQueryVariables>(
+    CommunityMembersListDocument,
+    options
+  );
+}
+
+export function useCommunityMembersListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityMembersListQuery,
+    SchemaTypes.CommunityMembersListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityMembersListQuery, SchemaTypes.CommunityMembersListQueryVariables>(
+    CommunityMembersListDocument,
+    options
+  );
+}
+
+export type CommunityMembersListQueryHookResult = ReturnType<typeof useCommunityMembersListQuery>;
+export type CommunityMembersListLazyQueryHookResult = ReturnType<typeof useCommunityMembersListLazyQuery>;
+export type CommunityMembersListQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityMembersListQuery,
+  SchemaTypes.CommunityMembersListQueryVariables
+>;
+export function refetchCommunityMembersListQuery(variables: SchemaTypes.CommunityMembersListQueryVariables) {
+  return { query: CommunityMembersListDocument, variables: variables };
+}
+
 export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -12210,139 +12285,6 @@ export function refetchOpportunityCommunityMembersQuery(
   variables: SchemaTypes.OpportunityCommunityMembersQueryVariables
 ) {
   return { query: OpportunityCommunityMembersDocument, variables: variables };
-}
-
-export const SpaceCommunityQueryDocument = gql`
-  query spaceCommunityQuery($spaceId: UUID_NAMEID!, $communityId: UUID!) {
-    space(ID: $spaceId) {
-      host {
-        ...OrganizationDetails
-      }
-    }
-    lookup {
-      community(ID: $communityId) {
-        ...CommunityMembers
-      }
-    }
-  }
-  ${OrganizationDetailsFragmentDoc}
-  ${CommunityMembersFragmentDoc}
-`;
-
-/**
- * __useSpaceCommunityQueryQuery__
- *
- * To run a query within a React component, call `useSpaceCommunityQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCommunityQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceCommunityQueryQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      communityId: // value for 'communityId'
- *   },
- * });
- */
-export function useSpaceCommunityQueryQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceCommunityQueryQuery,
-    SchemaTypes.SpaceCommunityQueryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceCommunityQueryQuery, SchemaTypes.SpaceCommunityQueryQueryVariables>(
-    SpaceCommunityQueryDocument,
-    options
-  );
-}
-
-export function useSpaceCommunityQueryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceCommunityQueryQuery,
-    SchemaTypes.SpaceCommunityQueryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityQueryQuery, SchemaTypes.SpaceCommunityQueryQueryVariables>(
-    SpaceCommunityQueryDocument,
-    options
-  );
-}
-
-export type SpaceCommunityQueryQueryHookResult = ReturnType<typeof useSpaceCommunityQueryQuery>;
-export type SpaceCommunityQueryLazyQueryHookResult = ReturnType<typeof useSpaceCommunityQueryLazyQuery>;
-export type SpaceCommunityQueryQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCommunityQueryQuery,
-  SchemaTypes.SpaceCommunityQueryQueryVariables
->;
-export function refetchSpaceCommunityQueryQuery(variables: SchemaTypes.SpaceCommunityQueryQueryVariables) {
-  return { query: SpaceCommunityQueryDocument, variables: variables };
-}
-
-export const ChallengeCommunityQueryDocument = gql`
-  query challengeCommunityQuery($challengeId: UUID!, $communityId: UUID!) {
-    lookup {
-      challenge(ID: $challengeId) {
-        id
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeCommunityQueryQuery__
- *
- * To run a query within a React component, call `useChallengeCommunityQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeCommunityQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeCommunityQueryQuery({
- *   variables: {
- *      challengeId: // value for 'challengeId'
- *      communityId: // value for 'communityId'
- *   },
- * });
- */
-export function useChallengeCommunityQueryQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeCommunityQueryQuery,
-    SchemaTypes.ChallengeCommunityQueryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeCommunityQueryQuery, SchemaTypes.ChallengeCommunityQueryQueryVariables>(
-    ChallengeCommunityQueryDocument,
-    options
-  );
-}
-
-export function useChallengeCommunityQueryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeCommunityQueryQuery,
-    SchemaTypes.ChallengeCommunityQueryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeCommunityQueryQuery,
-    SchemaTypes.ChallengeCommunityQueryQueryVariables
-  >(ChallengeCommunityQueryDocument, options);
-}
-
-export type ChallengeCommunityQueryQueryHookResult = ReturnType<typeof useChallengeCommunityQueryQuery>;
-export type ChallengeCommunityQueryLazyQueryHookResult = ReturnType<typeof useChallengeCommunityQueryLazyQuery>;
-export type ChallengeCommunityQueryQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeCommunityQueryQuery,
-  SchemaTypes.ChallengeCommunityQueryQueryVariables
->;
-export function refetchChallengeCommunityQueryQuery(variables: SchemaTypes.ChallengeCommunityQueryQueryVariables) {
-  return { query: ChallengeCommunityQueryDocument, variables: variables };
 }
 
 export const ContributorsPageOrganizationsDocument = gql`
@@ -19824,6 +19766,7 @@ export const CommunityApplicationsInvitationsDocument = gql`
   query CommunityApplicationsInvitations($communityId: UUID!) {
     lookup {
       community(ID: $communityId) {
+        id
         applications {
           ...AdminCommunityApplication
         }

@@ -1,0 +1,51 @@
+query CommunityMembersList($communityId: UUID!, $spaceId: UUID_NAMEID = "mockid", $includeSpaceHost: Boolean = false) {
+  space(ID: $spaceId) @include(if: $includeSpaceHost) {
+    host {
+      ...OrganizationDetails
+    }
+  }
+  lookup {
+    community(ID: $communityId) {
+      ...CommunityMembersDetails
+    }
+  }
+}
+
+fragment CommunityMembersDetails on Community {
+  id
+  memberUsers {
+    ...CommunityMemberUser
+  }
+  leadUsers: usersInRole(role: LEAD) {
+    ...CommunityMemberUser
+  }
+  memberOrganizations: organizationsInRole(role: MEMBER) {
+    ...OrganizationDetails
+  }
+  leadOrganizations: organizationsInRole(role: LEAD) {
+    ...OrganizationDetails
+  }
+  policy {
+    ...CommunityPolicy
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+fragment CommunityPolicy on CommunityPolicy {
+  id
+  lead {
+    maxOrg
+    maxUser
+    minOrg
+    minUser
+  }
+  member {
+    maxOrg
+    maxUser
+    minOrg
+    minUser
+  }
+}
