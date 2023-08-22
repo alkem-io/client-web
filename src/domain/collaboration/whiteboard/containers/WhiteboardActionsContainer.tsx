@@ -1,6 +1,7 @@
 import { FC, useCallback, useMemo } from 'react';
 import {
   WhiteboardDetailsFragmentDoc,
+  refetchWhiteboardWithValueQuery,
   useCheckoutWhiteboardMutation,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
@@ -125,6 +126,11 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
             errorOnFailedTransition: false,
           },
         },
+        refetchQueries: [
+          refetchWhiteboardWithValueQuery({
+            whiteboardId: whiteboard.id,
+          }),
+        ],
       });
     };
 
