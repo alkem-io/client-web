@@ -25,10 +25,13 @@ export const SpaceList: FC = () => {
   const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
   const { data: organizationData } = useOrganizationsListQuery();
   const organizations = useMemo(
-    () => organizationData?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
+    () =>
+      sortBy(
+        organizationData?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) ?? [],
+        org => org.name
+      ),
     [organizationData]
   );
-  const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
 
   const spaceList = useMemo(() => {
     return (
@@ -59,10 +62,10 @@ export const SpaceList: FC = () => {
           visibility: space.visibility,
           hostID: space.host?.id,
           nameID: space.nameID,
-          organizations: organizationsSorted,
+          organizations,
         })) ?? []
     );
-  }, [spacesData, organizationsSorted]);
+  }, [spacesData, organizations]);
 
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchAdminSpacesListQuery()],
