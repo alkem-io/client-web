@@ -19,6 +19,6 @@ export default defineConfig({
   plugins: [
     react(),
     viteTsconfigPaths(),
-    svgrPlugin()
+    svgrPlugin(),
   ],
 });
