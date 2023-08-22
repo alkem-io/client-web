@@ -1,15 +1,24 @@
+/**
+ * @jest-environment jsdom
+ */
 import React from 'react';
 import Tag from './Tag';
 import { render, screen } from '../../../../main/test/testUtils';
-import { expect, test } from 'vitest';
+import { expect, test, describe } from 'vitest';
+import { toBeInTheDocument } from '@testing-library/jest-dom/matchers'; // Import the toBeInTheDocument matcher
 
-test('check Tag with message', async () => {
-  // arrange
-  const message = 'Tag message';
+// Extend Jest's expect object with toBeInTheDocument matcher
+expect.extend({ toBeInTheDocument });
 
-  // act
-  render(<Tag text={message} />);
+describe('Tag component', () => {
+  test('renders Tag with message', async () => {
+    // Arrange
+    const message = 'Tag message';
 
-  // assert
-  expect(screen.getByText(message)).toBeInTheDocument();
+    // Act
+    render(<Tag text={message} />);
+
+    // Assert
+    expect(screen.getByText(message)).toBeInTheDocument();
+  });
 });

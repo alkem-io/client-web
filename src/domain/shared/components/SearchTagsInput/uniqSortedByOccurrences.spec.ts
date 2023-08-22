@@ -1,5 +1,5 @@
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
-import { expect, test } from 'vitest';
+import { expect, test, describe } from 'vitest';
 
 type SimpleType = {
   tags: string[];
@@ -34,7 +34,9 @@ const data = (): TestData[] =>
     ] as TestData[]
   ).map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each
 
-test.concurrent.each(data())('%s', async ({ data, result }) => {
-  const tags = uniqSortedByOccurrences(data.flatMap(item => item.tags));
-  expect(tags).toEqual(result);
+describe('mostCommonTags', () => {
+  test.concurrent.each(data())('%s', async ({ data, result }) => {
+    const tags = uniqSortedByOccurrences(data.flatMap(item => item.tags));
+    expect(tags).toEqual(result);
+  });
 });

@@ -11,5 +11,9 @@ export default defineConfig({
   build: {
     outDir: 'build',
   },
-  plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+  plugins: [
+    react(),
+    viteTsconfigPaths(),
+    svgrPlugin()
+  ],
 });
