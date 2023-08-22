@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
-import SpaceSettingsLayout from '../../../../platform/admin/space/SpaceSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
-import { useSpace } from '../../SpaceContext/useSpace';
-import PageContent from '../../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
-import CommunityUsers from '../../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../../community/community/CommunityAdmin/useCommunityAdmin';
-import CommunityOrganizations from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
-import CommunityApplications from '../../../../community/community/CommunityAdmin/CommunityApplications';
-import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
-import InvitationOptionsBlock from '../../../../community/invitations/InvitationOptionsBlock';
+import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
+import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
+import { useSpace } from '../SpaceContext/useSpace';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
+import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
+import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, loading: loadingSpace, communityId } = useSpace();
