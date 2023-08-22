@@ -2,6 +2,7 @@ import { ApplicationWithType } from './getApplicationWithType';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../constants/ApplicationState';
 import sortApplications from './sortApplications';
+import { expect, test } from 'vitest';
 
 type TestData = {
   name: string;
@@ -57,9 +58,7 @@ const data = (): TestData[] =>
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each
 
-describe('sortApplications', () => {
-  test.concurrent.each(data())('%s', async ({ data, result }) => {
-    const sorted = (data as ApplicationWithType[]).sort(sortApplications);
-    expect(sorted.map(x => x.id)).toEqual(result);
-  });
+test.concurrent.each(data())('%s', async ({ data, result }) => {
+  const sorted = (data as ApplicationWithType[]).sort(sortApplications);
+  expect(sorted.map(x => x.id)).toEqual(result);
 });

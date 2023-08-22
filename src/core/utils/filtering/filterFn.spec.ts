@@ -1,5 +1,6 @@
 import filterFn, { ValueType } from './filterFn';
 import { Identifiable } from '../Identifiable';
+import { expect, test } from 'vitest';
 
 type TestDataType = Identifiable & {
   displayName?: string;
@@ -319,9 +320,7 @@ const data = (): TestData[] =>
     ] as TestData[]
   ).map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each
 
-describe('filterFn', () => {
-  test.concurrent.each(data())('%s', async ({ data, terms, result }) => {
-    const filtered = filterFn(data, terms, getter).map(x => x.id);
-    expect(filtered).toEqual(result);
-  });
+test.concurrent.each(data())('%s', async ({ data, terms, result }) => {
+  const filtered = filterFn(data, terms, getter).map(x => x.id);
+  expect(filtered).toEqual(result);
 });

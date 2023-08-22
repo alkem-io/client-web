@@ -1,6 +1,7 @@
 import { ApplicationForRoleResult } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationWithType, { ApplicationWithType } from './getApplicationWithType';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { expect, test } from 'vitest';
 
 type TestData = {
   name: string;
@@ -46,13 +47,11 @@ const exceptionData = (): TestData[] =>
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each;
 
-describe('getApplicationWithType', () => {
-  test.concurrent.each(data())('%s', async ({ data, result }) => {
-    const appWithType = getApplicationWithType(data as ApplicationForRoleResult);
-    expect(appWithType).toEqual(result);
-  });
+test.concurrent.each(data())('%s', async ({ data, result }) => {
+  const appWithType = getApplicationWithType(data as ApplicationForRoleResult);
+  expect(appWithType).toEqual(result);
+});
 
-  test.concurrent.each(exceptionData())('%s', async ({ data, exceptionMsg }) => {
-    expect(() => getApplicationWithType(data as ApplicationForRoleResult)).toThrowError(exceptionMsg);
-  });
+test.concurrent.each(exceptionData())('%s', async ({ data, exceptionMsg }) => {
+  expect(() => getApplicationWithType(data as ApplicationForRoleResult)).toThrowError(exceptionMsg);
 });
