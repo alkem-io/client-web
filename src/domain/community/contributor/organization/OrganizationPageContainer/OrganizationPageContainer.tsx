@@ -149,7 +149,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   const contributions = useMemo(() => {
     const spacesHostingLeading =
       orgRolesData?.rolesOrganization?.spaces?.filter(
-        h => h.roles?.includes(RoleType.Host) || h.roles?.includes(RoleType.Lead)
+        space => space.roles?.includes(RoleType.Host) || space.roles?.includes(RoleType.Lead)
       ) || [];
 
     const spaceContributions = spacesHostingLeading.map<ContributionItem>(x => ({
