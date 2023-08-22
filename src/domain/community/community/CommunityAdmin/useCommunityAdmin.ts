@@ -8,7 +8,6 @@ import {
   useAssignUserAsSpaceAdminMutation,
   useEventOnApplicationMutation,
   useCommunityApplicationsInvitationsQuery,
-  useSpaceAvailableMemberUsersLazyQuery,
   useRemoveOrganizationAsCommunityLeadMutation,
   useRemoveOrganizationAsCommunityMemberMutation,
   useRemoveUserAsCommunityLeadMutation,
@@ -19,16 +18,17 @@ import {
   useDeleteInvitationMutation,
   useDeleteExternalInvitationMutation,
   useCommunityMembersListQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+  useCommunityAvailableMembersLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   AuthorizationPrivilege,
   CommunityRole,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { OrganizationDetailsFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
-import { CommunityMemberUserFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityUsers';
-import useInviteUsers from '../../../../community/invitations/useInviteUsers';
-import { useSpace } from '../../SpaceContext/useSpace';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
+import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
+import useInviteUsers from '../../../community/invitations/useInviteUsers';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -48,11 +48,8 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
       }
     : undefined;
 
-const useCommunityContext = (communityId: string, spaceId: string, includeSpaceHost: boolean = false) => {
-  if (!communityId) {
-    throw new Error('Must pass a valid communityId.');
-  }
-  const { profile: spaceProfile } = useSpace();
+const useCommunityAdmin = (communityId: string, includeSpaceHost: boolean = false) => {
+  const { spaceId, profile: spaceProfile } = useSpace();
 
   const {
     data,
@@ -64,6 +61,7 @@ const useCommunityContext = (communityId: string, spaceId: string, includeSpaceH
       spaceId,
       includeSpaceHost,
     },
+    skip: !communityId || !spaceId,
   });
 
   const communityPolicy = data?.lookup.community?.policy;
@@ -85,6 +83,7 @@ const useCommunityContext = (communityId: string, spaceId: string, includeSpaceH
         resourceID: spaceId,
       },
     },
+    skip: !spaceId,
   });
 
   const {
@@ -173,16 +172,16 @@ const useCommunityContext = (communityId: string, spaceId: string, includeSpaceH
   }, [data, dataAdmins]);
 
   // Available new members:
-  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useSpaceAvailableMemberUsersLazyQuery();
+  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useCommunityAvailableMembersLazyQuery();
   const getAvailableUsers = async (filter: string | undefined) => {
     const { data } = await fetchAvailableUsers({
       variables: {
-        spaceId,
+        communityId,
         first: MAX_AVAILABLE_MEMBERS,
         filter: buildUserFilterObject(filter),
       },
     });
-    return data?.space.community?.availableMemberUsers?.users;
+    return data?.lookup.availableMembers?.availableLeadUsers?.users;
   };
 
   const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
@@ -416,4 +415,4 @@ const useCommunityContext = (communityId: string, spaceId: string, includeSpaceH
   };
 };
 
-export default useCommunityContext;
+export default useCommunityAdmin;

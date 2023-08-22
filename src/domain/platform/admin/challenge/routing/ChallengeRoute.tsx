@@ -7,12 +7,13 @@ import ChallengeCommunicationsPage from '../../../../journey/challenge/pages/Cha
 import ChallengeProfilePage from '../../../../journey/challenge/pages/ChallengeProfile/ChallengeProfilePage';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import { OpportunitiesRoute } from '../../opportunity/routing/OpportunitiesRoute';
-import ChallengeCommunityAdminPage from '../ChallengeCommunityAdminPage';
+
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import ChallengeContextPage from '../../../../journey/challenge/pages/ChallengeContext/ChallengeContextPage';
 import ChallengeInnovationFlowPage from '../../../../journey/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import AdminChallengeCommunityPage from '../../../../journey/challenge/pages/AdminChallengeCommunityPage';
 
 export const ChallengeRoute: FC = () => {
   const { spaceId, communityId: spaceCommunityId } = useSpace();
@@ -35,7 +36,7 @@ export const ChallengeRoute: FC = () => {
             path="communications"
             element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={spaceCommunityId} />}
           />
-          <Route path="community" element={<ChallengeCommunityAdminPage />} />
+          <Route path="community" element={<AdminChallengeCommunityPage />} />
           <Route
             path="community/groups/*"
             element={

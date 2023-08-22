@@ -11,6 +11,17 @@ query CommunityMembersList($communityId: UUID!, $spaceId: UUID_NAMEID = "mockid"
   }
 }
 
+query CommunityAvailableMembers($communityId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  lookup {
+    #//!! availableLeads: community(ID: $communityId) {
+    #   ...CommunityAvailableMemberUsers
+    # }
+    availableMembers: community(ID: $communityId) {
+      ...CommunityAvailableLeadUsers
+    }
+  }
+}
+
 fragment CommunityMembersDetails on Community {
   id
   memberUsers {
@@ -48,4 +59,57 @@ fragment CommunityPolicy on CommunityPolicy {
     minOrg
     minUser
   }
+}
+
+fragment CommunityAvailableLeadUsers on Community {
+  id
+  availableLeadUsers(first: $first, after: $after, filter: $filter) {
+    users {
+      ...AvailableUser
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+fragment CommunityAvailableMemberUsers on Community {
+  id
+  availableMemberUsers(first: $first, after: $after, filter: $filter) {
+    users {
+      ...AvailableUser
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+fragment CommunityMemberUser on User {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
+  }
+  email
+  firstName
+  lastName
+}
+
+fragment AvailableUser on User {
+  id
+  profile {
+    id
+    displayName
+  }
+  email
 }

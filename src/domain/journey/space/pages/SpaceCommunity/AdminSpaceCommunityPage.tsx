@@ -7,7 +7,7 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import CommunityUsers from '../../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityContext from './useCommunityContext';
+import useCommunityAdmin from '../../../../community/community/CommunityAdmin/useCommunityAdmin';
 import CommunityOrganizations from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityApplications from '../../../../community/community/CommunityAdmin/CommunityApplications';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
@@ -41,7 +41,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityContext(communityId, spaceId, true); //!!
+  } = useCommunityAdmin(communityId, true); //!!
 
   if (!spaceId || loadingSpace) {
     return null;
@@ -54,9 +54,10 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           <PageContentBlock columns={8}>
             <CommunityApplications
               applications={applications}
+              onApplicationStateChange={onApplicationStateChange}
+              canHandleInvitations
               invitations={invitations}
               invitationsExternal={invitationsExternal}
-              onApplicationStateChange={onApplicationStateChange}
               onInvitationStateChange={onInvitationStateChange}
               onDeleteInvitation={onDeleteInvitation}
               onDeleteInvitationExternal={onDeleteInvitationExternal}

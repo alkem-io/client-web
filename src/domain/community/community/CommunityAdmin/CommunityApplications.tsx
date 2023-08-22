@@ -107,12 +107,13 @@ const sortState = (state: string | undefined) => {
 
 interface CommunityApplicationsProps {
   applications: AdminCommunityApplicationFragment[] | undefined;
-  invitations: AdminCommunityInvitationFragment[] | undefined;
-  invitationsExternal: AdminCommunityInvitationExternalFragment[] | undefined;
   onApplicationStateChange: (applicationId: string, state: string) => Promise<unknown>;
-  onInvitationStateChange: (invitationId: string, state: string) => Promise<unknown>;
-  onDeleteInvitation: (invitationId: string) => Promise<unknown>;
-  onDeleteInvitationExternal: (invitationId: string) => Promise<unknown>;
+  canHandleInvitations?: boolean;
+  invitations?: AdminCommunityInvitationFragment[] | undefined;
+  invitationsExternal?: AdminCommunityInvitationExternalFragment[] | undefined;
+  onInvitationStateChange?: (invitationId: string, state: string) => Promise<unknown>;
+  onDeleteInvitation?: (invitationId: string) => Promise<unknown>;
+  onDeleteInvitationExternal?: (invitationId: string) => Promise<unknown>;
   loading?: boolean;
 }
 
@@ -120,9 +121,10 @@ const NO_DATA_PLACEHOLDER = '—';
 
 const CommunityApplications: FC<CommunityApplicationsProps> = ({
   applications = [],
+  onApplicationStateChange,
+  canHandleInvitations = false,
   invitations = [],
   invitationsExternal = [],
-  onApplicationStateChange,
   onInvitationStateChange,
   onDeleteInvitation,
   onDeleteInvitationExternal,
@@ -213,17 +215,17 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     } else if (item.type === CandidateType.Invitation) {
       switch (item.lifecycle.state) {
         case 'invited': {
-          await onDeleteInvitation(item.id);
+          await onDeleteInvitation?.(item.id);
           break;
         }
         case 'approved':
         case 'rejected': {
-          await onInvitationStateChange(item.id, 'ARCHIVE');
+          await onInvitationStateChange?.(item.id, 'ARCHIVE');
           break;
         }
       }
     } else {
-      await onDeleteInvitationExternal(item.id);
+      await onDeleteInvitationExternal?.(item.id);
     }
     setDeletingItem(undefined);
   });
@@ -245,7 +247,9 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
   return (
     <>
       <Box display="flex" justifyContent="space-between">
-        <BlockTitle>{t('community.pendingApplications')}</BlockTitle>
+        <BlockTitle>
+          {t(canHandleInvitations ? 'community.pendingApplicationsAndInvitations' : 'community.pendingApplications')}
+        </BlockTitle>
         <Tooltip title={t('community.applicationsHelp')} arrow>
           <IconButton>
             <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
