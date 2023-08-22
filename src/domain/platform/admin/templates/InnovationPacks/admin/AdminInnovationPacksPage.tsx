@@ -6,8 +6,8 @@ import {
   useAdminInnovationPacksListQuery,
   useDeleteInnovationPackMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
-import SearchableListLayout from '../../../../../shared/components/SearchableListLayout';
-import SimpleSearchableList from '../../../../../shared/components/SimpleSearchableList';
+import SearchableListLayout from '../../../../../shared/components/SearchableList/SearchableListLayout';
+import SimpleSearchableList from '../../../../../shared/components/SearchableList/SimpleSearchableList';
 import AdminLayout from '../../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../../layout/toplevel/constants';
 import { buildInnovationPackSettingsUrl } from '../../../../../collaboration/InnovationPack/urlBuilders';

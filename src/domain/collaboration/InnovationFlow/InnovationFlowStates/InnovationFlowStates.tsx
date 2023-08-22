@@ -4,7 +4,7 @@ import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Trans, useTranslation } from 'react-i18next';
-import TranslationKey from '../../../../types/TranslationKey';
+import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';

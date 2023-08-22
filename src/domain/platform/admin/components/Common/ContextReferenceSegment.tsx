@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { PushFunc, RemoveFunc, useEditReference } from '../../../../shared/Reference/useEditReference';
+import { PushFunc, RemoveFunc, useEditReference } from '../../../../common/reference/useEditReference';
 import { Reference } from '../../../../common/profile/Profile';
-import { newReferenceName } from '../../../../../common/utils/newReferenceName';
+import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 
 interface ContextReferenceSegmentProps extends ReferenceSegmentProps {

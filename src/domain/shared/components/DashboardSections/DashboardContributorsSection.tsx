@@ -4,7 +4,7 @@ import ContributorCardSquare, {
   ContributorCardSquareProps,
   ContributorCardSkeleton,
 } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { WithId } from '../../../../types/WithId';
+import { WithId } from '../../../../core/utils/WithId';
 import { times } from 'lodash';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';

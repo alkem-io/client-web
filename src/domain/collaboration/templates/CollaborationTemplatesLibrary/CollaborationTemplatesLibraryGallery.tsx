@@ -3,7 +3,7 @@ import { Box, BoxProps, Skeleton } from '@mui/material';
 import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { useTranslation } from 'react-i18next';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
+import CardsLayout from '../../../../core/ui/card/cardsLayout/CardsLayout';
 import { Text } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { times } from 'lodash';

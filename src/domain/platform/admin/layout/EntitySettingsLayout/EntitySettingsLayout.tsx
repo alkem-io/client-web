@@ -3,7 +3,7 @@ import { SettingsSection } from './constants';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { EntityTabsProps } from '../../../../challenge/common/EntityPageLayout';
+import { EntityTabsProps } from '../../../../journey/common/EntityPageLayout';
 import SettingsPageContent from './SettingsPageContent';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import {
@@ -13,7 +13,7 @@ import {
 } from '../../../../../core/ui/grid/constants';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
-import EntityPageLayout from '../../../../challenge/common/EntityPageLayout/EntityPageLayout';
+import EntityPageLayout from '../../../../journey/common/EntityPageLayout/EntityPageLayout';
 
 type EntityTypeName = 'space' | 'challenge' | 'opportunity' | 'organization' | 'user';
 

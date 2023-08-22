@@ -12,7 +12,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
 
 export interface ActiveWhiteboardIdHolder {

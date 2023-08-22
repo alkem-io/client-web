@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import EmailVerificationNotice from '../../verification/components/EmailVerificationNotice/EmailVerificationNotice';
 import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { useUserContext } from '../../../../domain/community/contributor/user';
+import { useUserContext } from '../../../../domain/community/user';
 import { PageTitle } from '../../../ui/typography';
 import { useReturnUrl } from '../utils/SignUpReturnUrl';
 

@@ -1,8 +1,8 @@
-import { WithId } from '../../../../types/WithId';
+import { WithId } from '../../../../core/utils/WithId';
 import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
-import { UserCardProps } from '../../../../common/components/composite/common/cards';
+import { UserCardProps } from '../../user/userCard/UserCard';
 import { useMemo } from 'react';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
 import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
 import {

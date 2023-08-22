@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import WhiteboardsManagementViewWrapper from '../WhiteboardsManagement/WhiteboardsManagementViewWrapper';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
-import { buildWhiteboardUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { buildWhiteboardUrl, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import { useCalloutIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface WhiteboardsPageProps extends JourneyLocation {

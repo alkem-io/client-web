@@ -1,30 +1,35 @@
 import React, { FC, ReactNode } from 'react';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import SpaceCard, { SpaceCardProps } from '../../../challenge/space/SpaceCard/SpaceCard';
-import { buildSpaceUrl } from '../../../../common/utils/urlBuilders';
+import SpaceCard, { SpaceCardProps } from '../../../journey/space/SpaceCard/SpaceCard';
+import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
-import { Space, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import { Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { Visual } from '../../../common/visual/Visual';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-type NeededFields = 'nameID' | 'authorization' | 'id' | 'visibility';
-
-type SpaceAttrs = Pick<Space, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+export interface SpaceAttrs extends Identifiable {
+  nameID: string;
   context?: { vision?: string };
   profile: {
     displayName: string;
     tagline: string;
     tagset?: {
       id: string;
-      name: string;
       tags?: string[];
     };
-    visuals?: VisualUriFragment[];
+    cardBanner?: Visual;
   };
-};
+  authorization?: {
+    // is required by getSpaceCardProps
+    anonymousReadAccess: boolean;
+  };
+  // TODO inline types derived from generated GraphQL definitions
+  visibility?: SpaceVisibility;
+  metrics?: Pick<Nvp, 'name' | 'value'>[];
+}
 
 export interface DashboardSpaceSectionProps {
   spaces: SpaceAttrs[];
@@ -49,7 +54,7 @@ const DashboardSpacesSection: FC<DashboardSpaceSectionProps> = ({
         {spaces.map(space => (
           <SpaceCard
             key={space.id}
-            banner={getVisualByType(VisualName.BANNERNARROW, space.profile.visuals)}
+            banner={space.profile.cardBanner}
             spaceId={space.id}
             displayName={space.profile.displayName}
             journeyUri={buildSpaceUrl(space.nameID)}

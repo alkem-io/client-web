@@ -1,15 +1,15 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardActions from '../../../../../core/ui/card/CardActions';
-import JourneyCardGoToButton from '../../../../challenge/common/JourneyCard/JourneyCardGoToButton';
-import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
+import JourneyCardGoToButton from '../../../../journey/common/JourneyCard/JourneyCardGoToButton';
+import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import journeyIcon from '../../JourneyIcon/JourneyIcon';
-import JourneyCard, { JourneyCardProps } from '../../../../challenge/common/JourneyCard/JourneyCard';
-import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
+import JourneyCard, { JourneyCardProps } from '../../../../journey/common/JourneyCard/JourneyCard';
+import JourneyCardTagline from '../../../../journey/common/JourneyCard/JourneyCardTagline';
 import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
-import JourneyCardDescription from '../../../../challenge/common/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
+import JourneyCardDescription from '../../../../journey/common/JourneyCard/JourneyCardDescription';
+import JourneyCardSpacing from '../../../../journey/common/JourneyCard/JourneyCardSpacing';
 import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import CardRibbon from '../../../../../core/ui/card/CardRibbon';
 

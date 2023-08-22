@@ -50,9 +50,9 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
 
   const callout = data?.lookup.callout;
 
-  const whiteboard =
-    callout?.whiteboards?.find(whiteboard => whiteboard.nameID === whiteboardId || whiteboard.id === whiteboardId) ??
-    undefined;
+  const whiteboard = callout?.whiteboards?.find(
+    whiteboard => whiteboard.nameID === whiteboardId || whiteboard.id === whiteboardId
+  );
 
   const templates = whiteboardTemplates?.space.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.authorization;

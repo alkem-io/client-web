@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
+import { buildCalloutUrl } from '../../../../../main/routing/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';

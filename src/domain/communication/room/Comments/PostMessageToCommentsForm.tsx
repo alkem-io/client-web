@@ -4,7 +4,7 @@ import { Avatar, AvatarProps, Box, styled } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useUserContext } from '../../../community/contributor/user';
+import { useUserContext } from '../../../community/user';
 import FormikCommentInputField from './FormikCommentInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';

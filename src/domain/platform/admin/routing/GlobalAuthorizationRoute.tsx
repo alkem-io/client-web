@@ -5,7 +5,7 @@ import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
 import GlobalAuthorizationPage from '../authorization/GlobalAuthorizationPage';
 import GlobalCommunityAuthorizationPage from '../authorization/GlobalCommunityAuthorizationPage';
 import GlobalSpacesAdminAuthorizationPage from '../authorization/GlobalSpacesAdminAuthorizationPage';
-import { nameOfUrl } from '../../../../core/routing/urlParams';
+import { nameOfUrl } from '../../../../main/routing/urlParams';
 import AuthorizationRouteProps from './AuthorizationRouteProps';
 import GlobalBetaTesterAuthorizationPage from '../authorization/GlobalBetaTesterAuthorizationPage';
 

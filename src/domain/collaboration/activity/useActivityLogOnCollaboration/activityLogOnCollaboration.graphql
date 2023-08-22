@@ -69,10 +69,6 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
 
 fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
   communityType
-  community {
-    id
-    displayName
-  }
   user {
     id
     nameID

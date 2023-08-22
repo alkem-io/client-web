@@ -8,7 +8,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useConfig } from '../../../config/useConfig';
-import { PushFunc, RemoveFunc } from '../../../../shared/Reference/useEditReference';
+import { PushFunc, RemoveFunc } from '../../../../common/reference/useEditReference';
 import { Reference } from '../../../../common/profile/Profile';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';

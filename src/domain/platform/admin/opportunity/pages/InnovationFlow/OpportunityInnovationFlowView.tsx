@@ -8,9 +8,9 @@ import {
   useUpdateInnovationFlowLifecycleTemplateMutation,
   refetchInnovationFlowSettingsQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
-import Loading from '../../../../../../common/components/core/Loading/Loading';
+import Loading from '../../../../../../core/ui/loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
-import OpportunityLifecycleContainer from '../../../../../challenge/opportunity/containers/OpportunityLifecycleContainer';
+import OpportunityLifecycleContainer from '../../../../../journey/opportunity/containers/OpportunityLifecycleContainer';
 import { InnovationFlowType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 

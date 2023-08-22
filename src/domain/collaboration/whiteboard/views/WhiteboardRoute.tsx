@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import WhiteboardsView from '../EntityWhiteboardPage/WhiteboardsView';
 
 export interface WhiteboardRouteProps {

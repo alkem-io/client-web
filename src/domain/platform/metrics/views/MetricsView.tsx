@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { MetricItem } from './Metrics';
-import CircleTag from '../../../../common/components/core/CircleTag';
+import CircleTag from '../../../../core/ui/tags/CircleTag';
 import Skeleton from '@mui/material/Skeleton';
 
 export interface MetricViewProps {

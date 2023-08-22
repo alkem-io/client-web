@@ -11,31 +11,31 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
-import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
-import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
-import WhiteboardTemplatesChooser from './creation-dialog/CalloutTemplate/WhiteboardTemplateChooser';
+import FormikEffectFactory from '../../../core/ui/forms/FormikEffect';
+import { FormikSwitch } from '../../../core/ui/forms/FormikSwitch';
+import { displayNameValidator } from '../../../core/ui/forms/validator/displayNameValidator';
+import WhiteboardTemplatesChooser from './creationDialog/CalloutTemplate/WhiteboardTemplateChooser';
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
 import ReferenceSegment from '../../platform/admin/components/Common/ReferenceSegment';
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
-import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
+import PostTemplatesChooser from './creationDialog/CalloutTemplate/PostTemplateChooser';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
-import EmptyWhiteboard from '../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
+import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
 import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
-import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
-import { FormikSelectValue } from '../../../common/components/composite/forms/FormikAutocomplete';
+import FormikSelect from '../../../core/ui/forms/FormikSelect';
+import { FormikSelectValue } from '../../../core/ui/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
 import { Caption } from '../../../core/ui/typography';
 import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
-} from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { JourneyTypeName } from '../../challenge/JourneyTypeName';
+} from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { JourneyCalloutDisplayLocationOptions } from './CalloutsInContext/CalloutsGroup';
 
 type FormValueType = {

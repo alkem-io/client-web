@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
+import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from './DiscussionIcon';
 import {
@@ -21,7 +21,7 @@ import {
   refetchPlatformDiscussionsQuery,
   useCreateDiscussionMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
+import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
 import { useNavigate } from 'react-router-dom';
 
 interface formValues {

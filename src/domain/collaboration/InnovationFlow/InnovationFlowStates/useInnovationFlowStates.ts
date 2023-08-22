@@ -1,7 +1,7 @@
 import { useChallengeInnovationFlowStatesAllowedValuesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useOpportunityInnovationFlowStatesAllowedValuesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 interface UseInnovationFlowStatesParams {
   journeyId: string | undefined;

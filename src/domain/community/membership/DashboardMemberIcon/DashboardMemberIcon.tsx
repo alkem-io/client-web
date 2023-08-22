@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from '@mui/material';
 import { HowToRegOutlined } from '@mui/icons-material';
-import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { Caption } from '../../../../core/ui/typography';
 
 interface DashboardMemberIconProps {

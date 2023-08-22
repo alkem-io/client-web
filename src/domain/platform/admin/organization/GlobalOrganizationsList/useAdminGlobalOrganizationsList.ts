@@ -6,7 +6,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
-import { SearchableListItem } from '../../../../shared/components/SimpleSearchableList';
+import { SearchableListItem } from '../../../../shared/components/SearchableList/SimpleSearchableList';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
 

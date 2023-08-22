@@ -2,7 +2,6 @@ query communityUpdates($communityId: UUID!) {
   lookup {
     community(ID: $communityId) {
       id
-      displayName
       communication {
         id
         updates {

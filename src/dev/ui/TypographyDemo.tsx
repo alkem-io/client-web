@@ -11,7 +11,7 @@ import {
   TextBlock,
 } from '../../core/ui/typography';
 import { GUTTER_MUI } from '../../core/ui/grid/constants';
-import Main from '../../common/components/composite/layout/App/Main';
+import Main from '../../main/ui/layout/topLevelWrappers/Main';
 import WrapperMarkdown from '../../core/ui/markdown/WrapperMarkdown';
 
 const loremIpsum =

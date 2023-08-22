@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { Context, Profile, Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema } from './Common/ContextSegment';
-import FormikAutocomplete from '../../../../common/components/composite/forms/FormikAutocomplete';
+import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';

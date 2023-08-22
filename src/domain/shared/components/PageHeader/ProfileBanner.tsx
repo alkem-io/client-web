@@ -9,7 +9,7 @@ import { formatLocation } from '../../../common/location/LocationUtils';
 import { ContactDetail } from '../ContactDetails/ContactDetail';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import hexToRGBA from '../../../../common/utils/hexToRGBA';
+import hexToRGBA from '../../../../core/utils/hexToRGBA';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import { CaptionSmall } from '../../../../core/ui/typography/components';
 import PageContent from '../../../../core/ui/content/PageContent';

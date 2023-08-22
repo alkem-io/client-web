@@ -2,12 +2,12 @@ import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
+import WrapperTypography from '../../../ui/typography/deprecated/WrapperTypography';
 import { useQueryParams } from '../../../routing/useQueryParams';
-import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
+import AuthenticationLayout from '../../../../main/ui/layout/AuthenticationLayout';
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
 import { Box, Button } from '@mui/material';
-import { buildReturnUrlParam } from '../../../../common/utils/urlBuilders';
+import { buildReturnUrlParam } from '../../../../main/routing/urlBuilders';
 
 interface AuthRequiredPageProps {}
 

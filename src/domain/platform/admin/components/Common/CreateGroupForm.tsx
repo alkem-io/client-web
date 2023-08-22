@@ -4,8 +4,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
+import WrapperButton from '../../../../../core/ui/button/deprecated/WrapperButton';
+import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
 
 interface CreateGroupFormProps {
   onCreate: (name: string) => Promise<void>;

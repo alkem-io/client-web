@@ -1,7 +1,7 @@
 import React, { ComponentType } from 'react';
 import { Tabs } from '@mui/material';
 import { TabsProps } from '@mui/material/Tabs/Tabs';
-import NavigationTab from '../../../../../common/components/core/NavigationTab/NavigationTab';
+import NavigationTab from '../../../../../core/ui/tabs/NavigationTab';
 import { gutters } from '../../../../../core/ui/grid/utils';
 
 export interface TabDefinition<Section extends string | number> {

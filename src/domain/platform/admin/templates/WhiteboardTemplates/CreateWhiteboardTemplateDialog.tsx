@@ -7,7 +7,7 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import EmptyWhiteboard from '../../../../../common/components/composite/entities/Whiteboard/EmptyWhiteboard';
+import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;

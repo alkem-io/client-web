@@ -1,7 +1,7 @@
 import { Callout, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutFormInput } from '../CalloutForm';
-import { CalloutWhiteboardTemplate, CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
+import { CalloutWhiteboardTemplate, CalloutPostTemplate } from '../creationDialog/CalloutCreationDialog';
 
 export type CalloutEditType = Omit<
   CalloutFormInput,

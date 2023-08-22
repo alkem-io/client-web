@@ -12,15 +12,13 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import FormikTimePicker from '../../../../core/ui/forms/DatePicker/FormikTimePicker';
-import FormikAutocomplete, {
-  FormikSelectValue,
-} from '../../../../common/components/composite/forms/FormikAutocomplete';
+import FormikAutocomplete, { FormikSelectValue } from '../../../../core/ui/forms/FormikAutocomplete';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import { displayNameValidator } from '../../../../common/utils/validator';
+import { displayNameValidator } from '../../../../core/ui/forms/validator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
 import { LoadingButton } from '@mui/lab';

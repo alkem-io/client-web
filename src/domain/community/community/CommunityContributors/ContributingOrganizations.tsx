@@ -4,7 +4,7 @@ import OrganizationCardHorizontal, {
   OrganizationCardProps,
 } from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 import React, { FC, ReactElement } from 'react';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface ContributingOrganizationsProps {
   loading?: boolean;

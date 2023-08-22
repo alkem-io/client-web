@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '../../../../../core/analytics/useSentry';
-import { useSpace } from '../../../../challenge/space/SpaceContext/useSpace';
+import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import SpaceCommunicationsPage from '../../../../challenge/space/pages/SpaceCommunication/SpaceCommunicationsPage';
-import SpaceProfilePage from '../../../../challenge/space/pages/SpaceProfile/SpaceProfilePage';
-import SpaceSettingsPage from '../../../../challenge/space/pages/SpaceSettings/SpaceSettingsPage';
+import SpaceCommunicationsPage from '../../../../journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';
+import SpaceProfilePage from '../../../../journey/space/pages/SpaceProfile/SpaceProfilePage';
+import SpaceSettingsPage from '../../../../journey/space/pages/SpaceSettings/SpaceSettingsPage';
 import { ChallengesRoute } from '../../challenge/routing/ChallengesRoute';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import SpaceTemplatesAdminRoutes from '../SpaceTemplatesAdminRoutes';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
-import SpaceContextPage from '../../../../challenge/space/pages/SpaceContext/SpaceContextPage';
+import SpaceContextPage from '../../../../journey/space/pages/SpaceContext/SpaceContextPage';
 import SpaceStorageAdminPage from '../storage/SpaceStorageAdminPage';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import AdminSpaceCommunityPage from '../../../../challenge/space/pages/SpaceCommunity/AdminSpaceCommunityPage';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import AdminSpaceCommunityPage from '../../../../journey/space/pages/SpaceCommunity/AdminSpaceCommunityPage';
 
 export const SpaceRoute: FC = () => {
   useTransactionScope({ type: 'admin' });

@@ -13,8 +13,8 @@ import {
   TagsetType,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { EditMode } from '../../../../../core/ui/forms/editMode';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import Section, { Header } from '../../../../../common/components/core/Section';
+import WrapperButton from '../../../../../core/ui/button/deprecated/WrapperButton';
+import Section, { Header } from '../../../../../core/ui/content/deprecated/Section';
 import VisualUpload from '../../../../../core/ui/upload/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';

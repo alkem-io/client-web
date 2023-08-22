@@ -8,7 +8,7 @@ import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
 import React, { useLayoutEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Loading from '../../../../common/components/core/Loading/Loading';
+import Loading from '../../../ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';

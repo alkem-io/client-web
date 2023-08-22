@@ -3,6 +3,10 @@ query challengeCommunity($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $in
     id
     challenge(ID: $challengeId) {
       id
+      profile {
+        id
+        displayName
+      }
       community {
         id
         ...CommunityDetails @include(if: $includeDetails)

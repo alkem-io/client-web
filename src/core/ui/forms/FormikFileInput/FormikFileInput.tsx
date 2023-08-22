@@ -2,7 +2,7 @@ import React from 'react';
 import { useField } from 'formik';
 import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
 import FileUploadButton from '../../upload/FileUpload/FileUpload';
-import { useStorageConfigContext } from '../../../../domain/platform/storage/StorageBucket/StorageConfigContext';
+import { useStorageConfigContext } from '../../../../domain/storage/StorageBucket/StorageConfigContext';
 
 const DEFAULT_PROTOCOL = 'https';
 const MATCH_PROTOCOL_REGEX = /^[a-z][a-z0-9+_-]{0,500}:\/\//i;

@@ -1,5 +1,5 @@
 import { Tooltip, TooltipProps } from '@mui/material';
-import UserCard, { UserCardProps } from '../../../common/components/composite/common/cards/user-card/UserCard';
+import UserCard, { UserCardProps } from '../../../domain/community/user/userCard/UserCard';
 
 interface ContributorTooltipProps extends UserCardProps {
   children: TooltipProps['children'];

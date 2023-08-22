@@ -5,7 +5,7 @@ import {
   useActivityLogOnCollaborationQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { LATEST_ACTIVITIES_COUNT } from '../../../shared/components/ActivityLog/constants';
-import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import createUseSubscriptionToSubEntityHook from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 import {
   ActivityCreatedSubscription,
   ActivityCreatedSubscriptionVariables,

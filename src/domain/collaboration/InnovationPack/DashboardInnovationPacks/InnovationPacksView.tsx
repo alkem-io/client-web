@@ -3,10 +3,10 @@ import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import InnovationPackCard, { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import { CONTRIBUTE_CARD_COLUMNS } from '../../../../core/ui/card/ContributeCard';
 import GridItem from '../../../../core/ui/grid/GridItem';

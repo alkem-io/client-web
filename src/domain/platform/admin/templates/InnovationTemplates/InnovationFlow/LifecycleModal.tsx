@@ -5,7 +5,7 @@ import { toDirectedGraph } from '@xstate/graph';
 import { Lifecycle } from '../../../../../../core/apollo/generated/graphql-schema';
 import { Dialog } from '@mui/material';
 import InnovationFlowVisualizer from '../InnovationFlowVisualizer';
-import { DialogContent, DialogTitle } from '../../../../../../common/components/core/dialog';
+import { DialogContent, DialogTitle } from '../../../../../../core/ui/dialog/deprecated';
 
 const useDialogStyles = makeStyles(() => ({
   content: {

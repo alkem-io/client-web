@@ -6,11 +6,11 @@ import { Box, BoxProps, SvgIconProps } from '@mui/material';
 import { GroupedCallout } from './useInnovationFlowSettings';
 import { groupBy } from 'lodash';
 import calloutIcons from '../../callout/utils/calloutIcons';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from 'react-beautiful-dnd';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import i18n from '../../../../core/i18n/config';
-import TranslationKey from '../../../../types/TranslationKey';
+import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
 
 interface InnovationFlowCollaborationToolsBlockProps {

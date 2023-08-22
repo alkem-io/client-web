@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
 import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
-import { RoleType } from '../../user/constants/RoleType';
+import { RoleType } from '../../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';
 import {
   useRolesOrganizationQuery,
@@ -11,20 +11,20 @@ import {
 import { COUNTRIES_BY_CODE } from '../../../../common/location/countries.constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../../../common/tags/tagset.constants';
 import { ContainerChildProps } from '../../../../../core/container/container';
-import { ContributionItem } from '../../contribution';
+import { ContributionItem } from '../../../user/contribution';
 import {
   isSocialNetworkSupported,
   SocialNetworkEnum,
   toSocialNetworkEnum,
 } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import { AuthorizationPrivilege, OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import {
   ADMIN_TRANSLATION_KEY,
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
-} from '../../user/constants/translation.constants';
+} from '../../../user/constants/translation.constants';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -147,9 +147,12 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
-    const spacesHosting = orgRolesData?.rolesOrganization?.spaces?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+    const spacesHostingLeading =
+      orgRolesData?.rolesOrganization?.spaces?.filter(
+        space => space.roles?.includes(RoleType.Host) || space.roles?.includes(RoleType.Lead)
+      ) || [];
 
-    const spaceContributions = spacesHosting.map<ContributionItem>(x => ({
+    const spaceContributions = spacesHostingLeading.map<ContributionItem>(x => ({
       spaceId: x.id,
       id: x.id,
     }));

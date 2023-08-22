@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
-import Loading from '../../../../common/components/core/Loading/Loading';
+import Loading from '../../../ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { _AUTH_LOGIN_PATH } from '../constants/authentication.constants';
 import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';

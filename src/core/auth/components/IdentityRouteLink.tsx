@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonProps, Link } from '@mui/material';
 import { useConfig } from '../../../domain/platform/config/useConfig';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
-import { buildReturnUrlParam } from '../../../common/utils/urlBuilders';
+import { buildReturnUrlParam } from '../../../main/routing/urlBuilders';
 import { useLocation } from 'react-router-dom';
 
 const IdentityRouteLink = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({

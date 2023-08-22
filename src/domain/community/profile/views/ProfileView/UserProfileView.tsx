@@ -5,7 +5,7 @@ import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import References from '../../../../shared/components/References/References';
 import { styled } from '@mui/styles';
-import { UserMetadata } from '../../../contributor/user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../../user/hooks/useUserMetadataWrapper';
 import { isSocialNetworkSupported } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';

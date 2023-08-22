@@ -1,5 +1,5 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../challenge/common/EntityPageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../../journey/common/EntityPageLayout';
 import InnovationPageTabs, { InnovationPageTabsProps } from './InnovationPageTabs';
 import InnovationPackBanner, { InnovationPackBannerProps } from './InnovationPackBanner';
 

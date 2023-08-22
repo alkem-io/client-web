@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { buildPostUrl } from '../../../../../common/utils/urlBuilders';
+import { buildPostUrl } from '../../../../../main/routing/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';

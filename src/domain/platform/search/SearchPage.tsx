@@ -1,4 +1,4 @@
-import TopLevelDesktopLayout from '../ui/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../main/ui/layout/TopLevelDesktopLayout';
 import SearchView from './SearchView';
 import { SEARCH_ROUTE } from '../routes/constants';
 import { journeyFilterConfig } from './Filter';
