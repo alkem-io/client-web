@@ -1,7 +1,6 @@
 import { Box, Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import SpaceEditForm, { SpaceEditFormValuesType } from '../../components/SpaceEditForm';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
@@ -16,6 +15,7 @@ import {
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
+import SpaceCreateForm, { SpaceCreateFormValuesType } from '../../components/SpaceCreateForm';
 
 interface NewSpaceProps extends PageProps {}
 
@@ -64,7 +64,7 @@ export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
 
   const isLoading = loading1 || loadingOrganizations;
 
-  const onSubmit = async (values: SpaceEditFormValuesType) => {
+  const onSubmit = async (values: SpaceCreateFormValuesType) => {
     const { name, nameID, host, tagsets } = values;
 
     await createSpace({
@@ -90,7 +90,7 @@ export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
         <Box marginY={3}>
           <WrapperTypography variant="h2">{'New Space'}</WrapperTypography>
         </Box>
-        <SpaceEditForm
+        <SpaceCreateForm
           isEdit={false}
           onSubmit={onSubmit}
           wireSubmit={submit => (submitWired = submit)}

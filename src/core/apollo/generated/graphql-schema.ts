@@ -4667,8 +4667,6 @@ export type UpdateSpaceInput = {
   ID: Scalars['UUID_NAMEID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
-  /** Update the host Organization for the Space. */
-  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -25266,8 +25264,7 @@ export type AdminGlobalOrganizationsListQuery = {
 };
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
-  spaceId: Scalars['String'];
-  visibility: SpaceVisibility;
+  updateData: UpdateSpacePlatformSettingsInput;
 }>;
 
 export type UpdateSpacePlatformSettingsMutation = {
@@ -25294,6 +25291,13 @@ export type AdminSpacesListQuery = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   }>;
 };
 
@@ -25305,6 +25309,9 @@ export type AdminSpaceFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  host?:
+    | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
 };
 
