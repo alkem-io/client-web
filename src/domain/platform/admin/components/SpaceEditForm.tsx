@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { Context, Profile, Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema } from './Common/ContextSegment';
+import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
@@ -21,7 +22,9 @@ interface Props {
   profile?: Profile;
   name?: string;
   nameID?: string;
+  hostID?: string;
   tagset?: Tagset;
+  organizations?: { id: string; name: string }[];
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   isEdit: boolean;
@@ -30,13 +33,24 @@ interface Props {
 export interface SpaceEditFormValuesType {
   name: string;
   nameID: string;
+  host: string;
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
   tagsets: Tagset[];
 }
 
-const SpaceEditForm: FC<Props> = ({ profile, name, nameID, tagset, onSubmit, wireSubmit, isEdit }) => {
+const SpaceEditForm: FC<Props> = ({
+  profile,
+  name,
+  nameID,
+  hostID,
+  tagset,
+  onSubmit,
+  wireSubmit,
+  isEdit,
+  organizations = [],
+}) => {
   const { t } = useTranslation();
 
   const tagsets = useMemo(() => {
@@ -55,17 +69,19 @@ const SpaceEditForm: FC<Props> = ({ profile, name, nameID, tagset, onSubmit, wir
   const profileId = profile?.id;
 
   const initialValues: SpaceEditFormValuesType = {
-    name: name ?? '',
-    nameID: nameID ?? '',
-    tagline: profile?.tagline ?? '',
-    location: formatLocation(profile?.location) ?? EmptyLocation,
-    references: profile?.references ?? [],
+    name: name || '',
+    nameID: nameID || '',
+    tagline: profile?.tagline || '',
+    location: formatLocation(profile?.location) || EmptyLocation,
+    references: profile?.references || [],
     tagsets: tagsets,
+    host: hostID || '',
   };
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name || yup.string(),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
+    host: yup.string().required(t('forms.validations.required')),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
@@ -91,6 +107,14 @@ const SpaceEditForm: FC<Props> = ({ profile, name, nameID, tagset, onSubmit, wir
         return (
           <Gutters>
             <NameSegment disabled={isEdit} required={!isEdit} />
+            <FormikAutocomplete
+              title={t('components.editSpaceForm.host.title')}
+              name="host"
+              values={organizations}
+              required
+              placeholder={t('components.editSpaceForm.host.title')}
+              disabled={isEdit}
+            />
             <FormikInputField
               name={'tagline'}
               title={t('context.space.tagline.title')}
