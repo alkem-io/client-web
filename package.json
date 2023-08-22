@@ -147,7 +147,7 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.12",
     "@graphql-codegen/typescript-operations": "^2.3.2",
     "@graphql-codegen/typescript-react-apollo": "^3.2.8",
-    "@testing-library/jest-dom": "^6.0.1",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react-hooks": "^5.1.0",
     "@types/apollo-upload-client": "^17.0.0",
     "@types/js-cookie": "^3.0.2",
@@ -189,7 +189,10 @@
       "<rootDir>/src/generated",
       "<rootDir>/src/sentry"
     ],
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ]
   },
   "babel": {
     "env": {
