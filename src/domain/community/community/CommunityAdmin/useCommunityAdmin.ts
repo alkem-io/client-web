@@ -48,7 +48,7 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
       }
     : undefined;
 
-const useCommunityAdmin = (communityId: string, includeSpaceHost: boolean = false) => {
+const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = false) => {
   const { spaceId, profile: spaceProfile } = useSpace();
 
   const {
@@ -59,7 +59,7 @@ const useCommunityAdmin = (communityId: string, includeSpaceHost: boolean = fals
     variables: {
       communityId,
       spaceId,
-      includeSpaceHost,
+      includeSpaceHost: isSpaceCommunity,
     },
     skip: !communityId || !spaceId,
   });

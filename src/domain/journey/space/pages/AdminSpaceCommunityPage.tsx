@@ -41,7 +41,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin(communityId, true); //!!
+  } = useCommunityAdmin(communityId, true);
 
   if (!spaceId || loadingSpace) {
     return null;

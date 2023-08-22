@@ -31,7 +31,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableUsers,
     getAvailableOrganizations,
     loading,
-  } = useCommunityAdmin(communityId, false); //!!
+  } = useCommunityAdmin(communityId, false);
 
   if (!spaceId || loadingChallenge) {
     return null;

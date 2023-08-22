@@ -12,6 +12,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import ChallengeSettingsLayout from '../../../platform/admin/challenge/ChallengeSettingsLayout';
 import ChallengeCommunityAdminMembershipPreferencesSection from '../../../platform/admin/challenge/ChallengeCommunityAdminMembershipPreferencesSection';
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 
 const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, loading: loadingChallenge, communityId, challengeId } = useChallenge();
@@ -33,7 +34,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
     getAvailableUsers,
     getAvailableOrganizations,
     loading,
-  } = useCommunityAdmin(communityId, false); //!!
+  } = useCommunityAdmin(communityId, false);
 
   if (!spaceId || loadingChallenge) {
     return null;
@@ -81,8 +82,10 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
           </PageContentBlock>
         </PageContentColumn>
       </PageContent>
-      <ChallengeCommunityAdminMembershipPreferencesSection spaceId={spaceId} challengeId={challengeId} />
-      <CommunityApplicationForm spaceId={spaceId} challengeId={challengeId} />
+      <PageContentBlockSeamless>
+        <ChallengeCommunityAdminMembershipPreferencesSection spaceId={spaceId} challengeId={challengeId} />
+        <CommunityApplicationForm spaceId={spaceId} challengeId={challengeId} />
+      </PageContentBlockSeamless>
     </ChallengeSettingsLayout>
   );
 };
@@ -91,8 +94,7 @@ export default AdminChallengeCommunityPage;
 /*
 // OLD
   Delete? //!! ??
-useChallengeMemberOrganizationAssignment
-useCommunityUserAssignment
+
 
 const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId } = useSpace();
@@ -100,11 +102,6 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../
   const { t } = useTranslation();
 
   const communityId = challenge?.community?.id;
-
-  const memberOrganizationsProps = useChallengeMemberOrganizationAssignment({
-    spaceId,
-    challengeId,
-  });
 
   const memberUsersProps = useCommunityUserAssignment({
     memberType: 'member',

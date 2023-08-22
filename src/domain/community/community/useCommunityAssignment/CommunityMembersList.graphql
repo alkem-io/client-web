@@ -13,9 +13,6 @@ query CommunityMembersList($communityId: UUID!, $spaceId: UUID_NAMEID = "mockid"
 
 query CommunityAvailableMembers($communityId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
-    #//!! availableLeads: community(ID: $communityId) {
-    #   ...CommunityAvailableMemberUsers
-    # }
     availableMembers: community(ID: $communityId) {
       ...CommunityAvailableLeadUsers
     }
