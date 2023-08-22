@@ -532,9 +532,9 @@
       "maxLeadsWarning": "Note that there is a specific <b>maximum number of leads</b> for the communities. If the maximum number if reached, this option will be disabled for others.",
       "removeMember": {
         "sectionTitle": "Remove member",
-        "remove": "Click here to remove this user from this Space. Be careful, this action cannot be undone.",
+        "remove": "Click here to remove this user from this Community. Be careful, this action cannot be undone.",
         "dialogTitle": "Are you sure you want to remove this member?",
-        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Space and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
+        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
       }
     }
   },
