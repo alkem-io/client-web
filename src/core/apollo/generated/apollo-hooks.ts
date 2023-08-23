@@ -2707,6 +2707,13 @@ export const AdminSpaceFragmentDoc = gql`
       id
       myPrivileges
     }
+    host {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
   }
 `;
 export const DocumentDataFragmentDoc = gql`
@@ -20417,8 +20424,15 @@ export function refetchAdminGlobalOrganizationsListQuery(
 }
 
 export const UpdateSpacePlatformSettingsDocument = gql`
-  mutation UpdateSpacePlatformSettings($spaceId: String!, $visibility: SpaceVisibility!) {
-    updateSpacePlatformSettings(updateData: { spaceID: $spaceId, visibility: $visibility }) {
+  mutation UpdateSpacePlatformSettings(
+    $spaceID: String!
+    $hostID: UUID_NAMEID
+    $nameID: NameID
+    $visibility: SpaceVisibility
+  ) {
+    updateSpacePlatformSettings(
+      updateData: { spaceID: $spaceID, hostID: $hostID, nameID: $nameID, visibility: $visibility }
+    ) {
       id
       visibility
       nameID
@@ -20446,7 +20460,9 @@ export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateSpacePlatformSettingsMutation, { data, loading, error }] = useUpdateSpacePlatformSettingsMutation({
  *   variables: {
- *      spaceId: // value for 'spaceId'
+ *      spaceID: // value for 'spaceID'
+ *      hostID: // value for 'hostID'
+ *      nameID: // value for 'nameID'
  *      visibility: // value for 'visibility'
  *   },
  * });
