@@ -7,7 +7,7 @@ import { useUserContext } from '../../../user/hooks/useUserContext';
 interface OrganizationContextProps {
   organization?: OrganizationInfoFragment;
   organizationId: string;
-  organizationNameId: string;
+  organizationNameId: string | undefined;
   canReadUsers: boolean;
   displayName: string;
   loading: boolean;
@@ -22,15 +22,15 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 });
 
 const OrganizationProvider: FC = ({ children }) => {
-  const { organizationNameId: organizationId = '' } = useUrlParams();
-  const { user } = useUserContext();
-  const { data, loading: loadingOrganization } = useOrganizationInfoQuery({
+  const { organizationNameId } = useUrlParams();
+  const { user, loading: isUserLoading } = useUserContext();
+  const { data, loading: isOrganizationLoading } = useOrganizationInfoQuery({
     variables: {
-      organizationId,
-      includeAssociates: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
+      organizationId: organizationNameId!,
+      includeAssociates: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
     },
     errorPolicy: 'all',
-    skip: typeof user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) === 'undefined',
+    skip: !organizationNameId || isUserLoading,
   });
   const organization = data?.organization;
   const displayName = organization?.profile.displayName || '';
@@ -39,11 +39,11 @@ const OrganizationProvider: FC = ({ children }) => {
     <OrganizationContext.Provider
       value={{
         organization,
-        organizationId: organization?.id || '',
-        organizationNameId: organization?.nameID || organizationId,
-        canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
+        organizationId: organization?.id ?? '',
+        organizationNameId: organization?.nameID ?? organizationNameId,
+        canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
         displayName,
-        loading: loadingOrganization,
+        loading: isUserLoading || isOrganizationLoading,
       }}
     >
       {children}
