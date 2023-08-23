@@ -39,9 +39,9 @@ const OrganizationProvider: FC = ({ children }) => {
     <OrganizationContext.Provider
       value={{
         organization,
-        organizationId: organization?.id || '',
-        organizationNameId: organization?.nameID || organizationNameId,
-        canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
+        organizationId: organization?.id ?? '',
+        organizationNameId: organization?.nameID ?? organizationNameId,
+        canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
         displayName,
         loading: isUserLoading || isOrganizationLoading,
       }}
