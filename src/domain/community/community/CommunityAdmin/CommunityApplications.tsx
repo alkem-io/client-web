@@ -248,7 +248,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>
-          {t(canHandleInvitations ? 'community.pendingApplicationsAndInvitations' : 'community.pendingApplications')}
+          {t(canHandleInvitations ? 'community.pendingMemberships' : 'community.pendingApplications')}
         </BlockTitle>
         <Tooltip title={t('community.applicationsHelp')} arrow>
           <IconButton>

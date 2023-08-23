@@ -96,7 +96,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
       space.challenges.map(challenge => ({ id: challenge.id, roles: challenge.roles }))
     ) || [];
 
-  const { data: challengeData, loading: loadingChallengeData } = useChallengeExplorerDataQuery({
+  const { data: challengeData, loading: isLoadingChallenge } = useChallengeExplorerDataQuery({
     variables: {
       spaceIDs,
     },
@@ -171,7 +171,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     searchResults,
   };
 
-  const loading = loadingUser || loadingUserData || loadingChallengeData;
+  const loading = loadingUser || loadingUserData || isLoadingChallenge;
   const loadingSearch = loadingSearchResults;
 
   return <>{children(provided, { loading, loadingSearch, error }, {})}</>;

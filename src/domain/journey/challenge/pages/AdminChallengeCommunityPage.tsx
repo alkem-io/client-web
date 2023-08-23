@@ -15,7 +15,7 @@ import CommunityApplicationForm from '../../../community/community/CommunityAppl
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 
 const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: loadingChallenge, communityId, challengeId } = useChallenge();
+  const { spaceId, loading: isLoadingChallenge, communityId, challengeId } = useChallenge();
 
   const {
     users,
@@ -35,7 +35,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
     loading,
   } = useCommunityAdmin(communityId, false);
 
-  if (!spaceId || loadingChallenge) {
+  if (!spaceId || isLoadingChallenge) {
     return null;
   }
 

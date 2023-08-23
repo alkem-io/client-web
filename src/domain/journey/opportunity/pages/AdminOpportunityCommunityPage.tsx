@@ -12,7 +12,7 @@ import { useOpportunity } from '../hooks/useOpportunity';
 import OpportunitySettingsLayout from '../../../platform/admin/opportunity/OpportunitySettingsLayout';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: loadingChallenge, communityId } = useOpportunity();
+  const { spaceId, loading: isLoadingChallenge, communityId } = useOpportunity();
 
   const {
     users,
@@ -32,7 +32,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     loading,
   } = useCommunityAdmin(communityId, false);
 
-  if (!spaceId || loadingChallenge) {
+  if (!spaceId || isLoadingChallenge) {
     return null;
   }
 

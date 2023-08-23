@@ -14,7 +14,7 @@ import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlo
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: loadingSpace, communityId } = useSpace();
+  const { spaceId, loading: isLoadingSpace, communityId } = useSpace();
 
   const {
     users,
@@ -43,7 +43,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     inviteExistingUser,
   } = useCommunityAdmin(communityId, true);
 
-  if (!spaceId || loadingSpace) {
+  if (!spaceId || isLoadingSpace) {
     return null;
   }
 

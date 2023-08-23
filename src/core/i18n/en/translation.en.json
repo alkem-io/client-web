@@ -466,7 +466,7 @@
     "leading-organizations": "Leading Organizations",
     "memberOrganizations": "Member Organizations ({{count}})",
     "pendingApplications": "Pending applications",
-    "pendingApplicationsAndInvitations": "Pending applications & invitations",
+    "pendingMemberships": "Pending applications & invitations",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
