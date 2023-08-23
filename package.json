@@ -12,7 +12,6 @@
     "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
     "build": "cross-env NODE_ENV=production node buildConfiguration && vite build",
     "test": "vitest",
-    "coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage",
     "test:cov": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage",
     "test:coverage": "npm run test -- --coverage ",
     "codegen": "graphql-codegen --config codegen.yml",
