@@ -1,5 +1,6 @@
 import filterFn, { ValueType } from './filterFn';
 import { Identifiable } from '../Identifiable';
+import { expect, test, describe } from 'vitest';
 
 type TestDataType = Identifiable & {
   displayName?: string;
