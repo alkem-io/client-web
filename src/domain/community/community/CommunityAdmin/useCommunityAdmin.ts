@@ -7,9 +7,7 @@ import {
   useAssignUserAsCommunityMemberMutation,
   useAssignUserAsSpaceAdminMutation,
   useEventOnApplicationMutation,
-  useSpaceApplicationsInvitationsQuery,
-  useSpaceAvailableMemberUsersLazyQuery,
-  useSpaceCommunityMembersQuery,
+  useCommunityApplicationsInvitationsQuery,
   useRemoveOrganizationAsCommunityLeadMutation,
   useRemoveOrganizationAsCommunityMemberMutation,
   useRemoveUserAsCommunityLeadMutation,
@@ -17,18 +15,20 @@ import {
   useRemoveUserAsSpaceAdminMutation,
   useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
-  useSpaceDisplayNameQuery,
   useDeleteInvitationMutation,
   useDeleteExternalInvitationMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+  useCommunityMembersListQuery,
+  useCommunityAvailableMembersLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   AuthorizationPrivilege,
   CommunityRole,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { OrganizationDetailsFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityOrganizations';
-import { CommunityMemberUserFragmentWithRoles } from '../../../../community/community/CommunityAdmin/CommunityUsers';
-import useInviteUsers from '../../../../community/invitations/useInviteUsers';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
+import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
+import useInviteUsers from '../../../community/invitations/useInviteUsers';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -48,37 +48,29 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
       }
     : undefined;
 
-const useSpaceCommunityContext = (spaceId: string) => {
-  if (!spaceId) {
-    throw new Error('Must be within a Space route.');
-  }
+const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = false) => {
+  const { spaceId, profile: spaceProfile } = useSpace();
 
   const {
     data,
     loading: loadingMembers,
     refetch: refetchCommunityMembers,
-  } = useSpaceCommunityMembersQuery({
+  } = useCommunityMembersListQuery({
     variables: {
+      communityId,
       spaceId,
+      includeSpaceHost: isSpaceCommunity,
     },
+    skip: !communityId || !spaceId,
   });
 
-  const communityId = data?.space.community?.id;
-  const communityPolicy = data?.space.community?.policy;
+  const communityPolicy = data?.lookup.community?.policy;
 
   const permissions = {
-    canAddMembers: (data?.space.community?.authorization?.myPrivileges ?? []).some(
+    canAddMembers: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
       priv => priv === AuthorizationPrivilege.CommunityAddMember
     ),
   };
-
-  const { data: spaceDisplayNameData } = useSpaceDisplayNameQuery({
-    variables: {
-      spaceId,
-    },
-  });
-
-  const spaceDisplayName = spaceDisplayNameData?.space.profile.displayName;
 
   const {
     data: dataAdmins,
@@ -91,20 +83,22 @@ const useSpaceCommunityContext = (spaceId: string) => {
         resourceID: spaceId,
       },
     },
+    skip: !spaceId,
   });
 
   const {
     data: dataApplications,
     loading: loadingApplications,
     refetch: refetchApplicationsAndInvitations,
-  } = useSpaceApplicationsInvitationsQuery({
-    variables: { spaceId },
+  } = useCommunityApplicationsInvitationsQuery({
+    variables: { communityId },
+    skip: !communityId,
   });
 
   // Members:
   const users = useMemo(() => {
-    const members = data?.space.community?.memberUsers ?? [];
-    const leads = data?.space.community?.leadUsers ?? [];
+    const members = data?.lookup.community?.memberUsers ?? [];
+    const leads = data?.lookup.community?.leadUsers ?? [];
     const admins = dataAdmins?.usersWithAuthorizationCredential ?? [];
 
     const result = members.map<CommunityMemberUserFragmentWithRoles>(user => ({
@@ -144,14 +138,14 @@ const useSpaceCommunityContext = (spaceId: string) => {
   }, [data, dataAdmins]);
 
   const organizations = useMemo(() => {
-    const members = data?.space.community?.memberOrganizations ?? [];
-    const leads = data?.space.community?.leadOrganizations ?? [];
+    const members = data?.lookup.community?.memberOrganizations ?? [];
+    const leads = data?.lookup.community?.leadOrganizations ?? [];
 
     const result = members.map<OrganizationDetailsFragmentWithRoles>(member => ({
       ...member,
       isMember: true,
       isLead: leads.find(lead => lead.id === member.id) !== undefined,
-      isFacilitating: data?.space.host?.id === member.id,
+      isFacilitating: data?.space?.host?.id === member.id,
     }));
 
     // Push the rest of the leads that are not yet in the list of members
@@ -162,14 +156,14 @@ const useSpaceCommunityContext = (spaceId: string) => {
           ...lead,
           isMember: false,
           isLead: true,
-          isFacilitating: data?.space.host?.id === lead.id,
+          isFacilitating: data?.space?.host?.id === lead.id,
         });
       }
     });
 
     // Add Facilitating if it's not yet in the result
-    if (data?.space.host) {
-      const member = result.find(organization => organization.id === data.space.host!.id);
+    if (data?.space?.host) {
+      const member = result.find(organization => organization.id === data.space?.host!.id);
       if (!member) {
         result.push({ ...data.space.host, isMember: false, isLead: false, isFacilitating: true });
       }
@@ -178,16 +172,16 @@ const useSpaceCommunityContext = (spaceId: string) => {
   }, [data, dataAdmins]);
 
   // Available new members:
-  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useSpaceAvailableMemberUsersLazyQuery();
+  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useCommunityAvailableMembersLazyQuery();
   const getAvailableUsers = async (filter: string | undefined) => {
     const { data } = await fetchAvailableUsers({
       variables: {
-        spaceId,
+        communityId,
         first: MAX_AVAILABLE_MEMBERS,
         filter: buildUserFilterObject(filter),
       },
     });
-    return data?.space.community?.availableMemberUsers?.users;
+    return data?.lookup.availableMembers?.availableLeadUsers?.users;
   };
 
   const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
@@ -398,10 +392,10 @@ const useSpaceCommunityContext = (spaceId: string) => {
     organizations,
     communityPolicy,
     permissions,
-    spaceDisplayName,
-    applications: dataApplications?.space.community?.applications,
-    invitations: dataApplications?.space.community?.invitations,
-    invitationsExternal: dataApplications?.space.community?.invitationsExternal,
+    spaceDisplayName: spaceProfile.displayName,
+    applications: dataApplications?.lookup.community?.applications,
+    invitations: dataApplications?.lookup.community?.invitations,
+    invitationsExternal: dataApplications?.lookup.community?.invitationsExternal,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,
@@ -421,4 +415,4 @@ const useSpaceCommunityContext = (spaceId: string) => {
   };
 };
 
-export default useSpaceCommunityContext;
+export default useCommunityAdmin;
