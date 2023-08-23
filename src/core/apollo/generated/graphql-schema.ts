@@ -24937,8 +24937,10 @@ export type AdminGlobalOrganizationsListQuery = {
 };
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
-  spaceId: Scalars['String'];
-  visibility: SpaceVisibility;
+  spaceID: Scalars['String'];
+  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
+  visibility?: InputMaybe<SpaceVisibility>;
 }>;
 
 export type UpdateSpacePlatformSettingsMutation = {
@@ -24965,6 +24967,13 @@ export type AdminSpacesListQuery = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   }>;
 };
 
@@ -24976,6 +24985,9 @@ export type AdminSpaceFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  host?:
+    | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
 };
 

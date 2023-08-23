@@ -113,6 +113,7 @@ const SpaceEditForm: FC<Props> = ({
               values={organizations}
               required
               placeholder={t('components.editSpaceForm.host.title')}
+              disabled={isEdit}
             />
             <FormikInputField
               name={'tagline'}
