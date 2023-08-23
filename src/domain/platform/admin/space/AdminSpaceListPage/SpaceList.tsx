@@ -24,14 +24,11 @@ export const SpaceList: FC = () => {
 
   const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
   const { data: organizationData } = useOrganizationsListQuery();
-  const organizations = useMemo(
-    () =>
-      sortBy(
-        organizationData?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) ?? [],
-        org => org.name
-      ),
-    [organizationData]
-  );
+  const organizations = useMemo(() => {
+    const organizationNames =
+      organizationData?.organizations.map(org => ({ id: org.id, name: org.profile.displayName })) ?? [];
+    return sortBy(organizationNames, org => org.name);
+  }, [organizationData]);
 
   const spaceList = useMemo(() => {
     return (

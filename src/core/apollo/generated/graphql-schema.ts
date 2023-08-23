@@ -4667,6 +4667,8 @@ export type UpdateSpaceInput = {
   ID: Scalars['UUID_NAMEID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
+  /** Update the host Organization for the Space. */
+  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -25264,7 +25266,10 @@ export type AdminGlobalOrganizationsListQuery = {
 };
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
-  updateData: UpdateSpacePlatformSettingsInput;
+  spaceID: Scalars['String'];
+  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
+  visibility?: InputMaybe<SpaceVisibility>;
 }>;
 
 export type UpdateSpacePlatformSettingsMutation = {

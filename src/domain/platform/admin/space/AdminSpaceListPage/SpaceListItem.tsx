@@ -53,12 +53,10 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
   const handleSubmit = async ({ visibility, nameID, hostID }: Partial<SpacePlatformSettings>) => {
     await updatePlatformSettings({
       variables: {
-        updateData: {
-          spaceID: spaceId,
-          visibility,
-          nameID,
-          hostID,
-        },
+        spaceID: spaceId,
+        hostID,
+        nameID,
+        visibility,
       },
     });
     setIsPlatformSettingsModalOpen(false);
@@ -114,12 +112,14 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
                   title={t('components.nameSegment.nameID.title')}
                   placeholder={t('components.nameSegment.nameID.placeholder')}
                   required
+                  disabled={loading}
                 />
                 <FormikAutocomplete
                   title={t('components.editSpaceForm.host.title')}
                   name="hostID"
                   values={organizations}
                   required
+                  disabled={loading}
                   placeholder={t('components.editSpaceForm.host.title')}
                 />
                 <FormikAutocomplete name="visibility" values={selectOptions} disablePortal={false} disabled={loading} />
