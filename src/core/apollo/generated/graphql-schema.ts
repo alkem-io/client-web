@@ -1238,6 +1238,8 @@ export type CreateCalloutOnCollaborationInput = {
   /** PostTemplate data for Post Callouts. */
   postTemplate?: InputMaybe<CreatePostTemplateInput>;
   profile: CreateProfileInput;
+  /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
+  sendNotification?: InputMaybe<Scalars['Boolean']>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
@@ -1245,6 +1247,8 @@ export type CreateCalloutOnCollaborationInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
   /** Callout type. */
   type: CalloutType;
+  /** Visibility of the Callout. Defaults to DRAFT. */
+  visibility?: InputMaybe<CalloutVisibility>;
   /** Whiteboard data for whiteboard Callouts. */
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   /** WhiteboardTemplate data for whiteboard Callouts. */
