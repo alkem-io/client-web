@@ -88,7 +88,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
   const { data: orgRolesData, loading: orgRolesLoading } = useRolesOrganizationQuery({
     variables: {
-      input: organizationNameId,
+      input: organizationNameId!,
     },
     skip: !organizationNameId,
   });
