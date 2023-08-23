@@ -35,7 +35,7 @@ export const SpaceProfile: FC = () => {
   };
 
   const onSubmit = async (values: SpaceEditFormValuesType) => {
-    const { name: displayName, tagline, host, tagsets, references } = values;
+    const { name: displayName, tagline, tagsets, references } = values;
     updateSpace({
       variables: {
         input: {
@@ -52,7 +52,6 @@ export const SpaceProfile: FC = () => {
             tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
           },
           ID: spaceNameId,
-          hostID: host,
         },
       },
     });

@@ -1647,7 +1647,8 @@
         "saved": "Saved Successfully"
       },
       "spaces": {
-        "updateVisibility": "Update Visibility"
+        "updateVisibility": "Update Visibility",
+        "spaceSettings": "Space Settings"
       }
     },
     "feedback": {
