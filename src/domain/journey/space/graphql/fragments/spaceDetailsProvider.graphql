@@ -5,11 +5,11 @@ fragment SpaceDetailsProvider on Space {
     id
     displayName
     tagline
-    visuals {
-      ...VisualUri
-    }
     tagset {
       ...TagsetDetails
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
     }
   }
   authorization {

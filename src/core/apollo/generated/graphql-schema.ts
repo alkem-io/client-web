@@ -24432,7 +24432,6 @@ export type SpaceDetailsProviderFragment = {
     id: string;
     displayName: string;
     tagline: string;
-    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -24443,6 +24442,7 @@ export type SpaceDetailsProviderFragment = {
           type: TagsetType;
         }
       | undefined;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
@@ -24677,7 +24677,6 @@ export type SpaceCardQuery = {
       id: string;
       displayName: string;
       tagline: string;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -24688,6 +24687,7 @@ export type SpaceCardQuery = {
             type: TagsetType;
           }
         | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
@@ -24820,7 +24820,6 @@ export type SpacesQuery = {
       id: string;
       displayName: string;
       tagline: string;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -24831,6 +24830,7 @@ export type SpacesQuery = {
             type: TagsetType;
           }
         | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
