@@ -2684,11 +2684,11 @@ export const SpaceDetailsProviderFragmentDoc = gql`
       id
       displayName
       tagline
-      visuals {
-        ...VisualUri
-      }
       tagset {
         ...TagsetDetails
+      }
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
       }
     }
     authorization {
@@ -2707,8 +2707,8 @@ export const SpaceDetailsProviderFragmentDoc = gql`
     }
     visibility
   }
-  ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
   ${ContextDetailsProviderFragmentDoc}
 `;
 export const SpaceNameFragmentDoc = gql`
