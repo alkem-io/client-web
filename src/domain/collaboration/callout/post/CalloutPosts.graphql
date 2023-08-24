@@ -1,4 +1,4 @@
-query CalloutPostsSubscription($calloutId: UUID!) {
+query CalloutPosts($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id

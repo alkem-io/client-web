@@ -9240,7 +9240,7 @@ export type CreateLinkOnCalloutMutation = {
 };
 
 export type CalloutPostCreatedSubscriptionVariables = Exact<{
-  calloutID: Scalars['UUID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type CalloutPostCreatedSubscription = {
@@ -9296,11 +9296,11 @@ export type CalloutPostCreatedSubscription = {
   };
 };
 
-export type CalloutPostsSubscriptionQueryVariables = Exact<{
+export type CalloutPostsQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
 }>;
 
-export type CalloutPostsSubscriptionQuery = {
+export type CalloutPostsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -9373,65 +9373,6 @@ export type CalloutPostsSubscriptionQuery = {
         }
       | undefined;
   };
-};
-
-export type PostsOnCalloutFragment = {
-  __typename?: 'Callout';
-  id: string;
-  posts?:
-    | Array<{
-        __typename?: 'Post';
-        id: string;
-        nameID: string;
-        type: string;
-        createdDate: Date;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        createdBy?:
-          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-          | undefined;
-        comments: { __typename?: 'Room'; id: string; messagesCount: number };
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          visuals: Array<{
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }>;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
-        };
-      }>
-    | undefined;
 };
 
 export type CalloutsQueryVariables = Exact<{
