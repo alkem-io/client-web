@@ -166,8 +166,9 @@ const getWindowSize = () => {
 
 const getScreenInfo = () => {
   const { width, height, orientation } = window.screen;
+  const orientationType: OrientationType = orientation?.type ?? 'landscape-primary';
 
-  return { width, height, orientation: orientation.type };
+  return { width, height, orientation: orientationType };
 };
 
 const getLanguage = () => {
