@@ -17,7 +17,7 @@ import AdminChallengeCommunityPage from '../../../../journey/challenge/pages/Adm
 
 export const ChallengeRoute: FC = () => {
   const { spaceId, communityId: spaceCommunityId } = useSpace();
-  const { challenge, challengeId, challengeNameId } = useChallenge();
+  const { challenge, challengeNameId } = useChallenge();
   const communityId = challenge?.community?.id;
 
   return (
@@ -45,7 +45,7 @@ export const ChallengeRoute: FC = () => {
           />
           <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
           <Route path="opportunities/*" element={<OpportunitiesRoute />} />
-          <Route path="authorization/*" element={<ChallengeAuthorizationRoute resourceId={challengeId} />} />
+          <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
           <Route path="innovation-flow/*" element={<ChallengeInnovationFlowPage />} />
           <Route path="*" element={<Error404 />} />
         </Route>

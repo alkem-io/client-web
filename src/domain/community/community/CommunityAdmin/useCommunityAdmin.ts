@@ -5,20 +5,20 @@ import {
   useAssignOrganizationAsCommunityMemberMutation,
   useAssignUserAsCommunityLeadMutation,
   useAssignUserAsCommunityMemberMutation,
-  useAssignUserAsSpaceAdminMutation,
   useEventOnApplicationMutation,
   useCommunityApplicationsInvitationsQuery,
   useRemoveOrganizationAsCommunityLeadMutation,
   useRemoveOrganizationAsCommunityMemberMutation,
   useRemoveUserAsCommunityLeadMutation,
   useRemoveUserAsCommunityMemberMutation,
-  useRemoveUserAsSpaceAdminMutation,
   useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
   useDeleteExternalInvitationMutation,
   useCommunityMembersListQuery,
   useCommunityAvailableMembersLazyQuery,
+  useAssignCommunityRoleToUserMutation,
+  useRemoveCommunityRoleFromUserMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
@@ -28,7 +28,7 @@ import {
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { JourneyTypeName, getJourneyTypeName } from '../../../journey/JourneyTypeName';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -48,8 +48,29 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
       }
     : undefined;
 
-const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = false) => {
-  const { spaceId, profile: spaceProfile } = useSpace();
+const adminCredentialByJourneyType = (journeyType: JourneyTypeName) => {
+  if (journeyType === 'opportunity') {
+    return AuthorizationCredential.OpportunityAdmin;
+  } else if (journeyType === 'challenge') {
+    return AuthorizationCredential.ChallengeAdmin;
+  } else {
+    return AuthorizationCredential.SpaceAdmin;
+  }
+};
+
+// TODO: Inherit from CoreEntityIds when they are not NameIds
+interface useCommunityAdminParams {
+  communityId: string;
+  spaceId: string;
+  challengeId?: string;
+  opportunityId?: string;
+}
+
+const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }: useCommunityAdminParams) => {
+  const journeyTypeName = getJourneyTypeName({
+    challengeNameId: challengeId,
+    opportunityNameId: opportunityId,
+  });
 
   const {
     data,
@@ -59,7 +80,7 @@ const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = fals
     variables: {
       communityId,
       spaceId,
-      includeSpaceHost: isSpaceCommunity,
+      includeSpaceHost: journeyTypeName === 'space',
     },
     skip: !communityId || !spaceId,
   });
@@ -79,11 +100,11 @@ const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = fals
   } = useUsersWithCredentialsQuery({
     variables: {
       input: {
-        type: AuthorizationCredential.SpaceAdmin,
-        resourceID: spaceId,
+        type: adminCredentialByJourneyType(journeyTypeName),
+        resourceID: opportunityId ?? challengeId ?? spaceId,
       },
     },
-    skip: !spaceId,
+    skip: !spaceId && !challengeId && !opportunityId,
   });
 
   const {
@@ -181,7 +202,7 @@ const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = fals
         filter: buildUserFilterObject(filter),
       },
     });
-    return data?.lookup.availableMembers?.availableLeadUsers?.users;
+    return data?.lookup.availableMembers?.availableMemberUsers?.users;
   };
 
   const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
@@ -267,28 +288,16 @@ const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = fals
     return refetchCommunityMembers();
   };
 
-  const [assignUserAsSpaceAdmin] = useAssignUserAsSpaceAdminMutation();
-  const [removeUserAsSpaceAdmin] = useRemoveUserAsSpaceAdminMutation();
+  const [assignCommunityRole] = useAssignCommunityRoleToUserMutation();
+  const [removeCommunityRole] = useRemoveCommunityRoleFromUserMutation();
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
     if (isAdmin) {
-      await assignUserAsSpaceAdmin({
-        variables: {
-          input: {
-            userID: memberId,
-            communityID: communityId || '',
-            role: CommunityRole.Admin,
-          },
-        },
+      await assignCommunityRole({
+        variables: { communityID: communityId, role: CommunityRole.Admin, userID: memberId },
       });
     } else {
-      await removeUserAsSpaceAdmin({
-        variables: {
-          input: {
-            userID: memberId,
-            communityID: communityId || '',
-            role: CommunityRole.Admin,
-          },
-        },
+      await removeCommunityRole({
+        variables: { communityID: communityId, role: CommunityRole.Admin, userID: memberId },
       });
     }
     return refetchAuthorization();
@@ -392,7 +401,6 @@ const useCommunityAdmin = (communityId: string, isSpaceCommunity: boolean = fals
     organizations,
     communityPolicy,
     permissions,
-    spaceDisplayName: spaceProfile.displayName,
     applications: dataApplications?.lookup.community?.applications,
     invitations: dataApplications?.lookup.community?.invitations,
     invitationsExternal: dataApplications?.lookup.community?.invitationsExternal,
