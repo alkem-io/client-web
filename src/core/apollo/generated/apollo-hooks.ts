@@ -397,63 +397,6 @@ export const ProfileDisplayNameFragmentDoc = gql`
     displayName
   }
 `;
-export const PostCardFragmentDoc = gql`
-  fragment PostCard on Post {
-    id
-    nameID
-    type
-    createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-    createdDate
-    comments {
-      id
-      messagesCount
-    }
-    profile {
-      id
-      displayName
-      description
-      visuals {
-        ...VisualFull
-      }
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        uri
-        description
-      }
-    }
-  }
-  ${VisualFullFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const ContributeTabPostFragmentDoc = gql`
-  fragment ContributeTabPost on Post {
-    ...PostCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${PostCardFragmentDoc}
-`;
-export const PostsOnCalloutFragmentDoc = gql`
-  fragment PostsOnCallout on Callout {
-    id
-    posts {
-      ...ContributeTabPost
-    }
-  }
-  ${ContributeTabPostFragmentDoc}
-`;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
     id
@@ -853,6 +796,54 @@ export const CalloutPostInfoFragmentDoc = gql`
       }
     }
   }
+`;
+export const PostCardFragmentDoc = gql`
+  fragment PostCard on Post {
+    id
+    nameID
+    type
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+    comments {
+      id
+      messagesCount
+    }
+    profile {
+      id
+      displayName
+      description
+      visuals {
+        ...VisualFull
+      }
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
+  ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const ContributeTabPostFragmentDoc = gql`
+  fragment ContributeTabPost on Post {
+    ...PostCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${PostCardFragmentDoc}
 `;
 export const TemplateProviderProfileFragmentDoc = gql`
   fragment TemplateProviderProfile on Profile {
@@ -6121,8 +6112,8 @@ export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateLinkOnCalloutMutationVariables
 >;
 export const CalloutPostCreatedDocument = gql`
-  subscription CalloutPostCreated($calloutID: UUID!) {
-    calloutPostCreated(calloutID: $calloutID) {
+  subscription CalloutPostCreated($calloutId: UUID!) {
+    calloutPostCreated(calloutID: $calloutId) {
       post {
         ...ContributeTabPost
       }
@@ -6143,7 +6134,7 @@ export const CalloutPostCreatedDocument = gql`
  * @example
  * const { data, loading, error } = useCalloutPostCreatedSubscription({
  *   variables: {
- *      calloutID: // value for 'calloutID'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -6163,8 +6154,8 @@ export function useCalloutPostCreatedSubscription(
 export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
 export type CalloutPostCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
-export const CalloutPostsSubscriptionDocument = gql`
-  query CalloutPostsSubscription($calloutId: UUID!) {
+export const CalloutPostsDocument = gql`
+  query CalloutPosts($calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         id
@@ -6178,55 +6169,49 @@ export const CalloutPostsSubscriptionDocument = gql`
 `;
 
 /**
- * __useCalloutPostsSubscriptionQuery__
+ * __useCalloutPostsQuery__
  *
- * To run a query within a React component, call `useCalloutPostsSubscriptionQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutPostsSubscriptionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCalloutPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCalloutPostsSubscriptionQuery({
+ * const { data, loading, error } = useCalloutPostsQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
-export function useCalloutPostsSubscriptionQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutPostsSubscriptionQuery,
-    SchemaTypes.CalloutPostsSubscriptionQueryVariables
-  >
+export function useCalloutPostsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutPostsSubscriptionQuery, SchemaTypes.CalloutPostsSubscriptionQueryVariables>(
-    CalloutPostsSubscriptionDocument,
+  return Apollo.useQuery<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>(
+    CalloutPostsDocument,
     options
   );
 }
 
-export function useCalloutPostsSubscriptionLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutPostsSubscriptionQuery,
-    SchemaTypes.CalloutPostsSubscriptionQueryVariables
-  >
+export function useCalloutPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CalloutPostsSubscriptionQuery,
-    SchemaTypes.CalloutPostsSubscriptionQueryVariables
-  >(CalloutPostsSubscriptionDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>(
+    CalloutPostsDocument,
+    options
+  );
 }
 
-export type CalloutPostsSubscriptionQueryHookResult = ReturnType<typeof useCalloutPostsSubscriptionQuery>;
-export type CalloutPostsSubscriptionLazyQueryHookResult = ReturnType<typeof useCalloutPostsSubscriptionLazyQuery>;
-export type CalloutPostsSubscriptionQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutPostsSubscriptionQuery,
-  SchemaTypes.CalloutPostsSubscriptionQueryVariables
+export type CalloutPostsQueryHookResult = ReturnType<typeof useCalloutPostsQuery>;
+export type CalloutPostsLazyQueryHookResult = ReturnType<typeof useCalloutPostsLazyQuery>;
+export type CalloutPostsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutPostsQuery,
+  SchemaTypes.CalloutPostsQueryVariables
 >;
-export function refetchCalloutPostsSubscriptionQuery(variables: SchemaTypes.CalloutPostsSubscriptionQueryVariables) {
-  return { query: CalloutPostsSubscriptionDocument, variables: variables };
+export function refetchCalloutPostsQuery(variables: SchemaTypes.CalloutPostsQueryVariables) {
+  return { query: CalloutPostsDocument, variables: variables };
 }
 
 export const CalloutsDocument = gql`

@@ -1,6 +1,0 @@
-fragment PostsOnCallout on Callout {
-  id
-  posts {
-    ...ContributeTabPost
-  }
-}
