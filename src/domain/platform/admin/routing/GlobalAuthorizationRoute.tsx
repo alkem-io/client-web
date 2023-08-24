@@ -6,10 +6,9 @@ import GlobalAuthorizationPage from '../authorization/GlobalAuthorizationPage';
 import GlobalCommunityAuthorizationPage from '../authorization/GlobalCommunityAuthorizationPage';
 import GlobalSpacesAdminAuthorizationPage from '../authorization/GlobalSpacesAdminAuthorizationPage';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
-import AuthorizationRouteProps from './AuthorizationRouteProps';
 import GlobalBetaTesterAuthorizationPage from '../authorization/GlobalBetaTesterAuthorizationPage';
 
-const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = () => {
+const GlobalAuthorizationRoute: FC = () => {
   return (
     <Routes>
       <Route path="/" element={<AdminAuthorizationPage />} />

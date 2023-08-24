@@ -2,7 +2,6 @@ import { FC } from 'react';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
@@ -12,15 +11,13 @@ import { useOpportunity } from '../hooks/useOpportunity';
 import OpportunitySettingsLayout from '../../../platform/admin/opportunity/OpportunitySettingsLayout';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: isLoadingChallenge, communityId } = useOpportunity();
+  const { spaceId, loading: isLoadingChallenge, communityId, opportunityId } = useOpportunity();
 
   const {
     users,
     organizations,
-    applications,
     communityPolicy,
     permissions,
-    onApplicationStateChange,
     onUserLeadChange,
     onOrganizationLeadChange,
     onAddUser,
@@ -30,7 +27,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableUsers,
     getAvailableOrganizations,
     loading,
-  } = useCommunityAdmin(communityId, false);
+  } = useCommunityAdmin({ spaceId, opportunityId, communityId });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
@@ -39,15 +36,6 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
   return (
     <OpportunitySettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <PageContent background="transparent">
-        <PageContentColumn columns={12}>
-          <PageContentBlock columns={12}>
-            <CommunityApplications
-              applications={applications}
-              onApplicationStateChange={onApplicationStateChange}
-              loading={loading}
-            />
-          </PageContentBlock>
-        </PageContentColumn>
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers

@@ -1035,6 +1035,8 @@ export type Community = Groupable & {
   memberUsers?: Maybe<Array<User>>;
   /** The membership status of the currently logged in user. */
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
+  /** The roles on this community for the currently logged in user. */
+  myRoles?: Maybe<Array<CommunityRole>>;
   /** All Organizations that have the specified Role in this Community. */
   organizationsInRole?: Maybe<Array<Organization>>;
   /** The policy that defines the roles for this Community. */
@@ -3135,6 +3137,8 @@ export type Organization = Groupable & {
   legalEntityName?: Maybe<Scalars['String']>;
   /** Metrics about the activity within this Organization. */
   metrics?: Maybe<Array<Nvp>>;
+  /** The roles on this Organization for the currently logged in user. */
+  myRoles?: Maybe<Array<OrganizationRole>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** All Users that are owners of this Organization. */
@@ -3169,6 +3173,12 @@ export type OrganizationFilterInput = {
 
 export enum OrganizationPreferenceType {
   AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
+}
+
+export enum OrganizationRole {
+  Admin = 'ADMIN',
+  Associate = 'ASSOCIATE',
+  Owner = 'OWNER',
 }
 
 export type OrganizationVerification = {
@@ -4671,8 +4681,6 @@ export type UpdateSpaceInput = {
   ID: Scalars['UUID_NAMEID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
-  /** Update the host Organization for the Space. */
-  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -15831,7 +15839,7 @@ export type CommunityAvailableMembersQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          availableLeadUsers?:
+          availableMemberUsers?:
             | {
                 __typename?: 'PaginatedUsers';
                 users: Array<{
@@ -16143,56 +16151,24 @@ export type RemoveOrganizationAsCommunityLeadMutation = {
   removeCommunityRoleFromOrganization: { __typename?: 'Organization'; id: string };
 };
 
-export type AssignUserAsSpaceAdminMutationVariables = Exact<{
-  input: AssignCommunityRoleToUserInput;
+export type AssignCommunityRoleToUserMutationVariables = Exact<{
+  communityID: Scalars['UUID'];
+  role: CommunityRole;
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
-export type AssignUserAsSpaceAdminMutation = {
+export type AssignCommunityRoleToUserMutation = {
   __typename?: 'Mutation';
   assignCommunityRoleToUser: { __typename?: 'User'; id: string };
 };
 
-export type RemoveUserAsSpaceAdminMutationVariables = Exact<{
-  input: RemoveCommunityRoleFromUserInput;
+export type RemoveCommunityRoleFromUserMutationVariables = Exact<{
+  communityID: Scalars['UUID'];
+  role: CommunityRole;
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
-export type RemoveUserAsSpaceAdminMutation = {
-  __typename?: 'Mutation';
-  removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
-};
-
-export type AssignUserAsChallengeAdminMutationVariables = Exact<{
-  input: AssignCommunityRoleToUserInput;
-}>;
-
-export type AssignUserAsChallengeAdminMutation = {
-  __typename?: 'Mutation';
-  assignCommunityRoleToUser: { __typename?: 'User'; id: string };
-};
-
-export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
-  input: RemoveCommunityRoleFromUserInput;
-}>;
-
-export type RemoveUserAsChallengeAdminMutation = {
-  __typename?: 'Mutation';
-  removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
-};
-
-export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
-  input: AssignCommunityRoleToUserInput;
-}>;
-
-export type AssignUserAsOpportunityAdminMutation = {
-  __typename?: 'Mutation';
-  assignCommunityRoleToUser: { __typename?: 'User'; id: string };
-};
-
-export type RemoveUserAsOpportunityAdminMutationVariables = Exact<{
-  input: RemoveCommunityRoleFromUserInput;
-}>;
-
-export type RemoveUserAsOpportunityAdminMutation = {
+export type RemoveCommunityRoleFromUserMutation = {
   __typename?: 'Mutation';
   removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
 };

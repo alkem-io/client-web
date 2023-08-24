@@ -7,7 +7,6 @@ import AdminOpportunityCommunityPage from '../../../../journey/opportunity/pages
 import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityContextPage from '../pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfilePage';
-import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
@@ -49,7 +48,6 @@ export const OpportunityRoute: FC = () => {
             />
           }
         />
-        <Route path="authorization/*" element={<OpportunityAuthorizationRoute />} />
         <Route path="innovation-flow/*" element={<OpportunityInnovationFlowPage />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
