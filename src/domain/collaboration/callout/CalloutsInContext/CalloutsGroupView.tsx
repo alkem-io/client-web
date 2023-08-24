@@ -7,7 +7,6 @@ import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../../core/apol
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
-import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   spaceId: string;
@@ -34,7 +33,6 @@ const CalloutsGroupView = ({
     handleCreateCallout,
     isCreating,
   } = useCalloutCreationWithPreviewImages();
-  const { handleVisibilityChange } = useCalloutEdit();
 
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { spaceId: spaceId } });
@@ -66,8 +64,7 @@ const CalloutsGroupView = ({
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
-        onSaveAsDraft={handleCreateCallout}
-        onVisibilityChange={handleVisibilityChange}
+        onCreateCallout={handleCreateCallout}
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}

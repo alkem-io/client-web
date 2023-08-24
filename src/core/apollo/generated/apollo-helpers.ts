@@ -737,6 +737,7 @@ export type CommunityKeySpecifier = (
   | 'invitationsExternal'
   | 'memberUsers'
   | 'myMembershipStatus'
+  | 'myRoles'
   | 'organizationsInRole'
   | 'policy'
   | 'usersInRole'
@@ -755,6 +756,7 @@ export type CommunityFieldPolicy = {
   invitationsExternal?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1607,6 +1609,7 @@ export type OrganizationKeySpecifier = (
   | 'id'
   | 'legalEntityName'
   | 'metrics'
+  | 'myRoles'
   | 'nameID'
   | 'owners'
   | 'preferences'
@@ -1628,6 +1631,7 @@ export type OrganizationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   owners?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;

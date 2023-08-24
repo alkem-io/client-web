@@ -14,7 +14,7 @@ import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlo
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: isLoadingSpace, communityId } = useSpace();
+  const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
 
   const {
     users,
@@ -24,7 +24,6 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     invitationsExternal,
     communityPolicy,
     permissions,
-    spaceDisplayName,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -41,7 +40,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin(communityId, true);
+  } = useCommunityAdmin({ communityId, spaceId });
 
   if (!spaceId || isLoadingSpace) {
     return null;
@@ -66,7 +65,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           </PageContentBlock>
           <PageContentBlockSeamless columns={4} disablePadding>
             <InvitationOptionsBlock
-              spaceDisplayName={spaceDisplayName}
+              spaceDisplayName={spaceProfile.displayName}
               inviteExistingUser={inviteExistingUser}
               inviteExternalUser={inviteExternalUser}
             />

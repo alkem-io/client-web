@@ -1,14 +1,8 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useUserContext } from '../../../community/user';
-import {
-  refetchUsersWithCredentialsQuery,
-  useAssignUserAsOpportunityAdminMutation,
-  useRemoveUserAsOpportunityAdminMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   Community,
-  CommunityRole,
   Opportunity,
   UserDisplayNameFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -17,8 +11,6 @@ import {
   useAvailableMembersWithCredential,
   AvailableMembersResults,
 } from '../../../community/community/useAvailableMembersWithCredential';
-
-const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
 
 export type AuthorizationCredentials =
   | AuthorizationCredential.OpportunityAdmin
@@ -38,15 +30,11 @@ export interface OpportunityMembersProps {
 }
 
 export interface OpportunityMembersActions {
-  handleAssignAdmin: (memberId: string) => void;
-  handleRemoveAdmin: (memberId: string) => void;
   handleLoadMore: () => Promise<void>;
   setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
 
 export interface OpportunityMembersState {
-  addingAdmin: boolean;
-  removingAdmin: boolean;
   loading: boolean;
   hasMoreUsers: boolean | undefined;
 }
@@ -60,52 +48,6 @@ export interface OpportunityMembersEntities {
 export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, entities }) => {
   const { user } = useUserContext();
   const { communityId } = entities;
-
-  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOpportunityAdminMutation({});
-
-  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOpportunityAdminMutation({});
-
-  const handleAssignAdmin = useCallback(
-    (memberId: string) => {
-      grantAdmin({
-        variables: {
-          input: {
-            communityID: communityId || '', // TODO
-            userID: memberId,
-            role: CommunityRole.Admin,
-          },
-        },
-        refetchQueries: [
-          refetchUsersWithCredentialsQuery({
-            input: { type: opportunityAdminCredential, resourceID: entities.opportunityId },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, grantAdmin]
-  );
-
-  const handleRemoveAdmin = useCallback(
-    (memberId: string) => {
-      revokeAdmin({
-        variables: {
-          input: {
-            userID: memberId,
-            communityID: communityId || '', // TODO
-            role: CommunityRole.Admin,
-          },
-        },
-        refetchQueries: [
-          refetchUsersWithCredentialsQuery({
-            input: { type: opportunityAdminCredential, resourceID: entities.opportunityId },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, revokeAdmin]
-  );
 
   const {
     availableMembers,
@@ -141,14 +83,10 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
       {children(
         { availableMembers, allMembers, currentMember },
         {
-          handleAssignAdmin,
-          handleRemoveAdmin,
           handleLoadMore,
           setSearchTerm,
         },
         {
-          addingAdmin,
-          removingAdmin,
           loading,
           hasMoreUsers: hasMore,
         }

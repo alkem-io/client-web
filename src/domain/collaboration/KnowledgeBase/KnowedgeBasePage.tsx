@@ -22,7 +22,6 @@ import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
-import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -50,7 +49,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     handleCreateCallout,
     isCreating,
   } = useCalloutCreationWithPreviewImages();
-  const { handleVisibilityChange } = useCalloutEdit();
 
   const { spaceId } = useSpace();
 
@@ -136,8 +134,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
             <CalloutCreationDialog
               open={isCalloutCreationDialogOpen}
               onClose={handleCreateCalloutClosed}
-              onSaveAsDraft={handleCreateCallout}
-              onVisibilityChange={handleVisibilityChange}
+              onCreateCallout={handleCreateCallout}
               isCreating={isCreating}
               calloutNames={calloutNames}
               templates={templates}
