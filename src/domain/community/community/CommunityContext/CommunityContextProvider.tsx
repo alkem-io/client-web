@@ -24,13 +24,13 @@ const CommunityContextProvider: FC = ({ children }) => {
   const { permissions: challengePermissions } = useChallenge();
   const { permissions: opportunityPermissions } = useOpportunity();
 
-  const { data: spaceData, loading: loadingSpace } = useSpaceCommunityQuery({
+  const { data: spaceData, loading: isLoadingSpace } = useSpaceCommunityQuery({
     variables: { spaceId: spaceNameId, includeDetails: spacePermissions.communityReadAccess },
     errorPolicy: 'all',
     skip: !spaceNameId || Boolean(challengeNameId) || Boolean(opportunityNameId),
   });
 
-  const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
+  const { data: challengeData, loading: isLoadingChallenge } = useChallengeCommunityQuery({
     variables: {
       spaceId: spaceNameId,
       challengeId: challengeNameId,
@@ -40,7 +40,7 @@ const CommunityContextProvider: FC = ({ children }) => {
     skip: !spaceNameId || !challengeNameId || Boolean(opportunityNameId),
   });
 
-  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCommunityQuery({
+  const { data: opportunityData, loading: isLoadingOpportunity } = useOpportunityCommunityQuery({
     variables: {
       spaceId: spaceNameId,
       opportunityId: opportunityNameId,
@@ -60,7 +60,7 @@ const CommunityContextProvider: FC = ({ children }) => {
     challengeData?.space.challenge.profile.displayName ??
     opportunityData?.space.opportunity.profile.displayName;
 
-  const isLoading = loadingSpace || loadingChallenge || loadingOpportunity;
+  const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
 
   const providedValue = useMemo<CommunityContextValue>(
     () => ({

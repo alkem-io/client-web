@@ -2,12 +2,11 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import ChallengeAuthorizationPage from '../../../../journey/challenge/pages/ChallengeAuthorization/ChallengeAuthorizationPage';
-import AuthorizationRouteProps from '../../routing/AuthorizationRouteProps';
 
-const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ resourceId = '' }) => {
+const ChallengeAuthorizationRoute: FC = () => {
   return (
     <Routes>
-      <Route index element={<ChallengeAuthorizationPage resourceId={resourceId} routePrefix="../../" />} />
+      <Route index element={<ChallengeAuthorizationPage routePrefix="../../" />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

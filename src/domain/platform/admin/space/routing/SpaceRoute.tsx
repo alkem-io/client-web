@@ -13,7 +13,7 @@ import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRou
 import SpaceContextPage from '../../../../journey/space/pages/SpaceContext/SpaceContextPage';
 import SpaceStorageAdminPage from '../storage/SpaceStorageAdminPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
-import AdminSpaceCommunityPage from '../../../../journey/space/pages/SpaceCommunity/AdminSpaceCommunityPage';
+import AdminSpaceCommunityPage from '../../../../journey/space/pages/AdminSpaceCommunityPage';
 
 export const SpaceRoute: FC = () => {
   useTransactionScope({ type: 'admin' });

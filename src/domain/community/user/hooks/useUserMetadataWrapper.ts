@@ -16,7 +16,7 @@ export interface PendingApplication extends ContributionItem, Stateful {}
 
 export interface UserMetadata {
   user: User;
-  hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean;
+  hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;
   ofChallenge: (id: string) => boolean;
   ofSpace: (id: string) => boolean;
   ofOpportunity: (id: string) => boolean;
@@ -107,21 +107,21 @@ export const toUserMetadata = (
     });
   };
 
-  const hasPlatformPrivilege = (myPrivileges: AuthorizationPrivilege[]) => (privilege: AuthorizationPrivilege) => {
-    return myPrivileges.includes(privilege);
-  };
-
   const challengeDisplayNames = challengeMemberships.map(getDisplayName);
   const opportunityDisplayNames = opportunityMemberships.map(getDisplayName);
   const organizationDisplayNames = membershipData?.organizations.map(getDisplayName) ?? [];
   const organizationNameIDs = membershipData?.organizations.map(o => o.nameID) ?? [];
   const groups = membershipData?.spaces.flatMap(e => e.userGroups.map(getDisplayName)) || [];
 
-  const myPrivileges = platformLevelAuthorization?.myPrivileges ?? [];
+  const myPrivileges = platformLevelAuthorization?.myPrivileges;
+
+  const hasPlatformPrivilege = (privilege: AuthorizationPrivilege) => {
+    return myPrivileges?.includes(privilege);
+  };
 
   return {
     user,
-    hasPlatformPrivilege: hasPlatformPrivilege(myPrivileges),
+    hasPlatformPrivilege: hasPlatformPrivilege,
     ofChallenge: IsJourneyMember(challengeMemberships),
     ofSpace: IsJourneyMember(spaceMemberships),
     ofOpportunity: IsJourneyMember(opportunityMemberships),
