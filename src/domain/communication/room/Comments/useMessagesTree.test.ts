@@ -1,7 +1,8 @@
 import { buildMessagesTree, IdentifiableReply } from './useMessagesTree';
+import { expect, test, describe } from 'vitest';
 
 describe('buildMessagesTree', () => {
-  it('builds a simple tree', () => {
+  test('builds a simple tree', () => {
     const messages: IdentifiableReply[] = [
       {
         id: 'root0',
@@ -31,7 +32,7 @@ describe('buildMessagesTree', () => {
     ]);
   });
 
-  it('skips replies without root', () => {
+  test('skips replies without root', () => {
     const messages: IdentifiableReply[] = [
       {
         id: 'root0',
@@ -55,7 +56,7 @@ describe('buildMessagesTree', () => {
     ]);
   });
 
-  it('treats self-pointing replies as root messages', () => {
+  test('treats self-pointing replies as root messages', () => {
     // TODO remove after dealing with client-4587
     const messages: IdentifiableReply[] = [
       {
