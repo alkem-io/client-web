@@ -11,6 +11,7 @@ import {
   CalloutDisplayLocation,
   CalloutState,
   CalloutType,
+  CalloutVisibility,
   CreateCalloutMutation,
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -33,6 +34,8 @@ export interface CalloutCreationType {
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
   displayLocation?: CalloutDisplayLocation;
+  visibility?: CalloutVisibility;
+  sendNotification?: boolean;
 }
 
 export interface CalloutCreationUtils {
