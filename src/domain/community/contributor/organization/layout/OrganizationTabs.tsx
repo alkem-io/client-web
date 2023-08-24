@@ -10,6 +10,10 @@ import { BadgeOutlined } from '@mui/icons-material';
 const OrganizationTabs = (props: EntityTabsProps) => {
   const { organizationNameId } = useOrganization();
 
+  if (!organizationNameId) {
+    throw new Error('Organization nameID is missing');
+  }
+
   const routes = useMemo(
     () => ({
       [EntityPageSection.Profile]: buildOrganizationUrl(organizationNameId),

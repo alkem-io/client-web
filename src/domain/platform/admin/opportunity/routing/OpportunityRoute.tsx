@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useChallenge } from '../../../../journey/challenge/hooks/useChallenge';
 import { useOpportunity } from '../../../../journey/opportunity/hooks/useOpportunity';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import OpportunityCommunityAdminPage from '../OpportunityCommunityAdminPage';
+import AdminOpportunityCommunityPage from '../../../../journey/opportunity/pages/AdminOpportunityCommunityPage';
 import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityContextPage from '../pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfilePage';
@@ -39,7 +39,7 @@ export const OpportunityRoute: FC = () => {
             />
           }
         />
-        <Route path="community" element={<OpportunityCommunityAdminPage />} />
+        <Route path="community" element={<AdminOpportunityCommunityPage />} />
         <Route
           path="community/groups/*"
           element={

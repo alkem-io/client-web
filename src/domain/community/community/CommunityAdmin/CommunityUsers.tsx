@@ -50,7 +50,7 @@ const initialState: GridInitialState = {
 interface CommunityUsersProps {
   users: CommunityMemberUserFragmentWithRoles[] | undefined;
   onUserLeadChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
-  onUserAuthorizationChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
+  onUserAuthorizationChange?: (userId: string, newValue: boolean) => Promise<unknown> | void;
   onRemoveMember: (userId: string) => Promise<unknown> | void;
   canAddMembers: boolean;
   onAddMember: (memberId: string) => Promise<unknown> | undefined;

@@ -29,7 +29,7 @@ export const useBreadcrumbs = () => {
     skip: !spaceNameId,
   });
 
-  const { data: _challenge, loading: loadingChallenge } = useChallengeNameQuery({
+  const { data: _challenge, loading: isLoadingChallenge } = useChallengeNameQuery({
     variables: {
       spaceId: _space?.space.id || '',
       challengeId: challengeNameId!,
@@ -46,7 +46,7 @@ export const useBreadcrumbs = () => {
   });
 
   const loading =
-    (spaceNameId && loadingSpace) || (challengeNameId && loadingChallenge) || (showOpportunity && loadingOpportunity);
+    (spaceNameId && loadingSpace) || (challengeNameId && isLoadingChallenge) || (showOpportunity && loadingOpportunity);
 
   const breadcrumbs = useMemo(() => {
     const items: BreadcrumbsItem[] = [];
