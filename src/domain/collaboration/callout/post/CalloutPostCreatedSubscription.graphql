@@ -1,5 +1,5 @@
-subscription CalloutPostCreated($calloutID: UUID!) {
-  calloutPostCreated(calloutID: $calloutID) {
+subscription CalloutPostCreated($calloutId: UUID!) {
+  calloutPostCreated(calloutID: $calloutId) {
     post {
       ...ContributeTabPost
     }
