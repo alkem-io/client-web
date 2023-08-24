@@ -2,16 +2,13 @@ import React, { FC } from 'react';
 import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
-import ChallengeAuthorizationView from './ChallengeAuthorizationView';
 import {
-  AuthorizationCredential,
   ChallengePreferencesQuery,
   ChallengePreferencesQueryVariables,
   ChallengePreferenceType,
   UpdatePreferenceOnChallengeMutationVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import PreferenceSection from '../../../../../main/ui/settings/PreferenceSection';
 import { PreferenceTypes } from '../../../../common/preference/preference-types';
 import { useSpace } from '../../../space/SpaceContext/useSpace';
@@ -22,16 +19,13 @@ import {
   UpdatePreferenceOnChallengeDocument,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 
-const authorizationCredential = AuthorizationCredential.ChallengeAdmin;
 const selectedGroups = ['Authorization', 'Privileges'];
 
 const querySelector = (query: ChallengePreferencesQuery) => query.space.challenge.preferences;
 
-interface ChallengeAuthorizationPageProps extends SettingsPageProps {
-  resourceId: string | undefined;
-}
+interface ChallengeAuthorizationPageProps extends SettingsPageProps {}
 
-const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ resourceId, routePrefix = '../' }) => {
+const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useSpace();
   const { challengeNameId, challengeId } = useChallenge();
@@ -65,8 +59,6 @@ const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ resou
 
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Authorization} tabRoutePrefix={routePrefix}>
-      <ChallengeAuthorizationView credential={authorizationCredential} resourceId={resourceId} />
-      <SectionSpacer />
       <PreferenceSection
         headerText={t('common.authorization')}
         subHeaderText={t('pages.admin.challenge.authorization.preferences.subtitle')}

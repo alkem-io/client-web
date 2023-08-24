@@ -25,6 +25,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
     permissions,
     onApplicationStateChange,
     onUserLeadChange,
+    onUserAuthorizationChange,
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
@@ -33,7 +34,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
     getAvailableUsers,
     getAvailableOrganizations,
     loading,
-  } = useCommunityAdmin(communityId, false);
+  } = useCommunityAdmin({ communityId, spaceId, challengeId });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
@@ -56,6 +57,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
             <CommunityUsers
               users={users}
               onUserLeadChange={onUserLeadChange}
+              onUserAuthorizationChange={onUserAuthorizationChange}
               canAddMembers={permissions.canAddMembers}
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
