@@ -17,4 +17,4 @@ const devRoutes = () => {
   );
 };
 
-export default process.env.NODE_ENV === 'development' ? devRoutes : () => null;
+export default import.meta.env.MODE === 'development' ? devRoutes : () => null;

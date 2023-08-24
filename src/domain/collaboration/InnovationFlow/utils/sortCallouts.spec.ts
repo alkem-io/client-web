@@ -1,5 +1,6 @@
 import { sortCallouts, SortCalloutsParams } from './sortCallouts';
 import { groupBy, mapValues, sortBy } from 'lodash';
+import { expect, test, describe } from 'vitest';
 
 enum FlowStates {
   A = 'A',
@@ -30,7 +31,7 @@ const sortAndGroup = (movedCallout: SortCalloutsParams['movedCallout']) => {
 };
 
 describe('sortCallouts handling grouped Callouts', () => {
-  it('does not change sortedCalloutIds if the moved Callout is the only one in the target group', () => {
+  test('does not change sortedCalloutIds if the moved Callout is the only one in the target group', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -44,7 +45,7 @@ describe('sortCallouts handling grouped Callouts', () => {
     });
   });
 
-  it('handles the Callout that goes to the end of the target group', () => {
+  test('handles the Callout that goes to the end of the target group', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -57,7 +58,7 @@ describe('sortCallouts handling grouped Callouts', () => {
     });
   });
 
-  it('handles the Callout that goes to the middle of the target group', () => {
+  test('handles the Callout that goes to the middle of the target group', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -70,7 +71,7 @@ describe('sortCallouts handling grouped Callouts', () => {
     });
   });
 
-  it('handles the Callout that goes to the top of the target group', () => {
+  test('handles the Callout that goes to the top of the target group', () => {
     expect(
       sortAndGroup({
         id: '6',
@@ -83,7 +84,7 @@ describe('sortCallouts handling grouped Callouts', () => {
     });
   });
 
-  it('handles the Callout that moves within the same group', () => {
+  test('handles the Callout that moves within the same group', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -96,7 +97,7 @@ describe('sortCallouts handling grouped Callouts', () => {
     });
   });
 
-  it('handles the Callout that stays in the same place', () => {
+  test('handles the Callout that stays in the same place', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -111,7 +112,7 @@ describe('sortCallouts handling grouped Callouts', () => {
 });
 
 describe('sortCallouts providing optimistic sortOrder', () => {
-  it('gives 0 if the moved Callout is the only one in the target group', () => {
+  test('gives 0 if the moved Callout is the only one in the target group', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -121,7 +122,7 @@ describe('sortCallouts providing optimistic sortOrder', () => {
     ).toEqual(0);
   });
 
-  it('gives max sortOrder + 1 if the Callout goes to the end of the target group', () => {
+  test('gives max sortOrder + 1 if the Callout goes to the end of the target group', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -131,7 +132,7 @@ describe('sortCallouts providing optimistic sortOrder', () => {
     ).toEqual(7);
   });
 
-  it('for the Callout that goes to the middle of the target group, gives sortOrder in between prev and next items', () => {
+  test('for the Callout that goes to the middle of the target group, gives sortOrder in between prev and next items', () => {
     const { optimisticSortOrder } = sortAndGroup({
       id: '4',
       insertIndex: 1,
@@ -141,7 +142,7 @@ describe('sortCallouts providing optimistic sortOrder', () => {
     expect(optimisticSortOrder).toBeLessThan(6);
   });
 
-  it('for the Callout that goes to the top of the target group, gives sortOrder less that of the next item', () => {
+  test('for the Callout that goes to the top of the target group, gives sortOrder less that of the next item', () => {
     const { optimisticSortOrder } = sortAndGroup({
       id: '4',
       insertIndex: 0,

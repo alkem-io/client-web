@@ -7,7 +7,7 @@ import { env } from '../../../main/env';
 import { logger } from '../../logging/winston/logger';
 
 const WS_RETRY_ATTEMPTS = 10;
-const DOMAIN = env?.REACT_APP_ALKEMIO_DOMAIN ?? window.location.origin;
+const DOMAIN = env?.VITE_APP_ALKEMIO_DOMAIN ?? window.location.origin;
 
 export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => {
   const uploadLink = createUploadLink({

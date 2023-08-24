@@ -17,7 +17,7 @@ export const normalizeLink = (link: string) => {
   ) {
     return link.slice(window.origin.length) || '/';
   } else {
-    if (process.env.NODE_ENV === 'development' && link.startsWith('localhost')) {
+    if (import.meta.env.MODE === 'development' && link.startsWith('localhost')) {
       return /[^/]*(\/.*)?/.exec(link)?.[1] ?? '/';
     }
     const match = getDomainLikeRegexp().exec(link);

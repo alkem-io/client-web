@@ -4,8 +4,8 @@ import { env } from '../../../main/env';
 const usePlatformOrigin = () => {
   const { platform, loading } = useConfig();
 
-  if (process.env.NODE_ENV === 'development') {
-    return env?.REACT_APP_ALKEMIO_DOMAIN;
+  if (import.meta.env.MODE === 'development') {
+    return env?.VITE_APP_ALKEMIO_DOMAIN;
   }
 
   if (loading) {

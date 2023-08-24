@@ -18,7 +18,7 @@ const useRedirectToIdentityDomain = () => {
 
   // Kratos config for development setup is quite specific, we can't rely on it locally.
   const identityOrigin =
-    process.env.NODE_ENV === 'development' ? undefined : config.authentication?.providers[0].config.issuer;
+    import.meta.env.MODE === 'development' ? undefined : config.authentication?.providers[0].config.issuer;
 
   const isOnIdentityOrigin = window.location.origin === identityOrigin;
 

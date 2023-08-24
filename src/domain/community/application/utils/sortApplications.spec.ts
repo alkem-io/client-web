@@ -2,6 +2,7 @@ import { ApplicationWithType } from './getApplicationWithType';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../constants/ApplicationState';
 import sortApplications from './sortApplications';
+import { expect, test, describe } from 'vitest';
 
 type TestData = {
   name: string;

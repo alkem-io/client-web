@@ -209,4 +209,4 @@ const SilentLinesFitter = <Item,>(props: LinesFitterProps<Item>) => {
   );
 };
 
-export default process.env.NODE_ENV === 'production' ? SilentLinesFitter : LinesFitter;
+export default import.meta.env.MODE === 'production' ? SilentLinesFitter : LinesFitter;

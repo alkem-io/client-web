@@ -7,7 +7,7 @@ interface ReleaseNotificationData {
 }
 
 const useVersionControl = () => {
-  const currentClientVersion = process.env.REACT_APP_VERSION ?? '';
+  const currentClientVersion = import.meta.env.VITE_APP_VERSION ?? '';
 
   const checkLastVersionViewed = () => {
     const data = localStorage.getItem(LOCALSTORAGE_VERSIONCONTROL_KEY);
