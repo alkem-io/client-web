@@ -1,6 +1,7 @@
 import { ApplicationForRoleResult } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationWithType, { ApplicationWithType } from './getApplicationWithType';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { expect, test, describe } from 'vitest';
 
 type TestData = {
   name: string;

@@ -1,5 +1,5 @@
 const dotenvFlow = require('dotenv-flow');
-const dotenvExpand = require('dotenv-expand');
+const dotenvExpand = require('dotenv-expand').expand;
 const { createWriteStream } = require('fs');
 const { writeFile } = require('fs/promises');
 const path = require('path');
@@ -16,18 +16,18 @@ async function buildConfiguration() {
   const env = process.env;
 
   const configuration = {};
-  const nodeEnv = env.NODE_ENV ? env.NODE_ENV : 'development';
+  const nodeEnv = env.MODE ? env.MODE : 'development';
 
   console.info(`Building for : '${nodeEnv}'`);
 
   Object.keys(env).forEach(function (key) {
-    if (key.startsWith('REACT_APP')) {
+    if (key.startsWith('VITE_APP')) {
       configuration[key] = env[key];
       console.info(`${key}: ${env[key]}`);
     }
   });
 
-  configuration['REACT_APP_GRAPHQL_ENDPOINT'] = configuration['REACT_APP_GRAPHQL_ENDPOINT'] || '/graphql';
+  configuration['VITE_APP_GRAPHQL_ENDPOINT'] = configuration['VITE_APP_GRAPHQL_ENDPOINT'] || '/graphql';
 
   const envBasePath = path.join(__dirname, '.build', 'docker', '.env.base');
   const envBase = createWriteStream(envBasePath, { flags: 'w' });

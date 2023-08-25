@@ -20,7 +20,7 @@ import { env } from '../../../../main/env';
 export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
 
-const ALKEMIO_DOMAIN = env?.REACT_APP_ALKEMIO_DOMAIN ?? '/';
+const ALKEMIO_DOMAIN = env?.VITE_APP_ALKEMIO_DOMAIN ?? '/';
 
 const Root = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.neutralLight.main,

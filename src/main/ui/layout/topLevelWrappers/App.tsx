@@ -25,13 +25,13 @@ const App: FC = () => {
   useEffect(() => {
     if (services.length) {
       console.table({
-        clientName: process.env.REACT_APP_NAME,
-        clientVersion: process.env.REACT_APP_VERSION,
+        clientName: import.meta.env.VITE_APP_NAME,
+        clientVersion: import.meta.env.VITE_APP_VERSION,
         serverName: services[0].name,
         serverVersion: services[0].version,
-        buildVersion: process.env.REACT_APP_BUILD_VERSION,
-        buildDate: process.env.REACT_APP_BUILD_DATE,
-        buildRevision: process.env.REACT_APP_BUILD_REVISION,
+        buildVersion: import.meta.env.VITE_APP_BUILD_VERSION,
+        buildDate: import.meta.env.VITE_APP_BUILD_DATE,
+        buildRevision: import.meta.env.VITE_APP_BUILD_REVISION,
       });
     }
   }, [services]);

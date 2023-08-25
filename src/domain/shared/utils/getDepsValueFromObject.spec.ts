@@ -1,7 +1,8 @@
 import getDepsValueFromObject from './getDepsValueFromObject';
+import { expect, test, describe } from 'vitest';
 
 describe('getValuesSorted', () => {
-  it('returns values of an object, sorted by key names', () => {
+  test('returns values of an object, sorted by key names', () => {
     expect(
       getDepsValueFromObject({
         x: 0,
