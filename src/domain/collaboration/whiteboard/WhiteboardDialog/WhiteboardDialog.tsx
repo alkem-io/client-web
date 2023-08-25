@@ -12,7 +12,7 @@ import { LockedByDetailsFragment } from '../../../../core/apollo/generated/graph
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
-import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
+import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -284,7 +284,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardValue && whiteboard && (
-                <ExcalidrawWrapper
+                <CollaborativeExcalidrawWrapper
                   entities={{ whiteboard }}
                   ref={excalidrawApiRef}
                   options={{
