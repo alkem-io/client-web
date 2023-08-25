@@ -2,6 +2,9 @@ import { TypedTypePolicies } from '../generated/apollo-helpers';
 import { paginationFieldPolicy } from '../../../domain/shared/utils/apollo-cache/pagination-policy';
 
 export const typePolicies: TypedTypePolicies = {
+  LookupQueryResults: {
+    merge: true,
+  },
   UserGroup: {
     fields: {
       members: {
