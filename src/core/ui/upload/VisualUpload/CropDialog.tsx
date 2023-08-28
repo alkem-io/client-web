@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, DialogProps } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogProps, Link } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
@@ -11,6 +11,8 @@ import FormikInputField from '../../forms/FormikInputField/FormikInputField';
 import { Actions } from '../../actions/Actions';
 import { ALT_TEXT_LENGTH } from '../../forms/field-length.constants';
 import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+import { TranslateWithElements } from '../../../../domain/shared/i18n/TranslateWithElements';
+import { useConfig } from '../../../../domain/platform/config/useConfig';
 
 interface CropDialogConfig {
   aspectRatio?: number;
@@ -38,6 +40,8 @@ const MIN_HEIGHT = 200;
 
 export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...rest }) => {
   const { t } = useTranslation();
+  const tLinks = TranslateWithElements(<Link target="_blank" />);
+  const { platform } = useConfig();
   const imgRef = useRef<HTMLImageElement>();
 
   const {
@@ -203,6 +207,9 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
                   withCounter
                   maxLength={ALT_TEXT_LENGTH}
                   helpIconText={t('pages.visualEdit.form.altText.helpText')}
+                  helperText={tLinks('components.referenceSegment.url-helper-text', {
+                    terms: { href: platform?.terms },
+                  })}
                 />
               </Box>
               <Actions justifyContent="space-between">
