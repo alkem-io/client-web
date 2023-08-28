@@ -1,22 +1,21 @@
 import throttle from 'lodash.throttle';
 import { PureComponent } from 'react';
-import { ExcalidrawImperativeAPI } from '../../types';
-import { ErrorDialog } from '../../components/ErrorDialog';
-import { APP_NAME, ENV, EVENT } from '../../constants';
-import { ImportedDataState } from '../../data/types';
-import { ExcalidrawElement, InitializedExcalidrawImageElement } from '../../element/types';
-import { getSceneVersion, restoreElements } from '../../packages/excalidraw/index';
-import { Collaborator, Gesture } from '../../types';
-import { preventUnload, resolvablePromise, withBatchedUpdates } from '../../utils';
+import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import { EVENT } from '@alkemio/excalidraw/types/constants';
+import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
+import { ExcalidrawElement, InitializedExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
+import { getSceneVersion, restoreElements } from '@alkemio/excalidraw';
+import { Collaborator, Gesture } from '@alkemio/excalidraw/types/types';
+import { preventUnload, resolvablePromise, withBatchedUpdates } from '@alkemio/excalidraw/types/utils';
+
 import {
   CURSOR_SYNC_TIMEOUT,
   FILE_UPLOAD_MAX_BYTES,
-  FIREBASE_STORAGE_PREFIXES,
   INITIAL_SCENE_UPDATE_TIMEOUT,
   LOAD_IMAGES_TIMEOUT,
   WS_SCENE_EVENT_TYPES,
   SYNC_FULL_SCENE_INTERVAL_MS,
-} from '../app_constants';
+} from './excalidrawAppConstants'; //!!
 import {
   generateCollaborationLinkData,
   getCollaborationLink,
@@ -24,33 +23,23 @@ import {
   getSyncableElements,
   SocketUpdateDataSource,
   SyncableExcalidrawElement,
-} from '../data';
-import {
-  isSavedToFirebase,
-  loadFilesFromFirebase,
-  loadFromFirebase,
-  saveFilesToFirebase,
-  saveToFirebase,
-} from '../data/firebase';
-import { importUsernameFromLocalStorage, saveUsernameToLocalStorage } from '../data/localStorage';
+} from './data';
 import Portal from './Portal';
-import RoomDialog from './RoomDialog';
-import { t } from '../../i18n';
-import { UserIdleState } from '../../types';
-import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from '../../constants';
+
+import { UserIdleState } from '@alkemio/excalidraw/types/types';
+import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from '@alkemio/excalidraw/types/constants';
 import { encodeFilesForUpload, FileManager, updateStaleImageStatuses } from '../data/FileManager';
-import { AbortError } from '../../errors';
-import { isImageElement, isInitializedImageElement } from '../../element/typeChecks';
-import { newElementWith } from '../../element/mutateElement';
+import { isImageElement, isInitializedImageElement } from '@alkemio/excalidraw/types/element/typeChecks';
+import { newElementWith } from '@alkemio/excalidraw';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { decryptData } from '../../data/encryption';
 import { resetBrowserStateVersions } from '../data/tabSync';
 import { LocalData } from '../data/LocalData';
-import { atom, useAtom } from 'jotai';
+import { atom } from 'jotai';
 import { appJotaiStore } from '../app-jotai';
 
+const isTest = true; //!!
 export const collabAPIAtom = atom<CollabAPI | null>(null);
-export const collabDialogShownAtom = atom(false);
 export const isCollaboratingAtom = atom(false);
 export const isOfflineAtom = atom(false);
 
@@ -77,7 +66,7 @@ interface PublicProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
 }
 
-type Props = PublicProps & { modalIsShown: boolean };
+type Props = PublicProps;
 
 class Collab extends PureComponent<Props, CollabState> {
   portal: Portal;
@@ -102,7 +91,7 @@ class Collab extends PureComponent<Props, CollabState> {
       getFiles: async fileIds => {
         const { roomId, roomKey } = this.portal;
         if (!roomId || !roomKey) {
-          throw new AbortError();
+          throw new Error('Aborted');
         }
 
         return loadFilesFromFirebase(`files/rooms/${roomId}`, roomKey, fileIds);
@@ -110,7 +99,7 @@ class Collab extends PureComponent<Props, CollabState> {
       saveFiles: async ({ addedFiles }) => {
         const { roomId, roomKey } = this.portal;
         if (!roomId || !roomKey) {
-          throw new AbortError();
+          throw new Error('Aborted');
         }
 
         return saveFilesToFirebase({
@@ -148,7 +137,8 @@ class Collab extends PureComponent<Props, CollabState> {
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
 
-    if (process.env.NODE_ENV === ENV.TEST || process.env.NODE_ENV === ENV.DEVELOPMENT) {
+    if (isTest) {
+      //!!
       window.collab = window.collab || ({} as Window['collab']);
       Object.defineProperties(window, {
         collab: {
@@ -695,10 +685,6 @@ class Collab extends PureComponent<Props, CollabState> {
     { leading: false }
   );
 
-  handleClose = () => {
-    appJotaiStore.set(collabDialogShownAtom, false);
-  };
-
   setUsername = (username: string) => {
     this.setState({ username });
   };
@@ -711,24 +697,11 @@ class Collab extends PureComponent<Props, CollabState> {
   render() {
     const { username, errorMessage, activeRoomLink } = this.state;
 
-    const { modalIsShown } = this.props;
-
     return (
       <>
-        {modalIsShown && (
-          <RoomDialog
-            handleClose={this.handleClose}
-            activeRoomLink={activeRoomLink}
-            username={username}
-            onUsernameChange={this.onUsernameChange}
-            onRoomCreate={() => this.startCollaboration(null)}
-            onRoomDestroy={this.stopCollaboration}
-            setErrorMessage={errorMessage => {
-              this.setState({ errorMessage });
-            }}
-          />
-        )}
-        {errorMessage && <ErrorDialog onClose={() => this.setState({ errorMessage: '' })}>{errorMessage}</ErrorDialog>}
+        <p>
+          Collab {username} : {errorMessage} : {activeRoomLink}
+        </p>
       </>
     );
   }
@@ -740,13 +713,13 @@ declare global {
   }
 }
 
-if (process.env.NODE_ENV === ENV.TEST || process.env.NODE_ENV === ENV.DEVELOPMENT) {
+if (isTest) {
+  //!!
   window.collab = window.collab || ({} as Window['collab']);
 }
 
 const _Collab: React.FC<PublicProps> = props => {
-  const [collabDialogShown] = useAtom(collabDialogShownAtom);
-  return <Collab {...props} modalIsShown={collabDialogShown} />;
+  return <Collab {...props} />;
 };
 
 export default _Collab;
