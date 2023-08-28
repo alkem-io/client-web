@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, DialogProps, Link } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogProps, FormHelperText, Link } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
@@ -199,6 +199,11 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
               <Box display="flex" justifyContent="center" sx={{ backgroundColor: t => t.palette.grey[800] }}>
                 {src && <ReactCrop src={src} crop={crop} onChange={onCropChange} onImageLoaded={onLoad} />}
               </Box>
+              <FormHelperText>
+                {tLinks('components.referenceSegment.url-helper-text', {
+                  terms: { href: platform?.terms },
+                })}
+              </FormHelperText>
               <Box>
                 <FormikInputField
                   title={t('common.description')}
@@ -207,9 +212,6 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
                   withCounter
                   maxLength={ALT_TEXT_LENGTH}
                   helpIconText={t('pages.visualEdit.form.altText.helpText')}
-                  helperText={tLinks('components.referenceSegment.url-helper-text', {
-                    terms: { href: platform?.terms },
-                  })}
                 />
               </Box>
               <Actions justifyContent="space-between">
