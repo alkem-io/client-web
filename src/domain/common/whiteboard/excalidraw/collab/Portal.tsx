@@ -65,16 +65,10 @@ class Portal {
 
   async _broadcastSocketData(data: SocketUpdateData, volatile: boolean = false) {
     if (this.isOpen()) {
-      const json = JSON.stringify(data);
-      const encoded = new TextEncoder().encode(json);
-      // const { encryptedBuffer, iv } = await encryptData(this.roomKey!, encoded);
+      const jsonStr = JSON.stringify(data);
+      const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
 
-      this.socket?.emit(
-        volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER,
-        this.roomId,
-        /*encryptedBuffer*/ encoded
-        //iv
-      );
+      this.socket?.emit(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
     }
   }
 
@@ -88,7 +82,7 @@ class Portal {
       if ((error as { name: string }).name !== 'AbortError') {
         this.collab.excalidrawAPI.updateScene({
           appState: {
-            errorMessage: (error as { message: string }).message,
+            errorMessage: (error as { message: string } | undefined)?.message,
           },
         });
       }

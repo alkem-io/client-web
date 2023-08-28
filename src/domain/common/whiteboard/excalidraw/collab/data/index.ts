@@ -20,6 +20,11 @@ export const isSyncableElement = (
   return !isInvisiblySmallElement(element);
 };
 
+export const getSyncableElements = (elements: readonly ExcalidrawElement[]) =>
+  elements.filter((element) =>
+    isSyncableElement(element),
+  ) as SyncableExcalidrawElement[];
+
 const generateRoomId = async () => {
   const buffer = new Uint8Array(ROOM_ID_BYTES);
   window.crypto.getRandomValues(buffer);
