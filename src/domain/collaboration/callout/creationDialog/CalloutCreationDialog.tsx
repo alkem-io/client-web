@@ -7,7 +7,6 @@ import {
   CalloutType,
   WhiteboardTemplateCardFragment,
   CalloutVisibility,
-  Callout,
   CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
@@ -52,12 +51,7 @@ export type CalloutCreationDialogFields = {
 export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
-  onSaveAsDraft: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
-  onVisibilityChange: (
-    calloutId: Callout['id'],
-    visibility: CalloutVisibility,
-    sendNotification: boolean
-  ) => Promise<void>;
+  onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   isCreating: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
@@ -93,8 +87,7 @@ export interface CalloutWhiteboardTemplate {
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
-  onSaveAsDraft,
-  onVisibilityChange,
+  onCreateCallout,
   isCreating,
   calloutNames,
   templates,
@@ -139,38 +132,35 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const openPublishDialog = () => setIsConfirmPublishDialogOpen(true);
   const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
 
-  const handlePublish = async () => {
-    const createdCallout = await handleSaveAsDraftCallout();
-    if (createdCallout) {
-      await onVisibilityChange(createdCallout.id, CalloutVisibility.Published, sendNotification);
-    }
-    closePublishDialog();
-  };
+  const handleSaveCallout = useCallback(
+    async (visibility: CalloutVisibility, sendNotification: boolean) => {
+      const newCallout: CalloutCreationTypeWithPreviewImages = {
+        profile: {
+          displayName: callout.displayName!,
+          description: callout.description!,
+          referencesData: callout.references!,
+          tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+        },
+        tags: callout.tags,
+        type: callout.type!,
+        state: callout.state!,
+        postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
+        whiteboardTemplate:
+          callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
+        displayLocation,
+        whiteboard: callout.whiteboard,
+        visibility,
+        sendNotification: visibility === CalloutVisibility.Published && sendNotification,
+      };
 
-  const handleSaveAsDraftCallout = useCallback(async () => {
-    const newCallout: CalloutCreationTypeWithPreviewImages = {
-      profile: {
-        displayName: callout.displayName!,
-        description: callout.description!,
-        referencesData: callout.references!,
-        tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
-      },
-      tags: callout.tags,
-      type: callout.type!,
-      state: callout.state!,
-      postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
-      whiteboardTemplate:
-        callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
-      displayLocation,
-      whiteboard: callout.whiteboard,
-    };
+      const result = await onCreateCallout(newCallout);
 
-    const result = await onSaveAsDraft(newCallout);
-
-    setCallout({});
-
-    return result;
-  }, [callout, onSaveAsDraft, templates, spaceNameId, fetchWhiteboardValueFromSpace, fetchWhiteboardValueFromLibrary]);
+      setCallout({});
+      closePublishDialog();
+      return result;
+    },
+    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardValueFromSpace, fetchWhiteboardValueFromLibrary]
+  );
 
   const handleClose = useCallback(() => {
     onClose?.();
@@ -217,7 +207,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <LoadingButton
               loading={isCreating}
               loadingIndicator={`${t('buttons.save-draft')}...`}
-              onClick={handleSaveAsDraftCallout}
+              onClick={() => handleSaveCallout(CalloutVisibility.Draft, sendNotification)}
               variant="outlined"
               disabled={!isValid}
             >
@@ -247,7 +237,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               <LoadingButton
                 loading={isCreating}
                 loadingIndicator={`${t('buttons.publish')}...`}
-                onClick={handlePublish}
+                onClick={() => handleSaveCallout(CalloutVisibility.Published, sendNotification)}
                 variant="contained"
                 disabled={!isValid}
               >

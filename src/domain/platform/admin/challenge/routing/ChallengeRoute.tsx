@@ -7,16 +7,17 @@ import ChallengeCommunicationsPage from '../../../../journey/challenge/pages/Cha
 import ChallengeProfilePage from '../../../../journey/challenge/pages/ChallengeProfile/ChallengeProfilePage';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import { OpportunitiesRoute } from '../../opportunity/routing/OpportunitiesRoute';
-import ChallengeCommunityAdminPage from '../ChallengeCommunityAdminPage';
+
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import ChallengeContextPage from '../../../../journey/challenge/pages/ChallengeContext/ChallengeContextPage';
 import ChallengeInnovationFlowPage from '../../../../journey/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import AdminChallengeCommunityPage from '../../../../journey/challenge/pages/AdminChallengeCommunityPage';
 
 export const ChallengeRoute: FC = () => {
   const { spaceId, communityId: spaceCommunityId } = useSpace();
-  const { challenge, challengeId, challengeNameId } = useChallenge();
+  const { challenge, challengeNameId } = useChallenge();
   const communityId = challenge?.community?.id;
 
   return (
@@ -35,7 +36,7 @@ export const ChallengeRoute: FC = () => {
             path="communications"
             element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={spaceCommunityId} />}
           />
-          <Route path="community" element={<ChallengeCommunityAdminPage />} />
+          <Route path="community" element={<AdminChallengeCommunityPage />} />
           <Route
             path="community/groups/*"
             element={
@@ -44,7 +45,7 @@ export const ChallengeRoute: FC = () => {
           />
           <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
           <Route path="opportunities/*" element={<OpportunitiesRoute />} />
-          <Route path="authorization/*" element={<ChallengeAuthorizationRoute resourceId={challengeId} />} />
+          <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
           <Route path="innovation-flow/*" element={<ChallengeInnovationFlowPage />} />
           <Route path="*" element={<Error404 />} />
         </Route>

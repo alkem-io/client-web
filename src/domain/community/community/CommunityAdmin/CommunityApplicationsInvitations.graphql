@@ -1,22 +1,21 @@
-query spaceApplicationsInvitations($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    community {
+query CommunityApplicationsInvitations($communityId: UUID!) {
+  lookup {
+    community(ID: $communityId) {
       id
       applications {
-        ...AdminSpaceCommunityApplication
+        ...AdminCommunityApplication
       }
       invitations {
-        ...AdminSpaceCommunityInvitation
+        ...AdminCommunityInvitation
       }
       invitationsExternal {
-        ...AdminSpaceCommunityInvitationExternal
+        ...AdminCommunityInvitationExternal
       }
     }
   }
 }
 
-fragment AdminSpaceCommunityApplication on Application {
+fragment AdminCommunityApplication on Application {
   id
   createdDate
   updatedDate
@@ -26,7 +25,7 @@ fragment AdminSpaceCommunityApplication on Application {
     nextEvents
   }
   user {
-    ...AdminSpaceCommunityCandidateMember
+    ...AdminCommunityCandidateMember
   }
   questions {
     id
@@ -35,7 +34,7 @@ fragment AdminSpaceCommunityApplication on Application {
   }
 }
 
-fragment AdminSpaceCommunityInvitation on Invitation {
+fragment AdminCommunityInvitation on Invitation {
   id
   createdDate
   updatedDate
@@ -45,17 +44,17 @@ fragment AdminSpaceCommunityInvitation on Invitation {
     nextEvents
   }
   user {
-    ...AdminSpaceCommunityCandidateMember
+    ...AdminCommunityCandidateMember
   }
 }
 
-fragment AdminSpaceCommunityInvitationExternal on InvitationExternal {
+fragment AdminCommunityInvitationExternal on InvitationExternal {
   id
   createdDate
   email
 }
 
-fragment AdminSpaceCommunityCandidateMember on User {
+fragment AdminCommunityCandidateMember on User {
   id
   nameID
   email

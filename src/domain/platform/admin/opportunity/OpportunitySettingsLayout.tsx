@@ -9,7 +9,6 @@ import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 
 interface OpportunitySettingsLayoutProps {
   currentTab: SettingsSection;
@@ -36,11 +35,6 @@ const tabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Communications,
     route: 'communications',
     icon: ForumOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Authorization,
-    route: 'authorization',
-    icon: GppGoodOutlinedIcon,
   },
   {
     section: SettingsSection.InnovationFlow,

@@ -1,4 +1,4 @@
-import { usePostCreatedOnCalloutSubscription } from '../usePostCreatedOnCalloutSubscription';
+import { useCalloutPosts } from './useCalloutPosts';
 import { ContributeTabPostFragment, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import {
   PostCardFragmentDoc,
@@ -29,7 +29,7 @@ const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ c
     triggerOnce: true,
   });
 
-  const { subscriptionEnabled, posts, loading } = usePostCreatedOnCalloutSubscription({
+  const { subscriptionEnabled, posts, loading } = useCalloutPosts({
     calloutId,
     skip: !inView,
   });

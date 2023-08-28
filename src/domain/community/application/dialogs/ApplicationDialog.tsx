@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
-import { AdminSpaceCommunityApplicationFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { AdminCommunityApplicationFragment } from '../../../../core/apollo/generated/graphql-schema';
 import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
 import LifecycleButton from '../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
 import { Optional } from '../../../../core/utils/Optional';
@@ -74,7 +74,7 @@ const appStyles = makeStyles(theme => ({
   },
 }));
 
-export type ApplicationDialogDataType = Optional<AdminSpaceCommunityApplicationFragment, 'lifecycle' | 'user'>;
+export type ApplicationDialogDataType = Optional<AdminCommunityApplicationFragment, 'lifecycle' | 'user'>;
 
 export interface ApplicationDialogProps {
   app?: ApplicationDialogDataType;

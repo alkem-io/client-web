@@ -10,11 +10,6 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    rollupOptions: {
-      input: {
-        setupTests: 'src/setupTests.ts'
-      }
-    }
   },
   plugins: [
     react(),
