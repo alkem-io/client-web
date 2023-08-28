@@ -15,7 +15,7 @@ import { clearAppStateForLocalStorage } from '@alkemio/excalidraw/types/appState
 import { clearElementsForLocalStorage } from '@alkemio/excalidraw/types/element';
 import { ExcalidrawElement, FileId } from '@alkemio/excalidraw/types/element/types';
 import { AppState, BinaryFileData, BinaryFiles } from '@alkemio/excalidraw/types/types';
-import { debounce } from '../../utils';
+import { debounce } from '../utils';
 import { SAVE_TO_LOCAL_STORAGE_TIMEOUT, STORAGE_KEYS } from '../excalidrawAppConstants';
 
 import { FileManager } from './FileManager';
