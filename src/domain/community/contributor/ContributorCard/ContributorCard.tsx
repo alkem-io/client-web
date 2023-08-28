@@ -73,7 +73,7 @@ const ContributorCard = ({
             expansion={
               <>
                 {description && <JourneyCardDescription rows={3}>{description}</JourneyCardDescription>}
-                {matchedTerms ? <CardTags tags={tags} rows={3} /> : undefined}
+                {matchedTerms ? <CardTags tags={tags} rows={3} disableIndentation /> : undefined}
               </>
             }
           />

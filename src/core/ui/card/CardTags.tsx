@@ -4,12 +4,28 @@ import TagsComponent, { TagsComponentProps } from '../../../domain/shared/compon
 
 export interface CardTagsProps extends TagsComponentProps {
   rows?: number;
+  disableIndentation?: boolean;
+  hideIfEmpty?: boolean; // If no tags are passed and this flag is falsey the element will show "No tags available"
 }
 
-const CardTags = ({ rows = 1, ...props }: CardTagsProps) => {
+const CardTags = ({ rows = 1, disableIndentation, hideIfEmpty, tags, ...props }: CardTagsProps) => {
   const heightGutters = rows + (rows - 1) * 0.5;
 
-  return <TagsComponent variant="filled" height={gutters(heightGutters)} marginTop={0.5} color="primary" {...props} />;
+  if (hideIfEmpty && tags.length === 0) {
+    return null;
+  }
+
+  return (
+    <TagsComponent
+      variant="filled"
+      height={gutters(heightGutters)}
+      marginTop={0.5}
+      paddingLeft={disableIndentation ? 0 : 1.5}
+      color="primary"
+      tags={tags}
+      {...props}
+    />
+  );
 };
 
 export default CardTags;

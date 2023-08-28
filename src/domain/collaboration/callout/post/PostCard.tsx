@@ -4,7 +4,7 @@ import { PostIcon } from '../../post/icon/PostIcon';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescription from '../../../../core/ui/card/CardDescription';
+import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
 import CardTags from '../../../../core/ui/card/CardTags';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
@@ -22,7 +22,6 @@ export type PostCardPost = Pick<ContributeTabPostFragment, NeededFields> & {
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
 
-const DESCRIPTION_HEIGHT_GUTTERS = 5;
 interface PostCardProps {
   post: PostCardPost | undefined;
   onClick: (post: PostCardPost) => void;
@@ -45,7 +44,9 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
     );
   }
   const tags = post.profile.tagset?.tags ?? [];
-  const descriptionHeight = tags.length ? DESCRIPTION_HEIGHT_GUTTERS : DESCRIPTION_HEIGHT_GUTTERS + 2; // <CardTags rows=1> is heightGutters = 2
+  const descriptionHeight = tags.length
+    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS
+    : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS + 2; // CardTags's height is gutters(2)
 
   return (
     <ContributeCard onClick={handleClick}>
@@ -54,7 +55,7 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
       </CardHeader>
       <CardDetails>
         <CardDescription heightGutters={descriptionHeight}>{post.profile.description!}</CardDescription>
-        {tags.length > 0 ? <CardTags tags={tags} paddingX={1.5} marginY={1} /> : undefined}
+        <CardTags tags={tags} marginY={1} hideIfEmpty />
       </CardDetails>
       <CardFooter>
         {post.createdDate && <CardFooterDate date={post.createdDate} />}

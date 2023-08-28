@@ -5,7 +5,7 @@ import WrapperMarkdown from '../markdown/WrapperMarkdown';
 import OverflowGradient, { OverflowGradientProps } from '../overflow/OverflowGradient';
 import stopPropagationFromLinks from '../utils/stopPropagationFromLinks';
 
-const DEFAULT_HEIGHT_GUTTERS = 5;
+export const DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS = 5;
 
 interface CardDescriptionProps extends BoxProps {
   children: string;
@@ -16,7 +16,7 @@ interface CardDescriptionProps extends BoxProps {
 export const CardDescription = ({
   children,
   overflowGradientColor = 'default',
-  heightGutters = DEFAULT_HEIGHT_GUTTERS,
+  heightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS,
   ...containerProps
 }: CardDescriptionProps) => {
   return (
