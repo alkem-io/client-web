@@ -14,6 +14,7 @@ const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 =
 const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
+const APM_ORIENTATION_TYPE_NOT_SUPPORTED = 'orientation type not supported on this device';
 
 const skipOnLocal = import.meta.env.MODE !== 'production';
 
@@ -28,7 +29,7 @@ export interface ApmCustomContext {
   screen?: {
     width: number;
     height: number;
-    orientation: OrientationType;
+    orientation: OrientationType | typeof APM_ORIENTATION_TYPE_NOT_SUPPORTED;
   };
   window?: {
     width: number;
@@ -166,8 +167,9 @@ const getWindowSize = () => {
 
 const getScreenInfo = () => {
   const { width, height, orientation } = window.screen;
+  const orientationType: OrientationType = orientation?.type ?? APM_ORIENTATION_TYPE_NOT_SUPPORTED;
 
-  return { width, height, orientation: orientation.type };
+  return { width, height, orientation: orientationType };
 };
 
 const getLanguage = () => {
