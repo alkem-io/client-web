@@ -22,6 +22,7 @@ export type PostCardPost = Pick<ContributeTabPostFragment, NeededFields> & {
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
 
+const DESCRIPTION_HEIGHT_GUTTERS = 5;
 interface PostCardProps {
   post: PostCardPost | undefined;
   onClick: (post: PostCardPost) => void;
@@ -43,6 +44,8 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
       </ContributeCard>
     );
   }
+  const tags = post.profile.tagset?.tags ?? [];
+  const descriptionHeight = tags.length ? DESCRIPTION_HEIGHT_GUTTERS : DESCRIPTION_HEIGHT_GUTTERS + 2; // <CardTags rows=1> is heightGutters = 2
 
   return (
     <ContributeCard onClick={handleClick}>
@@ -50,8 +53,8 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
         <CardHeaderCaption noWrap>{post.createdBy?.profile.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{post.profile.description!}</CardDescription>
-        <CardTags tags={post.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescription heightGutters={descriptionHeight}>{post.profile.description!}</CardDescription>
+        {tags.length > 0 ? <CardTags tags={tags} paddingX={1.5} marginY={1} /> : undefined}
       </CardDetails>
       <CardFooter>
         {post.createdDate && <CardFooterDate date={post.createdDate} />}
