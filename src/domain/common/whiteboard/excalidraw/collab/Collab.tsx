@@ -32,8 +32,7 @@ import { encodeFilesForUpload, FileManager, updateStaleImageStatuses } from '../
 import { isImageElement, isInitializedImageElement } from '@alkemio/excalidraw/types/element/typeChecks';
 import { newElementWith } from '@alkemio/excalidraw';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
-import { decryptData } from '../../data/encryption';
-import { resetBrowserStateVersions } from '../data/tabSync';
+import { resetBrowserStateVersions } from './data/tabSync';
 import { LocalData } from '../data/LocalData';
 import { atom } from 'jotai';
 import { appJotaiStore } from '../app-jotai';
@@ -297,7 +296,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
   private decryptPayload = async (iv: Uint8Array, encryptedData: ArrayBuffer, decryptionKey: string) => {
     try {
-      const decrypted = await decryptData(iv, encryptedData, decryptionKey);
+      const decrypted = encryptedData; // await decryptData(iv, encryptedData, decryptionKey);
 
       const decodedData = new TextDecoder('utf-8').decode(new Uint8Array(decrypted));
       return JSON.parse(decodedData);
