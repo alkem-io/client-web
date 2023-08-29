@@ -3,7 +3,7 @@ import { PureComponent } from 'react';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { APP_NAME, EVENT } from '@alkemio/excalidraw/types/constants';
 import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
-import { ExcalidrawElement, InitializedExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
+import { ExcalidrawElement, FileId, InitializedExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 import { getSceneVersion, restoreElements } from '@alkemio/excalidraw';
 import { Collaborator, Gesture } from '@alkemio/excalidraw/types/types';
 import { preventUnload, resolvablePromise, withBatchedUpdates } from '@alkemio/excalidraw/types/utils';
@@ -32,7 +32,9 @@ import { newElementWith } from '@alkemio/excalidraw';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { resetBrowserStateVersions } from './data/tabSync';
 import { atom } from 'jotai';
-import { appJotaiStore } from '../app-jotai';
+import { createStore } from 'jotai';
+
+const appJotaiStore = createStore();
 
 const isTest = true; //!!
 export const collabAPIAtom = atom<CollabAPI | null>(null);
@@ -91,7 +93,8 @@ class Collab extends PureComponent<Props, CollabState> {
           throw new Error('Aborted');
         }
         console.log('well see this');
-        return;
+        const erroredFiles: Map<FileId, true> = new Map();
+        return { loadedFiles: [], erroredFiles };
         //return loadFilesFromFirebase(`files/rooms/${roomId}`, roomKey, fileIds);
       },
       saveFiles: async ({ addedFiles }) => {
@@ -99,7 +102,7 @@ class Collab extends PureComponent<Props, CollabState> {
         if (!roomId || !roomKey) {
           throw new Error('Aborted');
         }
-        return;
+        return { savedFiles: new Map(), erroredFiles: new Map() };
         /*return saveFilesToFirebase({
           prefix: `${FIREBASE_STORAGE_PREFIXES.collabFiles}/${roomId}`,
           files: await encodeFilesForUpload({
@@ -439,7 +442,8 @@ class Collab extends PureComponent<Props, CollabState> {
       this.excalidrawAPI.resetScene();
 
       try {
-        const elements = await loadFromFirebase(roomLinkData.roomId, roomLinkData.roomKey, this.portal.socket);
+        console.log('loadFromFirebase');
+        /*const elements = await loadFromFirebase(roomLinkData.roomId, roomLinkData.roomKey, this.portal.socket);
         if (elements) {
           this.setLastBroadcastedOrReceivedSceneVersion(getSceneVersion(elements));
 
@@ -447,7 +451,7 @@ class Collab extends PureComponent<Props, CollabState> {
             elements,
             scrollToContent: true,
           };
-        }
+        }*/
       } catch (error: unknown) {
         // log the error and move on. other peers will sync us the scene.
         console.error(error);

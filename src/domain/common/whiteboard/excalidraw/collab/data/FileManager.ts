@@ -30,14 +30,14 @@ export class FileManager {
     getFiles: (fileIds: FileId[]) => Promise<{
       loadedFiles: BinaryFileData[];
       erroredFiles: Map<FileId, true>;
-    }>;
+    }> | undefined;
     saveFiles: (data: { addedFiles: Map<FileId, BinaryFileData> }) => Promise<{
       savedFiles: Map<FileId, true>;
       erroredFiles: Map<FileId, true>;
-    }>;
+    }> | undefined;
   }) {
-    this._getFiles = getFiles;
-    this._saveFiles = saveFiles;
+    this._getFiles = getFiles ?? (() => {});
+    this._saveFiles = saveFiles ?? (() => {});
   }
 
   /**

@@ -1,6 +1,8 @@
-import { Excalidraw } from '@alkemio/excalidraw';
+import { Excalidraw, newElementWith } from '@alkemio/excalidraw';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import {
+  AppState,
+  BinaryFiles,
   ExcalidrawAPIRefValue,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
@@ -14,6 +16,12 @@ import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
+import { LocalData } from './collab/data/LocalData';
+import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import { collabAPIAtom } from './collab/Collab';
+import { useAtom } from 'jotai';
+import { useCallbackRefState } from './useCallbackRefState';
+import LiveCollaborationStatus from './collab/LiveCollaborationStatus';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -52,9 +60,11 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options }, excalidrawRef) => {
     const { whiteboard } = entities;
+    const [collabAPI] = useAtom(collabAPIAtom);
 
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
+    const [excalidrawAPI, excalidrawRefCallback] = useCallbackRefState<ExcalidrawImperativeAPI>();
 
     const data = useMemo(() => {
       const parsedData = whiteboard?.value ? JSON.parse(whiteboard?.value) : EmptyWhiteboard;
@@ -155,17 +165,58 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
 
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
+    const onChange = (elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
+      console.log('onChange');
+      if (collabAPI?.isCollaborating()) {
+        collabAPI.syncElements(elements);
+      }
+
+      // this check is redundant, but since this is a hot path, it's best
+      // not to evaludate the nested expression every time
+      if (!LocalData.isSavePaused()) {
+        LocalData.save(elements, appState, files, () => {
+          if (excalidrawAPI) {
+            let didChange = false;
+
+            const elements = excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
+              if (LocalData.fileStorage.shouldUpdateImageElementStatus(element)) {
+                const newElement = newElementWith(element, { status: 'saved' });
+                if (newElement !== element) {
+                  didChange = true;
+                }
+                return newElement;
+              }
+              return element;
+            });
+
+            if (didChange) {
+              excalidrawAPI.updateScene({
+                elements,
+              });
+            }
+          }
+        });
+      }
+    };
+
     return (
       <div className={styles.container} style={{ border: '1px solid red' }}>
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            ref={combinedRef}
+            ref={excalidrawRefCallback}
             initialData={data}
             UIOptions={mergedUIOptions}
-            isCollaborating={false}
+            isCollaborating
             gridModeEnabled
             viewModeEnabled
+            onChange={onChange}
+            onPointerUpdate={collabAPI?.onPointerUpdate}
+            detectScroll={false}
+            autoFocus
+            renderTopRightUI={isMobile => {
+              return <LiveCollaborationStatus />;
+            }}
             {...restOptions}
           />
         )}
