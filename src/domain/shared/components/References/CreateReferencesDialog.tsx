@@ -1,6 +1,6 @@
 import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { CalloutType, Reference } from '../../../../core/apollo/generated/graphql-schema';
-import { Box, Button, Dialog, DialogContent, IconButton, Tooltip } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -18,6 +18,8 @@ import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 import { newReferenceName } from '../../../common/reference/newReferenceName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
+import { TranslateWithElements } from '../../i18n/TranslateWithElements';
+import { useConfig } from '../../../platform/config/useConfig';
 
 export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
 interface FormValueType {
@@ -44,6 +46,8 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
   onSave,
 }) => {
   const { t } = useTranslation();
+  const tLinks = TranslateWithElements(<Link target="_blank" />);
+  const { platform } = useConfig();
   const breakpoint = useCurrentBreakpoint();
   const isMobile = ['xs', 'sm'].includes(breakpoint);
 
@@ -144,6 +148,9 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                               title={t('common.url')}
                               fullWidth
                               referenceID={reference.id}
+                              helperText={tLinks('components.referenceSegment.url-helper-text', {
+                                terms: { href: platform?.terms },
+                              })}
                             />
                             <Box>
                               <Tooltip
