@@ -8,14 +8,14 @@ interface CardDescriptionWithTagsProps extends CardDescriptionProps {
 }
 
 export const CardDescriptionWithTags = ({
-  tags,
+  tags = [],
   tagsContainerProps,
   heightGutters,
   ...props
 }: CardDescriptionWithTagsProps) => {
   const descriptionHeight =
     typeof heightGutters === 'undefined'
-      ? (tags ?? []).length > 0
+      ? tags.length > 0
         ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS
         : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS + 2
       : heightGutters;
@@ -23,7 +23,7 @@ export const CardDescriptionWithTags = ({
   return (
     <>
       <CardDescription heightGutters={descriptionHeight} {...props} />
-      <CardTags tags={tags ?? []} marginY={1} hideIfEmpty {...tagsContainerProps} />
+      <CardTags tags={tags} marginY={1} hideIfEmpty {...tagsContainerProps} />
     </>
   );
 };
