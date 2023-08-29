@@ -11,17 +11,11 @@ import React from 'react';
 import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
 import { SvgIconComponent } from '@mui/icons-material';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../core/ui/card/CardTags';
+import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 
 interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
 
 const InnovationFlowTemplateCard = ({ template, loading, onClick }: InnovationFlowTemplateCardProps) => {
-  const tags = template?.tags ?? [];
-  const descriptionHeight = tags.length
-    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS
-    : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS + 2;
-
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
@@ -31,8 +25,7 @@ const InnovationFlowTemplateCard = ({ template, loading, onClick }: InnovationFl
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription heightGutters={descriptionHeight}>{template?.description ?? ''}</CardDescription>
-        <CardTags tags={tags} marginY={1} hideIfEmpty />
+        <CardDescriptionWithTags tags={template?.tags}>{template?.description}</CardDescriptionWithTags>
       </CardDetails>
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

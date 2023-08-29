@@ -7,8 +7,7 @@ import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/Co
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { PostIcon } from '../icon/PostIcon';
-import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../core/ui/card/CardTags';
+import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 
 export interface PostTemplate {
@@ -32,10 +31,6 @@ interface PostTemplateCardProps extends ContributeCardProps {
 }
 
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClick }) => {
-  const tags = template?.tags ?? [];
-  const descriptionHeight =
-    tags.length > 0 ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS + 2;
-
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.displayName} iconComponent={PostIcon}>
@@ -45,8 +40,7 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClic
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription heightGutters={descriptionHeight}>{template?.description ?? ''}</CardDescription>
-        <CardTags tags={tags} marginY={1} hideIfEmpty />
+        <CardDescriptionWithTags tags={template?.tags}>{template?.description}</CardDescriptionWithTags>
       </CardDetails>
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

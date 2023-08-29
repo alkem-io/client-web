@@ -7,8 +7,8 @@ import stopPropagationFromLinks from '../utils/stopPropagationFromLinks';
 
 export const DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS = 5;
 
-interface CardDescriptionProps extends BoxProps {
-  children: string;
+export interface CardDescriptionProps extends BoxProps {
+  children: string | undefined;
   overflowGradientColor?: OverflowGradientProps['backgroundColor'];
   heightGutters?: number;
 }
@@ -22,7 +22,7 @@ export const CardDescription = ({
   return (
     <Box paddingX={1.5} paddingY={1} onClick={stopPropagationFromLinks} {...containerProps}>
       <OverflowGradient height={gutters(heightGutters)} backgroundColor={overflowGradientColor}>
-        <WrapperMarkdown>{children}</WrapperMarkdown>
+        <WrapperMarkdown>{children ?? ''}</WrapperMarkdown>
       </OverflowGradient>
     </Box>
   );

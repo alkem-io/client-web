@@ -8,7 +8,7 @@ export interface CardTagsProps extends TagsComponentProps {
   hideIfEmpty?: boolean; // If no tags are passed and this flag is falsey the element will show "No tags available"
 }
 
-const CardTags = ({ rows = 1, disableIndentation, hideIfEmpty, tags, ...props }: CardTagsProps) => {
+const CardTags = ({ rows = 1, disableIndentation, hideIfEmpty = false, tags, ...props }: CardTagsProps) => {
   const heightGutters = rows + (rows - 1) * 0.5;
 
   if (hideIfEmpty && tags.length === 0) {

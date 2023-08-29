@@ -6,7 +6,7 @@ const CardDetails = ({ transparent = false, sx, ...boxProps }: { transparent?: b
     backgroundColor: transparent ? undefined : 'background.default',
     // To disable margin collapsing because items inside, like CardTags have vertical margin.
     // (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Mastering_margin_collapsing)
-    overflow: 'hidden',
+    borderBottom: '1px solid transparent', // if another border > 0 is specified in sx, this should still work
     ...sx,
   };
 
