@@ -11,8 +11,6 @@
  */
 
 import { createStore, entries, del, getMany, set, setMany } from 'idb-keyval';
-import { clearAppStateForLocalStorage } from '@alkemio/excalidraw/types/appState';
-import { clearElementsForLocalStorage } from '@alkemio/excalidraw/types/element';
 import { ExcalidrawElement, FileId } from '@alkemio/excalidraw/types/element/types';
 import { AppState, BinaryFileData, BinaryFiles } from '@alkemio/excalidraw/types/types';
 import { debounce } from '../utils';
@@ -44,25 +42,6 @@ class LocalFileManager extends FileManager {
   };
 }
 
-const saveDataStateToLocalStorage = (
-  elements: readonly ExcalidrawElement[],
-  appState: AppState,
-) => {
-  try {
-    localStorage.setItem(
-      STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,
-      JSON.stringify(clearElementsForLocalStorage(elements)),
-    );
-    localStorage.setItem(
-      STORAGE_KEYS.LOCAL_STORAGE_APP_STATE,
-      JSON.stringify(clearAppStateForLocalStorage(appState)),
-    );
-    updateBrowserStateVersion(STORAGE_KEYS.VERSION_DATA_STATE);
-  } catch (error: any) {
-    // Unable to access window.localStorage
-    console.error(error);
-  }
-};
 
 type SavingLockTypes = 'collaboration';
 
@@ -74,7 +53,7 @@ export class LocalData {
       files: BinaryFiles,
       onFilesSaved: () => void,
     ) => {
-      saveDataStateToLocalStorage(elements, appState);
+      console.log('save to local storage??');
 
       await this.fileStorage.saveFiles({
         elements,

@@ -1,13 +1,12 @@
 import throttle from 'lodash.throttle';
-import { PureComponent } from 'react';
+import { PureComponent, Ref } from 'react';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
-import { APP_NAME, EVENT } from '@alkemio/excalidraw/types/constants';
+import { APP_NAME, EVENT } from './excalidrawAppConstants';
 import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
 import { ExcalidrawElement, FileId, InitializedExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 import { getSceneVersion, restoreElements } from '@alkemio/excalidraw';
 import { Collaborator, Gesture } from '@alkemio/excalidraw/types/types';
-import { preventUnload, resolvablePromise, withBatchedUpdates } from '@alkemio/excalidraw/types/utils';
-
+import { preventUnload, resolvablePromise, withBatchedUpdates } from './utils';
 import {
   CURSOR_SYNC_TIMEOUT,
   INITIAL_SCENE_UPDATE_TIMEOUT,
@@ -23,11 +22,10 @@ import {
   SocketUpdateDataSource,
 } from './data';
 import Portal from './Portal';
-
-import { UserIdleState } from '@alkemio/excalidraw/types/types';
-import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from '@alkemio/excalidraw/types/constants';
+import { UserIdleState } from './utils';
+import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from './excalidrawAppConstants';
 import { FileManager, updateStaleImageStatuses } from './data/FileManager';
-import { isImageElement, isInitializedImageElement } from '@alkemio/excalidraw/types/element/typeChecks';
+import { isImageElement, isInitializedImageElement } from './utils';
 import { newElementWith } from '@alkemio/excalidraw';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { resetBrowserStateVersions } from './data/tabSync';
@@ -38,7 +36,6 @@ const appJotaiStore = createStore();
 
 const isTest = true; //!!
 export const collabAPIAtom = atom<CollabAPI | null>(null);
-export const isCollaboratingAtom = atom(false);
 export const isOfflineAtom = atom(false);
 
 interface CollabState {
@@ -51,7 +48,6 @@ type CollabInstance = InstanceType<typeof Collab>;
 
 export interface CollabAPI {
   /** function so that we can access the latest value from stale callbacks */
-  isCollaborating: () => boolean;
   onPointerUpdate: CollabInstance['onPointerUpdate'];
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
@@ -63,6 +59,7 @@ export interface CollabAPI {
 interface PublicProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   username: string;
+  collabAPIRef?: (collabAPI: CollabAPI) => void;
 }
 
 type Props = PublicProps;
@@ -77,6 +74,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private socketInitializationTimer?: number;
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
+  private collabAPIRef: (collabAPI: CollabAPI) => void;
 
   constructor(props: Props) {
     super(props);
@@ -89,7 +87,7 @@ class Collab extends PureComponent<Props, CollabState> {
     this.fileManager = new FileManager({
       getFiles: async fileIds => {
         const { roomId, roomKey } = this.portal;
-        if (!roomId || !roomKey) {
+        if (!roomId) {
           throw new Error('Aborted');
         }
         console.log('well see this');
@@ -99,7 +97,7 @@ class Collab extends PureComponent<Props, CollabState> {
       },
       saveFiles: async ({ addedFiles }) => {
         const { roomId, roomKey } = this.portal;
-        if (!roomId || !roomKey) {
+        if (!roomId) {
           throw new Error('Aborted');
         }
         return { savedFiles: new Map(), erroredFiles: new Map() };
@@ -116,9 +114,11 @@ class Collab extends PureComponent<Props, CollabState> {
     this.excalidrawAPI = props.excalidrawAPI;
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
+    this.collabAPIRef = props.collabAPIRef ?? (() => {});
   }
 
   componentDidMount() {
+    console.log('componentDidMount');
     window.addEventListener(EVENT.BEFORE_UNLOAD, this.beforeUnload);
     window.addEventListener('online', this.onOfflineStatusToggle);
     window.addEventListener('offline', this.onOfflineStatusToggle);
@@ -127,7 +127,6 @@ class Collab extends PureComponent<Props, CollabState> {
     this.onOfflineStatusToggle();
 
     const collabAPI: CollabAPI = {
-      isCollaborating: this.isCollaborating,
       onPointerUpdate: this.onPointerUpdate,
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
@@ -137,7 +136,9 @@ class Collab extends PureComponent<Props, CollabState> {
     };
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
+    this.collabAPIRef(collabAPI);
 
+    console.log({ collabAPIAtom, collabAPI });
     if (isTest) {
       //!!
       window.collab = window.collab || ({} as Window['collab']);
@@ -171,12 +172,6 @@ class Collab extends PureComponent<Props, CollabState> {
     }
   }
 
-  isCollaborating = () => appJotaiStore.get(isCollaboratingAtom)!;
-
-  private setIsCollaborating = (isCollaborating: boolean) => {
-    appJotaiStore.set(isCollaboratingAtom, isCollaborating);
-  };
-
   private onUnload = () => {
     this.destroySocketClient({ isUnload: true });
   };
@@ -184,7 +179,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private beforeUnload = withBatchedUpdates((event: BeforeUnloadEvent) => {
     const syncableElements = getSyncableElements(this.getSceneElementsIncludingDeleted());
 
-    if (this.isCollaborating() && this.fileManager.shouldPreventUnload(syncableElements)) {
+    if (this.fileManager.shouldPreventUnload(syncableElements)) {
       preventUnload(event);
     }
   });
@@ -226,7 +221,6 @@ class Collab extends PureComponent<Props, CollabState> {
     this.portal.close();
     this.fileManager.reset();
     if (!opts?.isUnload) {
-      this.setIsCollaborating(false);
       this.setState({
         activeRoomLink: '',
       });
@@ -284,8 +278,6 @@ class Collab extends PureComponent<Props, CollabState> {
     }
 
     const scenePromise = resolvablePromise<ImportedDataState | null>();
-
-    this.setIsCollaborating(true);
 
     const { default: socketIOClient } = await import(/* webpackChunkName: "socketIoClient" */ 'socket.io-client');
 

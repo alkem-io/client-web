@@ -1,3 +1,40 @@
+export const APP_NAME = 'Excalidraw';
+export enum EVENT {
+  COPY = 'copy',
+  PASTE = 'paste',
+  CUT = 'cut',
+  KEYDOWN = 'keydown',
+  KEYUP = 'keyup',
+  MOUSE_MOVE = 'mousemove',
+  RESIZE = 'resize',
+  UNLOAD = 'unload',
+  FOCUS = 'focus',
+  BLUR = 'blur',
+  DRAG_OVER = 'dragover',
+  DROP = 'drop',
+  GESTURE_END = 'gestureend',
+  BEFORE_UNLOAD = 'beforeunload',
+  GESTURE_START = 'gesturestart',
+  GESTURE_CHANGE = 'gesturechange',
+  POINTER_MOVE = 'pointermove',
+  POINTER_DOWN = 'pointerdown',
+  POINTER_UP = 'pointerup',
+  STATE_CHANGE = 'statechange',
+  WHEEL = 'wheel',
+  TOUCH_START = 'touchstart',
+  TOUCH_END = 'touchend',
+  HASHCHANGE = 'hashchange',
+  VISIBILITY_CHANGE = 'visibilitychange',
+  SCROLL = 'scroll',
+  // custom events
+  EXCALIDRAW_LINK = 'excalidraw-link',
+  MENU_ITEM_SELECT = 'menu.itemSelect',
+}
+export const PRECEDING_ELEMENT_KEY = '__precedingElement__';
+
+export const IDLE_THRESHOLD = 60_000;
+export const ACTIVE_THRESHOLD = 3_000;
+
 // time constants (ms)
 export const SAVE_TO_LOCAL_STORAGE_TIMEOUT = 300;
 export const INITIAL_SCENE_UPDATE_TIMEOUT = 5000;

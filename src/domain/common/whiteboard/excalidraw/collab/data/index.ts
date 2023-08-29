@@ -2,7 +2,7 @@ import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { DELETED_ELEMENT_TIMEOUT, REACT_APP_PORTAL_URL, REACT_APP_WS_SERVER_URL, ROOM_ID_BYTES } from '../excalidrawAppConstants';
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
 import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
-import { bytesToHexString } from '@alkemio/excalidraw/types/utils';
+import { bytesToHexString } from '../utils';
 
 export type SyncableExcalidrawElement = ExcalidrawElement & {
   _brand: 'SyncableExcalidrawElement';

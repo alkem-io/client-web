@@ -56,18 +56,16 @@ export const usersIcon = createIcon(
   tablerIconProps
 );
 
-const LiveCollaborationTrigger = (props: ButtonProps) => {
+const LiveCollaborationStatus = (props: ButtonProps) => {
   const appState = useUIAppState();
+  const collaboratorsCount = appState?.collaborators?.size ?? 0;
 
   return (
     <Button style={{ position: 'relative' }} {...props}>
       {usersIcon}
-      {appState.collaborators.size > 0 && (
-        <div className="CollabButton-collaborators">{appState.collaborators.size}</div>
-      )}
+      {<div className="CollabButton-collaborators">{collaboratorsCount}</div>}
     </Button>
   );
 };
 
-export default LiveCollaborationTrigger;
-LiveCollaborationTrigger.displayName = 'LiveCollaborationTrigger';
+export default LiveCollaborationStatus;

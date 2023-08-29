@@ -1,13 +1,12 @@
 import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
 import { TCollabClass } from './Collab';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { WS_EVENTS, FILE_UPLOAD_TIMEOUT, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
-import { UserIdleState } from '@alkemio/excalidraw/types/types';
+import { WS_EVENTS, FILE_UPLOAD_TIMEOUT, WS_SCENE_EVENT_TYPES, PRECEDING_ELEMENT_KEY } from './excalidrawAppConstants';
+import { UserIdleState } from './utils';
 import throttle from 'lodash.throttle';
 import { newElementWith } from '@alkemio/excalidraw';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
-import { PRECEDING_ELEMENT_KEY } from '@alkemio/excalidraw/types/constants';
 
 class Portal {
   collab: TCollabClass;

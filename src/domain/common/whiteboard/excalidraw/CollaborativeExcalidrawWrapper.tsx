@@ -12,16 +12,17 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
-import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { LocalData } from './collab/data/LocalData';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { collabAPIAtom } from './collab/Collab';
+import Collab, { CollabAPI, collabAPIAtom } from './collab/Collab';
 import { useAtom } from 'jotai';
 import { useCallbackRefState } from './useCallbackRefState';
 import LiveCollaborationStatus from './collab/LiveCollaborationStatus';
+import { useUserContext } from '../../../community/user';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -60,11 +61,17 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options }, excalidrawRef) => {
     const { whiteboard } = entities;
-    const [collabAPI] = useAtom(collabAPIAtom);
+
+    const [collabAPI, setCollabAPIRef] = useState<CollabAPI>();
+
+    console.log('collabAPI', collabAPI);
 
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
     const [excalidrawAPI, excalidrawRefCallback] = useCallbackRefState<ExcalidrawImperativeAPI>();
+
+    const { user } = useUserContext();
+    const username = user?.user.profile.displayName ?? 'User'; //!!
 
     const data = useMemo(() => {
       const parsedData = whiteboard?.value ? JSON.parse(whiteboard?.value) : EmptyWhiteboard;
@@ -167,9 +174,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
 
     const onChange = (elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
       console.log('onChange');
-      if (collabAPI?.isCollaborating()) {
-        collabAPI.syncElements(elements);
-      }
+      collabAPI?.syncElements(elements);
 
       // this check is redundant, but since this is a hot path, it's best
       // not to evaludate the nested expression every time
@@ -199,6 +204,17 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
       }
     };
 
+    useEffect(() => {
+      console.log({ collabAPI, whiteboardId: whiteboard?.id });
+      if (collabAPI && whiteboard?.id) {
+        console.log(`starting collaboration on room:${whiteboard.id}`);
+        collabAPI.startCollaboration({
+          roomId: whiteboard.id,
+          roomKey: 'ghggh',
+        });
+      }
+    }, [collabAPI]);
+
     return (
       <div className={styles.container} style={{ border: '1px solid red' }}>
         {whiteboard && (
@@ -220,6 +236,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             {...restOptions}
           />
         )}
+        {excalidrawAPI && <Collab username={username} excalidrawAPI={excalidrawAPI} collabAPIRef={setCollabAPIRef} />}
       </div>
     );
   }

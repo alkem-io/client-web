@@ -1,5 +1,5 @@
 import { newElementWith } from '@alkemio/excalidraw';
-import { isInitializedImageElement } from '@alkemio/excalidraw/types/element/typeChecks';
+import { isInitializedImageElement } from '../utils';
 import {
   ExcalidrawElement,
   ExcalidrawImageElement,
