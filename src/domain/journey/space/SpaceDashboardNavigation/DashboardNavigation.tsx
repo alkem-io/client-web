@@ -73,7 +73,7 @@ const DashboardNavigation = ({
       />
       <Collapse in={showAll} collapsedSize={allItemsFit ? 0 : theme.spacing(6 * VISIBLE_ROWS_WHEN_COLLAPSED - 2)}>
         <Gutters disablePadding>
-          {dashboardNavigation?.map(({ id, nameId: challengeNameId, visual, ...challenge }) => {
+          {dashboardNavigation?.map(({ id, nameId: challengeNameId, visual, member, ...challenge }) => {
             if (!spaceNameId) {
               return <Skeleton key={id} />;
             }
@@ -99,13 +99,14 @@ const DashboardNavigation = ({
                     spaceUri={spaceUrl}
                     spaceVisibility={spaceVisibility}
                     sx={{ width: gutters(15) }}
+                    member={member}
                   />
                 }
                 tooltipPlacement={tooltipPlacement}
                 {...challenge}
               >
                 {Boolean(challenge.children?.length) &&
-                  challenge.children?.map(({ id, nameId: opportunityNameId, visual, ...opportunity }) => (
+                  challenge.children?.map(({ id, nameId: opportunityNameId, visual, member, ...opportunity }) => (
                     <DashboardNavigationItemView
                       key={id}
                       url={spaceNameId && buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
@@ -124,6 +125,7 @@ const DashboardNavigation = ({
                           challengeUri={challengeUrl}
                           spaceVisibility={spaceVisibility}
                           sx={{ width: gutters(15) }}
+                          member={member}
                         />
                       }
                       {...opportunity}

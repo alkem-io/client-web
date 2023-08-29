@@ -11,7 +11,10 @@ import ErrorBlock from '../../../../core/ui/error/ErrorBlock';
 import { Loading } from '../../../../core/ui/loading/Loading';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
-import { refetchMeQuery, useApplyForCommunityMembershipMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  refetchUserProviderQuery,
+  useApplyForCommunityMembershipMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationTypeKey from '../utils/getApplicationTypeKey';
@@ -64,7 +67,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
   const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
     onCompleted: () => setHasApplied(true),
     // refetch user applications
-    refetchQueries: [refetchMeQuery()],
+    refetchQueries: [refetchUserProviderQuery()],
   });
 
   const initialValues: Record<string, string> = useMemo(

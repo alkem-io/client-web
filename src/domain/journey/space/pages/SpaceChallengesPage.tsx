@@ -17,7 +17,7 @@ import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SpaceChallengesPageProps {}
 
@@ -76,6 +76,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 journeyUri={buildChallengeUrl(spaceNameId, challenge.nameID)}
                 locked={!challenge.authorization?.anonymousReadAccess}
                 spaceVisibility={visibility}
+                member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
             childEntityCreateAccess={permissions.canCreateChallenges}

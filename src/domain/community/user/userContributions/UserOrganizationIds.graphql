@@ -1,0 +1,7 @@
+query UserOrganizationIds($userId: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userId }) {
+    organizations {
+      id
+    }
+  }
+}

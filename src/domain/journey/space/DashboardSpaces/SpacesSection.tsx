@@ -3,36 +3,30 @@ import { Box } from '@mui/material';
 import DashboardSpacesSection, {
   DashboardSpaceSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardSpacesSection';
-import { useSpacesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useDashboardSpacesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MetricTooltip from '../../../platform/metrics/MetricTooltip';
 import useServerMetadata from '../../../platform/metadata/useServerMetadata';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricItem } from '../../../platform/metrics/views/Metrics';
-import { keyBy } from 'lodash';
-import { UserRolesInEntity } from '../../../community/user/providers/UserProvider/UserRolesInEntity';
 import Loading from '../../../../core/ui/loading/Loading';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
-import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import FilterByTag from '../FilterByTag/FilterByTag';
 import FilterButtons from '../FilterByTag/FilterButtons';
 import { useTranslation } from 'react-i18next';
 
-interface SpacesSectionProps {
-  userSpaceRoles: UserRolesInEntity[] | undefined;
-  loading?: boolean;
-}
-
-const SpacesSection = ({ userSpaceRoles, loading }: SpacesSectionProps) => {
+const SpacesSection = () => {
   const { t: tLineBreaks } = useTranslationWithLineBreaks();
   const { t: tRaw } = useTranslation();
-  const { data: spacesData, loading: areSpacesLoading } = useSpacesQuery({ fetchPolicy: 'cache-and-network' });
+  const { data: spacesData, loading: areSpacesLoading } = useDashboardSpacesQuery({ fetchPolicy: 'cache-and-network' });
 
-  const spaceRolesBySpaceId = useMemo(() => keyBy(userSpaceRoles, 'id'), [userSpaceRoles]);
   const spaces = useMemo(
-    () => spacesData?.spaces.filter(({ id }) => !spaceRolesBySpaceId[id]) ?? [],
-    [spacesData, spaceRolesBySpaceId]
+    () =>
+      spacesData?.spaces.filter(space => space.community?.myMembershipStatus !== CommunityMembershipStatus.Member) ??
+      [],
+    [spacesData]
   );
 
   const { metrics, loading: isLoadingActivities } = useServerMetadata();
@@ -43,10 +37,18 @@ const SpacesSection = ({ userSpaceRoles, loading }: SpacesSectionProps) => {
     getMetricCount(metrics, MetricType.Opportunity),
   ];
 
-  const getSpaceCardProps: DashboardSpaceSectionProps['getSpaceCardProps'] = space => {
+  const getSpaceCardProps: DashboardSpaceSectionProps<{
+    authorization?: {
+      anonymousReadAccess: boolean;
+    };
+    community?: {
+      myMembershipStatus?: CommunityMembershipStatus;
+    };
+  }>['getSpaceCardProps'] = space => {
     return {
       locked: !space.authorization?.anonymousReadAccess,
       isDemoSpace: space.visibility === SpaceVisibility.Demo,
+      member: space.community?.myMembershipStatus === CommunityMembershipStatus.Member,
     };
   };
 
@@ -74,8 +76,6 @@ const SpacesSection = ({ userSpaceRoles, loading }: SpacesSectionProps) => {
     [challengeCount, spaceCount, isLoadingActivities, opportunityCount, tLineBreaks]
   );
 
-  const isLoading = loading || areSpacesLoading;
-
   return (
     <FilterByTag items={spaces} valueGetter={space => ({ id: space.id, values: space?.profile.tagset?.tags ?? [] })}>
       {({ items: filteredSpaces, value, handleChange }) => (
@@ -94,7 +94,7 @@ const SpacesSection = ({ userSpaceRoles, loading }: SpacesSectionProps) => {
             config={tRaw('spaces-filter.config', { returnObjects: true })}
             onChange={handleChange}
           />
-          {isLoading && <Loading />}
+          {areSpacesLoading && <Loading />}
         </DashboardSpacesSection>
       )}
     </FilterByTag>

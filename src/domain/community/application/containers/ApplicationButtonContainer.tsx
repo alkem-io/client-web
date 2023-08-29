@@ -49,6 +49,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     variables: { spaceNameId, communityId },
     skip: !communityId,
   });
+
   const hasCommunityParent = _communityPrivileges?.space?.spaceCommunity?.id !== communityId;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
@@ -67,6 +68,9 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   );
 
   const isMember = myMembershipStatus === CommunityMembershipStatus.Member;
+  const isParentMember =
+    hasCommunityParent &&
+    _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const applyUrl =
     challengeId && challengeNameId
@@ -74,7 +78,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
       : buildSpaceApplyUrl(spaceNameId);
   const joinParentUrl = challengeNameId && buildSpaceUrl(spaceNameId);
 
-  const communityPrivileges = _communityPrivileges?.space?.community?.authorization?.myPrivileges ?? [];
+  const communityPrivileges = _communityPrivileges?.space?.applicationCommunity?.authorization?.myPrivileges ?? [];
   const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
   const canApplyToCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
 
@@ -97,7 +101,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const applicationButtonProps: ApplicationButtonProps = {
     isAuthenticated,
     isMember,
-    isParentMember: Boolean(challengeId) && user?.ofSpace(spaceId),
+    isParentMember,
     applyUrl,
     parentApplyUrl: buildSpaceApplyUrl(spaceNameId),
     joinParentUrl,

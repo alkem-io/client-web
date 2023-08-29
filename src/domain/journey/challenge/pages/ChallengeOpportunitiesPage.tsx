@@ -18,7 +18,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ChallengeOpportunitiesPageProps {}
 
@@ -78,6 +78,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
                 journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}
                 spaceVisibility={visibility}
+                member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
             childEntityCreateAccess={permissions.canCreateOpportunity}

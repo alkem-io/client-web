@@ -22,7 +22,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
         <ContributionsView
           title={t('common.my-memberships')}
           helpText={t('pages.user-profile.communities.help')}
-          contributions={userMetadata?.contributions || []}
+          contributions={[]}
           loading={loading}
           enableLeave
         />

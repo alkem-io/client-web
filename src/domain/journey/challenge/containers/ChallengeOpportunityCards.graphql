@@ -1,4 +1,4 @@
-query opportunityCards($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query ChallengeOpportunityCards($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     challenge(ID: $challengeId) {

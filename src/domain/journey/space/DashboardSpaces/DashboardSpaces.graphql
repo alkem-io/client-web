@@ -1,4 +1,4 @@
-query spaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
+query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
   spaces(filter: { visibilities: $visibilities }) {
     ...SpaceDetailsProvider
   }
