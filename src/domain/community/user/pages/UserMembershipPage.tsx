@@ -36,7 +36,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
           <ContributionsView
             title={t('pages.user-profile.pending-applications.title')}
             helpText={t('pages.user-profile.pending-applications.help')}
-            contributions={userMetadata?.pendingApplications || []}
+            contributions={userMetadata?.pendingApplications}
             loading={loading}
           />
         </Grid>

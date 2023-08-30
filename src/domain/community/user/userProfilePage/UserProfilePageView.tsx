@@ -45,7 +45,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
         <ContributionsView
           title={t('pages.user-profile.communities.title')}
           helpText={t('pages.user-profile.communities.help')}
-          contributions={contributions ?? []}
+          contributions={contributions}
           cards
         />
         <ContributionsView
