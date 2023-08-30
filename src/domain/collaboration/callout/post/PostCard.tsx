@@ -4,8 +4,7 @@ import { PostIcon } from '../../post/icon/PostIcon';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescription from '../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../core/ui/card/CardTags';
+import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import MessageCounter from '../../../../core/ui/card/MessageCounter';
@@ -43,15 +42,13 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
       </ContributeCard>
     );
   }
-
   return (
     <ContributeCard onClick={handleClick}>
       <CardHeader title={post.profile.displayName} iconComponent={PostIcon}>
         <CardHeaderCaption noWrap>{post.createdBy?.profile.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{post.profile.description!}</CardDescription>
-        <CardTags tags={post.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescriptionWithTags tags={post.profile.tagset?.tags}>{post.profile.description}</CardDescriptionWithTags>
       </CardDetails>
       <CardFooter>
         {post.createdDate && <CardFooterDate date={post.createdDate} />}

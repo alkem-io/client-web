@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.44.0",
+  "version": "0.44.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -11,9 +11,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
     "build": "cross-env NODE_ENV=production node buildConfiguration && vite build",
-    "test": "vitest",
-    "test:cov": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage",
-    "test:coverage": "npm run test -- --coverage ",
+    "test": "vitest --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
+    "test:coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
+    "test:upload:coverage": "npm run test:coverage && cat ./coverage/lcov.info | coveralls ",
     "codegen": "graphql-codegen --config codegen.yml",
     "format": "prettier --write src/**/*.ts{,x}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
@@ -157,8 +157,7 @@
     "@types/react-mentions": "^4.1.8",
     "@types/uuid": "^8.3.1",
     "@vitest/browser": "^0.34.2",
-    "@vitest/coverage-v8": "^0.34.2",
-    "clover2lcov": "^1.0.0",
+    "@vitest/coverage-istanbul": "^0.34.3",
     "coveralls": "^3.1.1",
     "eslint": "8.22.0",
     "eslint-config-prettier": "^8.3.0",

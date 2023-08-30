@@ -5,22 +5,24 @@ import WrapperMarkdown from '../markdown/WrapperMarkdown';
 import OverflowGradient, { OverflowGradientProps } from '../overflow/OverflowGradient';
 import stopPropagationFromLinks from '../utils/stopPropagationFromLinks';
 
-const DESCRIPTION_TEXT_MAX_LINES = 5;
+export const DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS = 5;
 
-interface CardDescriptionProps extends BoxProps {
-  children: string;
+export interface CardDescriptionProps extends BoxProps {
+  children: string | undefined;
   overflowGradientColor?: OverflowGradientProps['backgroundColor'];
+  heightGutters?: number;
 }
 
 export const CardDescription = ({
   children,
   overflowGradientColor = 'default',
+  heightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS,
   ...containerProps
 }: CardDescriptionProps) => {
   return (
     <Box paddingX={1.5} paddingY={1} onClick={stopPropagationFromLinks} {...containerProps}>
-      <OverflowGradient height={gutters(DESCRIPTION_TEXT_MAX_LINES)} backgroundColor={overflowGradientColor}>
-        <WrapperMarkdown>{children}</WrapperMarkdown>
+      <OverflowGradient height={gutters(heightGutters)} backgroundColor={overflowGradientColor}>
+        <WrapperMarkdown>{children ?? ''}</WrapperMarkdown>
       </OverflowGradient>
     </Box>
   );
