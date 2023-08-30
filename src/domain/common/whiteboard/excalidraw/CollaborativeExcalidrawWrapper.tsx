@@ -225,7 +225,6 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             UIOptions={mergedUIOptions}
             isCollaborating
             gridModeEnabled
-            viewModeEnabled
             onChange={onChange}
             onPointerUpdate={collabAPI?.onPointerUpdate}
             detectScroll={false}

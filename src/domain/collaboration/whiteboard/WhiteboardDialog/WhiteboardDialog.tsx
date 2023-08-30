@@ -288,7 +288,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
                   entities={{ whiteboard }}
                   ref={excalidrawApiRef}
                   options={{
-                    viewModeEnabled: !options.canEdit,
+                    // viewModeEnabled: !options.canEdit,
                     UIOptions: {
                       canvasActions: {
                         export: options.canEdit
