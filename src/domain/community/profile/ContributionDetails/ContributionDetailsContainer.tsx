@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import {
-  refetchRolesUserQuery,
   useChallengeContributionDetailsQuery,
   useSpaceContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
@@ -43,7 +42,6 @@ export interface ContributionDetails {
     uri: string;
     alternativeText?: string;
   };
-  bannerAltText?: string;
   tags: string[];
   journeyUri: string;
   communityId?: string;
@@ -132,7 +130,6 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
           memberId: userId,
           communityId: details?.communityId,
         },
-        refetchQueries: [refetchRolesUserQuery({ input: userId })],
         awaitRefetchQueries: true,
       });
   }, [userId, details?.communityId, leaveCommunity]);

@@ -55,9 +55,10 @@ fragment ChallengeProfile on Challenge {
     ...DashboardTimelineAuthorization
   }
   community {
+    id
+    myMembershipStatus
     ...EntityDashboardCommunity
   }
-
   opportunities {
     ...OpportunityCard
   }

@@ -20,6 +20,7 @@ import Tag from '../../../../core/ui/tags/deprecated/Tag';
 import UserPopUpTagContainer from './UserPopUpTagContainer';
 import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
 import { useUserMetadata } from '../index';
+import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {
@@ -102,6 +103,8 @@ interface UserPopUpProps {
   terms?: Array<string>;
 }
 
+const getStringOfNames = (arr: string[]) => arr.join(', ');
+
 const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
   const { t } = useTranslation();
   const styles = useUserPopUpStyles();
@@ -110,16 +113,12 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
   const user = userMetadata?.user;
   const refs = user?.profile.references || [];
 
-  const getStringOfNames = arr => arr.join(', ');
+  const { spaces, challenges, opportunities, organizations } = useUserContributionDisplayNames();
 
   const tags = (userMetadata?.user?.profile.tagsets || []).flatMap(x => x.tags);
-  const groups = userMetadata?.groups || [];
-  const challenges = userMetadata?.challenges || [];
-  const organizations = userMetadata?.organizations || [];
-  const opportunities = userMetadata?.opportunities || [];
 
   const noMembership =
-    !(groups && groups.length > 0) &&
+    !(spaces && spaces.length > 0) &&
     !(challenges && challenges.length > 0) &&
     !(organizations && organizations.length > 0) &&
     !(opportunities && opportunities.length > 0);
@@ -172,7 +171,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {groups && groups.length > 0 && (
+                  {spaces && spaces.length > 0 && (
                     <TableRow>
                       <TableCell align="center">
                         <WrapperTypography weight={'medium'} className={styles.centeredText}>
@@ -180,7 +179,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
                         </WrapperTypography>
                       </TableCell>
                       <TableCell align="center">
-                        <WrapperTypography weight={'medium'}>{getStringOfNames(groups)}</WrapperTypography>
+                        <WrapperTypography weight={'medium'}>{getStringOfNames(spaces)}</WrapperTypography>
                       </TableCell>
                     </TableRow>
                   )}

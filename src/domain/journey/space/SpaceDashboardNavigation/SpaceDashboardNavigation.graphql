@@ -10,7 +10,7 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
       context {
         ...SpaceDashboardNavigationContext
       }
-      innovationFlow{
+      innovationFlow {
         id
         lifecycle {
           ...SpaceDashboardNavigationLifecycle
@@ -21,8 +21,7 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
         myPrivileges
       }
       community {
-        id
-        myMembershipStatus
+        ...SpaceDashboardNavigationCommunity
       }
     }
     visibility
@@ -43,11 +42,14 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeId
         context {
           ...SpaceDashboardNavigationContext
         }
-        innovationFlow{
+        innovationFlow {
           id
           lifecycle {
             ...SpaceDashboardNavigationLifecycle
           }
+        }
+        community {
+          ...SpaceDashboardNavigationCommunity
         }
       }
     }
@@ -76,4 +78,9 @@ fragment SpaceDashboardNavigationContext on Context {
 fragment SpaceDashboardNavigationLifecycle on Lifecycle {
   id
   state
+}
+
+fragment SpaceDashboardNavigationCommunity on Community {
+  id
+  myMembershipStatus
 }

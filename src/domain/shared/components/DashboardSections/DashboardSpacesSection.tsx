@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -22,30 +22,26 @@ export interface SpaceAttrs extends Identifiable {
     };
     cardBanner?: Visual;
   };
-  authorization?: {
-    // is required by getSpaceCardProps
-    anonymousReadAccess: boolean;
-  };
   // TODO inline types derived from generated GraphQL definitions
   visibility?: SpaceVisibility;
   metrics?: Pick<Nvp, 'name' | 'value'>[];
 }
 
-export interface DashboardSpaceSectionProps {
-  spaces: SpaceAttrs[];
-  getSpaceCardProps?: (space: SpaceAttrs) => Partial<SpaceCardProps>;
+export interface DashboardSpaceSectionProps<ExtraAttrs extends {}> {
+  spaces: (SpaceAttrs & ExtraAttrs)[];
+  getSpaceCardProps?: (space: SpaceAttrs & ExtraAttrs) => Partial<SpaceCardProps>;
   headerText: ReactNode;
   primaryAction?: ReactNode;
 }
 
-const DashboardSpacesSection: FC<DashboardSpaceSectionProps> = ({
+const DashboardSpacesSection = <ExtraAttrs extends {}>({
   headerText,
   primaryAction,
   spaces,
   getSpaceCardProps,
   children,
   ...props
-}) => {
+}: PropsWithChildren<DashboardSpaceSectionProps<ExtraAttrs>>) => {
   return (
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />

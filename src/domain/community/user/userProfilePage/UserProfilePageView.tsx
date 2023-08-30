@@ -8,12 +8,16 @@ import UserProfileView, { UserProfileViewProps } from '../../profile/views/Profi
 import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import { ContributionItem } from '../contribution';
 
-export interface UserProfileViewPageProps extends UserProfileViewProps {}
+export interface UserProfileViewPageProps extends UserProfileViewProps {
+  contributions: ContributionItem[] | undefined;
+  organizationIds: string[] | undefined;
+}
 
-export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) => {
+export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contributions, organizationIds, entities }) => {
   const { t } = useTranslation();
-  const { contributions, pendingApplications, organizationNameIDs, user } = entities.userMetadata;
+  const { pendingApplications, user } = entities.userMetadata;
   const { id } = user;
 
   const { isFeatureEnabled } = useConfig();
@@ -23,7 +27,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) 
       <PageContentColumn columns={4}>
         <UserProfileView entities={entities} />
         <AssociatedOrganizationsLazilyFetched
-          organizationNameIDs={organizationNameIDs}
+          organizationIds={organizationIds ?? []}
           title={t('pages.user-profile.associated-organizations.title')}
           helpText={t('pages.user-profile.associated-organizations.help')}
         />

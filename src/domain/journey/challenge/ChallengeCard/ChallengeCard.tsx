@@ -5,7 +5,6 @@ import SpaceChildJourneyCard, {
 import { ChallengeIcon } from '../icon/ChallengeIcon';
 import CardParentJourneySegment from '../../common/SpaceChildJourneyCard/CardParentJourneySegment';
 import { SpaceIcon } from '../../space/icon/SpaceIcon';
-import { useUserContext } from '../../../community/user';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
 import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';
@@ -37,10 +36,8 @@ const ChallengeCard = ({
   hideJoin = false,
   ...props
 }: ChallengeCardProps) => {
-  const { user } = useUserContext();
   const { t } = useTranslation();
 
-  const isMember = challengeId ? user?.ofChallenge(challengeId) : undefined;
   const ribbon =
     spaceVisibility === SpaceVisibility.Archived ? (
       <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
@@ -49,7 +46,6 @@ const ChallengeCard = ({
   return (
     <SpaceChildJourneyCard
       iconComponent={ChallengeIcon}
-      member={isMember}
       parentSegment={
         spaceUri &&
         spaceDisplayName && (

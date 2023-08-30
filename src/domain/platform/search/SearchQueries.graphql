@@ -209,12 +209,15 @@ fragment SearchResultChallenge on SearchResultChallenge {
     spaceID
     context {
       id
-
       vision
     }
     authorization {
       id
       anonymousReadAccess
+    }
+    community {
+      id
+      myMembershipStatus
     }
   }
   space {
