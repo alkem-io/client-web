@@ -42,7 +42,6 @@ export interface ContributionDetails {
     uri: string;
     alternativeText?: string;
   };
-  // bannerAltText?: string;
   tags: string[];
   journeyUri: string;
   communityId?: string;
