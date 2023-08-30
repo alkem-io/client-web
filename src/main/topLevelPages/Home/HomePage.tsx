@@ -58,7 +58,7 @@ export const HomePage = () => {
               </Box>
             </Grow>
           )}
-          <SpacesSection userSpaceRoles={user.userSpaceRoles} loading={user.loading} />
+          <SpacesSection />
           <ContributorsSection />
           <HomePageFooter />
         </PageContentColumn>

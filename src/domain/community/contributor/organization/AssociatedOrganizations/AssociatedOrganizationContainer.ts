@@ -1,7 +1,7 @@
 import { FC, useCallback } from 'react';
 import { useUserContext } from '../../../user';
 import {
-  refetchUserOrganizationsQuery,
+  refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
   useRemoveUserFromOrganizationMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -13,7 +13,7 @@ import { AssociatedOrganization, mapToAssociatedOrganization } from './Associate
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
-    organizationNameId: string;
+    organizationId: string;
     enableLeave?: boolean;
   },
   AssociatedOrganization & {
@@ -23,7 +23,7 @@ export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
 >;
 
 export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerProps> = ({
-  organizationNameId,
+  organizationId,
   enableLeave,
   ...rendered
 }) => {
@@ -31,7 +31,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
 
   const { data, loading, error } = useAssociatedOrganizationQuery({
     variables: {
-      organizationId: organizationNameId,
+      organizationId,
     },
     errorPolicy: 'all',
   });
@@ -39,22 +39,24 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
   const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] =
     useRemoveUserFromOrganizationMutation();
 
-  const handleRemoveSelfFromOrganization = useCallback(
-    async () =>
-      await disassociateSelfFromOrganization({
-        variables: {
-          input: {
-            userID: user?.user.id || '',
-            organizationID: organizationNameId,
-          },
-        },
-        refetchQueries: [refetchUserOrganizationsQuery({ input: user?.user.id || '' })],
-        awaitRefetchQueries: true,
-      }),
-    [user?.user.id, organizationNameId, disassociateSelfFromOrganization]
-  );
+  const handleRemoveSelfFromOrganization = useCallback(async () => {
+    if (!user) {
+      throw new Error('User is not loaded');
+    }
 
-  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationNameId, {
+    await disassociateSelfFromOrganization({
+      variables: {
+        input: {
+          userID: user.user.id,
+          organizationID: organizationId,
+        },
+      },
+      refetchQueries: [refetchUserOrganizationIdsQuery({ userId: user.user.id })],
+      awaitRefetchQueries: true,
+    });
+  }, [user?.user.id, organizationId, disassociateSelfFromOrganization]);
+
+  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationId, {
     loading,
     error,
   });

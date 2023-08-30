@@ -23,6 +23,7 @@ import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettings
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '../../../../core/ui/card/cardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
+import useUserContributions from '../userContributions/useUserContributions';
 
 interface UserCredentialsPageProps extends PageProps {}
 
@@ -50,6 +51,8 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
     },
     skip: !requestCredentialDialogOpen,
   });
+
+  const contributions = useUserContributions();
 
   if (!currentUser?.user.id) {
     return <Loading />;
@@ -177,7 +180,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
               entities={{
                 titleId: 'components.credential-share-request-dialog.title',
                 content: t('components.credential-share-request-dialog.content'),
-                contributions: currentUser.contributions,
+                contributions: contributions ?? [],
               }}
               options={{
                 show: communityCredentialOfferDialogOpen,

@@ -6,7 +6,6 @@ import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
 import JourneyCardDescription from '../../common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
-import { useUserContext } from '../../../community/user';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
@@ -34,9 +33,6 @@ const SpaceCard = ({
 }: SpaceCardProps) => {
   const { t } = useTranslation();
 
-  const { user } = useUserContext();
-
-  const isMember = spaceId ? user?.ofSpace(spaceId) : undefined;
   const ribbon =
     spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
       <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
@@ -45,7 +41,6 @@ const SpaceCard = ({
   return (
     <JourneyCard
       iconComponent={HubOutlined}
-      member={isMember}
       header={
         <>
           <BlockTitle noWrap component="dt">

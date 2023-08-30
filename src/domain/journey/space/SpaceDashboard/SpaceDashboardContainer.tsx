@@ -3,20 +3,21 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useSpace } from '../SpaceContext/useSpace';
 import { useUserContext } from '../../../community/user';
 import {
+  useSendMessageToCommunityLeadsMutation,
   useSpaceDashboardReferencesQuery,
   useSpacePageQuery,
-  useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   ActivityEventType,
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
-  ChallengeCardFragment,
-  DashboardTopCalloutFragment,
-  SpacePageFragment,
-  Reference,
   CalloutDisplayLocation,
+  ChallengeCardFragment,
+  CommunityMembershipStatus,
+  DashboardTopCalloutFragment,
+  Reference,
+  SpacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
@@ -68,14 +69,15 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   const { spaceId, spaceNameId, loading: loadingSpace, isPrivate } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
-  const isMember = user?.ofSpace(spaceId) ?? false;
-
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: { spaceId: spaceNameId },
     errorPolicy: 'all',
     skip: loadingSpace,
   });
+
   const collaborationID = _space?.space?.collaboration?.id;
+
+  const isMember = _space?.space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   // don't load references without READ privilege on Context
   const { data: referencesData } = useSpaceDashboardReferencesQuery({

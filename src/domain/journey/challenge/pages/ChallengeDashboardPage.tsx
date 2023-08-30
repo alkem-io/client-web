@@ -18,7 +18,7 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { InfoOutlined } from '@mui/icons-material';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -107,6 +107,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   challengeDisplayName={entities.challenge?.profile.displayName!}
                   challengeUri={buildChallengeUrl(entities.spaceNameId, entities.challenge!.nameID)}
                   spaceVisibility={entities.spaceVisibility}
+                  member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
                 />
               )}
               journeyTypeName="challenge"

@@ -17,7 +17,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useSpaceDashboardNavigation from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -87,6 +87,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   spaceDisplayName={entities.space!.profile.displayName}
                   spaceUri={buildSpaceUrl(entities.space!.nameID)}
                   spaceVisibility={entities.space!.visibility}
+                  member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
                 />
               )}
               journeyTypeName="space"

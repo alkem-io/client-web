@@ -10,7 +10,8 @@ import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
 
-interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'children'> {
+interface DashboardNavigationItemViewProps
+  extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'member' | 'children'> {
   url?: string;
   visualUri?: string;
   tooltip?: ReactNode;

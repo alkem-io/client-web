@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
-import { useOpportunityCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useChallengeOpportunityCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { CalloutDisplayLocation, OpportunityCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
@@ -37,7 +37,7 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
     data: _challenge,
     loading,
     subscribeToMore,
-  } = useOpportunityCardsQuery({
+  } = useChallengeOpportunityCardsQuery({
     variables: {
       spaceId: spaceNameId,
       challengeId: challengeNameId,

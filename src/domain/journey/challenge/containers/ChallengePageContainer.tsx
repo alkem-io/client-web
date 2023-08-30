@@ -12,6 +12,7 @@ import {
   AuthorizationPrivilege,
   CalloutDisplayLocation,
   ChallengeProfileFragment,
+  CommunityMembershipStatus,
   DashboardTopCalloutFragment,
   Reference,
   SpaceVisibility,
@@ -78,7 +79,7 @@ const NO_PRIVILEGES = [];
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { user, isAuthenticated } = useUserContext();
   const { loading: loadingSpaceContext, ...space } = useSpace();
-  const { spaceId, spaceNameId, challengeId, challengeNameId, loading } = useChallenge();
+  const { spaceId, spaceNameId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
     variables: {
@@ -102,7 +103,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ),
     challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
     timelineReadAccess,
-    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
+    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
@@ -156,6 +157,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ],
   });
 
+  const isMember = _challenge?.space.challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+
   return (
     <>
       {children(
@@ -173,7 +176,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           permissions,
           isAuthenticated,
           references,
-          isMember: user?.ofChallenge(challengeId) || false,
+          isMember,
           ...contributors,
           activities,
           topCallouts,

@@ -13,19 +13,19 @@ interface AssociatedOrganizationsLazilyFetchedProps
     >,
     'organizations' | 'organizationCardComponent'
   > {
-  organizationNameIDs: string[];
+  organizationIds: string[];
   enableLeave?: boolean;
 }
 
 interface OrganizationCardLazilyFetchedProps {
-  nameID: string;
+  organizationId: string;
   enableLeave?: boolean;
 }
 
-const OrganizationCardLazilyFetched = ({ nameID, enableLeave }: OrganizationCardLazilyFetchedProps) => {
+const OrganizationCardLazilyFetched = ({ organizationId, enableLeave }: OrganizationCardLazilyFetchedProps) => {
   return (
     <AssociatedOrganizationContainer
-      organizationNameId={nameID}
+      organizationId={organizationId}
       enableLeave={enableLeave}
       component={OrganizationCard}
     />
@@ -33,13 +33,13 @@ const OrganizationCardLazilyFetched = ({ nameID, enableLeave }: OrganizationCard
 };
 
 export const AssociatedOrganizationsLazilyFetched: FC<AssociatedOrganizationsLazilyFetchedProps> = ({
-  organizationNameIDs,
+  organizationIds,
   enableLeave,
   ...viewProps
 }) => {
-  const organizations = organizationNameIDs.map(
-    nameID => ({ key: nameID, nameID, enableLeave }),
-    [organizationNameIDs]
+  const organizations = organizationIds.map(
+    organizationId => ({ key: organizationId, organizationId, enableLeave }),
+    [organizationIds]
   );
 
   return (
