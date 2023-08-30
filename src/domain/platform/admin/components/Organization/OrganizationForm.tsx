@@ -26,6 +26,7 @@ import { OrganizationInput } from '../../../../community/contributor/organizatio
 import { formatLocation } from '../../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../../common/location/LocationSegment';
 import { EmptyLocation } from '../../../../common/location/Location';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 const EmptyOrganization: Omit<Organization, 'authorization'> = {
   id: '',
@@ -240,7 +241,7 @@ export const OrganizationForm: FC<Props> = ({
                   }
                 >
                   <Header text={title} />
-                  <Grid container spacing={2}>
+                  <Gutters disablePadding>
                     <NameSegment disabled={isEditMode} required={!isEditMode} />
                     {!isCreateMode && (
                       <>
@@ -270,7 +271,7 @@ export const OrganizationForm: FC<Props> = ({
                         </Grid>
                       </Grid>
                     )}
-                  </Grid>
+                  </Gutters>
                 </Section>
               </Form>
             );
