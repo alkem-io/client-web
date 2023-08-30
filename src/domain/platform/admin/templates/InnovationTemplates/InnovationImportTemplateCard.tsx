@@ -6,8 +6,7 @@ import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPac
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../../core/ui/card/CardDetails';
-import CardDescription from '../../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../../core/ui/card/CardTags';
+import CardDescriptionWithTags from '../../../../../core/ui/card/CardDescriptionWithTags';
 import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
 import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
 import { Caption } from '../../../../../core/ui/typography';
@@ -24,8 +23,9 @@ const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTem
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{template.profile.description || ''}</CardDescription>
-        <CardTags tags={template.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescriptionWithTags tags={template.profile.tagset?.tags}>
+          {template.profile.description}
+        </CardDescriptionWithTags>
       </CardDetails>
       <CardSegmentCaption icon={<InnovationPackIcon />}>
         <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>

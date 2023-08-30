@@ -11,8 +11,7 @@ import React from 'react';
 import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
 import { SvgIconComponent } from '@mui/icons-material';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescription from '../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../core/ui/card/CardTags';
+import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 
 interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
 
@@ -26,8 +25,7 @@ const InnovationFlowTemplateCard = ({ template, loading, onClick }: InnovationFl
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{template?.description ?? ''}</CardDescription>
-        <CardTags tags={template?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescriptionWithTags tags={template?.tags}>{template?.description}</CardDescriptionWithTags>
       </CardDetails>
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
