@@ -2,8 +2,10 @@ import React from 'react';
 import { Box, BoxProps } from '@mui/material';
 
 const CardDetails = ({ transparent = false, sx, ...boxProps }: { transparent?: boolean } & BoxProps) => {
-  const mergedSx = {
+  const mergedSx: BoxProps['sx'] = {
     backgroundColor: transparent ? undefined : 'background.default',
+    display: 'flex',
+    flexDirection: 'column',
     ...sx,
   };
 

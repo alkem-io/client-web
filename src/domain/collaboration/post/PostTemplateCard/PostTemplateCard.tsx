@@ -7,8 +7,7 @@ import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/Co
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { PostIcon } from '../icon/PostIcon';
-import CardDescription from '../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../core/ui/card/CardTags';
+import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 
 export interface PostTemplate {
@@ -41,8 +40,7 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClic
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{template?.description ?? ''}</CardDescription>
-        <CardTags tags={template?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescriptionWithTags tags={template?.tags}>{template?.description}</CardDescriptionWithTags>
       </CardDetails>
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

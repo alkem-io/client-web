@@ -94,7 +94,7 @@ const JourneyCard = ({
           expansion={expansion}
           actions={actions}
           expansionActions={expansionActions}
-          tags={<Tags tags={tags} />}
+          tags={<Tags tags={tags} disableIndentation />}
         />
       </Box>
     </ContributeCard>
