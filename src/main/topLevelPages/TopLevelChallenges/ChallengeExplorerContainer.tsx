@@ -32,7 +32,6 @@ export type SimpleChallenge = {
     alternativeText?: string;
   };
   tags: string[];
-  // roles: string[];
   member: boolean;
   vision: string;
 };
@@ -155,7 +154,6 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         banner: getVisualByType(VisualName.BANNERNARROW, ch.profile.visuals),
         tagline: ch.profile.tagline || '',
         tags: ch.profile.tagset?.tags || [],
-        // roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
         vision: ch.context?.vision || '',
         matchedTerms: entry.terms,
         member: ch.community?.myMembershipStatus === CommunityMembershipStatus.Member,
