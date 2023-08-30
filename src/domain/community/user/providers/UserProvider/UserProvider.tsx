@@ -17,7 +17,7 @@ import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper
 export interface UserContextValue {
   user: UserMetadata | undefined;
   loading: boolean;
-  loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar but f.e. roles information is not guaranteed yet.
+  loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: boolean;
   isAuthenticated: boolean;
 }
@@ -32,7 +32,7 @@ const UserContext = React.createContext<UserContextValue>({
 
 const UserProvider: FC<{}> = ({ children }) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
-  // TODO "me" query fetches too much beyond user name
+
   const { data: meData, loading: loadingMe } = useUserProviderQuery({
     skip: !isAuthenticated,
   });
