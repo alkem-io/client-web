@@ -1,4 +1,3 @@
-import { Grid } from '@mui/material';
 import { FieldArray, useField } from 'formik';
 import React, { FC, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
@@ -96,26 +95,23 @@ export const TagsetField: FC<TagsetFieldProps> = ({
     return meta.error;
   }, [isError, meta.error, _helperText]);
 
-  // TODO remove Grid wrapping, it breaks single responsibility
   return (
-    <Grid item xs={12}>
-      <TagsInput
-        name={name}
-        label={title}
-        variant={'outlined'}
-        placeholder={placeholder}
-        value={field.value}
-        required={required}
-        disabled={disabled}
-        readOnly={readOnly}
-        error={isError}
-        helperText={helperText}
-        helpTextIcon={helpTextIcon}
-        onChange={items => helper.setValue(items)}
-        onBlur={field.onBlur}
-        fullWidth
-        loading={loading}
-      />
-    </Grid>
+    <TagsInput
+      name={name}
+      label={title}
+      variant={'outlined'}
+      placeholder={placeholder}
+      value={field.value}
+      required={required}
+      disabled={disabled}
+      readOnly={readOnly}
+      error={isError}
+      helperText={helperText}
+      helpTextIcon={helpTextIcon}
+      onChange={items => helper.setValue(items)}
+      onBlur={field.onBlur}
+      fullWidth
+      loading={loading}
+    />
   );
 };

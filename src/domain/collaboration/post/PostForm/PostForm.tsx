@@ -2,21 +2,19 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
-import { Grid } from '@mui/material';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
 import { Post, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ReferenceSegment, { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import { PushFunc, RemoveFunc } from '../../../common/reference/useEditReference';
 import { Reference } from '../../../common/profile/Profile';
-import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
-import FormRow from '../../../../core/ui/forms/FormRow';
 import { displayNameValidator } from '../../../../core/ui/forms/validator';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 
 interface FormValue {
   name: string;
@@ -137,28 +135,24 @@ const PostForm: FC<PostFormProps> = ({
     >
       {formikState => (
         <>
-          <Grid container spacing={2}>
+          <Gutters disablePadding>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-            <FormRow>
-              <FormikInputField
-                name={'name'}
-                title={t('common.title')}
-                required
-                placeholder={t('components.post-creation.info-step.name-help-text')}
-              />
-            </FormRow>
-            <SectionSpacer />
-            <MarkdownInput
-              name="description"
-              label={t('components.post-creation.info-step.description')}
-              placeholder={t('components.post-creation.info-step.description-placeholder')}
+            <FormikInputField
+              name={'name'}
+              title={t('common.title')}
               required
-              loading={loading}
+              placeholder={t('components.post-creation.info-step.name-help-text')}
+            />
+            <FormikMarkdownField
+              name="description"
+              title={t('components.post-creation.info-step.description')}
+              placeholder={t('components.post-creation.info-step.description-placeholder')}
               rows={7}
+              required
               maxLength={VERY_LONG_TEXT_LENGTH}
               withCounter
+              loading={loading}
             />
-            <SectionSpacer />
             <TagsetSegment
               tagsets={tagsets}
               title={t('common.tags')}
@@ -167,7 +161,6 @@ const PostForm: FC<PostFormProps> = ({
             />
             {edit && (
               <>
-                <SectionSpacer />
                 <ReferenceSegment
                   references={formikState.values.references}
                   onAdd={push => onAddReference?.(push, formikState.values.references?.length)}
@@ -175,7 +168,7 @@ const PostForm: FC<PostFormProps> = ({
                 />
               </>
             )}
-          </Grid>
+          </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>
       )}
