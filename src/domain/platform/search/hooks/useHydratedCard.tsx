@@ -1,23 +1,24 @@
 import {
-  SearchResultPostFragment,
+  CommunityMembershipStatus,
   SearchResultChallengeFragment,
-  SearchResultSpaceFragment,
   SearchResultOpportunityFragment,
   SearchResultOrganizationFragment,
+  SearchResultPostFragment,
+  SearchResultSpaceFragment,
   SearchResultUserFragment,
   UserRolesSearchCardsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import React from 'react';
 import {
-  buildPostUrl,
   buildCalloutUrl,
   buildChallengeUrl,
-  buildSpaceUrl,
   buildOpportunityUrl,
   buildOrganizationUrl,
+  buildPostUrl,
+  buildSpaceUrl,
   buildUserProfileUrl,
 } from '../../../../main/routing/urlBuilders';
-import { SearchChallengeCard, SearchSpaceCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
+import { SearchChallengeCard, SearchOpportunityCard, SearchSpaceCard } from '../../../shared/components/search-cards';
 import { RoleType } from '../../../community/user/constants/RoleType';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -92,10 +93,7 @@ const _hydrateOrganizationCard = (
   );
 };
 
-const _hydrateSpaceCard = (
-  data: SearchResultT<SearchResultSpaceFragment>,
-  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
-) => {
+const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
   if (!data?.space) {
     return null;
   }
@@ -106,16 +104,12 @@ const _hydrateSpaceCard = (
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = space.context?.vision || '';
 
-  const spaceRoles = userRoles?.spaces.find(x => x.id === data.id);
-  const isMember =
-    spaceRoles?.roles.find(x => x === RoleType.Lead) ||
-    spaceRoles?.roles.find(x => x === RoleType.Host) ||
-    spaceRoles?.roles.find(x => x === RoleType.Member);
+  const isMember = space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   return (
     <SearchSpaceCard
       banner={getVisualByType(VisualName.BANNERNARROW, space.profile.visuals)}
-      member={!!isMember}
+      member={isMember}
       displayName={name}
       tagline={tagline}
       journeyUri={url}
@@ -128,10 +122,7 @@ const _hydrateSpaceCard = (
   );
 };
 
-const useHydrateChallengeCard = (
-  data: SearchResultT<SearchResultChallengeFragment> | undefined,
-  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
-) => {
+const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragment> | undefined) => {
   if (!data?.challenge || !data?.space) {
     return null;
   }
@@ -140,7 +131,6 @@ const useHydrateChallengeCard = (
   const tagline = challenge.profile.tagline || '';
   const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
-  const spaceId = containingSpace.id;
   const spaceNameId = containingSpace.nameID;
   const spaceDisplayName = containingSpace.profile.displayName;
   const vision = challenge.context?.vision || '';
@@ -149,15 +139,12 @@ const useHydrateChallengeCard = (
 
   const url = buildChallengeUrl(spaceNameId, nameID);
 
-  const challengeRoles = userRoles?.spaces.find(x => x.id === spaceId)?.challenges.find(x => x.id === data?.id);
-
-  const isMember =
-    challengeRoles?.roles.find(x => x === RoleType.Lead) || challengeRoles?.roles.find(x => x === RoleType.Member);
+  const isMember = challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   return (
     <SearchChallengeCard
       banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
-      member={!!isMember}
+      member={isMember}
       displayName={name}
       tagline={tagline}
       tags={matchedTerms}
@@ -179,10 +166,7 @@ const useHydrateChallengeCard = (
   );
 };
 
-const useHydrateOpportunityCard = (
-  data: SearchResultT<SearchResultOpportunityFragment> | undefined,
-  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
-) => {
+const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFragment> | undefined) => {
   if (!data?.opportunity) {
     return null;
   }
@@ -194,22 +178,18 @@ const useHydrateOpportunityCard = (
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
   const challengeDisplayName = containingChallenge.profile.displayName;
-  const spaceId = containingSpace.id;
   const spaceNameID = containingSpace.nameID;
   const nameID = opportunity.nameID;
   const vision = opportunity.context?.vision ?? '';
 
   const url = buildOpportunityUrl(spaceNameID, challengeNameId, nameID);
 
-  const opportunityRoles = userRoles?.spaces.find(x => x.id === spaceId)?.opportunities.find(x => x.id === data?.id);
-
-  const isMember =
-    opportunityRoles?.roles.find(x => x === RoleType.Lead) || opportunityRoles?.roles.find(x => x === RoleType.Member);
+  const isMember = opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   return (
     <SearchOpportunityCard
       banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
-      member={!!isMember}
+      member={isMember}
       displayName={name}
       tagline={tagline}
       tags={matchedTerms}
@@ -335,17 +315,13 @@ export const useHydrateCard = (result: SearchResultMetaType | undefined): UseHyd
   const hydrateContributionCard = () => _hydrateContributionPost(result as SearchResultT<SearchResultPostFragment>);
 
   // Journey cards:
-  const hydrateSpaceCard = () => _hydrateSpaceCard(result as SearchResultT<SearchResultSpaceFragment>, userRoles);
+  const hydrateSpaceCard = () => _hydrateSpaceCard(result as SearchResultT<SearchResultSpaceFragment>);
 
-  const hydrateChallengeCardResult = useHydrateChallengeCard(
-    result as SearchResultT<SearchResultChallengeFragment>,
-    userRoles
-  );
+  const hydrateChallengeCardResult = useHydrateChallengeCard(result as SearchResultT<SearchResultChallengeFragment>);
   const hydrateChallengeCard = () => hydrateChallengeCardResult;
 
   const hydrateOpportunityCardResult = useHydrateOpportunityCard(
-    result as SearchResultT<SearchResultOpportunityFragment>,
-    userRoles
+    result as SearchResultT<SearchResultOpportunityFragment>
   );
   const hydrateOpportunityCard = () => hydrateOpportunityCardResult;
 
