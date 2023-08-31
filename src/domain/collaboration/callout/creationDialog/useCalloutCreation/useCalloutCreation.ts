@@ -19,6 +19,7 @@ import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/temp
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardRtFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
 
 export interface CalloutCreationType {
   profile: {
@@ -33,7 +34,7 @@ export interface CalloutCreationType {
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValues;
-  whiteboardRt?: WhiteboardFieldSubmittedValues;
+  whiteboardRt?: WhiteboardRtFieldSubmittedValues;
   displayLocation?: CalloutDisplayLocation;
   visibility?: CalloutVisibility;
   sendNotification?: boolean;

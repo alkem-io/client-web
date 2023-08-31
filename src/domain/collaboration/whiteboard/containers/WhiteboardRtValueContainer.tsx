@@ -27,21 +27,23 @@ export interface WhiteboardValueContainerState {
 }
 
 export interface WhiteboardValueParams {
+  calloutId: string | undefined; //!! TEMPORARY
   whiteboardId: string | undefined;
 }
 
-export interface WhiteboardValueContainerProps
+export interface WhiteboardRtValueContainerProps
   extends ContainerChildProps<IWhiteboardRtValueEntities, {}, WhiteboardValueContainerState>,
     WhiteboardValueParams {
   onWhiteboardValueLoaded?: (whiteboard: WhiteboardRtWithContent) => void;
 }
 
-const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
+const WhiteboardRtValueContainer: FC<WhiteboardRtValueContainerProps> = ({
   children,
+  calloutId,
   whiteboardId,
   onWhiteboardValueLoaded,
 }) => {
-  const skipWhiteboardQuery = !Boolean(whiteboardId);
+  const skipWhiteboardQuery = !Boolean(calloutId);
   const { data: whiteboardWithValueData, loading: loadingWhiteboardWithValue } = useWhiteboardRtWithContentQuery({
     errorPolicy: 'all',
     // TODO: Check if these policies are really needed
@@ -49,11 +51,12 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
     nextFetchPolicy: 'cache-and-network',
     skip: skipWhiteboardQuery,
     variables: {
-      whiteboardId: whiteboardId!,
+      calloutId: calloutId!,
+      //whiteboardId: whiteboardId!,
     },
   });
 
-  const whiteboard = whiteboardWithValueData?.lookup.whiteboardRt;
+  const whiteboard = whiteboardWithValueData?.lookup.callout?.whiteboardRt;
 
   useEffect(() => {
     if (whiteboard) {
@@ -76,4 +79,4 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
   );
 };
 
-export default WhiteboardValueContainer;
+export default WhiteboardRtValueContainer;

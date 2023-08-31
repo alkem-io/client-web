@@ -72,7 +72,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
 
   return (
     <>
-      <WhiteboardRtValueContainer whiteboardId={whiteboard?.id}>
+      <WhiteboardRtValueContainer whiteboardId={whiteboard?.id} calloutId={calloutId}>
         {entities => {
           return (
             <WhiteboardRtDialog

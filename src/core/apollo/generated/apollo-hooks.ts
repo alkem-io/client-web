@@ -7820,7 +7820,7 @@ export function refetchWhiteboardFromCalloutQuery(variables: SchemaTypes.Whitebo
 }
 
 export const WhiteboardRtFromCalloutDocument = gql`
-  query WhiteboardRtFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+  query WhiteboardRtFromCallout($calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         ...CalloutWithWhiteboardRt
@@ -7843,7 +7843,6 @@ export const WhiteboardRtFromCalloutDocument = gql`
  * const { data, loading, error } = useWhiteboardRtFromCalloutQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      whiteboardId: // value for 'whiteboardId'
  *   },
  * });
  */
@@ -7949,11 +7948,13 @@ export function refetchWhiteboardWithValueQuery(variables: SchemaTypes.Whiteboar
 }
 
 export const WhiteboardRtWithContentDocument = gql`
-  query whiteboardRtWithContent($whiteboardId: UUID!) {
+  query whiteboardRtWithContent($calloutId: UUID!) {
     lookup {
-      whiteboardRt(ID: $whiteboardId) {
-        ...WhiteboardRtDetails
-        ...WhiteboardRtContent
+      callout(ID: $calloutId) {
+        whiteboardRt {
+          ...WhiteboardRtDetails
+          ...WhiteboardRtContent
+        }
       }
     }
   }
@@ -7973,7 +7974,7 @@ export const WhiteboardRtWithContentDocument = gql`
  * @example
  * const { data, loading, error } = useWhiteboardRtWithContentQuery({
  *   variables: {
- *      whiteboardId: // value for 'whiteboardId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */

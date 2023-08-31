@@ -84,6 +84,11 @@ export interface CalloutWhiteboardTemplate {
   profile: TemplateProfile;
 }
 
+const whiteboardValueToContent = ({ value, ...rest }: WhiteboardFieldSubmittedValuesWithPreviewImages) => ({
+  content: value,
+  ...rest,
+});
+
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
@@ -149,7 +154,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
         displayLocation,
         whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
-        whiteboardRt: callout.type === CalloutType.WhiteboardRt ? callout.whiteboard : undefined,
+        whiteboardRt:
+          callout.type === CalloutType.WhiteboardRt && callout.whiteboard
+            ? whiteboardValueToContent(callout.whiteboard)
+            : undefined,
         visibility,
         sendNotification: visibility === CalloutVisibility.Published && sendNotification,
       };

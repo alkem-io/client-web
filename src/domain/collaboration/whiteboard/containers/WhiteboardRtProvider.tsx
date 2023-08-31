@@ -42,7 +42,7 @@ const WhiteboardRtProvider: FC<WhiteboardRtProviderProps> = ({
   });
 
   const { data, loading } = useWhiteboardRtFromCalloutQuery({
-    variables: { calloutId: calloutId!, whiteboardId },
+    variables: { calloutId: calloutId! },
     skip: !calloutId || !whiteboardId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network', // TODO: Check if this is still needed

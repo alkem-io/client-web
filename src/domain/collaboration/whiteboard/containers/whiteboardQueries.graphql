@@ -176,7 +176,7 @@ query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
   }
 }
 
-query WhiteboardRtFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+query WhiteboardRtFromCallout($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       ...CalloutWithWhiteboardRt
@@ -193,11 +193,14 @@ query whiteboardWithValue($whiteboardId: UUID!) {
   }
 }
 
-query whiteboardRtWithContent($whiteboardId: UUID!) {
+# Due to a problem with authorization I am requesting the whiteboardRt through the callout for now
+query whiteboardRtWithContent($calloutId: UUID!) {
   lookup {
-    whiteboardRt(ID: $whiteboardId) {
-      ...WhiteboardRtDetails
-      ...WhiteboardRtContent
+    callout(ID: $calloutId) {
+      whiteboardRt {
+        ...WhiteboardRtDetails
+        ...WhiteboardRtContent
+      }
     }
   }
 }

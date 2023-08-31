@@ -1,12 +1,13 @@
 import { useCallback } from 'react';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardRtFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
 import { useUploadWhiteboardVisuals } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { CalloutCreationType, CalloutCreationUtils, useCalloutCreation } from './useCalloutCreation';
-import { CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutCreationTypeWithPreviewImages extends Omit<CalloutCreationType, 'whiteboard'> {
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
-  whiteboardRt?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+  whiteboardRt?: WhiteboardRtFieldSubmittedValuesWithPreviewImages;
 }
 
 export interface CalloutCreationUtilsWithPreviewImages extends Omit<CalloutCreationUtils, 'handleCreateCallout'> {
@@ -47,7 +48,7 @@ export const useCalloutCreationWithPreviewImages = (initialOpened = false): Call
       // The PreviewImages (like the ones generated for SingleWhiteboard callouts
       // are sent from here to the server after the callout creation
       if (result && previewImages) {
-        const whiteboard = result?.whiteboards?.[0];
+        const whiteboard = (callout.type === CalloutType.Whiteboard ? result?.whiteboards?.[0] : (callout.type === CalloutType.WhiteboardRt ? result?.whiteboardRt : undefined));
         if (whiteboard && whiteboard.profile) {
           await uploadVisuals(
             previewImages,
