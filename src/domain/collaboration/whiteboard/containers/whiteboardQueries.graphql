@@ -40,6 +40,30 @@ fragment WhiteboardDetails on Whiteboard {
     }
   }
 }
+fragment WhiteboardRtDetails on WhiteboardRt {
+  id
+  nameID
+  createdDate
+  profile {
+    ...WhiteboardProfile
+  }
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
 
 fragment WhiteboardSummary on Whiteboard {
   id
@@ -54,6 +78,11 @@ fragment WhiteboardSummary on Whiteboard {
 fragment WhiteboardValue on Whiteboard {
   id
   value
+}
+
+fragment WhiteboardRtContent on WhiteboardRt {
+  id
+  content
 }
 
 fragment CheckoutDetails on WhiteboardCheckout {
@@ -105,6 +134,19 @@ fragment CalloutWithWhiteboard on Callout {
     ...WhiteboardDetails
   }
 }
+fragment CalloutWithWhiteboardRt on Callout {
+  id
+  nameID
+  type
+  authorization {
+    id
+    anonymousReadAccess
+    myPrivileges
+  }
+  whiteboardRt {
+    ...WhiteboardRtDetails
+  }
+}
 
 fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
@@ -120,6 +162,9 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
     whiteboards {
       ...WhiteboardDetails
     }
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
   }
 }
 
@@ -131,11 +176,28 @@ query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
   }
 }
 
+query WhiteboardRtFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      ...CalloutWithWhiteboardRt
+    }
+  }
+}
+
 query whiteboardWithValue($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {
       ...WhiteboardDetails
       ...WhiteboardValue
+    }
+  }
+}
+
+query whiteboardRtWithContent($whiteboardId: UUID!) {
+  lookup {
+    whiteboardRt(ID: $whiteboardId) {
+      ...WhiteboardRtDetails
+      ...WhiteboardRtContent
     }
   }
 }
@@ -196,6 +258,16 @@ mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
   }
 }
 
+mutation updateWhiteboardRt($input: UpdateWhiteboardRtDirectInput!) {
+  updateWhiteboardRt(whiteboardData: $input) {
+    id
+    content
+    profile {
+      id
+      displayName
+    }
+  }
+}
 mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
   eventOnWhiteboardCheckout(whiteboardCheckoutEventData: $input) {
     ...CheckoutDetails

@@ -6,6 +6,7 @@ import { CreateCalloutMutation } from '../../../../../core/apollo/generated/grap
 
 export interface CalloutCreationTypeWithPreviewImages extends Omit<CalloutCreationType, 'whiteboard'> {
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+  whiteboardRt?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 }
 
 export interface CalloutCreationUtilsWithPreviewImages extends Omit<CalloutCreationUtils, 'handleCreateCallout'> {
@@ -25,6 +26,13 @@ export const useCalloutCreationWithPreviewImages = (initialOpened = false): Call
         ...restCallout
       } = callout;
       return { callout: { whiteboard: restWhiteboard, ...restCallout }, previewImages };
+    }
+    if (callout.whiteboardRt) {
+      const {
+        whiteboardRt: { previewImages, ...restWhiteboard },
+        ...restCallout
+      } = callout;
+      return { callout: { whiteboardRt: restWhiteboard, ...restCallout }, previewImages };
     }
     return { callout };
   };

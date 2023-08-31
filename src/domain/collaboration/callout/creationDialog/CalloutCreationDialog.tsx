@@ -148,7 +148,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         whiteboardTemplate:
           callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
         displayLocation,
-        whiteboard: callout.whiteboard,
+        whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
+        whiteboardRt: callout.type === CalloutType.WhiteboardRt ? callout.whiteboard : undefined,
         visibility,
         sendNotification: visibility === CalloutVisibility.Published && sendNotification,
       };

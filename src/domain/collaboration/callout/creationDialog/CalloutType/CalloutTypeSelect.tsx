@@ -17,6 +17,7 @@ interface CalloutTypeSelectProps {
 const availableCalloutTypes = [
   CalloutType.Post,
   CalloutType.Whiteboard,
+  CalloutType.WhiteboardRt,
   CalloutType.LinkCollection,
   CalloutType.PostCollection,
   CalloutType.WhiteboardCollection,

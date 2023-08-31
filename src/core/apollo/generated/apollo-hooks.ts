@@ -469,6 +469,33 @@ export const WhiteboardDetailsFragmentDoc = gql`
   ${WhiteboardProfileFragmentDoc}
   ${CheckoutDetailsFragmentDoc}
 `;
+export const WhiteboardRtDetailsFragmentDoc = gql`
+  fragment WhiteboardRtDetails on WhiteboardRt {
+    id
+    nameID
+    createdDate
+    profile {
+      ...WhiteboardProfile
+    }
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+  }
+  ${WhiteboardProfileFragmentDoc}
+`;
 export const ReactionDetailsFragmentDoc = gql`
   fragment ReactionDetails on Reaction {
     id
@@ -598,6 +625,9 @@ export const CalloutFragmentDoc = gql`
     whiteboards {
       ...WhiteboardDetails
     }
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
     comments {
       ...CommentsWithMessages
     }
@@ -612,6 +642,7 @@ export const CalloutFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardRtDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutPostTemplateFragmentDoc}
   ${CalloutWhiteboardTemplateFragmentDoc}
@@ -928,6 +959,12 @@ export const WhiteboardValueFragmentDoc = gql`
     value
   }
 `;
+export const WhiteboardRtContentFragmentDoc = gql`
+  fragment WhiteboardRtContent on WhiteboardRt {
+    id
+    content
+  }
+`;
 export const CreateWhiteboardWhiteboardTemplateFragmentDoc = gql`
   fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
     id
@@ -955,6 +992,22 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
   }
   ${WhiteboardDetailsFragmentDoc}
 `;
+export const CalloutWithWhiteboardRtFragmentDoc = gql`
+  fragment CalloutWithWhiteboardRt on Callout {
+    id
+    nameID
+    type
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
+  }
+  ${WhiteboardRtDetailsFragmentDoc}
+`;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
@@ -970,9 +1023,13 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
       whiteboards {
         ...WhiteboardDetails
       }
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
     }
   }
   ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardRtDetailsFragmentDoc}
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -7762,6 +7819,70 @@ export function refetchWhiteboardFromCalloutQuery(variables: SchemaTypes.Whitebo
   return { query: WhiteboardFromCalloutDocument, variables: variables };
 }
 
+export const WhiteboardRtFromCalloutDocument = gql`
+  query WhiteboardRtFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+    lookup {
+      callout(ID: $calloutId) {
+        ...CalloutWithWhiteboardRt
+      }
+    }
+  }
+  ${CalloutWithWhiteboardRtFragmentDoc}
+`;
+
+/**
+ * __useWhiteboardRtFromCalloutQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardRtFromCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardRtFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardRtFromCalloutQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardRtFromCalloutQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardRtFromCalloutQuery,
+    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardRtFromCalloutQuery, SchemaTypes.WhiteboardRtFromCalloutQueryVariables>(
+    WhiteboardRtFromCalloutDocument,
+    options
+  );
+}
+
+export function useWhiteboardRtFromCalloutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardRtFromCalloutQuery,
+    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardRtFromCalloutQuery,
+    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
+  >(WhiteboardRtFromCalloutDocument, options);
+}
+
+export type WhiteboardRtFromCalloutQueryHookResult = ReturnType<typeof useWhiteboardRtFromCalloutQuery>;
+export type WhiteboardRtFromCalloutLazyQueryHookResult = ReturnType<typeof useWhiteboardRtFromCalloutLazyQuery>;
+export type WhiteboardRtFromCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardRtFromCalloutQuery,
+  SchemaTypes.WhiteboardRtFromCalloutQueryVariables
+>;
+export function refetchWhiteboardRtFromCalloutQuery(variables: SchemaTypes.WhiteboardRtFromCalloutQueryVariables) {
+  return { query: WhiteboardRtFromCalloutDocument, variables: variables };
+}
+
 export const WhiteboardWithValueDocument = gql`
   query whiteboardWithValue($whiteboardId: UUID!) {
     lookup {
@@ -7825,6 +7946,71 @@ export type WhiteboardWithValueQueryResult = Apollo.QueryResult<
 >;
 export function refetchWhiteboardWithValueQuery(variables: SchemaTypes.WhiteboardWithValueQueryVariables) {
   return { query: WhiteboardWithValueDocument, variables: variables };
+}
+
+export const WhiteboardRtWithContentDocument = gql`
+  query whiteboardRtWithContent($whiteboardId: UUID!) {
+    lookup {
+      whiteboardRt(ID: $whiteboardId) {
+        ...WhiteboardRtDetails
+        ...WhiteboardRtContent
+      }
+    }
+  }
+  ${WhiteboardRtDetailsFragmentDoc}
+  ${WhiteboardRtContentFragmentDoc}
+`;
+
+/**
+ * __useWhiteboardRtWithContentQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardRtWithContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardRtWithContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardRtWithContentQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardRtWithContentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardRtWithContentQuery,
+    SchemaTypes.WhiteboardRtWithContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardRtWithContentQuery, SchemaTypes.WhiteboardRtWithContentQueryVariables>(
+    WhiteboardRtWithContentDocument,
+    options
+  );
+}
+
+export function useWhiteboardRtWithContentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardRtWithContentQuery,
+    SchemaTypes.WhiteboardRtWithContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardRtWithContentQuery,
+    SchemaTypes.WhiteboardRtWithContentQueryVariables
+  >(WhiteboardRtWithContentDocument, options);
+}
+
+export type WhiteboardRtWithContentQueryHookResult = ReturnType<typeof useWhiteboardRtWithContentQuery>;
+export type WhiteboardRtWithContentLazyQueryHookResult = ReturnType<typeof useWhiteboardRtWithContentLazyQuery>;
+export type WhiteboardRtWithContentQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardRtWithContentQuery,
+  SchemaTypes.WhiteboardRtWithContentQueryVariables
+>;
+export function refetchWhiteboardRtWithContentQuery(variables: SchemaTypes.WhiteboardRtWithContentQueryVariables) {
+  return { query: WhiteboardRtWithContentDocument, variables: variables };
 }
 
 export const WhiteboardTemplateValueDocument = gql`
@@ -8127,6 +8313,59 @@ export type UpdateWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.U
 export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
   SchemaTypes.UpdateWhiteboardMutationVariables
+>;
+export const UpdateWhiteboardRtDocument = gql`
+  mutation updateWhiteboardRt($input: UpdateWhiteboardRtDirectInput!) {
+    updateWhiteboardRt(whiteboardData: $input) {
+      id
+      content
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type UpdateWhiteboardRtMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardRtMutation,
+  SchemaTypes.UpdateWhiteboardRtMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardRtMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardRtMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardRtMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardRtMutation, { data, loading, error }] = useUpdateWhiteboardRtMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardRtMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardRtMutation,
+    SchemaTypes.UpdateWhiteboardRtMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateWhiteboardRtMutation, SchemaTypes.UpdateWhiteboardRtMutationVariables>(
+    UpdateWhiteboardRtDocument,
+    options
+  );
+}
+
+export type UpdateWhiteboardRtMutationHookResult = ReturnType<typeof useUpdateWhiteboardRtMutation>;
+export type UpdateWhiteboardRtMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardRtMutation>;
+export type UpdateWhiteboardRtMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardRtMutation,
+  SchemaTypes.UpdateWhiteboardRtMutationVariables
 >;
 export const CheckoutWhiteboardDocument = gql`
   mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
