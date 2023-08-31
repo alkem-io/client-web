@@ -25,24 +25,24 @@ const useRestoredMessages = (messages: Message[] | undefined): MaybeDeletedMessa
       deleted: false,
     }));
 
-    const deletedMessagesById = messages.reduce<Record<string, DeletedMessage>>((deleted, message) => {
+    const restoredMessagesById = messages.reduce<Record<string, DeletedMessage>>((restored, message) => {
       const { threadID } = message;
       if (!threadID) {
-        return deleted;
+        return restored;
       }
       const isThreadStarterMissing = !messagesById[threadID];
-      if (isThreadStarterMissing && !deleted[threadID]) {
-        deleted[threadID] = {
+      if (isThreadStarterMissing && !restored[threadID]) {
+        restored[threadID] = {
           id: threadID,
           deleted: true,
           author: undefined,
           reactions: [],
         };
       }
-      return deleted;
+      return restored;
     }, {});
 
-    return [...nonDeletedMessages, ...Object.values(deletedMessagesById)];
+    return [...nonDeletedMessages, ...Object.values(restoredMessagesById)];
   }, [messages]);
 };
 
