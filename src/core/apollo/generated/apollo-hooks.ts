@@ -22921,7 +22921,7 @@ export function refetchInnovationLibraryQuery(variables?: SchemaTypes.Innovation
 }
 
 export const ChallengeExplorerPageDocument = gql`
-  query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
+  query ChallengeExplorerPage {
     me {
       spaceMemberships(visibilities: [ACTIVE, DEMO]) {
         id
@@ -22942,12 +22942,11 @@ export const ChallengeExplorerPageDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeExplorerPageQuery({
  *   variables: {
- *      userID: // value for 'userID'
  *   },
  * });
  */
 export function useChallengeExplorerPageQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.ChallengeExplorerPageQuery,
     SchemaTypes.ChallengeExplorerPageQueryVariables
   >
@@ -22978,7 +22977,7 @@ export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerPageQuery,
   SchemaTypes.ChallengeExplorerPageQueryVariables
 >;
-export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
+export function refetchChallengeExplorerPageQuery(variables?: SchemaTypes.ChallengeExplorerPageQueryVariables) {
   return { query: ChallengeExplorerPageDocument, variables: variables };
 }
 
