@@ -1056,17 +1056,18 @@
       "apply-not-signed": "Sign in to apply",
       "apply-pending": "Application pending",
       "join": "Join",
-      "join-parent": "Join parent",
+      "go-to-space": "Go to $t(common.space)",
+      "go-to-challenge": "Go to $t(common.challenge)",
       "parent-pending": "Parent application pending",
       "applyTo": "Apply to",
       "extendedMessage": "{{join}} our Community and start making change!",
       "dialog-apply-parent": {
-        "title": "Want to join the parent Space?",
+        "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the challenge you want to join in the Spaces' application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "To join <strong title='Challenge name'>{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Join community",
@@ -1074,7 +1075,7 @@
         "accept-terms": "I understand and accept the terms and conditions for community members"
       },
       "dialog-join-parent": {
-        "title": "Join parent community",
+        "title": "Join <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "You can join this community without applying for a membership, because you have the right credentials. But first you have to join the parent community and accept the terms and conditions there, then you can join this one."
       }
     },

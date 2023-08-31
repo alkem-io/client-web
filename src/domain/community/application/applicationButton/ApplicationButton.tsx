@@ -221,7 +221,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       if (canJoinParentCommunity) {
         return (
           <Button ref={ref as Ref<HTMLButtonElement>} onClick={handleClickJoinParent} variant={'contained'}>
-            {t('components.application-button.join-parent')}
+            {t('components.application-button.join')}
           </Button>
         );
       }
@@ -229,7 +229,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       if (canApplyToParentCommunity) {
         return (
           <Button ref={ref as Ref<HTMLButtonElement>} onClick={handleClickApplyParent} variant={'contained'}>
-            {t('components.application-button.apply-parent')}
+            {t('buttons.apply')}
           </Button>
         );
       }

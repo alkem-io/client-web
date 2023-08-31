@@ -1,9 +1,15 @@
-import { Button, Dialog, DialogContent } from '@mui/material';
+import { Button, Dialog, DialogContent, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import { DialogActions, DialogTitle } from '../../../../core/ui/dialog/deprecated';
 import isApplicationPending from './isApplicationPending';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 export interface PreApplicationDialogProps {
   open: boolean;
@@ -27,9 +33,24 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
   parentApplyUrl,
 }) => {
   const { t } = useTranslation();
+  const { profile: spaceProfile } = useSpace();
+  const { profile: challengeProfile } = useChallenge();
+  const { opportunityId } = useOpportunity();
+  const parentCommunityName = opportunityId ? challengeProfile.displayName : spaceProfile.displayName;
+  const buttonText = t(`components.application-button.go-to-${opportunityId ? 'challenge' : 'space'}` as const);
+
   return (
     <Dialog open={open}>
-      <DialogTitle onClose={onClose}>{t(`components.application-button.${dialogVariant}.title` as const)}</DialogTitle>
+      <DialogHeader onClose={onClose}>
+        <BlockTitle>
+          <Typography
+            variant="h3"
+            dangerouslySetInnerHTML={{
+              __html: t(`components.application-button.${dialogVariant}.title` as const, { parentCommunityName }),
+            }}
+          />
+        </BlockTitle>
+      </DialogHeader>
       <DialogContent dividers>
         <Trans
           i18nKey={`components.application-button.${dialogVariant}.body` as const}
@@ -39,16 +60,16 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
           }}
         />
       </DialogContent>
-      <DialogActions>
+      <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
         <Button
           component={RouterLink}
           to={(isApplicationPending(parentApplicationState) ? applyUrl : parentApplyUrl) || ''}
           variant="contained"
           aria-label="dialog-apply"
         >
-          {t('buttons.apply')}
+          {isApplicationPending(parentApplicationState) ? t('buttons.apply') : buttonText}
         </Button>
-      </DialogActions>
+      </Actions>
     </Dialog>
   );
 };
