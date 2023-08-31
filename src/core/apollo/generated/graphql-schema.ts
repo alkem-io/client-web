@@ -28725,9 +28725,7 @@ export type LibraryTemplatesFragment = {
   }>;
 };
 
-export type ChallengeExplorerPageQueryVariables = Exact<{
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-}>;
+export type ChallengeExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ChallengeExplorerPageQuery = {
   __typename?: 'Query';

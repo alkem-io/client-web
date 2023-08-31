@@ -85,9 +85,6 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     loading: loadingUserData,
     error,
   } = useChallengeExplorerPageQuery({
-    variables: {
-      userID: userMetadata?.user?.id || '',
-    },
     skip: !isAuthenticated || !userMetadata?.user?.id,
   });
 
