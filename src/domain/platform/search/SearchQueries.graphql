@@ -187,6 +187,10 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       anonymousReadAccess
     }
+    community {
+      id
+      myMembershipStatus
+    }
     visibility
   }
 }
@@ -259,6 +263,10 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
     authorization {
       id
       anonymousReadAccess
+    }
+    community {
+      id
+      myMembershipStatus
     }
   }
   challenge {
