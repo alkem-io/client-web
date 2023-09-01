@@ -3060,6 +3060,10 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         anonymousReadAccess
       }
+      community {
+        id
+        myMembershipStatus
+      }
       visibility
     }
   }
@@ -3137,6 +3141,10 @@ export const SearchResultOpportunityFragmentDoc = gql`
       authorization {
         id
         anonymousReadAccess
+      }
+      community {
+        id
+        myMembershipStatus
       }
     }
     challenge {
