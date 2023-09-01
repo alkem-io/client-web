@@ -4,9 +4,8 @@ import { PostIcon } from '../../../collaboration/post/icon/PostIcon';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import MessageCounter from '../../../../core/ui/card/MessageCounter';
 import CardFooter from '../../../../core/ui/card/CardFooter';
-import CardDescription from '../../../../core/ui/card/CardDescription';
+import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardTags from '../../../../core/ui/card/CardTags';
 
 export type SearchContributionCardCardProps = Omit<SearchBaseContributionCardProps, 'icon'> & {
   createdDate?: Date;
@@ -26,8 +25,7 @@ export const SearchContributionCardCard: FC<SearchContributionCardCardProps> = (
   return (
     <SearchBaseContributionCard icon={PostIcon} {...props}>
       <CardDetails paddingBottom={1}>
-        <CardDescription>{description}</CardDescription>
-        <CardTags tags={tags} paddingX={1.5} marginY={1} />
+        <CardDescriptionWithTags tags={tags}>{description}</CardDescriptionWithTags>
       </CardDetails>
       {parentSegment}
       <CardFooter>

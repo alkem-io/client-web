@@ -1,7 +1,10 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, Dialog, DialogContent, Typography } from '@mui/material';
-import { DialogActions, DialogTitle } from '../../../../core/ui/dialog/deprecated';
+import { Trans, useTranslation } from 'react-i18next';
+import { Button, Dialog, DialogContent } from '@mui/material';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 export interface PreApplicationDialogProps {
   open: boolean;
@@ -13,22 +16,17 @@ const PreJoinDialog: FC<PreApplicationDialogProps> = ({ open, onClose, onJoin })
   const { t } = useTranslation();
   return (
     <Dialog open={open}>
-      <DialogTitle onClose={onClose}>{t('components.application-button.dialog-join.title')}</DialogTitle>
-      <DialogContent dividers>
-        <>
-          <Typography
-            variant="body1"
-            dangerouslySetInnerHTML={{
-              __html: t('components.application-button.dialog-join.body'),
-            }}
-          />
-        </>
+      <DialogHeader onClose={onClose}>
+        <BlockTitle>{t('components.application-button.dialog-join.title')}</BlockTitle>
+      </DialogHeader>
+      <DialogContent>
+        <Trans i18nKey="components.application-button.dialog-join.body" />
       </DialogContent>
-      <DialogActions>
+      <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
         <Button onClick={onJoin} variant="contained" aria-label="dialog-join">
           {t('components.application-button.join')}
         </Button>
-      </DialogActions>
+      </Actions>
     </Dialog>
   );
 };

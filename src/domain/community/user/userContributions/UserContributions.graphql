@@ -1,0 +1,16 @@
+query UserContributions($userId: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    spaces {
+      id
+      nameID
+      challenges {
+        id
+        nameID
+      }
+      opportunities {
+        id
+        nameID
+      }
+    }
+  }
+}

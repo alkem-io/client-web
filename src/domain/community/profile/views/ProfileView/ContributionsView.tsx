@@ -14,7 +14,7 @@ interface ContributionViewProps {
   title: string;
   subtitle?: string;
   helpText?: string; // TODO it's unused: either find a way to use or remove
-  contributions: ContributionItem[];
+  contributions: ContributionItem[] | undefined;
   loading?: boolean;
   enableLeave?: boolean;
   cards?: PageContentBlockGridProps['cards'];
@@ -69,7 +69,7 @@ export const ContributionsView = ({
         )}
         {!loading && (
           <ScrollableCardsLayoutContainer>
-            {contributions.map(contributionItem => (
+            {contributions?.map(contributionItem => (
               <ContributionDetailsContainer key={getContributionItemKey(contributionItem)} entities={contributionItem}>
                 {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
                   if (loading || !details) {
@@ -92,7 +92,7 @@ export const ContributionsView = ({
             ))}
           </ScrollableCardsLayoutContainer>
         )}
-        {!contributions.length && (
+        {!loading && !contributions?.length && (
           <Grid item flexGrow={1} flexBasis={'50%'}>
             {t('contributions-view.no-data', { name: title })}
           </Grid>

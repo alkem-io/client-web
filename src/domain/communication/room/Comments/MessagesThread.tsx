@@ -6,6 +6,7 @@ import MessageWithRepliesView from './MessageWithRepliesView';
 import { Message } from '../models/Message';
 import { useTranslation } from 'react-i18next';
 import useMessagesTree from './useMessagesTree';
+import useRestoredMessages from './useRestoredMessages';
 
 interface MessagesThreadProps {
   messages: Message[] | undefined;
@@ -32,7 +33,9 @@ const MessagesThread = ({
 }: MessagesThreadProps) => {
   const { t } = useTranslation();
 
-  const rootMessages = useMessagesTree(messages);
+  const messagesWithRestored = useRestoredMessages(messages);
+
+  const rootMessages = useMessagesTree(messagesWithRestored);
 
   return (
     <>
@@ -40,13 +43,14 @@ const MessagesThread = ({
         <MessageWithRepliesView
           key={message.id}
           message={message}
-          canDelete={canDeleteMessage(message.author?.id)}
+          canDelete={!message.deleted && canDeleteMessage(message.author?.id)}
           onDelete={onDeleteMessage}
-          canAddReaction={canAddReaction}
+          canAddReaction={canAddReaction && !message.deleted}
           addReaction={addReaction}
           removeReaction={removeReaction}
           reply={
-            canPostMessages && (
+            canPostMessages &&
+            !message.deleted && (
               <PostMessageToCommentsForm
                 placeholder={t('pages.post.dashboard.comment.placeholder')}
                 onPostComment={(messageText: string) =>

@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,11 +9,11 @@ import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import { LONG_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { BlockSectionTitle } from '../../../../../../core/ui/typography';
-import FormRow from '../../../../../../core/ui/forms/FormRow';
 import ContextReferenceSegment from '../../../components/Common/ContextReferenceSegment';
 import { NameSegment, nameSegmentSchema } from '../../../components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../components/Common/TagsetSegment';
+import Gutters from '../../../../../../core/ui/grid/Gutters';
 
 export interface InnovationPackFormValues {
   nameID: string;
@@ -83,25 +83,21 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
       {({ values: { profile }, handleSubmit }) => {
         return (
-          <Grid container gap={2}>
+          <Gutters disablePadding>
             <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
-            <FormRow>
-              <FormikAutocomplete
-                title={t('pages.admin.innovation-packs.fields.provider')}
-                name="providerId"
-                values={organizations ?? []}
-                required
-                placeholder={t('pages.admin.innovation-packs.fields.provider')}
-              />
-            </FormRow>
-            <FormRow>
-              <FormikMarkdownField
-                title={t('common.description')}
-                name="profile.description"
-                maxLength={LONG_TEXT_LENGTH}
-                withCounter
-              />
-            </FormRow>
+            <FormikAutocomplete
+              title={t('pages.admin.innovation-packs.fields.provider')}
+              name="providerId"
+              values={organizations ?? []}
+              required
+              placeholder={t('pages.admin.innovation-packs.fields.provider')}
+            />
+            <FormikMarkdownField
+              title={t('common.description')}
+              name="profile.description"
+              maxLength={LONG_TEXT_LENGTH}
+              withCounter
+            />
             {!isNew && profileId ? (
               <>
                 <BlockSectionTitle>{t('components.tagsSegment.title')}</BlockSectionTitle>
@@ -115,12 +111,10 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
             ) : (
               <BlockSectionTitle>{t('pages.admin.innovation-packs.save-new-for-details')}</BlockSectionTitle>
             )}
-            <FormRow>
-              <Box display="flex" marginY={4} justifyContent="flex-end">
-                <SaveButton loading={loading} onClick={() => handleSubmit()} />
-              </Box>
-            </FormRow>
-          </Grid>
+            <Box display="flex" marginY={4} justifyContent="flex-end">
+              <SaveButton loading={loading} onClick={() => handleSubmit()} />
+            </Box>
+          </Gutters>
         );
       }}
     </Formik>

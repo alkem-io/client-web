@@ -68,6 +68,8 @@ fragment SpacePage on Space {
     ...DashboardTimelineAuthorization
   }
   community {
+    id
+    myMembershipStatus
     ...EntityDashboardCommunity
     leadUsers: usersInRole(role: LEAD) {
       profile {

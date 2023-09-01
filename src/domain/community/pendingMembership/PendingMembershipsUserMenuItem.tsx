@@ -13,7 +13,7 @@ import ActivityDescription from '../../shared/components/ActivityDescription/Act
 import { Actions } from '../../../core/ui/actions/Actions';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { refetchMeQuery, useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
+import { refetchUserProviderQuery, useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -68,7 +68,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
       : undefined;
 
   const [invitationStateEventMutation] = useInvitationStateEventMutation({
-    refetchQueries: [refetchMeQuery()],
+    refetchQueries: [refetchUserProviderQuery()],
   });
 
   const [changeInvitationState, isChangingInvitationState] = useLoadingState(

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import UserProfilePage from '../pages/UserProfilePage';
+import UserProfilePage from '../userProfilePage/UserProfilePage';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import UserSettingsRoute from './UserSettingsRoute';
 import { EntityPageLayoutHolder } from '../../../journey/common/EntityPageLayout';

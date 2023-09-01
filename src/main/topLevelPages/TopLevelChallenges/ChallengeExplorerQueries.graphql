@@ -1,12 +1,7 @@
-query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
-  rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
-    spaces {
+query ChallengeExplorerPage {
+  me {
+    spaceMemberships(visibilities: [ACTIVE, DEMO]) {
       id
-      roles
-      challenges {
-        id
-        roles
-      }
     }
   }
 }
@@ -24,7 +19,7 @@ query ChallengeExplorerSearch($searchData: SearchInput!) {
   }
 }
 
-query ChallengeExplorerData($spaceIDs: [UUID!], $challengeIDs: [UUID!]) {
+query ChallengeExplorerData($spaceIDs: [UUID!]) {
   spaces(IDs: $spaceIDs) {
     id
     nameID
@@ -34,7 +29,7 @@ query ChallengeExplorerData($spaceIDs: [UUID!], $challengeIDs: [UUID!]) {
       displayName
     }
     visibility
-    challenges(IDs: $challengeIDs) {
+    challenges {
       id
       nameID
       profile {
@@ -52,6 +47,10 @@ query ChallengeExplorerData($spaceIDs: [UUID!], $challengeIDs: [UUID!]) {
       context {
         id
         vision
+      }
+      community {
+        id
+        myMembershipStatus
       }
     }
   }

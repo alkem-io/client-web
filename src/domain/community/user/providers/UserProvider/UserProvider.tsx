@@ -1,10 +1,9 @@
 import React, { FC, useEffect, useMemo } from 'react';
 import {
-  refetchMeQuery,
+  refetchUserProviderQuery,
   useCreateUserNewRegistrationMutation,
-  useMeQuery,
   usePlatformLevelAuthorizationQuery,
-  useRolesUserQuery,
+  useUserProviderQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '../../../../../core/pages/Errors/ErrorPage';
 import {
@@ -12,22 +11,19 @@ import {
   InvitationForRoleResult,
   User,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { UserRolesInEntity } from './UserRolesInEntity';
 import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
-  userSpaceRoles: UserRolesInEntity[] | undefined;
   loading: boolean;
-  loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar but f.e. roles information is not guaranteed yet.
+  loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: boolean;
   isAuthenticated: boolean;
 }
 
 const UserContext = React.createContext<UserContextValue>({
   user: undefined,
-  userSpaceRoles: undefined,
   loading: true,
   loadingMe: true,
   verified: false,
@@ -36,16 +32,9 @@ const UserContext = React.createContext<UserContextValue>({
 
 const UserProvider: FC<{}> = ({ children }) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
-  // TODO "me" query fetches too much beyond user name
-  const { data: meData, loading: loadingMe } = useMeQuery({
-    skip: !isAuthenticated,
-  });
 
-  const { data: rolesData, loading: loadingRolesData } = useRolesUserQuery({
-    skip: !meData?.me.user?.id,
-    variables: {
-      input: meData?.me.user?.id!,
-    },
+  const { data: meData, loading: loadingMe } = useUserProviderQuery({
+    skip: !isAuthenticated,
   });
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
@@ -53,7 +42,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const platformLevelAuthorization = platformLevelAuthorizationData?.platform.authorization;
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchMeQuery()],
+    refetchQueries: [refetchUserProviderQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });
@@ -68,7 +57,6 @@ const UserProvider: FC<{}> = ({ children }) => {
     loadingAuthentication ||
     loadingCreateUser ||
     loadingMe ||
-    loadingRolesData ||
     isLoadingPlatformLevelAuthorization ||
     (isAuthenticated && !meData?.me.user);
 
@@ -81,23 +69,21 @@ const UserProvider: FC<{}> = ({ children }) => {
             meData.me.user as User,
             meData.me.applications as ApplicationForRoleResult[],
             meData.me.invitations as InvitationForRoleResult[],
-            rolesData?.rolesUser,
             platformLevelAuthorization
           )
         : undefined,
-    [meData, rolesData, platformLevelAuthorization]
+    [meData, platformLevelAuthorization]
   );
 
   const providedValue = useMemo<UserContextValue>(
     () => ({
       user: userMetadata,
-      userSpaceRoles: rolesData?.rolesUser.spaces,
       loading,
       loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
     }),
-    [userMetadata, rolesData, loading, loadingMeAndParentQueries, verified, isAuthenticated]
+    [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );
 
   if (error) return <ErrorPage error={error} />;

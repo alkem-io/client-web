@@ -2,13 +2,13 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, IconButton, Paper, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Message } from '../models/Message';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import AuthorAvatar from '../../../shared/components/AuthorAvatar/AuthorAvatar';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption, Text } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommentReactions from './CommentReactions';
+import { MaybeDeletedMessage } from './useRestoredMessages';
 
 const MessageContentWrapper = styled(Box)(({ theme }) => ({
   overflowWrap: 'break-word',
@@ -40,7 +40,7 @@ const MessageActionsContainer = styled('ul')(({ theme }) => ({
 }));
 
 export interface MessageViewProps {
-  message: Message;
+  message: MaybeDeletedMessage;
   canDelete: boolean;
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
   root?: boolean;
@@ -61,7 +61,7 @@ export const MessageView = ({
   removeReaction,
   children,
 }: PropsWithChildren<MessageViewProps>) => {
-  const { author, body, id } = message;
+  const { author, id } = message;
 
   const { t } = useTranslation();
 
@@ -74,22 +74,32 @@ export const MessageView = ({
       <AuthorAvatar author={author} />
       <Box flexGrow={1} flexShrink={1} minWidth={0}>
         <Paper sx={{ backgroundColor: root ? undefined : 'background.default', padding: gutters(0.5) }} elevation={0}>
-          <Box display="flex" height={gutters()} justifyContent="space-between" alignItems="center">
-            <Caption>{author?.displayName}</Caption>
-            {canDelete && onDelete && (
-              <IconButton aria-label="Delete" onClick={() => onDelete(id)} size="small">
-                <DeleteOutlined fontSize="inherit" />
-              </IconButton>
-            )}
-          </Box>
+          {!message.deleted && (
+            <Box display="flex" height={gutters()} justifyContent="space-between" alignItems="center">
+              <Caption>{author?.displayName}</Caption>
+              {canDelete && onDelete && (
+                <IconButton aria-label="Delete" onClick={() => onDelete(id)} size="small">
+                  <DeleteOutlined fontSize="inherit" />
+                </IconButton>
+              )}
+            </Box>
+          )}
           <MessageContentWrapper>
-            <WrapperMarkdown>{body}</WrapperMarkdown>
+            {message.deleted ? (
+              <Text fontStyle="italic" paddingY={gutters(0.5)}>
+                {t('messaging.messageDeleted')}
+              </Text>
+            ) : (
+              <WrapperMarkdown>{message.body}</WrapperMarkdown>
+            )}
           </MessageContentWrapper>
-          <Box display="flex" justifyContent="end">
-            <Typography variant="body2" color="neutralMedium.dark">
-              {`${root ? t('components.message.root') : ''} ${formatTimeElapsed(message.createdAt, t)}`}
-            </Typography>
-          </Box>
+          {!message.deleted && (
+            <Box display="flex" justifyContent="end">
+              <Typography variant="body2" color="neutralMedium.dark">
+                {`${root ? t('components.message.root') : ''} ${formatTimeElapsed(message.createdAt, t)}`}
+              </Typography>
+            </Box>
+          )}
         </Paper>
         <MessageActionsContainer>
           {enabledReactions && (

@@ -3,12 +3,13 @@ query communityUserPrivileges($spaceNameId: UUID_NAMEID!, $communityId: UUID!) {
     id
     spaceCommunity: community {
       id
+      myMembershipStatus
       authorization {
         id
         myPrivileges
       }
     }
-    community(ID: $communityId) {
+    applicationCommunity: community(ID: $communityId) {
       id
       authorization {
         id

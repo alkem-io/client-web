@@ -2,8 +2,7 @@ import React, { ReactNode } from 'react';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescription from '../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../core/ui/card/CardTags';
+import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import InnovationPackIcon from '../InnovationPackIcon';
 import CardFooterBadge from '../../../../core/ui/card/CardFooterBadge';
@@ -43,8 +42,7 @@ const InnovationPackCard = ({
     <ContributeCard {...props} to={innovationPackUri}>
       <CardHeader title={displayName} iconComponent={InnovationPackIcon} />
       <CardDetails>
-        <CardDescription>{description ?? ''}</CardDescription>
-        <CardTags tags={tags} paddingX={1.5} marginY={1} />
+        <CardDescriptionWithTags tags={tags}>{description}</CardDescriptionWithTags>
       </CardDetails>
       <CardFooter flexDirection="column" alignItems="stretch" height="auto">
         <Box display="flex" gap={gutters()} height={gutters(2)} alignItems="center" justifyContent="end">

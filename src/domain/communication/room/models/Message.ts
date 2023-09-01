@@ -15,5 +15,4 @@ export interface Message {
       lastName: string;
     };
   }[];
-  replies?: Message[];
 }

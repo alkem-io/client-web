@@ -10,6 +10,7 @@ import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettings
 import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import useUserOrganizationIds from '../userContributions/useUserOrganizationIds';
 
 export interface UserOrganizationsPageProps extends PageProps {}
 
@@ -18,6 +19,7 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
+  const organizationIds = useUserOrganizationIds(userNameId);
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [url, paths]);
   useUpdateNavigation({ currentPaths });
@@ -31,7 +33,7 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
             canCreateOrganization={
               userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.CreateOrganization) ?? false
             }
-            organizationNameIDs={userMetadata?.organizationNameIDs || []}
+            organizationIds={organizationIds ?? []}
             title={t('pages.user-profile.associated-organizations.title')}
             helpText={t('pages.user-profile.associated-organizations.help')}
             loading={loading}

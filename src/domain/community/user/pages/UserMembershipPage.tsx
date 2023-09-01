@@ -8,6 +8,7 @@ import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettings
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import useUserContributions from '../userContributions/useUserContributions';
 
 export interface UserMembershipPageProps {}
 
@@ -16,13 +17,15 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
+  const contributions = useUserContributions(userNameId);
+
   return (
     <UserSettingsLayout currentTab={SettingsSection.Membership}>
       <GridProvider columns={12}>
         <ContributionsView
           title={t('common.my-memberships')}
           helpText={t('pages.user-profile.communities.help')}
-          contributions={userMetadata?.contributions || []}
+          contributions={contributions}
           loading={loading}
           enableLeave
         />
@@ -33,7 +36,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
           <ContributionsView
             title={t('pages.user-profile.pending-applications.title')}
             helpText={t('pages.user-profile.pending-applications.help')}
-            contributions={userMetadata?.pendingApplications || []}
+            contributions={userMetadata?.pendingApplications}
             loading={loading}
           />
         </Grid>

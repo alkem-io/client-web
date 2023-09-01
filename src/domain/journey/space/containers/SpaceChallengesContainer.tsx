@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import useChallengeCreatedSubscription from '../hooks/useChallengeCreatedSubscription';
-import { useChallengeCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceChallengeCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { CalloutDisplayLocation, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
@@ -28,7 +28,7 @@ export interface SpaceChallengesContainerProps
 }
 
 export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ spaceNameId, children }) => {
-  const { data, error, loading, subscribeToMore } = useChallengeCardsQuery({
+  const { data, error, loading, subscribeToMore } = useSpaceChallengeCardsQuery({
     variables: { spaceId: spaceNameId },
     skip: !spaceNameId,
   });

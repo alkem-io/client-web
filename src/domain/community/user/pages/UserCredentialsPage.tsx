@@ -23,6 +23,8 @@ import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettings
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '../../../../core/ui/card/cardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
+import useUserContributions from '../userContributions/useUserContributions';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface UserCredentialsPageProps extends PageProps {}
 
@@ -30,6 +32,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
   const { t } = useTranslation();
   const notify = useNotification();
   const { pathname: url } = useResolvedPath('.');
+  const { userNameId = '' } = useUrlParams();
 
   const { user: currentUser, loading: loadingUserContext } = useUserContext();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);
@@ -50,6 +53,8 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
     },
     skip: !requestCredentialDialogOpen,
   });
+
+  const contributions = useUserContributions(userNameId);
 
   if (!currentUser?.user.id) {
     return <Loading />;
@@ -177,7 +182,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
               entities={{
                 titleId: 'components.credential-share-request-dialog.title',
                 content: t('components.credential-share-request-dialog.content'),
-                contributions: currentUser.contributions,
+                contributions: contributions ?? [],
               }}
               options={{
                 show: communityCredentialOfferDialogOpen,

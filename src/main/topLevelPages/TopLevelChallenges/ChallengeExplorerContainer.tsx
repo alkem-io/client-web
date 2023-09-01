@@ -9,7 +9,11 @@ import {
 import { useUserContext } from '../../../domain/community/user';
 import { ValueType } from '../../../core/utils/filtering/filterFn';
 import { getVisualByType } from '../../../domain/common/visual/utils/visuals.utils';
-import { SpaceVisibility, SearchResultChallengeFragment } from '../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  SearchResultChallengeFragment,
+  SpaceVisibility,
+} from '../../../core/apollo/generated/graphql-schema';
 import { SearchResultT } from '../../../domain/platform/search/SearchView';
 import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
 
@@ -28,7 +32,7 @@ export type SimpleChallenge = {
     alternativeText?: string;
   };
   tags: string[];
-  roles: string[];
+  member: boolean;
   vision: string;
 };
 
@@ -81,26 +85,16 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     loading: loadingUserData,
     error,
   } = useChallengeExplorerPageQuery({
-    variables: {
-      userID: userMetadata?.user?.id || '',
-    },
     skip: !isAuthenticated || !userMetadata?.user?.id,
   });
 
-  const spaceIDs = userChallenges?.rolesUser.spaces.map(space => space.id) || [];
-  const myChallengesIDs = userChallenges?.rolesUser.spaces.flatMap(space =>
-    space.challenges.map(challenge => challenge.id)
-  );
-  const challengeRoles =
-    userChallenges?.rolesUser.spaces.flatMap(space =>
-      space.challenges.map(challenge => ({ id: challenge.id, roles: challenge.roles }))
-    ) || [];
+  const mySpaceIds = userChallenges?.me.spaceMemberships.map(space => space.id);
 
   const { data: challengeData, loading: isLoadingChallenge } = useChallengeExplorerDataQuery({
     variables: {
-      spaceIDs,
+      spaceIDs: mySpaceIds,
     },
-    skip: !spaceIDs?.length,
+    skip: !mySpaceIds?.length,
   });
 
   // With both the userChallenges loaded from the roles query and the challengeData loaded from a spaces query
@@ -119,13 +113,13 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         banner: getVisualByType(VisualName.BANNERNARROW, ch.profile.visuals),
         tagline: ch.profile.tagline || '',
         tags: ch.profile.tagset?.tags || [],
-        roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
         vision: ch.context?.vision || '',
+        member: ch.community?.myMembershipStatus === CommunityMembershipStatus.Member,
       })) || []
   );
 
-  const myChallenges = allChallengesInMySpaces?.filter(ch => myChallengesIDs?.includes(ch.id));
-  const otherChallenges = allChallengesInMySpaces?.filter(ch => !myChallengesIDs?.includes(ch.id));
+  const myChallenges = allChallengesInMySpaces?.filter(ch => ch.member);
+  const otherChallenges = allChallengesInMySpaces?.filter(ch => !ch.member);
 
   // PUBLIC: Search for challenges
   const { data: rawSearchResults, loading: loadingSearchResults } = useChallengeExplorerSearchQuery({
@@ -157,9 +151,9 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         banner: getVisualByType(VisualName.BANNERNARROW, ch.profile.visuals),
         tagline: ch.profile.tagline || '',
         tags: ch.profile.tagset?.tags || [],
-        roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
         vision: ch.context?.vision || '',
         matchedTerms: entry.terms,
+        member: ch.community?.myMembershipStatus === CommunityMembershipStatus.Member,
       };
     }) || [];
 

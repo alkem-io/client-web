@@ -6,9 +6,11 @@ import { JourneyTypeName } from '../../JourneyTypeName';
 import {
   Authorization,
   AuthorizationPrivilege,
+  CommunityMembershipStatus,
+  SpaceDashboardNavigationCommunityFragment,
   SpaceDashboardNavigationContextFragment,
-  SpaceDashboardNavigationProfileFragment,
   SpaceDashboardNavigationLifecycleFragment,
+  SpaceDashboardNavigationProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { keyBy } from 'lodash';
 import { useMemo } from 'react';
@@ -36,6 +38,7 @@ export interface DashboardNavigationItem {
   tags: string[] | undefined;
   lifecycleState: string | undefined;
   private?: boolean;
+  member: boolean;
   children?: DashboardNavigationItem[];
 }
 
@@ -48,6 +51,7 @@ const DashboardNavigationItemPropsGetter =
       profile: SpaceDashboardNavigationProfileFragment;
       context?: SpaceDashboardNavigationContextFragment;
       lifecycle?: SpaceDashboardNavigationLifecycleFragment;
+      community?: SpaceDashboardNavigationCommunityFragment;
     },
     disabled?: boolean
   ): DashboardNavigationItem => {
@@ -61,6 +65,7 @@ const DashboardNavigationItemPropsGetter =
       tags: journey.profile.tagset?.tags,
       lifecycleState: journey.lifecycle?.state,
       private: disabled,
+      member: journey.community?.myMembershipStatus === CommunityMembershipStatus.Member,
       journeyTypeName,
     };
   };
