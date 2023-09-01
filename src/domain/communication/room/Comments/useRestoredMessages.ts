@@ -1,8 +1,8 @@
 import { Message } from '../models/Message';
 import { useMemo } from 'react';
-import { keyBy } from 'lodash';
+import { keyBy, sortBy } from 'lodash';
 
-interface DeletedMessage extends Omit<Message, 'body' | 'createdAt'> {
+interface DeletedMessage extends Omit<Message, 'body'> {
   deleted: true;
 }
 
@@ -31,18 +31,23 @@ const useRestoredMessages = (messages: Message[] | undefined): MaybeDeletedMessa
         return restored;
       }
       const isThreadStarterMissing = !messagesById[threadID];
-      if (isThreadStarterMissing && !restored[threadID]) {
-        restored[threadID] = {
-          id: threadID,
-          deleted: true,
-          author: undefined,
-          reactions: [],
-        };
+      if (isThreadStarterMissing) {
+        if (!restored[threadID]) {
+          restored[threadID] = {
+            id: threadID,
+            deleted: true,
+            author: undefined,
+            reactions: [],
+            createdAt: message.createdAt,
+          };
+        } else if (restored[threadID].createdAt > message.createdAt) {
+          restored[threadID].createdAt = message.createdAt;
+        }
       }
       return restored;
     }, {});
 
-    return [...nonDeletedMessages, ...Object.values(restoredMessagesById)];
+    return sortBy([...nonDeletedMessages, ...Object.values(restoredMessagesById)], message => message.createdAt);
   }, [messages]);
 };
 
