@@ -589,7 +589,8 @@
   "messaging": {
     "message": "Message",
     "message-optional": "Message (Optional)",
-    "successfully-sent": "Message successfully sent"
+    "successfully-sent": "Message successfully sent",
+    "messageDeleted": "This message has been deleted."
   },
   "send-message-dialog": {
     "direct-message-title": "Send a message",

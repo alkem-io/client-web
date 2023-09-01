@@ -1,6 +1,6 @@
 import { FetchResult } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '../../../platform/admin/components/Common/Filter';
 import MessageView from '../../room/Comments/MessageView';
@@ -46,12 +46,16 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
   const canAddReaction = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessageReaction) ?? false;
 
   // construct the discussion info as a comment with ID of the discussion for easier update/delete
-  const initialComment = {
-    id,
-    author,
-    createdAt,
-    body: description,
-  } as Message;
+  const initialComment: Message = useMemo(
+    () => ({
+      id,
+      author,
+      createdAt: createdAt!,
+      body: description!,
+      reactions: [],
+    }),
+    [id, author, createdAt, description]
+  );
 
   const { pathname } = useResolvedPath('..');
   const discussionUrl = buildDiscussionUrl(pathname, nameID);
