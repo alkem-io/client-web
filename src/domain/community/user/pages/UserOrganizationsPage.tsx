@@ -19,7 +19,7 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
-  const organizationIds = useUserOrganizationIds();
+  const organizationIds = useUserOrganizationIds(userNameId);
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [url, paths]);
   useUpdateNavigation({ currentPaths });
