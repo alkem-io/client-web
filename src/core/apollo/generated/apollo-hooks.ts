@@ -15482,38 +15482,42 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
 
 export const HomePageSpacesDocument = gql`
   query HomePageSpaces($includeMembershipStatus: Boolean!) {
-    spaces(filter: { visibilities: [ACTIVE] }) {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-        tagset {
-          ...TagsetDetails
-        }
-        cardBanner: visual(type: CARD) {
+    platform {
+      innovationHub {
+        spaceListFilter {
           id
-          uri
-          alternativeText
+          nameID
+          profile {
+            id
+            displayName
+            tagline
+            tagset {
+              ...TagsetDetails
+            }
+            cardBanner: visual(type: CARD) {
+              id
+              uri
+              alternativeText
+            }
+          }
+          context {
+            id
+            vision
+          }
+          metrics {
+            id
+            name
+            value
+          }
+          ... on Space @include(if: $includeMembershipStatus) {
+            community {
+              id
+              myMembershipStatus
+            }
+          }
+          visibility
         }
       }
-      context {
-        id
-        vision
-      }
-      metrics {
-        id
-        name
-        value
-      }
-      ... on Space @include(if: $includeMembershipStatus) {
-        community {
-          id
-          myMembershipStatus
-        }
-      }
-      visibility
     }
   }
   ${TagsetDetailsFragmentDoc}
