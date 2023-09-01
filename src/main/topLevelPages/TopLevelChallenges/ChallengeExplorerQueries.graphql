@@ -1,4 +1,4 @@
-query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
+query ChallengeExplorerPage {
   me {
     spaceMemberships(visibilities: [ACTIVE, DEMO]) {
       id

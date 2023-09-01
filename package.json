@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.44.2",
+  "version": "0.44.3",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -10,6 +10,7 @@
   "license": "EUPL-1.2",
   "scripts": {
     "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
+    "ts:watch": "tsc --noEmit --watch",
     "build": "cross-env NODE_ENV=production node buildConfiguration && vite build",
     "test": "vitest --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
     "test:coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
