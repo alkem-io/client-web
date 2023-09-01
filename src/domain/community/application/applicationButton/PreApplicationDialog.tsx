@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, Typography } from '@mui/material';
+import { Button, Dialog, DialogContent } from '@mui/material';
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
@@ -37,21 +37,21 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
   const { profile: challengeProfile } = useChallenge();
   const { opportunityId } = useOpportunity();
   const parentCommunityName = opportunityId ? challengeProfile.displayName : spaceProfile.displayName;
-  const buttonText = t(`components.application-button.go-to-${opportunityId ? 'challenge' : 'space'}` as const);
+  const buttonText = t(`components.application-button.goTo${opportunityId ? 'Challenge' : 'Space'}` as const);
 
   return (
     <Dialog open={open}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>
-          <Typography
-            variant="h3"
-            dangerouslySetInnerHTML={{
-              __html: t(`components.application-button.${dialogVariant}.title` as const, { parentCommunityName }),
-            }}
+          <Trans
+            i18nKey={`components.application-button.${dialogVariant}.title` as const}
+            values={{ parentCommunityName }}
+            components={{ strong: <strong /> }}
+            t={t}
           />
         </BlockTitle>
       </DialogHeader>
-      <DialogContent dividers>
+      <DialogContent>
         <Trans
           i18nKey={`components.application-button.${dialogVariant}.body` as const}
           values={{ spaceName, challengeName }}

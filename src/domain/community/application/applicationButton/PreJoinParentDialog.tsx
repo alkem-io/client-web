@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, Dialog, DialogContent, Typography } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
+import { Button, Dialog, DialogContent } from '@mui/material';
 import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -22,27 +22,26 @@ const PreJoinParentDialog: FC<PreJoinParentDialogProps> = ({ open, onClose, onJo
   const { opportunityId } = useOpportunity();
 
   const parentCommunityName = opportunityId ? challengeProfile.displayName : spaceProfile.displayName;
-  const buttonText = t(`components.application-button.go-to-${opportunityId ? 'challenge' : 'space'}` as const);
-  const title = t('components.application-button.dialog-join-parent.title', { parentCommunityName });
+  const buttonText = t(`components.application-button.goTo${opportunityId ? 'Challenge' : 'Space'}` as const);
 
   return (
     <Dialog open={open}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>
-          <Typography
-            variant="h3"
-            dangerouslySetInnerHTML={{
-              __html: title,
-            }}
+          <Trans
+            i18nKey="components.application-button.dialog-join-parent.title"
+            values={{ parentCommunityName }}
+            components={{ strong: <strong /> }}
+            t={t}
           />
         </BlockTitle>
       </DialogHeader>
       <DialogContent>
-        <Typography
-          variant="body1"
-          dangerouslySetInnerHTML={{
-            __html: t('components.application-button.dialog-join-parent.body', { parentCommunityName }),
-          }}
+        <Trans
+          i18nKey="components.application-button.dialog-join-parent.body"
+          values={{ parentCommunityName }}
+          components={{ strong: <strong /> }}
+          t={t}
         />
       </DialogContent>
       <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
