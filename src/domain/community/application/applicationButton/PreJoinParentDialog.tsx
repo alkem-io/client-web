@@ -41,7 +41,7 @@ const PreJoinParentDialog: FC<PreJoinParentDialogProps> = ({ open, onClose, onJo
         <Typography
           variant="body1"
           dangerouslySetInnerHTML={{
-            __html: t('components.application-button.dialog-join-parent.body'),
+            __html: t('components.application-button.dialog-join-parent.body', { parentCommunityName }),
           }}
         />
       </DialogContent>
