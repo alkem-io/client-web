@@ -1,16 +1,15 @@
 import { useUserContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../hooks/useUserContext';
 import { ContributionItem } from '../contribution';
 import { useMemo } from 'react';
 
-const useUserContributions = () => {
-  const { user } = useUserContext();
+const useUserContributions = (userNameId: string) => {
+  const skip = !userNameId;
 
   const { data } = useUserContributionsQuery({
     variables: {
-      userId: user?.user.id!,
+      userId: userNameId,
     },
-    skip: !user?.user.id,
+    skip,
   });
 
   return useMemo(() => {

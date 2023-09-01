@@ -17,7 +17,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
-  const contributions = useUserContributions();
+  const contributions = useUserContributions(userNameId);
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Membership}>

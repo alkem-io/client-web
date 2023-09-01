@@ -24,6 +24,7 @@ import DashboardGenericSection from '../../../shared/components/DashboardSection
 import { CardLayoutContainer, CardLayoutItem } from '../../../../core/ui/card/cardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import useUserContributions from '../userContributions/useUserContributions';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface UserCredentialsPageProps extends PageProps {}
 
@@ -31,6 +32,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
   const { t } = useTranslation();
   const notify = useNotification();
   const { pathname: url } = useResolvedPath('.');
+  const { userNameId = '' } = useUrlParams();
 
   const { user: currentUser, loading: loadingUserContext } = useUserContext();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);
@@ -52,7 +54,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
     skip: !requestCredentialDialogOpen,
   });
 
-  const contributions = useUserContributions();
+  const contributions = useUserContributions(userNameId);
 
   if (!currentUser?.user.id) {
     return <Loading />;
