@@ -21,9 +21,9 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
-  const contributions = useUserContributions();
+  const contributions = useUserContributions(userNameId);
 
-  const organizationIds = useUserOrganizationIds();
+  const organizationIds = useUserOrganizationIds(userNameId);
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 

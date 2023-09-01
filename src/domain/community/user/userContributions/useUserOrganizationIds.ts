@@ -1,15 +1,14 @@
-import { useUserContext } from '../hooks/useUserContext';
 import { useUserOrganizationIdsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 
-const useUserOrganizationIds = () => {
-  const { user } = useUserContext();
+const useUserOrganizationIds = (userNameId: string) => {
+  const skip = !userNameId;
 
   const { data } = useUserOrganizationIdsQuery({
     variables: {
-      userId: user?.user.id!,
+      userId: userNameId,
     },
-    skip: !user?.user.id,
+    skip,
   });
 
   return useMemo(() => {
