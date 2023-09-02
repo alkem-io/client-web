@@ -3,25 +3,27 @@ import { useUserContext } from '../../../community/user';
 import {
   WhiteboardContentUpdatedDocument,
   useWhiteboardLockedByDetailsQuery,
-  useWhiteboardWithValueQuery,
+  useWhiteboardWithContentQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   WhiteboardContentUpdatedSubscription,
   WhiteboardDetailsFragment,
-  WhiteboardValueFragment,
+  WhiteboardContentFragment,
   SubscriptionWhiteboardContentUpdatedArgs,
   WhiteboardCheckoutStateEnum,
   WhiteboardLockedByDetailsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 
-export interface WhiteboardWithValue extends Omit<WhiteboardValueFragment, 'id'>, Partial<WhiteboardDetailsFragment> {}
+export interface WhiteboardWithContent
+  extends Omit<WhiteboardContentFragment, 'id'>,
+    Partial<WhiteboardDetailsFragment> {}
 
-export type WhiteboardWithoutValue<Whiteboard extends WhiteboardWithValue> = Omit<Whiteboard, 'value'>;
+export type WhiteboardWithoutContent<Whiteboard extends WhiteboardWithContent> = Omit<Whiteboard, 'value'>;
 
 export interface IWhiteboardValueEntities {
-  whiteboard?: WhiteboardWithValue;
+  whiteboard?: WhiteboardWithContent;
   isWhiteboardCheckedOutByMe: boolean;
   isWhiteboardAvailable: boolean;
   lockedBy: WhiteboardLockedByDetailsQuery['users'][0] | undefined;
@@ -38,11 +40,11 @@ export interface WhiteboardValueParams {
 export interface WhiteboardValueContainerProps
   extends ContainerChildProps<IWhiteboardValueEntities, {}, WhiteboardValueContainerState>,
     WhiteboardValueParams {
-  onWhiteboardValueLoaded?: (whiteboard: WhiteboardWithValue) => void;
+  onWhiteboardValueLoaded?: (whiteboard: WhiteboardWithContent) => void;
 }
 
 const useSubscribeToWhiteboard = UseSubscriptionToSubEntity<
-  WhiteboardValueFragment & WhiteboardDetailsFragment,
+  WhiteboardContentFragment & WhiteboardDetailsFragment,
   WhiteboardContentUpdatedSubscription,
   SubscriptionWhiteboardContentUpdatedArgs
 >({
@@ -50,7 +52,7 @@ const useSubscribeToWhiteboard = UseSubscriptionToSubEntity<
   getSubscriptionVariables: whiteboard => ({ whiteboardIDs: [whiteboard.id] }),
   updateSubEntity: (whiteboard, subscriptionData) => {
     if (whiteboard && subscriptionData.whiteboardContentUpdated.whiteboardID === whiteboard.id) {
-      whiteboard.value = subscriptionData.whiteboardContentUpdated.value;
+      whiteboard.content = subscriptionData.whiteboardContentUpdated.content;
     }
   },
 });
@@ -68,7 +70,7 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
     data: whiteboardWithValueData,
     loading: loadingWhiteboardWithValue,
     subscribeToMore: subscribeToWhiteboard,
-  } = useWhiteboardWithValueQuery({
+  } = useWhiteboardWithContentQuery({
     errorPolicy: 'all',
     // TODO: Check if these policies are really needed
     fetchPolicy: 'network-only',

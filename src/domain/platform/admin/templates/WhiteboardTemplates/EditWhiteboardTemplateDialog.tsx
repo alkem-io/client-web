@@ -47,7 +47,7 @@ const EditWhiteboardTemplateDialog = ({
   }
 
   const initialValues: Partial<WhiteboardTemplateFormValues> = {
-    value: templateValue?.value,
+    content: templateValue?.content,
     displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,

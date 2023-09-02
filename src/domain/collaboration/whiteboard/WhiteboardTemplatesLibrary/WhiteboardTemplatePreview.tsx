@@ -1,12 +1,12 @@
 import { FC } from 'react';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { TemplatePreviewBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { WhiteboardTemplateWithValue } from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 
-interface WhiteboardTemplatePreviewProps extends TemplatePreviewBaseProps<WhiteboardTemplateWithValue> {}
+interface WhiteboardTemplatePreviewProps extends TemplatePreviewBaseProps<WhiteboardTemplateWithContent> {}
 
 const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ template }) => {
-  if (!template?.value) {
+  if (!template?.content) {
     return null;
   }
   return (

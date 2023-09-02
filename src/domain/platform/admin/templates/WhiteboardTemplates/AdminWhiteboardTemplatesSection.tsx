@@ -2,8 +2,7 @@ import React, { useCallback } from 'react';
 import {
   useCreateWhiteboardTemplateMutation,
   useDeleteWhiteboardTemplateMutation,
-  useSpaceTemplatesAdminWhiteboardTemplateWithValueLazyQuery,
-  useInnovationPackWhiteboardTemplateWithValueLazyQuery,
+  useWhiteboardTemplateContentLazyQuery,
   useUpdateWhiteboardTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -21,7 +20,6 @@ import { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm'
 import { useTranslation } from 'react-i18next';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import WhiteboardImportTemplateCard from './WhitebaordImportTemplateCard';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   WhiteboardPreviewImage,
   useUploadWhiteboardVisuals,
@@ -48,54 +46,32 @@ const AdminWhiteboardTemplatesSection = ({
   ...props
 }: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
-  const { spaceNameId, innovationPackNameId } = useUrlParams();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
 
-  const [fetchWhiteboardTemplateFromSpaceValue, { data: dataFromSpace }] =
-    useSpaceTemplatesAdminWhiteboardTemplateWithValueLazyQuery({
-      fetchPolicy: 'cache-and-network',
-    });
+  const [fetchWhiteboardTemplateContent, { data: whiteboardContent }] = useWhiteboardTemplateContentLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
 
-  const [fetchWhiteboardTemplateFromPlatformValue, { data: dataFromPlatform }] =
-    useInnovationPackWhiteboardTemplateWithValueLazyQuery({
-      fetchPolicy: 'cache-and-network',
-    });
-
-  const getTemplateValue = useCallback(
+  const getWhiteboardTemplateContent = useCallback(
     (template: AdminWhiteboardTemplateFragment) => {
-      if (whiteboardTemplatesLocation === 'space' && spaceNameId) {
-        fetchWhiteboardTemplateFromSpaceValue({
-          variables: { spaceId: spaceNameId, whiteboardTemplateId: template.id },
-        });
-      } else if (whiteboardTemplatesLocation === 'platform' && innovationPackNameId) {
-        fetchWhiteboardTemplateFromPlatformValue({
-          variables: { innovationPackId: innovationPackNameId, whiteboardTemplateId: template.id },
-        });
-      }
-    },
-    [spaceNameId, innovationPackNameId, fetchWhiteboardTemplateFromSpaceValue, fetchWhiteboardTemplateFromPlatformValue]
-  );
-
-  const getWhiteboardValue = () => {
-    switch (whiteboardTemplatesLocation) {
-      case 'space':
-        return dataFromSpace?.space.templates?.whiteboardTemplate;
-      case 'platform':
-        return dataFromPlatform?.platform.library.innovationPack?.templates?.whiteboardTemplate;
-    }
-  };
-
-  // Importing only makes sense on space templates, not on platform templates:
-  const [fetchInnovationPackWhiteboardValue, { data: importedWhiteboardValue }] =
-    useInnovationPackWhiteboardTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
-
-  const getImportedTemplateValue = useCallback(
-    (template: AdminWhiteboardTemplateFragment & TemplateInnovationPackMetaInfo) => {
-      fetchInnovationPackWhiteboardValue({
-        variables: { innovationPackId: template.innovationPackId, whiteboardTemplateId: template.id },
+      fetchWhiteboardTemplateContent({
+        variables: { whiteboardTemplateId: template.id },
       });
     },
-    [fetchInnovationPackWhiteboardValue]
+    [fetchWhiteboardTemplateContent]
+  );
+
+  // Importing only makes sense on space templates, not on platform templates:
+  const [fetchImportedWhiteboardTemplateContent, { data: importedWhiteboardContent }] =
+    useWhiteboardTemplateContentLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
+
+  const getImportedWhiteboardTemplateContent = useCallback(
+    (whiteboardTemplate: AdminWhiteboardTemplateFragment & TemplateInnovationPackMetaInfo) => {
+      fetchImportedWhiteboardTemplateContent({
+        variables: { whiteboardTemplateId: whiteboardTemplate.id },
+      });
+    },
+    [fetchImportedWhiteboardTemplateContent]
   );
 
   const onMutationCalled = (
@@ -117,14 +93,12 @@ const AdminWhiteboardTemplatesSection = ({
       templateCardComponent={WhiteboardTemplateCard}
       templateImportCardComponent={WhiteboardImportTemplateCard}
       templatePreviewComponent={WhiteboardTemplatePreview}
-      getTemplateValue={getTemplateValue}
-      getImportedTemplateValue={getImportedTemplateValue}
-      templateValue={getWhiteboardValue()}
-      importedTemplateValue={importedWhiteboardValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
+      getWhiteboardTemplateContent={getWhiteboardTemplateContent}
+      getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}
+      whiteboardTemplateContent={whiteboardContent?.lookup.whiteboardTemplate}
+      importedTemplateContent={importedWhiteboardContent?.lookup.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
-      //getImportedTemplateValue={getImportedTemplateValue}
-      //importedTemplateValue={importedWhiteboardValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
       // TODO:
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}

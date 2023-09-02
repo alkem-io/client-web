@@ -88,10 +88,10 @@ type AdminTemplatesSectionProps<
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
-  getTemplateValue?: (template: T) => void;
-  getImportedTemplateValue?: (template: Q) => void;
-  templateValue?: V | undefined;
-  importedTemplateValue?: V | undefined;
+  getWhiteboardTemplateContent?: (template: T) => void;
+  getImportedWhiteboardTemplateContent?: (template: Q) => void;
+  whiteboardTemplateContent?: V | undefined;
+  importedTemplateContent?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
   editTemplateDialogComponent: ComponentType<
     DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
@@ -138,7 +138,7 @@ const AdminTemplatesSection = <
   editTemplateDialogComponent,
   canImportTemplates,
   // Some Templates (Post, InnovationFlow...) come with the value included, and some others (Whiteboards) need to call this function to retrieve the data
-  getTemplateValue = () => {},
+  getWhiteboardTemplateContent = () => {},
   ...dialogProps
 }: AdminTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
@@ -352,8 +352,8 @@ const AdminTemplatesSection = <
           template={selectedTemplate}
           onSubmit={handleTemplateUpdate}
           onDelete={() => setDeletingTemplateId(selectedTemplate.id)}
-          getTemplateValue={getTemplateValue}
-          templateValue={dialogProps.templateValue}
+          getTemplateValue={getWhiteboardTemplateContent}
+          templateValue={dialogProps.whiteboardTemplateContent}
         />
       )}
       {selectedTemplate && (
@@ -365,8 +365,8 @@ const AdminTemplatesSection = <
         >
           <TemplatePreview
             template={selectedTemplate}
-            getTemplateValue={getTemplateValue}
-            templateValue={dialogProps.templateValue}
+            getTemplateValue={getWhiteboardTemplateContent}
+            templateValue={dialogProps.whiteboardTemplateContent}
           />
         </TemplateViewDialog>
       )}

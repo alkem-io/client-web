@@ -17,13 +17,13 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
 interface WhiteboardTemplateViewProps {
   template: AdminWhiteboardTemplateFragment;
   getTemplateValue?: (template: AdminWhiteboardTemplateFragment) => void;
-  templateValue?: AdminWhiteboardTemplateValueFragment | undefined;
+  templateContent?: AdminWhiteboardTemplateValueFragment | undefined;
 }
 
 const WhiteboardTemplatePreview = ({
   template,
   getTemplateValue = () => {},
-  templateValue,
+  templateContent,
 }: WhiteboardTemplateViewProps) => {
   const { t } = useTranslation();
 
@@ -38,9 +38,9 @@ const WhiteboardTemplatePreview = ({
   const whiteboardFromTemplate = useMemo(() => {
     return {
       id: '__template',
-      value: templateValue?.value ?? '',
+      content: templateContent?.content ?? '',
     };
-  }, [templateValue]);
+  }, [templateContent]);
 
   return (
     <>
@@ -56,7 +56,7 @@ const WhiteboardTemplatePreview = ({
         <TagsComponent tags={tags || []} />
       </Box>
       <Box height={theme => theme.spacing(40)}>
-        {templateValue?.value && (
+        {templateContent?.content && (
           <ExcalidrawWrapper
             entities={{
               whiteboard: whiteboardFromTemplate,

@@ -47,7 +47,7 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
         name={`${name}.value`}
         previewImagesName={`${name}.previewImages`}
         canEdit
-        onChangeValue={handleChange}
+        onChangeContent={handleChange}
         maxHeight={gutters(12)}
         dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
       />

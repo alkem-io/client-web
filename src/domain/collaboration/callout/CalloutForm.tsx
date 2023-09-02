@@ -139,7 +139,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         profile: {
           displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
         },
-        value: JSON.stringify(EmptyWhiteboard),
+        content: JSON.stringify(EmptyWhiteboard),
       },
       whiteboard: callout?.whiteboard
         ? {
@@ -150,7 +150,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             profileData: {
               displayName: t('components.callout-creation.whiteboard.title'),
             },
-            value: JSON.stringify(EmptyWhiteboard),
+            content: JSON.stringify(EmptyWhiteboard),
             previewImages: undefined,
           },
     }),

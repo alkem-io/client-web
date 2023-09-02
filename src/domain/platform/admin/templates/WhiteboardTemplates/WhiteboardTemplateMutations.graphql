@@ -1,5 +1,5 @@
-mutation updateWhiteboardTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput!) {
-  updateWhiteboardTemplate(whiteboardTemplateInput: { ID: $templateId, value: $value, profile: $profile }) {
+mutation updateWhiteboardTemplate($templateId: UUID!, $content: JSON, $profile: UpdateProfileInput!) {
+  updateWhiteboardTemplate(whiteboardTemplateInput: { ID: $templateId, content: $content, profile: $profile }) {
     id
     profile {
       id
@@ -12,12 +12,12 @@ mutation updateWhiteboardTemplate($templateId: UUID!, $value: JSON, $profile: Up
 
 mutation createWhiteboardTemplate(
   $templatesSetId: UUID!
-  $value: JSON!
+  $content: JSON!
   $profile: CreateProfileInput!
   $tags: [String!]
 ) {
   createWhiteboardTemplate(
-    whiteboardTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile, tags: $tags }
+    whiteboardTemplateInput: { templatesSetID: $templatesSetId, content: $content, profile: $profile, tags: $tags }
   ) {
     id
     profile {

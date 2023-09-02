@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
-import WhiteboardValueContainer from '../containers/WhiteboardValueContainer';
+import WhiteboardValueContainer from '../containers/WhiteboardContentContainer';
 import {
   WhiteboardDetailsFragment,
   WhiteboardValueFragment,

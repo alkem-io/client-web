@@ -26,27 +26,27 @@ import isWhiteboardValueEqual from '../utils/isWhiteboardValueEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { PageTitle } from '../../../../core/ui/typography';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
-import { WhiteboardTemplateWithValue } from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardWithValue, WhiteboardWithoutValue } from '../containers/WhiteboardValueContainer';
+import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
 import {
   WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
-interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithValue> {
+interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
     whiteboard?: Whiteboard;
     lockedBy?: LockedByDetailsFragment;
   };
   actions: {
-    onCancel: (whiteboard: WhiteboardWithoutValue<Whiteboard>) => void;
-    onCheckin?: (whiteboard: WhiteboardWithoutValue<Whiteboard>) => void;
-    onCheckout?: (whiteboard: WhiteboardWithoutValue<Whiteboard>) => void;
+    onCancel: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
+    onCheckin?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
+    onCheckout?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
     onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => void;
-    onDelete?: (whiteboard: WhiteboardWithoutValue<Whiteboard>) => void;
+    onDelete?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
   };
   options: {
     show: boolean;
@@ -92,7 +92,7 @@ type WhiteboardAction = 'save-and-checkin' | 'checkout';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
+const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   entities,
   actions,
   options,
@@ -125,7 +125,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
     return { appState, elements, files };
   };
 
-  const handleUpdate = async (whiteboard: WhiteboardWithValue, state: RelevantExcalidrawState | undefined) => {
+  const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
       return;
     }
@@ -134,7 +134,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
 
-    const value = serializeAsJSON(elements, appState, files ?? {}, 'local');
+    const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
       return;
@@ -149,7 +149,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
           ...whiteboard.profile,
           displayName,
         },
-        value,
+        content,
       } as Whiteboard,
       previewImages
     );
@@ -191,11 +191,11 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithValue>({
     actions.onCancel(whiteboard!);
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplateWithValue) => {
+  const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
     const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
     if (whiteboardApi && options.canEdit && options.checkedOutByMe) {
       try {
-        mergeWhiteboard(whiteboardApi, template.value);
+        mergeWhiteboard(whiteboardApi, template.content);
       } catch (err) {
         notify(t('whiteboard-templates.error-importing'), 'error');
         logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`));

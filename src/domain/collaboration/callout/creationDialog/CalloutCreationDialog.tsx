@@ -15,10 +15,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import {
-  useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery,
-  useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useWhiteboardTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../core/ui/actions/Actions';
@@ -109,11 +106,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     }
   }, [open]);
 
-  const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [fetchWhiteboardValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -159,7 +152,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       closePublishDialog();
       return result;
     },
-    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardValueFromSpace, fetchWhiteboardValueFromLibrary]
+    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardContent, fetchWhiteboardTemplateContent]
   );
 
   const handleClose = useCallback(() => {

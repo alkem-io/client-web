@@ -7,7 +7,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import WhiteboardTemplatesLibrary from '../../../whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
-import { WhiteboardTemplateWithValue } from '../../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
+import { WhiteboardTemplateWithContent } from '../../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { gutters } from '../../../../../core/ui/grid/utils';
 
@@ -23,23 +23,23 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
       profile: {
         displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
       },
-      value: JSON.stringify(EmptyWhiteboard),
+      content: JSON.stringify(EmptyWhiteboard),
     });
   };
 
-  const handleChange = (newValue: string) => {
+  const handleChange = (newContent: string) => {
     helpers.setValue({
       profile: {
         displayName: t('components.callout-creation.custom-template'),
       },
-      value: newValue,
+      content: newContent,
     });
   };
 
-  const handleSelectTemplate = (template: WhiteboardTemplateWithValue) => {
+  const handleSelectTemplate = (template: WhiteboardTemplateWithContent) => {
     helpers.setValue({
       profile: { displayName: template.displayName },
-      value: template.value,
+      content: template.content,
     });
   };
 
@@ -64,7 +64,7 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
       <FormikWhiteboardPreview
         name={`${name}.value`}
         canEdit
-        onChangeValue={handleChange}
+        onChangeContent={handleChange}
         maxHeight={gutters(12)}
         dialogProps={{ title: t('whiteboard-templates.edit-template-button') }}
       />

@@ -51,9 +51,9 @@ fragment WhiteboardSummary on Whiteboard {
   }
 }
 
-fragment WhiteboardValue on Whiteboard {
+fragment WhiteboardContent on Whiteboard {
   id
-  value
+  content
 }
 
 fragment CheckoutDetails on WhiteboardCheckout {
@@ -89,7 +89,7 @@ fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
     displayName
     description
   }
-  value
+  content
 }
 
 fragment CalloutWithWhiteboard on Callout {
@@ -131,44 +131,11 @@ query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
   }
 }
 
-query whiteboardWithValue($whiteboardId: UUID!) {
+query WhiteboardWithContent($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {
       ...WhiteboardDetails
-      ...WhiteboardValue
-    }
-  }
-}
-
-query whiteboardTemplateValue($whiteboardId: UUID!) {
-  lookup {
-    whiteboardTemplate(ID: $whiteboardId) {
-      id
-      profile {
-        ...WhiteboardProfile
-      }
-      value
-    }
-  }
-}
-
-query platformTemplateWhiteboardValues($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
-  platform {
-    id
-    library {
-      id
-      innovationPack(ID: $innovationPackId) {
-        templates {
-          id
-          whiteboardTemplate(ID: $whiteboardId) {
-            id
-            profile {
-              ...WhiteboardProfile
-            }
-            value
-          }
-        }
-      }
+      ...WhiteboardContent
     }
   }
 }
@@ -188,7 +155,7 @@ mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
 mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
   updateWhiteboard(whiteboardData: $input) {
     id
-    value
+    content
     profile {
       id
       displayName
@@ -205,6 +172,6 @@ mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
 subscription whiteboardContentUpdated($whiteboardIDs: [UUID!]!) {
   whiteboardContentUpdated(whiteboardIDs: $whiteboardIDs) {
     whiteboardID
-    value
+    content
   }
 }
