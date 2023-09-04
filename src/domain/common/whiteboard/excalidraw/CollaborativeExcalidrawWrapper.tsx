@@ -19,7 +19,6 @@ import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import Collab, { CollabAPI } from './collab/Collab';
 import { useCallbackRefState } from './useCallbackRefState';
-import LiveCollaborationStatus from './collab/LiveCollaborationStatus';
 import { useUserContext } from '../../../community/user';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
@@ -62,11 +61,9 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
 
     const [collabAPI, setCollabAPIRef] = useState<CollabAPI>();
 
-    console.log('collabAPI', collabAPI);
-
     const styles = useActorWhiteboardStyles();
+    //    const [excalidrawAPI, excalidrawRefCallback] = useCallbackRefState<ExcalidrawImperativeAPI>();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
-    const [excalidrawAPI, excalidrawRefCallback] = useCallbackRefState<ExcalidrawImperativeAPI>();
 
     const { user } = useUserContext();
     const username = user?.user.profile.displayName ?? 'User'; //!!
@@ -171,19 +168,18 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
     const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, _files: BinaryFiles) => {
-      console.log('onChange');
       collabAPI?.syncElements(elements);
     };
 
     useEffect(() => {
       console.log({ collabAPI, whiteboardId: whiteboard?.id });
       if (collabAPI && whiteboard?.id) {
-        console.log(`starting collaboration on room:${whiteboard.id}`);
         collabAPI.startCollaboration({
           roomId: whiteboard.id,
           roomKey: 'ghggh',
         });
       }
+      return () => collabAPI?.stopCollaboration();
     }, [collabAPI]);
 
     return (
@@ -191,7 +187,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            ref={excalidrawRefCallback}
+            ref={combinedRef}
             initialData={data}
             UIOptions={mergedUIOptions}
             isCollaborating
@@ -200,13 +196,16 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             onPointerUpdate={collabAPI?.onPointerUpdate}
             detectScroll={false}
             autoFocus
-            renderTopRightUI={_isMobile => {
+            /*renderTopRightUI={_isMobile => {
               return <LiveCollaborationStatus />;
-            }}
+            }}*/
             {...restOptions}
           />
         )}
-        {excalidrawAPI && <Collab username={username} excalidrawAPI={excalidrawAPI} collabAPIRef={setCollabAPIRef} />}
+        {combinedRef.current && (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          <Collab username={username} excalidrawAPI={combinedRef.current as any} collabAPIRef={setCollabAPIRef} />
+        )}
       </div>
     );
   }

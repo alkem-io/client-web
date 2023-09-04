@@ -1,10 +1,8 @@
 import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
 import { TCollabClass } from './Collab';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { WS_EVENTS, FILE_UPLOAD_TIMEOUT, WS_SCENE_EVENT_TYPES, PRECEDING_ELEMENT_KEY } from './excalidrawAppConstants';
+import { WS_EVENTS, WS_SCENE_EVENT_TYPES, PRECEDING_ELEMENT_KEY } from './excalidrawAppConstants';
 import { UserIdleState } from './utils';
-import throttle from 'lodash.throttle';
-import { newElementWith } from '@alkemio/excalidraw';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
 
@@ -39,6 +37,7 @@ class Portal {
       );
     });
     this.socket.on('room-user-change', (clients: string[]) => {
+      console.log('room-user-change', clients);
       this.collab.setCollaborators(clients);
     });
 
@@ -49,7 +48,7 @@ class Portal {
     if (!this.socket) {
       return;
     }
-    this.queueFileUpload.flush();
+    console.log('closing!!!');
     this.socket.close();
     this.socket = null;
     this.roomId = null;
@@ -70,37 +69,6 @@ class Portal {
       this.socket?.emit(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
     }
   }
-
-  queueFileUpload = throttle(async () => {
-    try {
-      await this.collab.fileManager.saveFiles({
-        elements: this.collab.excalidrawAPI.getSceneElementsIncludingDeleted(),
-        files: this.collab.excalidrawAPI.getFiles(),
-      });
-    } catch (error) {
-      if ((error as { name: string }).name !== 'AbortError') {
-        this.collab.excalidrawAPI.updateScene({
-          appState: {
-            errorMessage: (error as { message: string } | undefined)?.message,
-          },
-        });
-      }
-    }
-
-    this.collab.excalidrawAPI.updateScene({
-      elements: this.collab.excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
-        if (this.collab.fileManager.shouldUpdateImageElementStatus(element)) {
-          // this will signal collaborators to pull image data from server
-          // (using mutation instead of newElementWith otherwise it'd break
-          // in-progress dragging)
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return newElementWith(element, { status: 'saved' } as any); //!!
-        }
-        return element;
-      }),
-    });
-  }, FILE_UPLOAD_TIMEOUT);
 
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.UPDATE,
@@ -140,8 +108,6 @@ class Portal {
     for (const syncableElement of syncableElements) {
       this.broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
     }
-
-    this.queueFileUpload();
 
     await this._broadcastSocketData(data as SocketUpdateData);
   };

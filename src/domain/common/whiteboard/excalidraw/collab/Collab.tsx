@@ -1,16 +1,15 @@
 import throttle from 'lodash.throttle';
-import { PureComponent, Ref } from 'react';
+import { PureComponent } from 'react';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { APP_NAME, EVENT } from './excalidrawAppConstants';
 import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
-import { ExcalidrawElement, FileId, InitializedExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
+import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { getSceneVersion, restoreElements } from '@alkemio/excalidraw';
 import { Collaborator, Gesture } from '@alkemio/excalidraw/types/types';
-import { preventUnload, resolvablePromise, withBatchedUpdates } from './utils';
+import { resolvablePromise, withBatchedUpdates } from './utils';
 import {
   CURSOR_SYNC_TIMEOUT,
   INITIAL_SCENE_UPDATE_TIMEOUT,
-  LOAD_IMAGES_TIMEOUT,
   WS_SCENE_EVENT_TYPES,
   SYNC_FULL_SCENE_INTERVAL_MS,
 } from './excalidrawAppConstants'; //!!
@@ -24,8 +23,7 @@ import {
 import Portal from './Portal';
 import { UserIdleState } from './utils';
 import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from './excalidrawAppConstants';
-import { FileManager, updateStaleImageStatuses } from './data/FileManager';
-import { isImageElement, isInitializedImageElement } from './utils';
+import { isImageElement } from './utils';
 import { newElementWith } from '@alkemio/excalidraw';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { resetBrowserStateVersions } from './data/tabSync';
@@ -52,7 +50,6 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
-  fetchImageFilesFromFirebase: CollabInstance['fetchImageFilesFromFirebase'];
   setUsername: (username: string) => void;
 }
 
@@ -66,7 +63,6 @@ type Props = PublicProps;
 
 class Collab extends PureComponent<Props, CollabState> {
   portal: Portal;
-  fileManager: FileManager;
   excalidrawAPI: Props['excalidrawAPI'];
   activeIntervalId: number | null;
   idleTimeoutId: number | null;
@@ -84,33 +80,6 @@ class Collab extends PureComponent<Props, CollabState> {
       activeRoomLink: '',
     };
     this.portal = new Portal(this);
-    this.fileManager = new FileManager({
-      getFiles: async fileIds => {
-        const { roomId, roomKey } = this.portal;
-        if (!roomId) {
-          throw new Error('Aborted');
-        }
-        console.log('well see this');
-        const erroredFiles: Map<FileId, true> = new Map();
-        return { loadedFiles: [], erroredFiles };
-        //return loadFilesFromFirebase(`files/rooms/${roomId}`, roomKey, fileIds);
-      },
-      saveFiles: async ({ addedFiles }) => {
-        const { roomId, roomKey } = this.portal;
-        if (!roomId) {
-          throw new Error('Aborted');
-        }
-        return { savedFiles: new Map(), erroredFiles: new Map() };
-        /*return saveFilesToFirebase({
-          prefix: `${FIREBASE_STORAGE_PREFIXES.collabFiles}/${roomId}`,
-          files: await encodeFilesForUpload({
-            files: addedFiles,
-            encryptionKey: roomKey,
-            maxBytes: FILE_UPLOAD_MAX_BYTES,
-          }),
-        });*/
-      },
-    });
     this.excalidrawAPI = props.excalidrawAPI;
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
@@ -130,7 +99,6 @@ class Collab extends PureComponent<Props, CollabState> {
       onPointerUpdate: this.onPointerUpdate,
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
-      fetchImageFilesFromFirebase: this.fetchImageFilesFromFirebase,
       stopCollaboration: this.stopCollaboration,
       setUsername: this.setUsername,
     };
@@ -179,14 +147,14 @@ class Collab extends PureComponent<Props, CollabState> {
   private beforeUnload = withBatchedUpdates((event: BeforeUnloadEvent) => {
     const syncableElements = getSyncableElements(this.getSceneElementsIncludingDeleted());
 
-    if (this.fileManager.shouldPreventUnload(syncableElements)) {
-      preventUnload(event);
-    }
+    // should prevent unload?? //!!
+    // if (this.fileManager.shouldPreventUnload(syncableElements)) {
+    //   preventUnload(event);
+    // }
   });
 
   stopCollaboration = (keepRemoteState = true) => {
     this.queueBroadcastAllElements.cancel();
-    this.loadImageFiles.cancel();
 
     if (this.portal.socket && this.fallbackInitializationHandler) {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
@@ -219,7 +187,6 @@ class Collab extends PureComponent<Props, CollabState> {
   private destroySocketClient = (opts?: { isUnload: boolean }) => {
     this.lastBroadcastedOrReceivedSceneVersion = -1;
     this.portal.close();
-    this.fileManager.reset();
     if (!opts?.isUnload) {
       this.setState({
         activeRoomLink: '',
@@ -229,33 +196,6 @@ class Collab extends PureComponent<Props, CollabState> {
         collaborators: this.collaborators,
       });
     }
-  };
-
-  private fetchImageFilesFromFirebase = async (opts: {
-    elements: readonly ExcalidrawElement[];
-    /**
-     * Indicates whether to fetch files that are errored or pending and older
-     * than 10 seconds.
-     *
-     * Use this as a machanism to fetch files which may be ok but for some
-     * reason their status was not updated correctly.
-     */
-    forceFetchFiles?: boolean;
-  }) => {
-    const unfetchedImages = opts.elements
-      .filter(element => {
-        return (
-          isInitializedImageElement(element) &&
-          !this.fileManager.isFileHandled(element.fileId) &&
-          !element.isDeleted &&
-          (opts.forceFetchFiles
-            ? element.status !== 'pending' || Date.now() - element.updated > 10000
-            : element.status === 'saved')
-        );
-      })
-      .map(element => (element as InitializedExcalidrawImageElement).fileId);
-
-    return await this.fileManager.getFiles(unfetchedImages);
   };
 
   private fallbackInitializationHandler: null | (() => unknown) = null;
@@ -431,9 +371,10 @@ class Collab extends PureComponent<Props, CollabState> {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
     }
     if (fetchScene && roomLinkData && this.portal.socket) {
-      this.excalidrawAPI.resetScene();
+      //this.excalidrawAPI.resetScene();
 
       try {
+        this.queueBroadcastAllElements();
         console.log('loadFromFirebase');
         /*const elements = await loadFromFirebase(roomLinkData.roomId, roomLinkData.roomKey, this.portal.socket);
         if (elements) {
@@ -473,20 +414,6 @@ class Collab extends PureComponent<Props, CollabState> {
     return reconciledElements;
   };
 
-  private loadImageFiles = throttle(async () => {
-    const { loadedFiles, erroredFiles } = await this.fetchImageFilesFromFirebase({
-      elements: this.excalidrawAPI.getSceneElementsIncludingDeleted(),
-    });
-
-    this.excalidrawAPI.addFiles(loadedFiles);
-
-    updateStaleImageStatuses({
-      excalidrawAPI: this.excalidrawAPI,
-      erroredFiles,
-      elements: this.excalidrawAPI.getSceneElementsIncludingDeleted(),
-    });
-  }, LOAD_IMAGES_TIMEOUT);
-
   private handleRemoteSceneUpdate = (elements: ReconciledElements, { init = false }: { init?: boolean } = {}) => {
     this.excalidrawAPI.updateScene({
       elements,
@@ -498,8 +425,6 @@ class Collab extends PureComponent<Props, CollabState> {
     // undo, a user makes a change, and then try to redo, your element(s) will be lost. However,
     // right now we think this is the right tradeoff.
     this.excalidrawAPI.history.clear();
-
-    this.loadImageFiles();
   };
 
   private onPointerMove = () => {
@@ -623,15 +548,7 @@ class Collab extends PureComponent<Props, CollabState> {
   };
 
   render() {
-    const { username, errorMessage, activeRoomLink } = this.state;
-
-    return (
-      <>
-        <p>
-          Collab {username} : {errorMessage} : {activeRoomLink}
-        </p>
-      </>
-    );
+    return <></>;
   }
 }
 
