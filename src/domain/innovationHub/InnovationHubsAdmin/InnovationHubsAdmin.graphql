@@ -27,7 +27,7 @@ fragment InnovationHubProfile on Profile {
   tagset {
     ...TagsetDetails
   }
-  visual(type: BANNER) {
+  visual(type: BANNER_WIDE) {
     ...VisualFull
   }
 }

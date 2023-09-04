@@ -598,6 +598,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 
 export enum AuthorizationPrivilege {
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
+  AccessWhiteboardRt = 'ACCESS_WHITEBOARD_RT',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
@@ -1174,7 +1175,7 @@ export type ContributorRoles = {
   id: Scalars['UUID'];
   /** The invitations for the specified user; only accessible for platform admins */
   invitations: Array<InvitationForRoleResult>;
-  /** Details of the Organizations the User is a member of, with child memberships. */
+  /** Details of the roles the contributor has in Organizations */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships */
   spaces: Array<RolesResultSpace>;
@@ -4681,8 +4682,6 @@ export type UpdateSpaceInput = {
   ID: Scalars['UUID_NAMEID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
@@ -4924,6 +4923,7 @@ export type Visual = {
 export enum VisualType {
   Avatar = 'AVATAR',
   Banner = 'BANNER',
+  BannerWide = 'BANNER_WIDE',
   Card = 'CARD',
 }
 
