@@ -13,13 +13,7 @@ import {
   WS_SCENE_EVENT_TYPES,
   SYNC_FULL_SCENE_INTERVAL_MS,
 } from './excalidrawAppConstants'; //!!
-import {
-  generateCollaborationLinkData,
-  getCollaborationLink,
-  getCollabServer,
-  getSyncableElements,
-  SocketUpdateDataSource,
-} from './data';
+import { generateCollaborationLinkData, getCollabServer, getSyncableElements, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { UserIdleState } from './utils';
 import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from './excalidrawAppConstants';
@@ -200,21 +194,17 @@ class Collab extends PureComponent<Props, CollabState> {
 
   private fallbackInitializationHandler: null | (() => unknown) = null;
 
-  startCollaboration = async (
-    existingRoomLinkData: null | { roomId: string; roomKey: string }
-  ): Promise<ImportedDataState | null> => {
+  startCollaboration = async (existingRoomLinkData: null | { roomId: string }): Promise<ImportedDataState | null> => {
     if (this.portal.socket) {
       return null;
     }
 
     let roomId;
-    let roomKey;
 
     if (existingRoomLinkData) {
-      ({ roomId, roomKey } = existingRoomLinkData);
+      ({ roomId } = existingRoomLinkData);
     } else {
-      ({ roomId, roomKey } = await generateCollaborationLinkData());
-      window.history.pushState({}, APP_NAME, getCollaborationLink({ roomId, roomKey }));
+      ({ roomId } = await generateCollaborationLinkData());
     }
 
     const scenePromise = resolvablePromise<ImportedDataState | null>();
@@ -239,8 +229,7 @@ class Collab extends PureComponent<Props, CollabState> {
           transports: socketServerData.polling ? ['websocket', 'polling'] : ['websocket'],
           path: '/api/private/ws/socket.io',
         }),
-        roomId,
-        roomKey
+        roomId
       );
 
       this.portal.socket.once('connect_error', fallbackInitializationHandler);
@@ -274,10 +263,6 @@ class Collab extends PureComponent<Props, CollabState> {
 
     // All socket listeners are moving to Portal
     this.portal.socket.on('client-broadcast', async (encryptedData: ArrayBuffer, iv: Uint8Array) => {
-      if (!this.portal.roomKey) {
-        return;
-      }
-
       const decodedData = new TextDecoder().decode(encryptedData);
       const decryptedData = JSON.parse(decodedData);
 
@@ -362,7 +347,7 @@ class Collab extends PureComponent<Props, CollabState> {
   }:
     | {
         fetchScene: true;
-        roomLinkData: { roomId: string; roomKey: string } | null;
+        roomLinkData: { roomId: string } | null;
       }
     | { fetchScene: false; roomLinkData?: null }) => {
     console.log('initializeRoom');
@@ -376,7 +361,7 @@ class Collab extends PureComponent<Props, CollabState> {
       try {
         this.queueBroadcastAllElements();
         console.log('loadFromFirebase');
-        /*const elements = await loadFromFirebase(roomLinkData.roomId, roomLinkData.roomKey, this.portal.socket);
+        /*const elements = await loadFromFirebase(roomLinkData.roomId, this.portal.socket);
         if (elements) {
           this.setLastBroadcastedOrReceivedSceneVersion(getSceneVersion(elements));
 

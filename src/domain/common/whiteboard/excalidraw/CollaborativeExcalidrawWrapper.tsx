@@ -18,7 +18,6 @@ import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import Collab, { CollabAPI } from './collab/Collab';
-import { useCallbackRefState } from './useCallbackRefState';
 import { useUserContext } from '../../../community/user';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
@@ -172,11 +171,9 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     };
 
     useEffect(() => {
-      console.log({ collabAPI, whiteboardId: whiteboard?.id });
       if (collabAPI && whiteboard?.id) {
         collabAPI.startCollaboration({
           roomId: whiteboard.id,
-          roomKey: 'ghggh',
         });
       }
       return () => collabAPI?.stopCollaboration();
