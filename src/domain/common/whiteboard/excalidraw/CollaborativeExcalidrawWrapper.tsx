@@ -148,13 +148,11 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
       [data, actions, styles.excalidrawAlkemioBackground]
     );
 
-    // This needs to be removed in case it crashes the export window
-    // We already have a Save button
     const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
       () => ({
         canvasActions: {
           export: {
-            saveFileToDisk: false,
+            saveFileToDisk: true,
             renderCustomUI,
           },
         },
@@ -180,7 +178,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     }, [collabAPI]);
 
     return (
-      <div className={styles.container} style={{ border: '1px solid red' }}>
+      <div className={styles.container}>
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard

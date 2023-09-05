@@ -35,7 +35,6 @@ class Portal {
       );
     });
     this.socket.on('room-user-change', (clients: string[]) => {
-      console.log('room-user-change', clients);
       this.collab.setCollaborators(clients);
     });
 
@@ -46,7 +45,6 @@ class Portal {
     if (!this.socket) {
       return;
     }
-    console.log('closing!!!');
     this.socket.close();
     this.socket = null;
     this.roomId = null;

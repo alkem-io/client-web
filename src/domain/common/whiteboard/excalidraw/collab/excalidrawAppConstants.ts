@@ -1,4 +1,6 @@
-export const APP_NAME = 'Excalidraw';
+/**
+ * Constants and enums that are supposed to be exported by Excalidraw but Vite cannot see
+ */
 export enum EVENT {
   COPY = 'copy',
   PASTE = 'paste',
@@ -78,5 +80,3 @@ export const isExcalidrawPlusSignedUser = document.cookie.includes(
   COOKIES.AUTH_STATE_COOKIE,
 );
 
-export const REACT_APP_WS_SERVER_URL = 'http://localhost:3000'; //!!
-export const REACT_APP_PORTAL_URL = ''; //!!

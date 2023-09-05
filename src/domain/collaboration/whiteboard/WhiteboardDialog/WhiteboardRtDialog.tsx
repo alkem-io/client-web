@@ -147,7 +147,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
 
-    if (whiteboardApi && options.canEdit) {
+    if (whiteboardApi) {
       const elements = whiteboardApi.getSceneElements();
       const appState = whiteboardApi.getAppState();
       const files = whiteboardApi.getFiles();
@@ -169,7 +169,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
   const handleImportTemplate = async (template: WhiteboardTemplateWithValue) => {
     const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-    if (whiteboardApi && options.canEdit) {
+    if (whiteboardApi) {
       try {
         mergeWhiteboard(whiteboardApi, template.value);
       } catch (err) {
@@ -228,6 +228,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 />
               )}
               <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />
+              <span>
+                RT<sup title=":)">beta</sup>
+              </span>
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardValue && whiteboard && (
@@ -237,11 +240,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                   options={{
                     UIOptions: {
                       canvasActions: {
-                        export: options.canEdit
-                          ? {
-                              saveFileToDisk: true,
-                            }
-                          : false,
+                        export: {
+                          saveFileToDisk: true,
+                        },
                       },
                     },
                   }}

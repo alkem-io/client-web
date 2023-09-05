@@ -1,5 +1,5 @@
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { DELETED_ELEMENT_TIMEOUT, REACT_APP_PORTAL_URL, REACT_APP_WS_SERVER_URL, ROOM_ID_BYTES } from '../excalidrawAppConstants';
+import { DELETED_ELEMENT_TIMEOUT, ROOM_ID_BYTES } from '../excalidrawAppConstants';
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
 import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
 import { bytesToHexString } from '../utils';
@@ -20,11 +20,6 @@ export const isSyncableElement = (
   return !isInvisiblySmallElement(element);
 };
 
-export const getSyncableElements = (elements: readonly ExcalidrawElement[]) =>
-  elements.filter((element) =>
-    isSyncableElement(element),
-  ) as SyncableExcalidrawElement[];
-
 const generateRoomId = async () => {
   const buffer = new Uint8Array(ROOM_ID_BYTES);
   window.crypto.getRandomValues(buffer);
@@ -36,28 +31,19 @@ const generateRoomId = async () => {
  * from upstream is to allow changing the params immediately when needed without
  * having to wait for clients to update the SW.
  *
- * If REACT_APP_WS_SERVER_URL env is set, we use that instead (useful for forks)
+ * If VITE_APP_ALKEMIO_DOMAIN env is set, we use that instead (useful for forks)
  */
 export const getCollabServer = async (): Promise<{
   url: string;
   polling: boolean;
 }> => {
-  if (REACT_APP_WS_SERVER_URL) {  //!! get from process.env
+  if (import.meta.env.VITE_APP_ALKEMIO_DOMAIN) {
     return {
-      url: REACT_APP_WS_SERVER_URL,
+      url: import.meta.env.VITE_APP_ALKEMIO_DOMAIN,
       polling: true,
     };
   }
-
-  try {
-    const resp = await fetch(
-      `${REACT_APP_PORTAL_URL}/collab-server`,
-    );
-    return await resp.json();
-  } catch (error) {
-    console.error(error);
-    throw new Error('errors.cannotResolveCollabServer');
-  }
+  throw new Error('errors.cannotResolveCollabServer');
 };
 
 export type SocketUpdateDataSource = {
@@ -97,13 +83,6 @@ export type SocketUpdateData =
   SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
     _brand: 'socketUpdateData';
   };
-
-  const RE_COLLAB_LINK = /^#room=([a-zA-Z0-9_-]+)$/;
-
-export const isCollaborationLink = (link: string) => {
-  const hash = new URL(link).hash;
-  return RE_COLLAB_LINK.test(hash);
-};
 
 export const generateCollaborationLinkData = async () => {
   const roomId = await generateRoomId();

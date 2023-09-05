@@ -1,19 +1,19 @@
 import throttle from 'lodash.throttle';
 import { PureComponent } from 'react';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
-import { APP_NAME, EVENT } from './excalidrawAppConstants';
+import { EVENT } from './excalidrawAppConstants';
 import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { getSceneVersion, restoreElements } from '@alkemio/excalidraw';
 import { Collaborator, Gesture } from '@alkemio/excalidraw/types/types';
-import { resolvablePromise, withBatchedUpdates } from './utils';
+import { resolvablePromise } from './utils';
 import {
   CURSOR_SYNC_TIMEOUT,
   INITIAL_SCENE_UPDATE_TIMEOUT,
   WS_SCENE_EVENT_TYPES,
   SYNC_FULL_SCENE_INTERVAL_MS,
-} from './excalidrawAppConstants'; //!!
-import { generateCollaborationLinkData, getCollabServer, getSyncableElements, SocketUpdateDataSource } from './data';
+} from './excalidrawAppConstants';
+import { generateCollaborationLinkData, getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { UserIdleState } from './utils';
 import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from './excalidrawAppConstants';
@@ -26,7 +26,6 @@ import { createStore } from 'jotai';
 
 const appJotaiStore = createStore();
 
-const isTest = true; //!!
 export const collabAPIAtom = atom<CollabAPI | null>(null);
 export const isOfflineAtom = atom(false);
 
@@ -44,7 +43,6 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
-  setUsername: (username: string) => void;
 }
 
 interface PublicProps {
@@ -81,8 +79,6 @@ class Collab extends PureComponent<Props, CollabState> {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
-    window.addEventListener(EVENT.BEFORE_UNLOAD, this.beforeUnload);
     window.addEventListener('online', this.onOfflineStatusToggle);
     window.addEventListener('offline', this.onOfflineStatusToggle);
     window.addEventListener(EVENT.UNLOAD, this.onUnload);
@@ -94,15 +90,12 @@ class Collab extends PureComponent<Props, CollabState> {
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
       stopCollaboration: this.stopCollaboration,
-      setUsername: this.setUsername,
     };
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
     this.collabAPIRef(collabAPI);
 
-    console.log({ collabAPIAtom, collabAPI });
-    if (isTest) {
-      //!!
+    if (import.meta.env.MODE === 'development') {
       window.collab = window.collab || ({} as Window['collab']);
       Object.defineProperties(window, {
         collab: {
@@ -120,7 +113,6 @@ class Collab extends PureComponent<Props, CollabState> {
   componentWillUnmount() {
     window.removeEventListener('online', this.onOfflineStatusToggle);
     window.removeEventListener('offline', this.onOfflineStatusToggle);
-    window.removeEventListener(EVENT.BEFORE_UNLOAD, this.beforeUnload);
     window.removeEventListener(EVENT.UNLOAD, this.onUnload);
     window.removeEventListener(EVENT.POINTER_MOVE, this.onPointerMove);
     window.removeEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
@@ -138,30 +130,17 @@ class Collab extends PureComponent<Props, CollabState> {
     this.destroySocketClient({ isUnload: true });
   };
 
-  private beforeUnload = withBatchedUpdates((event: BeforeUnloadEvent) => {
-    const syncableElements = getSyncableElements(this.getSceneElementsIncludingDeleted());
-
-    // should prevent unload?? //!!
-    // if (this.fileManager.shouldPreventUnload(syncableElements)) {
-    //   preventUnload(event);
-    // }
-  });
-
-  stopCollaboration = (keepRemoteState = true) => {
+  stopCollaboration = (force = false) => {
     this.queueBroadcastAllElements.cancel();
 
     if (this.portal.socket && this.fallbackInitializationHandler) {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
     }
 
-    if (!keepRemoteState) {
-      this.destroySocketClient();
-    } else if (window.confirm('alerts.collabStopOverridePrompt')) {
+    if (force || window.confirm('This is a collaborative Whiteboard. Make sure at least One user saves the work!')) {
       // hack to ensure that we prefer we disregard any new browser state
       // that could have been saved in other tabs while we were collaborating
       resetBrowserStateVersions();
-
-      window.history.pushState({}, APP_NAME, window.location.origin);
       this.destroySocketClient();
 
       const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
@@ -262,7 +241,7 @@ class Collab extends PureComponent<Props, CollabState> {
     this.socketInitializationTimer = window.setTimeout(fallbackInitializationHandler, INITIAL_SCENE_UPDATE_TIMEOUT);
 
     // All socket listeners are moving to Portal
-    this.portal.socket.on('client-broadcast', async (encryptedData: ArrayBuffer, iv: Uint8Array) => {
+    this.portal.socket.on('client-broadcast', async (encryptedData: ArrayBuffer) => {
       const decodedData = new TextDecoder().decode(encryptedData);
       const decryptedData = JSON.parse(decodedData);
 
@@ -350,7 +329,6 @@ class Collab extends PureComponent<Props, CollabState> {
         roomLinkData: { roomId: string } | null;
       }
     | { fetchScene: false; roomLinkData?: null }) => {
-    console.log('initializeRoom');
     clearTimeout(this.socketInitializationTimer!);
     if (this.portal.socket && this.fallbackInitializationHandler) {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
@@ -360,16 +338,6 @@ class Collab extends PureComponent<Props, CollabState> {
 
       try {
         this.queueBroadcastAllElements();
-        console.log('loadFromFirebase');
-        /*const elements = await loadFromFirebase(roomLinkData.roomId, this.portal.socket);
-        if (elements) {
-          this.setLastBroadcastedOrReceivedSceneVersion(getSceneVersion(elements));
-
-          return {
-            elements,
-            scrollToContent: true,
-          };
-        }*/
       } catch (error: unknown) {
         // log the error and move on. other peers will sync us the scene.
         console.error(error);
@@ -523,15 +491,6 @@ class Collab extends PureComponent<Props, CollabState> {
     this.setLastBroadcastedOrReceivedSceneVersion(newVersion);
   }, SYNC_FULL_SCENE_INTERVAL_MS);
 
-  //!!
-  setUsername = (username: string) => {
-    this.setState({ username });
-  };
-
-  onUsernameChange = (username: string) => {
-    this.setUsername(username);
-  };
-
   render() {
     return <></>;
   }
@@ -543,8 +502,7 @@ declare global {
   }
 }
 
-if (isTest) {
-  //!!
+if (import.meta.env.MODE === 'development') {
   window.collab = window.collab || ({} as Window['collab']);
 }
 
