@@ -63,7 +63,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
   options,
   backToWhiteboards,
 }) => {
-  const { whiteboardNameId, calloutId, whiteboard } = entities;
+  const { whiteboardNameId, whiteboard } = entities;
 
   const handleCancel = (whiteboard: WhiteboardRtDetailsFragment) => {
     backToWhiteboards();
@@ -72,7 +72,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
 
   return (
     <>
-      <WhiteboardRtValueContainer whiteboardId={whiteboard?.id} calloutId={calloutId}>
+      <WhiteboardRtValueContainer whiteboardId={whiteboard?.id}>
         {entities => {
           return (
             <WhiteboardRtDialog

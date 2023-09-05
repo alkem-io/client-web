@@ -170,13 +170,16 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
 
     useEffect(() => {
       if (collabAPI && whiteboard?.id) {
+        console.log('startCollaboration!', whiteboard.id);
         collabAPI.startCollaboration({
           roomId: whiteboard.id,
         });
+      } else {
+        console.log('didnt start collaboration!', whiteboard?.id, collabAPI);
       }
       return () => collabAPI?.stopCollaboration();
-    }, [collabAPI]);
-
+    }, [collabAPI, whiteboard?.id]);
+    console.log('combinedRef.current', combinedRef.current, excalidrawRef);
     return (
       <div className={styles.container}>
         {whiteboard && (
@@ -198,8 +201,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
           />
         )}
         {combinedRef.current && (
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          <Collab username={username} excalidrawAPI={combinedRef.current as any} collabAPIRef={setCollabAPIRef} />
+          <Collab username={username} excalidrawAPI={combinedRef.current} collabAPIRef={setCollabAPIRef} />
         )}
       </div>
     );

@@ -76,9 +76,11 @@ class Collab extends PureComponent<Props, CollabState> {
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
     this.collabAPIRef = props.collabAPIRef ?? (() => {});
+    console.log('collab constructor');
   }
 
   componentDidMount() {
+    console.log('collabApi did mount');
     window.addEventListener('online', this.onOfflineStatusToggle);
     window.addEventListener('offline', this.onOfflineStatusToggle);
     window.addEventListener(EVENT.UNLOAD, this.onUnload);
@@ -93,6 +95,7 @@ class Collab extends PureComponent<Props, CollabState> {
     };
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
+    console.log('collabApi set ref');
     this.collabAPIRef(collabAPI);
 
     if (import.meta.env.MODE === 'development') {
@@ -174,6 +177,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private fallbackInitializationHandler: null | (() => unknown) = null;
 
   startCollaboration = async (existingRoomLinkData: null | { roomId: string }): Promise<ImportedDataState | null> => {
+    console.log('collab starting collaboration');
     if (this.portal.socket) {
       return null;
     }
@@ -188,7 +192,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
     const scenePromise = resolvablePromise<ImportedDataState | null>();
 
-    const { default: socketIOClient } = await import(/* webpackChunkName: "socketIoClient" */ 'socket.io-client');
+    const { default: socketIOClient } = await import('socket.io-client');
 
     const fallbackInitializationHandler = () => {
       this.initializeRoom({
@@ -492,6 +496,7 @@ class Collab extends PureComponent<Props, CollabState> {
   }, SYNC_FULL_SCENE_INTERVAL_MS);
 
   render() {
+    console.log('collab render');
     return <></>;
   }
 }
