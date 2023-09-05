@@ -3,14 +3,13 @@ import { DELETED_ELEMENT_TIMEOUT, ROOM_ID_BYTES } from '../excalidrawAppConstant
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
 import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
 import { bytesToHexString } from '../utils';
+import { env } from '../../../../../../main/env';
 
 export type SyncableExcalidrawElement = ExcalidrawElement & {
   _brand: 'SyncableExcalidrawElement';
 };
 
-export const isSyncableElement = (
-  element: ExcalidrawElement,
-): element is SyncableExcalidrawElement => {
+export const isSyncableElement = (element: ExcalidrawElement): element is SyncableExcalidrawElement => {
   if (element.isDeleted) {
     if (element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT) {
       return true;
@@ -37,9 +36,9 @@ export const getCollabServer = async (): Promise<{
   url: string;
   polling: boolean;
 }> => {
-  if (import.meta.env.VITE_APP_ALKEMIO_DOMAIN) {
+  if (env?.VITE_APP_ALKEMIO_DOMAIN) {
     return {
-      url: import.meta.env.VITE_APP_ALKEMIO_DOMAIN,
+      url: env.VITE_APP_ALKEMIO_DOMAIN,
       polling: true,
     };
   }
@@ -79,10 +78,9 @@ export type SocketUpdateDataSource = {
   };
 };
 
-export type SocketUpdateData =
-  SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
-    _brand: 'socketUpdateData';
-  };
+export type SocketUpdateData = SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
+  _brand: 'socketUpdateData';
+};
 
 export const generateCollaborationLinkData = async () => {
   const roomId = await generateRoomId();

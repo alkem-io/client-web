@@ -132,7 +132,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
   stopCollaboration = () => {
     this.queueBroadcastAllElements.cancel();
-
+    this.portal.socket?.send('disconnecting');
     if (this.portal.socket && this.fallbackInitializationHandler) {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
     }
