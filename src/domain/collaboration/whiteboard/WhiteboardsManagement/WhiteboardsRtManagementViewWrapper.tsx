@@ -39,7 +39,7 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
   loadingWhiteboards,
   whiteboardShareUrl,
   readOnlyDisplayName,
-  updatePrivilege = AuthorizationPrivilege.CreateWhiteboard,
+  updatePrivilege = AuthorizationPrivilege.AccessWhiteboardRt,
   ...whiteboardsState
 }) => {
   const { isFeatureEnabled } = useConfig();
@@ -48,7 +48,8 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
     return null;
   }
   const hasReadPrivileges =
-    authorization?.anonymousReadAccess || authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
+    authorization?.anonymousReadAccess ||
+    authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.AccessWhiteboardRt);
 
   if (!loadingWhiteboards && (!isFeatureEnabled(FEATURE_COLLABORATION_WHITEBOARDES) || !hasReadPrivileges))
     return <Error404 />;

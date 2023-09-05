@@ -65,7 +65,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, ref);
 
     const { user } = useUserContext();
-    const username = user?.user.profile.displayName ?? 'User'; //!!
+    const username = user?.user.profile.displayName ?? 'User';
 
     const data = useMemo(() => {
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;

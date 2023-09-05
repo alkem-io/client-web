@@ -67,7 +67,6 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
 
   const handleCancel = (whiteboard: WhiteboardRtDetailsFragment) => {
     backToWhiteboards();
-    //!! Save whiteboard
   };
 
   return (
