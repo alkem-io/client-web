@@ -76,11 +76,9 @@ class Collab extends PureComponent<Props, CollabState> {
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
     this.collabAPIRef = props.collabAPIRef ?? (() => {});
-    console.log('collab constructor');
   }
 
   componentDidMount() {
-    console.log('collabApi did mount');
     window.addEventListener('online', this.onOfflineStatusToggle);
     window.addEventListener('offline', this.onOfflineStatusToggle);
     window.addEventListener(EVENT.UNLOAD, this.onUnload);
@@ -95,7 +93,6 @@ class Collab extends PureComponent<Props, CollabState> {
     };
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
-    console.log('collabApi set ref');
     this.collabAPIRef(collabAPI);
 
     if (import.meta.env.MODE === 'development') {
@@ -133,31 +130,27 @@ class Collab extends PureComponent<Props, CollabState> {
     this.destroySocketClient({ isUnload: true });
   };
 
-  stopCollaboration = (force = false) => {
+  stopCollaboration = () => {
     this.queueBroadcastAllElements.cancel();
 
     if (this.portal.socket && this.fallbackInitializationHandler) {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
     }
 
-    if (force || window.confirm('This is a collaborative Whiteboard. Make sure at least One user saves the work!')) {
-      // hack to ensure that we prefer we disregard any new browser state
-      // that could have been saved in other tabs while we were collaborating
-      resetBrowserStateVersions();
-      this.destroySocketClient();
+    resetBrowserStateVersions();
+    this.destroySocketClient();
 
-      const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
-        if (isImageElement(element) && element.status === 'saved') {
-          return newElementWith(element, { status: 'pending' });
-        }
-        return element;
-      });
+    const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
+      if (isImageElement(element) && element.status === 'saved') {
+        return newElementWith(element, { status: 'pending' });
+      }
+      return element;
+    });
 
-      this.excalidrawAPI.updateScene({
-        elements,
-        commitToHistory: false,
-      });
-    }
+    this.excalidrawAPI.updateScene({
+      elements,
+      commitToHistory: false,
+    });
   };
 
   private destroySocketClient = (opts?: { isUnload: boolean }) => {
@@ -177,7 +170,6 @@ class Collab extends PureComponent<Props, CollabState> {
   private fallbackInitializationHandler: null | (() => unknown) = null;
 
   startCollaboration = async (existingRoomLinkData: null | { roomId: string }): Promise<ImportedDataState | null> => {
-    console.log('collab starting collaboration');
     if (this.portal.socket) {
       return null;
     }
@@ -496,7 +488,6 @@ class Collab extends PureComponent<Props, CollabState> {
   }, SYNC_FULL_SCENE_INTERVAL_MS);
 
   render() {
-    console.log('collab render');
     return <></>;
   }
 }

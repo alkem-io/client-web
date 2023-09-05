@@ -152,7 +152,7 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     );
 
     const { UIOptions: externalUIOptions, ...restOptions } = options || {};
-    const externalUIOptions1 = {};
+
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
     return (

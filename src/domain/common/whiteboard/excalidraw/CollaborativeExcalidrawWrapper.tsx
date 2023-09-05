@@ -12,7 +12,7 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
-import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
@@ -55,14 +55,14 @@ const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
-  ({ entities, actions, options }, excalidrawRef) => {
+  ({ entities, actions, options }, ref) => {
     const { whiteboard } = entities;
 
     const [collabAPI, setCollabAPIRef] = useState<CollabAPI>();
 
     const styles = useActorWhiteboardStyles();
-    //    const [excalidrawAPI, excalidrawRefCallback] = useCallbackRefState<ExcalidrawImperativeAPI>();
-    const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
+    const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
+    const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, ref);
 
     const { user } = useUserContext();
     const username = user?.user.profile.displayName ?? 'User'; //!!
@@ -170,22 +170,28 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
 
     useEffect(() => {
       if (collabAPI && whiteboard?.id) {
-        console.log('startCollaboration!', whiteboard.id);
         collabAPI.startCollaboration({
           roomId: whiteboard.id,
         });
-      } else {
-        console.log('didnt start collaboration!', whiteboard?.id, collabAPI);
       }
       return () => collabAPI?.stopCollaboration();
     }, [collabAPI, whiteboard?.id]);
-    console.log('combinedRef.current', combinedRef.current, excalidrawRef);
+
+    const excalidrawRef = useCallback(
+      async (excalidrawApiRefValue: ExcalidrawAPIRefValue) => {
+        combinedRef.current = excalidrawApiRefValue;
+        const excalidrawApi = await (excalidrawApiRefValue.readyPromise ?? excalidrawApiRefValue);
+        setExcalidrawAPI(excalidrawApi as ExcalidrawImperativeAPI);
+      },
+      [combinedRef]
+    );
+
     return (
       <div className={styles.container}>
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            ref={combinedRef}
+            ref={excalidrawRef}
             initialData={data}
             UIOptions={mergedUIOptions}
             isCollaborating
@@ -200,9 +206,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             {...restOptions}
           />
         )}
-        {combinedRef.current && (
-          <Collab username={username} excalidrawAPI={combinedRef.current} collabAPIRef={setCollabAPIRef} />
-        )}
+        {excalidrawAPI && <Collab username={username} excalidrawAPI={excalidrawAPI} collabAPIRef={setCollabAPIRef} />}
       </div>
     );
   }
