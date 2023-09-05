@@ -65,7 +65,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
 }) => {
   const { whiteboardNameId, whiteboard } = entities;
 
-  const handleCancel = (whiteboard: WhiteboardRtDetailsFragment) => {
+  const handleCancel = (/*whiteboard: WhiteboardRtDetailsFragment*/) => {
     backToWhiteboards();
   };
 
