@@ -20,7 +20,6 @@ import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from './excalidrawAppConstants';
 import { isImageElement } from './utils';
 import { newElementWith } from '@alkemio/excalidraw';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
-import { resetBrowserStateVersions } from './data/tabSync';
 import { atom } from 'jotai';
 import { createStore } from 'jotai';
 
@@ -137,7 +136,6 @@ class Collab extends PureComponent<Props, CollabState> {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
     }
 
-    resetBrowserStateVersions();
     this.destroySocketClient();
 
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
