@@ -10,6 +10,7 @@ import {
   CalloutType,
   CalloutVisibility,
   WhiteboardDetailsFragment,
+  WhiteboardRtDetailsFragment,
   WhiteboardTemplate,
   CommentsWithMessagesFragment,
   ContributeTabPostFragment,
@@ -31,11 +32,13 @@ interface CalloutChildTypePropName {
   [CalloutType.Post]: 'comments';
   [CalloutType.LinkCollection]: 'links';
   [CalloutType.Whiteboard]: 'whiteboards';
+  [CalloutType.WhiteboardRt]: 'whiteboardRt';
 }
 
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
+export type WhiteboardRtFragmentWithCallout = WhiteboardRtDetailsFragment & { calloutNameId: string };
 
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
@@ -46,7 +49,7 @@ interface CalloutChildPropValue {
   whiteboards: WhiteboardFragmentWithCallout[];
   comments: CommentsWithMessagesFragmentWithCallout;
   links: ReferencesFragmentWithCallout;
-  whiteboard: WhiteboardFragmentWithCallout[];
+  whiteboardRt: WhiteboardRtFragmentWithCallout;
 }
 
 type CalloutCardTemplateType = {
@@ -55,6 +58,7 @@ type CalloutCardTemplateType = {
   [CalloutType.Post]: {};
   [CalloutType.LinkCollection]: {};
   [CalloutType.Whiteboard]: { whiteboardTemplate: WhiteboardTemplate };
+  [CalloutType.WhiteboardRt]: { whiteboardTemplate: WhiteboardTemplate };
 };
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -73,6 +77,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
     | CalloutTypesWithChildTypes[CalloutType.Post]
     | CalloutTypesWithChildTypes[CalloutType.LinkCollection]
     | CalloutTypesWithChildTypes[CalloutType.Whiteboard]
+    | CalloutTypesWithChildTypes[CalloutType.WhiteboardRt]
   ) & {
     profile: {
       id: string;
@@ -173,6 +178,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           ...callout,
           // Add calloutNameId to all whiteboards
           whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
+          whiteboardRt: ({ ...callout.whiteboardRt, calloutNameId: callout.nameID }),
           comments: { ...callout.comments, calloutNameId: callout.nameID },
           authorization,
           draft,

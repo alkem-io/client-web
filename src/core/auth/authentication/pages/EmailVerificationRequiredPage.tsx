@@ -9,11 +9,13 @@ import { useReturnUrl } from '../utils/SignUpReturnUrl';
 export const EmailVerificationRequiredPage: FC = () => {
   const { t } = useTranslation();
 
+  const returnUrl = useReturnUrl();
+
   return (
     <AuthPageContentContainer>
       <FixedHeightLogo />
       <PageTitle>{t('pages.verification-required.header')}</PageTitle>
-      <EmailVerificationNotice returnUrl={useReturnUrl()} />
+      {returnUrl && <EmailVerificationNotice returnUrl={returnUrl} />}
     </AuthPageContentContainer>
   );
 };

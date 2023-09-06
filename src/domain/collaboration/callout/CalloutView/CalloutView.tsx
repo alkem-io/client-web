@@ -7,6 +7,7 @@ import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
 import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
+import SingleWhiteboardRtCallout from '../SingleWhiteboard/SingleWhiteboardRtCallout';
 import PostCalloutContainer from '../post/PostCalloutContainer';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
@@ -45,6 +46,8 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(({ callout, ...
       return <LinkCollectionCallout ref={ref} callout={callout} {...props} />;
     case CalloutType.Whiteboard:
       return <SingleWhiteboardCallout ref={ref} callout={callout} {...props} />;
+    case CalloutType.WhiteboardRt:
+      return <SingleWhiteboardRtCallout ref={ref} callout={callout} {...props} />;
     default:
       throw new Error(`Unexpected Callout type "${callout['type']}"`);
   }
