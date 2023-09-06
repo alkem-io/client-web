@@ -62,7 +62,7 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
         </Box>
       </Box>
       <FormikWhiteboardPreview
-        name={`${name}.value`}
+        name={`${name}.content`}
         canEdit
         onChangeContent={handleChange}
         maxHeight={gutters(12)}

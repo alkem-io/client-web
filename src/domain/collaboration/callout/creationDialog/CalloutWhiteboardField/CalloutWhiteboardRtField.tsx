@@ -44,7 +44,7 @@ export const CalloutWhiteboardRtField: FC<CalloutWhiteboardRtFieldProps> = ({ na
         </Box>
       </Box>
       <FormikWhiteboardPreview
-        name={`${name}.value`}
+        name={`${name}.content`}
         previewImagesName={`${name}.previewImages`}
         canEdit
         onChangeContent={handleChange}

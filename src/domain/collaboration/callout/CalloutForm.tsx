@@ -185,13 +185,13 @@ const CalloutForm: FC<CalloutFormProps> = ({
         profile: yup.object().shape({
           displayName: yup.string(),
         }),
-        value: yup.string().required(),
+        content: yup.string().required(),
       }),
     }),
     whiteboard: yup.object().when('type', {
       is: CalloutType.Whiteboard || CalloutType.WhiteboardRt,
       then: yup.object().shape({
-        value: yup.string().required(),
+        content: yup.string().required(),
       }),
     }),
   });
