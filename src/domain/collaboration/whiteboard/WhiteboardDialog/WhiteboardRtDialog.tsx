@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -33,6 +33,27 @@ import { Caption } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
+
+const LastSavedCaption = ({ date }: { date: Date }) => {
+  const { t } = useTranslation();
+
+  // Re render it every second
+  const [, setTime] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setTime(Date.now()), 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  return (
+    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
+      {t('common.last-saved', {
+        datetime: formatTimeElapsed(date, t),
+      })}
+    </Caption>
+  );
+};
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -95,7 +116,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
   });
-  const lastSavedDate = lastSaved?.lookup.whiteboardRt?.updatedDate;
+  const lastSavedDate = lastSaved?.lookup.whiteboardRt?.updatedDate
+    ? new Date(lastSaved.lookup.whiteboardRt.updatedDate)
+    : new Date();
 
   const getExcalidrawStateFromApi = async (
     excalidrawApi: ExcalidrawAPIRefValue | null
@@ -154,6 +177,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
     await handleUpdate(whiteboard, state);
     collabApiRef.current?.notifySavedToDatabase();
+    await refetchLastSaved();
   };
 
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -274,11 +298,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
               {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              <Caption>
-                {t('common.last-saved', {
-                  datetime: formatTimeElapsed(lastSavedDate, t) + lastSavedDate?.toString(),
-                })}
-              </Caption>
+              <LastSavedCaption date={lastSavedDate} />
               <LoadingButton
                 startIcon={<Save />}
                 onClick={() => saveWhiteboard(whiteboard!)}

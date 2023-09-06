@@ -42,14 +42,14 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
-  notifySavedToDatabase: () => void;
+  notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
 }
 
 interface PublicProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   username: string;
   collabAPIRef?: MutableRefObject<CollabAPI | null>;
-  onSavedToDatabase?: () => void; // Someone in the your room saved the whiteboard to the database.
+  onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
 }
 
 type Props = PublicProps;
@@ -297,7 +297,9 @@ class Collab extends PureComponent<Props, CollabState> {
           break;
         }
         case 'SAVED': {
+          console.log('Someone saved to the database');
           this.onSavedToDatabase?.();
+          break;
         }
       }
     });

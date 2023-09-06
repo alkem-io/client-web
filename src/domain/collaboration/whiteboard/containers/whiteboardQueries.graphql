@@ -44,7 +44,6 @@ fragment WhiteboardRtDetails on WhiteboardRt {
   id
   nameID
   createdDate
-  updatedDate
   profile {
     ...WhiteboardProfile
   }
