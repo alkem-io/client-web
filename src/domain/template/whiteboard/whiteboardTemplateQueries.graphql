@@ -1,0 +1,27 @@
+query whiteboardTemplateContent($whiteboardTemplateId: UUID!) {
+  lookup {
+    whiteboardTemplate(ID: $whiteboardTemplateId) {
+      id
+      profile {
+        ...WhiteboardProfile
+      }
+      content
+    }
+  }
+}
+
+fragment WhiteboardProfile on Profile {
+  id
+  displayName
+  description
+  visual(type: CARD) {
+    ...VisualFull
+  }
+  preview: visual(type: BANNER) {
+    ...VisualFull
+  }
+  tagset {
+    ...TagsetDetails
+  }
+}
+

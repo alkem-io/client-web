@@ -1,10 +1,9 @@
 import { compact } from 'lodash';
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useSpaceWhiteboardTemplateValueLazyQuery,
   useSpaceWhiteboardTemplatesLibraryLazyQuery,
-  usePlatformWhiteboardTemplateValueLazyQuery,
+  useWhiteboardTemplateContentLazyQuery,
   usePlatformWhiteboardTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -12,13 +11,13 @@ import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplate
 import {
   WhiteboardTemplate,
   whiteboardTemplateMapper,
-  WhiteboardTemplateWithValue,
+  WhiteboardTemplateWithContent,
 } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import WhiteboardTemplateCard from '../WhiteboardTemplateCard/WhiteboardTemplateCard';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 
 export interface WhiteboardTemplatesLibraryProps {
-  onSelectTemplate: (template: WhiteboardTemplateWithValue) => void;
+  onSelectTemplate: (template: WhiteboardTemplateWithContent) => void;
 }
 
 const applyFilter = (filter: string[], templates: WhiteboardTemplate[] | undefined) => {
@@ -45,8 +44,8 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
       },
     });
 
-  const [fetchTemplateValueSpace, { loading: loadingTemplateValueFromSpace }] =
-    useSpaceWhiteboardTemplateValueLazyQuery();
+  const [fetchWhiteboardTemplateContent, { loading: loadingWhiteboardTemplateContent }] =
+    useWhiteboardTemplateContentLazyQuery();
 
   const templatesFromSpace = useMemo(
     () =>
@@ -59,28 +58,9 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
     [spaceData, filter]
   );
 
-  const fetchTemplateFromSpaceValue = async (template: WhiteboardTemplate) => {
-    const { data } = await fetchTemplateValueSpace({
-      variables: {
-        spaceId: spaceNameId!,
-        whiteboardTemplateId: template.id,
-      },
-    });
-    const templateValue = data?.space.templates?.whiteboardTemplate;
-    if (templateValue) {
-      return {
-        ...whiteboardTemplateMapper(templateValue, spaceData?.space.host?.profile),
-        value: templateValue.value,
-      };
-    }
-  };
-
   // Platform Templates:
   const [fetchPlatformTemplates, { data: platformData, loading: loadingTemplatesFromPlatform }] =
     usePlatformWhiteboardTemplatesLibraryLazyQuery();
-
-  const [fetchTemplateValuePlatform, { loading: loadingTemplateValueFromPlatform }] =
-    usePlatformWhiteboardTemplateValueLazyQuery();
 
   const templatesFromPlatform = useMemo(
     () =>
@@ -97,22 +77,20 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
     [platformData]
   );
 
-  const fetchTemplateFromPlatformValue = async (template: WhiteboardTemplate) => {
-    const { data } = await fetchTemplateValuePlatform({
+  const getWhiteboardTemplateWithContent = useCallback(async (template: WhiteboardTemplate) => {
+    const { data } = await fetchWhiteboardTemplateContent({
       variables: {
-        innovationPackId: template.innovationPack.id!,
         whiteboardTemplateId: template.id,
       },
     });
-    const ip = data?.platform.library.innovationPack;
-    const templateValue = ip?.templates?.whiteboardTemplate;
-    if (templateValue) {
-      return {
-        ...whiteboardTemplateMapper(templateValue, ip?.provider?.profile, ip),
-        value: templateValue.value,
-      };
-    }
-  };
+
+    const content = data?.lookup.whiteboardTemplate?.content ?? '';
+
+    return {
+      ...template,
+      content,
+    };
+  }, []);
 
   return (
     <CollaborationTemplatesLibrary
@@ -126,13 +104,11 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      loadingTemplateValueFromSpace={loadingTemplateValueFromSpace}
-      fetchTemplateFromSpaceValue={fetchTemplateFromSpaceValue}
+      loadingWhiteboardTemplateContent={loadingWhiteboardTemplateContent}
+      getWhiteboardTemplateWithContent={getWhiteboardTemplateWithContent}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
-      loadingTemplateValueFromPlatform={loadingTemplateValueFromPlatform}
-      fetchTemplateFromPlatformValue={fetchTemplateFromPlatformValue}
     />
   );
 };

@@ -71,7 +71,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
   );
 
   // Post templates include the value (defaultDescription and type), so no need to go to the server and fetch like with Whiteboards
-  const getPostTemplateValue = (template: PostTemplate): Promise<PostTemplateWithValue> => {
+  const getPostTemplateContent = (template: PostTemplate): Promise<PostTemplateWithValue> => {
     return Promise.resolve(template);
   };
 
@@ -87,13 +87,11 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      loadingTemplateValueFromSpace={false}
-      fetchTemplateFromSpaceValue={template => getPostTemplateValue(template)}
+      loadingWhiteboardTemplateContent={false}
+      getWhiteboardTemplateWithContent={template => getPostTemplateContent(template)}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
-      loadingTemplateValueFromPlatform={false}
-      fetchTemplateFromPlatformValue={template => getPostTemplateValue(template)}
     />
   );
 };

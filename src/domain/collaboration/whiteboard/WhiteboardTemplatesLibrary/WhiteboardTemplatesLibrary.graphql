@@ -17,19 +17,6 @@ query SpaceWhiteboardTemplatesLibrary($spaceId: UUID_NAMEID!) {
   }
 }
 
-query SpaceWhiteboardTemplateValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
-      id
-      whiteboardTemplate(ID: $whiteboardTemplateId) {
-        ...WhiteboardTemplateCard
-        value
-      }
-    }
-  }
-}
-
 query PlatformWhiteboardTemplatesLibrary {
   platform {
     id
@@ -52,25 +39,6 @@ query PlatformWhiteboardTemplatesLibrary {
           id
           whiteboardTemplates {
             ...WhiteboardTemplateCard
-          }
-        }
-      }
-    }
-  }
-}
-
-query PlatformWhiteboardTemplateValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-  platform {
-    id
-    library {
-      id
-      innovationPack(ID: $innovationPackId) {
-        ...InnovationPackWithProvider
-        templates {
-          id
-          whiteboardTemplate(ID: $whiteboardTemplateId) {
-            ...WhiteboardTemplateCard
-            value
           }
         }
       }

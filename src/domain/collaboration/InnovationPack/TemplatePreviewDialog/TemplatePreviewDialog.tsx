@@ -48,15 +48,15 @@ interface TemplatePreviewComponentProps
   extends Omit<
     CollaborationTemplatesLibraryPreviewProps<
       TemplatePreview['template'],
-      TemplatePreview['template'] & { value: string }
+      TemplatePreview['template'] & { content: string }
     >,
     'template' | 'templateCardComponent' | 'templatePreviewComponent'
   > {
   template: TemplatePreview | undefined;
-  templateWithValue?: { value: string };
+  templateWithContent?: { content: string };
 }
 
-const TemplatePreviewComponent = ({ template, templateWithValue, ...props }: TemplatePreviewComponentProps) => {
+const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: TemplatePreviewComponentProps) => {
   if (!template) {
     return (
       <CollaborationTemplatesLibraryPreview
@@ -71,11 +71,11 @@ const TemplatePreviewComponent = ({ template, templateWithValue, ...props }: Tem
   }
   switch (template.templateType) {
     case TemplateType.WhiteboardTemplate: {
-      if (!templateWithValue) {
+      if (!templateWithContent) {
         return null;
       }
       const whiteboardTemplate = {
-        ...templateWithValue,
+        ...templateWithContent,
         ...template.template,
       };
 
@@ -146,16 +146,16 @@ interface TemplatePreviewDialogProps {
   open?: boolean;
   onClose: () => void;
   template: TemplatePreviewComponentProps['template'];
-  templateWithValue: TemplatePreviewComponentProps['templateWithValue'];
-  loadingTemplateValue?: boolean;
+  templateWithContent: TemplatePreviewComponentProps['templateWithContent'];
+  loadingTemplateContent?: boolean;
 }
 
 const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
   open = false,
   onClose,
   template,
-  templateWithValue,
-  loadingTemplateValue,
+  templateWithContent,
+  loadingTemplateContent,
 }) => {
   const { t } = useTranslation();
 
@@ -167,8 +167,8 @@ const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
       <Gutters>
         <TemplatePreviewComponent
           template={template}
-          templateWithValue={templateWithValue}
-          loading={loadingTemplateValue}
+          templateWithContent={templateWithContent}
+          loading={loadingTemplateContent}
           onClose={onClose}
           actions={<DisabledUseButton />}
         />

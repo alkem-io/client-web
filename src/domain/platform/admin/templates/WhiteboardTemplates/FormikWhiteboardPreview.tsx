@@ -8,10 +8,10 @@ import { BlockTitle } from '../../../../../core/ui/typography';
 import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
-  name: string; // Formik fieldName of the Whiteboard value
+  name: string; // Formik fieldName of the Whiteboard content
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
   canEdit: boolean;
-  onChangeValue?: (value: string, previewImages?: WhiteboardPreviewImage[]) => void;
+  onChangeContent?: (content: string, previewImages?: WhiteboardPreviewImage[]) => void;
   loading?: boolean;
   dialogProps?: {
     title?: string;
@@ -26,16 +26,16 @@ const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
 }));
 
 const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
-  name = 'value',
+  name = 'content',
   previewImagesName,
   canEdit,
-  onChangeValue,
+  onChangeContent,
   loading,
   dialogProps,
   ...containerProps
 }) => {
   const { t } = useTranslation();
-  const [field, , helpers] = useField<string>(name); // Whiteboard value JSON string
+  const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -50,7 +50,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
       id: '__template',
       // Needed to pass yup validation of WhiteboardDialog
       profile: { id: '__templateProfile', displayName: '__template' },
-      value: field.value,
+      content: field.value,
     };
   }, [field.value]);
 
@@ -97,11 +97,11 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   onCheckin: undefined,
                   onCheckout: undefined,
                   onUpdate: (whiteboard, previewImages) => {
-                    helpers.setValue(whiteboard.value);
+                    helpers.setValue(whiteboard.content);
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);
                     }
-                    onChangeValue?.(whiteboard.value, previewImages);
+                    onChangeContent?.(whiteboard.content, previewImages);
                     setEditDialogOpen(false);
                   },
                   onDelete: undefined,

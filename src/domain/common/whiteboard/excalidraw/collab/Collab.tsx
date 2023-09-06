@@ -207,7 +207,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
       this.portal.socket.once('connect_error', fallbackInitializationHandler);
     } catch (error) {
-      console.error(error);
+      console.error(error); // eslint-disable no-console
       this.setState({ errorMessage: (error as { message: string } | undefined)?.message ?? '' });
       return null;
     }
@@ -334,7 +334,7 @@ class Collab extends PureComponent<Props, CollabState> {
         this.queueBroadcastAllElements();
       } catch (error: unknown) {
         // log the error and move on. other peers will sync us the scene.
-        console.error(error);
+        console.error(error); // eslint-disable no-console
       } finally {
         this.portal.socketInitialized = true;
       }

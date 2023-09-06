@@ -6,11 +6,11 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { BlockSectionTitle } from '../../../../core/ui/typography/components';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import { TemplateBase, TemplateBaseWithValue, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
+import { TemplateBase, TemplateBaseWithContent, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
 
 export interface CollaborationTemplatesLibraryPreviewProps<
   Template extends TemplateBase,
-  TemplateValue extends TemplateBaseWithValue
+  TemplateValue extends TemplateBaseWithContent
 > {
   onClose: () => void;
   template?: TemplateValue;
@@ -22,7 +22,7 @@ export interface CollaborationTemplatesLibraryPreviewProps<
 
 const CollaborationTemplatesLibraryPreview = <
   Template extends TemplateBase,
-  TemplateValue extends TemplateBaseWithValue
+  TemplateValue extends TemplateBaseWithContent
 >({
   template,
   templateCardComponent: TemplateCard,
