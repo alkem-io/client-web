@@ -40,6 +40,30 @@ fragment WhiteboardDetails on Whiteboard {
     }
   }
 }
+fragment WhiteboardRtDetails on WhiteboardRt {
+  id
+  nameID
+  createdDate
+  profile {
+    ...WhiteboardProfile
+  }
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
 
 fragment WhiteboardSummary on Whiteboard {
   id
@@ -52,6 +76,11 @@ fragment WhiteboardSummary on Whiteboard {
 }
 
 fragment WhiteboardContent on Whiteboard {
+  id
+  content
+}
+
+fragment WhiteboardRtContent on WhiteboardRt {
   id
   content
 }
@@ -106,6 +135,20 @@ fragment CalloutWithWhiteboard on Callout {
   }
 }
 
+fragment CalloutWithWhiteboardRt on Callout {
+  id
+  nameID
+  type
+  authorization {
+    id
+    anonymousReadAccess
+    myPrivileges
+  }
+  whiteboardRt {
+    ...WhiteboardRtDetails
+  }
+}
+
 fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
   callouts {
@@ -120,6 +163,9 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
     whiteboards {
       ...WhiteboardDetails
     }
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
   }
 }
 
@@ -131,11 +177,49 @@ query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
   }
 }
 
+query WhiteboardRtFromCallout($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      ...CalloutWithWhiteboardRt
+    }
+  }
+}
+
 query WhiteboardWithContent($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {
       ...WhiteboardDetails
       ...WhiteboardContent
+    }
+  }
+}
+
+query whiteboardRtWithContent($whiteboardId: UUID!) {
+  lookup {
+    whiteboardRt(ID: $whiteboardId) {
+      ...WhiteboardRtDetails
+      ...WhiteboardRtContent
+    }
+  }
+}
+
+query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        templates {
+          id
+          whiteboardTemplate(ID: $whiteboardId) {
+            id
+            profile {
+              ...WhiteboardProfile
+            }
+            content
+          }
+        }
+      }
     }
   }
 }
@@ -154,6 +238,17 @@ mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
 
 mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
   updateWhiteboard(whiteboardData: $input) {
+    id
+    content
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+mutation updateWhiteboardRt($input: UpdateWhiteboardRtDirectInput!) {
+  updateWhiteboardRt(whiteboardData: $input) {
     id
     content
     profile {

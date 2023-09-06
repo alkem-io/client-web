@@ -77,7 +77,7 @@ export interface CalloutPostTemplate {
 
 export interface CalloutWhiteboardTemplate {
   id?: string;
-  value: string;
+  content: string;
   profile: TemplateProfile;
 }
 
@@ -127,32 +127,39 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
   const handleSaveCallout = useCallback(
     async (visibility: CalloutVisibility, sendNotification: boolean) => {
-      const newCallout: CalloutCreationTypeWithPreviewImages = {
-        profile: {
-          displayName: callout.displayName!,
-          description: callout.description!,
-          referencesData: callout.references!,
-          tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
-        },
-        tags: callout.tags,
-        type: callout.type!,
-        state: callout.state!,
-        postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
-        whiteboardTemplate:
-          callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
-        displayLocation,
-        whiteboard: callout.whiteboard,
-        visibility,
-        sendNotification: visibility === CalloutVisibility.Published && sendNotification,
-      };
+      let result: Identifiable | undefined;
+      try {
+        const newCallout: CalloutCreationTypeWithPreviewImages = {
+          profile: {
+            displayName: callout.displayName!,
+            description: callout.description!,
+            referencesData: callout.references!,
+            tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+          },
+          tags: callout.tags,
+          type: callout.type!,
+          state: callout.state!,
+          postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
+          whiteboardTemplate:
+            callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
+          displayLocation,
+          whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
+          whiteboardRt:
+            callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
+          visibility,
+          sendNotification: visibility === CalloutVisibility.Published && sendNotification,
+        };
 
-      const result = await onCreateCallout(newCallout);
-
-      setCallout({});
-      closePublishDialog();
-      return result;
+        result = await onCreateCallout(newCallout);
+      } catch (ex) {
+        console.error(ex); // eslint-disable no-console
+      } finally {
+        setCallout({});
+        closePublishDialog();
+        return result;
+      }
     },
-    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardContent, fetchWhiteboardTemplateContent]
+    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardTemplateContent]
   );
 
   const handleClose = useCallback(() => {

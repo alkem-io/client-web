@@ -2,29 +2,28 @@ import React, { useCallback } from 'react';
 import {
   useCreateWhiteboardTemplateMutation,
   useDeleteWhiteboardTemplateMutation,
-  useWhiteboardTemplateContentLazyQuery,
   useUpdateWhiteboardTemplateMutation,
+  useWhiteboardTemplateContentLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   AdminWhiteboardTemplateFragment,
+  CreateWhiteboardTemplateMutation,
   UpdateWhiteboardTemplateMutation,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
-import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
+import AdminTemplatesSection from '../AdminTemplatesSection';
 import EditWhiteboardTemplateDialog from './EditWhiteboardTemplateDialog';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
-import { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import WhiteboardImportTemplateCard from './WhitebaordImportTemplateCard';
 import {
-  WhiteboardPreviewImage,
   useUploadWhiteboardVisuals,
+  WhiteboardPreviewImage,
 } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { CreateWhiteboardTemplateMutation } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface AdminWhiteboardTemplatesSectionProps {
   whiteboardTemplatesLocation: 'space' | 'platform';
@@ -102,17 +101,13 @@ const AdminWhiteboardTemplatesSection = ({
       // TODO:
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
-      useUpdateTemplateMutation={
-        useUpdateWhiteboardTemplateMutation as MutationHook<
-          Partial<WhiteboardTemplateFormSubmittedValues> & { templateId: string },
-          UpdateWhiteboardTemplateMutation
-        >
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      useUpdateTemplateMutation={useUpdateWhiteboardTemplateMutation as any}
       useDeleteTemplateMutation={useDeleteWhiteboardTemplateMutation}
       onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
-        onMutationCalled(mutationResult?.['createWhiteboardTemplate'], previewImages)
+        onMutationCalled(mutationResult?.createWhiteboardTemplate, previewImages)
       }
-      onTemplateUpdated={(mutationResult, previewImages) =>
+      onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>
         onMutationCalled(mutationResult?.updateWhiteboardTemplate, previewImages)
       }
     />

@@ -1,5 +1,5 @@
 import { compact } from 'lodash';
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useSpaceWhiteboardTemplatesLibraryLazyQuery,
@@ -77,6 +77,21 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
     [platformData]
   );
 
+  const getWhiteboardTemplateWithContent = useCallback(async (template: WhiteboardTemplate) => {
+    const { data } = await fetchWhiteboardTemplateContent({
+      variables: {
+        whiteboardTemplateId: template.id,
+      },
+    });
+
+    const content = data?.lookup.whiteboardTemplate?.content ?? '';
+
+    return {
+      ...template,
+      content,
+    };
+  }, []);
+
   return (
     <CollaborationTemplatesLibrary
       dialogTitle={t('whiteboard-templates.template-library')}
@@ -90,7 +105,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
       loadingWhiteboardTemplateContent={loadingWhiteboardTemplateContent}
-      fetchWhiteboardTemplateContent={fetchWhiteboardTemplateContent}
+      getWhiteboardTemplateWithContent={getWhiteboardTemplateWithContent}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}

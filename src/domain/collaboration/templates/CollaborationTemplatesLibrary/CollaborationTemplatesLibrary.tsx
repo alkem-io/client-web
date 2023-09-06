@@ -35,7 +35,7 @@ export interface CollaborationTemplatesLibraryProps<
 
   // Whiteboard template content
   loadingWhiteboardTemplateContent?: boolean;
-  fetchWhiteboardTemplateContent?: (template: Template) => Promise<TemplateWithContent | undefined>;
+  getWhiteboardTemplateWithContent?: (template: Template) => Promise<TemplateWithContent | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
   templatesFromPlatform?: Template[];
@@ -57,10 +57,10 @@ const CollaborationTemplatesLibrary = <
   templatesFromSpace,
   loadingTemplatesFromSpace,
   loadingWhiteboardTemplateContent,
-  fetchWhiteboardTemplateContent,
+  getWhiteboardTemplateWithContent,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
-  loadingTemplatesFromPlatform,
+  loadingTemplatesFromPlatform = false,
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
   const { t } = useTranslation();
 
@@ -81,7 +81,7 @@ const CollaborationTemplatesLibrary = <
   }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
 
   const handlePreviewWhiteboardTemplate = async (template: Template) => {
-    setPreviewTemplate(await fetchWhiteboardTemplateContent?.(template));
+    setPreviewTemplate(await getWhiteboardTemplateWithContent?.(template));
   };
 
   // Load Platform Templates if no spaceName is provided:

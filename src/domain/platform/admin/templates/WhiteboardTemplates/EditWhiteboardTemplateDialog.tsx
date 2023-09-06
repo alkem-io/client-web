@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  AdminWhiteboardTemplateFragment,
-  AdminWhiteboardTemplateValueFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminWhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
@@ -22,7 +19,7 @@ export interface EditWhiteboardTemplateDialogProps {
   onDelete: () => void;
   template: AdminWhiteboardTemplateFragment | undefined;
   getTemplateValue: (template: AdminWhiteboardTemplateFragment) => void;
-  templateValue: AdminWhiteboardTemplateValueFragment | undefined;
+  templateValue: { content: string | undefined } | undefined;
 }
 
 const EditWhiteboardTemplateDialog = ({

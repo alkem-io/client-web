@@ -5,10 +5,7 @@ import TagsComponent from '../../../../shared/components/TagsComponent/TagsCompo
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import ExcalidrawWrapper from '../../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
-import {
-  AdminWhiteboardTemplateFragment,
-  AdminWhiteboardTemplateValueFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminWhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -17,7 +14,7 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
 interface WhiteboardTemplateViewProps {
   template: AdminWhiteboardTemplateFragment;
   getTemplateValue?: (template: AdminWhiteboardTemplateFragment) => void;
-  templateContent?: AdminWhiteboardTemplateValueFragment | undefined;
+  templateContent?: { content: string | undefined } | undefined;
 }
 
 const WhiteboardTemplatePreview = ({

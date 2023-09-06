@@ -8,30 +8,30 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import { CreateProfileInput } from '../../../../../core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewImage } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
-interface CalloutWhiteboardFieldProps {
+interface CalloutWhiteboardRtFieldProps {
   name: string;
 }
 
-export interface WhiteboardFieldSubmittedValues {
+export interface WhiteboardRtFieldSubmittedValues {
   content: string;
   profileData: CreateProfileInput;
 }
 
-export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {
+export interface WhiteboardRtFieldSubmittedValuesWithPreviewImages extends WhiteboardRtFieldSubmittedValues {
   // Whiteboard Preview Images are sent as visuals in a different call to the server after the callout is saved (See useCalloutCreationWithPreviewImages.ts)
   previewImages: WhiteboardPreviewImage[] | undefined;
 }
 
-export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }) => {
+export const CalloutWhiteboardRtField: FC<CalloutWhiteboardRtFieldProps> = ({ name }) => {
   const { t } = useTranslation();
-  const [, , helpers] = useField<WhiteboardFieldSubmittedValuesWithPreviewImages>(name);
+  const [, , helpers] = useField<WhiteboardRtFieldSubmittedValuesWithPreviewImages>(name);
 
-  const handleChange = (newValue: string, previewImages?: WhiteboardPreviewImage[]) => {
+  const handleChange = (newContent: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
       profileData: {
         displayName: t('common.whiteboard'),
       },
-      content: newValue,
+      content: newContent,
       previewImages,
     });
   };
@@ -55,4 +55,4 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
   );
 };
 
-export default CalloutWhiteboardField;
+export default CalloutWhiteboardRtField;
