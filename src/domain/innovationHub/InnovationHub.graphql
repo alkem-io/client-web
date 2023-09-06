@@ -15,7 +15,7 @@ fragment InnovationHubHomeInnovationHub on InnovationHub {
     displayName
     tagline
     description
-    banner: visual(type: BANNER) {
+    banner: visual(type: BANNER_WIDE) {
       id
       uri
       alternativeText
