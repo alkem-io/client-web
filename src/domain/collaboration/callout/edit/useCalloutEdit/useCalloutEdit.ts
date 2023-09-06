@@ -70,7 +70,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
                 }
               : undefined,
             whiteboardTemplate: callout.whiteboardTemplate
-              ? { value: callout.whiteboardTemplate.value, profileData: callout.whiteboardTemplate.profile }
+              ? { content: callout.whiteboardTemplate.content, profileData: callout.whiteboardTemplate.profile }
               : undefined,
           },
         },

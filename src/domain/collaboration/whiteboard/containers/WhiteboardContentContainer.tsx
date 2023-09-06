@@ -3,46 +3,48 @@ import { useUserContext } from '../../../community/user';
 import {
   WhiteboardContentUpdatedDocument,
   useWhiteboardLockedByDetailsQuery,
-  useWhiteboardWithValueQuery,
+  useWhiteboardWithContentQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   WhiteboardContentUpdatedSubscription,
   WhiteboardDetailsFragment,
-  WhiteboardValueFragment,
+  WhiteboardContentFragment,
   SubscriptionWhiteboardContentUpdatedArgs,
   WhiteboardCheckoutStateEnum,
   WhiteboardLockedByDetailsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 
-export interface WhiteboardWithValue extends Omit<WhiteboardValueFragment, 'id'>, Partial<WhiteboardDetailsFragment> {}
+export interface WhiteboardWithContent
+  extends Omit<WhiteboardContentFragment, 'id'>,
+    Partial<WhiteboardDetailsFragment> {}
 
-export type WhiteboardWithoutValue<Whiteboard extends WhiteboardWithValue> = Omit<Whiteboard, 'value'>;
+export type WhiteboardWithoutContent<Whiteboard extends WhiteboardWithContent> = Omit<Whiteboard, 'content'>;
 
-export interface IWhiteboardValueEntities {
-  whiteboard?: WhiteboardWithValue;
+export interface IWhiteboardContentEntities {
+  whiteboard?: WhiteboardWithContent;
   isWhiteboardCheckedOutByMe: boolean;
   isWhiteboardAvailable: boolean;
   lockedBy: WhiteboardLockedByDetailsQuery['users'][0] | undefined;
 }
 
-export interface WhiteboardValueContainerState {
-  loadingWhiteboardValue?: boolean;
+export interface WhiteboardContentContainerState {
+  loadingWhiteboardContent?: boolean;
 }
 
-export interface WhiteboardValueParams {
+export interface WhiteboardContentParams {
   whiteboardId: string | undefined;
 }
 
-export interface WhiteboardValueContainerProps
-  extends ContainerChildProps<IWhiteboardValueEntities, {}, WhiteboardValueContainerState>,
-    WhiteboardValueParams {
-  onWhiteboardValueLoaded?: (whiteboard: WhiteboardWithValue) => void;
+export interface WhiteboardContentContainerProps
+  extends ContainerChildProps<IWhiteboardContentEntities, {}, WhiteboardContentContainerState>,
+    WhiteboardContentParams {
+  onWhiteboardContentLoaded?: (whiteboard: WhiteboardWithContent) => void;
 }
 
 const useSubscribeToWhiteboard = UseSubscriptionToSubEntity<
-  WhiteboardValueFragment & WhiteboardDetailsFragment,
+  WhiteboardContentFragment & WhiteboardDetailsFragment,
   WhiteboardContentUpdatedSubscription,
   SubscriptionWhiteboardContentUpdatedArgs
 >({
@@ -50,25 +52,25 @@ const useSubscribeToWhiteboard = UseSubscriptionToSubEntity<
   getSubscriptionVariables: whiteboard => ({ whiteboardIDs: [whiteboard.id] }),
   updateSubEntity: (whiteboard, subscriptionData) => {
     if (whiteboard && subscriptionData.whiteboardContentUpdated.whiteboardID === whiteboard.id) {
-      whiteboard.value = subscriptionData.whiteboardContentUpdated.value;
+      whiteboard.content = subscriptionData.whiteboardContentUpdated.content;
     }
   },
 });
 
-const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
+const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({
   children,
   whiteboardId,
-  onWhiteboardValueLoaded,
+  onWhiteboardContentLoaded,
 }) => {
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
   const skipWhiteboardQuery = !Boolean(whiteboardId);
   const {
-    data: whiteboardWithValueData,
-    loading: loadingWhiteboardWithValue,
+    data: whiteboardWithContentData,
+    loading: loadingWhiteboardContent,
     subscribeToMore: subscribeToWhiteboard,
-  } = useWhiteboardWithValueQuery({
+  } = useWhiteboardWithContentQuery({
     errorPolicy: 'all',
     // TODO: Check if these policies are really needed
     fetchPolicy: 'network-only',
@@ -79,17 +81,17 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
     },
   });
 
-  const whiteboard = whiteboardWithValueData?.lookup.whiteboard;
+  const whiteboard = whiteboardWithContentData?.lookup.whiteboard;
 
   useEffect(() => {
     if (whiteboard) {
-      onWhiteboardValueLoaded?.(whiteboard);
+      onWhiteboardContentLoaded?.(whiteboard);
     }
-  }, [whiteboard, onWhiteboardValueLoaded]);
+  }, [whiteboard, onWhiteboardContentLoaded]);
 
   const skipWhiteboardSubscription = !whiteboardId || whiteboard?.checkout?.lockedBy === userId;
 
-  useSubscribeToWhiteboard(whiteboardWithValueData, data => data?.lookup.whiteboard, subscribeToWhiteboard, {
+  useSubscribeToWhiteboard(whiteboardWithContentData, data => data?.lookup.whiteboard, subscribeToWhiteboard, {
     skip: skipWhiteboardSubscription,
   });
 
@@ -112,7 +114,7 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
           lockedBy: lockedByDetailsData?.users.find(user => user.id === whiteboard?.checkout?.lockedBy),
         },
         {
-          loadingWhiteboardValue: loadingWhiteboardWithValue,
+          loadingWhiteboardContent,
         },
         {}
       )}
@@ -120,4 +122,4 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
   );
 };
 
-export default WhiteboardValueContainer;
+export default WhiteboardContentContainer;

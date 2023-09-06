@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo } from 'react';
 import {
   WhiteboardDetailsFragmentDoc,
-  refetchWhiteboardWithValueQuery,
+  refetchWhiteboardWithContentQuery,
   useCheckoutWhiteboardMutation,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
@@ -10,7 +10,7 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   WhiteboardDetailsFragment,
-  WhiteboardValueFragment,
+  WhiteboardContentFragment,
   CreateWhiteboardOnCalloutInput,
   DeleteWhiteboardInput,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -23,7 +23,7 @@ export interface IWhiteboardActions {
   onCheckout: (whiteboard: WhiteboardDetailsFragment) => Promise<void>;
   onCheckin: (whiteboard: WhiteboardDetailsFragment) => Promise<void>;
   onUpdate: (
-    whiteboard: WhiteboardValueFragment & WhiteboardDetailsFragment,
+    whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
     previewImages?: WhiteboardPreviewImage[]
   ) => Promise<void>;
 }
@@ -127,7 +127,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           },
         },
         refetchQueries: [
-          refetchWhiteboardWithValueQuery({
+          refetchWhiteboardWithContentQuery({
             whiteboardId: whiteboard.id,
           }),
         ],
@@ -141,7 +141,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
 
   const handleUpdateWhiteboard = useCallback(
     async (
-      whiteboard: WhiteboardValueFragment & WhiteboardDetailsFragment,
+      whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
       previewImages?: WhiteboardPreviewImage[]
     ) => {
       await Promise.all([
@@ -149,7 +149,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           variables: {
             input: {
               ID: whiteboard.id,
-              value: whiteboard.value,
+              content: whiteboard.content,
               profileData: {
                 displayName: whiteboard.profile.displayName,
               },

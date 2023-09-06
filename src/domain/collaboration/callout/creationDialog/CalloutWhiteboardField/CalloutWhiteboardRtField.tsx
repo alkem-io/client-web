@@ -26,7 +26,7 @@ export const CalloutWhiteboardRtField: FC<CalloutWhiteboardRtFieldProps> = ({ na
   const { t } = useTranslation();
   const [, , helpers] = useField<WhiteboardRtFieldSubmittedValuesWithPreviewImages>(name);
 
-  const handleChange = (newContent: string, previewImages?: WhiteboardPreviewImage[]) => {
+  const handleChangeContent = (newContent: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
       profileData: {
         displayName: t('common.whiteboard'),
@@ -44,10 +44,10 @@ export const CalloutWhiteboardRtField: FC<CalloutWhiteboardRtFieldProps> = ({ na
         </Box>
       </Box>
       <FormikWhiteboardPreview
-        name={`${name}.value`}
+        name={`${name}.content`}
         previewImagesName={`${name}.previewImages`}
         canEdit
-        onChangeValue={handleChange}
+        onChangeContent={handleChangeContent}
         maxHeight={gutters(12)}
         dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
       />

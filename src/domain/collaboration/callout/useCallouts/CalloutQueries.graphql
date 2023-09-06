@@ -108,7 +108,7 @@ fragment CalloutPostTemplate on Callout {
 fragment CalloutWhiteboardTemplate on Callout {
   whiteboardTemplate {
     id
-    value
+    content
     profile {
       id
       displayName

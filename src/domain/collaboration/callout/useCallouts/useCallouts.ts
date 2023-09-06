@@ -178,7 +178,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           ...callout,
           // Add calloutNameId to all whiteboards
           whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
-          whiteboardRt: ({ ...callout.whiteboardRt, calloutNameId: callout.nameID }),
+          whiteboardRt: { ...callout.whiteboardRt, calloutNameId: callout.nameID },
           comments: { ...callout.comments, calloutNameId: callout.nameID },
           authorization,
           draft,

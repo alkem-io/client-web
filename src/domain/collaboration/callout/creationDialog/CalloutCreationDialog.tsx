@@ -15,10 +15,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import {
-  useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery,
-  useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useWhiteboardTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../core/ui/actions/Actions';
@@ -80,14 +77,9 @@ export interface CalloutPostTemplate {
 
 export interface CalloutWhiteboardTemplate {
   id?: string;
-  value: string;
+  content: string;
   profile: TemplateProfile;
 }
-
-const whiteboardValueToContent = ({ value, ...rest }: WhiteboardFieldSubmittedValuesWithPreviewImages) => ({
-  content: value,
-  ...rest,
-});
 
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
@@ -114,11 +106,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     }
   }, [open]);
 
-  const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [fetchWhiteboardValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -157,23 +145,21 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           displayLocation,
           whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
           whiteboardRt:
-            callout.type === CalloutType.WhiteboardRt && callout.whiteboard
-              ? whiteboardValueToContent(callout.whiteboard)
-              : undefined,
+            callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
         };
 
         result = await onCreateCallout(newCallout);
       } catch (ex) {
-        console.error(ex);
+        console.error(ex); // eslint-disable no-console
       } finally {
         setCallout({});
         closePublishDialog();
         return result;
       }
     },
-    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardValueFromSpace, fetchWhiteboardValueFromLibrary]
+    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardTemplateContent]
   );
 
   const handleClose = useCallback(() => {

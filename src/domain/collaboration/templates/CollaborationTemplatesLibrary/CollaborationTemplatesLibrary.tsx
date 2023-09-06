@@ -11,17 +11,17 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogIcon from '../../../../core/ui/dialog/DialogIcon';
 import { ImageSearch as ImageSearchIcon } from '@mui/icons-material';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import { TemplateBase, TemplateBaseWithValue, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
+import { TemplateBase, TemplateBaseWithContent, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
 
 export interface CollaborationTemplatesLibraryProps<
   Template extends TemplateBase,
-  TemplateWithValue extends TemplateBaseWithValue
+  TemplateWithContent extends TemplateBaseWithContent
 > {
   dialogTitle: string;
-  onSelectTemplate: (template: TemplateWithValue) => void;
+  onSelectTemplate: (template: TemplateWithContent) => void;
   // Components:
   templateCardComponent: ComponentType<TemplateCardBaseProps<Template>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateWithValue>>;
+  templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateWithContent>>;
 
   // Filtering
   filter?: string[];
@@ -32,17 +32,20 @@ export interface CollaborationTemplatesLibraryProps<
   fetchTemplatesFromSpace?: () => void;
   templatesFromSpace?: Template[];
   loadingTemplatesFromSpace?: boolean;
-  loadingTemplateValueFromSpace?: boolean;
-  fetchTemplateFromSpaceValue?: (template: Template) => Promise<TemplateWithValue | undefined>;
+
+  // Whiteboard template content
+  loadingWhiteboardTemplateContent?: boolean;
+  getWhiteboardTemplateWithContent?: (template: Template) => Promise<TemplateWithContent | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
   templatesFromPlatform?: Template[];
   loadingTemplatesFromPlatform?: boolean;
-  loadingTemplateValueFromPlatform?: boolean;
-  fetchTemplateFromPlatformValue?: (template: Template) => Promise<TemplateWithValue | undefined>;
 }
 
-const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWithValue extends TemplateBaseWithValue>({
+const CollaborationTemplatesLibrary = <
+  Template extends TemplateBase,
+  TemplateWithValue extends TemplateBaseWithContent
+>({
   dialogTitle,
   onSelectTemplate,
   templateCardComponent,
@@ -53,13 +56,11 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
   fetchTemplatesFromSpace,
   templatesFromSpace,
   loadingTemplatesFromSpace,
-  loadingTemplateValueFromSpace,
-  fetchTemplateFromSpaceValue,
+  loadingWhiteboardTemplateContent,
+  getWhiteboardTemplateWithContent,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
-  loadingTemplatesFromPlatform,
-  loadingTemplateValueFromPlatform,
-  fetchTemplateFromPlatformValue,
+  loadingTemplatesFromPlatform = false,
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
   const { t } = useTranslation();
 
@@ -79,8 +80,8 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
     }
   }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
 
-  const handlePreviewTemplateSpace = async (template: Template) => {
-    setPreviewTemplate(await fetchTemplateFromSpaceValue?.(template));
+  const handlePreviewWhiteboardTemplate = async (template: Template) => {
+    setPreviewTemplate(await getWhiteboardTemplateWithContent?.(template));
   };
 
   // Load Platform Templates if no spaceName is provided:
@@ -89,10 +90,6 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
       fetchTemplatesFromPlatform();
     }
   }, [fetchTemplatesFromPlatform, fetchSpaceTemplatesOnLoad]);
-
-  const handlePreviewTemplatePlatform = async (template: Template) => {
-    setPreviewTemplate(await fetchTemplateFromPlatformValue?.(template));
-  };
 
   const handleClosePreview = () => {
     setPreviewTemplate(undefined);
@@ -105,12 +102,8 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
     }
   };
 
-  const loading =
-    loadingTemplatesFromSpace ||
-    loadingTemplatesFromPlatform ||
-    loadingTemplateValueFromSpace ||
-    loadingTemplateValueFromPlatform;
-  const loadingPreview = loadingTemplateValueFromSpace || loadingTemplateValueFromPlatform;
+  const loading = loadingTemplatesFromSpace || loadingTemplatesFromPlatform || loadingWhiteboardTemplateContent;
+  const loadingPreview = loadingWhiteboardTemplateContent;
 
   return (
     <>
@@ -148,7 +141,7 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromSpace}
                     templateCardComponent={templateCardComponent}
-                    onPreviewTemplate={template => handlePreviewTemplateSpace(template)}
+                    onPreviewTemplate={template => handlePreviewWhiteboardTemplate(template)}
                     loading={loadingTemplatesFromSpace}
                   />
                 </>
@@ -170,7 +163,7 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromPlatform}
                     templateCardComponent={templateCardComponent}
-                    onPreviewTemplate={template => handlePreviewTemplatePlatform(template)}
+                    onPreviewTemplate={template => handlePreviewWhiteboardTemplate(template)}
                     loading={loadingTemplatesFromPlatform}
                   />
                 </>

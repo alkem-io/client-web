@@ -1,5 +1,4 @@
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import { WhiteboardWithValue } from '../containers/WhiteboardValueContainer';
 import { exportToBlob } from '@alkemio/excalidraw';
 import getWhiteboardPreviewDimensions from './getWhiteboardPreviewDimensions';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
@@ -27,7 +26,14 @@ export interface VisualsIds {
   previewVisualId?: string;
 }
 
-export const generateWhiteboardPreviewImages = async <Whiteboard extends { profile?: WhiteboardWithValue['profile']}>(
+interface WhiteboardWithPreviewImageDimensions {
+  profile?: {
+    preview?: PreviewImageDimensions;
+    visual?: PreviewImageDimensions;
+  };
+}
+
+export const generateWhiteboardPreviewImages = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
   whiteboard: Whiteboard,
   excalidrawState: RelevantExcalidrawState | undefined
 ) => {

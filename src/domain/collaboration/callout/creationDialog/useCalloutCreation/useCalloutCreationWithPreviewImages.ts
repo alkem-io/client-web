@@ -48,7 +48,12 @@ export const useCalloutCreationWithPreviewImages = (initialOpened = false): Call
       // The PreviewImages (like the ones generated for SingleWhiteboard callouts
       // are sent from here to the server after the callout creation
       if (result && previewImages) {
-        const whiteboard = (callout.type === CalloutType.Whiteboard ? result?.whiteboards?.[0] : (callout.type === CalloutType.WhiteboardRt ? result?.whiteboardRt : undefined));
+        const whiteboard =
+          callout.type === CalloutType.Whiteboard
+            ? result?.whiteboards?.[0]
+            : callout.type === CalloutType.WhiteboardRt
+            ? result?.whiteboardRt
+            : undefined;
         if (whiteboard && whiteboard.profile) {
           await uploadVisuals(
             previewImages,

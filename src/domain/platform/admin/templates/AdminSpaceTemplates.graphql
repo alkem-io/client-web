@@ -45,11 +45,6 @@ fragment AdminWhiteboardTemplate on WhiteboardTemplate {
   }
 }
 
-fragment AdminWhiteboardTemplateValue on WhiteboardTemplate {
-  id
-  value
-}
-
 fragment ProfileInfoWithVisual on Profile {
   id
   displayName
@@ -59,17 +54,5 @@ fragment ProfileInfoWithVisual on Profile {
   }
   visual(type: CARD) {
     ...VisualFull
-  }
-}
-
-query SpaceTemplatesAdminWhiteboardTemplateWithValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
-      id
-      whiteboardTemplate(ID: $whiteboardTemplateId) {
-        ...AdminWhiteboardTemplateValue
-      }
-    }
   }
 }

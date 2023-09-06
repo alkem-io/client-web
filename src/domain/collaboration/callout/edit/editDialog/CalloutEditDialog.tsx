@@ -15,10 +15,7 @@ import {
   TagsetType,
   WhiteboardTemplateCardFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import {
-  useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery,
-  useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
@@ -76,7 +73,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       type: callout.postTemplate?.type ?? '',
     },
     whiteboardTemplateData: {
-      value: callout.whiteboardTemplate?.value ?? JSON.stringify(EmptyWhiteboard),
+      content: callout.whiteboardTemplate?.content ?? JSON.stringify(EmptyWhiteboard),
       profile: {
         displayName:
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
@@ -85,10 +82,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     displayLocation: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
-  const [fetchWhiteboardValueFromSpace] = useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
-  const [fetchWhiteboardValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
+  const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -121,15 +115,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       displayLocation: newCallout.displayLocation,
     });
     setLoading(false);
-  }, [
-    callout,
-    fetchWhiteboardValueFromSpace,
-    newCallout,
-    spaceNameId,
-    onCalloutEdit,
-    templates,
-    fetchWhiteboardValueFromLibrary,
-  ]);
+  }, [callout, fetchWhiteboardTemplateContent, newCallout, spaceNameId, onCalloutEdit, templates]);
 
   const handleDelete = useCallback(async () => {
     setLoading(true);
