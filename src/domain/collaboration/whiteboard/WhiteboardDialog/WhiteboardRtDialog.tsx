@@ -176,8 +176,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     formikRef.current?.setTouched({ displayName: true }, true);
 
     await handleUpdate(whiteboard, state);
-    collabApiRef.current?.notifySavedToDatabase();
-    await refetchLastSaved();
+
+    collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
+    await refetchLastSaved(); // And update the caption
   };
 
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
