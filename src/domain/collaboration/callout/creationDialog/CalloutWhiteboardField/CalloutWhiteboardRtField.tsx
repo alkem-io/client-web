@@ -26,7 +26,7 @@ export const CalloutWhiteboardRtField: FC<CalloutWhiteboardRtFieldProps> = ({ na
   const { t } = useTranslation();
   const [, , helpers] = useField<WhiteboardRtFieldSubmittedValuesWithPreviewImages>(name);
 
-  const handleChange = (newContent: string, previewImages?: WhiteboardPreviewImage[]) => {
+  const handleChangeContent = (newContent: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
       profileData: {
         displayName: t('common.whiteboard'),
@@ -47,7 +47,7 @@ export const CalloutWhiteboardRtField: FC<CalloutWhiteboardRtFieldProps> = ({ na
         name={`${name}.content`}
         previewImagesName={`${name}.previewImages`}
         canEdit
-        onChangeContent={handleChange}
+        onChangeContent={handleChangeContent}
         maxHeight={gutters(12)}
         dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
       />

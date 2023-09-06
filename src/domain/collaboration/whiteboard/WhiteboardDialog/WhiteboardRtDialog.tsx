@@ -17,7 +17,7 @@ import { LoadingButton } from '@mui/lab';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import isWhiteboardValueEqual from '../utils/isWhiteboardValueEqual';
+import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
@@ -153,7 +153,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       const files = whiteboardApi.getFiles();
       const value = serializeAsJSON(elements, appState, files, 'local');
 
-      if (!isWhiteboardValueEqual(whiteboard?.content, value) || formikRef.current?.dirty) {
+      if (!isWhiteboardContentEqual(whiteboard?.content, value) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
         ) {

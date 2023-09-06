@@ -48,7 +48,7 @@ interface TemplatePreviewComponentProps
   extends Omit<
     CollaborationTemplatesLibraryPreviewProps<
       TemplatePreview['template'],
-      TemplatePreview['template'] & { value: string }
+      TemplatePreview['template'] & { content: string }
     >,
     'template' | 'templateCardComponent' | 'templatePreviewComponent'
   > {

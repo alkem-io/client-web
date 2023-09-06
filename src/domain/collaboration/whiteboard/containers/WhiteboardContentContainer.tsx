@@ -20,27 +20,27 @@ export interface WhiteboardWithContent
   extends Omit<WhiteboardContentFragment, 'id'>,
     Partial<WhiteboardDetailsFragment> {}
 
-export type WhiteboardWithoutContent<Whiteboard extends WhiteboardWithContent> = Omit<Whiteboard, 'value'>;
+export type WhiteboardWithoutContent<Whiteboard extends WhiteboardWithContent> = Omit<Whiteboard, 'content'>;
 
-export interface IWhiteboardValueEntities {
+export interface IWhiteboardContentEntities {
   whiteboard?: WhiteboardWithContent;
   isWhiteboardCheckedOutByMe: boolean;
   isWhiteboardAvailable: boolean;
   lockedBy: WhiteboardLockedByDetailsQuery['users'][0] | undefined;
 }
 
-export interface WhiteboardValueContainerState {
-  loadingWhiteboardValue?: boolean;
+export interface WhiteboardContentContainerState {
+  loadingWhiteboardContent?: boolean;
 }
 
-export interface WhiteboardValueParams {
+export interface WhiteboardContentParams {
   whiteboardId: string | undefined;
 }
 
-export interface WhiteboardValueContainerProps
-  extends ContainerChildProps<IWhiteboardValueEntities, {}, WhiteboardValueContainerState>,
-    WhiteboardValueParams {
-  onWhiteboardValueLoaded?: (whiteboard: WhiteboardWithContent) => void;
+export interface WhiteboardContentContainerProps
+  extends ContainerChildProps<IWhiteboardContentEntities, {}, WhiteboardContentContainerState>,
+    WhiteboardContentParams {
+  onWhiteboardContentLoaded?: (whiteboard: WhiteboardWithContent) => void;
 }
 
 const useSubscribeToWhiteboard = UseSubscriptionToSubEntity<
@@ -57,18 +57,18 @@ const useSubscribeToWhiteboard = UseSubscriptionToSubEntity<
   },
 });
 
-const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
+const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({
   children,
   whiteboardId,
-  onWhiteboardValueLoaded,
+  onWhiteboardContentLoaded,
 }) => {
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
   const skipWhiteboardQuery = !Boolean(whiteboardId);
   const {
-    data: whiteboardWithValueData,
-    loading: loadingWhiteboardWithValue,
+    data: whiteboardWithContentData,
+    loading: loadingWhiteboardContent,
     subscribeToMore: subscribeToWhiteboard,
   } = useWhiteboardWithContentQuery({
     errorPolicy: 'all',
@@ -81,17 +81,17 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
     },
   });
 
-  const whiteboard = whiteboardWithValueData?.lookup.whiteboard;
+  const whiteboard = whiteboardWithContentData?.lookup.whiteboard;
 
   useEffect(() => {
     if (whiteboard) {
-      onWhiteboardValueLoaded?.(whiteboard);
+      onWhiteboardContentLoaded?.(whiteboard);
     }
-  }, [whiteboard, onWhiteboardValueLoaded]);
+  }, [whiteboard, onWhiteboardContentLoaded]);
 
   const skipWhiteboardSubscription = !whiteboardId || whiteboard?.checkout?.lockedBy === userId;
 
-  useSubscribeToWhiteboard(whiteboardWithValueData, data => data?.lookup.whiteboard, subscribeToWhiteboard, {
+  useSubscribeToWhiteboard(whiteboardWithContentData, data => data?.lookup.whiteboard, subscribeToWhiteboard, {
     skip: skipWhiteboardSubscription,
   });
 
@@ -114,7 +114,7 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
           lockedBy: lockedByDetailsData?.users.find(user => user.id === whiteboard?.checkout?.lockedBy),
         },
         {
-          loadingWhiteboardValue: loadingWhiteboardWithValue,
+          loadingWhiteboardContent,
         },
         {}
       )}
@@ -122,4 +122,4 @@ const WhiteboardValueContainer: FC<WhiteboardValueContainerProps> = ({
   );
 };
 
-export default WhiteboardValueContainer;
+export default WhiteboardContentContainer;

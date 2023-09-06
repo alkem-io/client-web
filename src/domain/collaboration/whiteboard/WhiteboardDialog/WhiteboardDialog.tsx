@@ -22,7 +22,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import isWhiteboardValueEqual from '../utils/isWhiteboardValueEqual';
+import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { PageTitle } from '../../../../core/ui/typography';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
@@ -59,7 +59,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   };
   state?: {
     updatingWhiteboard?: boolean;
-    loadingWhiteboardValue?: boolean;
+    loadingWhiteboardContent?: boolean;
     changingWhiteboardLockState?: boolean;
   };
 }
@@ -177,7 +177,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       const files = whiteboardApi.getFiles();
       const content = serializeAsJSON(elements, appState, files, 'local');
 
-      if (!isWhiteboardValueEqual(whiteboard?.content, content) || formikRef.current?.dirty) {
+      if (!isWhiteboardContentEqual(whiteboard?.content, content) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
         ) {
@@ -283,7 +283,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               )}
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
-              {!state?.loadingWhiteboardValue && whiteboard && (
+              {!state?.loadingWhiteboardContent && whiteboard && (
                 <ExcalidrawWrapper
                   entities={{ whiteboard }}
                   ref={excalidrawApiRef}
@@ -306,7 +306,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   }}
                 />
               )}
-              {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
+              {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
               {options.checkedOutByMe && actions.onDelete && (
