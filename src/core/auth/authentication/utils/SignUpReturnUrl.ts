@@ -12,7 +12,7 @@ const storeSignUpReturnUrl = (returnUrl: string) => {
 
 export const useReturnUrl = () => {
   const platformOrigin = usePlatformOrigin();
-  const defaultReturnUrl = `${platformOrigin}${ROUTE_HOME}`;
+  const defaultReturnUrl = platformOrigin && `${platformOrigin}${ROUTE_HOME}`;
 
   return useRef(sessionStorage.getItem(STORAGE_KEY_RETURN_URL)).current ?? defaultReturnUrl;
 };
