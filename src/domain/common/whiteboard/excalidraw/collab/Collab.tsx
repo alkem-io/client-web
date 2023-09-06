@@ -42,12 +42,14 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
+  notifySavedToDatabase: () => void;
 }
 
 interface PublicProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   username: string;
   collabAPIRef?: (collabAPI: CollabAPI) => void;
+  onSavedToDatabase?: () => void; // Someone in the your room saved the whiteboard to the database.
 }
 
 type Props = PublicProps;
@@ -62,6 +64,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
   private collabAPIRef: (collabAPI: CollabAPI) => void;
+  private onSavedToDatabase: (() => void) | undefined;
 
   constructor(props: Props) {
     super(props);
@@ -75,6 +78,7 @@ class Collab extends PureComponent<Props, CollabState> {
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
     this.collabAPIRef = props.collabAPIRef ?? (() => {});
+    this.onSavedToDatabase = props.onSavedToDatabase;
   }
 
   componentDidMount() {
@@ -89,6 +93,7 @@ class Collab extends PureComponent<Props, CollabState> {
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
       stopCollaboration: this.stopCollaboration,
+      notifySavedToDatabase: this.notifySavedToDatabase,
     };
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
@@ -291,6 +296,9 @@ class Collab extends PureComponent<Props, CollabState> {
           });
           break;
         }
+        case 'SAVED': {
+          this.onSavedToDatabase?.();
+        }
       }
     });
 
@@ -472,6 +480,10 @@ class Collab extends PureComponent<Props, CollabState> {
 
   syncElements = (elements: readonly ExcalidrawElement[]) => {
     this.broadcastElements(elements);
+  };
+
+  notifySavedToDatabase = () => {
+    this.portal.broadcastSavedEvent();
   };
 
   queueBroadcastAllElements = throttle(() => {

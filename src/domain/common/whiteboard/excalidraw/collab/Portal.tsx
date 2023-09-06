@@ -145,6 +145,22 @@ class Portal {
       );
     }
   };
+
+  broadcastSavedEvent = () => {
+    if (this.socket?.id) {
+      const data: SocketUpdateDataSource['SAVED'] = {
+        type: 'SAVED',
+        payload: {
+          socketId: this.socket.id,
+          username: this.collab.state.username,
+        },
+      };
+      return this._broadcastSocketData(
+        data as SocketUpdateData,
+        false // volatile
+      );
+    }
+  };
 }
 
 export default Portal;

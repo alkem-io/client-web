@@ -29,6 +29,9 @@ import {
   WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { Caption } from '../../../../core/ui/typography';
+import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
+import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -85,6 +88,12 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
 
   const styles = useStyles();
+
+  const { data: lastSaved, refetch: refetchLastSaved } = useWhiteboardRtLastUpdatedDateQuery({
+    variables: { whiteboardId: whiteboard?.id! },
+    skip: !whiteboard?.id,
+  });
+  const lastSavedDate = lastSaved?.lookup.whiteboardRt?.updatedDate;
 
   const getExcalidrawStateFromApi = async (
     excalidrawApi: ExcalidrawAPIRefValue | null
@@ -250,12 +259,22 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     onUpdate: state => {
                       handleUpdate(whiteboard, state);
                     },
+                    onSavedToDatabase: () => {
+                      refetchLastSaved({
+                        whiteboardId: whiteboard.id,
+                      });
+                    },
                   }}
                 />
               )}
               {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+              <Caption>
+                {t('common.last-saved', {
+                  datetime: formatTimeElapsed(lastSavedDate, t) + lastSavedDate?.toString(),
+                })}
+              </Caption>
               <LoadingButton
                 startIcon={<Save />}
                 onClick={() => saveWhiteboard(whiteboard!)}

@@ -41,6 +41,7 @@ export interface WhiteboardWhiteboardEntities {
 
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => void;
+  onSavedToDatabase?: () => void;
 }
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
@@ -206,7 +207,14 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             {...restOptions}
           />
         )}
-        {excalidrawAPI && <Collab username={username} excalidrawAPI={excalidrawAPI} collabAPIRef={setCollabAPIRef} />}
+        {excalidrawAPI && (
+          <Collab
+            username={username}
+            excalidrawAPI={excalidrawAPI}
+            collabAPIRef={setCollabAPIRef}
+            onSavedToDatabase={actions.onSavedToDatabase}
+          />
+        )}
       </div>
     );
   }

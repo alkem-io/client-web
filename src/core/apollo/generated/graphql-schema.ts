@@ -5031,6 +5031,7 @@ export type WhiteboardRt = {
   nameID: Scalars['NameID'];
   /** The Profile for this WhiteboardRt. */
   profile: Profile;
+  updatedDate: Scalars['DateTime'];
 };
 
 export type WhiteboardTemplate = {
@@ -5492,6 +5493,7 @@ export type CalloutPageCalloutQuery = {
                       id: string;
                       nameID: string;
                       createdDate: Date;
+                      updatedDate: Date;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -5835,6 +5837,7 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -6181,6 +6184,7 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9167,6 +9171,7 @@ export type CreateCalloutMutation = {
           id: string;
           nameID: string;
           createdDate: Date;
+          updatedDate: Date;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -9899,6 +9904,7 @@ export type CalloutsQuery = {
                       id: string;
                       nameID: string;
                       createdDate: Date;
+                      updatedDate: Date;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -10246,6 +10252,7 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -10596,6 +10603,7 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -10940,6 +10948,7 @@ export type CollaborationWithCalloutsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              updatedDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -11255,6 +11264,7 @@ export type CalloutFragment = {
         id: string;
         nameID: string;
         createdDate: Date;
+        updatedDate: Date;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13452,6 +13462,7 @@ export type WhiteboardRtDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  updatedDate: Date;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -13694,6 +13705,7 @@ export type CalloutWithWhiteboardRtFragment = {
         id: string;
         nameID: string;
         createdDate: Date;
+        updatedDate: Date;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13877,6 +13889,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              updatedDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14095,6 +14108,7 @@ export type WhiteboardRtFromCalloutQuery = {
                 id: string;
                 nameID: string;
                 createdDate: Date;
+                updatedDate: Date;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -14284,6 +14298,7 @@ export type WhiteboardRtWithContentQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
+          updatedDate: Date;
           content: string;
           profile: {
             __typename?: 'Profile';
@@ -14353,6 +14368,18 @@ export type WhiteboardRtWithContentQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type WhiteboardRtLastUpdatedDateQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type WhiteboardRtLastUpdatedDateQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboardRt?: { __typename?: 'WhiteboardRt'; id: string; updatedDate: Date } | undefined;
   };
 };
 

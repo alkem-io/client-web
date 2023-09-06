@@ -2557,6 +2557,7 @@ export type WhiteboardRtKeySpecifier = (
   | 'id'
   | 'nameID'
   | 'profile'
+  | 'updatedDate'
   | WhiteboardRtKeySpecifier
 )[];
 export type WhiteboardRtFieldPolicy = {
@@ -2567,6 +2568,7 @@ export type WhiteboardRtFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardTemplateKeySpecifier = (
   | 'authorization'

@@ -239,6 +239,7 @@
     "field-required": "This field is required",
     "field-min-length": "This field must be minimum of {{min}} characters",
     "field-max-length": "This field must be maximum of {{max}} characters",
+    "last-saved": "Last saved: {{datetime}}",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",

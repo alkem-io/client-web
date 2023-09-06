@@ -44,6 +44,7 @@ fragment WhiteboardRtDetails on WhiteboardRt {
   id
   nameID
   createdDate
+  updatedDate
   profile {
     ...WhiteboardProfile
   }
@@ -198,6 +199,15 @@ query whiteboardRtWithContent($whiteboardId: UUID!) {
     whiteboardRt(ID: $whiteboardId) {
       ...WhiteboardRtDetails
       ...WhiteboardRtContent
+    }
+  }
+}
+
+query whiteboardRtLastUpdatedDate($whiteboardId: UUID!) {
+  lookup {
+    whiteboardRt(ID: $whiteboardId) {
+      id
+      updatedDate
     }
   }
 }
