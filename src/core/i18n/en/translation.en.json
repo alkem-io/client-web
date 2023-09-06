@@ -982,7 +982,8 @@
         "POST_COLLECTION": "Call for Posts",
         "WHITEBOARD_COLLECTION": "Call for Whiteboards",
         "LINK_COLLECTION": "Collection of Links",
-        "WHITEBOARD": "Whiteboard"
+        "WHITEBOARD": "Whiteboard",
+        "WHITEBOARD_RT": "Whiteboard RealTime"
       }
     },
     "post-creation": {

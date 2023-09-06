@@ -27,7 +27,7 @@ export interface VisualsIds {
   previewVisualId?: string;
 }
 
-export const generateWhiteboardPreviewImages = async <Whiteboard extends WhiteboardWithValue>(
+export const generateWhiteboardPreviewImages = async <Whiteboard extends { profile?: WhiteboardWithValue['profile']}>(
   whiteboard: Whiteboard,
   excalidrawState: RelevantExcalidrawState | undefined
 ) => {

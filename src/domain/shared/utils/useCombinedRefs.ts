@@ -31,6 +31,6 @@ export const useCombinedRefs = <T>(initialValue: T, ...refs: Ref<T>[]): MutableR
         return currentHolder.current;
       },
     }),
-    []
+    refs
   );
 };
