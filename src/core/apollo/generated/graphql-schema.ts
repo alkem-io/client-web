@@ -19399,34 +19399,46 @@ export type HomePageSpacesQueryVariables = Exact<{
 
 export type HomePageSpacesQuery = {
   __typename?: 'Query';
-  spaces: Array<{
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    visibility: SpaceVisibility;
-    community?:
-      | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
+  platform: {
+    __typename?: 'Platform';
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          spaceListFilter?:
+            | Array<{
+                __typename?: 'Space';
+                id: string;
+                nameID: string;
+                visibility: SpaceVisibility;
+                community?:
+                  | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
+                  | undefined;
+                profile?: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+                    | undefined;
+                };
+                context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              }>
+            | undefined;
+        }
       | undefined;
-    profile?: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline: string;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
-    };
-    context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  }>;
+  };
 };
 
 export type AdminInnovationHubsListQueryVariables = Exact<{ [key: string]: never }>;

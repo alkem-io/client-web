@@ -40,7 +40,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
     },
   });
 
-  const allSpaces = spacesData?.spaces;
+  const allSpaces = spacesData?.platform.innovationHub?.spaceListFilter || [];
 
   const { platform } = useConfig();
 
