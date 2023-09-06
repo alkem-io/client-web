@@ -19,7 +19,7 @@ const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhite
   const { t } = useTranslation();
 
   const initialValues: Partial<WhiteboardTemplateFormValues> = {
-    value: JSON.stringify(EmptyWhiteboard),
+    content: JSON.stringify(EmptyWhiteboard),
     displayName: '',
     description: '',
     tags: [],

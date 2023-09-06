@@ -17,8 +17,8 @@ export interface WhiteboardTemplate extends TemplateBase {
   };
 }
 
-export interface WhiteboardTemplateWithValue extends WhiteboardTemplate {
-  value: string;
+export interface WhiteboardTemplateWithContent extends WhiteboardTemplate {
+  content: string;
 }
 
 export const whiteboardTemplateMapper = (

@@ -1,10 +1,11 @@
-import { ExcalidrawElement, ExcalidrawImageElement, InitializedExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
+import {
+  ExcalidrawElement,
+  ExcalidrawImageElement,
+  InitializedExcalidrawImageElement,
+} from '@alkemio/excalidraw/types/element/types';
 import { unstable_batchedUpdates } from 'react-dom';
 
-export const debounce = <T extends unknown[]>(
-  fn: (...args: T) => void,
-  timeout: number,
-) => {
+export const debounce = <T extends unknown[]>(fn: (...args: T) => void, timeout: number) => {
   let handle = 0;
   let lastArgs: T | null = null;
   const ret = (...args: T) => {
@@ -30,23 +31,21 @@ export const debounce = <T extends unknown[]>(
   return ret;
 };
 
-export const arrayToMapWithIndex = <T extends { id: string }>(
-  elements: readonly T[],
-) =>
+export const arrayToMapWithIndex = <T extends { id: string }>(elements: readonly T[]) =>
   elements.reduce((acc, element: T, idx) => {
     acc.set(element.id, [element, idx]);
     return acc;
   }, new Map<string, [element: T, index: number]>());
 
-  export const preventUnload = (event: BeforeUnloadEvent) => {
-    event.preventDefault();
-    // NOTE: modern browsers no longer allow showing a custom message here
-    event.returnValue = '';
-  };
+export const preventUnload = (event: BeforeUnloadEvent) => {
+  event.preventDefault();
+  // NOTE: modern browsers no longer allow showing a custom message here
+  event.returnValue = '';
+};
 
 export const bytesToHexString = (bytes: Uint8Array) => {
   return Array.from(bytes)
-    .map((byte) => `0${byte.toString(16)}`.slice(-2))
+    .map(byte => `0${byte.toString(16)}`.slice(-2))
     .join('');
 };
 
@@ -74,23 +73,19 @@ export const resolvablePromise = <T>() => {
 /**
  * @param func handler taking at most single parameter (event).
  */
-export const withBatchedUpdates = <
-  TFunction extends ((event) => void) | (() => void),
->(
-  func: Parameters<TFunction>['length'] extends 0 | 1 ? TFunction : never,
+export const withBatchedUpdates = <TFunction extends ((event) => void) | (() => void)>(
+  func: Parameters<TFunction>['length'] extends 0 | 1 ? TFunction : never
 ) =>
-  ((event) => {
+  (event => {
     unstable_batchedUpdates(func as TFunction, event);
   }) as TFunction;
 
-export const isImageElement = (
-  element: ExcalidrawElement | null,
-): element is ExcalidrawImageElement => {
+export const isImageElement = (element: ExcalidrawElement | null): element is ExcalidrawImageElement => {
   return !!element && element.type === 'image';
 };
 
 export const isInitializedImageElement = (
-  element: ExcalidrawElement | null,
+  element: ExcalidrawElement | null
 ): element is InitializedExcalidrawImageElement => {
   return !!element && element.type === 'image' && !!element.fileId;
 };

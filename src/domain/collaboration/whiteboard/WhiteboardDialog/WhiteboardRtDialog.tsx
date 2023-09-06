@@ -17,10 +17,10 @@ import { LoadingButton } from '@mui/lab';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import isWhiteboardValueEqual from '../utils/isWhiteboardValueEqual';
+import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
-import { WhiteboardTemplateWithValue } from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -153,7 +153,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       const files = whiteboardApi.getFiles();
       const value = serializeAsJSON(elements, appState, files, 'local');
 
-      if (!isWhiteboardValueEqual(whiteboard?.content, value) || formikRef.current?.dirty) {
+      if (!isWhiteboardContentEqual(whiteboard?.content, value) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
         ) {
@@ -167,11 +167,11 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     actions.onCancel(whiteboard!);
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplateWithValue) => {
+  const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
     const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
     if (whiteboardApi) {
       try {
-        mergeWhiteboard(whiteboardApi, template.value);
+        mergeWhiteboard(whiteboardApi, template.content);
       } catch (err) {
         notify(t('whiteboard-templates.error-importing'), 'error');
         logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`));

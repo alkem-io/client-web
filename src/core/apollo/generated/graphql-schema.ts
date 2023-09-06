@@ -1508,18 +1508,18 @@ export type CreateUserInput = {
 };
 
 export type CreateWhiteboardInput = {
+  content?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  value?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateWhiteboardOnCalloutInput = {
   calloutID: Scalars['UUID'];
+  content?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  value?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateWhiteboardRtInput = {
@@ -1530,19 +1530,19 @@ export type CreateWhiteboardRtInput = {
 };
 
 export type CreateWhiteboardTemplateInput = {
+  content?: InputMaybe<Scalars['JSON']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
-  value?: InputMaybe<Scalars['JSON']>;
   visualUri?: InputMaybe<Scalars['String']>;
   /** Use the specified Whiteboard as the initial value for this WhiteboardTemplate */
   whiteboardID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateWhiteboardTemplateOnTemplatesSetInput = {
+  content?: InputMaybe<Scalars['JSON']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
-  value?: InputMaybe<Scalars['JSON']>;
   visualUri?: InputMaybe<Scalars['String']>;
   /** Use the specified Whiteboard as the initial value for this WhiteboardTemplate */
   whiteboardID?: InputMaybe<Scalars['UUID']>;
@@ -4475,9 +4475,9 @@ export type UpdateCalloutVisibilityInput = {
 };
 
 export type UpdateCalloutWhiteboardTemplateInput = {
+  content?: InputMaybe<Scalars['JSON']>;
   /** The Profile of the Template. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateChallengeInput = {
@@ -4772,11 +4772,11 @@ export type UpdateVisualInput = {
 
 export type UpdateWhiteboardDirectInput = {
   ID: Scalars['UUID'];
+  content?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  value?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateWhiteboardRtDirectInput = {
@@ -4790,9 +4790,9 @@ export type UpdateWhiteboardRtDirectInput = {
 
 export type UpdateWhiteboardTemplateInput = {
   ID: Scalars['UUID'];
+  content?: InputMaybe<Scalars['JSON']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
-  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type User = {
@@ -4971,6 +4971,8 @@ export type Whiteboard = {
   authorization?: Maybe<Authorization>;
   /** The checkout out state of this Whiteboard. */
   checkout?: Maybe<WhiteboardCheckout>;
+  /** The visual content of the Whiteboard. */
+  content: Scalars['JSON'];
   /** The user that created this Whiteboard */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -4980,8 +4982,6 @@ export type Whiteboard = {
   nameID: Scalars['NameID'];
   /** The Profile for this Whiteboard. */
   profile: Profile;
-  /** The JSON representation of the Whiteboard. */
-  value: Scalars['JSON'];
 };
 
 export type WhiteboardCheckout = {
@@ -5012,7 +5012,7 @@ export enum WhiteboardCheckoutStateEnum {
 export type WhiteboardContentUpdated = {
   __typename?: 'WhiteboardContentUpdated';
   /** The updated content. */
-  value: Scalars['String'];
+  content: Scalars['String'];
   /** The identifier for the Whiteboard. */
   whiteboardID: Scalars['String'];
 };
@@ -5032,18 +5032,19 @@ export type WhiteboardRt = {
   nameID: Scalars['NameID'];
   /** The Profile for this WhiteboardRt. */
   profile: Profile;
+  updatedDate: Scalars['DateTime'];
 };
 
 export type WhiteboardTemplate = {
   __typename?: 'WhiteboardTemplate';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The visual content of the Whiteboard. */
+  content: Scalars['JSON'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
-  /** The JSON representation of the Whiteboard. */
-  value: Scalars['JSON'];
 };
 
 export type MyPrivilegesFragment = {
@@ -5650,7 +5651,7 @@ export type CalloutPageCalloutQuery = {
                   | {
                       __typename?: 'WhiteboardTemplate';
                       id: string;
-                      value: string;
+                      content: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -5995,7 +5996,7 @@ export type CalloutPageCalloutQuery = {
                     | {
                         __typename?: 'WhiteboardTemplate';
                         id: string;
-                        value: string;
+                        content: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -6341,7 +6342,7 @@ export type CalloutPageCalloutQuery = {
                     | {
                         __typename?: 'WhiteboardTemplate';
                         id: string;
-                        value: string;
+                        content: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9319,7 +9320,7 @@ export type CreateCalloutMutation = {
       | {
           __typename?: 'WhiteboardTemplate';
           id: string;
-          value: string;
+          content: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -9452,7 +9453,7 @@ export type UpdateCalloutMutation = {
       | {
           __typename?: 'WhiteboardTemplate';
           id: string;
-          value: string;
+          content: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -10057,7 +10058,7 @@ export type CalloutsQuery = {
                   | {
                       __typename?: 'WhiteboardTemplate';
                       id: string;
-                      value: string;
+                      content: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -10406,7 +10407,7 @@ export type CalloutsQuery = {
                     | {
                         __typename?: 'WhiteboardTemplate';
                         id: string;
-                        value: string;
+                        content: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -10756,7 +10757,7 @@ export type CalloutsQuery = {
                     | {
                         __typename?: 'WhiteboardTemplate';
                         id: string;
-                        value: string;
+                        content: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -11092,7 +11093,7 @@ export type CollaborationWithCalloutsFragment = {
           | {
               __typename?: 'WhiteboardTemplate';
               id: string;
-              value: string;
+              content: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -11407,7 +11408,7 @@ export type CalloutFragment = {
     | {
         __typename?: 'WhiteboardTemplate';
         id: string;
-        value: string;
+        content: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -11461,7 +11462,7 @@ export type CalloutWhiteboardTemplateFragment = {
     | {
         __typename?: 'WhiteboardTemplate';
         id: string;
-        value: string;
+        content: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13118,49 +13119,6 @@ export type SpaceWhiteboardTemplatesLibraryQuery = {
   };
 };
 
-export type SpaceWhiteboardTemplateValueQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type SpaceWhiteboardTemplateValueQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          whiteboardTemplate?:
-            | {
-                __typename?: 'WhiteboardTemplate';
-                value: string;
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type PlatformWhiteboardTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformWhiteboardTemplatesLibraryQuery = {
@@ -13216,73 +13174,6 @@ export type PlatformWhiteboardTemplatesLibraryQuery = {
             }
           | undefined;
       }>;
-    };
-  };
-};
-
-export type PlatformWhiteboardTemplateValueQueryVariables = Exact<{
-  innovationPackId: Scalars['UUID_NAMEID'];
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type PlatformWhiteboardTemplateValueQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      id: string;
-      innovationPack?:
-        | {
-            __typename?: 'InnovationPack';
-            id: string;
-            nameID: string;
-            templates?:
-              | {
-                  __typename?: 'TemplatesSet';
-                  id: string;
-                  whiteboardTemplate?:
-                    | {
-                        __typename?: 'WhiteboardTemplate';
-                        value: string;
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                }
-              | undefined;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-            provider?:
-              | {
-                  __typename?: 'Organization';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }
-              | undefined;
-          }
-        | undefined;
     };
   };
 };
@@ -13529,7 +13420,7 @@ export type WhiteboardSummaryFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type WhiteboardValueFragment = { __typename?: 'Whiteboard'; id: string; value: string };
+export type WhiteboardContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
 
 export type WhiteboardRtContentFragment = { __typename?: 'WhiteboardRt'; id: string; content: string };
 
@@ -13560,7 +13451,7 @@ export type WhiteboardTemplatesQuery = {
           whiteboardTemplates: Array<{
             __typename?: 'WhiteboardTemplate';
             id: string;
-            value: string;
+            content: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }>;
         }
@@ -13571,7 +13462,7 @@ export type WhiteboardTemplatesQuery = {
 export type CreateWhiteboardWhiteboardTemplateFragment = {
   __typename?: 'WhiteboardTemplate';
   id: string;
-  value: string;
+  content: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
 };
 
@@ -14169,11 +14060,11 @@ export type WhiteboardRtFromCalloutQuery = {
   };
 };
 
-export type WhiteboardWithValueQueryVariables = Exact<{
+export type WhiteboardWithContentQueryVariables = Exact<{
   whiteboardId: Scalars['UUID'];
 }>;
 
-export type WhiteboardWithValueQuery = {
+export type WhiteboardWithContentQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -14183,7 +14074,7 @@ export type WhiteboardWithValueQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
-          value: string;
+          content: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -14357,76 +14248,12 @@ export type WhiteboardRtWithContentQuery = {
   };
 };
 
-export type WhiteboardTemplateValueQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID'];
-}>;
-
-export type WhiteboardTemplateValueQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboardTemplate?:
-      | {
-          __typename?: 'WhiteboardTemplate';
-          id: string;
-          value: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            visual?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            preview?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type PlatformTemplateWhiteboardValuesQueryVariables = Exact<{
+export type PlatformTemplateWhiteboardContentsQueryVariables = Exact<{
   innovationPackId: Scalars['UUID_NAMEID'];
   whiteboardId: Scalars['UUID'];
 }>;
 
-export type PlatformTemplateWhiteboardValuesQuery = {
+export type PlatformTemplateWhiteboardContentsQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
@@ -14445,7 +14272,7 @@ export type PlatformTemplateWhiteboardValuesQuery = {
                     | {
                         __typename?: 'WhiteboardTemplate';
                         id: string;
-                        value: string;
+                        content: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -14612,7 +14439,7 @@ export type UpdateWhiteboardMutation = {
   updateWhiteboard: {
     __typename?: 'Whiteboard';
     id: string;
-    value: string;
+    content: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
@@ -14655,7 +14482,7 @@ export type WhiteboardContentUpdatedSubscriptionVariables = Exact<{
 
 export type WhiteboardContentUpdatedSubscription = {
   __typename?: 'Subscription';
-  whiteboardContentUpdated: { __typename?: 'WhiteboardContentUpdated'; whiteboardID: string; value: string };
+  whiteboardContentUpdated: { __typename?: 'WhiteboardContentUpdated'; whiteboardID: string; content: string };
 };
 
 export type ChallengePreferencesQueryVariables = Exact<{
@@ -25238,49 +25065,6 @@ export type InnovationFlowTemplatesFromSpaceQuery = {
   };
 };
 
-export type SpaceTemplatesWhiteboardTemplateWithValueQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type SpaceTemplatesWhiteboardTemplateWithValueQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          whiteboardTemplate?:
-            | {
-                __typename?: 'WhiteboardTemplate';
-                value: string;
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type SpaceTemplatesFragment = {
   __typename?: 'Space';
   templates?:
@@ -25356,29 +25140,6 @@ export type SpaceTemplatesFragment = {
         }>;
       }
     | undefined;
-};
-
-export type WhiteboardTemplateWithValueFragment = {
-  __typename?: 'WhiteboardTemplate';
-  value: string;
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
 };
 
 export type InnovationFlowTemplateFragment = {
@@ -26449,8 +26210,6 @@ export type AdminWhiteboardTemplateFragment = {
   };
 };
 
-export type AdminWhiteboardTemplateValueFragment = { __typename?: 'WhiteboardTemplate'; id: string; value: string };
-
 export type ProfileInfoWithVisualFragment = {
   __typename?: 'Profile';
   id: string;
@@ -26481,26 +26240,6 @@ export type ProfileInfoWithVisualFragment = {
         alternativeText?: string | undefined;
       }
     | undefined;
-};
-
-export type SpaceTemplatesAdminWhiteboardTemplateWithValueQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type SpaceTemplatesAdminWhiteboardTemplateWithValueQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          whiteboardTemplate?: { __typename?: 'WhiteboardTemplate'; id: string; value: string } | undefined;
-        }
-      | undefined;
-  };
 };
 
 export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
@@ -26660,87 +26399,6 @@ export type InnovationPackProviderProfileWithAvatarFragment = {
     id: string;
     displayName: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
-};
-
-export type InnovationPackWhiteboardTemplateWithValueQueryVariables = Exact<{
-  innovationPackId: Scalars['UUID_NAMEID'];
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type InnovationPackWhiteboardTemplateWithValueQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      id: string;
-      innovationPack?:
-        | {
-            __typename?: 'InnovationPack';
-            id: string;
-            templates?:
-              | {
-                  __typename?: 'TemplatesSet';
-                  whiteboardTemplate?: { __typename?: 'WhiteboardTemplate'; id: string; value: string } | undefined;
-                }
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type InnovationPackFullWhiteboardTemplateWithValueQueryVariables = Exact<{
-  innovationPackId: Scalars['UUID_NAMEID'];
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type InnovationPackFullWhiteboardTemplateWithValueQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      id: string;
-      innovationPack?:
-        | {
-            __typename?: 'InnovationPack';
-            id: string;
-            templates?:
-              | {
-                  __typename?: 'TemplatesSet';
-                  whiteboardTemplate?:
-                    | {
-                        __typename?: 'WhiteboardTemplate';
-                        value: string;
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                }
-              | undefined;
-          }
-        | undefined;
-    };
   };
 };
 
@@ -27198,7 +26856,7 @@ export type DeletePostTemplateMutation = {
 
 export type UpdateWhiteboardTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
-  value?: InputMaybe<Scalars['JSON']>;
+  content?: InputMaybe<Scalars['JSON']>;
   profile: UpdateProfileInput;
 }>;
 
@@ -27213,7 +26871,7 @@ export type UpdateWhiteboardTemplateMutation = {
 
 export type CreateWhiteboardTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
-  value: Scalars['JSON'];
+  content: Scalars['JSON'];
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
@@ -28539,6 +28197,70 @@ export type PostInCalloutOnCollaborationWithStorageConfigFragment = {
           | undefined;
       }>
     | undefined;
+};
+
+export type WhiteboardTemplateContentQueryVariables = Exact<{
+  whiteboardTemplateId: Scalars['UUID'];
+}>;
+
+export type WhiteboardTemplateContentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboardTemplate?:
+      | {
+          __typename?: 'WhiteboardTemplate';
+          id: string;
+          content: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
 };
 
 export type SpaceDashboardCalendarEventsQueryVariables = Exact<{

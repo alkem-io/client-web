@@ -6,7 +6,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { compact } from 'lodash';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
 import TemplatePreviewDialog, { TemplatePreview } from '../TemplatePreviewDialog/TemplatePreviewDialog';
-import { usePlatformWhiteboardTemplateValueQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useWhiteboardTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface DashboardLibraryTemplatesProps {
@@ -36,10 +36,9 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<LibraryTemplateCardProps>();
 
-  const { data: whiteboardTemplateValueData, loading: loadingWhiteboardTemplateValue } =
-    usePlatformWhiteboardTemplateValueQuery({
+  const { data: whiteboardTemplateContentData, loading: loadingWhiteboardTemplateContent } =
+    useWhiteboardTemplateContentQuery({
       variables: {
-        innovationPackId: selectedTemplate?.innovationPack.id!,
         whiteboardTemplateId: selectedTemplate?.id!,
       },
       skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
@@ -91,8 +90,8 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
             ? ({ template: selectedTemplate, templateType: selectedTemplate?.templateType } as TemplatePreview)
             : undefined
         }
-        templateWithValue={whiteboardTemplateValueData?.platform.library.innovationPack?.templates?.whiteboardTemplate}
-        loadingTemplateValue={loadingWhiteboardTemplateValue}
+        templateWithContent={whiteboardTemplateContentData?.lookup?.whiteboardTemplate}
+        loadingTemplateContent={loadingWhiteboardTemplateContent}
       />
     </>
   );

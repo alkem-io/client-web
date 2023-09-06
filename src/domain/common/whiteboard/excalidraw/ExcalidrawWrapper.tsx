@@ -31,7 +31,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 }));
 
 export interface WhiteboardWhiteboardEntities {
-  whiteboard: { id?: string; value: string } | undefined;
+  whiteboard: { id?: string; content: string } | undefined;
 }
 
 export interface WhiteboardWhiteboardActions {
@@ -57,12 +57,12 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
     const data = useMemo(() => {
-      const parsedData = whiteboard?.value ? JSON.parse(whiteboard?.value) : EmptyWhiteboard;
+      const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
       return {
         ...parsedData,
         zoomToFit: true,
       };
-    }, [whiteboard?.value]);
+    }, [whiteboard?.content]);
 
     const refreshOnDataChange = useRef(
       debounce(async (state: Parameters<ExcalidrawImperativeAPI['updateScene']>[0]) => {

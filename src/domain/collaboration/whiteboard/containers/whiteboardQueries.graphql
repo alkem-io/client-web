@@ -75,9 +75,9 @@ fragment WhiteboardSummary on Whiteboard {
   }
 }
 
-fragment WhiteboardValue on Whiteboard {
+fragment WhiteboardContent on Whiteboard {
   id
-  value
+  content
 }
 
 fragment WhiteboardRtContent on WhiteboardRt {
@@ -118,7 +118,7 @@ fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
     displayName
     description
   }
-  value
+  content
 }
 
 fragment CalloutWithWhiteboard on Callout {
@@ -134,6 +134,7 @@ fragment CalloutWithWhiteboard on Callout {
     ...WhiteboardDetails
   }
 }
+
 fragment CalloutWithWhiteboardRt on Callout {
   id
   nameID
@@ -184,11 +185,11 @@ query WhiteboardRtFromCallout($calloutId: UUID!) {
   }
 }
 
-query whiteboardWithValue($whiteboardId: UUID!) {
+query WhiteboardWithContent($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {
       ...WhiteboardDetails
-      ...WhiteboardValue
+      ...WhiteboardContent
     }
   }
 }
@@ -202,19 +203,7 @@ query whiteboardRtWithContent($whiteboardId: UUID!) {
   }
 }
 
-query whiteboardTemplateValue($whiteboardId: UUID!) {
-  lookup {
-    whiteboardTemplate(ID: $whiteboardId) {
-      id
-      profile {
-        ...WhiteboardProfile
-      }
-      value
-    }
-  }
-}
-
-query platformTemplateWhiteboardValues($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
+query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
   platform {
     id
     library {
@@ -227,7 +216,7 @@ query platformTemplateWhiteboardValues($innovationPackId: UUID_NAMEID!, $whitebo
             profile {
               ...WhiteboardProfile
             }
-            value
+            content
           }
         }
       }
@@ -250,7 +239,7 @@ mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
 mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
   updateWhiteboard(whiteboardData: $input) {
     id
-    value
+    content
     profile {
       id
       displayName
@@ -268,6 +257,7 @@ mutation updateWhiteboardRt($input: UpdateWhiteboardRtDirectInput!) {
     }
   }
 }
+
 mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
   eventOnWhiteboardCheckout(whiteboardCheckoutEventData: $input) {
     ...CheckoutDetails
@@ -277,6 +267,6 @@ mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
 subscription whiteboardContentUpdated($whiteboardIDs: [UUID!]!) {
   whiteboardContentUpdated(whiteboardIDs: $whiteboardIDs) {
     whiteboardID
-    value
+    content
   }
 }

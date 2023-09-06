@@ -2511,23 +2511,23 @@ export type VisualFieldPolicy = {
 export type WhiteboardKeySpecifier = (
   | 'authorization'
   | 'checkout'
+  | 'content'
   | 'createdBy'
   | 'createdDate'
   | 'id'
   | 'nameID'
   | 'profile'
-  | 'value'
   | WhiteboardKeySpecifier
 )[];
 export type WhiteboardFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   checkout?: FieldPolicy<any> | FieldReadFunction<any>;
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardCheckoutKeySpecifier = (
   | 'authorization'
@@ -2544,9 +2544,13 @@ export type WhiteboardCheckoutFieldPolicy = {
   lockedBy?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type WhiteboardContentUpdatedKeySpecifier = ('value' | 'whiteboardID' | WhiteboardContentUpdatedKeySpecifier)[];
+export type WhiteboardContentUpdatedKeySpecifier = (
+  | 'content'
+  | 'whiteboardID'
+  | WhiteboardContentUpdatedKeySpecifier
+)[];
 export type WhiteboardContentUpdatedFieldPolicy = {
-  value?: FieldPolicy<any> | FieldReadFunction<any>;
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardRtKeySpecifier = (
@@ -2557,6 +2561,7 @@ export type WhiteboardRtKeySpecifier = (
   | 'id'
   | 'nameID'
   | 'profile'
+  | 'updatedDate'
   | WhiteboardRtKeySpecifier
 )[];
 export type WhiteboardRtFieldPolicy = {
@@ -2567,19 +2572,20 @@ export type WhiteboardRtFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardTemplateKeySpecifier = (
   | 'authorization'
+  | 'content'
   | 'id'
   | 'profile'
-  | 'value'
   | WhiteboardTemplateKeySpecifier
 )[];
 export type WhiteboardTemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
   APM?: Omit<TypePolicy, 'fields' | 'keyFields'> & {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 import {
   useInnovationPackProfilePageQuery,
-  usePlatformWhiteboardTemplateValueQuery,
+  useWhiteboardTemplateContentQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -66,10 +66,9 @@ const InnovationPackProfilePage = () => {
 
   const providerUri = providerNameId && buildOrganizationUrl(providerNameId);
 
-  const { data: whiteboardTemplateValueData, loading: loadingWhiteboardTemplateValue } =
-    usePlatformWhiteboardTemplateValueQuery({
+  const { data: whiteboardTemplateContentData, loading: loadingWhiteboardTemplateContent } =
+    useWhiteboardTemplateContentQuery({
       variables: {
-        innovationPackId: innovationPackNameId,
         whiteboardTemplateId: selectedTemplate?.template.id!,
       },
       skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
@@ -161,8 +160,8 @@ const InnovationPackProfilePage = () => {
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
         template={selectedTemplate}
-        templateWithValue={whiteboardTemplateValueData?.platform.library.innovationPack?.templates?.whiteboardTemplate}
-        loadingTemplateValue={loadingWhiteboardTemplateValue}
+        templateWithContent={whiteboardTemplateContentData?.lookup.whiteboardTemplate}
+        loadingTemplateContent={loadingWhiteboardTemplateContent}
       />
     </>
   );
