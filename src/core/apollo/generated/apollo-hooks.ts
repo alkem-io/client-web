@@ -1819,7 +1819,7 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
       displayName
       tagline
       description
-      banner: visual(type: BANNER) {
+      banner: visual(type: BANNER_WIDE) {
         id
         uri
         alternativeText
@@ -1836,7 +1836,7 @@ export const InnovationHubProfileFragmentDoc = gql`
     tagset {
       ...TagsetDetails
     }
-    visual(type: BANNER) {
+    visual(type: BANNER_WIDE) {
       ...VisualFull
     }
   }

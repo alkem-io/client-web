@@ -4956,6 +4956,7 @@ export type Visual = {
 export enum VisualType {
   Avatar = 'AVATAR',
   Banner = 'BANNER',
+  BannerWide = 'BANNER_WIDE',
   Card = 'CARD',
 }
 
