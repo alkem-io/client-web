@@ -13,11 +13,13 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
 
+  const returnUrl = useReturnUrl();
+
   return (
     <AuthPageContentContainer>
       <FixedHeightLogo />
       <PageTitle>{t('pages.registration-success.header', { firstName: user?.user?.firstName })}</PageTitle>
-      <EmailVerificationNotice returnUrl={useReturnUrl()} />
+      {returnUrl && <EmailVerificationNotice returnUrl={returnUrl} />}
     </AuthPageContentContainer>
   );
 };
