@@ -6,6 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import useVersionControl from '../../metadata/useVersionControl';
 
+const SKIP_THIS_VERSION = true; // if true the dialog is never shown
 const Icon = props => <Box sx={{ display: 'inline', fontSize: '1.5em', marginRight: gutters(0.5) }} {...props} />;
 
 const ReleaseUpdatesDialog: FC = () => {
@@ -19,7 +20,7 @@ const ReleaseUpdatesDialog: FC = () => {
     saveCurrentVersionViewed();
   }, [setIsNotificationVisible]);
 
-  return !isCurrentVersionViewed ? (
+  return !SKIP_THIS_VERSION && !isCurrentVersionViewed ? (
     <>
       {isNotificationVisible && (
         <Dialog open={isNotificationVisible} maxWidth="lg">
