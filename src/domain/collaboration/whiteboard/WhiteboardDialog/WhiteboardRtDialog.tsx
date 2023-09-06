@@ -32,6 +32,7 @@ import {
 import { Caption } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -86,6 +87,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const notify = useNotification();
   const { whiteboard } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const collabApiRef = useRef<CollabAPI>(null);
 
   const styles = useStyles();
 
@@ -151,6 +153,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     formikRef.current?.setTouched({ displayName: true }, true);
 
     await handleUpdate(whiteboard, state);
+    collabApiRef.current?.notifySavedToDatabase();
   };
 
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -246,6 +249,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 <CollaborativeExcalidrawWrapper
                   entities={{ whiteboard }}
                   ref={excalidrawApiRef}
+                  collabApiRef={collabApiRef}
                   options={{
                     UIOptions: {
                       canvasActions: {
