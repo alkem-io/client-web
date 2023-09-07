@@ -40,11 +40,13 @@ const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
   // Re render it every second
   const [formattedTime, setFormattedTime] = useState<string>();
   useEffect(() => {
-    const interval = setInterval(() => setFormattedTime(date && formatTimeElapsed(date, t)), 500);
+    const interval = setInterval(() => {
+      setFormattedTime(date && formatTimeElapsed(date, t));
+    }, 500);
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [date]);
 
   if (!date) {
     return null;
