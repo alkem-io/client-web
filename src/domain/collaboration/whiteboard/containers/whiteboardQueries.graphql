@@ -203,6 +203,15 @@ query whiteboardRtWithContent($whiteboardId: UUID!) {
   }
 }
 
+query whiteboardRtLastUpdatedDate($whiteboardId: UUID!) {
+  lookup {
+    whiteboardRt(ID: $whiteboardId) {
+      id
+      updatedDate
+    }
+  }
+}
+
 query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
   platform {
     id

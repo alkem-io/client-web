@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -29,6 +29,37 @@ import {
   WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { Caption } from '../../../../core/ui/typography';
+import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
+import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
+
+const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
+  const { t } = useTranslation();
+
+  // Re render it every second
+  const [formattedTime, setFormattedTime] = useState<string>();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFormattedTime(date && formatTimeElapsed(date, t));
+    }, 500);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [date]);
+
+  if (!date) {
+    return null;
+  }
+
+  return (
+    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
+      {t('common.last-saved', {
+        datetime: formattedTime,
+      })}
+    </Caption>
+  );
+};
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -83,8 +114,18 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const notify = useNotification();
   const { whiteboard } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const collabApiRef = useRef<CollabAPI>(null);
 
   const styles = useStyles();
+
+  const { data: lastSaved, refetch: refetchLastSaved } = useWhiteboardRtLastUpdatedDateQuery({
+    variables: { whiteboardId: whiteboard?.id! },
+    skip: !whiteboard?.id,
+  });
+  const lastSavedDate = useMemo(
+    () => lastSaved?.lookup.whiteboardRt?.updatedDate && new Date(lastSaved.lookup.whiteboardRt.updatedDate),
+    [lastSaved?.lookup.whiteboardRt?.updatedDate]
+  );
 
   const getExcalidrawStateFromApi = async (
     excalidrawApi: ExcalidrawAPIRefValue | null
@@ -142,6 +183,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     formikRef.current?.setTouched({ displayName: true }, true);
 
     await handleUpdate(whiteboard, state);
+
+    collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
+    await refetchLastSaved(); // And update the caption
   };
 
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -237,6 +281,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 <CollaborativeExcalidrawWrapper
                   entities={{ whiteboard }}
                   ref={excalidrawApiRef}
+                  collabApiRef={collabApiRef}
                   options={{
                     UIOptions: {
                       canvasActions: {
@@ -250,12 +295,18 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     onUpdate: state => {
                       handleUpdate(whiteboard, state);
                     },
+                    onSavedToDatabase: () => {
+                      refetchLastSaved({
+                        whiteboardId: whiteboard.id,
+                      });
+                    },
                   }}
                 />
               )}
               {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+              <LastSavedCaption date={lastSavedDate} />
               <LoadingButton
                 startIcon={<Save />}
                 onClick={() => saveWhiteboard(whiteboard!)}

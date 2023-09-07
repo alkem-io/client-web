@@ -474,6 +474,7 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
     id
     nameID
     createdDate
+    updatedDate
     profile {
       ...WhiteboardProfile
     }
@@ -7860,6 +7861,71 @@ export type WhiteboardRtWithContentQueryResult = Apollo.QueryResult<
 >;
 export function refetchWhiteboardRtWithContentQuery(variables: SchemaTypes.WhiteboardRtWithContentQueryVariables) {
   return { query: WhiteboardRtWithContentDocument, variables: variables };
+}
+
+export const WhiteboardRtLastUpdatedDateDocument = gql`
+  query whiteboardRtLastUpdatedDate($whiteboardId: UUID!) {
+    lookup {
+      whiteboardRt(ID: $whiteboardId) {
+        id
+        updatedDate
+      }
+    }
+  }
+`;
+
+/**
+ * __useWhiteboardRtLastUpdatedDateQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardRtLastUpdatedDateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardRtLastUpdatedDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardRtLastUpdatedDateQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardRtLastUpdatedDateQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >(WhiteboardRtLastUpdatedDateDocument, options);
+}
+
+export function useWhiteboardRtLastUpdatedDateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >(WhiteboardRtLastUpdatedDateDocument, options);
+}
+
+export type WhiteboardRtLastUpdatedDateQueryHookResult = ReturnType<typeof useWhiteboardRtLastUpdatedDateQuery>;
+export type WhiteboardRtLastUpdatedDateLazyQueryHookResult = ReturnType<typeof useWhiteboardRtLastUpdatedDateLazyQuery>;
+export type WhiteboardRtLastUpdatedDateQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+  SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+>;
+export function refetchWhiteboardRtLastUpdatedDateQuery(
+  variables: SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+) {
+  return { query: WhiteboardRtLastUpdatedDateDocument, variables: variables };
 }
 
 export const PlatformTemplateWhiteboardContentsDocument = gql`

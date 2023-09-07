@@ -1,5 +1,5 @@
 import throttle from 'lodash.throttle';
-import { PureComponent } from 'react';
+import { MutableRefObject, PureComponent } from 'react';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { EVENT } from './excalidrawAppConstants';
 import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
@@ -42,12 +42,14 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
+  notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
 }
 
 interface PublicProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   username: string;
-  collabAPIRef?: (collabAPI: CollabAPI) => void;
+  collabAPIRef?: MutableRefObject<CollabAPI | null>;
+  onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
 }
 
 type Props = PublicProps;
@@ -61,7 +63,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private socketInitializationTimer?: number;
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
-  private collabAPIRef: (collabAPI: CollabAPI) => void;
+  private onSavedToDatabase: (() => void) | undefined;
 
   constructor(props: Props) {
     super(props);
@@ -74,7 +76,7 @@ class Collab extends PureComponent<Props, CollabState> {
     this.excalidrawAPI = props.excalidrawAPI;
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
-    this.collabAPIRef = props.collabAPIRef ?? (() => {});
+    this.onSavedToDatabase = props.onSavedToDatabase;
   }
 
   componentDidMount() {
@@ -89,10 +91,13 @@ class Collab extends PureComponent<Props, CollabState> {
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
       stopCollaboration: this.stopCollaboration,
+      notifySavedToDatabase: this.notifySavedToDatabase,
     };
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
-    this.collabAPIRef(collabAPI);
+    if (this.props.collabAPIRef) {
+      this.props.collabAPIRef.current = collabAPI;
+    }
 
     if (import.meta.env.MODE === 'development') {
       window.collab = window.collab || ({} as Window['collab']);
@@ -291,6 +296,11 @@ class Collab extends PureComponent<Props, CollabState> {
           });
           break;
         }
+        case 'SAVED': {
+          console.log('Someone saved to the database');
+          this.onSavedToDatabase?.();
+          break;
+        }
       }
     });
 
@@ -472,6 +482,10 @@ class Collab extends PureComponent<Props, CollabState> {
 
   syncElements = (elements: readonly ExcalidrawElement[]) => {
     this.broadcastElements(elements);
+  };
+
+  notifySavedToDatabase = () => {
+    this.portal.broadcastSavedEvent();
   };
 
   queueBroadcastAllElements = throttle(() => {

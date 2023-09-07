@@ -12,7 +12,7 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
-import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
@@ -41,6 +41,7 @@ export interface WhiteboardWhiteboardEntities {
 
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => void;
+  onSavedToDatabase?: () => void;
 }
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
@@ -49,16 +50,18 @@ export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options?: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
+  collabApiRef?: Ref<CollabAPI | null>;
 }
 
 const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
-  ({ entities, actions, options }, ref) => {
+  ({ entities, actions, options, collabApiRef }, ref) => {
     const { whiteboard } = entities;
 
-    const [collabAPI, setCollabAPIRef] = useState<CollabAPI>();
+    const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
+    const collabAPI = combinedCollabApiRef.current;
 
     const styles = useActorWhiteboardStyles();
     const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
@@ -206,7 +209,14 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             {...restOptions}
           />
         )}
-        {excalidrawAPI && <Collab username={username} excalidrawAPI={excalidrawAPI} collabAPIRef={setCollabAPIRef} />}
+        {excalidrawAPI && (
+          <Collab
+            username={username}
+            excalidrawAPI={excalidrawAPI}
+            collabAPIRef={combinedCollabApiRef}
+            onSavedToDatabase={actions.onSavedToDatabase}
+          />
+        )}
       </div>
     );
   }
