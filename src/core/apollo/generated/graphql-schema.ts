@@ -5494,7 +5494,6 @@ export type CalloutPageCalloutQuery = {
                       id: string;
                       nameID: string;
                       createdDate: Date;
-                      updatedDate: Date;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -5838,7 +5837,6 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -6185,7 +6183,6 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9172,7 +9169,6 @@ export type CreateCalloutMutation = {
           id: string;
           nameID: string;
           createdDate: Date;
-          updatedDate: Date;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -9905,7 +9901,6 @@ export type CalloutsQuery = {
                       id: string;
                       nameID: string;
                       createdDate: Date;
-                      updatedDate: Date;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -10253,7 +10248,6 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -10604,7 +10598,6 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -10949,7 +10942,6 @@ export type CollaborationWithCalloutsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
-              updatedDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -11265,7 +11257,6 @@ export type CalloutFragment = {
         id: string;
         nameID: string;
         createdDate: Date;
-        updatedDate: Date;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13353,7 +13344,6 @@ export type WhiteboardRtDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
-  updatedDate: Date;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -13596,7 +13586,6 @@ export type CalloutWithWhiteboardRtFragment = {
         id: string;
         nameID: string;
         createdDate: Date;
-        updatedDate: Date;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13780,7 +13769,6 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
-              updatedDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -13999,7 +13987,6 @@ export type WhiteboardRtFromCalloutQuery = {
                 id: string;
                 nameID: string;
                 createdDate: Date;
-                updatedDate: Date;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -14189,7 +14176,6 @@ export type WhiteboardRtWithContentQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
-          updatedDate: Date;
           content: string;
           profile: {
             __typename?: 'Profile';
@@ -19352,47 +19338,6 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
-export type InnovationHubQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InnovationHubQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            tagline: string;
-            description?: string | undefined;
-            banner?:
-              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type InnovationHubHomeInnovationHubFragment = {
-  __typename?: 'InnovationHub';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    tagline: string;
-    description?: string | undefined;
-    banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
-  };
-};
-
 export type HomePageSpacesQueryVariables = Exact<{
   includeMembershipStatus: Scalars['Boolean'];
 }>;
@@ -19587,6 +19532,49 @@ export type UpdateInnovationHubMutationVariables = Exact<{
 export type UpdateInnovationHubMutation = {
   __typename?: 'Mutation';
   updateInnovationHub: { __typename?: 'InnovationHub'; id: string; nameID: string };
+};
+
+export type InnovationHubQueryVariables = Exact<{
+  subdomain?: InputMaybe<Scalars['String']>;
+}>;
+
+export type InnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            description?: string | undefined;
+            banner?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type InnovationHubHomeInnovationHubFragment = {
+  __typename?: 'InnovationHub';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline: string;
+    description?: string | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  };
 };
 
 export type ChallengeCardFragment = {

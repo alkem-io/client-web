@@ -12,11 +12,10 @@ import PageContent from '../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { gutters } from '../../../core/ui/grid/utils';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
-import { useInnovationHubQuery } from '../../../core/apollo/generated/apollo-hooks';
 import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
-import useInnovationHubAttrs from '../../../domain/innovationHub/InnovationHubHomePage/InnovationHubAttrs';
 import Loading from '../../../core/ui/loading/Loading';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
+import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/useInnovationHub';
 
 export const HomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -26,9 +25,7 @@ export const HomePage = () => {
   const params = useQueryParams();
   const isFromLanding = params.get('from') === 'landing';
 
-  const { data: innovationHubData, loading: innovationHubLoading } = useInnovationHubQuery();
-
-  const innovationHub = useInnovationHubAttrs(innovationHubData?.platform.innovationHub);
+  const { innovationHub, innovationHubLoading } = useInnovationHub();
 
   if (innovationHubLoading) {
     return (

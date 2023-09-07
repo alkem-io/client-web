@@ -474,7 +474,6 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
     id
     nameID
     createdDate
-    updatedDate
     profile {
       ...WhiteboardProfile
     }
@@ -1810,6 +1809,22 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const InnovationHubProfileFragmentDoc = gql`
+  fragment InnovationHubProfile on Profile {
+    id
+    displayName
+    description
+    tagline
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: BANNER_WIDE) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   fragment InnovationHubHomeInnovationHub on InnovationHub {
     id
@@ -1826,22 +1841,6 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
       }
     }
   }
-`;
-export const InnovationHubProfileFragmentDoc = gql`
-  fragment InnovationHubProfile on Profile {
-    id
-    displayName
-    description
-    tagline
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: BANNER_WIDE) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
@@ -15494,63 +15493,6 @@ export function refetchUserSpacesQuery(variables?: SchemaTypes.UserSpacesQueryVa
   return { query: UserSpacesDocument, variables: variables };
 }
 
-export const InnovationHubDocument = gql`
-  query InnovationHub {
-    platform {
-      id
-      innovationHub {
-        ...InnovationHubHomeInnovationHub
-      }
-    }
-  }
-  ${InnovationHubHomeInnovationHubFragmentDoc}
-`;
-
-/**
- * __useInnovationHubQuery__
- *
- * To run a query within a React component, call `useInnovationHubQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationHubQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInnovationHubQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
-    InnovationHubDocument,
-    options
-  );
-}
-
-export function useInnovationHubLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
-    InnovationHubDocument,
-    options
-  );
-}
-
-export type InnovationHubQueryHookResult = ReturnType<typeof useInnovationHubQuery>;
-export type InnovationHubLazyQueryHookResult = ReturnType<typeof useInnovationHubLazyQuery>;
-export type InnovationHubQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationHubQuery,
-  SchemaTypes.InnovationHubQueryVariables
->;
-export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQueryVariables) {
-  return { query: InnovationHubDocument, variables: variables };
-}
-
 export const HomePageSpacesDocument = gql`
   query HomePageSpaces($includeMembershipStatus: Boolean!) {
     platform {
@@ -15942,6 +15884,64 @@ export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationHubMutation,
   SchemaTypes.UpdateInnovationHubMutationVariables
 >;
+export const InnovationHubDocument = gql`
+  query InnovationHub($subdomain: String) {
+    platform {
+      id
+      innovationHub(subdomain: $subdomain) {
+        ...InnovationHubHomeInnovationHub
+      }
+    }
+  }
+  ${InnovationHubHomeInnovationHubFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubQuery({
+ *   variables: {
+ *      subdomain: // value for 'subdomain'
+ *   },
+ * });
+ */
+export function useInnovationHubQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
+    InnovationHubDocument,
+    options
+  );
+}
+
+export function useInnovationHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
+    InnovationHubDocument,
+    options
+  );
+}
+
+export type InnovationHubQueryHookResult = ReturnType<typeof useInnovationHubQuery>;
+export type InnovationHubLazyQueryHookResult = ReturnType<typeof useInnovationHubLazyQuery>;
+export type InnovationHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubQuery,
+  SchemaTypes.InnovationHubQueryVariables
+>;
+export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQueryVariables) {
+  return { query: InnovationHubDocument, variables: variables };
+}
+
 export const ChallengeOpportunityCardsDocument = gql`
   query ChallengeOpportunityCards($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     space(ID: $spaceId) {
