@@ -1,35 +1,38 @@
 import { useLayoutEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { ROUTE_HOME } from './constants';
 import { useConfig } from '../config/useConfig';
 import { FEATURE_LANDING_PAGE } from '../config/features.constants';
-import { useInnovationHubQuery } from '../../../core/apollo/generated/apollo-hooks';
+import useInnovationHub from '../../innovationHub/useInnovationHub/useInnovationHub';
 
 const RedirectToLanding = () => {
   const { isFeatureEnabled } = useConfig();
   const { isAuthenticated, loading: loadingAuthentication } = useAuthenticationContext();
-  const { data: customHomepageData, loading: loadingCustomHomepage } = useInnovationHubQuery();
+  const { innovationHub, innovationHubLoading } = useInnovationHub();
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const isOnCustomHomepage = !!customHomepageData?.platform.innovationHub;
+  const isOnCustomHomepage = !!innovationHub;
 
   useLayoutEffect(() => {
+    const homeRoute = `${ROUTE_HOME}${location.search}`;
+
     if (!isFeatureEnabled(FEATURE_LANDING_PAGE)) {
-      navigate(ROUTE_HOME);
+      navigate(homeRoute);
       return;
     }
 
-    if (loadingAuthentication || loadingCustomHomepage) {
+    if (loadingAuthentication || innovationHubLoading) {
       return;
     }
 
     if (isAuthenticated || isOnCustomHomepage) {
-      navigate(ROUTE_HOME);
+      navigate(homeRoute);
     } else {
       window.location.replace('/landing');
     }
-  }, [isAuthenticated, loadingAuthentication, isFeatureEnabled, loadingCustomHomepage, isOnCustomHomepage]);
+  }, [isAuthenticated, loadingAuthentication, isFeatureEnabled, innovationHubLoading, isOnCustomHomepage]);
 
   return null;
 };
