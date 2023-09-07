@@ -10,12 +10,10 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useSpaceDashboardNavigation from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -77,7 +75,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 <ChallengeCard
                   challengeId={challenge.id}
                   challengeNameId={challenge.nameID}
-                  banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
+                  banner={challenge.profile.cardBanner}
                   displayName={challenge.profile.displayName}
                   tags={challenge.profile.tagset?.tags!}
                   tagline={challenge.profile.tagline!}

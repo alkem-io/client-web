@@ -1,6 +1,6 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
+import { getVisualCardBanner } from '../../../../common/visual/utils/visuals.utils';
 import { WhiteboardIcon } from '../../../../collaboration/whiteboard/icon/WhiteboardIcon';
 import InnovationPackIcon from '../../../../collaboration/InnovationPack/InnovationPackIcon';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
@@ -22,7 +22,7 @@ const WhiteboardImportTemplateCard = ({ template, onClick }: WhiteboardImportTem
         </CardHeaderCaption>
       </CardHeader>
       <CardImage
-        src={getVisualBannerNarrow(template.profile.visual)}
+        src={getVisualCardBanner(template.profile.visual)}
         alt={template.profile.displayName}
         defaultImage={<WhiteboardIcon />}
       />

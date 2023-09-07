@@ -16,7 +16,7 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals, visualTypes }) => 
   const { t } = useTranslation();
   const avatar = getVisualByType(VisualName.AVATAR, visuals);
   const banner = getVisualByType(VisualName.BANNER, visuals);
-  const bannerNarrow = getVisualByType(VisualName.BANNERNARROW, visuals);
+  const cardBanner = getVisualByType(VisualName.CARD, visuals);
 
   return (
     <>
@@ -51,15 +51,15 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals, visualTypes }) => 
       {(!visualTypes || visualTypes.includes(VisualType.Card)) && (
         <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
           <VisualUpload
-            visual={bannerNarrow}
-            altText={t('pages.visualEdit.bannerNarrow.description', {
-              alternativeText: bannerNarrow?.alternativeText,
+            visual={cardBanner}
+            altText={t('pages.visualEdit.cardBanner.description', {
+              alternativeText: cardBanner?.alternativeText,
               interpolation: {
                 escapeValue: false,
               },
             })}
           />
-          <VisualDescription visualTypeName="bannerNarrow" visual={bannerNarrow} />
+          <VisualDescription visualTypeName="cardBanner" visual={cardBanner} />
         </Box>
       )}
     </>
