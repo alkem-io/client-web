@@ -60,7 +60,6 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
   ({ entities, actions, options, collabApiRef }, ref) => {
     const { whiteboard } = entities;
 
-    // const [collabAPI, setCollabAPIRef] = useState<CollabAPI>();
     const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
     const collabAPI = combinedCollabApiRef.current;
 

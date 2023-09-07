@@ -34,22 +34,26 @@ import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 
-const LastSavedCaption = ({ date }: { date: Date }) => {
+const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
   const { t } = useTranslation();
 
   // Re render it every second
-  const [, setTime] = useState(Date.now());
+  const [formattedTime, setFormattedTime] = useState<string>();
   useEffect(() => {
-    const interval = setInterval(() => setTime(Date.now()), 1000);
+    const interval = setInterval(() => setFormattedTime(date && formatTimeElapsed(date, t)), 500);
     return () => {
       clearInterval(interval);
     };
   }, []);
 
+  if (!date) {
+    return null;
+  }
+
   return (
     <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
       {t('common.last-saved', {
-        datetime: formatTimeElapsed(date, t),
+        datetime: formattedTime,
       })}
     </Caption>
   );
@@ -116,9 +120,10 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
   });
-  const lastSavedDate = lastSaved?.lookup.whiteboardRt?.updatedDate
-    ? new Date(lastSaved.lookup.whiteboardRt.updatedDate)
-    : new Date();
+  const lastSavedDate = useMemo(
+    () => lastSaved?.lookup.whiteboardRt?.updatedDate && new Date(lastSaved.lookup.whiteboardRt.updatedDate),
+    [lastSaved?.lookup.whiteboardRt?.updatedDate]
+  );
 
   const getExcalidrawStateFromApi = async (
     excalidrawApi: ExcalidrawAPIRefValue | null
