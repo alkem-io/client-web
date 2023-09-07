@@ -139,7 +139,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         profile: {
           displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
         },
-        value: JSON.stringify(EmptyWhiteboard),
+        content: JSON.stringify(EmptyWhiteboard),
       },
       whiteboard: callout?.whiteboard
         ? {
@@ -150,7 +150,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             profileData: {
               displayName: t('components.callout-creation.whiteboard.title'),
             },
-            value: JSON.stringify(EmptyWhiteboard),
+            content: JSON.stringify(EmptyWhiteboard),
             previewImages: undefined,
           },
     }),
@@ -185,13 +185,13 @@ const CalloutForm: FC<CalloutFormProps> = ({
         profile: yup.object().shape({
           displayName: yup.string(),
         }),
-        value: yup.string().required(),
+        content: yup.string().required(),
       }),
     }),
     whiteboard: yup.object().when('type', {
-      is: CalloutType.Whiteboard,
+      is: CalloutType.Whiteboard || CalloutType.WhiteboardRt,
       then: yup.object().shape({
-        value: yup.string().required(),
+        content: yup.string().required(),
       }),
     }),
   });
@@ -231,9 +231,12 @@ const CalloutForm: FC<CalloutFormProps> = ({
     tags: true,
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
-    newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.Whiteboard,
+    newResponses:
+      calloutType !== CalloutType.LinkCollection &&
+      calloutType !== CalloutType.Whiteboard &&
+      calloutType !== CalloutType.WhiteboardRt,
     locationChange: editMode && Boolean(canChangeCalloutLocation),
-    whiteboard: calloutType === CalloutType.Whiteboard,
+    whiteboard: calloutType === CalloutType.Whiteboard || calloutType === CalloutType.WhiteboardRt,
   };
 
   return (

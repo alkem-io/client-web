@@ -4,11 +4,11 @@ import { Trans } from 'react-i18next';
 import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
-import WhiteboardValueContainer from '../containers/WhiteboardValueContainer';
+import WhiteboardValueContainer from '../containers/WhiteboardContentContainer';
 import {
   WhiteboardDetailsFragment,
-  WhiteboardValueFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
+  WhiteboardContentFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
@@ -90,7 +90,7 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
           return (
             <WhiteboardDialog
               entities={{
-                whiteboard: entities.whiteboard as WhiteboardValueFragment & WhiteboardDetailsFragment,
+                whiteboard: entities.whiteboard as WhiteboardContentFragment & WhiteboardDetailsFragment,
                 lockedBy: entities.lockedBy,
               }}
               actions={{

@@ -73,6 +73,9 @@ fragment Callout on Callout {
   whiteboards {
     ...WhiteboardDetails
   }
+  whiteboardRt {
+    ...WhiteboardRtDetails
+  }
   comments {
     ...CommentsWithMessages
   }
@@ -105,7 +108,7 @@ fragment CalloutPostTemplate on Callout {
 fragment CalloutWhiteboardTemplate on Callout {
   whiteboardTemplate {
     id
-    value
+    content
     profile {
       id
       displayName

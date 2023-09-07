@@ -43,36 +43,3 @@ fragment InnovationPackProviderProfileWithAvatar on Organization {
   }
 }
 
-query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-  platform {
-    id
-    library {
-      id
-      innovationPack(ID: $innovationPackId) {
-        id
-        templates {
-          whiteboardTemplate(ID: $whiteboardTemplateId) {
-            ...AdminWhiteboardTemplateValue
-          }
-        }
-      }
-    }
-  }
-}
-
-query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-  platform {
-    id
-    library {
-      id
-      innovationPack(ID: $innovationPackId) {
-        id
-        templates {
-          whiteboardTemplate(ID: $whiteboardTemplateId) {
-            ...WhiteboardTemplateWithValue
-          }
-        }
-      }
-    }
-  }
-}

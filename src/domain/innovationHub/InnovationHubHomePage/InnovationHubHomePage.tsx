@@ -40,9 +40,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
     },
   });
 
-  const allSpaces = spacesData?.spaces;
-
-  const userSpaces = spacesData?.spaces.filter(isMember);
+  const allSpaces = spacesData?.platform.innovationHub?.spaceListFilter || [];
 
   const { platform } = useConfig();
 
@@ -80,27 +78,6 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
             ))}
           </ScrollableCardsLayoutContainer>
         </PageContentBlock>
-        {userSpaces && userSpaces.length > 0 && (
-          <PageContentBlock>
-            <PageContentBlockHeader
-              title={t('pages.home.sections.my-spaces.header', { mySpacesCount: userSpaces.length })}
-            />
-            <ScrollableCardsLayoutContainer orientation="horizontal" cards>
-              {userSpaces.map(space => (
-                <SpaceCard
-                  banner={space.profile?.cardBanner}
-                  displayName={space.profile?.displayName!}
-                  vision={space.context?.vision!}
-                  membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                  tagline={space.profile?.tagline!}
-                  tags={space.profile?.tagset?.tags ?? []}
-                  journeyUri={buildSpaceUrl(space.nameID)}
-                  spaceVisibility={space.visibility}
-                />
-              ))}
-            </ScrollableCardsLayoutContainer>
-          </PageContentBlock>
-        )}
         <PageContentBlock disablePadding>
           <Gutters
             row

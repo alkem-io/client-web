@@ -469,6 +469,34 @@ export const WhiteboardDetailsFragmentDoc = gql`
   ${WhiteboardProfileFragmentDoc}
   ${CheckoutDetailsFragmentDoc}
 `;
+export const WhiteboardRtDetailsFragmentDoc = gql`
+  fragment WhiteboardRtDetails on WhiteboardRt {
+    id
+    nameID
+    createdDate
+    updatedDate
+    profile {
+      ...WhiteboardProfile
+    }
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+  }
+  ${WhiteboardProfileFragmentDoc}
+`;
 export const ReactionDetailsFragmentDoc = gql`
   fragment ReactionDetails on Reaction {
     id
@@ -553,7 +581,7 @@ export const CalloutWhiteboardTemplateFragmentDoc = gql`
   fragment CalloutWhiteboardTemplate on Callout {
     whiteboardTemplate {
       id
-      value
+      content
       profile {
         id
         displayName
@@ -598,6 +626,9 @@ export const CalloutFragmentDoc = gql`
     whiteboards {
       ...WhiteboardDetails
     }
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
     comments {
       ...CommentsWithMessages
     }
@@ -612,6 +643,7 @@ export const CalloutFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardRtDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutPostTemplateFragmentDoc}
   ${CalloutWhiteboardTemplateFragmentDoc}
@@ -922,10 +954,16 @@ export const WhiteboardSummaryFragmentDoc = gql`
     }
   }
 `;
-export const WhiteboardValueFragmentDoc = gql`
-  fragment WhiteboardValue on Whiteboard {
+export const WhiteboardContentFragmentDoc = gql`
+  fragment WhiteboardContent on Whiteboard {
     id
-    value
+    content
+  }
+`;
+export const WhiteboardRtContentFragmentDoc = gql`
+  fragment WhiteboardRtContent on WhiteboardRt {
+    id
+    content
   }
 `;
 export const CreateWhiteboardWhiteboardTemplateFragmentDoc = gql`
@@ -936,7 +974,7 @@ export const CreateWhiteboardWhiteboardTemplateFragmentDoc = gql`
       displayName
       description
     }
-    value
+    content
   }
 `;
 export const CalloutWithWhiteboardFragmentDoc = gql`
@@ -955,6 +993,22 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
   }
   ${WhiteboardDetailsFragmentDoc}
 `;
+export const CalloutWithWhiteboardRtFragmentDoc = gql`
+  fragment CalloutWithWhiteboardRt on Callout {
+    id
+    nameID
+    type
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
+  }
+  ${WhiteboardRtDetailsFragmentDoc}
+`;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
@@ -970,9 +1024,13 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
       whiteboards {
         ...WhiteboardDetails
       }
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
     }
   }
   ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardRtDetailsFragmentDoc}
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -1761,7 +1819,7 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
       displayName
       tagline
       description
-      banner: visual(type: BANNER) {
+      banner: visual(type: BANNER_WIDE) {
         id
         uri
         alternativeText
@@ -1778,7 +1836,7 @@ export const InnovationHubProfileFragmentDoc = gql`
     tagset {
       ...TagsetDetails
     }
-    visual(type: BANNER) {
+    visual(type: BANNER_WIDE) {
       ...VisualFull
     }
   }
@@ -2646,13 +2704,6 @@ export const SpaceTemplatesFragmentDoc = gql`
   ${WhiteboardTemplateCardFragmentDoc}
   ${InnovationFlowTemplateFragmentDoc}
 `;
-export const WhiteboardTemplateWithValueFragmentDoc = gql`
-  fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
-    ...WhiteboardTemplateCard
-    value
-  }
-  ${WhiteboardTemplateCardFragmentDoc}
-`;
 export const ChallengesOnSpaceFragmentDoc = gql`
   fragment ChallengesOnSpace on Space {
     id
@@ -2757,12 +2808,6 @@ export const DocumentDataFragmentDoc = gql`
       id
       myPrivileges
     }
-  }
-`;
-export const AdminWhiteboardTemplateValueFragmentDoc = gql`
-  fragment AdminWhiteboardTemplateValue on WhiteboardTemplate {
-    id
-    value
   }
 `;
 export const InnovationPackProfileFragmentDoc = gql`
@@ -7343,79 +7388,6 @@ export function refetchSpaceWhiteboardTemplatesLibraryQuery(
   return { query: SpaceWhiteboardTemplatesLibraryDocument, variables: variables };
 }
 
-export const SpaceWhiteboardTemplateValueDocument = gql`
-  query SpaceWhiteboardTemplateValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-    space(ID: $spaceId) {
-      id
-      templates {
-        id
-        whiteboardTemplate(ID: $whiteboardTemplateId) {
-          ...WhiteboardTemplateCard
-          value
-        }
-      }
-    }
-  }
-  ${WhiteboardTemplateCardFragmentDoc}
-`;
-
-/**
- * __useSpaceWhiteboardTemplateValueQuery__
- *
- * To run a query within a React component, call `useSpaceWhiteboardTemplateValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceWhiteboardTemplateValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceWhiteboardTemplateValueQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      whiteboardTemplateId: // value for 'whiteboardTemplateId'
- *   },
- * });
- */
-export function useSpaceWhiteboardTemplateValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceWhiteboardTemplateValueQuery,
-    SchemaTypes.SpaceWhiteboardTemplateValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceWhiteboardTemplateValueQuery,
-    SchemaTypes.SpaceWhiteboardTemplateValueQueryVariables
-  >(SpaceWhiteboardTemplateValueDocument, options);
-}
-
-export function useSpaceWhiteboardTemplateValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceWhiteboardTemplateValueQuery,
-    SchemaTypes.SpaceWhiteboardTemplateValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceWhiteboardTemplateValueQuery,
-    SchemaTypes.SpaceWhiteboardTemplateValueQueryVariables
-  >(SpaceWhiteboardTemplateValueDocument, options);
-}
-
-export type SpaceWhiteboardTemplateValueQueryHookResult = ReturnType<typeof useSpaceWhiteboardTemplateValueQuery>;
-export type SpaceWhiteboardTemplateValueLazyQueryHookResult = ReturnType<
-  typeof useSpaceWhiteboardTemplateValueLazyQuery
->;
-export type SpaceWhiteboardTemplateValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceWhiteboardTemplateValueQuery,
-  SchemaTypes.SpaceWhiteboardTemplateValueQueryVariables
->;
-export function refetchSpaceWhiteboardTemplateValueQuery(
-  variables: SchemaTypes.SpaceWhiteboardTemplateValueQueryVariables
-) {
-  return { query: SpaceWhiteboardTemplateValueDocument, variables: variables };
-}
-
 export const PlatformWhiteboardTemplatesLibraryDocument = gql`
   query PlatformWhiteboardTemplatesLibrary {
     platform {
@@ -7504,86 +7476,6 @@ export function refetchPlatformWhiteboardTemplatesLibraryQuery(
   variables?: SchemaTypes.PlatformWhiteboardTemplatesLibraryQueryVariables
 ) {
   return { query: PlatformWhiteboardTemplatesLibraryDocument, variables: variables };
-}
-
-export const PlatformWhiteboardTemplateValueDocument = gql`
-  query PlatformWhiteboardTemplateValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-    platform {
-      id
-      library {
-        id
-        innovationPack(ID: $innovationPackId) {
-          ...InnovationPackWithProvider
-          templates {
-            id
-            whiteboardTemplate(ID: $whiteboardTemplateId) {
-              ...WhiteboardTemplateCard
-              value
-            }
-          }
-        }
-      }
-    }
-  }
-  ${InnovationPackWithProviderFragmentDoc}
-  ${WhiteboardTemplateCardFragmentDoc}
-`;
-
-/**
- * __usePlatformWhiteboardTemplateValueQuery__
- *
- * To run a query within a React component, call `usePlatformWhiteboardTemplateValueQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformWhiteboardTemplateValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformWhiteboardTemplateValueQuery({
- *   variables: {
- *      innovationPackId: // value for 'innovationPackId'
- *      whiteboardTemplateId: // value for 'whiteboardTemplateId'
- *   },
- * });
- */
-export function usePlatformWhiteboardTemplateValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformWhiteboardTemplateValueQuery,
-    SchemaTypes.PlatformWhiteboardTemplateValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.PlatformWhiteboardTemplateValueQuery,
-    SchemaTypes.PlatformWhiteboardTemplateValueQueryVariables
-  >(PlatformWhiteboardTemplateValueDocument, options);
-}
-
-export function usePlatformWhiteboardTemplateValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformWhiteboardTemplateValueQuery,
-    SchemaTypes.PlatformWhiteboardTemplateValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PlatformWhiteboardTemplateValueQuery,
-    SchemaTypes.PlatformWhiteboardTemplateValueQueryVariables
-  >(PlatformWhiteboardTemplateValueDocument, options);
-}
-
-export type PlatformWhiteboardTemplateValueQueryHookResult = ReturnType<typeof usePlatformWhiteboardTemplateValueQuery>;
-export type PlatformWhiteboardTemplateValueLazyQueryHookResult = ReturnType<
-  typeof usePlatformWhiteboardTemplateValueLazyQuery
->;
-export type PlatformWhiteboardTemplateValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformWhiteboardTemplateValueQuery,
-  SchemaTypes.PlatformWhiteboardTemplateValueQueryVariables
->;
-export function refetchPlatformWhiteboardTemplateValueQuery(
-  variables: SchemaTypes.PlatformWhiteboardTemplateValueQueryVariables
-) {
-  return { query: PlatformWhiteboardTemplateValueDocument, variables: variables };
 }
 
 export const WhiteboardLockedByDetailsDocument = gql`
@@ -7778,140 +7670,266 @@ export function refetchWhiteboardFromCalloutQuery(variables: SchemaTypes.Whitebo
   return { query: WhiteboardFromCalloutDocument, variables: variables };
 }
 
-export const WhiteboardWithValueDocument = gql`
-  query whiteboardWithValue($whiteboardId: UUID!) {
+export const WhiteboardRtFromCalloutDocument = gql`
+  query WhiteboardRtFromCallout($calloutId: UUID!) {
     lookup {
-      whiteboard(ID: $whiteboardId) {
-        ...WhiteboardDetails
-        ...WhiteboardValue
+      callout(ID: $calloutId) {
+        ...CalloutWithWhiteboardRt
       }
     }
   }
-  ${WhiteboardDetailsFragmentDoc}
-  ${WhiteboardValueFragmentDoc}
+  ${CalloutWithWhiteboardRtFragmentDoc}
 `;
 
 /**
- * __useWhiteboardWithValueQuery__
+ * __useWhiteboardRtFromCalloutQuery__
  *
- * To run a query within a React component, call `useWhiteboardWithValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useWhiteboardRtFromCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardRtFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useWhiteboardWithValueQuery({
+ * const { data, loading, error } = useWhiteboardRtFromCalloutQuery({
  *   variables: {
- *      whiteboardId: // value for 'whiteboardId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
-export function useWhiteboardWithValueQuery(
+export function useWhiteboardRtFromCalloutQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardWithValueQuery,
-    SchemaTypes.WhiteboardWithValueQueryVariables
+    SchemaTypes.WhiteboardRtFromCalloutQuery,
+    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.WhiteboardWithValueQuery, SchemaTypes.WhiteboardWithValueQueryVariables>(
-    WhiteboardWithValueDocument,
+  return Apollo.useQuery<SchemaTypes.WhiteboardRtFromCalloutQuery, SchemaTypes.WhiteboardRtFromCalloutQueryVariables>(
+    WhiteboardRtFromCalloutDocument,
     options
   );
 }
 
-export function useWhiteboardWithValueLazyQuery(
+export function useWhiteboardRtFromCalloutLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardWithValueQuery,
-    SchemaTypes.WhiteboardWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.WhiteboardWithValueQuery, SchemaTypes.WhiteboardWithValueQueryVariables>(
-    WhiteboardWithValueDocument,
-    options
-  );
-}
-
-export type WhiteboardWithValueQueryHookResult = ReturnType<typeof useWhiteboardWithValueQuery>;
-export type WhiteboardWithValueLazyQueryHookResult = ReturnType<typeof useWhiteboardWithValueLazyQuery>;
-export type WhiteboardWithValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardWithValueQuery,
-  SchemaTypes.WhiteboardWithValueQueryVariables
->;
-export function refetchWhiteboardWithValueQuery(variables: SchemaTypes.WhiteboardWithValueQueryVariables) {
-  return { query: WhiteboardWithValueDocument, variables: variables };
-}
-
-export const WhiteboardTemplateValueDocument = gql`
-  query whiteboardTemplateValue($whiteboardId: UUID!) {
-    lookup {
-      whiteboardTemplate(ID: $whiteboardId) {
-        id
-        profile {
-          ...WhiteboardProfile
-        }
-        value
-      }
-    }
-  }
-  ${WhiteboardProfileFragmentDoc}
-`;
-
-/**
- * __useWhiteboardTemplateValueQuery__
- *
- * To run a query within a React component, call `useWhiteboardTemplateValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardTemplateValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWhiteboardTemplateValueQuery({
- *   variables: {
- *      whiteboardId: // value for 'whiteboardId'
- *   },
- * });
- */
-export function useWhiteboardTemplateValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardTemplateValueQuery,
-    SchemaTypes.WhiteboardTemplateValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.WhiteboardTemplateValueQuery, SchemaTypes.WhiteboardTemplateValueQueryVariables>(
-    WhiteboardTemplateValueDocument,
-    options
-  );
-}
-
-export function useWhiteboardTemplateValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardTemplateValueQuery,
-    SchemaTypes.WhiteboardTemplateValueQueryVariables
+    SchemaTypes.WhiteboardRtFromCalloutQuery,
+    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.WhiteboardTemplateValueQuery,
-    SchemaTypes.WhiteboardTemplateValueQueryVariables
-  >(WhiteboardTemplateValueDocument, options);
+    SchemaTypes.WhiteboardRtFromCalloutQuery,
+    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
+  >(WhiteboardRtFromCalloutDocument, options);
 }
 
-export type WhiteboardTemplateValueQueryHookResult = ReturnType<typeof useWhiteboardTemplateValueQuery>;
-export type WhiteboardTemplateValueLazyQueryHookResult = ReturnType<typeof useWhiteboardTemplateValueLazyQuery>;
-export type WhiteboardTemplateValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardTemplateValueQuery,
-  SchemaTypes.WhiteboardTemplateValueQueryVariables
+export type WhiteboardRtFromCalloutQueryHookResult = ReturnType<typeof useWhiteboardRtFromCalloutQuery>;
+export type WhiteboardRtFromCalloutLazyQueryHookResult = ReturnType<typeof useWhiteboardRtFromCalloutLazyQuery>;
+export type WhiteboardRtFromCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardRtFromCalloutQuery,
+  SchemaTypes.WhiteboardRtFromCalloutQueryVariables
 >;
-export function refetchWhiteboardTemplateValueQuery(variables: SchemaTypes.WhiteboardTemplateValueQueryVariables) {
-  return { query: WhiteboardTemplateValueDocument, variables: variables };
+export function refetchWhiteboardRtFromCalloutQuery(variables: SchemaTypes.WhiteboardRtFromCalloutQueryVariables) {
+  return { query: WhiteboardRtFromCalloutDocument, variables: variables };
 }
 
-export const PlatformTemplateWhiteboardValuesDocument = gql`
-  query platformTemplateWhiteboardValues($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
+export const WhiteboardWithContentDocument = gql`
+  query WhiteboardWithContent($whiteboardId: UUID!) {
+    lookup {
+      whiteboard(ID: $whiteboardId) {
+        ...WhiteboardDetails
+        ...WhiteboardContent
+      }
+    }
+  }
+  ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardContentFragmentDoc}
+`;
+
+/**
+ * __useWhiteboardWithContentQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardWithContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardWithContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardWithContentQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardWithContentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardWithContentQuery,
+    SchemaTypes.WhiteboardWithContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardWithContentQuery, SchemaTypes.WhiteboardWithContentQueryVariables>(
+    WhiteboardWithContentDocument,
+    options
+  );
+}
+
+export function useWhiteboardWithContentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardWithContentQuery,
+    SchemaTypes.WhiteboardWithContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.WhiteboardWithContentQuery, SchemaTypes.WhiteboardWithContentQueryVariables>(
+    WhiteboardWithContentDocument,
+    options
+  );
+}
+
+export type WhiteboardWithContentQueryHookResult = ReturnType<typeof useWhiteboardWithContentQuery>;
+export type WhiteboardWithContentLazyQueryHookResult = ReturnType<typeof useWhiteboardWithContentLazyQuery>;
+export type WhiteboardWithContentQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardWithContentQuery,
+  SchemaTypes.WhiteboardWithContentQueryVariables
+>;
+export function refetchWhiteboardWithContentQuery(variables: SchemaTypes.WhiteboardWithContentQueryVariables) {
+  return { query: WhiteboardWithContentDocument, variables: variables };
+}
+
+export const WhiteboardRtWithContentDocument = gql`
+  query whiteboardRtWithContent($whiteboardId: UUID!) {
+    lookup {
+      whiteboardRt(ID: $whiteboardId) {
+        ...WhiteboardRtDetails
+        ...WhiteboardRtContent
+      }
+    }
+  }
+  ${WhiteboardRtDetailsFragmentDoc}
+  ${WhiteboardRtContentFragmentDoc}
+`;
+
+/**
+ * __useWhiteboardRtWithContentQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardRtWithContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardRtWithContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardRtWithContentQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardRtWithContentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardRtWithContentQuery,
+    SchemaTypes.WhiteboardRtWithContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardRtWithContentQuery, SchemaTypes.WhiteboardRtWithContentQueryVariables>(
+    WhiteboardRtWithContentDocument,
+    options
+  );
+}
+
+export function useWhiteboardRtWithContentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardRtWithContentQuery,
+    SchemaTypes.WhiteboardRtWithContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardRtWithContentQuery,
+    SchemaTypes.WhiteboardRtWithContentQueryVariables
+  >(WhiteboardRtWithContentDocument, options);
+}
+
+export type WhiteboardRtWithContentQueryHookResult = ReturnType<typeof useWhiteboardRtWithContentQuery>;
+export type WhiteboardRtWithContentLazyQueryHookResult = ReturnType<typeof useWhiteboardRtWithContentLazyQuery>;
+export type WhiteboardRtWithContentQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardRtWithContentQuery,
+  SchemaTypes.WhiteboardRtWithContentQueryVariables
+>;
+export function refetchWhiteboardRtWithContentQuery(variables: SchemaTypes.WhiteboardRtWithContentQueryVariables) {
+  return { query: WhiteboardRtWithContentDocument, variables: variables };
+}
+
+export const WhiteboardRtLastUpdatedDateDocument = gql`
+  query whiteboardRtLastUpdatedDate($whiteboardId: UUID!) {
+    lookup {
+      whiteboardRt(ID: $whiteboardId) {
+        id
+        updatedDate
+      }
+    }
+  }
+`;
+
+/**
+ * __useWhiteboardRtLastUpdatedDateQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardRtLastUpdatedDateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardRtLastUpdatedDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardRtLastUpdatedDateQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardRtLastUpdatedDateQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >(WhiteboardRtLastUpdatedDateDocument, options);
+}
+
+export function useWhiteboardRtLastUpdatedDateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+  >(WhiteboardRtLastUpdatedDateDocument, options);
+}
+
+export type WhiteboardRtLastUpdatedDateQueryHookResult = ReturnType<typeof useWhiteboardRtLastUpdatedDateQuery>;
+export type WhiteboardRtLastUpdatedDateLazyQueryHookResult = ReturnType<typeof useWhiteboardRtLastUpdatedDateLazyQuery>;
+export type WhiteboardRtLastUpdatedDateQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
+  SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+>;
+export function refetchWhiteboardRtLastUpdatedDateQuery(
+  variables: SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+) {
+  return { query: WhiteboardRtLastUpdatedDateDocument, variables: variables };
+}
+
+export const PlatformTemplateWhiteboardContentsDocument = gql`
+  query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
     platform {
       id
       library {
@@ -7924,7 +7942,7 @@ export const PlatformTemplateWhiteboardValuesDocument = gql`
               profile {
                 ...WhiteboardProfile
               }
-              value
+              content
             }
           }
         }
@@ -7935,62 +7953,62 @@ export const PlatformTemplateWhiteboardValuesDocument = gql`
 `;
 
 /**
- * __usePlatformTemplateWhiteboardValuesQuery__
+ * __usePlatformTemplateWhiteboardContentsQuery__
  *
- * To run a query within a React component, call `usePlatformTemplateWhiteboardValuesQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformTemplateWhiteboardValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePlatformTemplateWhiteboardContentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformTemplateWhiteboardContentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePlatformTemplateWhiteboardValuesQuery({
+ * const { data, loading, error } = usePlatformTemplateWhiteboardContentsQuery({
  *   variables: {
  *      innovationPackId: // value for 'innovationPackId'
  *      whiteboardId: // value for 'whiteboardId'
  *   },
  * });
  */
-export function usePlatformTemplateWhiteboardValuesQuery(
+export function usePlatformTemplateWhiteboardContentsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformTemplateWhiteboardValuesQuery,
-    SchemaTypes.PlatformTemplateWhiteboardValuesQueryVariables
+    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
+    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.PlatformTemplateWhiteboardValuesQuery,
-    SchemaTypes.PlatformTemplateWhiteboardValuesQueryVariables
-  >(PlatformTemplateWhiteboardValuesDocument, options);
+    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
+    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
+  >(PlatformTemplateWhiteboardContentsDocument, options);
 }
 
-export function usePlatformTemplateWhiteboardValuesLazyQuery(
+export function usePlatformTemplateWhiteboardContentsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformTemplateWhiteboardValuesQuery,
-    SchemaTypes.PlatformTemplateWhiteboardValuesQueryVariables
+    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
+    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.PlatformTemplateWhiteboardValuesQuery,
-    SchemaTypes.PlatformTemplateWhiteboardValuesQueryVariables
-  >(PlatformTemplateWhiteboardValuesDocument, options);
+    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
+    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
+  >(PlatformTemplateWhiteboardContentsDocument, options);
 }
 
-export type PlatformTemplateWhiteboardValuesQueryHookResult = ReturnType<
-  typeof usePlatformTemplateWhiteboardValuesQuery
+export type PlatformTemplateWhiteboardContentsQueryHookResult = ReturnType<
+  typeof usePlatformTemplateWhiteboardContentsQuery
 >;
-export type PlatformTemplateWhiteboardValuesLazyQueryHookResult = ReturnType<
-  typeof usePlatformTemplateWhiteboardValuesLazyQuery
+export type PlatformTemplateWhiteboardContentsLazyQueryHookResult = ReturnType<
+  typeof usePlatformTemplateWhiteboardContentsLazyQuery
 >;
-export type PlatformTemplateWhiteboardValuesQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformTemplateWhiteboardValuesQuery,
-  SchemaTypes.PlatformTemplateWhiteboardValuesQueryVariables
+export type PlatformTemplateWhiteboardContentsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
+  SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
 >;
-export function refetchPlatformTemplateWhiteboardValuesQuery(
-  variables: SchemaTypes.PlatformTemplateWhiteboardValuesQueryVariables
+export function refetchPlatformTemplateWhiteboardContentsQuery(
+  variables: SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
 ) {
-  return { query: PlatformTemplateWhiteboardValuesDocument, variables: variables };
+  return { query: PlatformTemplateWhiteboardContentsDocument, variables: variables };
 }
 
 export const CreateWhiteboardOnCalloutDocument = gql`
@@ -8095,7 +8113,7 @@ export const UpdateWhiteboardDocument = gql`
   mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
     updateWhiteboard(whiteboardData: $input) {
       id
-      value
+      content
       profile {
         id
         displayName
@@ -8143,6 +8161,59 @@ export type UpdateWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.U
 export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
   SchemaTypes.UpdateWhiteboardMutationVariables
+>;
+export const UpdateWhiteboardRtDocument = gql`
+  mutation updateWhiteboardRt($input: UpdateWhiteboardRtDirectInput!) {
+    updateWhiteboardRt(whiteboardData: $input) {
+      id
+      content
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type UpdateWhiteboardRtMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardRtMutation,
+  SchemaTypes.UpdateWhiteboardRtMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardRtMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardRtMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardRtMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardRtMutation, { data, loading, error }] = useUpdateWhiteboardRtMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardRtMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardRtMutation,
+    SchemaTypes.UpdateWhiteboardRtMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateWhiteboardRtMutation, SchemaTypes.UpdateWhiteboardRtMutationVariables>(
+    UpdateWhiteboardRtDocument,
+    options
+  );
+}
+
+export type UpdateWhiteboardRtMutationHookResult = ReturnType<typeof useUpdateWhiteboardRtMutation>;
+export type UpdateWhiteboardRtMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardRtMutation>;
+export type UpdateWhiteboardRtMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardRtMutation,
+  SchemaTypes.UpdateWhiteboardRtMutationVariables
 >;
 export const CheckoutWhiteboardDocument = gql`
   mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
@@ -8197,7 +8268,7 @@ export const WhiteboardContentUpdatedDocument = gql`
   subscription whiteboardContentUpdated($whiteboardIDs: [UUID!]!) {
     whiteboardContentUpdated(whiteboardIDs: $whiteboardIDs) {
       whiteboardID
-      value
+      content
     }
   }
 `;
@@ -15482,38 +15553,42 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
 
 export const HomePageSpacesDocument = gql`
   query HomePageSpaces($includeMembershipStatus: Boolean!) {
-    spaces(filter: { visibilities: [ACTIVE] }) {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-        tagset {
-          ...TagsetDetails
-        }
-        cardBanner: visual(type: CARD) {
+    platform {
+      innovationHub {
+        spaceListFilter {
           id
-          uri
-          alternativeText
+          nameID
+          profile {
+            id
+            displayName
+            tagline
+            tagset {
+              ...TagsetDetails
+            }
+            cardBanner: visual(type: CARD) {
+              id
+              uri
+              alternativeText
+            }
+          }
+          context {
+            id
+            vision
+          }
+          metrics {
+            id
+            name
+            value
+          }
+          ... on Space @include(if: $includeMembershipStatus) {
+            community {
+              id
+              myMembershipStatus
+            }
+          }
+          visibility
         }
       }
-      context {
-        id
-        vision
-      }
-      metrics {
-        id
-        name
-        value
-      }
-      ... on Space @include(if: $includeMembershipStatus) {
-        community {
-          id
-          myMembershipStatus
-        }
-      }
-      visibility
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -18997,80 +19072,6 @@ export function refetchInnovationFlowTemplatesFromSpaceQuery(
   return { query: InnovationFlowTemplatesFromSpaceDocument, variables: variables };
 }
 
-export const SpaceTemplatesWhiteboardTemplateWithValueDocument = gql`
-  query SpaceTemplatesWhiteboardTemplateWithValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-    space(ID: $spaceId) {
-      id
-      templates {
-        id
-        whiteboardTemplate(ID: $whiteboardTemplateId) {
-          ...WhiteboardTemplateWithValue
-        }
-      }
-    }
-  }
-  ${WhiteboardTemplateWithValueFragmentDoc}
-`;
-
-/**
- * __useSpaceTemplatesWhiteboardTemplateWithValueQuery__
- *
- * To run a query within a React component, call `useSpaceTemplatesWhiteboardTemplateWithValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceTemplatesWhiteboardTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceTemplatesWhiteboardTemplateWithValueQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      whiteboardTemplateId: // value for 'whiteboardTemplateId'
- *   },
- * });
- */
-export function useSpaceTemplatesWhiteboardTemplateWithValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQueryVariables
-  >(SpaceTemplatesWhiteboardTemplateWithValueDocument, options);
-}
-
-export function useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQueryVariables
-  >(SpaceTemplatesWhiteboardTemplateWithValueDocument, options);
-}
-
-export type SpaceTemplatesWhiteboardTemplateWithValueQueryHookResult = ReturnType<
-  typeof useSpaceTemplatesWhiteboardTemplateWithValueQuery
->;
-export type SpaceTemplatesWhiteboardTemplateWithValueLazyQueryHookResult = ReturnType<
-  typeof useSpaceTemplatesWhiteboardTemplateWithValueLazyQuery
->;
-export type SpaceTemplatesWhiteboardTemplateWithValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQuery,
-  SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQueryVariables
->;
-export function refetchSpaceTemplatesWhiteboardTemplateWithValueQuery(
-  variables: SchemaTypes.SpaceTemplatesWhiteboardTemplateWithValueQueryVariables
-) {
-  return { query: SpaceTemplatesWhiteboardTemplateWithValueDocument, variables: variables };
-}
-
 export const SpaceChallengeCardsDocument = gql`
   query SpaceChallengeCards($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -20099,80 +20100,6 @@ export function refetchAdminSpaceTemplatesQuery(variables: SchemaTypes.AdminSpac
   return { query: AdminSpaceTemplatesDocument, variables: variables };
 }
 
-export const SpaceTemplatesAdminWhiteboardTemplateWithValueDocument = gql`
-  query SpaceTemplatesAdminWhiteboardTemplateWithValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-    space(ID: $spaceId) {
-      id
-      templates {
-        id
-        whiteboardTemplate(ID: $whiteboardTemplateId) {
-          ...AdminWhiteboardTemplateValue
-        }
-      }
-    }
-  }
-  ${AdminWhiteboardTemplateValueFragmentDoc}
-`;
-
-/**
- * __useSpaceTemplatesAdminWhiteboardTemplateWithValueQuery__
- *
- * To run a query within a React component, call `useSpaceTemplatesAdminWhiteboardTemplateWithValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceTemplatesAdminWhiteboardTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceTemplatesAdminWhiteboardTemplateWithValueQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      whiteboardTemplateId: // value for 'whiteboardTemplateId'
- *   },
- * });
- */
-export function useSpaceTemplatesAdminWhiteboardTemplateWithValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQueryVariables
-  >(SpaceTemplatesAdminWhiteboardTemplateWithValueDocument, options);
-}
-
-export function useSpaceTemplatesAdminWhiteboardTemplateWithValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQuery,
-    SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQueryVariables
-  >(SpaceTemplatesAdminWhiteboardTemplateWithValueDocument, options);
-}
-
-export type SpaceTemplatesAdminWhiteboardTemplateWithValueQueryHookResult = ReturnType<
-  typeof useSpaceTemplatesAdminWhiteboardTemplateWithValueQuery
->;
-export type SpaceTemplatesAdminWhiteboardTemplateWithValueLazyQueryHookResult = ReturnType<
-  typeof useSpaceTemplatesAdminWhiteboardTemplateWithValueLazyQuery
->;
-export type SpaceTemplatesAdminWhiteboardTemplateWithValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQuery,
-  SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQueryVariables
->;
-export function refetchSpaceTemplatesAdminWhiteboardTemplateWithValueQuery(
-  variables: SchemaTypes.SpaceTemplatesAdminWhiteboardTemplateWithValueQueryVariables
-) {
-  return { query: SpaceTemplatesAdminWhiteboardTemplateWithValueDocument, variables: variables };
-}
-
 export const InnovationPacksDocument = gql`
   query InnovationPacks {
     platform {
@@ -20254,164 +20181,6 @@ export type InnovationPacksQueryResult = Apollo.QueryResult<
 >;
 export function refetchInnovationPacksQuery(variables?: SchemaTypes.InnovationPacksQueryVariables) {
   return { query: InnovationPacksDocument, variables: variables };
-}
-
-export const InnovationPackWhiteboardTemplateWithValueDocument = gql`
-  query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-    platform {
-      id
-      library {
-        id
-        innovationPack(ID: $innovationPackId) {
-          id
-          templates {
-            whiteboardTemplate(ID: $whiteboardTemplateId) {
-              ...AdminWhiteboardTemplateValue
-            }
-          }
-        }
-      }
-    }
-  }
-  ${AdminWhiteboardTemplateValueFragmentDoc}
-`;
-
-/**
- * __useInnovationPackWhiteboardTemplateWithValueQuery__
- *
- * To run a query within a React component, call `useInnovationPackWhiteboardTemplateWithValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationPackWhiteboardTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationPackWhiteboardTemplateWithValueQuery({
- *   variables: {
- *      innovationPackId: // value for 'innovationPackId'
- *      whiteboardTemplateId: // value for 'whiteboardTemplateId'
- *   },
- * });
- */
-export function useInnovationPackWhiteboardTemplateWithValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQueryVariables
-  >(InnovationPackWhiteboardTemplateWithValueDocument, options);
-}
-
-export function useInnovationPackWhiteboardTemplateWithValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackWhiteboardTemplateWithValueQueryVariables
-  >(InnovationPackWhiteboardTemplateWithValueDocument, options);
-}
-
-export type InnovationPackWhiteboardTemplateWithValueQueryHookResult = ReturnType<
-  typeof useInnovationPackWhiteboardTemplateWithValueQuery
->;
-export type InnovationPackWhiteboardTemplateWithValueLazyQueryHookResult = ReturnType<
-  typeof useInnovationPackWhiteboardTemplateWithValueLazyQuery
->;
-export type InnovationPackWhiteboardTemplateWithValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationPackWhiteboardTemplateWithValueQuery,
-  SchemaTypes.InnovationPackWhiteboardTemplateWithValueQueryVariables
->;
-export function refetchInnovationPackWhiteboardTemplateWithValueQuery(
-  variables: SchemaTypes.InnovationPackWhiteboardTemplateWithValueQueryVariables
-) {
-  return { query: InnovationPackWhiteboardTemplateWithValueDocument, variables: variables };
-}
-
-export const InnovationPackFullWhiteboardTemplateWithValueDocument = gql`
-  query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-    platform {
-      id
-      library {
-        id
-        innovationPack(ID: $innovationPackId) {
-          id
-          templates {
-            whiteboardTemplate(ID: $whiteboardTemplateId) {
-              ...WhiteboardTemplateWithValue
-            }
-          }
-        }
-      }
-    }
-  }
-  ${WhiteboardTemplateWithValueFragmentDoc}
-`;
-
-/**
- * __useInnovationPackFullWhiteboardTemplateWithValueQuery__
- *
- * To run a query within a React component, call `useInnovationPackFullWhiteboardTemplateWithValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationPackFullWhiteboardTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationPackFullWhiteboardTemplateWithValueQuery({
- *   variables: {
- *      innovationPackId: // value for 'innovationPackId'
- *      whiteboardTemplateId: // value for 'whiteboardTemplateId'
- *   },
- * });
- */
-export function useInnovationPackFullWhiteboardTemplateWithValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQueryVariables
-  >(InnovationPackFullWhiteboardTemplateWithValueDocument, options);
-}
-
-export function useInnovationPackFullWhiteboardTemplateWithValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQuery,
-    SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQueryVariables
-  >(InnovationPackFullWhiteboardTemplateWithValueDocument, options);
-}
-
-export type InnovationPackFullWhiteboardTemplateWithValueQueryHookResult = ReturnType<
-  typeof useInnovationPackFullWhiteboardTemplateWithValueQuery
->;
-export type InnovationPackFullWhiteboardTemplateWithValueLazyQueryHookResult = ReturnType<
-  typeof useInnovationPackFullWhiteboardTemplateWithValueLazyQuery
->;
-export type InnovationPackFullWhiteboardTemplateWithValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQuery,
-  SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQueryVariables
->;
-export function refetchInnovationPackFullWhiteboardTemplateWithValueQuery(
-  variables: SchemaTypes.InnovationPackFullWhiteboardTemplateWithValueQueryVariables
-) {
-  return { query: InnovationPackFullWhiteboardTemplateWithValueDocument, variables: variables };
 }
 
 export const AdminInnovationPacksListDocument = gql`
@@ -21130,8 +20899,8 @@ export type DeletePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostTemplateMutationVariables
 >;
 export const UpdateWhiteboardTemplateDocument = gql`
-  mutation updateWhiteboardTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput!) {
-    updateWhiteboardTemplate(whiteboardTemplateInput: { ID: $templateId, value: $value, profile: $profile }) {
+  mutation updateWhiteboardTemplate($templateId: UUID!, $content: JSON, $profile: UpdateProfileInput!) {
+    updateWhiteboardTemplate(whiteboardTemplateInput: { ID: $templateId, content: $content, profile: $profile }) {
       id
       profile {
         id
@@ -21161,7 +20930,7 @@ export type UpdateWhiteboardTemplateMutationFn = Apollo.MutationFunction<
  * const [updateWhiteboardTemplateMutation, { data, loading, error }] = useUpdateWhiteboardTemplateMutation({
  *   variables: {
  *      templateId: // value for 'templateId'
- *      value: // value for 'value'
+ *      content: // value for 'content'
  *      profile: // value for 'profile'
  *   },
  * });
@@ -21189,12 +20958,12 @@ export type UpdateWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions
 export const CreateWhiteboardTemplateDocument = gql`
   mutation createWhiteboardTemplate(
     $templatesSetId: UUID!
-    $value: JSON!
+    $content: JSON!
     $profile: CreateProfileInput!
     $tags: [String!]
   ) {
     createWhiteboardTemplate(
-      whiteboardTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile, tags: $tags }
+      whiteboardTemplateInput: { templatesSetID: $templatesSetId, content: $content, profile: $profile, tags: $tags }
     ) {
       id
       profile {
@@ -21225,7 +20994,7 @@ export type CreateWhiteboardTemplateMutationFn = Apollo.MutationFunction<
  * const [createWhiteboardTemplateMutation, { data, loading, error }] = useCreateWhiteboardTemplateMutation({
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
- *      value: // value for 'value'
+ *      content: // value for 'content'
  *      profile: // value for 'profile'
  *      tags: // value for 'tags'
  *   },
@@ -22169,6 +21938,73 @@ export type PlatformStorageConfigQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.PlatformStorageConfigQueryVariables) {
   return { query: PlatformStorageConfigDocument, variables: variables };
+}
+
+export const WhiteboardTemplateContentDocument = gql`
+  query whiteboardTemplateContent($whiteboardTemplateId: UUID!) {
+    lookup {
+      whiteboardTemplate(ID: $whiteboardTemplateId) {
+        id
+        profile {
+          ...WhiteboardProfile
+        }
+        content
+      }
+    }
+  }
+  ${WhiteboardProfileFragmentDoc}
+`;
+
+/**
+ * __useWhiteboardTemplateContentQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardTemplateContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardTemplateContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardTemplateContentQuery({
+ *   variables: {
+ *      whiteboardTemplateId: // value for 'whiteboardTemplateId'
+ *   },
+ * });
+ */
+export function useWhiteboardTemplateContentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardTemplateContentQuery,
+    SchemaTypes.WhiteboardTemplateContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.WhiteboardTemplateContentQuery,
+    SchemaTypes.WhiteboardTemplateContentQueryVariables
+  >(WhiteboardTemplateContentDocument, options);
+}
+
+export function useWhiteboardTemplateContentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardTemplateContentQuery,
+    SchemaTypes.WhiteboardTemplateContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardTemplateContentQuery,
+    SchemaTypes.WhiteboardTemplateContentQueryVariables
+  >(WhiteboardTemplateContentDocument, options);
+}
+
+export type WhiteboardTemplateContentQueryHookResult = ReturnType<typeof useWhiteboardTemplateContentQuery>;
+export type WhiteboardTemplateContentLazyQueryHookResult = ReturnType<typeof useWhiteboardTemplateContentLazyQuery>;
+export type WhiteboardTemplateContentQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardTemplateContentQuery,
+  SchemaTypes.WhiteboardTemplateContentQueryVariables
+>;
+export function refetchWhiteboardTemplateContentQuery(variables: SchemaTypes.WhiteboardTemplateContentQueryVariables) {
+  return { query: WhiteboardTemplateContentDocument, variables: variables };
 }
 
 export const SpaceDashboardCalendarEventsDocument = gql`

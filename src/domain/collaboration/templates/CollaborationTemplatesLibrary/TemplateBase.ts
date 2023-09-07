@@ -5,7 +5,7 @@ export interface TemplateBase extends Identifiable {
   tags?: string[];
 }
 
-export interface TemplateBaseWithValue extends TemplateBase {}
+export interface TemplateBaseWithContent extends TemplateBase {}
 
 export interface TemplateCardBaseProps<Template extends TemplateBase> {
   template?: Template;
@@ -13,6 +13,6 @@ export interface TemplateCardBaseProps<Template extends TemplateBase> {
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export interface TemplatePreviewBaseProps<TemplateValue extends TemplateBaseWithValue> {
+export interface TemplatePreviewBaseProps<TemplateValue extends TemplateBaseWithContent> {
   template?: TemplateValue;
 }

@@ -12,11 +12,11 @@ export interface WhiteboardTemplateFormValues {
   displayName: string;
   description: string;
   tags: string[];
-  value: string;
+  content: string;
 }
 
 export interface WhiteboardTemplateFormSubmittedValues {
-  value: string;
+  content: string;
   visualUri?: string;
   profile: CreateProfileInput;
   tags?: string[];
@@ -35,7 +35,7 @@ interface WhiteboardTemplateFormProps {
 }
 
 const validator = {
-  value: yup.string().required(),
+  content: yup.string().required(),
 };
 
 const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, loading }: WhiteboardTemplateFormProps) => {
@@ -51,7 +51,7 @@ const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, load
     >
       <TemplateFormRows>
         <FormikWhiteboardPreview
-          name="value"
+          name="content"
           previewImagesName="previewImages"
           canEdit
           loading={loading}

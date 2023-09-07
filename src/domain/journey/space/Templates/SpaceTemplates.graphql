@@ -37,18 +37,6 @@ query InnovationFlowTemplatesFromSpace($spaceId: UUID_NAMEID!) {
   }
 }
 
-query SpaceTemplatesWhiteboardTemplateWithValue($spaceId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
-  space(ID: $spaceId) {
-    id
-    templates {
-      id
-      whiteboardTemplate(ID: $whiteboardTemplateId) {
-        ...WhiteboardTemplateWithValue
-      }
-    }
-  }
-}
-
 fragment SpaceTemplates on Space {
   templates {
     id
@@ -62,11 +50,6 @@ fragment SpaceTemplates on Space {
       ...InnovationFlowTemplate
     }
   }
-}
-
-fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
-  ...WhiteboardTemplateCard
-  value
 }
 
 fragment InnovationFlowTemplate on InnovationFlowTemplate {

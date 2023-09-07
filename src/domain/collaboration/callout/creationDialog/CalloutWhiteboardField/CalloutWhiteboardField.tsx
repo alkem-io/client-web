@@ -13,7 +13,7 @@ interface CalloutWhiteboardFieldProps {
 }
 
 export interface WhiteboardFieldSubmittedValues {
-  value: string;
+  content: string;
   profileData: CreateProfileInput;
 }
 
@@ -26,12 +26,12 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
   const { t } = useTranslation();
   const [, , helpers] = useField<WhiteboardFieldSubmittedValuesWithPreviewImages>(name);
 
-  const handleChange = (newValue: string, previewImages?: WhiteboardPreviewImage[]) => {
+  const handleChangeContent = (newContent: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
       profileData: {
         displayName: t('common.whiteboard'),
       },
-      value: newValue,
+      content: newContent,
       previewImages,
     });
   };
@@ -44,10 +44,10 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
         </Box>
       </Box>
       <FormikWhiteboardPreview
-        name={`${name}.value`}
+        name={`${name}.content`}
         previewImagesName={`${name}.previewImages`}
         canEdit
-        onChangeValue={handleChange}
+        onChangeContent={handleChangeContent}
         maxHeight={gutters(12)}
         dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
       />

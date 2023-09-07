@@ -112,7 +112,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                     id: '',
                     displayName: '',
                   },
-                  value: callout.whiteboardTemplate.value,
+                  content: callout.whiteboardTemplate.content,
                 },
               }}
               actions={{
@@ -120,7 +120,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                 onUpdate: (input, previewImages) => {
                   actions.onCreate(
                     {
-                      value: input.value,
+                      content: input.content,
                       profileData: {
                         displayName: input.profile.displayName,
                       },
