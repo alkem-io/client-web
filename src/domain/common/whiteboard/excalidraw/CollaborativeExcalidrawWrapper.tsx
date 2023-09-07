@@ -189,15 +189,10 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
       [combinedRef]
     );
 
-    const collabRef = {
-      get current() {
-        return combinedCollabApiRef.current;
-      },
-      set current(collabApiRef: CollabAPI | null) {
-        combinedCollabApiRef.current = collabApiRef;
-        setCollabAPI(collabApiRef);
-      },
-    };
+    const collabRef = useCallback((collabApi: CollabAPI | null) => {
+      combinedCollabApiRef.current = collabApi;
+      setCollabAPI(collabApi);
+    }, []);
 
     return (
       <div className={styles.container}>
