@@ -297,7 +297,6 @@ class Collab extends PureComponent<Props, CollabState> {
           break;
         }
         case 'SAVED': {
-          console.log('Someone saved to the database');
           this.onSavedToDatabase?.();
           break;
         }
