@@ -1,0 +1,15 @@
+fragment InnovationHubSpace on Space {
+  id
+  visibility
+  profile {
+    id
+    displayName
+  }
+  host {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

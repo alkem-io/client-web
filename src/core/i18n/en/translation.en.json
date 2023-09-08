@@ -1653,6 +1653,14 @@
       "spaces": {
         "updateVisibility": "Update Visibility",
         "spaceSettings": "Space Settings"
+      },
+      "innovationHub": {
+        "spaceListFilter": {
+          "header": {
+            "title": "Current Selection",
+            "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
+          }
+        }
       }
     },
     "feedback": {
