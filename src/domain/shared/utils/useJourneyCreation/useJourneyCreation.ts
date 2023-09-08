@@ -137,13 +137,11 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
-              visuals: [
-                {
-                  id: '',
-                  uri: '',
-                  name: '',
-                },
-              ],
+              cardBanner: {
+                id: '',
+                uri: '',
+                name: '',
+              },
               tagset: {
                 id: '-1',
                 name: 'default',
@@ -196,19 +194,17 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
-              visuals: [
-                {
-                  id: '',
-                  uri: '',
-                  name: '',
-                  allowedTypes: [],
-                  aspectRatio: 1,
-                  maxHeight: 1,
-                  maxWidth: 1,
-                  minHeight: 1,
-                  minWidth: 1,
-                },
-              ],
+              cardBanner: {
+                id: '',
+                uri: '',
+                name: '',
+                allowedTypes: [],
+                aspectRatio: 1,
+                maxHeight: 1,
+                maxWidth: 1,
+                minHeight: 1,
+                minWidth: 1,
+              },
               tagset: {
                 id: '-1',
                 name: 'default',

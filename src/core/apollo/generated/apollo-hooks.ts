@@ -2065,7 +2065,7 @@ export const OpportunityCardFragmentDoc = gql`
       tagset {
         ...TagsetDetails
       }
-      visuals {
+      cardBanner: visual(type: CARD) {
         ...VisualFull
       }
     }
@@ -2554,7 +2554,7 @@ export const ChallengeCardFragmentDoc = gql`
       tagline
       displayName
       description
-      visuals {
+      cardBanner: visual(type: CARD) {
         ...VisualUri
       }
       tagset {
@@ -22985,7 +22985,7 @@ export const ChallengeExplorerDataDocument = gql`
           tagline
           displayName
           description
-          visuals {
+          cardBanner: visual(type: CARD) {
             ...VisualUri
           }
           tagset {

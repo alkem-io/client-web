@@ -11,7 +11,7 @@ const ChallengePageBanner: FC = () => {
   const { challenge, spaceId } = useChallenge();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, challenge?.profile.visuals);
-  const cardImage = getVisualByType(VisualName.BANNERNARROW, challenge?.profile.visuals);
+  const cardImage = getVisualByType(VisualName.CARD, challenge?.profile.visuals);
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,

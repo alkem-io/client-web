@@ -108,7 +108,7 @@ const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
 
   return (
     <SearchSpaceCard
-      banner={getVisualByType(VisualName.BANNERNARROW, space.profile.visuals)}
+      banner={getVisualByType(VisualName.CARD, space.profile.visuals)}
       member={isMember}
       displayName={name}
       tagline={tagline}
@@ -143,7 +143,7 @@ const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragme
 
   return (
     <SearchChallengeCard
-      banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
+      banner={getVisualByType(VisualName.CARD, challenge.profile.visuals)}
       member={isMember}
       displayName={name}
       tagline={tagline}
@@ -188,7 +188,7 @@ const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFr
 
   return (
     <SearchOpportunityCard
-      banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
+      banner={getVisualByType(VisualName.CARD, opportunity.profile.visuals)}
       member={isMember}
       displayName={name}
       tagline={tagline}

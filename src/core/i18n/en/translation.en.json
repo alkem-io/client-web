@@ -1687,7 +1687,7 @@
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "bannerNarrow": {
+      "cardBanner": {
         "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on cards",
