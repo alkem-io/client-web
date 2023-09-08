@@ -1,6 +1,6 @@
 import throttle from 'lodash.throttle';
 import { MutableRefObject, PureComponent, RefCallback } from 'react';
-import { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
+import { BinaryFiles, Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
 import {
   ACTIVE_THRESHOLD,
   CURSOR_SYNC_TIMEOUT,
@@ -38,6 +38,7 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
+  syncFiles: CollabInstance['syncFiles'];
   notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
 }
 
@@ -60,6 +61,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
+  private alreadySharedFiles: string[] = [];
 
   constructor(props: Props) {
     super(props);
@@ -73,6 +75,7 @@ class Collab extends PureComponent<Props, CollabState> {
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
     this.onSavedToDatabase = props.onSavedToDatabase;
+    this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
   componentDidMount() {
@@ -86,6 +89,7 @@ class Collab extends PureComponent<Props, CollabState> {
       onPointerUpdate: this.onPointerUpdate,
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
+      syncFiles: this.syncFiles,
       stopCollaboration: this.stopCollaboration,
       notifySavedToDatabase: this.notifySavedToDatabase,
     };
@@ -259,12 +263,48 @@ class Collab extends PureComponent<Props, CollabState> {
               elements: reconciledElements,
               scrollToContent: true,
             });
+
+            // Files included in the canvas:
+            const requiredFilesIds = reconciledElements.reduce<string[]>((files, element) => {
+              if (element.type === 'image' && element.fileId) {
+                files.push(element.fileId);
+              }
+              return files;
+            }, []);
+            // Files missing in this client:
+            const currentFiles = Object.keys(this.excalidrawAPI.getFiles());
+            const missingFiles = requiredFilesIds.filter(fileId => !currentFiles.includes(fileId));
+            if (missingFiles.length > 0) {
+              this.portal.broadcastFileRequest(missingFiles);
+            }
           }
           break;
         }
-        case WS_SCENE_EVENT_TYPES.UPDATE:
+        case WS_SCENE_EVENT_TYPES.UPDATE: {
           this.handleRemoteSceneUpdate(this.reconcileElements(decryptedData.payload.elements));
           break;
+        }
+        case 'FILE_UPLOAD': {
+          const payload = decryptedData.payload as SocketUpdateDataSource['FILE_UPLOAD']['payload'];
+          const currentFiles = this.excalidrawAPI.getFiles();
+          if (!currentFiles[payload.file.id]) {
+            this.excalidrawAPI.addFiles([payload.file]);
+            this.alreadySharedFiles.push(payload.file.id);
+          }
+          break;
+        }
+        case 'FILE_REQUEST': {
+          const payload = decryptedData.payload as SocketUpdateDataSource['FILE_REQUEST']['payload'];
+          const currentFiles = this.excalidrawAPI.getFiles();
+          if (payload.fileIds && payload.fileIds.length > 0) {
+            payload.fileIds.forEach(id => {
+              if (currentFiles[id]) {
+                this.portal.broadcastFile(currentFiles[id]);
+              }
+            });
+          }
+          break;
+        }
         case 'MOUSE_LOCATION': {
           const { pointer, button, username, selectedElementIds } = decryptedData.payload;
           const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] =
@@ -480,6 +520,16 @@ class Collab extends PureComponent<Props, CollabState> {
 
   syncElements = (elements: readonly ExcalidrawElement[]) => {
     this.broadcastElements(elements);
+  };
+
+  syncFiles = (files: BinaryFiles) => {
+    Object.keys(files).forEach(id => {
+      if (!this.alreadySharedFiles.includes(id)) {
+        const file = files[id];
+        this.portal.broadcastFile(file);
+        this.alreadySharedFiles.push(id);
+      }
+    });
   };
 
   notifySavedToDatabase = () => {

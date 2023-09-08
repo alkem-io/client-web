@@ -1,7 +1,7 @@
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { DELETED_ELEMENT_TIMEOUT, ROOM_ID_BYTES } from '../excalidrawAppConstants';
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
-import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
+import { AppState, BinaryFileData, UserIdleState } from '@alkemio/excalidraw/types/types';
 import { bytesToHexString } from '../utils';
 import { env } from '../../../../../../main/env';
 
@@ -81,6 +81,20 @@ export type SocketUpdateDataSource = {
     payload: {
       socketId: string;
       username: string;
+    };
+  };
+  FILE_UPLOAD: {
+    type: 'FILE_UPLOAD';
+    payload: {
+      socketId: string;
+      file: BinaryFileData;
+    };
+  };
+  FILE_REQUEST: {
+    type: 'FILE_REQUEST';
+    payload: {
+      socketId: string;
+      fileIds: string[];
     };
   };
 };
