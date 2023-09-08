@@ -5,6 +5,7 @@ import { WS_EVENTS, WS_SCENE_EVENT_TYPES, PRECEDING_ELEMENT_KEY } from './excali
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
+import { BinaryFileData } from '@alkemio/excalidraw/types/types';
 
 class Portal {
   collab: TCollabClass;
@@ -105,6 +106,34 @@ class Portal {
     }
 
     await this._broadcastSocketData(data as SocketUpdateData);
+  };
+
+  broadcastFile = async (file: BinaryFileData) => {
+    if (this.socket?.id) {
+      const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
+        type: 'FILE_UPLOAD',
+        payload: {
+          socketId: this.socket.id,
+          file,
+        },
+      };
+
+      await this._broadcastSocketData(data as SocketUpdateData);
+    }
+  };
+
+  broadcastFileRequest = async (fileIds: string[]) => {
+    if (this.socket?.id) {
+      const data: SocketUpdateDataSource['FILE_REQUEST'] = {
+        type: 'FILE_REQUEST',
+        payload: {
+          socketId: this.socket.id,
+          fileIds,
+        },
+      };
+
+      await this._broadcastSocketData(data as SocketUpdateData);
+    }
   };
 
   broadcastIdleChange = (userState: UserIdleState) => {
