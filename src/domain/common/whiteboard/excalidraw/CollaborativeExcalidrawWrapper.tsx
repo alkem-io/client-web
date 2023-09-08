@@ -167,8 +167,9 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
 
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-    const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, _files: BinaryFiles) => {
+    const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
       collabAPI?.syncElements(elements);
+      collabAPI?.syncFiles(files);
     };
 
     useEffect(() => {
