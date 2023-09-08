@@ -1653,6 +1653,14 @@
       "spaces": {
         "updateVisibility": "Update Visibility",
         "spaceSettings": "Space Settings"
+      },
+      "innovationHub": {
+        "spaceListFilter": {
+          "header": {
+            "title": "Current Selection",
+            "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
+          }
+        }
       }
     },
     "feedback": {
@@ -1679,7 +1687,7 @@
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "bannerNarrow": {
+      "cardBanner": {
         "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on cards",

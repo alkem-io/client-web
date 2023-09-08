@@ -10,9 +10,7 @@ import ChallengeContributorsDialogContent from '../../../community/community/ent
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
@@ -102,7 +100,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   vision={opportunity.context?.vision!}
                   innovationFlowState={opportunity.innovationFlow?.lifecycle?.state}
                   tags={opportunity.profile.tagset?.tags!}
-                  banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
+                  banner={opportunity.profile.cardBanner}
                   journeyUri={buildOpportunityUrl(entities.spaceNameId, entities.challenge!.nameID, opportunity.nameID)}
                   challengeDisplayName={entities.challenge?.profile.displayName!}
                   challengeUri={buildChallengeUrl(entities.spaceNameId, entities.challenge!.nameID)}

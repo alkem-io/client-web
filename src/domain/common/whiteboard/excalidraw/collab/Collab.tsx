@@ -1,27 +1,23 @@
 import throttle from 'lodash.throttle';
-import { MutableRefObject, PureComponent } from 'react';
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
-import { EVENT } from './excalidrawAppConstants';
+import { MutableRefObject, PureComponent, RefCallback } from 'react';
+import { BinaryFiles, Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
+import {
+  ACTIVE_THRESHOLD,
+  CURSOR_SYNC_TIMEOUT,
+  EVENT,
+  IDLE_THRESHOLD,
+  INITIAL_SCENE_UPDATE_TIMEOUT,
+  SYNC_FULL_SCENE_INTERVAL_MS,
+  WS_SCENE_EVENT_TYPES,
+} from './excalidrawAppConstants';
 import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { getSceneVersion, restoreElements } from '@alkemio/excalidraw';
-import { Collaborator, Gesture } from '@alkemio/excalidraw/types/types';
-import { resolvablePromise } from './utils';
-import {
-  CURSOR_SYNC_TIMEOUT,
-  INITIAL_SCENE_UPDATE_TIMEOUT,
-  WS_SCENE_EVENT_TYPES,
-  SYNC_FULL_SCENE_INTERVAL_MS,
-} from './excalidrawAppConstants';
+import { getSceneVersion, newElementWith, restoreElements } from '@alkemio/excalidraw';
+import { isImageElement, resolvablePromise, UserIdleState } from './utils';
 import { generateCollaborationLinkData, getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
-import { UserIdleState } from './utils';
-import { IDLE_THRESHOLD, ACTIVE_THRESHOLD } from './excalidrawAppConstants';
-import { isImageElement } from './utils';
-import { newElementWith } from '@alkemio/excalidraw';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
-import { atom } from 'jotai';
-import { createStore } from 'jotai';
+import { atom, createStore } from 'jotai';
 
 const appJotaiStore = createStore();
 
@@ -42,13 +38,14 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
+  syncFiles: CollabInstance['syncFiles'];
   notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
 }
 
 interface PublicProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
   username: string;
-  collabAPIRef?: MutableRefObject<CollabAPI | null>;
+  collabAPIRef?: MutableRefObject<CollabAPI | null> | RefCallback<CollabAPI | null>;
   onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
 }
 
@@ -64,6 +61,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
+  private alreadySharedFiles: string[] = [];
 
   constructor(props: Props) {
     super(props);
@@ -77,6 +75,7 @@ class Collab extends PureComponent<Props, CollabState> {
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
     this.onSavedToDatabase = props.onSavedToDatabase;
+    this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
   componentDidMount() {
@@ -90,12 +89,16 @@ class Collab extends PureComponent<Props, CollabState> {
       onPointerUpdate: this.onPointerUpdate,
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
+      syncFiles: this.syncFiles,
       stopCollaboration: this.stopCollaboration,
       notifySavedToDatabase: this.notifySavedToDatabase,
     };
 
     appJotaiStore.set(collabAPIAtom, collabAPI);
-    if (this.props.collabAPIRef) {
+
+    if (typeof this.props.collabAPIRef === 'function') {
+      this.props.collabAPIRef(collabAPI);
+    } else if (this.props.collabAPIRef) {
       this.props.collabAPIRef.current = collabAPI;
     }
 
@@ -260,12 +263,48 @@ class Collab extends PureComponent<Props, CollabState> {
               elements: reconciledElements,
               scrollToContent: true,
             });
+
+            // Files included in the canvas:
+            const requiredFilesIds = reconciledElements.reduce<string[]>((files, element) => {
+              if (element.type === 'image' && element.fileId) {
+                files.push(element.fileId);
+              }
+              return files;
+            }, []);
+            // Files missing in this client:
+            const currentFiles = Object.keys(this.excalidrawAPI.getFiles());
+            const missingFiles = requiredFilesIds.filter(fileId => !currentFiles.includes(fileId));
+            if (missingFiles.length > 0) {
+              this.portal.broadcastFileRequest(missingFiles);
+            }
           }
           break;
         }
-        case WS_SCENE_EVENT_TYPES.UPDATE:
+        case WS_SCENE_EVENT_TYPES.UPDATE: {
           this.handleRemoteSceneUpdate(this.reconcileElements(decryptedData.payload.elements));
           break;
+        }
+        case 'FILE_UPLOAD': {
+          const payload = decryptedData.payload as SocketUpdateDataSource['FILE_UPLOAD']['payload'];
+          const currentFiles = this.excalidrawAPI.getFiles();
+          if (!currentFiles[payload.file.id]) {
+            this.excalidrawAPI.addFiles([payload.file]);
+            this.alreadySharedFiles.push(payload.file.id);
+          }
+          break;
+        }
+        case 'FILE_REQUEST': {
+          const payload = decryptedData.payload as SocketUpdateDataSource['FILE_REQUEST']['payload'];
+          const currentFiles = this.excalidrawAPI.getFiles();
+          if (payload.fileIds && payload.fileIds.length > 0) {
+            payload.fileIds.forEach(id => {
+              if (currentFiles[id]) {
+                this.portal.broadcastFile(currentFiles[id]);
+              }
+            });
+          }
+          break;
+        }
         case 'MOUSE_LOCATION': {
           const { pointer, button, username, selectedElementIds } = decryptedData.payload;
           const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] =
@@ -297,7 +336,6 @@ class Collab extends PureComponent<Props, CollabState> {
           break;
         }
         case 'SAVED': {
-          console.log('Someone saved to the database');
           this.onSavedToDatabase?.();
           break;
         }
@@ -482,6 +520,16 @@ class Collab extends PureComponent<Props, CollabState> {
 
   syncElements = (elements: readonly ExcalidrawElement[]) => {
     this.broadcastElements(elements);
+  };
+
+  syncFiles = (files: BinaryFiles) => {
+    Object.keys(files).forEach(id => {
+      if (!this.alreadySharedFiles.includes(id)) {
+        const file = files[id];
+        this.portal.broadcastFile(file);
+        this.alreadySharedFiles.push(id);
+      }
+    });
   };
 
   notifySavedToDatabase = () => {

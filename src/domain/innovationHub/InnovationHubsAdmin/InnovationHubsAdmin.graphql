@@ -36,46 +36,35 @@ query AdminInnovationHub($innovationHubId: UUID_NAMEID!) {
   platform {
     id
     innovationHub(id: $innovationHubId) {
-      id
-      nameID
-      subdomain
-
-      profile {
-        ...InnovationHubProfile
-      }
-      spaceListFilter {
-        id
-        nameID
-        visibility
-        profile {
-          id
-          displayName
-        }
-        host {
-          id
-          nameID
-          profile {
-            id
-            displayName
-          }
-        }
-      }
-      spaceVisibilityFilter
-      type
+      ...AdminInnovationHub
     }
   }
 }
 
+fragment AdminInnovationHub on InnovationHub {
+  id
+  nameID
+  subdomain
+
+  profile {
+    ...InnovationHubProfile
+  }
+
+  spaceListFilter {
+    ...InnovationHubSpace
+  }
+
+  spaceVisibilityFilter
+}
+
 mutation createInnovationHub($hubData: CreateInnovationHubInput!) {
   createInnovationHub(createData: $hubData) {
-    id
-    nameID
+    ...AdminInnovationHub
   }
 }
 
 mutation updateInnovationHub($hubData: UpdateInnovationHubInput!) {
   updateInnovationHub(updateData: $hubData) {
-    id
-    nameID
+    ...AdminInnovationHub
   }
 }

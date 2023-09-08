@@ -474,7 +474,6 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
     id
     nameID
     createdDate
-    updatedDate
     profile {
       ...WhiteboardProfile
     }
@@ -1810,6 +1809,55 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const InnovationHubProfileFragmentDoc = gql`
+  fragment InnovationHubProfile on Profile {
+    id
+    displayName
+    description
+    tagline
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: BANNER_WIDE) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+export const InnovationHubSpaceFragmentDoc = gql`
+  fragment InnovationHubSpace on Space {
+    id
+    visibility
+    profile {
+      id
+      displayName
+    }
+    host {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const AdminInnovationHubFragmentDoc = gql`
+  fragment AdminInnovationHub on InnovationHub {
+    id
+    nameID
+    subdomain
+    profile {
+      ...InnovationHubProfile
+    }
+    spaceListFilter {
+      ...InnovationHubSpace
+    }
+    spaceVisibilityFilter
+  }
+  ${InnovationHubProfileFragmentDoc}
+  ${InnovationHubSpaceFragmentDoc}
+`;
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   fragment InnovationHubHomeInnovationHub on InnovationHub {
     id
@@ -1826,22 +1874,6 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
       }
     }
   }
-`;
-export const InnovationHubProfileFragmentDoc = gql`
-  fragment InnovationHubProfile on Profile {
-    id
-    displayName
-    description
-    tagline
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: BANNER_WIDE) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
@@ -2033,7 +2065,7 @@ export const OpportunityCardFragmentDoc = gql`
       tagset {
         ...TagsetDetails
       }
-      visuals {
+      cardBanner: visual(type: CARD) {
         ...VisualFull
       }
     }
@@ -2522,7 +2554,7 @@ export const ChallengeCardFragmentDoc = gql`
       tagline
       displayName
       description
-      visuals {
+      cardBanner: visual(type: CARD) {
         ...VisualUri
       }
       tagset {
@@ -15494,63 +15526,6 @@ export function refetchUserSpacesQuery(variables?: SchemaTypes.UserSpacesQueryVa
   return { query: UserSpacesDocument, variables: variables };
 }
 
-export const InnovationHubDocument = gql`
-  query InnovationHub {
-    platform {
-      id
-      innovationHub {
-        ...InnovationHubHomeInnovationHub
-      }
-    }
-  }
-  ${InnovationHubHomeInnovationHubFragmentDoc}
-`;
-
-/**
- * __useInnovationHubQuery__
- *
- * To run a query within a React component, call `useInnovationHubQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationHubQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInnovationHubQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
-    InnovationHubDocument,
-    options
-  );
-}
-
-export function useInnovationHubLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
-    InnovationHubDocument,
-    options
-  );
-}
-
-export type InnovationHubQueryHookResult = ReturnType<typeof useInnovationHubQuery>;
-export type InnovationHubLazyQueryHookResult = ReturnType<typeof useInnovationHubLazyQuery>;
-export type InnovationHubQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationHubQuery,
-  SchemaTypes.InnovationHubQueryVariables
->;
-export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQueryVariables) {
-  return { query: InnovationHubDocument, variables: variables };
-}
-
 export const HomePageSpacesDocument = gql`
   query HomePageSpaces($includeMembershipStatus: Boolean!) {
     platform {
@@ -15638,6 +15613,70 @@ export type HomePageSpacesQueryResult = Apollo.QueryResult<
 >;
 export function refetchHomePageSpacesQuery(variables: SchemaTypes.HomePageSpacesQueryVariables) {
   return { query: HomePageSpacesDocument, variables: variables };
+}
+
+export const InnovationHubAvailableSpacesDocument = gql`
+  query InnovationHubAvailableSpaces {
+    spaces {
+      ...InnovationHubSpace
+    }
+  }
+  ${InnovationHubSpaceFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubAvailableSpacesQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubAvailableSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubAvailableSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubAvailableSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationHubAvailableSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >(InnovationHubAvailableSpacesDocument, options);
+}
+
+export function useInnovationHubAvailableSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >(InnovationHubAvailableSpacesDocument, options);
+}
+
+export type InnovationHubAvailableSpacesQueryHookResult = ReturnType<typeof useInnovationHubAvailableSpacesQuery>;
+export type InnovationHubAvailableSpacesLazyQueryHookResult = ReturnType<
+  typeof useInnovationHubAvailableSpacesLazyQuery
+>;
+export type InnovationHubAvailableSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubAvailableSpacesQuery,
+  SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+>;
+export function refetchInnovationHubAvailableSpacesQuery(
+  variables?: SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+) {
+  return { query: InnovationHubAvailableSpacesDocument, variables: variables };
 }
 
 export const AdminInnovationHubsListDocument = gql`
@@ -15761,35 +15800,11 @@ export const AdminInnovationHubDocument = gql`
     platform {
       id
       innovationHub(id: $innovationHubId) {
-        id
-        nameID
-        subdomain
-        profile {
-          ...InnovationHubProfile
-        }
-        spaceListFilter {
-          id
-          nameID
-          visibility
-          profile {
-            id
-            displayName
-          }
-          host {
-            id
-            nameID
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-        spaceVisibilityFilter
-        type
+        ...AdminInnovationHub
       }
     }
   }
-  ${InnovationHubProfileFragmentDoc}
+  ${AdminInnovationHubFragmentDoc}
 `;
 
 /**
@@ -15847,10 +15862,10 @@ export function refetchAdminInnovationHubQuery(variables: SchemaTypes.AdminInnov
 export const CreateInnovationHubDocument = gql`
   mutation createInnovationHub($hubData: CreateInnovationHubInput!) {
     createInnovationHub(createData: $hubData) {
-      id
-      nameID
+      ...AdminInnovationHub
     }
   }
+  ${AdminInnovationHubFragmentDoc}
 `;
 export type CreateInnovationHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateInnovationHubMutation,
@@ -15896,10 +15911,10 @@ export type CreateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateInnovationHubDocument = gql`
   mutation updateInnovationHub($hubData: UpdateInnovationHubInput!) {
     updateInnovationHub(updateData: $hubData) {
-      id
-      nameID
+      ...AdminInnovationHub
     }
   }
+  ${AdminInnovationHubFragmentDoc}
 `;
 export type UpdateInnovationHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateInnovationHubMutation,
@@ -15942,6 +15957,64 @@ export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationHubMutation,
   SchemaTypes.UpdateInnovationHubMutationVariables
 >;
+export const InnovationHubDocument = gql`
+  query InnovationHub($subdomain: String) {
+    platform {
+      id
+      innovationHub(subdomain: $subdomain) {
+        ...InnovationHubHomeInnovationHub
+      }
+    }
+  }
+  ${InnovationHubHomeInnovationHubFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubQuery({
+ *   variables: {
+ *      subdomain: // value for 'subdomain'
+ *   },
+ * });
+ */
+export function useInnovationHubQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
+    InnovationHubDocument,
+    options
+  );
+}
+
+export function useInnovationHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>(
+    InnovationHubDocument,
+    options
+  );
+}
+
+export type InnovationHubQueryHookResult = ReturnType<typeof useInnovationHubQuery>;
+export type InnovationHubLazyQueryHookResult = ReturnType<typeof useInnovationHubLazyQuery>;
+export type InnovationHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubQuery,
+  SchemaTypes.InnovationHubQueryVariables
+>;
+export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQueryVariables) {
+  return { query: InnovationHubDocument, variables: variables };
+}
+
 export const ChallengeOpportunityCardsDocument = gql`
   query ChallengeOpportunityCards($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -22912,7 +22985,7 @@ export const ChallengeExplorerDataDocument = gql`
           tagline
           displayName
           description
-          visuals {
+          cardBanner: visual(type: CARD) {
             ...VisualUri
           }
           tagset {

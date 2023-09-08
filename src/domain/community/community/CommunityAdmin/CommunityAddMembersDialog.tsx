@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { CircularProgress, IconButton, IconButtonProps, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import DataGridTable from '../../../../core/ui/table/DataGridTable';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import LoadingIconButton from '../../../../core/ui/button/LoadingIconButton';
 
 interface Entity extends Identifiable {
   profile: {
@@ -18,10 +19,6 @@ interface Entity extends Identifiable {
 
 type RenderParams = GridRenderCellParams<string, Entity>;
 type GetterParams = GridValueGetterParams<string, Entity>;
-
-const LoadingIconButton: FC<IconButtonProps & { loading?: boolean }> = ({ loading, ...props }) => {
-  return loading ? <CircularProgress /> : <IconButton {...props} />;
-};
 
 export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
@@ -73,11 +70,14 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
   ];
 
   const handleAdd = async (itemId: string) => {
-    setLoadingItemId(itemId);
-    await onAdd(itemId);
-    await fetchData();
-    setAddedMemberIds([...addedMemberIds, itemId]);
-    setLoadingItemId(undefined);
+    try {
+      setLoadingItemId(itemId);
+      await onAdd(itemId);
+      await fetchData();
+      setAddedMemberIds([...addedMemberIds, itemId]);
+    } finally {
+      setLoadingItemId(undefined);
+    }
   };
 
   return (

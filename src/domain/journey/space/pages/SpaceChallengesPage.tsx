@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { buildChallengeUrl } from '../../../../main/routing/urlBuilders';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -16,7 +15,6 @@ import SpaceChallengesContainer from '../containers/SpaceChallengesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SpaceChallengesPageProps {}
@@ -68,7 +66,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             renderChildEntityCard={challenge => (
               <ChallengeCard
                 displayName={challenge.profile.displayName}
-                banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
+                banner={challenge.profile.cardBanner}
                 tags={challenge.profile.tagset?.tags!}
                 tagline={challenge.profile.tagline!}
                 vision={challenge.context?.vision!}

@@ -60,8 +60,8 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
   ({ entities, actions, options, collabApiRef }, ref) => {
     const { whiteboard } = entities;
 
+    const [collabAPI, setCollabAPI] = useState<CollabAPI | null>(null);
     const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
-    const collabAPI = combinedCollabApiRef.current;
 
     const styles = useActorWhiteboardStyles();
     const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
@@ -167,8 +167,9 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
 
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-    const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, _files: BinaryFiles) => {
+    const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
       collabAPI?.syncElements(elements);
+      collabAPI?.syncFiles(files);
     };
 
     useEffect(() => {
@@ -188,6 +189,11 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
       },
       [combinedRef]
     );
+
+    const collabRef = useCallback((collabApi: CollabAPI | null) => {
+      combinedCollabApiRef.current = collabApi;
+      setCollabAPI(collabApi);
+    }, []);
 
     return (
       <div className={styles.container}>
@@ -213,7 +219,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
           <Collab
             username={username}
             excalidrawAPI={excalidrawAPI}
-            collabAPIRef={combinedCollabApiRef}
+            collabAPIRef={collabRef}
             onSavedToDatabase={actions.onSavedToDatabase}
           />
         )}

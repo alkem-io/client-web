@@ -5494,7 +5494,6 @@ export type CalloutPageCalloutQuery = {
                       id: string;
                       nameID: string;
                       createdDate: Date;
-                      updatedDate: Date;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -5838,7 +5837,6 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -6185,7 +6183,6 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9172,7 +9169,6 @@ export type CreateCalloutMutation = {
           id: string;
           nameID: string;
           createdDate: Date;
-          updatedDate: Date;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -9905,7 +9901,6 @@ export type CalloutsQuery = {
                       id: string;
                       nameID: string;
                       createdDate: Date;
-                      updatedDate: Date;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -10253,7 +10248,6 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -10604,7 +10598,6 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
-                        updatedDate: Date;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -10949,7 +10942,6 @@ export type CollaborationWithCalloutsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
-              updatedDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -11265,7 +11257,6 @@ export type CalloutFragment = {
         id: string;
         nameID: string;
         createdDate: Date;
-        updatedDate: Date;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13353,7 +13344,6 @@ export type WhiteboardRtDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
-  updatedDate: Date;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -13596,7 +13586,6 @@ export type CalloutWithWhiteboardRtFragment = {
         id: string;
         nameID: string;
         createdDate: Date;
-        updatedDate: Date;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -13780,7 +13769,6 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
-              updatedDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -13999,7 +13987,6 @@ export type WhiteboardRtFromCalloutQuery = {
                 id: string;
                 nameID: string;
                 createdDate: Date;
-                updatedDate: Date;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -14189,7 +14176,6 @@ export type WhiteboardRtWithContentQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
-          updatedDate: Date;
           content: string;
           profile: {
             __typename?: 'Profile';
@@ -19352,47 +19338,6 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
-export type InnovationHubQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InnovationHubQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            tagline: string;
-            description?: string | undefined;
-            banner?:
-              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type InnovationHubHomeInnovationHubFragment = {
-  __typename?: 'InnovationHub';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    tagline: string;
-    description?: string | undefined;
-    banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
-  };
-};
-
 export type HomePageSpacesQueryVariables = Exact<{
   includeMembershipStatus: Scalars['Boolean'];
 }>;
@@ -19439,6 +19384,35 @@ export type HomePageSpacesQuery = {
         }
       | undefined;
   };
+};
+
+export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationHubAvailableSpacesQuery = {
+  __typename?: 'Query';
+  spaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    visibility: SpaceVisibility;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  }>;
+};
+
+export type InnovationHubSpaceFragment = {
+  __typename?: 'Space';
+  id: string;
+  visibility: SpaceVisibility;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  host?:
+    | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type AdminInnovationHubsListQueryVariables = Exact<{ [key: string]: never }>;
@@ -19516,7 +19490,6 @@ export type AdminInnovationHubQuery = {
           nameID: string;
           subdomain: string;
           spaceVisibilityFilter?: SpaceVisibility | undefined;
-          type: InnovationHubType;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19553,14 +19526,12 @@ export type AdminInnovationHubQuery = {
             | Array<{
                 __typename?: 'Space';
                 id: string;
-                nameID: string;
                 visibility: SpaceVisibility;
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
                 host?:
                   | {
                       __typename?: 'Organization';
                       id: string;
-                      nameID: string;
                       profile: { __typename?: 'Profile'; id: string; displayName: string };
                     }
                   | undefined;
@@ -19571,13 +19542,121 @@ export type AdminInnovationHubQuery = {
   };
 };
 
+export type AdminInnovationHubFragment = {
+  __typename?: 'InnovationHub';
+  id: string;
+  nameID: string;
+  subdomain: string;
+  spaceVisibilityFilter?: SpaceVisibility | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline: string;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
+  spaceListFilter?:
+    | Array<{
+        __typename?: 'Space';
+        id: string;
+        visibility: SpaceVisibility;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
+      }>
+    | undefined;
+};
+
 export type CreateInnovationHubMutationVariables = Exact<{
   hubData: CreateInnovationHubInput;
 }>;
 
 export type CreateInnovationHubMutation = {
   __typename?: 'Mutation';
-  createInnovationHub: { __typename?: 'InnovationHub'; id: string; nameID: string };
+  createInnovationHub: {
+    __typename?: 'InnovationHub';
+    id: string;
+    nameID: string;
+    subdomain: string;
+    spaceVisibilityFilter?: SpaceVisibility | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline: string;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+    spaceListFilter?:
+      | Array<{
+          __typename?: 'Space';
+          id: string;
+          visibility: SpaceVisibility;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          host?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }
+            | undefined;
+        }>
+      | undefined;
+  };
 };
 
 export type UpdateInnovationHubMutationVariables = Exact<{
@@ -19586,7 +19665,103 @@ export type UpdateInnovationHubMutationVariables = Exact<{
 
 export type UpdateInnovationHubMutation = {
   __typename?: 'Mutation';
-  updateInnovationHub: { __typename?: 'InnovationHub'; id: string; nameID: string };
+  updateInnovationHub: {
+    __typename?: 'InnovationHub';
+    id: string;
+    nameID: string;
+    subdomain: string;
+    spaceVisibilityFilter?: SpaceVisibility | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline: string;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+    spaceListFilter?:
+      | Array<{
+          __typename?: 'Space';
+          id: string;
+          visibility: SpaceVisibility;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          host?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }
+            | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type InnovationHubQueryVariables = Exact<{
+  subdomain?: InputMaybe<Scalars['String']>;
+}>;
+
+export type InnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            description?: string | undefined;
+            banner?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type InnovationHubHomeInnovationHubFragment = {
+  __typename?: 'InnovationHub';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline: string;
+    description?: string | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  };
 };
 
 export type ChallengeCardFragment = {
@@ -19601,7 +19776,7 @@ export type ChallengeCardFragment = {
     tagline: string;
     displayName: string;
     description?: string | undefined;
-    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -19659,19 +19834,21 @@ export type ChallengeOpportunityCardsQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             innovationFlow?:
@@ -20108,19 +20285,21 @@ export type ChallengePageQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             innovationFlow?:
@@ -20534,19 +20713,21 @@ export type ChallengeProfileFragment = {
                 type: TagsetType;
               }
             | undefined;
-          visuals: Array<{
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }>;
+          cardBanner?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         innovationFlow?:
@@ -20713,19 +20894,21 @@ export type OpportunitiesOnChallengeFragment = {
                 type: TagsetType;
               }
             | undefined;
-          visuals: Array<{
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }>;
+          cardBanner?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         innovationFlow?:
@@ -20786,7 +20969,7 @@ export type CreateChallengeMutation = {
       tagline: string;
       displayName: string;
       description?: string | undefined;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -21136,19 +21319,21 @@ export type OpportunityCreatedSubscription = {
               type: TagsetType;
             }
           | undefined;
-        visuals: Array<{
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }>;
+        cardBanner?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }
+          | undefined;
       };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       innovationFlow?:
@@ -23210,19 +23395,21 @@ export type OpportunityCardFragment = {
           type: TagsetType;
         }
       | undefined;
-    visuals: Array<{
-      __typename?: 'Visual';
-      id: string;
-      uri: string;
-      name: string;
-      allowedTypes: Array<string>;
-      aspectRatio: number;
-      maxHeight: number;
-      maxWidth: number;
-      minHeight: number;
-      minWidth: number;
-      alternativeText?: string | undefined;
-    }>;
+    cardBanner?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   innovationFlow?:
@@ -23288,19 +23475,21 @@ export type CreateOpportunityMutation = {
             type: TagsetType;
           }
         | undefined;
-      visuals: Array<{
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-        alternativeText?: string | undefined;
-      }>;
+      cardBanner?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
     };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     innovationFlow?:
@@ -24377,7 +24566,7 @@ export type SpacePageQuery = {
             tagline: string;
             displayName: string;
             description?: string | undefined;
-            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -24781,7 +24970,7 @@ export type SpacePageFragment = {
           tagline: string;
           displayName: string;
           description?: string | undefined;
-          visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagset?:
             | {
                 __typename?: 'Tagset';
@@ -25226,7 +25415,7 @@ export type SpaceChallengeCardsQuery = {
             tagline: string;
             displayName: string;
             description?: string | undefined;
-            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -25270,7 +25459,7 @@ export type ChallengesOnSpaceFragment = {
           tagline: string;
           displayName: string;
           description?: string | undefined;
-          visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagset?:
             | {
                 __typename?: 'Tagset';
@@ -25773,7 +25962,7 @@ export type ChallengeCreatedSubscription = {
         tagline: string;
         displayName: string;
         description?: string | undefined;
-        visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?:
           | {
               __typename?: 'Tagset';
@@ -29743,7 +29932,7 @@ export type ChallengeExplorerDataQuery = {
             tagline: string;
             displayName: string;
             description?: string | undefined;
-            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
