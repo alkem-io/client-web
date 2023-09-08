@@ -83,7 +83,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: spaceData.space.profile.displayName,
         journeyTypeName: 'space',
-        banner: getVisualByType(VisualName.BANNERNARROW, spaceData.space.profile.visuals),
+        banner: getVisualByType(VisualName.CARD, spaceData.space.profile.visuals),
         tags: spaceData.space.profile.tagset?.tags ?? [],
         journeyUri: buildSpaceUrl(spaceData.space.nameID),
         communityId: spaceData.space.community?.id,
@@ -96,7 +96,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: challengeData.space.challenge.profile.displayName,
         journeyTypeName: 'challenge',
-        banner: getVisualByType(VisualName.BANNERNARROW, challengeData.space.challenge.profile.visuals),
+        banner: getVisualByType(VisualName.CARD, challengeData.space.challenge.profile.visuals),
         tags: challengeData.space.challenge.profile.tagset?.tags ?? [],
         journeyUri: buildChallengeUrl(challengeData.space.nameID, challengeData.space.challenge.nameID),
         communityId: challengeData.space.challenge.community?.id,
@@ -109,7 +109,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: opportunityData.space.opportunity.profile.displayName,
         journeyTypeName: 'opportunity',
-        banner: getVisualByType(VisualName.BANNERNARROW, opportunityData.space.opportunity.profile.visuals),
+        banner: getVisualByType(VisualName.CARD, opportunityData.space.opportunity.profile.visuals),
         tags: opportunityData.space.opportunity.profile.tagset?.tags ?? [],
         journeyUri: buildOpportunityUrl(
           opportunityData.space.nameID,

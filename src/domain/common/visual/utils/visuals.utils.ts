@@ -18,11 +18,11 @@ export function getVisualBanner(a?: unknown): string | undefined {
   return _getVisualByType(VisualName.BANNER, a)?.uri;
 }
 
-export function getVisualBannerNarrow(profile?: ProfileWithVisualNameAndUri): string | undefined;
-export function getVisualBannerNarrow(vis?: VisualNameAndUri[]): string | undefined;
-export function getVisualBannerNarrow(vis?: VisualNameAndUri): string | undefined;
-export function getVisualBannerNarrow(profileOrVisual?: unknown): string | undefined {
-  return _getVisualByType(VisualName.BANNERNARROW, profileOrVisual)?.uri;
+export function getVisualCardBanner(profile?: ProfileWithVisualNameAndUri): string | undefined;
+export function getVisualCardBanner(vis?: VisualNameAndUri[]): string | undefined;
+export function getVisualCardBanner(vis?: VisualNameAndUri): string | undefined;
+export function getVisualCardBanner(profileOrVisual?: unknown): string | undefined {
+  return _getVisualByType(VisualName.CARD, profileOrVisual)?.uri;
 }
 
 export function getVisualByType(type: VisualName, profile?: ProfileWithVisualNameAndUri): Visual | undefined;
@@ -38,11 +38,11 @@ const _getVisualByType = (type: VisualName, profileOrVisual?: unknown): Visual |
   }
 
   if (isProfile(profileOrVisual)) {
-    return (profileOrVisual as Profile).visuals?.find(x => x.name === type);
+    return profileOrVisual.visuals?.find(x => x.name === type);
   } else if (isVisualArray(profileOrVisual)) {
-    return (profileOrVisual as Visual[]).find(x => x.name === type);
+    return profileOrVisual.find(x => x.name === type);
   } else if (isVisual(profileOrVisual)) {
-    return (profileOrVisual as Visual).name === type ? (profileOrVisual as Visual) : undefined;
+    return profileOrVisual.name === type ? profileOrVisual : undefined;
   } else {
     return undefined;
   }

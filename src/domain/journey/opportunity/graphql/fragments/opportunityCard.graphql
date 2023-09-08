@@ -8,7 +8,7 @@ fragment OpportunityCard on Opportunity {
     tagset {
       ...TagsetDetails
     }
-    visuals {
+    cardBanner: visual(type: CARD) {
       ...VisualFull
     }
   }

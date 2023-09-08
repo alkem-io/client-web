@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -16,7 +15,6 @@ import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import ChallengeOpportunitiesContainer from '../containers/ChallengeOpportunitiesContainer';
 import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -75,7 +73,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 vision={opportunity.context?.vision!}
                 innovationFlowState={opportunity.innovationFlow?.lifecycle?.state}
                 tags={opportunity.profile.tagset?.tags!}
-                banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
+                banner={opportunity.profile.cardBanner}
                 journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}
                 spaceVisibility={visibility}
                 member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
