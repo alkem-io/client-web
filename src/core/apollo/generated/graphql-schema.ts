@@ -19589,7 +19589,7 @@ export type ChallengeCardFragment = {
     tagline: string;
     displayName: string;
     description?: string | undefined;
-    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -19647,19 +19647,21 @@ export type ChallengeOpportunityCardsQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             innovationFlow?:
@@ -20096,19 +20098,21 @@ export type ChallengePageQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             innovationFlow?:
@@ -20522,19 +20526,21 @@ export type ChallengeProfileFragment = {
                 type: TagsetType;
               }
             | undefined;
-          visuals: Array<{
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }>;
+          cardBanner?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         innovationFlow?:
@@ -20701,19 +20707,21 @@ export type OpportunitiesOnChallengeFragment = {
                 type: TagsetType;
               }
             | undefined;
-          visuals: Array<{
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }>;
+          cardBanner?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         innovationFlow?:
@@ -20774,7 +20782,7 @@ export type CreateChallengeMutation = {
       tagline: string;
       displayName: string;
       description?: string | undefined;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -21124,19 +21132,21 @@ export type OpportunityCreatedSubscription = {
               type: TagsetType;
             }
           | undefined;
-        visuals: Array<{
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }>;
+        cardBanner?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }
+          | undefined;
       };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       innovationFlow?:
@@ -23198,19 +23208,21 @@ export type OpportunityCardFragment = {
           type: TagsetType;
         }
       | undefined;
-    visuals: Array<{
-      __typename?: 'Visual';
-      id: string;
-      uri: string;
-      name: string;
-      allowedTypes: Array<string>;
-      aspectRatio: number;
-      maxHeight: number;
-      maxWidth: number;
-      minHeight: number;
-      minWidth: number;
-      alternativeText?: string | undefined;
-    }>;
+    cardBanner?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   innovationFlow?:
@@ -23276,19 +23288,21 @@ export type CreateOpportunityMutation = {
             type: TagsetType;
           }
         | undefined;
-      visuals: Array<{
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-        alternativeText?: string | undefined;
-      }>;
+      cardBanner?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
     };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     innovationFlow?:
@@ -24365,7 +24379,7 @@ export type SpacePageQuery = {
             tagline: string;
             displayName: string;
             description?: string | undefined;
-            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -24769,7 +24783,7 @@ export type SpacePageFragment = {
           tagline: string;
           displayName: string;
           description?: string | undefined;
-          visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagset?:
             | {
                 __typename?: 'Tagset';
@@ -25214,7 +25228,7 @@ export type SpaceChallengeCardsQuery = {
             tagline: string;
             displayName: string;
             description?: string | undefined;
-            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -25258,7 +25272,7 @@ export type ChallengesOnSpaceFragment = {
           tagline: string;
           displayName: string;
           description?: string | undefined;
-          visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagset?:
             | {
                 __typename?: 'Tagset';
@@ -25761,7 +25775,7 @@ export type ChallengeCreatedSubscription = {
         tagline: string;
         displayName: string;
         description?: string | undefined;
-        visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?:
           | {
               __typename?: 'Tagset';
@@ -29731,7 +29745,7 @@ export type ChallengeExplorerDataQuery = {
             tagline: string;
             displayName: string;
             description?: string | undefined;
-            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';

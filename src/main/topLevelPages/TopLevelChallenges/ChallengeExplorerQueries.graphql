@@ -37,7 +37,7 @@ query ChallengeExplorerData($spaceIDs: [UUID!]) {
         tagline
         displayName
         description
-        visuals {
+        cardBanner: visual(type: CARD) {
           ...VisualUri
         }
         tagset {

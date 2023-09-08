@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface VisualDescriptionProps {
-  visualTypeName: 'avatar' | 'banner' | 'bannerNarrow';
+  visualTypeName: 'avatar' | 'banner' | 'cardBanner';
   visual:
     | {
         maxWidth: number;
