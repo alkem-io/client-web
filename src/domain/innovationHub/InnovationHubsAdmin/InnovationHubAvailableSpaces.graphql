@@ -1,0 +1,5 @@
+query InnovationHubAvailableSpaces {
+  spaces {
+    ...InnovationHubSpace
+  }
+}

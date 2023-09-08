@@ -17,6 +17,8 @@ import { AdminSection } from '../../platform/admin/layout/toplevel/constants';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Button } from '@mui/material';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import InnovationHubSpacesField from './InnovationHubSpacesField';
 
 interface AdminInnovationHubPageProps {}
 
@@ -33,7 +35,7 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
     variables: { innovationHubId: innovationHubNameId },
   });
 
-  const innovationHubId = data?.platform.innovationHub?.id;
+  const innovationHub = data?.platform.innovationHub;
 
   const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const organizations = useMemo(
@@ -48,13 +50,13 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
   const [updateInnovationHub, { loading: updating }] = useUpdateInnovationHubMutation();
 
   const handleSubmit = async (formData: InnovationHubFormValues) => {
-    if (!innovationHubId) {
+    if (!innovationHub?.id) {
       return;
     }
     const { data } = await updateInnovationHub({
       variables: {
         hubData: {
-          ID: innovationHubId,
+          ID: innovationHub.id,
           profileData: {
             displayName: formData.profile.displayName,
             description: formData.profile.description,
@@ -73,7 +75,28 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
     }
   };
 
-  const innovationHub = data?.platform.innovationHub;
+  const handleSubmitSpaceListFilter = async (spaceListFilter: string[]) => {
+    if (!innovationHub?.id) {
+      return;
+    }
+    const { data } = await updateInnovationHub({
+      variables: {
+        hubData: {
+          ID: innovationHub.id,
+          spaceListFilter,
+        },
+      },
+      optimisticResponse: {
+        updateInnovationHub: {
+          ...innovationHub,
+          spaceListFilter: sortBy(innovationHub.spaceListFilter, ({ id }) => spaceListFilter.indexOf(id)),
+        },
+      },
+    });
+    if (data?.updateInnovationHub.nameID) {
+      notify(t('pages.admin.innovationHubs.saved'), 'success');
+    }
+  };
 
   const isLoading = loading || loadingOrganizations || updating;
 
@@ -93,6 +116,12 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
               onSubmit={handleSubmit}
               loading={isLoading}
             />
+            <PageContentBlock>
+              <InnovationHubSpacesField
+                spaces={innovationHub?.spaceListFilter}
+                onChange={handleSubmitSpaceListFilter}
+              />
+            </PageContentBlock>
           </StorageConfigContextProvider>
         </PageContentColumn>
       </PageContent>

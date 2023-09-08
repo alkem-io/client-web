@@ -1825,6 +1825,39 @@ export const InnovationHubProfileFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
+export const InnovationHubSpaceFragmentDoc = gql`
+  fragment InnovationHubSpace on Space {
+    id
+    visibility
+    profile {
+      id
+      displayName
+    }
+    host {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const AdminInnovationHubFragmentDoc = gql`
+  fragment AdminInnovationHub on InnovationHub {
+    id
+    nameID
+    subdomain
+    profile {
+      ...InnovationHubProfile
+    }
+    spaceListFilter {
+      ...InnovationHubSpace
+    }
+    spaceVisibilityFilter
+  }
+  ${InnovationHubProfileFragmentDoc}
+  ${InnovationHubSpaceFragmentDoc}
+`;
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   fragment InnovationHubHomeInnovationHub on InnovationHub {
     id
@@ -15582,6 +15615,70 @@ export function refetchHomePageSpacesQuery(variables: SchemaTypes.HomePageSpaces
   return { query: HomePageSpacesDocument, variables: variables };
 }
 
+export const InnovationHubAvailableSpacesDocument = gql`
+  query InnovationHubAvailableSpaces {
+    spaces {
+      ...InnovationHubSpace
+    }
+  }
+  ${InnovationHubSpaceFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubAvailableSpacesQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubAvailableSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubAvailableSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubAvailableSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationHubAvailableSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >(InnovationHubAvailableSpacesDocument, options);
+}
+
+export function useInnovationHubAvailableSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubAvailableSpacesQuery,
+    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+  >(InnovationHubAvailableSpacesDocument, options);
+}
+
+export type InnovationHubAvailableSpacesQueryHookResult = ReturnType<typeof useInnovationHubAvailableSpacesQuery>;
+export type InnovationHubAvailableSpacesLazyQueryHookResult = ReturnType<
+  typeof useInnovationHubAvailableSpacesLazyQuery
+>;
+export type InnovationHubAvailableSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubAvailableSpacesQuery,
+  SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+>;
+export function refetchInnovationHubAvailableSpacesQuery(
+  variables?: SchemaTypes.InnovationHubAvailableSpacesQueryVariables
+) {
+  return { query: InnovationHubAvailableSpacesDocument, variables: variables };
+}
+
 export const AdminInnovationHubsListDocument = gql`
   query AdminInnovationHubsList {
     platform {
@@ -15703,35 +15800,11 @@ export const AdminInnovationHubDocument = gql`
     platform {
       id
       innovationHub(id: $innovationHubId) {
-        id
-        nameID
-        subdomain
-        profile {
-          ...InnovationHubProfile
-        }
-        spaceListFilter {
-          id
-          nameID
-          visibility
-          profile {
-            id
-            displayName
-          }
-          host {
-            id
-            nameID
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-        spaceVisibilityFilter
-        type
+        ...AdminInnovationHub
       }
     }
   }
-  ${InnovationHubProfileFragmentDoc}
+  ${AdminInnovationHubFragmentDoc}
 `;
 
 /**
@@ -15789,10 +15862,10 @@ export function refetchAdminInnovationHubQuery(variables: SchemaTypes.AdminInnov
 export const CreateInnovationHubDocument = gql`
   mutation createInnovationHub($hubData: CreateInnovationHubInput!) {
     createInnovationHub(createData: $hubData) {
-      id
-      nameID
+      ...AdminInnovationHub
     }
   }
+  ${AdminInnovationHubFragmentDoc}
 `;
 export type CreateInnovationHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateInnovationHubMutation,
@@ -15838,10 +15911,10 @@ export type CreateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateInnovationHubDocument = gql`
   mutation updateInnovationHub($hubData: UpdateInnovationHubInput!) {
     updateInnovationHub(updateData: $hubData) {
-      id
-      nameID
+      ...AdminInnovationHub
     }
   }
+  ${AdminInnovationHubFragmentDoc}
 `;
 export type UpdateInnovationHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateInnovationHubMutation,
