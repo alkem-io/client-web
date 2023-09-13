@@ -5,6 +5,12 @@ export const typePolicies: TypedTypePolicies = {
   LookupQueryResults: {
     merge: true,
   },
+  Platform: {
+    merge: true,
+  },
+  MeQueryResults: {
+    merge: true,
+  },
   UserGroup: {
     fields: {
       members: {
