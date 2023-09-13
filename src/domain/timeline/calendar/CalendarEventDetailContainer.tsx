@@ -8,7 +8,7 @@ import {
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '../../../core/container/ComponentOrChildrenFn';
 import { useUserContext } from '../../community/user';
 import { Message } from '../../communication/room/models/Message';
-import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../../core/apollo/utils/removeFromCache';
 import { buildAuthorFromUser } from '../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../collaboration/callout/useSubscribeOnRoomEvents';

@@ -1,5 +1,5 @@
 import { TypedTypePolicies } from '../generated/apollo-helpers';
-import { paginationFieldPolicy } from '../../../domain/shared/utils/apollo-cache/pagination-policy';
+import { paginationFieldPolicy } from './paginationPolicy';
 
 export const typePolicies: TypedTypePolicies = {
   LookupQueryResults: {

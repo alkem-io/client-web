@@ -8,7 +8,7 @@ import {
 } from '../../../core/apollo/generated/apollo-hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { MutationType } from '../../../core/apollo/generated/graphql-schema';
-import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../../core/apollo/utils/removeFromCache';
 
 const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) => {
   const handleError = useApolloErrorHandler();
