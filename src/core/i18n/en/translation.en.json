@@ -1112,7 +1112,10 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-space members to challenges"
+      "read-access": "Allow read access for non-space members to challenges",
+      "about": "About this Space",
+      "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
+      "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "nameSegment": {
       "name": "Name",
@@ -1126,9 +1129,6 @@
       "avatar": "Avatar",
       "banner": "Banner",
       "background": "Background"
-    },
-    "tagsSegment": {
-      "title": "Tags"
     },
     "profileSegment": {
       "avatar": {
