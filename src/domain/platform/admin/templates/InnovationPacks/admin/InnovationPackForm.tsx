@@ -100,7 +100,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
             />
             {!isNew && profileId ? (
               <>
-                <BlockSectionTitle>{t('components.tagsSegment.title')}</BlockSectionTitle>
+                <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
                 <TagsetSegment fieldName="profile.tagsets" tagsets={profile.tagsets} />
                 <ContextReferenceSegment
                   fieldName="profile.references"
