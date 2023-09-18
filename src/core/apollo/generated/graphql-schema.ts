@@ -23,6 +23,7 @@ export type Scalars = {
   UUID_NAMEID: string;
   UUID_NAMEID_EMAIL: string;
   Upload: File;
+  WhiteboardContent: string;
 };
 
 export type Apm = {
@@ -1508,7 +1509,7 @@ export type CreateUserInput = {
 };
 
 export type CreateWhiteboardInput = {
-  content?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -1516,21 +1517,21 @@ export type CreateWhiteboardInput = {
 
 export type CreateWhiteboardOnCalloutInput = {
   calloutID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
 };
 
 export type CreateWhiteboardRtInput = {
-  content?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
 };
 
 export type CreateWhiteboardTemplateInput = {
-  content?: InputMaybe<Scalars['JSON']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   visualUri?: InputMaybe<Scalars['String']>;
@@ -1539,7 +1540,7 @@ export type CreateWhiteboardTemplateInput = {
 };
 
 export type CreateWhiteboardTemplateOnTemplatesSetInput = {
-  content?: InputMaybe<Scalars['JSON']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -4475,7 +4476,7 @@ export type UpdateCalloutVisibilityInput = {
 };
 
 export type UpdateCalloutWhiteboardTemplateInput = {
-  content?: InputMaybe<Scalars['JSON']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** The Profile of the Template. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
@@ -4772,7 +4773,7 @@ export type UpdateVisualInput = {
 
 export type UpdateWhiteboardDirectInput = {
   ID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -4781,7 +4782,7 @@ export type UpdateWhiteboardDirectInput = {
 
 export type UpdateWhiteboardRtDirectInput = {
   ID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -4790,7 +4791,7 @@ export type UpdateWhiteboardRtDirectInput = {
 
 export type UpdateWhiteboardTemplateInput = {
   ID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['JSON']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
 };
@@ -4972,7 +4973,7 @@ export type Whiteboard = {
   /** The checkout out state of this Whiteboard. */
   checkout?: Maybe<WhiteboardCheckout>;
   /** The visual content of the Whiteboard. */
-  content: Scalars['JSON'];
+  content: Scalars['WhiteboardContent'];
   /** The user that created this Whiteboard */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -5012,7 +5013,7 @@ export enum WhiteboardCheckoutStateEnum {
 export type WhiteboardContentUpdated = {
   __typename?: 'WhiteboardContentUpdated';
   /** The updated content. */
-  content: Scalars['String'];
+  content: Scalars['WhiteboardContent'];
   /** The identifier for the Whiteboard. */
   whiteboardID: Scalars['String'];
 };
@@ -5022,7 +5023,7 @@ export type WhiteboardRt = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The JSON representation of the WhiteboardRt. */
-  content: Scalars['JSON'];
+  content: Scalars['WhiteboardContent'];
   /** The user that created this WhiteboardRt */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -5040,7 +5041,7 @@ export type WhiteboardTemplate = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The visual content of the Whiteboard. */
-  content: Scalars['JSON'];
+  content: Scalars['WhiteboardContent'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for this template. */
@@ -27083,7 +27084,7 @@ export type DeletePostTemplateMutation = {
 
 export type UpdateWhiteboardTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
-  content?: InputMaybe<Scalars['JSON']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   profile: UpdateProfileInput;
 }>;
 
@@ -27098,7 +27099,7 @@ export type UpdateWhiteboardTemplateMutation = {
 
 export type CreateWhiteboardTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
-  content: Scalars['JSON'];
+  content: Scalars['WhiteboardContent'];
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
