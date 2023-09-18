@@ -1,23 +1,29 @@
-import { useEffect, useState } from 'react';
-import { addResponseMessage, addLinkSnippet, Widget } from 'react-chat-widget';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { addResponseMessage, Widget } from 'react-chat-widget';
 import { useAskChatGuidanceQuestionQuery } from '../../../core/apollo/generated/apollo-hooks';
-
-import logo from './favicon-16x16.png';
+import logoSrc from '../../../domain/platform/Logo/Logo-Small.svg';
 import { useTranslation } from 'react-i18next';
 import { FEATURE_GUIDANCE_ENGINE } from '../../../domain/platform/config/features.constants';
 import { useConfig } from '../../../domain/platform/config/useConfig';
 import { useUserContext } from '../../../domain/community/user';
 import 'react-chat-widget/lib/styles.css';
-import './styles.css';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
+import formatChatGuidanceResponseAsMarkdown from './formatChatGuidanceResponseAsMarkdown';
+import ChatWidgetStyles from './ChatWidgetStyles';
+import ChatWidgetTitle from './ChatWidgetTitle';
+import ChatWidgetSubtitle from './ChatWidgetSubtitle';
+import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
+import { createPortal } from 'react-dom';
+import ChatWidgetFooter from './ChatWidgetFooter';
+import { useMediaQuery } from '@mui/material';
 
 const ChatWidget = () => {
   const [newMessage, setNewMessage] = useState(null);
   const { t } = useTranslation();
   const { data, loading } = useAskChatGuidanceQuestionQuery({
-    variables: { chatData: { question: newMessage ?? '' } },
+    variables: { chatData: { question: newMessage! } },
     skip: !newMessage,
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
   });
 
   const { isFeatureEnabled } = useConfig();
@@ -28,18 +34,8 @@ const ChatWidget = () => {
 
   useEffect(() => {
     if (data && !loading) {
-      addResponseMessage(`Answer: ${data.askChatGuidanceQuestion.answer}`);
-
-      const regex = /metadata={'(\w+)': '([^']*)('})/g;
-      let match;
-      const sources: { title: string; link: string }[] = [];
-      while ((match = regex.exec(data.askChatGuidanceQuestion.sources)) !== null) {
-        sources.push({ title: match[1], link: match[2] });
-      }
-
-      sources.forEach(source => {
-        addLinkSnippet(source);
-      });
+      const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
+      addResponseMessage(responseMessageMarkdown);
     }
   }, [data, loading]);
 
@@ -47,13 +43,47 @@ const ChatWidget = () => {
     setNewMessage(message);
   };
 
+  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+
+  const [chatToggleTime, setChatToggleTime] = useState(Date.now());
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const [footerContainer, setFooterContainer] = useState<HTMLDivElement | null>(null);
+
+  const getConversationContainer = () => {
+    const conversationContainer = wrapperRef.current?.querySelector('.rcw-conversation-container');
+    if (!conversationContainer) {
+      setFooterContainer(null);
+      return;
+    }
+    let footerContainer = conversationContainer.querySelector('.footer-container') as HTMLDivElement | null;
+    if (!footerContainer) {
+      footerContainer = document.createElement('div');
+      footerContainer.classList.add('footer-container');
+      conversationContainer.appendChild(footerContainer);
+    }
+    setFooterContainer(footerContainer);
+  };
+
+  useLayoutEffect(getConversationContainer, [chatToggleTime]);
+
+  const isMobile = useMediaQuery('(orientation: portrait)');
+
   return enableWidget ? (
-    <Widget
-      profileAvatar={logo}
-      title={t('chatbot.title')}
-      subtitle={t('chatbot.subtitle')}
-      handleNewUserMessage={handleNewUserMessage}
-    />
+    <>
+      <ChatWidgetStyles ref={wrapperRef}>
+        <Widget
+          profileAvatar={logoSrc}
+          title={<ChatWidgetTitle mobile={isMobile} onClickInfo={() => setIsHelpDialogOpen(true)} />}
+          subtitle={<ChatWidgetSubtitle />}
+          handleNewUserMessage={handleNewUserMessage}
+          handleToggle={() => setChatToggleTime(Date.now())}
+        />
+      </ChatWidgetStyles>
+      <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
+      {footerContainer && createPortal(<ChatWidgetFooter />, footerContainer)}
+    </>
   ) : null;
 };
 
