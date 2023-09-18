@@ -1,7 +1,7 @@
 import 'react-chat-widget/lib/styles.css';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../../../core/ui/grid/utils';
-import { SourcesHeadingTagHtml } from './formatChatGuidanceResponseAsMarkdown';
+import { SOURCES_HEADING_TAG_HTML } from './formatChatGuidanceResponseAsMarkdown';
 import { forwardRef } from 'react';
 
 const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
@@ -41,7 +41,7 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
         '.rcw-response .rcw-message-text a': {
           color: theme.palette.text.primary,
         },
-        [`.rcw-message-text ${SourcesHeadingTagHtml}`]: {
+        [`.rcw-message-text ${SOURCES_HEADING_TAG_HTML}`]: {
           ...theme.typography.body2,
           whiteSpace: 'normal',
           margin: 0,

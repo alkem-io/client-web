@@ -2,8 +2,8 @@ import { TFunction } from 'react-i18next';
 
 const regex = /metadata={'(\w+)': '([^']*)('})/g;
 
-export const SourcesHeadingTagHtml = 'h5';
-const SourcesHeadingTagMarkdown = '#####';
+export const SOURCES_HEADING_TAG_HTML = 'h5';
+const SOURCES_HEADING_TAG_MARKDOWN = '#####';
 
 interface Source {
   title: string;
@@ -36,7 +36,7 @@ const formatChatGuidanceResponseAsMarkdown = (question: ChatGuidanceQuestionResp
       ? ''
       : `
 
-${SourcesHeadingTagMarkdown} ${t('common.sources')}:
+${SOURCES_HEADING_TAG_MARKDOWN} ${t('common.sources')}:
 
 ${sources.map(source => `- [${source.title}](${source.uri})`).join('\n')}
   `;
