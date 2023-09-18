@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactElement, ReactNode, useMemo } from 'react';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useCalloutPageCalloutQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
@@ -21,7 +21,7 @@ interface CalloutLocation {
 
 export interface CalloutPageProps {
   journeyTypeName: JourneyTypeName;
-  renderPage: (calloutDisplayLocation?: string) => ReactNode;
+  renderPage: (calloutDisplayLocation?: string) => ReactElement;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
 }
