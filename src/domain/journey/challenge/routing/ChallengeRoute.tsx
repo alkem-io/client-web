@@ -21,7 +21,7 @@ import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
 import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
-import ChallengeCalloutPage from '../ChallengeCollaborationPage/ChallengeCalloutPage';
+import ChallengeCalloutPage from '../challengeCalloutPage/ChallengeCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 interface ChallengeRootProps extends PageProps {}
