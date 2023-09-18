@@ -1,6 +1,6 @@
 import { TFunction } from 'react-i18next';
 
-const regex = /metadata={'(\w+)': '([^']*)('})/g;
+const SOURCE_REGEXP = /metadata={'(\w+)': '([^']*)('})/g;
 
 export const SOURCES_HEADING_TAG_HTML = 'h5';
 const SOURCES_HEADING_TAG_MARKDOWN = '#####';
@@ -13,7 +13,7 @@ interface Source {
 const getSources = (responseDocumentSources: string): Source[] => {
   let match;
   const sources: Source[] = [];
-  while ((match = regex.exec(responseDocumentSources)) !== null) {
+  while ((match = SOURCE_REGEXP.exec(responseDocumentSources)) !== null) {
     sources.push({
       // TODO match[1] always gives "source", putting the URL there for now
       // title: match[1],
