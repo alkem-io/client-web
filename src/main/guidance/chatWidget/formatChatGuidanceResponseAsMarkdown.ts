@@ -14,7 +14,7 @@ interface ChatGuidanceQuestionResponse {
 }
 
 const formatChatGuidanceResponseAsMarkdown = (question: ChatGuidanceQuestionResponse, t: TFunction) => {
-  const sources = question.sources;
+  const { answer, sources } = question;
   const sourcesMarkdown =
     sources.length === 0
       ? ''
@@ -25,7 +25,7 @@ ${SOURCES_HEADING_TAG_MARKDOWN} ${t('common.sources')}:
 ${sources.map(source => `- [${source.title}](${source.uri})`).join('\n')}
   `;
 
-  return `${question.answer}${sourcesMarkdown}`;
+  return `${answer}${sourcesMarkdown}`;
 };
 
 export default formatChatGuidanceResponseAsMarkdown;
