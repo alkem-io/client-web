@@ -1,6 +1,7 @@
 import { Excalidraw } from '@alkemio/excalidraw';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import {
+  BinaryFiles,
   ExcalidrawAPIRefValue,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
@@ -9,7 +10,7 @@ import {
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { debounce, merge } from 'lodash';
+import { compact, debounce, merge } from 'lodash';
 import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
@@ -47,6 +48,8 @@ export interface WhiteboardWhiteboardProps {
 }
 
 const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
+type RefreshWhiteboardStateParam = Parameters<ExcalidrawImperativeAPI['updateScene']>[0] & { files: BinaryFiles };
+
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
@@ -65,10 +68,20 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     }, [whiteboard?.content]);
 
     const refreshOnDataChange = useRef(
-      debounce(async (state: Parameters<ExcalidrawImperativeAPI['updateScene']>[0]) => {
+      debounce(async (state: RefreshWhiteboardStateParam) => {
         const excalidraw = await combinedRef.current?.readyPromise;
         excalidraw?.updateScene(state);
         excalidraw?.zoomToFit();
+
+        // Find the properties present in `state.files` and missing in currentFiles
+        // And put them into a BinaryFileData[]
+        const currentFiles = excalidraw?.getFiles() ?? {};
+        const missingFiles = compact(
+          Object.keys(state.files).map(key => (currentFiles[key] ? undefined : state.files[key]))
+        );
+        if (missingFiles.length > 0) {
+          excalidraw?.addFiles(missingFiles);
+        }
       }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
     ).current;
 

@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
-import WhiteboardValueContainer from '../containers/WhiteboardContentContainer';
+import WhiteboardContentContainer from '../containers/WhiteboardContentContainer';
 import {
   WhiteboardDetailsFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
@@ -83,7 +83,7 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
 
   return (
     <>
-      <WhiteboardValueContainer whiteboardId={whiteboard?.id}>
+      <WhiteboardContentContainer whiteboardId={whiteboard?.id}>
         {entities => {
           const { isWhiteboardCheckedOutByMe, isWhiteboardAvailable } = entities;
 
@@ -120,7 +120,7 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
             />
           );
         }}
-      </WhiteboardValueContainer>
+      </WhiteboardContentContainer>
       <ConfirmationDialog
         actions={{
           onCancel: () => setWhiteboardBeingDeleted(undefined),
