@@ -6,7 +6,7 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 import { UserListQuery, UserListQueryVariables } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import clearCacheForQuery from '../../../shared/utils/apollo-cache/clearCacheForQuery';
+import clearCacheForQuery from '../../../../core/apollo/utils/clearCacheForQuery';
 
 interface Provided {
   loading: boolean;

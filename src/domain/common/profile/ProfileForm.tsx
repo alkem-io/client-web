@@ -114,7 +114,7 @@ const ProfileForm: FC<ProfileFormProps> = ({
               maxLength={SMALL_TEXT_LENGTH}
               withCounter
             />
-            <BlockSectionTitle color={'primary'}>{t('components.tagsSegment.title')}</BlockSectionTitle>
+            <BlockSectionTitle color={'primary'}>{t('common.tags')}</BlockSectionTitle>
             <TagsetSegment tagsets={tagsets} />
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
           </Gutters>

@@ -9,7 +9,7 @@ import LinkNoUnderline from '../../../domain/shared/components/LinkNoUnderline';
 import { useTranslation } from 'react-i18next';
 import ContributorTooltip from './ContributorTooltip';
 
-interface SpaceWelcomeSectionContributorProps {
+export interface SpaceWelcomeSectionContributorProps {
   profile: {
     displayName: string;
     avatar?: {

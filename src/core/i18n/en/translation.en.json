@@ -1,7 +1,25 @@
 {
   "chatbot": {
-    "title": "Alkemio Helpdesk",
-    "subtitle": "Ask your questions here."
+    "title": "Alkemio Help",
+    "subtitle": "Ask your question to search through our documentation or browse it directly",
+    "infoDialog": {
+      "title": "Alkemio Help",
+      "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+    },
+    "references": [
+      {
+        "uri": "https://www.alkemio.org/help/getting-started/",
+        "title": "New user? Visit our Getting Started pages!"
+      },
+      {
+        "uri": "https://www.alkemio.org/help/",
+        "title": "Find your answers in the Help Center or FAQ"
+      },
+      {
+        "uri": "https://www.alkemio.org/support/",
+        "title": "Contact the Alkemio team"
+      }
+    ]
   },
   "notifications": {
     "releaseUpdates": {
@@ -290,6 +308,7 @@
     "innovationPack": "Innovation Pack",
     "more": "More",
     "url": "URL",
+    "sources": "Sources",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -1112,7 +1131,10 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-space members to challenges"
+      "read-access": "Allow read access for non-space members to challenges",
+      "about": "About this Space",
+      "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
+      "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "nameSegment": {
       "name": "Name",
@@ -1126,9 +1148,6 @@
       "avatar": "Avatar",
       "banner": "Banner",
       "background": "Background"
-    },
-    "tagsSegment": {
-      "title": "Tags"
     },
     "profileSegment": {
       "avatar": {
