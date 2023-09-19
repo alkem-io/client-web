@@ -632,9 +632,16 @@ export type ChallengeTemplateFieldPolicy = {
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ChatGuidanceResultKeySpecifier = ('answer' | 'question' | 'sources' | ChatGuidanceResultKeySpecifier)[];
+export type ChatGuidanceResultKeySpecifier = (
+  | 'answer'
+  | 'cost'
+  | 'question'
+  | 'sources'
+  | ChatGuidanceResultKeySpecifier
+)[];
 export type ChatGuidanceResultFieldPolicy = {
   answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  cost?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   sources?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2241,6 +2248,11 @@ export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SourceKeySpecifier = ('title' | 'uri' | SourceKeySpecifier)[];
+export type SourceFieldPolicy = {
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SpaceKeySpecifier = (
   | 'agent'
   | 'authorization'
@@ -3160,6 +3172,10 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
+  };
+  Source?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SourceKeySpecifier | (() => undefined | SourceKeySpecifier);
+    fields?: SourceFieldPolicy;
   };
   Space?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);
