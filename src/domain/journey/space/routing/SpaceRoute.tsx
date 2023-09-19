@@ -17,7 +17,7 @@ import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import SpaceSearchPage from '../pages/SpaceSearchPage';
-import SpaceCalloutPage from '../SpaceCollaborationPage/SpaceCalloutPage';
+import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';

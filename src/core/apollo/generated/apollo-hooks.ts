@@ -20972,7 +20972,7 @@ export type DeletePostTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostTemplateMutationVariables
 >;
 export const UpdateWhiteboardTemplateDocument = gql`
-  mutation updateWhiteboardTemplate($templateId: UUID!, $content: JSON, $profile: UpdateProfileInput!) {
+  mutation updateWhiteboardTemplate($templateId: UUID!, $content: WhiteboardContent, $profile: UpdateProfileInput!) {
     updateWhiteboardTemplate(whiteboardTemplateInput: { ID: $templateId, content: $content, profile: $profile }) {
       id
       profile {
@@ -21031,7 +21031,7 @@ export type UpdateWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions
 export const CreateWhiteboardTemplateDocument = gql`
   mutation createWhiteboardTemplate(
     $templatesSetId: UUID!
-    $content: JSON!
+    $content: WhiteboardContent!
     $profile: CreateProfileInput!
     $tags: [String!]
   ) {

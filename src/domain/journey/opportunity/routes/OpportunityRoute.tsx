@@ -14,7 +14,7 @@ import OpportunityAboutPage from '../pages/OpportunityAboutPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import Redirect from '../../../../core/routing/Redirect';
-import OpportunityCalloutPage from '../OpportunityCollaborationPage/OpportunityCalloutPage';
+import OpportunityCalloutPage from '../opportunityCalloutPage/OpportunityCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 interface OpportunityRootProps extends PageProps {}

@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactElement, ReactNode, useMemo } from 'react';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useCalloutPageCalloutQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
@@ -12,6 +12,7 @@ import { buildCalloutUrl } from '../../../main/routing/urlBuilders';
 import useCanGoBack from '../../../core/routing/useCanGoBack';
 import { Theme, useMediaQuery } from '@mui/material';
 import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
+import Loading from '../../../core/ui/loading/Loading';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -20,7 +21,7 @@ interface CalloutLocation {
 
 export interface CalloutPageProps {
   journeyTypeName: JourneyTypeName;
-  renderPage: (calloutDisplayLocation: string | undefined) => ReactNode;
+  renderPage: (calloutDisplayLocation?: string) => ReactElement;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
 }
@@ -53,7 +54,11 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     throw new Error('Callout ID is missing');
   }
 
-  const { data: calloutData, refetch: retechCalloutData } = useCalloutPageCalloutQuery({
+  const {
+    data: calloutData,
+    loading: isCalloutLoading,
+    refetch: refetchCalloutData,
+  } = useCalloutPageCalloutQuery({
     variables: {
       calloutNameId,
       spaceNameId,
@@ -98,8 +103,12 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
+  if (isCalloutLoading) {
+    return <Loading />;
+  }
+
   if (!typedCallout) {
-    return null;
+    return renderPage();
   }
 
   const calloutDisplayLocation = getCalloutDisplayLocationValue(typedCallout.profile.displayLocationTagset?.tags);
@@ -130,7 +139,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           contributionsCount={typedCallout.activity}
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}
-          onCalloutUpdate={retechCalloutData}
+          onCalloutUpdate={refetchCalloutData}
           onCalloutDelete={handleDelete}
           onClose={handleClose}
           calloutUri={calloutUri}
