@@ -7,7 +7,7 @@ import {
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '../../../../shared/components/SearchableList/SimpleSearchableList';
-import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
+import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
 
 const PAGE_SIZE = 10;

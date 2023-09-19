@@ -5,7 +5,7 @@ import CommentsComponent from '../../../communication/room/Comments/CommentsComp
 import { useUserContext } from '../../../community/user';
 import { useRemoveCommentFromCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
-import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
