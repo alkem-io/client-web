@@ -18575,6 +18575,19 @@ export const SpaceHostDocument = gql`
         profile {
           id
           displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
+          }
         }
       }
     }

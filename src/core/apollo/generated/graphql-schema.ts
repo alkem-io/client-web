@@ -24206,7 +24206,14 @@ export type SpaceHostQuery = {
           __typename?: 'Organization';
           id: string;
           nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          };
         }
       | undefined;
   };

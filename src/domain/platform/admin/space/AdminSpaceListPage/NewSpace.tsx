@@ -1,8 +1,7 @@
 import { Box, Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import SpaceEditForm, { SpaceEditFormValuesType } from '../../components/SpaceEditForm';
-import SaveButton from '../../../../../core/ui/actions/SaveButton';
+import SpaceEditForm, { SpaceEditFormValuesType } from '../../../../journey/space/spaceEditForm/SpaceEditForm';
 import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
@@ -25,9 +24,9 @@ export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
-  const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
+  const { data: organizationList } = useOrganizationsListQuery();
 
-  const [createSpace, { loading: loading1 }] = useCreateSpaceMutation({
+  const [createSpace, { loading }] = useCreateSpaceMutation({
     // refetchQueries: [refetchSpacesQuery()],
     // awaitRefetchQueries: true,
     onCompleted: data => {
@@ -62,8 +61,6 @@ export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
     [organizationList]
   );
 
-  const isLoading = loading1 || loadingOrganizations;
-
   const onSubmit = async (values: SpaceEditFormValuesType) => {
     const { name, nameID, host, tagsets } = values;
 
@@ -83,22 +80,13 @@ export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
     });
   };
 
-  let submitWired;
   return (
     <AdminLayout currentTab={AdminSection.Space}>
       <Container maxWidth="xl">
         <Box marginY={3}>
           <WrapperTypography variant="h2">{'New Space'}</WrapperTypography>
         </Box>
-        <SpaceEditForm
-          isEdit={false}
-          onSubmit={onSubmit}
-          wireSubmit={submit => (submitWired = submit)}
-          organizations={organizations}
-        />
-        <Box display="flex" marginY={4} justifyContent="flex-end">
-          <SaveButton loading={isLoading} onClick={() => submitWired()} />
-        </Box>
+        <SpaceEditForm onSubmit={onSubmit} organizations={organizations} loading={loading} />
       </Container>
     </AdminLayout>
   );
