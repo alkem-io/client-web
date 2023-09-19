@@ -29,6 +29,7 @@ generates:
         Markdown: string
         MessageID: string
         LifecycleDefinition: string
+        WhiteboardContent: string
       strictScalars: true
   src/core/apollo/generated/apollo-hooks.ts:
     preset: import-types
