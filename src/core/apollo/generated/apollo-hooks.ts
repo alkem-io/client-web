@@ -22730,7 +22730,10 @@ export const AskChatGuidanceQuestionDocument = gql`
     askChatGuidanceQuestion(chatData: $chatData) {
       answer
       question
-      sources
+      sources {
+        title
+        uri
+      }
     }
   }
 `;

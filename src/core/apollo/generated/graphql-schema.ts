@@ -856,6 +856,8 @@ export type ChallengeTemplate = {
 };
 
 export type ChatGuidanceInput = {
+  /** The language of the answer. */
+  language?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
   question: Scalars['String'];
 };
@@ -864,10 +866,12 @@ export type ChatGuidanceResult = {
   __typename?: 'ChatGuidanceResult';
   /** The answer to the question */
   answer: Scalars['String'];
+  /** Cost of the query, in USD */
+  cost?: Maybe<Scalars['Float']>;
   /** The original question */
   question: Scalars['String'];
   /** The sources used to answer the question */
-  sources: Scalars['String'];
+  sources: Array<Source>;
 };
 
 export type Collaboration = {
@@ -4105,6 +4109,14 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']>;
+};
+
+export type Source = {
+  __typename?: 'Source';
+  /** The title of the source */
+  title: Scalars['String'];
+  /** The URI of the source */
+  uri: Scalars['String'];
 };
 
 export type Space = {
@@ -29545,7 +29557,12 @@ export type AskChatGuidanceQuestionQueryVariables = Exact<{
 
 export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
-  askChatGuidanceQuestion: { __typename?: 'ChatGuidanceResult'; answer: string; question: string; sources: string };
+  askChatGuidanceQuestion: {
+    __typename?: 'ChatGuidanceResult';
+    answer: string;
+    question: string;
+    sources: Array<{ __typename?: 'Source'; title: string; uri: string }>;
+  };
 };
 
 export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;
