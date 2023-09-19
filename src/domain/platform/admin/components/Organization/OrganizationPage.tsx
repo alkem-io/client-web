@@ -18,7 +18,7 @@ import {
 import { logger } from '../../../../../core/logging/winston/logger';
 import Loading from '../../../../../core/ui/loading/Loading';
 import OrganizationForm from './OrganizationForm';
-import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
+import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 interface Props {
