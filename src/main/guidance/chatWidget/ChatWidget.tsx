@@ -19,13 +19,12 @@ import { useMediaQuery } from '@mui/material';
 
 const ChatWidget = () => {
   const [newMessage, setNewMessage] = useState(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data, loading } = useAskChatGuidanceQuestionQuery({
-    variables: { chatData: { question: newMessage! } },
+    variables: { chatData: { question: newMessage!, language: i18n.language.toUpperCase() } },
     skip: !newMessage,
     fetchPolicy: 'network-only',
   });
-
   const { isFeatureEnabled } = useConfig();
   const guidanceEnabled: boolean = isFeatureEnabled(FEATURE_GUIDANCE_ENGINE);
   const { user: currentUser } = useUserContext();
