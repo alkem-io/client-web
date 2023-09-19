@@ -85,13 +85,13 @@ const SpaceEditForm: FC<Props> = ({
   const profileId = profile?.id;
 
   const initialValues: SpaceEditFormValuesType = {
-    name: name || '',
-    nameID: nameID || '',
-    tagline: profile?.tagline || '',
+    name: name ?? '',
+    nameID: nameID ?? '',
+    tagline: profile?.tagline ?? '',
     location: formatLocation(profile?.location) || EmptyLocation,
-    references: profile?.references || [],
-    tagsets: tagsets,
-    host: hostID || '',
+    references: profile?.references ?? [],
+    tagsets,
+    host: hostID ?? '',
   };
 
   const validationSchema = yup.object().shape({
