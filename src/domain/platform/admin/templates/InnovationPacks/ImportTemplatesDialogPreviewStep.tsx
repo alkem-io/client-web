@@ -16,8 +16,8 @@ export interface ImportTemplatesDialogPreviewStepProps<
   template: Q;
   templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
-  getImportedTemplateValue?: (template: Q) => void;
-  importedTemplateValue?: V | undefined;
+  getImportedTemplateContent?: (template: Q) => void;
+  importedTemplateContent?: V | undefined;
   actions?: ReactNode;
 }
 
@@ -29,16 +29,16 @@ const ImportTemplatesDialogPreviewStep = <
   template,
   templatePreviewCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
-  getImportedTemplateValue,
-  importedTemplateValue,
+  getImportedTemplateContent,
+  importedTemplateContent,
   actions,
   onClose,
 }: ImportTemplatesDialogPreviewStepProps<T, Q, V>) => {
   const { t } = useTranslation();
 
-  const getTemplateValue = useCallback(
-    () => (getImportedTemplateValue ? getImportedTemplateValue(template) : undefined),
-    [getImportedTemplateValue, template]
+  const getTemplateContent = useCallback(
+    () => (getImportedTemplateContent ? getImportedTemplateContent(template) : undefined),
+    [getImportedTemplateContent, template]
   );
 
   return (
@@ -57,8 +57,8 @@ const ImportTemplatesDialogPreviewStep = <
       <Grid item xs={12} md={9}>
         <TemplatePreview
           template={template}
-          getTemplateValue={getTemplateValue}
-          templateValue={importedTemplateValue}
+          getTemplateContent={getTemplateContent}
+          templateContent={importedTemplateContent}
         />
       </Grid>
     </Grid>
