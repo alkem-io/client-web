@@ -1,9 +1,10 @@
-import { forwardRef } from 'react';
+import { ComponentType, ForwardedRef, forwardRef } from 'react';
 import { Paper, PaperProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import { DroppableProvidedProps } from 'react-beautiful-dnd';
 import BasePageContentBlock, { BasePageContentBlockProps } from './BasePageContentBlock';
+import { PaperTypeMap } from '@mui/material/Paper/Paper';
 
 export interface PageContentBlockProps extends BasePageContentBlockProps, PaperProps, Partial<DroppableProvidedProps> {
   accent?: boolean;
@@ -11,7 +12,12 @@ export interface PageContentBlockProps extends BasePageContentBlockProps, PaperP
 
 const borderWidth = '1px';
 
-const OutlinedPaper = props => <Paper variant="outlined" {...props} />;
+const OutlinedPaper = forwardRef(
+  <D extends React.ElementType = PaperTypeMap['defaultComponent'], P = {}>(
+    props: PaperProps<D, P>,
+    ref: ForwardedRef<HTMLDivElement>
+  ) => <Paper ref={ref} variant="outlined" {...props} />
+);
 
 const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(({ accent = false, ...props }, ref) => {
   return (
@@ -19,7 +25,7 @@ const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(({ ac
       <BasePageContentBlock
         ref={ref}
         padding={theme => `calc(${gutters()(theme)} - ${borderWidth})`}
-        component={OutlinedPaper}
+        component={OutlinedPaper as ComponentType<PaperProps>}
         {...props}
       />
     </SwapColors>
