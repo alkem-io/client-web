@@ -4,7 +4,6 @@ import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import { DroppableProvidedProps } from 'react-beautiful-dnd';
 import BasePageContentBlock, { BasePageContentBlockProps } from './BasePageContentBlock';
-import * as React from 'react';
 import { PaperTypeMap } from '@mui/material/Paper/Paper';
 
 export interface PageContentBlockProps extends BasePageContentBlockProps, PaperProps, Partial<DroppableProvidedProps> {
