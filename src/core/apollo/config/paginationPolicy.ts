@@ -79,7 +79,6 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
 
         if (index >= 0) {
           prefix = prefix.slice(0, index + 1);
-          console.log(prefix);
         }
       } else if (args?.before) {
         const index = prefix.findIndex(createRecordFinder(args.before));
