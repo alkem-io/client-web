@@ -51,21 +51,35 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
 
       const [dataFieldName] = nonMetaFields;
 
-      const incomingData = incoming[dataFieldName] as Item[];
+      let incomingData = incoming[dataFieldName] as Item[];
 
       let prefix = existing[dataFieldName] as Item[];
       let suffix: Item[] = [];
 
-      const recordFinder = (item: Item) =>
-        isReference(item) ? item.__ref === `${typeName}:${args.after}` : item.id === args.after;
+      const createRecordFinder = (itemId: string) => (item: Item) =>
+        isReference(item) ? item.__ref === `${typeName}:${itemId}` : item.id === itemId;
+
+      let hasNextPageOverride;
+      const fixDuplicates = (after: string) => {
+        // Remove after client-4586 is addressed on the server
+        const afterItemIndex = incomingData.findIndex(createRecordFinder(after));
+        incomingData = incomingData.slice(afterItemIndex + 1);
+        if (incomingData.length === 0) {
+          hasNextPageOverride = false;
+        }
+      };
 
       if (args?.after) {
-        const index = prefix.findIndex(recordFinder);
+        const index = prefix.findIndex(createRecordFinder(args.after));
+
+        fixDuplicates(args.after);
+
         if (index >= 0) {
           prefix = prefix.slice(0, index + 1);
+          console.log(prefix);
         }
       } else if (args?.before) {
-        const index = prefix.findIndex(recordFinder);
+        const index = prefix.findIndex(createRecordFinder(args.before));
         suffix = index < 0 ? prefix : prefix.slice(index);
         prefix = [];
       } else if (incomingData) {
@@ -105,6 +119,10 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
           if (hasNextPage !== undefined) pageInfo.hasNextPage = hasNextPage;
           if (endCursor !== undefined || endCursor !== null) pageInfo.endCursor = endCursor;
         }
+      }
+
+      if (typeof hasNextPageOverride !== 'undefined') {
+        pageInfo.hasNextPage = hasNextPageOverride;
       }
 
       return {
