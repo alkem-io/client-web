@@ -761,6 +761,18 @@ export enum CalloutDisplayLocation {
   OpportunitiesRight = 'OPPORTUNITIES_RIGHT',
 }
 
+export type CalloutFraming = {
+  __typename?: 'CalloutFraming';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The whiteboard template content for this Callout Framing. */
+  content?: Maybe<Scalars['JSON']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for framing the associated Callout. */
+  profile: Profile;
+};
+
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
   /** The identifier for the Callout on which the post was created. */
@@ -769,11 +781,55 @@ export type CalloutPostCreated = {
   post: Post;
 };
 
+export type CalloutResponseDefaults = {
+  __typename?: 'CalloutResponseDefaults';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The default description to use for new contributions. */
+  postDescription?: Maybe<Scalars['Markdown']>;
+  /** The default whiteboard content for whiteboard responses. */
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
+};
+
+export type CalloutResponsePolicy = {
+  __typename?: 'CalloutResponsePolicy';
+  /** The allowed response types for this callout. */
+  allowedResponseTypes: Array<CalloutResponseType>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** State of the Callout. */
+  state: CalloutState;
+};
+
+export enum CalloutResponseType {
+  Comments = 'COMMENTS',
+  Link = 'LINK',
+  Post = 'POST',
+  Whiteboard = 'WHITEBOARD',
+  WhiteboardRt = 'WHITEBOARD_RT',
+}
+
 export enum CalloutState {
   Archived = 'ARCHIVED',
   Closed = 'CLOSED',
   Open = 'OPEN',
 }
+
+export type CalloutTemplate = {
+  __typename?: 'CalloutTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The framing for callouts created from this template. */
+  framing: CalloutFraming;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+  /** The defaults to use for Callouts created from this template.   */
+  responseDefaults: CalloutResponseDefaults;
+  /** The response policy to use for Callouts created from this template.   */
+  responsePolicy: CalloutResponsePolicy;
+};
 
 export enum CalloutType {
   LinkCollection = 'LINK_COLLECTION',
@@ -1236,6 +1292,11 @@ export type CreateCalendarEventOnCalendarInput = {
   wholeDay: Scalars['Boolean'];
 };
 
+export type CreateCalloutFramingInput = {
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
+  profile: CreateProfileInput;
+};
+
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
   /** Set callout display location for this Callout. */
@@ -1262,6 +1323,29 @@ export type CreateCalloutOnCollaborationInput = {
   whiteboardRt?: InputMaybe<CreateWhiteboardRtInput>;
   /** WhiteboardTemplate data for whiteboard Callouts. */
   whiteboardTemplate?: InputMaybe<CreateWhiteboardTemplateInput>;
+};
+
+export type CreateCalloutResponseDefaultsInput = {
+  /** The default description to use for new Post contributions. */
+  postDescription?: InputMaybe<Scalars['Markdown']>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
+};
+
+export type CreateCalloutResponsePolicyInput = {
+  /** The allowed response types for this callout. */
+  allowedResponseTypes?: InputMaybe<Array<CalloutResponseType>>;
+  /** State of the callout. */
+  state?: InputMaybe<CalloutState>;
+};
+
+export type CreateCalloutTemplateOnTemplatesSetInput = {
+  framing: CreateCalloutFramingInput;
+  profile: CreateProfileInput;
+  responseDefaults: CreateCalloutResponseDefaultsInput;
+  responsePolicy: CreateCalloutResponsePolicyInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -1598,6 +1682,10 @@ export type DeleteCalendarEventInput = {
 };
 
 export type DeleteCalloutInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCalloutTemplateInput = {
   ID: Scalars['UUID'];
 };
 
@@ -2047,6 +2135,8 @@ export type LookupQueryResults = {
   calendarEvent?: Maybe<CalendarEvent>;
   /** Lookup the specified Callout */
   callout?: Maybe<Callout>;
+  /** Lookup the specified Callout Template */
+  calloutTemplate?: Maybe<CalloutTemplate>;
   /** Lookup the specified Challenge */
   challenge?: Maybe<Challenge>;
   /** Lookup the specified Collaboration */
@@ -2090,6 +2180,10 @@ export type LookupQueryResultsCalendarEventArgs = {
 };
 
 export type LookupQueryResultsCalloutArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsCalloutTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -2278,6 +2372,8 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Create a new Callout on the Collaboration. */
   createCalloutOnCollaboration: Callout;
+  /** Creates a new CalloutTemplate on the specified TemplatesSet. */
+  createCalloutTemplate: CalloutTemplate;
   /** Creates a new Challenge within the specified Space. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -2334,6 +2430,8 @@ export type Mutation = {
   deleteCalendarEvent: CalendarEvent;
   /** Delete a Callout. */
   deleteCallout: Callout;
+  /** Deletes the specified CalloutTemplate. */
+  deleteCalloutTemplate: CalloutTemplate;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Delete Collaboration. */
@@ -2450,6 +2548,8 @@ export type Mutation = {
   updateCallout: Callout;
   /** Update the information describing the publishing of the specified Callout. */
   updateCalloutPublishInfo: Callout;
+  /** Updates the specified CalloutTemplate. */
+  updateCalloutTemplate: CalloutTemplate;
   /** Update the visibility of the specified Callout. */
   updateCalloutVisibility: Callout;
   /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
@@ -2620,6 +2720,10 @@ export type MutationCreateCalloutOnCollaborationArgs = {
   calloutData: CreateCalloutOnCollaborationInput;
 };
 
+export type MutationCreateCalloutTemplateArgs = {
+  calloutTemplateInput: CreateCalloutTemplateOnTemplatesSetInput;
+};
+
 export type MutationCreateChallengeArgs = {
   challengeData: CreateChallengeOnSpaceInput;
 };
@@ -2726,6 +2830,10 @@ export type MutationDeleteCalendarEventArgs = {
 
 export type MutationDeleteCalloutArgs = {
   deleteData: DeleteCalloutInput;
+};
+
+export type MutationDeleteCalloutTemplateArgs = {
+  deleteData: DeleteCalloutTemplateInput;
 };
 
 export type MutationDeleteChallengeArgs = {
@@ -2950,6 +3058,10 @@ export type MutationUpdateCalloutArgs = {
 
 export type MutationUpdateCalloutPublishInfoArgs = {
   calloutData: UpdateCalloutPublishInfoInput;
+};
+
+export type MutationUpdateCalloutTemplateArgs = {
+  calloutTemplateInput: UpdateCalloutTemplateInput;
 };
 
 export type MutationUpdateCalloutVisibilityArgs = {
@@ -4358,6 +4470,8 @@ export type TemplatesSet = {
   __typename?: 'TemplatesSet';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The CalloutTemplates in this TemplatesSet. */
+  calloutTemplates: Array<CalloutTemplate>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A single InnovationFlowTemplate */
@@ -4430,6 +4544,13 @@ export type UpdateCalendarEventInput = {
   wholeDay: Scalars['Boolean'];
 };
 
+export type UpdateCalloutFramingInput = {
+  ID: Scalars['UUID'];
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
   /** Set display location for this Callout. */
@@ -4464,6 +4585,31 @@ export type UpdateCalloutPublishInfoInput = {
   publishDate?: InputMaybe<Scalars['Float']>;
   /** The identifier of the publisher of the Callout. */
   publisherID?: InputMaybe<Scalars['UUID_NAMEID_EMAIL']>;
+};
+
+export type UpdateCalloutResponseDefaultsInput = {
+  ID: Scalars['UUID'];
+  /** The default description to use for new Post contributions. */
+  postDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The default description to use for new Whiteboard contributions. */
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
+};
+
+export type UpdateCalloutResponsePolicyInput = {
+  ID: Scalars['UUID'];
+  /** The allowed response types for this callout. */
+  allowedResponseTypes?: InputMaybe<Array<CalloutResponseType>>;
+  /** State of the callout. */
+  state?: InputMaybe<CalloutState>;
+};
+
+export type UpdateCalloutTemplateInput = {
+  ID: Scalars['UUID'];
+  framing?: InputMaybe<UpdateCalloutFramingInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+  responseDefaults?: InputMaybe<UpdateCalloutResponseDefaultsInput>;
+  responsePolicy?: InputMaybe<UpdateCalloutResponsePolicyInput>;
 };
 
 export type UpdateCalloutVisibilityInput = {
