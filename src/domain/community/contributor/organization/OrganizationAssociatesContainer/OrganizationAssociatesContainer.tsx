@@ -47,7 +47,7 @@ export interface OrganizationAssociatesActions {
   handleRemoveAdmin: (memberId: string) => void;
   handleAssignOwner: (memberId: string) => void;
   handleRemoveOwner: (memberId: string) => void;
-  handleLoadMore: () => Promise<void>;
+  fetchMoreUsers: () => Promise<void>;
   setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
 
@@ -58,7 +58,7 @@ export interface OrganizationAssociatesState {
   removingAdmin: boolean;
   addingOwner: boolean;
   removingOwner: boolean;
-  loading: boolean;
+  loadingUsers: boolean;
   hasMoreUsers: boolean | undefined;
 }
 
@@ -206,16 +206,14 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
   const {
     availableMembers,
     currentMembers: allMembers,
-    loading,
-    fetchMore,
-    hasMore,
+    loading: loadingUsers,
+    fetchMore: fetchMoreUsers,
+    hasMore: hasMoreUsers,
     setSearchTerm,
   } = useAvailableMembersWithCredential({
     credential: entities.credential,
     resourceId: entities.organizationId,
   });
-
-  const handleLoadMore = fetchMore;
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -242,7 +240,7 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           handleRemoveAdmin,
           handleAssignOwner,
           handleRemoveOwner,
-          handleLoadMore,
+          fetchMoreUsers,
           setSearchTerm,
         },
         {
@@ -252,8 +250,8 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           removingAdmin,
           addingOwner,
           removingOwner,
-          loading,
-          hasMoreUsers: hasMore,
+          loadingUsers,
+          hasMoreUsers,
         }
       )}
     </>

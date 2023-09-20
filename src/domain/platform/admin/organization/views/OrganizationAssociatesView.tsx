@@ -26,10 +26,10 @@ export const OrganizationAssociatesView: FC = () => {
             executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignAssociate}
             onRemove={actions.handleRemoveAssociate}
-            fetchMore={actions.handleLoadMore}
+            fetchMore={actions.fetchMoreUsers}
             hasMore={state.hasMoreUsers}
-            loadingMembers={state.loading}
-            loadingAvailableMembers={state.loading}
+            loadingMembers={state.loadingUsers}
+            loadingAvailableMembers={state.loadingUsers}
             onSearchTermChange={actions.setSearchTerm}
           />
         )}
