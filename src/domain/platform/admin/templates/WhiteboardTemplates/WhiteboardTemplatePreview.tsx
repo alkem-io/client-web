@@ -13,13 +13,13 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
 
 interface WhiteboardTemplateViewProps {
   template: AdminWhiteboardTemplateFragment;
-  getTemplateValue?: (template: AdminWhiteboardTemplateFragment) => void;
+  getTemplateContent?: (template: AdminWhiteboardTemplateFragment) => void;
   templateContent?: { content: string | undefined } | undefined;
 }
 
 const WhiteboardTemplatePreview = ({
   template,
-  getTemplateValue = () => {},
+  getTemplateContent = () => {},
   templateContent,
 }: WhiteboardTemplateViewProps) => {
   const { t } = useTranslation();
@@ -29,8 +29,8 @@ const WhiteboardTemplatePreview = ({
   } = template;
 
   useEffect(() => {
-    getTemplateValue(template);
-  }, [getTemplateValue, template]);
+    getTemplateContent(template);
+  }, [getTemplateContent, template]);
 
   const whiteboardFromTemplate = useMemo(() => {
     return {
