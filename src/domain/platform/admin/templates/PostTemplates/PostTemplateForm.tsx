@@ -55,7 +55,6 @@ const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemp
           name="defaultDescription"
           title={t('post-templates.default-description')}
           maxLength={VERY_LONG_TEXT_LENGTH}
-          withCounter
         />
       </TemplateFormRows>
     </TemplateForm>

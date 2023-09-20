@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { VERY_LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
@@ -42,7 +42,7 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile
 
   const validationSchema = yup.object().shape({
     displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
-    description: yup.string().required().max(LONG_TEXT_LENGTH),
+    description: yup.string().required().max(VERY_LONG_TEXT_LENGTH),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
@@ -57,12 +57,7 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile
         return (
           <Gutters>
             <FormikInputField name="displayName" title={t('common.title')} maxLength={SMALL_TEXT_LENGTH} />
-            <FormikMarkdownField
-              name="description"
-              title={t('common.description')}
-              maxLength={LONG_TEXT_LENGTH}
-              withCounter
-            />
+            <FormikMarkdownField name="description" title={t('common.description')} maxLength={VERY_LONG_TEXT_LENGTH} />
             {/* TODO: Tags pending <TagsetSegment tagsets={profile?.tagsets ?? []} /> */}
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
             <VisualUpload visual={profile?.bannerNarrow} />

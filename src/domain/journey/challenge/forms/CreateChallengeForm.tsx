@@ -99,7 +99,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             rows={5}
             helperText={t('context.challenge.background.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={VERY_LONG_TEXT_LENGTH}
           />
           <SectionSpacer />
@@ -109,7 +108,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             rows={5}
             helperText={t('context.challenge.vision.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={VERY_LONG_TEXT_LENGTH}
           />
           <SectionSpacer double />

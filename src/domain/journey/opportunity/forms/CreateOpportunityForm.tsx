@@ -95,7 +95,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
             rows={5}
             helperText={t('context.opportunity.vision.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={VERY_LONG_TEXT_LENGTH}
           />
           <SectionSpacer double />

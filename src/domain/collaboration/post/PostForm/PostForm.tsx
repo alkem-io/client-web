@@ -129,6 +129,7 @@ const PostForm: FC<PostFormProps> = ({
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
+      withCounter
       enableReinitialize
       validateOnMount
       onSubmit={() => {}}
@@ -150,7 +151,6 @@ const PostForm: FC<PostFormProps> = ({
               rows={7}
               required
               maxLength={VERY_LONG_TEXT_LENGTH}
-              withCounter
               loading={loading}
             />
             <TagsetSegment

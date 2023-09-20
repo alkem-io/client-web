@@ -139,7 +139,6 @@ const CalendarEventForm = ({
                 name="description"
                 title={t('common.description')}
                 maxLength={VERY_LONG_TEXT_LENGTH}
-                withCounter
                 sx={{ marginBottom: gutters(-1) }}
               />
               <TagsetField name="tags" title={t('common.tags')} />

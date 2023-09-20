@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
   ALT_TEXT_LENGTH,
-  LONG_TEXT_LENGTH,
+  VERY_LONG_TEXT_LENGTH,
   MID_TEXT_LENGTH,
 } from '../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -13,7 +13,7 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 
 export const profileSegmentSchema = yup.object().shape({
   avatar: yup.string().max(MID_TEXT_LENGTH),
-  description: MarkdownValidator(LONG_TEXT_LENGTH),
+  description: MarkdownValidator(VERY_LONG_TEXT_LENGTH),
   tagline: yup.string().max(ALT_TEXT_LENGTH),
 });
 
@@ -46,8 +46,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
           rows={10}
           multiline
           disabled={disabled}
-          withCounter
-          maxLength={LONG_TEXT_LENGTH}
+          maxLength={VERY_LONG_TEXT_LENGTH}
           required={required}
         />
       </FormRow>

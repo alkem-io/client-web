@@ -8,11 +8,7 @@ import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikM
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from './DiscussionIcon';
-import {
-  LONG_TEXT_LENGTH,
-  SMALL_TEXT_LENGTH,
-  VERY_LONG_TEXT_LENGTH,
-} from '../../../../core/ui/forms/field-length.constants';
+import { SMALL_TEXT_LENGTH, VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { LoadingButton } from '@mui/lab';
@@ -124,8 +120,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
                     rows={10}
                     multiline
                     disabled={isSubmitting}
-                    withCounter
-                    maxLength={LONG_TEXT_LENGTH}
+                    maxLength={VERY_LONG_TEXT_LENGTH}
                   />
                 </Grid>
                 <Grid item>
