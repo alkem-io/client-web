@@ -59,9 +59,12 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
       const createRecordFinder = (itemId: string) => (item: Item) =>
         isReference(item) ? item.__ref === `${typeName}:${itemId}` : item.id === itemId;
 
+      /**
+       * Fix for client-4586, server can send a response that contains an item with id = args.after.
+       * Remove hasNextPageOverride and fixDuplicates when addressed properly.
+       */
       let hasNextPageOverride;
       const fixDuplicates = (after: string) => {
-        // Remove after client-4586 is addressed on the server
         const afterItemIndex = incomingData.findIndex(createRecordFinder(after));
         incomingData = incomingData.slice(afterItemIndex + 1);
         if (incomingData.length === 0) {
