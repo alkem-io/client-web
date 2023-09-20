@@ -15617,7 +15617,7 @@ export function refetchHomePageSpacesQuery(variables: SchemaTypes.HomePageSpaces
 
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
-    spaces {
+    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
       ...InnovationHubSpace
     }
   }
