@@ -80,6 +80,8 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const communityPrivileges = _communityPrivileges?.space?.applicationCommunity?.authorization?.myPrivileges ?? [];
   const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
+  const canAcceptInvitation =
+    _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
   const canApplyToCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
 
   const parentCommunityPrivileges = hasCommunityParent

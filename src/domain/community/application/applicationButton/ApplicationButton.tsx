@@ -22,6 +22,7 @@ export interface ApplicationButtonProps {
   spaceName?: string;
   challengeName?: string;
   canJoinCommunity?: boolean;
+  canAcceptInvitation?: boolean;
   canApplyToCommunity?: boolean;
   canJoinParentCommunity?: boolean;
   canApplyToParentCommunity?: boolean;
@@ -45,6 +46,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       spaceName,
       challengeName,
       canJoinCommunity,
+      canAcceptInvitation,
       canApplyToCommunity,
       canJoinParentCommunity,
       canApplyToParentCommunity,
@@ -59,10 +61,12 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     const navigate = useNavigate();
     const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
     const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
+    const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
     const [isJoinParentDialogOpen, setIsJoinParentDialogOpen] = useState(false);
 
     const handleClickApplyParent = () => setIsApplyDialogOpen(true);
     const handleClickJoin = () => setIsJoinDialogOpen(true);
+    const handleClickAcceptInvitation = () => setIsInvitationDialogOpen(true);
     const handleClickJoinParent = () => setIsJoinParentDialogOpen(true);
 
     const handleClose = () => {
@@ -156,6 +160,20 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
         return (
           <Button ref={ref as Ref<HTMLButtonElement>} disabled>
             {t('components.application-button.apply-pending')}
+          </Button>
+        );
+      }
+
+      if (canAcceptInvitation) {
+        return (
+          <Button
+            ref={ref as Ref<HTMLButtonElement>}
+            startIcon={extended ? <AddOutlined /> : undefined}
+            onClick={handleClickJoin}
+            variant="contained"
+            sx={extended ? { textTransform: 'none' } : undefined}
+          >
+            {getButtonLabel(t('components.application-button.join'))}
           </Button>
         );
       }
