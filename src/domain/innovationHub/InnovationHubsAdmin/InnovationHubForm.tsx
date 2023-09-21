@@ -120,7 +120,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
             </FormGroup>
             {!isNew && profileId ? (
               <>
-                <BlockSectionTitle>{t('components.tagsSegment.title')}</BlockSectionTitle>
+                <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
                 <TagsetSegment fieldName="profile.tagsets" tagsets={profile.tagsets} />
                 <BlockSectionTitle>{t('components.visualSegment.banner')}</BlockSectionTitle>
                 <VisualUpload

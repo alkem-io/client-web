@@ -16,7 +16,7 @@ import {
 } from '../../../../main/routing/urlBuilders';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
-import clearCacheForType from '../../../shared/utils/apollo-cache/clearCacheForType';
+import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 
 interface ApplicationContainerEntities {

@@ -1,47 +1,35 @@
-import { forwardRef } from 'react';
-import { Paper, PaperProps, SxProps } from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import { gutters, useGridItem } from '../grid/utils';
-import GridProvider from '../grid/GridProvider';
+import { ComponentType, ForwardedRef, forwardRef } from 'react';
+import { Paper, PaperProps } from '@mui/material';
+import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
-import { useDeclaredColumns } from '../grid/GridContext';
 import { DroppableProvidedProps } from 'react-beautiful-dnd';
+import BasePageContentBlock, { BasePageContentBlockProps } from './BasePageContentBlock';
+import { PaperTypeMap } from '@mui/material/Paper/Paper';
 
-export interface PageContentBlockProps extends PaperProps, Partial<DroppableProvidedProps> {
+export interface PageContentBlockProps extends BasePageContentBlockProps, PaperProps, Partial<DroppableProvidedProps> {
   accent?: boolean;
-  disablePadding?: boolean;
-  disableGap?: boolean;
-  halfWidth?: boolean;
-  columns?: number;
 }
 
 const borderWidth = '1px';
 
-const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(
-  ({ accent = false, disablePadding = false, disableGap = false, halfWidth = false, columns, sx, ...props }, ref) => {
-    const gridColumns = useDeclaredColumns();
-
-    const getGridItemStyle = useGridItem();
-
-    const columnsTaken = halfWidth ? gridColumns / 2 : columns;
-
-    const mergedSx: Partial<SxProps<Theme>> = {
-      padding: disablePadding ? undefined : theme => `calc(${gutters()(theme)} - ${borderWidth})`,
-      display: disableGap ? undefined : 'flex',
-      flexDirection: disableGap ? undefined : 'column',
-      gap: disableGap ? undefined : gutters(),
-      ...getGridItemStyle(columnsTaken),
-      ...sx,
-    };
-
-    return (
-      <SwapColors swap={accent}>
-        <GridProvider columns={columnsTaken ?? gridColumns}>
-          <Paper ref={ref} sx={mergedSx} variant="outlined" {...props} />
-        </GridProvider>
-      </SwapColors>
-    );
-  }
+const OutlinedPaper = forwardRef(
+  <D extends React.ElementType = PaperTypeMap['defaultComponent'], P = {}>(
+    props: PaperProps<D, P>,
+    ref: ForwardedRef<HTMLDivElement>
+  ) => <Paper ref={ref} variant="outlined" {...props} />
 );
+
+const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(({ accent = false, ...props }, ref) => {
+  return (
+    <SwapColors swap={accent}>
+      <BasePageContentBlock
+        ref={ref}
+        padding={theme => `calc(${gutters()(theme)} - ${borderWidth})`}
+        component={OutlinedPaper as ComponentType<PaperProps>}
+        {...props}
+      />
+    </SwapColors>
+  );
+});
 
 export default PageContentBlock;

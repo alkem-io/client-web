@@ -746,6 +746,24 @@ export type CalloutWhiteboardsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type CalloutContributionPolicy = {
+  __typename?: 'CalloutContributionPolicy';
+  /** The allowed contribution types for this callout. */
+  allowedContributionTypes: Array<CalloutContributionType>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** State of the Callout. */
+  state: CalloutState;
+};
+
+export enum CalloutContributionType {
+  Comments = 'COMMENTS',
+  Link = 'LINK',
+  Post = 'POST',
+  Whiteboard = 'WHITEBOARD',
+  WhiteboardRt = 'WHITEBOARD_RT',
+}
+
 export enum CalloutDisplayLocation {
   ChallengesLeft = 'CHALLENGES_LEFT',
   ChallengesRight = 'CHALLENGES_RIGHT',
@@ -761,6 +779,18 @@ export enum CalloutDisplayLocation {
   OpportunitiesRight = 'OPPORTUNITIES_RIGHT',
 }
 
+export type CalloutFraming = {
+  __typename?: 'CalloutFraming';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for framing the associated Callout. */
+  profile: Profile;
+  /** The whiteboard template content for this Callout Framing. */
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
+};
+
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
   /** The identifier for the Callout on which the post was created. */
@@ -769,11 +799,37 @@ export type CalloutPostCreated = {
   post: Post;
 };
 
+export type CalloutResponseDefaults = {
+  __typename?: 'CalloutResponseDefaults';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The default description to use for new contributions. */
+  postDescription?: Maybe<Scalars['Markdown']>;
+  /** The default whiteboard content for whiteboard responses. */
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
+};
+
 export enum CalloutState {
   Archived = 'ARCHIVED',
   Closed = 'CLOSED',
   Open = 'OPEN',
 }
+
+export type CalloutTemplate = {
+  __typename?: 'CalloutTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The framing for callouts created from this template. */
+  framing: CalloutFraming;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+  /** The defaults to use for Callouts created from this template.   */
+  responseDefaults: CalloutResponseDefaults;
+  /** The response policy to use for Callouts created from this template.   */
+  responsePolicy: CalloutContributionPolicy;
+};
 
 export enum CalloutType {
   LinkCollection = 'LINK_COLLECTION',
@@ -856,6 +912,8 @@ export type ChallengeTemplate = {
 };
 
 export type ChatGuidanceInput = {
+  /** The language of the answer. */
+  language?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
   question: Scalars['String'];
 };
@@ -867,7 +925,7 @@ export type ChatGuidanceResult = {
   /** The original question */
   question: Scalars['String'];
   /** The sources used to answer the question */
-  sources: Scalars['String'];
+  sources: Array<Source>;
 };
 
 export type Collaboration = {
@@ -1236,6 +1294,24 @@ export type CreateCalendarEventOnCalendarInput = {
   wholeDay: Scalars['Boolean'];
 };
 
+export type CreateCalloutContributionDefaultsInput = {
+  /** The default description to use for new Post contributions. */
+  postDescription?: InputMaybe<Scalars['Markdown']>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
+};
+
+export type CreateCalloutContributionPolicyInput = {
+  /** The allowed contribution types for this callout. */
+  allowedContributionTypes?: InputMaybe<Array<CalloutContributionType>>;
+  /** State of the callout. */
+  state?: InputMaybe<CalloutState>;
+};
+
+export type CreateCalloutFramingInput = {
+  profile: CreateProfileInput;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
+};
+
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
   /** Set callout display location for this Callout. */
@@ -1262,6 +1338,16 @@ export type CreateCalloutOnCollaborationInput = {
   whiteboardRt?: InputMaybe<CreateWhiteboardRtInput>;
   /** WhiteboardTemplate data for whiteboard Callouts. */
   whiteboardTemplate?: InputMaybe<CreateWhiteboardTemplateInput>;
+};
+
+export type CreateCalloutTemplateOnTemplatesSetInput = {
+  framing: CreateCalloutFramingInput;
+  profile: CreateProfileInput;
+  responseDefaults: CreateCalloutContributionDefaultsInput;
+  responsePolicy: CreateCalloutContributionPolicyInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -1598,6 +1684,10 @@ export type DeleteCalendarEventInput = {
 };
 
 export type DeleteCalloutInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCalloutTemplateInput = {
   ID: Scalars['UUID'];
 };
 
@@ -2047,6 +2137,8 @@ export type LookupQueryResults = {
   calendarEvent?: Maybe<CalendarEvent>;
   /** Lookup the specified Callout */
   callout?: Maybe<Callout>;
+  /** Lookup the specified Callout Template */
+  calloutTemplate?: Maybe<CalloutTemplate>;
   /** Lookup the specified Challenge */
   challenge?: Maybe<Challenge>;
   /** Lookup the specified Collaboration */
@@ -2090,6 +2182,10 @@ export type LookupQueryResultsCalendarEventArgs = {
 };
 
 export type LookupQueryResultsCalloutArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsCalloutTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -2278,6 +2374,8 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Create a new Callout on the Collaboration. */
   createCalloutOnCollaboration: Callout;
+  /** Creates a new CalloutTemplate on the specified TemplatesSet. */
+  createCalloutTemplate: CalloutTemplate;
   /** Creates a new Challenge within the specified Space. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -2334,6 +2432,8 @@ export type Mutation = {
   deleteCalendarEvent: CalendarEvent;
   /** Delete a Callout. */
   deleteCallout: Callout;
+  /** Deletes the specified CalloutTemplate. */
+  deleteCalloutTemplate: CalloutTemplate;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Delete Collaboration. */
@@ -2450,6 +2550,8 @@ export type Mutation = {
   updateCallout: Callout;
   /** Update the information describing the publishing of the specified Callout. */
   updateCalloutPublishInfo: Callout;
+  /** Updates the specified CalloutTemplate. */
+  updateCalloutTemplate: CalloutTemplate;
   /** Update the visibility of the specified Callout. */
   updateCalloutVisibility: Callout;
   /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
@@ -2620,6 +2722,10 @@ export type MutationCreateCalloutOnCollaborationArgs = {
   calloutData: CreateCalloutOnCollaborationInput;
 };
 
+export type MutationCreateCalloutTemplateArgs = {
+  calloutTemplateInput: CreateCalloutTemplateOnTemplatesSetInput;
+};
+
 export type MutationCreateChallengeArgs = {
   challengeData: CreateChallengeOnSpaceInput;
 };
@@ -2726,6 +2832,10 @@ export type MutationDeleteCalendarEventArgs = {
 
 export type MutationDeleteCalloutArgs = {
   deleteData: DeleteCalloutInput;
+};
+
+export type MutationDeleteCalloutTemplateArgs = {
+  deleteData: DeleteCalloutTemplateInput;
 };
 
 export type MutationDeleteChallengeArgs = {
@@ -2950,6 +3060,10 @@ export type MutationUpdateCalloutArgs = {
 
 export type MutationUpdateCalloutPublishInfoArgs = {
   calloutData: UpdateCalloutPublishInfoInput;
+};
+
+export type MutationUpdateCalloutTemplateArgs = {
+  calloutTemplateInput: UpdateCalloutTemplateInput;
 };
 
 export type MutationUpdateCalloutVisibilityArgs = {
@@ -4107,6 +4221,14 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type Source = {
+  __typename?: 'Source';
+  /** The title of the source */
+  title: Scalars['String'];
+  /** The URI of the source */
+  uri: Scalars['String'];
+};
+
 export type Space = {
   __typename?: 'Space';
   /** The Agent representing this Space. */
@@ -4358,6 +4480,8 @@ export type TemplatesSet = {
   __typename?: 'TemplatesSet';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The CalloutTemplates in this TemplatesSet. */
+  calloutTemplates: Array<CalloutTemplate>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A single InnovationFlowTemplate */
@@ -4430,6 +4554,26 @@ export type UpdateCalendarEventInput = {
   wholeDay: Scalars['Boolean'];
 };
 
+export type UpdateCalloutContributionDefaultsInput = {
+  /** The default description to use for new Post contributions. */
+  postDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The default description to use for new Whiteboard contributions. */
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
+};
+
+export type UpdateCalloutContributionPolicyInput = {
+  /** The allowed contribution types for this callout. */
+  allowedResponseTypes?: InputMaybe<Array<CalloutContributionType>>;
+  /** State of the callout. */
+  state?: InputMaybe<CalloutState>;
+};
+
+export type UpdateCalloutFramingInput = {
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
+};
+
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
   /** Set display location for this Callout. */
@@ -4464,6 +4608,15 @@ export type UpdateCalloutPublishInfoInput = {
   publishDate?: InputMaybe<Scalars['Float']>;
   /** The identifier of the publisher of the Callout. */
   publisherID?: InputMaybe<Scalars['UUID_NAMEID_EMAIL']>;
+};
+
+export type UpdateCalloutTemplateInput = {
+  ID: Scalars['UUID'];
+  framing?: InputMaybe<UpdateCalloutFramingInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+  responseDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
+  responsePolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -19339,54 +19492,6 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
-export type HomePageSpacesQueryVariables = Exact<{
-  includeMembershipStatus: Scalars['Boolean'];
-}>;
-
-export type HomePageSpacesQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          spaceListFilter?:
-            | Array<{
-                __typename?: 'Space';
-                id: string;
-                nameID: string;
-                visibility: SpaceVisibility;
-                community?:
-                  | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
-                  | undefined;
-                profile?: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  tagline: string;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                  cardBanner?:
-                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
-                    | undefined;
-                };
-                context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationHubAvailableSpacesQuery = {
@@ -24194,7 +24299,14 @@ export type SpaceHostQuery = {
           __typename?: 'Organization';
           id: string;
           nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          };
         }
       | undefined;
   };
@@ -29538,7 +29650,12 @@ export type AskChatGuidanceQuestionQueryVariables = Exact<{
 
 export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
-  askChatGuidanceQuestion: { __typename?: 'ChatGuidanceResult'; answer: string; question: string; sources: string };
+  askChatGuidanceQuestion: {
+    __typename?: 'ChatGuidanceResult';
+    answer: string;
+    question: string;
+    sources: Array<{ __typename?: 'Source'; title: string; uri: string }>;
+  };
 };
 
 export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;

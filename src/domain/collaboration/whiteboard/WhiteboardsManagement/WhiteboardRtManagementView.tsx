@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { IWhiteboardRtActions } from '../containers/WhiteboardRtActionsContainer';
 import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
-import WhiteboardRtValueContainer from '../containers/WhiteboardRtValueContainer';
+import WhiteboardRtContentContainer from '../containers/WhiteboardRtContentContainer';
 import {
   WhiteboardRtDetailsFragment,
   WhiteboardRtContentFragment,
@@ -71,7 +71,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
 
   return (
     <>
-      <WhiteboardRtValueContainer whiteboardId={whiteboard?.id}>
+      <WhiteboardRtContentContainer whiteboardId={whiteboard?.id}>
         {entities => {
           return (
             <WhiteboardRtDialog
@@ -97,7 +97,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
             />
           );
         }}
-      </WhiteboardRtValueContainer>
+      </WhiteboardRtContentContainer>
     </>
   );
 };

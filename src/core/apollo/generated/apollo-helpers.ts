@@ -582,10 +582,62 @@ export type CalloutFieldPolicy = {
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributionPolicyKeySpecifier = (
+  | 'allowedContributionTypes'
+  | 'id'
+  | 'state'
+  | CalloutContributionPolicyKeySpecifier
+)[];
+export type CalloutContributionPolicyFieldPolicy = {
+  allowedContributionTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFramingKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'profile'
+  | 'whiteboardContent'
+  | CalloutFramingKeySpecifier
+)[];
+export type CalloutFramingFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutResponseDefaultsKeySpecifier = (
+  | 'id'
+  | 'postDescription'
+  | 'whiteboardContent'
+  | CalloutResponseDefaultsKeySpecifier
+)[];
+export type CalloutResponseDefaultsFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutTemplateKeySpecifier = (
+  | 'authorization'
+  | 'framing'
+  | 'id'
+  | 'profile'
+  | 'responseDefaults'
+  | 'responsePolicy'
+  | CalloutTemplateKeySpecifier
+)[];
+export type CalloutTemplateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  framing?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  responseDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  responsePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
   | 'agent'
@@ -1191,6 +1243,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'calendar'
   | 'calendarEvent'
   | 'callout'
+  | 'calloutTemplate'
   | 'challenge'
   | 'collaboration'
   | 'community'
@@ -1212,6 +1265,7 @@ export type LookupQueryResultsFieldPolicy = {
   calendar?: FieldPolicy<any> | FieldReadFunction<any>;
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1292,6 +1346,7 @@ export type MutationKeySpecifier = (
   | 'createActor'
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
+  | 'createCalloutTemplate'
   | 'createChallenge'
   | 'createChildChallenge'
   | 'createDiscussion'
@@ -1320,6 +1375,7 @@ export type MutationKeySpecifier = (
   | 'deleteActorGroup'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
+  | 'deleteCalloutTemplate'
   | 'deleteChallenge'
   | 'deleteCollaboration'
   | 'deleteDiscussion'
@@ -1378,6 +1434,7 @@ export type MutationKeySpecifier = (
   | 'updateCalendarEvent'
   | 'updateCallout'
   | 'updateCalloutPublishInfo'
+  | 'updateCalloutTemplate'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
   | 'updateChallenge'
@@ -1444,6 +1501,7 @@ export type MutationFieldPolicy = {
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1472,6 +1530,7 @@ export type MutationFieldPolicy = {
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1530,6 +1589,7 @@ export type MutationFieldPolicy = {
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2241,6 +2301,11 @@ export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SourceKeySpecifier = ('title' | 'uri' | SourceKeySpecifier)[];
+export type SourceFieldPolicy = {
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SpaceKeySpecifier = (
   | 'agent'
   | 'authorization'
@@ -2374,6 +2439,7 @@ export type TemplateFieldPolicy = {
 };
 export type TemplatesSetKeySpecifier = (
   | 'authorization'
+  | 'calloutTemplates'
   | 'id'
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
@@ -2386,6 +2452,7 @@ export type TemplatesSetKeySpecifier = (
 )[];
 export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2762,9 +2829,28 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutKeySpecifier | (() => undefined | CalloutKeySpecifier);
     fields?: CalloutFieldPolicy;
   };
+  CalloutContributionPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributionPolicyKeySpecifier
+      | (() => undefined | CalloutContributionPolicyKeySpecifier);
+    fields?: CalloutContributionPolicyFieldPolicy;
+  };
+  CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
+    fields?: CalloutFramingFieldPolicy;
+  };
   CalloutPostCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);
     fields?: CalloutPostCreatedFieldPolicy;
+  };
+  CalloutResponseDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutResponseDefaultsKeySpecifier | (() => undefined | CalloutResponseDefaultsKeySpecifier);
+    fields?: CalloutResponseDefaultsFieldPolicy;
+  };
+  CalloutTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutTemplateKeySpecifier | (() => undefined | CalloutTemplateKeySpecifier);
+    fields?: CalloutTemplateFieldPolicy;
   };
   Challenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);
@@ -3160,6 +3246,10 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
+  };
+  Source?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SourceKeySpecifier | (() => undefined | SourceKeySpecifier);
+    fields?: SourceFieldPolicy;
   };
   Space?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);

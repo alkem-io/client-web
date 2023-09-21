@@ -13,7 +13,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/user';
 import { Message } from '../../../../communication/room/models/Message';
-import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../../../../core/apollo/utils/removeFromCache';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,

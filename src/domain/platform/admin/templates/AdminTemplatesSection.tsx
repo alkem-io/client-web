@@ -44,8 +44,8 @@ interface EditTemplateDialogProps<T extends Template, V extends TemplateValue, S
 
 export interface TemplatePreviewProps<T extends Template, V extends TemplateValue> {
   template: T;
-  getTemplateValue: (template: T) => void;
-  templateValue: V | undefined;
+  getTemplateContent: (template: T) => void;
+  templateContent: V | undefined;
 }
 
 export interface MutationHook<Variables, MutationResult> {
@@ -139,6 +139,7 @@ const AdminTemplatesSection = <
   canImportTemplates,
   // Some Templates (Post, InnovationFlow...) come with the value included, and some others (Whiteboards) need to call this function to retrieve the data
   getWhiteboardTemplateContent = () => {},
+  getImportedWhiteboardTemplateContent = () => {},
   ...dialogProps
 }: AdminTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
@@ -329,6 +330,8 @@ const AdminTemplatesSection = <
         dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
         templateImportCardComponent={TemplateImportCard}
         templatePreviewComponent={TemplatePreview}
+        getImportedTemplateContent={getImportedWhiteboardTemplateContent}
+        importedTemplateContent={dialogProps.importedTemplateContent}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
         onImportTemplate={handleImportTemplate}
@@ -365,8 +368,8 @@ const AdminTemplatesSection = <
         >
           <TemplatePreview
             template={selectedTemplate}
-            getTemplateValue={getWhiteboardTemplateContent}
-            templateValue={dialogProps.whiteboardTemplateContent}
+            getTemplateContent={getWhiteboardTemplateContent}
+            templateContent={dialogProps.whiteboardTemplateContent}
           />
         </TemplateViewDialog>
       )}

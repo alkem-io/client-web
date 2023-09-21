@@ -56,6 +56,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                   <ScrollableCardsLayoutContainer maxHeight={gutters(30)}>
                     {filteredChallenges.map(challenge => (
                       <ChallengeCard
+                        key={challenge.id}
                         challengeId={challenge.id}
                         challengeNameId={challenge.nameID}
                         banner={challenge.banner}

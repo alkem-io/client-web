@@ -1,25 +1,29 @@
 import React, { FC, useMemo } from 'react';
-import SpaceEditForm, { SpaceEditFormValuesType } from '../../../../platform/admin/components/SpaceEditForm';
-import SaveButton from '../../../../../core/ui/actions/SaveButton';
+import SpaceEditForm, { SpaceEditFormValuesType } from '../../spaceEditForm/SpaceEditForm';
 import {
-  useSpaceHostQuery,
   useOrganizationsListQuery,
+  useSpaceHostQuery,
   useUpdateSpaceMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { Box, Container } from '@mui/material';
 import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import { sortBy } from 'lodash';
+import { buildOrganizationUrl } from '../../../../../main/routing/urlBuilders';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import { useTranslation } from 'react-i18next';
 
 export const SpaceProfile: FC = () => {
   const { spaceNameId, ...space } = useSpace();
-  const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
+  const { data: organizationList } = useOrganizationsListQuery();
   const { data: hostOrganization } = useSpaceHostQuery({ variables: { spaceId: spaceNameId }, skip: !spaceNameId });
   const notify = useNotification();
+  const { t } = useTranslation();
 
-  const [updateSpace, { loading: loading1 }] = useUpdateSpaceMutation({
+  const [updateSpace, { loading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
   });
 
@@ -27,8 +31,6 @@ export const SpaceProfile: FC = () => {
     () => organizationList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
     [organizationList]
   );
-
-  const isLoading = loading1 || loadingOrganizations;
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
@@ -59,12 +61,24 @@ export const SpaceProfile: FC = () => {
 
   const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
 
+  const host = useMemo(() => {
+    const host = hostOrganization?.space.host;
+    if (!host) {
+      return undefined;
+    }
+    const url = buildOrganizationUrl(host.nameID);
+    return {
+      ...host,
+      url,
+    };
+  }, [hostOrganization]);
+
   const visuals = space.profile.visuals ?? [];
-  let submitWired;
+
   return (
-    <Container maxWidth="xl">
+    <PageContentColumn columns={12}>
       <SpaceEditForm
-        isEdit
+        edit
         name={space.profile.displayName}
         nameID={spaceNameId}
         hostID={hostOrganization?.space.host?.id}
@@ -72,16 +86,16 @@ export const SpaceProfile: FC = () => {
         context={space.context}
         profile={space.profile}
         organizations={organizationsSorted}
+        visibility={space.visibility}
+        host={host}
         onSubmit={onSubmit}
-        wireSubmit={submit => (submitWired = submit)}
+        loading={loading}
       />
-      <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
-        <SaveButton loading={isLoading} onClick={() => submitWired()} />
-      </Box>
-      <Box paddingY={2}>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('common.visuals')} />
         <EditVisualsView visuals={visuals} />
-      </Box>
-    </Container>
+      </PageContentBlock>
+    </PageContentColumn>
   );
 };
 
