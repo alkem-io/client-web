@@ -10,11 +10,10 @@ import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/In
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import { Identifiable } from '../../../core/utils/Identifiable';
-import { refetchUserProviderQuery, useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
-import useLoadingState from '../../shared/utils/useLoadingState';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
-import InvitationDialog from './InvitationDialog';
+import InvitationDialog from '../invitations/InvitationDialog';
+import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -63,44 +62,6 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
     openDialog?.type === DialogType.InvitationView
       ? invitations?.find(invitation => invitation.id === openDialog.invitationId)
       : undefined;
-
-  const [invitationStateEventMutation] = useInvitationStateEventMutation({
-    refetchQueries: [refetchUserProviderQuery()],
-  });
-
-  const [changeInvitationState, isChangingInvitationState] = useLoadingState(
-    async (...args: Parameters<typeof invitationStateEventMutation>) => {
-      await invitationStateEventMutation(...args);
-      setOpenDialog({ type: DialogType.PendingMembershipsList });
-    }
-  );
-
-  const [acceptInvitation, isAccepting] = useLoadingState((invitationId: string) =>
-    changeInvitationState({
-      variables: {
-        invitationId,
-        eventName: 'ACCEPT',
-      },
-    })
-  );
-
-  const [rejectInvitation, isRejecting] = useLoadingState((invitationId: string) =>
-    changeInvitationState({
-      variables: {
-        invitationId,
-        eventName: 'REJECT',
-      },
-    })
-  );
-
-  // TODO Uncomment when hiding an Invitation is available in the API
-  // const [hideInvitation, isHiding] = useLoadingState((invitationId: string) =>
-  //   deleteInvitation({
-  //     variables: {
-  //       invitationId,
-  //     },
-  //   })
-  // );
 
   const pendingMembershipsCount = invitations && applications ? invitations.length + applications.length : undefined;
 
@@ -162,16 +123,16 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
           )}
         </Gutters>
       </DialogWithGrid>
-      <InvitationDialog
-        open={openDialog?.type === DialogType.InvitationView}
-        onClose={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
-        invitation={currentInvitation}
-        updating={isChangingInvitationState}
-        acceptInvitation={acceptInvitation}
-        accepting={isAccepting}
-        rejectInvitation={rejectInvitation}
-        rejecting={isRejecting}
-      />
+      <InvitationActionsContainer onUpdate={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}>
+        {props => (
+          <InvitationDialog
+            open={openDialog?.type === DialogType.InvitationView}
+            onClose={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
+            invitation={currentInvitation}
+            {...props}
+          />
+        )}
+      </InvitationActionsContainer>
     </>
   );
 };

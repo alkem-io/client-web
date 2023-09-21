@@ -1,5 +1,5 @@
 import React from 'react';
-import { InvitationHydrator } from './PendingMemberships';
+import { InvitationHydrator } from '../pendingMembership/PendingMemberships';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
