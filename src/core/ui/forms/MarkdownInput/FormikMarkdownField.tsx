@@ -94,7 +94,15 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const labelOffset = inputElement?.getLabelOffset();
 
   const estimatedVisibleMaxLength = maxLength && MarkdownFieldMaxLength[maxLength];
-  console.log('isError', isError);
+  const onCharacterCountChange = (characterCount: number) => {
+    console.log('onCharacterCountChange', characterCount, estimatedVisibleMaxLength);
+    if (estimatedVisibleMaxLength && characterCount > estimatedVisibleMaxLength) {
+      console.log('setError');
+      helper.setError('max length reached');
+      console.log('meta2', meta);
+    }
+  };
+  console.log('meta', meta);
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
@@ -131,7 +139,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
             },
           }}
         />
-        <CharacterCountContainer>
+        <CharacterCountContainer onChange={onCharacterCountChange}>
           {({ characterCount }) => (
             <CharacterCounter count={characterCount} maxLength={estimatedVisibleMaxLength} disabled={!withCounter}>
               <FormHelperText error={isError}>{helperText}</FormHelperText>
