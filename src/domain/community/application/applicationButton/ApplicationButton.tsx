@@ -96,9 +96,9 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
     const handleAcceptInvitation = () => {
       handleClose();
-      if (journeyUrl) {
-        navigate(journeyUrl);
-      }
+      // if (journeyUrl) {
+      //   navigate(journeyUrl);
+      // }
     };
 
     /***
