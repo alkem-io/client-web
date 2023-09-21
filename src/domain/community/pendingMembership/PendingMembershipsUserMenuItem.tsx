@@ -2,22 +2,19 @@ import React, { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
+import { HdrStrongOutlined } from '@mui/icons-material';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { BlockSectionTitle, Caption, Text } from '../../../core/ui/typography';
+import { BlockSectionTitle } from '../../../core/ui/typography';
 import { ApplicationHydrator, InvitationHydrator, usePendingMemberships } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
-import ActivityDescription from '../../shared/components/ActivityDescription/ActivityDescription';
-import { Actions } from '../../../core/ui/actions/Actions';
 import { Identifiable } from '../../../core/utils/Identifiable';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { refetchUserProviderQuery, useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
-import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../shared/utils/useLoadingState';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
+import InvitationDialog from './InvitationDialog';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -87,7 +84,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
     })
   );
 
-  const [rejectInvitation, isDeclining] = useLoadingState((invitationId: string) =>
+  const [rejectInvitation, isRejecting] = useLoadingState((invitationId: string) =>
     changeInvitationState({
       variables: {
         invitationId,
@@ -165,84 +162,16 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
           )}
         </Gutters>
       </DialogWithGrid>
-      <DialogWithGrid
-        columns={12}
+      <InvitationDialog
         open={openDialog?.type === DialogType.InvitationView}
         onClose={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
-      >
-        {currentInvitation && (
-          <InvitationHydrator invitation={currentInvitation} withJourneyDetails>
-            {({ invitation }) =>
-              invitation && (
-                <>
-                  <DialogHeader
-                    title={
-                      <Gutters row disablePadding>
-                        <HdrStrongOutlined fontSize="small" />
-                        {t('community.pendingMembership.invitationDialog.title', {
-                          journey: invitation?.journeyDisplayName,
-                        })}
-                      </Gutters>
-                    }
-                    onClose={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
-                  />
-                  <Gutters paddingTop={0} row>
-                    <JourneyCard
-                      iconComponent={journeyIcon[invitation.journeyTypeName]}
-                      header={invitation.journeyDisplayName}
-                      tags={invitation.journeyTags ?? []}
-                      banner={invitation.journeyCardBanner}
-                      journeyUri={invitation.journeyUri}
-                    >
-                      <JourneyCardTagline>{invitation.journeyTagline ?? ''}</JourneyCardTagline>
-                    </JourneyCard>
-                    <Gutters disablePadding>
-                      <Caption>
-                        <ActivityDescription
-                          i18nKey="community.pendingMembership.invitationTitle"
-                          {...invitation}
-                          author={{ displayName: invitation.userDisplayName }}
-                        />
-                      </Caption>
-                      {invitation.welcomeMessage && <Text>{invitation.welcomeMessage}</Text>}
-                    </Gutters>
-                  </Gutters>
-                  <Gutters paddingTop={0}>
-                    <Actions justifyContent="end">
-                      {/*<LoadingButton*/}
-                      {/*  startIcon={<VisibilityOffOutlined />}*/}
-                      {/*  onClick={() => hideInvitation(currentInvitation.id)}*/}
-                      {/*  loading={isHiding}*/}
-                      {/*  disabled={isChangingInvitationState && !isHiding}*/}
-                      {/*>*/}
-                      {/*  {t('community.pendingMembership.invitationDialog.actions.hide')}*/}
-                      {/*</LoadingButton>*/}
-                      <LoadingButton
-                        startIcon={<CloseOutlinedIcon />}
-                        onClick={() => rejectInvitation(currentInvitation.id)}
-                        variant="outlined"
-                        loading={isDeclining}
-                        disabled={isChangingInvitationState && !isDeclining}
-                      >
-                        {t('community.pendingMembership.invitationDialog.actions.reject')}
-                      </LoadingButton>
-                      <LoadingButton
-                        startIcon={<CheckOutlined />}
-                        onClick={() => acceptInvitation(currentInvitation.id)}
-                        variant="contained"
-                        loading={isAccepting}
-                        disabled={isChangingInvitationState && !isAccepting}
-                      >
-                        {t('community.pendingMembership.invitationDialog.actions.accept')}
-                      </LoadingButton>
-                    </Actions>
-                  </Gutters>
-                </>
-              )
-            }
-          </InvitationHydrator>
-        )}
-      </DialogWithGrid>
+        invitation={currentInvitation}
+        updating={isChangingInvitationState}
+        acceptInvitation={acceptInvitation}
+        accepting={isAccepting}
+        rejectInvitation={rejectInvitation}
+        rejecting={isRejecting}
+      />
     </>
   );
 };
