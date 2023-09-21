@@ -14,7 +14,7 @@ import {
   CreateWhiteboardOnCalloutInput,
   DeleteWhiteboardInput,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface IWhiteboardActions {

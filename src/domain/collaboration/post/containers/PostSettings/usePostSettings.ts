@@ -16,7 +16,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { Reference } from '../../../../common/profile/Profile';
 import { newReferenceName } from '../../../../common/reference/newReferenceName';
-import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
+import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
 import { getCardCallout } from '../getPostCallout';
 
 type PostUpdateData = Pick<Post, 'id' | 'type'> & {

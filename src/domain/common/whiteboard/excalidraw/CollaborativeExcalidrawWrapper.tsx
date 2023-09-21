@@ -53,7 +53,6 @@ export interface WhiteboardWhiteboardProps {
   collabApiRef?: Ref<CollabAPI | null>;
 }
 
-const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
@@ -77,21 +76,6 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
         zoomToFit: true,
       };
     }, [whiteboard?.content]);
-
-    const refreshOnDataChange = useRef(
-      debounce(async (state: Parameters<ExcalidrawImperativeAPI['updateScene']>[0]) => {
-        const excalidraw = await combinedRef.current?.readyPromise;
-        excalidraw?.updateScene(state);
-        excalidraw?.zoomToFit();
-      }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
-    ).current;
-
-    useEffect(() => {
-      // apparently when a whiteboard state is changed too fast
-      // it is not reflected by excalidraw (they don't have internal debounce for state change)
-      refreshOnDataChange(data);
-      return refreshOnDataChange.cancel;
-    }, [refreshOnDataChange, data]);
 
     const scrollToContent = async () => {
       const excalidraw = await combinedRef.current?.readyPromise;

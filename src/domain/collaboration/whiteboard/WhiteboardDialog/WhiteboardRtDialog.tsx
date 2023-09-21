@@ -24,7 +24,7 @@ import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/Whitebo
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardRtWithContent, WhiteboardRtWithoutContent } from '../containers/WhiteboardRtValueContainer';
+import { WhiteboardRtWithContent, WhiteboardRtWithoutContent } from '../containers/WhiteboardRtContentContainer';
 import {
   WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,

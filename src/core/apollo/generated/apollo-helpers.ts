@@ -582,18 +582,29 @@ export type CalloutFieldPolicy = {
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributionPolicyKeySpecifier = (
+  | 'allowedContributionTypes'
+  | 'id'
+  | 'state'
+  | CalloutContributionPolicyKeySpecifier
+)[];
+export type CalloutContributionPolicyFieldPolicy = {
+  allowedContributionTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
-  | 'content'
   | 'id'
   | 'profile'
+  | 'whiteboardContent'
   | CalloutFramingKeySpecifier
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
@@ -610,17 +621,6 @@ export type CalloutResponseDefaultsFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CalloutResponsePolicyKeySpecifier = (
-  | 'allowedResponseTypes'
-  | 'id'
-  | 'state'
-  | CalloutResponsePolicyKeySpecifier
-)[];
-export type CalloutResponsePolicyFieldPolicy = {
-  allowedResponseTypes?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  state?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutTemplateKeySpecifier = (
   | 'authorization'
@@ -2301,6 +2301,11 @@ export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SourceKeySpecifier = ('title' | 'uri' | SourceKeySpecifier)[];
+export type SourceFieldPolicy = {
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SpaceKeySpecifier = (
   | 'agent'
   | 'authorization'
@@ -2824,6 +2829,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutKeySpecifier | (() => undefined | CalloutKeySpecifier);
     fields?: CalloutFieldPolicy;
   };
+  CalloutContributionPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributionPolicyKeySpecifier
+      | (() => undefined | CalloutContributionPolicyKeySpecifier);
+    fields?: CalloutContributionPolicyFieldPolicy;
+  };
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
     fields?: CalloutFramingFieldPolicy;
@@ -2835,10 +2847,6 @@ export type StrictTypedTypePolicies = {
   CalloutResponseDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutResponseDefaultsKeySpecifier | (() => undefined | CalloutResponseDefaultsKeySpecifier);
     fields?: CalloutResponseDefaultsFieldPolicy;
-  };
-  CalloutResponsePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CalloutResponsePolicyKeySpecifier | (() => undefined | CalloutResponsePolicyKeySpecifier);
-    fields?: CalloutResponsePolicyFieldPolicy;
   };
   CalloutTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutTemplateKeySpecifier | (() => undefined | CalloutTemplateKeySpecifier);
@@ -3238,6 +3246,10 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
+  };
+  Source?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SourceKeySpecifier | (() => undefined | SourceKeySpecifier);
+    fields?: SourceFieldPolicy;
   };
   Space?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);

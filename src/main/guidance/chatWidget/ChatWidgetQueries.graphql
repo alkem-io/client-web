@@ -1,8 +1,10 @@
 query askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
-  askChatGuidanceQuestion(chatData: $chatData)
-  {
+  askChatGuidanceQuestion(chatData: $chatData) {
     answer
     question
-    sources
+    sources {
+      title
+      uri
+    }
   }
 }

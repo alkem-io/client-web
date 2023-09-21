@@ -6,7 +6,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
-import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
+import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
 
 type UseCalloutEditReturnType = {
   handleVisibilityChange: (
