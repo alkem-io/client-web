@@ -11,7 +11,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
     "ts:watch": "tsc --noEmit --watch",
-    "build": "cross-env NODE_ENV=production node buildConfiguration && vite build",
+    "build": "cross-env NODE_ENV=production node buildConfiguration && NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "test": "vitest --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
     "test:coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
     "test:upload:coverage": "npm run test:coverage && cat ./coverage/lcov.info | coveralls ",
