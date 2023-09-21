@@ -9,13 +9,18 @@ import PreJoinDialog from './PreJoinDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { AddOutlined, PersonOutlined } from '@mui/icons-material';
 import RootThemeProvider from '../../../../core/ui/themes/RootThemeProvider';
+import { InvitationItem } from '../../user/providers/UserProvider/InvitationItem';
+import InvitationActionsContainer from '../../invitations/InvitationActionsContainer';
+import InvitationDialog from '../../invitations/InvitationDialog';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
   isMember?: boolean;
   isParentMember?: boolean;
   applicationState?: string;
+  userInvitation?: InvitationItem;
   parentApplicationState?: string;
+  journeyUrl?: string;
   applyUrl?: string;
   parentApplyUrl?: string;
   joinParentUrl?: string;
@@ -37,7 +42,9 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     {
       isAuthenticated,
       applicationState,
+      userInvitation,
       parentApplicationState,
+      journeyUrl,
       applyUrl,
       parentApplyUrl,
       joinParentUrl,
@@ -61,18 +68,19 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     const navigate = useNavigate();
     const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
     const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
-    const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
     const [isJoinParentDialogOpen, setIsJoinParentDialogOpen] = useState(false);
+    const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
 
     const handleClickApplyParent = () => setIsApplyDialogOpen(true);
     const handleClickJoin = () => setIsJoinDialogOpen(true);
-    const handleClickAcceptInvitation = () => setIsInvitationDialogOpen(true);
     const handleClickJoinParent = () => setIsJoinParentDialogOpen(true);
+    const handleClickAcceptInvitation = () => setIsInvitationDialogOpen(true);
 
     const handleClose = () => {
       setIsApplyDialogOpen(false);
       setIsJoinDialogOpen(false);
       setIsJoinParentDialogOpen(false);
+      setIsInvitationDialogOpen(false);
     };
 
     const handleJoin = () => {
@@ -83,6 +91,13 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     const handleJoinParent = () => {
       if (joinParentUrl) {
         navigate(joinParentUrl);
+      }
+    };
+
+    const handleAcceptInvitation = () => {
+      handleClose();
+      if (journeyUrl) {
+        navigate(journeyUrl);
       }
     };
 
@@ -169,11 +184,11 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           <Button
             ref={ref as Ref<HTMLButtonElement>}
             startIcon={extended ? <AddOutlined /> : undefined}
-            onClick={handleClickJoin}
+            onClick={handleClickAcceptInvitation}
             variant="contained"
             sx={extended ? { textTransform: 'none' } : undefined}
           >
-            {getButtonLabel(t('components.application-button.join'))}
+            {getButtonLabel(t('components.application-button.acceptInvitation'))}
           </Button>
         );
       }
@@ -280,6 +295,16 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           />
           <PreJoinDialog open={isJoinDialogOpen} onClose={handleClose} onJoin={handleJoin} />
           <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
+          <InvitationActionsContainer onUpdate={handleAcceptInvitation}>
+            {props => (
+              <InvitationDialog
+                open={isInvitationDialogOpen}
+                onClose={handleClose}
+                invitation={userInvitation}
+                {...props}
+              />
+            )}
+          </InvitationActionsContainer>
         </RootThemeProvider>
       </>
     );

@@ -8,7 +8,12 @@ import {
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { buildChallengeApplyUrl, buildSpaceApplyUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
+import {
+  buildChallengeApplyUrl,
+  buildChallengeUrl,
+  buildSpaceApplyUrl,
+  buildSpaceUrl,
+} from '../../../../main/routing/urlBuilders';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../shared/utils/apollo-cache/clearCacheForType';
@@ -61,6 +66,10 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     x => x.spaceId === spaceId && (challengeId ? x.challengeId === challengeId : true) && !x.opportunityId
   );
 
+  const userInvitation = user?.pendingInvitations?.find(
+    x => x.spaceId === spaceId && (challengeId ? x.challengeId === challengeId : true) && !x.opportunityId
+  );
+
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
   const parentApplication = user?.pendingApplications?.find(
@@ -72,6 +81,8 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     hasCommunityParent &&
     _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.Member;
 
+  const journeyUrl =
+    challengeId && challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : buildSpaceUrl(spaceNameId);
   const applyUrl =
     challengeId && challengeNameId
       ? buildChallengeApplyUrl(spaceNameId, challengeNameId)
@@ -104,14 +115,17 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     isAuthenticated,
     isMember,
     isParentMember,
+    journeyUrl,
     applyUrl,
     parentApplyUrl: buildSpaceApplyUrl(spaceNameId),
     joinParentUrl,
     applicationState: userApplication?.state,
+    userInvitation,
     parentApplicationState: parentApplication?.state,
     spaceName: spaceProfile.displayName,
     challengeName,
     canJoinCommunity,
+    canAcceptInvitation,
     canApplyToCommunity,
     canJoinParentCommunity,
     canApplyToParentCommunity,
