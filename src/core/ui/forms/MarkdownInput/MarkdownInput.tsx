@@ -1,5 +1,5 @@
 import React, { FormEvent, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import { Box, lighten, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
@@ -185,7 +185,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
             from: end - overflow,
             to: end,
           })
-          .setHighlight()
+          .setHighlight() // Passing a highlight color doesn't work well here, styled later in sx={mark:{...}}
           .run();
       };
 
@@ -276,7 +276,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
                       color: 'transparent',
                       mark: {
                         color: theme.palette.background.paper,
-                        backgroundColor: lighten(theme.palette.negative.main, 0.2),
+                        backgroundColor: theme.palette.primary.main,
                       },
                     }}
                   >
