@@ -12,7 +12,6 @@ interface MarkdownInputFieldProps {
   disabled?: boolean;
   required?: boolean;
   maxLength?: TextFieldMaxLength;
-  withCounter?: boolean;
   helperText?: string;
   loading?: boolean;
 }
@@ -28,7 +27,6 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
   disabled = false,
   required,
   maxLength,
-  withCounter,
   helperText,
   loading,
 }: MarkdownInputFieldProps) => {
@@ -45,7 +43,6 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
         rows={rows}
         required={required}
         maxLength={maxLength}
-        withCounter={withCounter}
         helperText={helperText}
         loading={loading}
       />

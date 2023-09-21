@@ -16,6 +16,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface InnovationFlowProfileFormValues {
   displayName: string;
@@ -42,7 +43,7 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile
 
   const validationSchema = yup.object().shape({
     displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
-    description: yup.string().required().max(VERY_LONG_TEXT_LENGTH),
+    description: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });

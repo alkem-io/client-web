@@ -33,7 +33,6 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
           title={t('components.profileSegment.tagline.name')}
           placeholder={t('components.profileSegment.tagline.placeholder')}
           disabled={disabled}
-          withCounter
           maxLength={ALT_TEXT_LENGTH}
           required={required}
         />

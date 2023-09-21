@@ -129,7 +129,6 @@ const PostForm: FC<PostFormProps> = ({
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      withCounter
       enableReinitialize
       validateOnMount
       onSubmit={() => {}}
