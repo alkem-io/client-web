@@ -275,8 +275,8 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
                       pointerEvents: 'none',
                       color: 'transparent',
                       mark: {
-                        color: theme.palette.background.paper,
-                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.error.main,
+                        backgroundColor: 'transparent',
                       },
                     }}
                   >

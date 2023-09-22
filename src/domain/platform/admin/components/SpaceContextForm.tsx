@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { Context, Profile } from '../../../../core/apollo/generated/graphql-schema';
 import { contextSegmentSchema } from './Common/ContextSegment';
@@ -22,38 +22,45 @@ export interface SpaceEditFormValuesType {
 }
 
 const SpaceEditForm: FC<SpaceEditFormProps> = ({ context, profile, onSubmit, wireSubmit, loading }) => {
-  const initialValues: SpaceEditFormValuesType = {
-    background: profile?.description || '',
-    impact: context?.impact || '',
-    vision: context?.vision || '',
-    who: context?.who || '',
-  };
+  const initialValues: SpaceEditFormValuesType = useMemo(() => {
+    console.log('generating initial values');
+    return {
+      background: profile?.description || '',
+      impact: context?.impact || '',
+      vision: context?.vision || '',
+      who: context?.who || '',
+    };
+  }, [profile?.id]);
+  const onSubmitCallback = useCallback(async values => {
+    onSubmit(values);
+  }, []);
 
   const validationSchema = yup.object().shape({
-    background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
+    // background: contextSegmentSchema.fields?.background || yup.string(),
+    // impact: contextSegmentSchema.fields?.impact || yup.string(),
+    // vision: contextSegmentSchema.fields?.vision || yup.string(),
+    // who: contextSegmentSchema.fields?.who || yup.string(),
   });
 
   let isSubmitWired = false;
-
+  if (!profile?.id) {
+    return <>Loading... //!!</>;
+  }
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize
-      onSubmit={async values => {
-        onSubmit(values);
-      }}
-    >
-      {({ handleSubmit }) => {
+    <Formik initialValues={initialValues} enableReinitialize onSubmit={onSubmitCallback}>
+      {({ handleSubmit, errors }) => {
+        console.log('formik errors', errors);
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
         }
 
-        return <SpaceContextSegment loading={loading} />;
+        return (
+          <>
+            hello
+            <SpaceContextSegment loading={loading} />
+          </>
+        );
       }}
     </Formik>
   );

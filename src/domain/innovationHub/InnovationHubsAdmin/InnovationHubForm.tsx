@@ -7,7 +7,7 @@ import { Tagset, TagsetType, Visual } from '../../../core/apollo/generated/graph
 import { NameSegment, nameSegmentSchema } from '../../platform/admin/components/Common/NameSegment';
 import FormikAutocomplete from '../../../core/ui/forms/FormikAutocomplete';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MID_TEXT_LENGTH, VERY_LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../core/ui/typography';
 import { TagsetSegment, tagsetSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
 import SaveButton from '../../../core/ui/actions/SaveButton';
@@ -81,7 +81,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
     subdomain: nameIdValidator,
     profile: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
-      description: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagline: yup.string().max(MID_TEXT_LENGTH),
       tagsets: tagsetSegmentSchema,
     }),
@@ -119,7 +119,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
               <FormikMarkdownField
                 title={t('common.description')}
                 name="profile.description"
-                maxLength={VERY_LONG_TEXT_LENGTH}
+                maxLength={MARKDOWN_TEXT_LENGTH}
               />
             </FormGroup>
             {!isNew && profileId ? (

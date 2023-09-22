@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import FormikAutocomplete from '../../../../../../core/ui/forms/FormikAutocomplete';
 import { Reference, Tagset, TagsetType } from '../../../../../../core/apollo/generated/graphql-schema';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
-import { VERY_LONG_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { BlockSectionTitle } from '../../../../../../core/ui/typography';
 import ContextReferenceSegment from '../../../components/Common/ContextReferenceSegment';
@@ -73,7 +73,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     profile: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
-      description: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       references: referenceSegmentSchema,
       tagsets: tagsetSegmentSchema,
     }),
@@ -96,7 +96,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
             <FormikMarkdownField
               title={t('common.description')}
               name="profile.description"
-              maxLength={VERY_LONG_TEXT_LENGTH}
+              maxLength={MARKDOWN_TEXT_LENGTH}
             />
             {!isNew && profileId ? (
               <>

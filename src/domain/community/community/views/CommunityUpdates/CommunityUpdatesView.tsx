@@ -37,7 +37,7 @@ import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { VERY_LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import hexToRGBA from '../../../../../core/utils/hexToRGBA';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
@@ -108,7 +108,9 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     'community-update': '',
   };
   const validationSchema = yup.object().shape({
-    'community-update': MarkdownValidator(512).trim().required(t('components.communityUpdates.msg-not-empty')),
+    'community-update': MarkdownValidator(MARKDOWN_TEXT_LENGTH)
+      .trim()
+      .required(t('components.communityUpdates.msg-not-empty')),
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
@@ -159,7 +161,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                       rows={30}
                       title={t('components.communityUpdates.title')}
                       required
-                      maxLength={VERY_LONG_TEXT_LENGTH}
+                      maxLength={MARKDOWN_TEXT_LENGTH}
                     />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">

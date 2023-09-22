@@ -7,7 +7,7 @@ import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
 import { gutters } from '../../grid/utils';
-import { MarkdownFieldMaxLength, TextFieldMaxLength } from '../field-length.constants';
+import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '../../../logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 
@@ -18,7 +18,7 @@ interface MarkdownFieldProps extends InputProps {
   readOnly?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  maxLength?: TextFieldMaxLength;
+  maxLength?: MarkdownTextMaxLength;
   withCounter?: boolean;
   helperText?: string;
   loading?: boolean; // TODO make use of
@@ -76,7 +76,11 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   }, [isError, meta.error, validInputHelperText, tErr, title]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    helper.setValue(event.target.value);
+    helper.setValue(event.target.value, false);
+    //!!
+    /*if (event.target.value.length > maxLength) {
+      helper.setError('max length reached from handleChange');
+    }*/
   };
 
   // Usually store a reference to the child in a Ref, but in this case we need state
@@ -93,16 +97,15 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
 
   const labelOffset = inputElement?.getLabelOffset();
 
-  const estimatedVisibleMaxLength = maxLength && MarkdownFieldMaxLength[maxLength];
   const onCharacterCountChange = (characterCount: number) => {
-    console.log('onCharacterCountChange', characterCount, estimatedVisibleMaxLength);
-    if (estimatedVisibleMaxLength && characterCount > estimatedVisibleMaxLength) {
+    console.log('onCharacterCountChange', characterCount);
+    if (maxLength && characterCount > maxLength) {
       console.log('setError');
       helper.setError('max length reached');
       console.log('meta2', meta);
     }
   };
-  console.log('meta', meta);
+  console.log('meta4', meta);
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
@@ -128,7 +131,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           inputRef={inputRef}
           inputProps={{
             controlsVisible: 'always',
-            maxLength: estimatedVisibleMaxLength,
+            maxLength,
           }}
           readOnly={readOnly}
           placeholder={placeholder}
@@ -141,12 +144,11 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         />
         <CharacterCountContainer onChange={onCharacterCountChange}>
           {({ characterCount }) => (
-            <CharacterCounter count={characterCount} maxLength={estimatedVisibleMaxLength} disabled={!withCounter}>
+            <CharacterCounter count={characterCount} maxLength={maxLength} disabled={!withCounter}>
               <FormHelperText error={isError}>{helperText}</FormHelperText>
             </CharacterCounter>
           )}
         </CharacterCountContainer>
-        {isError && <>isError</>}
       </CharacterCountContextProvider>
     </FormControl>
   );

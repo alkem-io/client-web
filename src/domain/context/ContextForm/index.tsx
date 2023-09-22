@@ -34,12 +34,12 @@ export const ContextForm: FC<ContextFormProps> = ({
     vision: context?.vision || '',
     who: context?.who || '',
   };
-
+  //!!
   const validationSchema = yup.object().shape({
-    background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
+    //  background: contextSegmentSchema.fields?.background || yup.string(),
+    //  impact: contextSegmentSchema.fields?.impact || yup.string(),
+    //  vision: contextSegmentSchema.fields?.vision || yup.string(),
+    //  who: contextSegmentSchema.fields?.who || yup.string(),
   });
 
   let isSubmitWired = false;

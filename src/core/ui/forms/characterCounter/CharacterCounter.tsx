@@ -8,6 +8,7 @@ type CharacterCounterProps = DistributiveOmit<TypographyProps, 'variant'> & {
   count?: number;
   separator?: string;
   maxLength?: number;
+  alwaysVisible?: boolean; // if false: show it only when the user is about to reach the limit
   disabled?: boolean;
 };
 
@@ -18,6 +19,7 @@ export const CharacterCounter = ({
   count = 0,
   separator = ' / ',
   disabled = false,
+  alwaysVisible = false,
   maxLength,
   flexWrap,
   children,
@@ -33,6 +35,7 @@ export const CharacterCounter = ({
       rowGap={0}
       alignItems="start"
       flexWrap={flexWrap}
+      visibility={alwaysVisible || (maxLength && count > maxLength - 10) ? 'visible' : 'hidden'}
     >
       {children}
       {!disabled && (
