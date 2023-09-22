@@ -8,11 +8,10 @@ import MarkdownInput from './MarkdownInput';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export const contextSegmentSchema = yup.object().shape({
-  // background: MarkdownValidator(MARKDOWN_TEXT_LENGTH), //!!
-  // impact: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  // vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  // who: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-
+  background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  impact: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  who: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   tagline: yup.string().max(SMALL_TEXT_LENGTH),
 });
 
@@ -37,7 +36,6 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         loading={loading}
       />
       <SectionSpacer />
-      {/*
       <MarkdownInput
         name="background"
         label={t(`context.${contextType}.background.title` as const)}
@@ -64,7 +62,6 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         maxLength={MARKDOWN_TEXT_LENGTH}
         loading={loading}
       />
-  */}
     </>
   );
 };

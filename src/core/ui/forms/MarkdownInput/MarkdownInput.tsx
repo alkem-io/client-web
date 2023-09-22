@@ -14,6 +14,7 @@ import { EditorState } from '@tiptap/pm/state';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
+import { TEXT_OVERFLOW_MARK } from './FormikMarkdownField';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -62,7 +63,8 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
 
     const updateHtmlContent = async () => {
-      const content = await markdownToHTML(value);
+      const removeOverflowMarker = value.replace(new RegExp(`/${TEXT_OVERFLOW_MARK}$/`), '');
+      const content = await markdownToHTML(removeOverflowMarker);
       setHtmlContent(String(content));
     };
 
@@ -132,15 +134,15 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     const emitChangeOnEditorUpdate = (editor: Editor) => {
       const handleStateChange = async () => {
         const markdown = await HTMLToMarkdown(editor.getHTML());
-
-        setCharacterCount(editor.getText().length);
+        const characterCount = editor.getText().length;
+        setCharacterCount(characterCount);
 
         onChange?.({
           currentTarget: {
-            value: markdown,
+            value: { markdown, characterCount },
           },
           target: {
-            value: markdown,
+            value: { markdown, characterCount },
           },
         } as unknown as FormEvent<HTMLInputElement>);
       };

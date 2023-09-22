@@ -162,6 +162,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                       title={t('components.communityUpdates.title')}
                       required
                       maxLength={MARKDOWN_TEXT_LENGTH}
+                      helperText="This is the helper text"
                     />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">

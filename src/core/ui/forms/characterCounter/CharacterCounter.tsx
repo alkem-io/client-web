@@ -35,11 +35,14 @@ export const CharacterCounter = ({
       rowGap={0}
       alignItems="start"
       flexWrap={flexWrap}
-      visibility={alwaysVisible || (maxLength && count > maxLength - 10) ? 'visible' : 'hidden'}
     >
       {children}
       {!disabled && (
-        <Caption color={color} {...rest}>
+        <Caption
+          color={color}
+          {...rest}
+          visibility={alwaysVisible || (maxLength && count > maxLength - 10) ? 'visible' : 'hidden'}
+        >
           {getText(count, separator, maxLength)}
         </Caption>
       )}
