@@ -8,12 +8,7 @@ import {
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import {
-  buildChallengeApplyUrl,
-  buildChallengeUrl,
-  buildSpaceApplyUrl,
-  buildSpaceUrl,
-} from '../../../../main/routing/urlBuilders';
+import { buildChallengeApplyUrl, buildSpaceApplyUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
@@ -81,8 +76,6 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     hasCommunityParent &&
     _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const journeyUrl =
-    challengeId && challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : buildSpaceUrl(spaceNameId);
   const applyUrl =
     challengeId && challengeNameId
       ? buildChallengeApplyUrl(spaceNameId, challengeNameId)
@@ -115,7 +108,6 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     isAuthenticated,
     isMember,
     isParentMember,
-    journeyUrl,
     applyUrl,
     parentApplyUrl: buildSpaceApplyUrl(spaceNameId),
     joinParentUrl,

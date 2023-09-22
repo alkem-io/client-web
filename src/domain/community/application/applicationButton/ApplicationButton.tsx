@@ -20,7 +20,6 @@ export interface ApplicationButtonProps {
   applicationState?: string;
   userInvitation?: InvitationItem;
   parentApplicationState?: string;
-  journeyUrl?: string;
   applyUrl?: string;
   parentApplyUrl?: string;
   joinParentUrl?: string;
@@ -44,7 +43,6 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       applicationState,
       userInvitation,
       parentApplicationState,
-      journeyUrl,
       applyUrl,
       parentApplyUrl,
       joinParentUrl,
@@ -96,9 +94,6 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
     const handleAcceptInvitation = () => {
       handleClose();
-      // if (journeyUrl) {
-      //   navigate(journeyUrl);
-      // }
     };
 
     /***
