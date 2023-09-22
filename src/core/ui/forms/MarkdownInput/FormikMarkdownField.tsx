@@ -1,11 +1,15 @@
-import React, { ChangeEvent, FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import TranslationKey from '../../../i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
-import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
+import {
+  CharacterCountContainer,
+  CharacterCountContextProvider,
+  CharacterCountContextProviderRefValue,
+} from './CharacterCountContext';
 import { gutters } from '../../grid/utils';
 import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '../../../logging/sentry/log';
@@ -58,7 +62,23 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   helperText: validInputHelperText,
 }) => {
   const tErr = useValidationMessageTranslation();
-  const [field, meta, helper] = useField(name);
+
+  const validate = () => {
+    if (!characterCountRef.current) {
+      return undefined;
+    }
+    const { characterCount } = characterCountRef.current;
+    const isAboveCharacterLimit = maxLength && characterCount > maxLength;
+    if (isAboveCharacterLimit) {
+      return isAboveCharacterLimit ? 'max length reached' : undefined;
+    }
+  };
+
+  const [field, meta, helper] = useField({
+    name,
+    validate,
+  });
+
   const isError = Boolean(meta.error) && meta.touched;
 
   useEffect(() => {
@@ -76,11 +96,12 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   }, [isError, meta.error, validInputHelperText, tErr, title]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    helper.setValue(event.target.value, false);
-    //!!
-    /*if (event.target.value.length > maxLength) {
-      helper.setError('max length reached from handleChange');
-    }*/
+    helper.setValue(event.target.value);
+    helper.setTouched(true);
+  };
+
+  const handleBlur = () => {
+    helper.setTouched(true);
   };
 
   // Usually store a reference to the child in a Ref, but in this case we need state
@@ -97,19 +118,13 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
 
   const labelOffset = inputElement?.getLabelOffset();
 
-  const onCharacterCountChange = (characterCount: number) => {
-    console.log('onCharacterCountChange', characterCount);
-    if (maxLength && characterCount > maxLength) {
-      console.log('setError');
-      helper.setError('max length reached');
-      console.log('meta2', meta);
-    }
-  };
-  console.log('meta4', meta);
+  const characterCountRef = useRef<CharacterCountContextProviderRefValue>(null);
+
+  console.log('FormikMarkdownField:render', { error: meta.error, touched: meta.touched });
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
-      <CharacterCountContextProvider>
+      <CharacterCountContextProvider ref={characterCountRef}>
         <FilledDetector value={inputElement?.value} />
         {labelOffset && (
           <InputLabel
@@ -126,6 +141,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         <OutlinedInput
           value={field.value}
           onChange={handleChange}
+          onBlur={handleBlur}
           label={title}
           inputComponent={MarkdownInput}
           inputRef={inputRef}
@@ -142,7 +158,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
             },
           }}
         />
-        <CharacterCountContainer onChange={onCharacterCountChange}>
+        <CharacterCountContainer>
           {({ characterCount }) => (
             <CharacterCounter count={characterCount} maxLength={maxLength} disabled={!withCounter}>
               <FormHelperText error={isError}>{helperText}</FormHelperText>
