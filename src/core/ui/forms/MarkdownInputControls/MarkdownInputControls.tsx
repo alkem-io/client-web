@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, memo, useEffect, useState } from 'react';
 import {
   Code,
   FormatBold,
@@ -19,6 +19,7 @@ import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
+import produce from 'immer';
 
 interface MarkdownInputControlsProps {
   editor: Editor | null;
@@ -44,96 +45,136 @@ const Toolbar = styled(Tabs)(() => ({
   minHeight: 'auto',
 }));
 
-const ControlsButton = ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
-  const isActiveArgs = specs && ((typeof specs === 'string' ? [specs] : specs) as Parameters<Editor['isActive']>);
+interface ButtonState {
+  active?: boolean;
+  disabled?: boolean;
+}
 
-  const isActive = isActiveArgs && editor?.isActive(...isActiveArgs);
+const ControlsButton = memo(
+  ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
+    const isActiveArgs = specs && ((typeof specs === 'string' ? [specs] : specs) as Parameters<Editor['isActive']>);
 
-  return (
-    <IconButton
-      onClick={() => editor && command(editor.chain().focus()).run()}
-      disabled={!editor || !command(editor.can().chain().focus()).run()}
-      color={isActive ? 'secondary' : undefined}
-      sx={{ width: gutters(2), height: gutters(2) }}
-      {...buttonProps}
-    />
-  );
-};
+    const getActiveState = () => (isActiveArgs ? editor?.isActive(...isActiveArgs) : false);
+
+    const getDisabledState = () => !editor || !command(editor.can().chain().focus()).run();
+
+    const produceButtonState = (prevState: ButtonState = {}) =>
+      produce(prevState, nextState => {
+        nextState.active = getActiveState();
+        nextState.disabled = getDisabledState();
+      });
+
+    const [state, setState] = useState<ButtonState>(produceButtonState());
+
+    const refreshOnEditorUpdate = (editor: Editor) => {
+      const handleStateChange = async () => {
+        setState(produceButtonState);
+      };
+
+      editor.on('transaction', handleStateChange);
+
+      return () => {
+        editor.off('transaction', handleStateChange);
+      };
+    };
+
+    useEffect(() => {
+      if (editor) {
+        return refreshOnEditorUpdate(editor);
+      }
+    }, [editor]);
+
+    return (
+      <IconButton
+        onClick={() => editor && command(editor.chain().focus()).run()}
+        disabled={state.disabled}
+        color={state.active ? 'secondary' : undefined}
+        sx={{ width: gutters(2), height: gutters(2) }}
+        {...buttonProps}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    return prevProps.editor === nextProps.editor;
+  }
+);
 
 const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
 
-const MarkdownInputControls = forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
-  ({ editor, visible = false, onDialogOpen, onDialogClose }, ref) => {
-    const [isVisible, setIsVisible] = useState(visible);
+const MarkdownInputControls = memo(
+  forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
+    ({ editor, visible = false, onDialogOpen, onDialogClose }, ref) => {
+      const [isVisible, setIsVisible] = useState(visible);
 
-    useEffect(() => {
-      if (visible) {
-        setTimeout(() => {
-          setIsVisible(() => visible);
-        }, CONTROLS_SHOW_DELAY_MS);
-      } else {
-        setIsVisible(false);
-      }
-    }, [visible]);
+      useEffect(() => {
+        if (visible) {
+          setTimeout(() => {
+            setIsVisible(() => visible);
+          }, CONTROLS_SHOW_DELAY_MS);
+        } else {
+          setIsVisible(false);
+        }
+      }, [visible]);
 
-    return (
-      <Collapse in={isVisible} ref={ref}>
-        <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
-          <ControlsButton editor={editor} command={e => e.undo()}>
-            <Undo />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.redo()}>
-            <Redo />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.toggleBold()} specs="bold">
-            <FormatBold />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
-            <FormatItalic />
-          </ControlsButton>
-          <ControlsButton
-            editor={editor}
-            command={e => e.toggleHeading({ level: 1 })}
-            specs={['heading', { level: 1 }]}
-          >
-            <Title fontSize="large" />
-          </ControlsButton>
-          <ControlsButton
-            editor={editor}
-            command={e => e.toggleHeading({ level: 2 })}
-            specs={['heading', { level: 2 }]}
-          >
-            <Title />
-          </ControlsButton>
-          <ControlsButton
-            editor={editor}
-            command={e => e.toggleHeading({ level: 3 })}
-            specs={['heading', { level: 3 }]}
-          >
-            <Title fontSize="small" />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.toggleBulletList()} specs="bulletList">
-            <FormatListBulleted />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.toggleOrderedList()} specs="orderedList">
-            <FormatListNumbered />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.toggleBlockquote()} specs="blockquote">
-            <FormatQuoteOutlined />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
-            <Code />
-          </ControlsButton>
-          <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
-            <HorizontalRuleOutlined />
-          </ControlsButton>
-          <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-          <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-          <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-        </Toolbar>
-      </Collapse>
-    );
-  }
+      return (
+        <Collapse in={isVisible} ref={ref}>
+          <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
+            <ControlsButton editor={editor} command={e => e.undo()}>
+              <Undo />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.redo()}>
+              <Redo />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.toggleBold()} specs="bold">
+              <FormatBold />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
+              <FormatItalic />
+            </ControlsButton>
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleHeading({ level: 1 })}
+              specs={['heading', { level: 1 }]}
+            >
+              <Title fontSize="large" />
+            </ControlsButton>
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleHeading({ level: 2 })}
+              specs={['heading', { level: 2 }]}
+            >
+              <Title />
+            </ControlsButton>
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleHeading({ level: 3 })}
+              specs={['heading', { level: 3 }]}
+            >
+              <Title fontSize="small" />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.toggleBulletList()} specs="bulletList">
+              <FormatListBulleted />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.toggleOrderedList()} specs="orderedList">
+              <FormatListNumbered />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.toggleBlockquote()} specs="blockquote">
+              <FormatQuoteOutlined />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
+              <Code />
+            </ControlsButton>
+            <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
+              <HorizontalRuleOutlined />
+            </ControlsButton>
+            <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+            <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+            <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+          </Toolbar>
+        </Collapse>
+      );
+    }
+  )
 );
 
 export default MarkdownInputControls;

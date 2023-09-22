@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
 import CharacterCounter from '../characterCounter/CharacterCounter';
@@ -7,7 +7,7 @@ import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
 import { gutters } from '../../grid/utils';
-import { MarkdownFieldMaxLength, TextFieldMaxLength } from '../field-length.constants';
+import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '../../../logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 
@@ -18,8 +18,8 @@ interface MarkdownFieldProps extends InputProps {
   readOnly?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  maxLength?: TextFieldMaxLength;
-  withCounter?: boolean;
+  maxLength?: MarkdownTextMaxLength;
+  counterDisabled?: boolean;
   helperText?: string;
   loading?: boolean; // TODO make use of
 }
@@ -46,7 +46,7 @@ const FilledDetector = ({ value }: FilledDetectorProps) => {
   return null;
 };
 
-export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
+export const FormikMarkdownField = ({
   title,
   name,
   required = false,
@@ -54,11 +54,24 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   disabled = false,
   placeholder,
   maxLength,
-  withCounter = false,
+  counterDisabled = false,
   helperText: validInputHelperText,
-}) => {
+}: MarkdownFieldProps) => {
   const tErr = useValidationMessageTranslation();
-  const [field, meta, helper] = useField(name);
+
+  const validate = () => {
+    const characterCount = inputElementRef.current?.value?.length ?? 0;
+    const isAboveCharacterLimit = maxLength && characterCount > maxLength;
+    if (isAboveCharacterLimit) {
+      return isAboveCharacterLimit ? 'max length reached' : undefined;
+    }
+  };
+
+  const [field, meta, helper] = useField({
+    name,
+    validate,
+  });
+
   const isError = Boolean(meta.error) && meta.touched;
 
   useEffect(() => {
@@ -75,15 +88,24 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     return tErr(meta.error as TranslationKey, { field: title });
   }, [isError, meta.error, validInputHelperText, tErr, title]);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    helper.setValue(event.target.value);
-  };
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      helper.setValue(event.target.value);
+    },
+    [helper]
+  );
+
+  const handleBlur = useCallback(() => {
+    helper.setTouched(true);
+  }, [helper]);
 
   // Usually store a reference to the child in a Ref, but in this case we need state
   // cause label's presence/position depends on the presence of this ref.
   const [inputElement, setInputElement] = useState<MarkdownInputRefApi | null>(null);
+  const inputElementRef = useRef<MarkdownInputRefApi | null>(null);
 
   const inputRef = useCallback((nextInputElement: MarkdownInputRefApi | null) => {
+    inputElementRef.current = nextInputElement;
     setInputElement(nextInputElement);
   }, []);
 
@@ -92,8 +114,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   };
 
   const labelOffset = inputElement?.getLabelOffset();
-
-  const estimatedVisibleMaxLength = maxLength && MarkdownFieldMaxLength[maxLength];
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
@@ -114,12 +134,13 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         <OutlinedInput
           value={field.value}
           onChange={handleChange}
+          onBlur={handleBlur}
           label={title}
           inputComponent={MarkdownInput}
           inputRef={inputRef}
           inputProps={{
             controlsVisible: 'always',
-            maxLength: estimatedVisibleMaxLength,
+            maxLength,
           }}
           readOnly={readOnly}
           placeholder={placeholder}
@@ -132,7 +153,11 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         />
         <CharacterCountContainer>
           {({ characterCount }) => (
-            <CharacterCounter count={characterCount} maxLength={estimatedVisibleMaxLength} disabled={!withCounter}>
+            <CharacterCounter
+              count={characterCount}
+              maxLength={maxLength}
+              disabled={counterDisabled || !maxLength || maxLength - characterCount > 10}
+            >
               <FormHelperText error={isError}>{helperText}</FormHelperText>
             </CharacterCounter>
           )}
