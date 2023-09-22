@@ -51,7 +51,8 @@
                 }
               }`;
 
-            const url = 'http://localhost:3000/graphql';
+            const url = `${window.location.protocol}//${window.location.host}/graphql`;
+            console.log(`URL: ${url}`);
             const options = {
                 method: 'POST',
                 headers: {
