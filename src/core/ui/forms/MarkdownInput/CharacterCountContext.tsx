@@ -1,9 +1,11 @@
 import {
   createContext,
   Dispatch,
+  forwardRef,
   PropsWithChildren,
   ReactElement,
   useContext,
+  useImperativeHandle,
   useLayoutEffect,
   useMemo,
   useState,
@@ -16,16 +18,30 @@ interface CharacterCountContextValue {
 
 const CharacterCountContext = createContext<CharacterCountContextValue | null>(null);
 
-export const CharacterCountContextProvider = ({ children }: PropsWithChildren<{}>) => {
-  const [characterCount, setCharacterCount] = useState(0);
+export interface CharacterCountContextProviderRefValue {
+  characterCount: number;
+}
 
-  const contextValue = useMemo<CharacterCountContextValue>(
-    () => ({ characterCount, setCharacterCount }),
-    [characterCount, setCharacterCount]
-  );
+export const CharacterCountContextProvider = forwardRef<CharacterCountContextProviderRefValue, PropsWithChildren<{}>>(
+  ({ children }, ref) => {
+    const [characterCount, setCharacterCount] = useState(0);
 
-  return <CharacterCountContext.Provider value={contextValue}>{children}</CharacterCountContext.Provider>;
-};
+    const contextValue = useMemo<CharacterCountContextValue>(
+      () => ({ characterCount, setCharacterCount }),
+      [characterCount, setCharacterCount]
+    );
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        characterCount,
+      }),
+      [characterCount]
+    );
+
+    return <CharacterCountContext.Provider value={contextValue}>{children}</CharacterCountContext.Provider>;
+  }
+);
 
 const useCharacterCountContext = () => {
   const context = useContext(CharacterCountContext);

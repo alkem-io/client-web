@@ -1,11 +1,15 @@
-import React, { ChangeEvent, FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { FieldMetaProps, useField } from 'formik';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import TranslationKey from '../../../i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
-import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
+import {
+  CharacterCountContainer,
+  CharacterCountContextProvider,
+  CharacterCountContextProviderRefValue,
+} from './CharacterCountContext';
 import { gutters } from '../../grid/utils';
 import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '../../../logging/sentry/log';
@@ -61,7 +65,23 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   helperText: validInputHelperText,
 }) => {
   const tErr = useValidationMessageTranslation();
-  const [field, meta, helper] = useField(name);
+
+  const validate = () => {
+    if (!characterCountRef.current) {
+      return undefined;
+    }
+    const { characterCount } = characterCountRef.current;
+    const isAboveCharacterLimit = maxLength && characterCount > maxLength;
+    if (isAboveCharacterLimit) {
+      return isAboveCharacterLimit ? 'max length reached' : undefined;
+    }
+  };
+
+  const [field, meta, helper] = useField({
+    name,
+    validate,
+  });
+
   const isError = Boolean(meta.error) && meta.touched;
 
   useEffect(() => {
@@ -78,17 +98,12 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   }, [isError, meta.error, validInputHelperText, tErr, title]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const eventData = event.target.value as unknown as { markdown: string; characterCount: number };
-    console.log('ChangeEvent', eventData);
-    const { markdown, characterCount } = eventData;
-
-    const maxLengthReached = maxLength && characterCount > maxLength;
-
+    helper.setValue(event.target.value);
     helper.setTouched(true);
+  };
 
-    const newValue =
-      markdown.replace(new RegExp(`/${TEXT_OVERFLOW_MARK}$/`), '') + (maxLengthReached ? TEXT_OVERFLOW_MARK : '');
-    helper.setValue(newValue);
+  const handleBlur = () => {
+    helper.setTouched(true);
   };
 
   // Usually store a reference to the child in a Ref, but in this case we need state
@@ -105,11 +120,13 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
 
   const labelOffset = inputElement?.getLabelOffset();
 
-  consoleLogMeta('render', meta);
+  const characterCountRef = useRef<CharacterCountContextProviderRefValue>(null);
+
+  console.log('FormikMarkdownField:render', { error: meta.error, touched: meta.touched });
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
-      <CharacterCountContextProvider>
+      <CharacterCountContextProvider ref={characterCountRef}>
         <FilledDetector value={inputElement?.value} />
         {labelOffset && (
           <InputLabel
@@ -126,6 +143,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         <OutlinedInput
           value={field.value}
           onChange={handleChange}
+          onBlur={handleBlur}
           label={title}
           inputComponent={MarkdownInput}
           inputRef={inputRef}
