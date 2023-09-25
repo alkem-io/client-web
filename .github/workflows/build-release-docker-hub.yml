@@ -5,7 +5,17 @@ on:
     types: [published]
 
 jobs:
-  docker:
+  upload-sourcemap:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout the repo
+      - name: 'Checkout github Action'
+        uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+      - run: npm run build:sentry
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -61,7 +71,6 @@ jobs:
             ARG_BUILD_VERSION=${{ steps.prep.outputs.version }}
             ARG_BUILD_DATE=${{ steps.prep.outputs.created }}
             ARG_BUILD_REVISION=${{ github.sha }}
-            ARG_SENTRY_AUTH_TOKEN= ${{ secrets.ARG_SENTRY_AUTH_TOKEN }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
