@@ -16,6 +16,8 @@ jobs:
           node-version: 16.15.0
       - name: 'Setup cross-env'
         run: npm install -g cross-env
+      - name: 'Install dependencies'
+        run: npm install
       - name: 'Upload sourcemaps to Sentry'
         run: npm run build:sentry
   build-and-deploy:
