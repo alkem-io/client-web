@@ -61,6 +61,10 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     x => x.spaceId === spaceId && (challengeId ? x.challengeId === challengeId : true) && !x.opportunityId
   );
 
+  const userInvitation = user?.pendingInvitations?.find(
+    x => x.spaceId === spaceId && (challengeId ? x.challengeId === challengeId : true) && !x.opportunityId
+  );
+
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
   const parentApplication = user?.pendingApplications?.find(
@@ -80,6 +84,8 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const communityPrivileges = _communityPrivileges?.space?.applicationCommunity?.authorization?.myPrivileges ?? [];
   const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
+  const canAcceptInvitation =
+    _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
   const canApplyToCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
 
   const parentCommunityPrivileges = hasCommunityParent
@@ -106,10 +112,12 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     parentApplyUrl: buildSpaceApplyUrl(spaceNameId),
     joinParentUrl,
     applicationState: userApplication?.state,
+    userInvitation,
     parentApplicationState: parentApplication?.state,
     spaceName: spaceProfile.displayName,
     challengeName,
     canJoinCommunity,
+    canAcceptInvitation,
     canApplyToCommunity,
     canJoinParentCommunity,
     canApplyToParentCommunity,
