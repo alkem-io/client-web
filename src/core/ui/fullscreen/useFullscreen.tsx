@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
 
 export const useFullscreen = (element: HTMLElement = document.documentElement) => {
-  const [fullscreen, setFullscreen] = useState(!!document.fullscreenElement);
+  const [fullscreenState, setFullscreenState] = useState(!!document.fullscreenElement);
 
-  const toggleFullscreen = () => {
-    setFullscreen(fullscreen => !fullscreen);
+  const fullscreenChanged = () => {
+    setFullscreenState(!!document.fullscreenElement);
   };
-
   useEffect(() => {
+    document.addEventListener('fullscreenchange', fullscreenChanged);
+    return () => {
+      document.removeEventListener('fullscreenchange', fullscreenChanged);
+    };
+  }, []);
+
+  const setFullscreen = (fullscreen: boolean) => {
     if (fullscreen) {
       if (element.requestFullscreen) {
         try {
@@ -21,13 +27,14 @@ export const useFullscreen = (element: HTMLElement = document.documentElement) =
         } catch (ex) {}
       }
     }
-    return () => {
-      console.log('unsubscribe fullscreen');
-    };
-  }, [fullscreen]);
+  };
+
+  const toggleFullscreen = () => {
+    setFullscreen(!fullscreenState);
+  };
 
   return {
-    fullscreen,
+    fullscreen: fullscreenState,
     toggleFullscreen,
     setFullscreen,
   };
