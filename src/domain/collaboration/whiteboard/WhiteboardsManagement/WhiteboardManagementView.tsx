@@ -77,10 +77,11 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
 }) => {
   const { whiteboardNameId, calloutId, whiteboard } = entities;
   const [whiteboardBeingDeleted, setWhiteboardBeingDeleted] = useState<WhiteboardBeingDeleted | undefined>(undefined);
-  const { fullscreen } = useFullscreen();
+  const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleCancel = (whiteboard: WhiteboardDetailsFragment) => {
     backToWhiteboards();
+    setFullscreen(false);
     actions.onCheckin(whiteboard);
   };
 

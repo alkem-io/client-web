@@ -66,10 +66,11 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
   backToWhiteboards,
 }) => {
   const { whiteboardNameId, whiteboard } = entities;
-  const { fullscreen } = useFullscreen();
+  const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleCancel = (/*whiteboard: WhiteboardRtDetailsFragment*/) => {
     backToWhiteboards();
+    setFullscreen(false);
   };
 
   return (
