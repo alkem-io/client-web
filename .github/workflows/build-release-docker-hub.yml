@@ -71,6 +71,7 @@ jobs:
             ARG_BUILD_VERSION=${{ steps.prep.outputs.version }}
             ARG_BUILD_DATE=${{ steps.prep.outputs.created }}
             ARG_BUILD_REVISION=${{ github.sha }}
+            ARG_BUILD_ENVIRONMENT=production
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}

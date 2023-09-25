@@ -10,6 +10,7 @@ ARG ARG_GRAPHQL_ENDPOINT=/graphql
 ENV VITE_APP_GRAPHQL_ENDPOINT=${ARG_GRAPHQL_ENDPOINT}
 
 # set build version, date and revision
+ARG ARG_BUILD_ENVIRONMENT=development
 ARG ARG_BUILD_VERSION=dev
 ARG ARG_BUILD_DATE
 ARG ARG_BUILD_REVISION
@@ -27,6 +28,13 @@ RUN npm install
 
 # Everything for now
 COPY . .
+
+# Conditionally run npm run build based on ARG_GRAPHQL_ENDPOINT
+RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
+  npm run-script build:dev; \
+  else \
+  npm run-script build; \
+  fi
 
 RUN npm run-script build
 
