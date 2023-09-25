@@ -81,8 +81,10 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
 
   const handleCancel = (whiteboard: WhiteboardDetailsFragment) => {
     backToWhiteboards();
-    setFullscreen(false);
     actions.onCheckin(whiteboard);
+    if (fullscreen) {
+      setFullscreen(false);
+    }
   };
 
   return (

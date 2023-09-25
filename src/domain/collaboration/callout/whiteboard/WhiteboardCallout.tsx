@@ -52,7 +52,9 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
     };
     const closeCreateDialog = () => {
       setShowCreateWhiteboardDialog(false);
-      setFullscreen(false);
+      if (fullscreen) {
+        setFullscreen(false);
+      }
     };
 
     const createButton = canCreate && callout.state !== CalloutState.Closed && (

@@ -48,7 +48,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   };
   const handleClose = () => {
     setEditDialogOpen(false);
-    setFullscreen(false);
+    if (fullscreen) {
+      setFullscreen(false);
+    }
   };
 
   const whiteboardFromTemplate = useMemo(() => {

@@ -13,7 +13,7 @@ const FullscreenButton: FC<FullscreenButtonProps> = ({ element }) => {
   const { fullscreen, toggleFullscreen } = useFullscreen(element);
 
   return (
-    <IconButton onClick={() => toggleFullscreen()} title={t('buttons.fullscreen')} color="primary">
+    <IconButton onClick={toggleFullscreen} title={t('buttons.fullscreen')} color="primary">
       {fullscreen ? <FullscreenExit /> : <Fullscreen />}
     </IconButton>
   );
