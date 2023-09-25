@@ -14,7 +14,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.15.0
-      - run: npm run build:sentry
+      - name: 'Setup cross-env'
+        run: npm install -g cross-env
+      - name: 'Upload sourcemaps to Sentry'
+        run: npm run build:sentry
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
