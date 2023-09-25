@@ -14,7 +14,7 @@ import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
-import FullscreenButton from '../../../shared/components/FullScreenButton';
+import FullscreenButton from '../../../shared/components/FullscreenButton';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardNameId?: string;

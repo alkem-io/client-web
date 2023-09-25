@@ -8,10 +8,29 @@ interface FullscreenButtonProps {
   onClick: IconButtonProps['onClick'];
 }
 
+function openFullscreen() {
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen();
+  }
+}
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  }
+}
+
 const FullscreenButton: FC<FullscreenButtonProps> = ({ isFullscreen, onClick }) => {
   const { t } = useTranslation();
+  const handleClick = event => {
+    if (isFullscreen) {
+      closeFullscreen();
+    } else {
+      openFullscreen();
+    }
+    onClick?.(event);
+  };
   return (
-    <IconButton onClick={onClick} title={t('buttons.fullscreen')} color="primary">
+    <IconButton onClick={handleClick} title={t('buttons.fullscreen')} color="primary">
       {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
     </IconButton>
   );
