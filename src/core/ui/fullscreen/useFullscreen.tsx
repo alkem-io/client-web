@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 
 export const useFullscreen = (element: HTMLElement = document.documentElement) => {
-  const [fullscreenState, setFullscreenState] = useState(!!document.fullscreenElement);
+  const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
 
-  const fullscreenChanged = () => {
-    setFullscreenState(!!document.fullscreenElement);
+  const handleFullscreenChange = () => {
+    setIsFullscreen(!!document.fullscreenElement);
   };
+
   useEffect(() => {
-    document.addEventListener('fullscreenchange', fullscreenChanged);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => {
-      document.removeEventListener('fullscreenchange', fullscreenChanged);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
   }, []);
 
@@ -29,13 +30,8 @@ export const useFullscreen = (element: HTMLElement = document.documentElement) =
     }
   };
 
-  const toggleFullscreen = () => {
-    setFullscreen(!fullscreenState);
-  };
-
   return {
-    fullscreen: fullscreenState,
-    toggleFullscreen,
+    fullscreen: isFullscreen,
     setFullscreen,
   };
 };
