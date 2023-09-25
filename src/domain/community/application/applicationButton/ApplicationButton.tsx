@@ -15,7 +15,7 @@ import InvitationDialog from '../../invitations/InvitationDialog';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
-  isMember?: boolean;
+  isMember: boolean;
   isParentMember?: boolean;
   applicationState?: string;
   userInvitation?: InvitationItem;

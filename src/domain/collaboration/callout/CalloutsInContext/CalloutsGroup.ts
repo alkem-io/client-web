@@ -2,7 +2,6 @@ import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphq
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 export enum CalloutDisplayLocationValuesMap {
-  HomeTop = 'HOME_0',
   HomeLeft = 'HOME_1',
   HomeRight = 'HOME_2',
   ContributeLeft = 'CONTRIBUTE_1',
@@ -18,7 +17,6 @@ export enum CalloutDisplayLocationValuesMap {
 
 export const JourneyCalloutDisplayLocationOptions: Record<JourneyTypeName, CalloutDisplayLocation[]> = {
   space: [
-    CalloutDisplayLocation.HomeTop,
     CalloutDisplayLocation.HomeLeft,
     CalloutDisplayLocation.HomeRight,
     CalloutDisplayLocation.CommunityLeft,
@@ -28,7 +26,6 @@ export const JourneyCalloutDisplayLocationOptions: Record<JourneyTypeName, Callo
     CalloutDisplayLocation.Knowledge,
   ],
   challenge: [
-    CalloutDisplayLocation.HomeTop,
     CalloutDisplayLocation.HomeLeft,
     CalloutDisplayLocation.HomeRight,
     CalloutDisplayLocation.ContributeLeft,
@@ -37,7 +34,6 @@ export const JourneyCalloutDisplayLocationOptions: Record<JourneyTypeName, Callo
     CalloutDisplayLocation.OpportunitiesRight,
   ],
   opportunity: [
-    CalloutDisplayLocation.HomeTop,
     CalloutDisplayLocation.HomeLeft,
     CalloutDisplayLocation.HomeRight,
     CalloutDisplayLocation.ContributeLeft,

@@ -13,14 +13,11 @@ import {
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   CalloutDisplayLocation,
-  ChallengeCardFragment,
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
   Reference,
   SpacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { MetricType } from '../../../platform/metrics/MetricType';
 import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
 import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
@@ -37,10 +34,8 @@ export interface SpaceContainerEntities {
     spaceReadAccess: boolean;
     readUsers: boolean;
   };
-  challengesCount: number | undefined;
   isAuthenticated: boolean;
   isMember: boolean;
-  challenges: ChallengeCardFragment[];
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
   postsCount: number | undefined;
@@ -62,7 +57,6 @@ export interface SpaceContainerState {
 export interface SpacePageContainerProps
   extends ContainerChildProps<SpaceContainerEntities, SpaceContainerActions, SpaceContainerState> {}
 
-const EMPTY = [];
 const NO_PRIVILEGES = [];
 
 export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children }) => {
@@ -93,8 +87,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     AuthorizationPrivilege.Read
   );
 
-  const challengesCount = useMemo(() => getMetricCount(_space?.space.metrics, MetricType.Challenge), [_space]);
-
   const spacePrivileges = _space?.space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
@@ -108,11 +100,9 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID || '', {
-    skipCondition: !permissions.spaceReadAccess || !permissions.readUsers,
+    skip: !permissions.spaceReadAccess || !permissions.readUsers,
     types: activityTypes,
   });
-
-  const challenges = _space?.space.challenges ?? EMPTY;
 
   const postsCount = usePostsCount(_space?.space.metrics);
   const whiteboardsCount = useWhiteboardsCount(_space?.space.metrics);
@@ -143,11 +133,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const callouts = useCallouts({
     spaceNameId,
-    displayLocations: [
-      CalloutDisplayLocation.HomeTop,
-      CalloutDisplayLocation.HomeLeft,
-      CalloutDisplayLocation.HomeRight,
-    ],
+    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
   });
 
   return (
@@ -157,10 +143,8 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
           space: _space?.space,
           isPrivate,
           permissions,
-          challengesCount,
           isAuthenticated,
           isMember,
-          challenges,
           postsCount,
           whiteboardsCount,
           references,

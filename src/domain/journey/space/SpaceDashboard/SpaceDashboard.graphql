@@ -77,9 +77,6 @@ fragment SpacePage on Space {
       }
     }
   }
-  challenges(limit: 3, shuffle: true) {
-    ...ChallengeCard
-  }
 }
 
 fragment SpaceWelcomeBlockContributorProfile on Profile {

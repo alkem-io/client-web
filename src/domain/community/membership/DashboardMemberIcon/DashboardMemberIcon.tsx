@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { HowToRegOutlined } from '@mui/icons-material';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { Caption } from '../../../../core/ui/typography';
@@ -20,7 +20,9 @@ const DashboardMemberIcon = ({ journeyTypeName }: DashboardMemberIconProps) => {
       title={<Caption>{t('pages.generic.sections.dashboard.memberOf', { entity: translatedJourneyTypeName })}</Caption>}
       placement="left"
     >
-      <HowToRegOutlined />
+      <Box paddingLeft={0.5} paddingBottom={1} sx={{ float: 'right' }}>
+        <HowToRegOutlined />
+      </Box>
     </Tooltip>
   );
 };

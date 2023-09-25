@@ -2041,6 +2041,123 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
+export const ChallengeProfileFragmentDoc = gql`
+  fragment ChallengeProfile on Challenge {
+    id
+    nameID
+    metrics {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      tagline
+      displayName
+      visuals {
+        ...VisualFull
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    innovationFlow {
+      id
+      lifecycle {
+        id
+        machineDef
+        state
+        nextEvents
+        stateIsFinal
+      }
+    }
+    context {
+      id
+      vision
+      authorization {
+        id
+        myPrivileges
+        anonymousReadAccess
+      }
+    }
+    collaboration {
+      id
+      ...DashboardTopCallouts
+      ...DashboardTimelineAuthorization
+    }
+    community {
+      id
+      myMembershipStatus
+      ...EntityDashboardCommunity
+    }
+  }
+  ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${DashboardTopCalloutsFragmentDoc}
+  ${DashboardTimelineAuthorizationFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+`;
+export const ChallengeInfoFragmentDoc = gql`
+  fragment ChallengeInfo on Challenge {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        uri
+      }
+      visuals {
+        ...VisualFull
+      }
+      location {
+        ...fullLocation
+      }
+    }
+    community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    context {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
+`;
+export const NewChallengeFragmentDoc = gql`
+  fragment NewChallenge on Challenge {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -2105,127 +2222,6 @@ export const OpportunityCardFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
-`;
-export const ChallengeProfileFragmentDoc = gql`
-  fragment ChallengeProfile on Challenge {
-    id
-    nameID
-    metrics {
-      id
-      name
-      value
-    }
-    profile {
-      id
-      tagline
-      displayName
-      visuals {
-        ...VisualFull
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    innovationFlow {
-      id
-      lifecycle {
-        id
-        machineDef
-        state
-        nextEvents
-        stateIsFinal
-      }
-    }
-    context {
-      id
-      vision
-      authorization {
-        id
-        myPrivileges
-        anonymousReadAccess
-      }
-    }
-    collaboration {
-      id
-      ...DashboardTopCallouts
-      ...DashboardTimelineAuthorization
-    }
-    community {
-      id
-      myMembershipStatus
-      ...EntityDashboardCommunity
-    }
-    opportunities {
-      ...OpportunityCard
-    }
-  }
-  ${VisualFullFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${DashboardTopCalloutsFragmentDoc}
-  ${DashboardTimelineAuthorizationFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
-  ${OpportunityCardFragmentDoc}
-`;
-export const ChallengeInfoFragmentDoc = gql`
-  fragment ChallengeInfo on Challenge {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      tagline
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        uri
-      }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
-      }
-    }
-    community {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    context {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
-`;
-export const NewChallengeFragmentDoc = gql`
-  fragment NewChallenge on Challenge {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-  }
 `;
 export const OpportunitiesOnChallengeFragmentDoc = gql`
   fragment OpportunitiesOnChallenge on Challenge {
@@ -2536,50 +2532,6 @@ export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
     }
   }
 `;
-export const ChallengeCardFragmentDoc = gql`
-  fragment ChallengeCard on Challenge {
-    id
-    nameID
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    metrics {
-      id
-      name
-      value
-    }
-    profile {
-      id
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    context {
-      id
-      vision
-    }
-    innovationFlow {
-      id
-      lifecycle {
-        id
-        state
-      }
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2639,9 +2591,6 @@ export const SpacePageFragmentDoc = gql`
         }
       }
     }
-    challenges(limit: 3, shuffle: true) {
-      ...ChallengeCard
-    }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${SpaceWelcomeBlockContributorProfileFragmentDoc}
@@ -2650,7 +2599,6 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
-  ${ChallengeCardFragmentDoc}
 `;
 export const SpaceDashboardNavigationProfileFragmentDoc = gql`
   fragment SpaceDashboardNavigationProfile on Profile {
@@ -2735,6 +2683,50 @@ export const SpaceTemplatesFragmentDoc = gql`
   ${PostTemplateCardFragmentDoc}
   ${WhiteboardTemplateCardFragmentDoc}
   ${InnovationFlowTemplateFragmentDoc}
+`;
+export const ChallengeCardFragmentDoc = gql`
+  fragment ChallengeCard on Challenge {
+    id
+    nameID
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    metrics {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      tagline
+      displayName
+      description
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    context {
+      id
+      vision
+    }
+    innovationFlow {
+      id
+      lifecycle {
+        id
+        state
+      }
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ChallengesOnSpaceFragmentDoc = gql`
   fragment ChallengesOnSpace on Space {
