@@ -1078,6 +1078,7 @@
       "apply-not-signed": "Sign in to apply",
       "apply-pending": "Application pending",
       "join": "Join",
+      "acceptInvitation": "Accept Invitation",
       "goToSpace": "Go to $t(common.space)",
       "goToChallenge": "Go to $t(common.challenge)",
       "parent-pending": "Parent application pending",
