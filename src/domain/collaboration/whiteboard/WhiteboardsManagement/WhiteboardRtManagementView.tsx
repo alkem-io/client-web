@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { IWhiteboardRtActions } from '../containers/WhiteboardRtActionsContainer';
 import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
 import WhiteboardRtContentContainer from '../containers/WhiteboardRtContentContainer';
@@ -12,7 +12,8 @@ import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
-import FullscreenButton from '../../../shared/components/FullscreenButton';
+import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
+import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardNameId?: string;
@@ -65,7 +66,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
   backToWhiteboards,
 }) => {
   const { whiteboardNameId, whiteboard } = entities;
-  const [isFullscreen, setFullscreen] = useState(false);
+  const { fullscreen } = useFullscreen();
 
   const handleCancel = (/*whiteboard: WhiteboardRtDetailsFragment*/) => {
     backToWhiteboards();
@@ -91,11 +92,11 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
                     {whiteboard?.profile.displayName}
                   </BlockTitle>
                 ),
-                isFullscreen,
+                fullscreen,
                 headerActions: (
                   <>
                     <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
-                    <FullscreenButton onClick={() => setFullscreen(value => !value)} isFullscreen={isFullscreen} />
+                    <FullscreenButton />
                   </>
                 ),
               }}

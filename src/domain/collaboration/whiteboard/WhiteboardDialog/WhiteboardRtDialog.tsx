@@ -75,7 +75,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
     canDelete?: boolean;
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
-    isFullscreen?: boolean;
+    fullscreen?: boolean;
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -248,10 +248,10 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       maxWidth={false}
       fullWidth
       classes={{
-        paper: options.isFullscreen ? styles.dialogFullscreen : styles.dialogRoot,
+        paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
       }}
       onClose={onClose}
-      fullScreen={options.isFullscreen}
+      fullScreen={options.fullscreen}
     >
       <Formik
         innerRef={formikRef}

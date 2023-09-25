@@ -56,7 +56,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
     checkedOutByMe: boolean;
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
-    isFullscreen?: boolean;
+    fullscreen?: boolean;
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -243,10 +243,10 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       maxWidth={false}
       fullWidth
       classes={{
-        paper: options.isFullscreen ? styles.dialogFullscreen : styles.dialogRoot,
+        paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
       }}
       onClose={onClose}
-      fullScreen={options.isFullscreen}
+      fullScreen={options.fullscreen}
     >
       <Formik
         innerRef={formikRef}

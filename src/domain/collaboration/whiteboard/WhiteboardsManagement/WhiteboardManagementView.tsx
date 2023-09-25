@@ -14,7 +14,8 @@ import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
-import FullscreenButton from '../../../shared/components/FullscreenButton';
+import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
+import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardNameId?: string;
@@ -76,7 +77,7 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
 }) => {
   const { whiteboardNameId, calloutId, whiteboard } = entities;
   const [whiteboardBeingDeleted, setWhiteboardBeingDeleted] = useState<WhiteboardBeingDeleted | undefined>(undefined);
-  const [isFullscreen, setFullscreen] = useState(false);
+  const { fullscreen } = useFullscreen();
 
   const handleCancel = (whiteboard: WhiteboardDetailsFragment) => {
     backToWhiteboards();
@@ -114,11 +115,11 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
                     {whiteboard?.profile.displayName}
                   </BlockTitle>
                 ),
-                isFullscreen,
+                fullscreen,
                 headerActions: (
                   <>
                     <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
-                    <FullscreenButton onClick={() => setFullscreen(value => !value)} isFullscreen={isFullscreen} />
+                    <FullscreenButton />
                   </>
                 ),
               }}
