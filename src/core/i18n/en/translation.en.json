@@ -140,7 +140,8 @@
     "moveDown": "Move down",
     "moveToTop": "Move to top",
     "moveToBottom": "Move to bottom",
-    "use": "Use"
+    "use": "Use",
+    "fullscreen": "Toggle full screen"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

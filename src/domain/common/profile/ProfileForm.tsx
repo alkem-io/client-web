@@ -112,7 +112,6 @@ const ProfileForm: FC<ProfileFormProps> = ({
               title={t(`context.${journeyType}.tagline.title` as const)}
               rows={3}
               maxLength={SMALL_TEXT_LENGTH}
-              withCounter
             />
             <BlockSectionTitle color={'primary'}>{t('common.tags')}</BlockSectionTitle>
             <TagsetSegment tagsets={tagsets} />
