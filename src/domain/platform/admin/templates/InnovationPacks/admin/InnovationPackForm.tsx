@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import FormikAutocomplete from '../../../../../../core/ui/forms/FormikAutocomplete';
 import { Reference, Tagset, TagsetType } from '../../../../../../core/apollo/generated/graphql-schema';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
-import { LONG_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { BlockSectionTitle } from '../../../../../../core/ui/typography';
 import ContextReferenceSegment from '../../../components/Common/ContextReferenceSegment';
@@ -14,6 +14,7 @@ import { NameSegment, nameSegmentSchema } from '../../../components/Common/NameS
 import { referenceSegmentSchema } from '../../../components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../components/Common/TagsetSegment';
 import Gutters from '../../../../../../core/ui/grid/Gutters';
+import MarkdownValidator from '../../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface InnovationPackFormValues {
   nameID: string;
@@ -72,7 +73,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     profile: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
-      description: yup.string().required().max(LONG_TEXT_LENGTH),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       references: referenceSegmentSchema,
       tagsets: tagsetSegmentSchema,
     }),
@@ -95,8 +96,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
             <FormikMarkdownField
               title={t('common.description')}
               name="profile.description"
-              maxLength={LONG_TEXT_LENGTH}
-              withCounter
+              maxLength={MARKDOWN_TEXT_LENGTH}
             />
             {!isNew && profileId ? (
               <>

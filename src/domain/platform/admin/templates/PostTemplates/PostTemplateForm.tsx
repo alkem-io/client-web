@@ -6,7 +6,7 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { VERY_LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import TemplateForm from '../TemplateForm';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
@@ -34,7 +34,7 @@ interface PostTemplateFormProps {
 }
 
 const validator = {
-  defaultDescription: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
+  defaultDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
   type: yup.string().required(),
 };
 
@@ -54,8 +54,7 @@ const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemp
         <FormikMarkdownField
           name="defaultDescription"
           title={t('post-templates.default-description')}
-          maxLength={VERY_LONG_TEXT_LENGTH}
-          withCounter
+          maxLength={MARKDOWN_TEXT_LENGTH}
         />
       </TemplateFormRows>
     </TemplateForm>
