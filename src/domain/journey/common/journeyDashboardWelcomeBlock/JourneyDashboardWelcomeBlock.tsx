@@ -10,6 +10,8 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import { MessageReceiverChipData } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import SeeMore from '../../../../core/ui/content/SeeMore';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface MemberIconHydratorProps {
   children: ({ isMember: boolean }) => ReactNode;
@@ -39,7 +41,10 @@ const JourneyDashboardWelcomeBlock = ({
 
   return (
     <PageContentBlock accent>
-      <OverflowGradient maxHeight={gutters(11)}>
+      <OverflowGradient
+        maxHeight={gutters(11)}
+        overflowMarker={<SeeMore label="buttons.readMore" to={EntityPageSection.About} sx={{ marginTop: -1 }} />}
+      >
         {children({ children: renderMemberIcon })}
         <WrapperMarkdown disableParagraphPadding>{vision}</WrapperMarkdown>
       </OverflowGradient>
