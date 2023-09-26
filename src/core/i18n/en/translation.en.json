@@ -549,7 +549,7 @@
     "memberSettings": {
       "title": "Member Settings",
       "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the Community. ",
-      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors.",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this community and all of its content and contributors.",
       "maxLeadsWarning": "Note that there is a specific <b>maximum number of leads</b> for the communities. If the maximum number if reached, this option will be disabled for others.",
       "removeMember": {
         "sectionTitle": "Remove member",
@@ -887,7 +887,7 @@
       }
     },
     "top-callouts": {
-      "title": "Top Callouts"
+      "title": "Top Activity"
     },
     "associated-organization": {
       "confirmation-dialog": {
@@ -996,7 +996,7 @@
         "post-template-label": "Choose Post template"
       },
       "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, **who have their notifications for these actions turned on**, to receive a notification?",
         "checkbox-label": "Yes, notify the community."
       }
     },
@@ -1470,7 +1470,7 @@
       }
     },
     "contribute": {
-      "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
+      "initial-text": "In the Knowledge Base you will find relevant documents, insights and other materials about the topic. The leads of the Space can provide the content, but also community members can contribute.",
       "innovationFlow": {
         "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
         "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
