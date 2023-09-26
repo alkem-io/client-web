@@ -3,7 +3,6 @@ import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { ActivityComponent, ActivityLogComponentProps } from '../../../shared/components/ActivityLog/ActivityComponent';
 import SeeMore from '../../../../core/ui/content/SeeMore';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { Caption } from '../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
@@ -82,7 +81,12 @@ const DashboardRecentContributionsBlock = ({
         <>
           {readUsersAccess && entityReadAccess && showActivities && (
             <>
-              <ActivityComponent activities={activities} journeyLocation={journeyLocation} limit={3} />
+              <ActivityComponent
+                activities={activities}
+                journeyLocation={journeyLocation}
+                limit={3}
+                sx={{ flexGrow: 1, justifyContent: 'space-around' }}
+              />
               <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
               <DialogWithGrid
                 columns={8}
@@ -95,7 +99,6 @@ const DashboardRecentContributionsBlock = ({
                 />
                 <Gutters>
                   <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-                  <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
                 </Gutters>
               </DialogWithGrid>
             </>

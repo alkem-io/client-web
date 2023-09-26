@@ -71,7 +71,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.challenge?.community?.leadUsers}
-              leadOrganizations={entities.challenge?.community?.leadOrganizations}
               activities={entities.activities}
               activityLoading={state.activityLoading}
               topCallouts={entities.topCallouts}

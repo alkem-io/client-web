@@ -12,7 +12,7 @@ import {
   ActivityLogOnCollaborationFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
-export const LATEST_ACTIVITIES_COUNT = 25;
+export const LATEST_ACTIVITIES_COUNT = 100;
 
 const useActivityOnCollaborationSubscription = (
   collaborationID: string,

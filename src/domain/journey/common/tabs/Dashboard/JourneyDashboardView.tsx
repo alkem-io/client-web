@@ -13,7 +13,6 @@ import {
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityLogResultType } from '../../../../shared/components/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
@@ -35,7 +34,7 @@ import DashboardRecentContributionsBlock, {
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
-    EntityDashboardLeads,
+    Omit<EntityDashboardLeads, 'leadOrganizations'>,
     Partial<CoreEntityIdTypes> {
   welcome?: ReactNode;
   communityId?: string;
@@ -78,7 +77,6 @@ const JourneyDashboardView = ({
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
-  leadOrganizations,
   leadUsers,
   activities,
   activityLoading,
@@ -104,9 +102,7 @@ const JourneyDashboardView = ({
         };
 
   const isSpace = journeyTypeName === 'space';
-  const leadOrganizationsHeader = isSpace
-    ? 'pages.space.sections.dashboard.organization'
-    : 'community.leading-organizations';
+
   const leadUsersHeader = isSpace ? 'community.host' : 'community.leads';
 
   const contactLeadsMessageReceivers = useMemo(
@@ -130,14 +126,6 @@ const JourneyDashboardView = ({
           url={journeyLocation && buildJourneyUrl(journeyLocation)}
           entityTypeName={journeyTypeName}
         />
-        {communityReadAccess && (
-          <EntityDashboardLeadsSection
-            usersHeader={t(leadUsersHeader)}
-            organizationsHeader={t(leadOrganizationsHeader)}
-            leadUsers={leadUsers}
-            leadOrganizations={leadOrganizations}
-          />
-        )}
         {communityReadAccess && contactLeadsMessageReceivers.length > 0 && (
           <ContactLeadsButton onClick={openContactLeadsDialog}>
             {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}

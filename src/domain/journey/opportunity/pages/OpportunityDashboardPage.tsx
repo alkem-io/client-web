@@ -65,7 +65,6 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.opportunity?.community?.leadUsers}
-              leadOrganizations={entities.opportunity?.community?.leadOrganizations}
               activities={entities.activities}
               activityLoading={state.activityLoading}
               journeyTypeName="opportunity"

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Box, styled } from '@mui/material';
+import { Box, styled, SxProps } from '@mui/material';
 import {
   ActivityEventType,
   ActivityLogCalendarEventCreatedFragment,
@@ -33,6 +33,7 @@ import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFr
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
+import { Theme } from '@mui/material/styles';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -67,6 +68,7 @@ export interface ActivityLogComponentProps {
   activities: ActivityLogResultType[] | undefined;
   journeyLocation: JourneyLocation | undefined;
   limit?: number;
+  sx?: SxProps<Theme>;
 }
 
 const getActivityOriginJourneyTypeName = (
@@ -82,7 +84,7 @@ const getActivityOriginJourneyTypeName = (
   return 'challenge';
 };
 
-export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation, limit }) => {
+export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation, limit, sx }) => {
   const display = useMemo(() => {
     if (!activities || !journeyLocation) {
       return null;
@@ -112,7 +114,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
     );
   }, [activities, journeyLocation]);
 
-  return <Root>{display ?? <ActivityLoadingView rows={3} />}</Root>;
+  return <Root sx={sx}>{display ?? <ActivityLoadingView rows={3} />}</Root>;
 };
 
 interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyLocation'> {
