@@ -24,6 +24,7 @@ export const CharacterCounter = ({
   ...rest
 }: PropsWithChildren<CharacterCounterProps>) => {
   const color = maxLength && count > maxLength ? 'negative.main' : undefined;
+  const visibility = !maxLength || maxLength - count > 10 ? 'hidden' : 'visible';
 
   return (
     <Box
@@ -36,7 +37,7 @@ export const CharacterCounter = ({
     >
       {children}
       {!disabled && (
-        <Caption color={color} {...rest}>
+        <Caption color={color} visibility={visibility} {...rest}>
           {getText(count, separator, maxLength)}
         </Caption>
       )}

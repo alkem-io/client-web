@@ -76,7 +76,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
             title={t('context.opportunity.displayName.title')}
             helperText={t('context.opportunity.displayName.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />
@@ -85,7 +84,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
             title={t('context.opportunity.tagline.title')}
             helperText={t('context.opportunity.tagline.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />
