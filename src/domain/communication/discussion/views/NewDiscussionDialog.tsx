@@ -101,7 +101,6 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
                     title={t('components.new-discussion.title.title')}
                     placeholder={t('components.new-discussion.title.placeholder')}
                     disabled={isSubmitting}
-                    withCounter
                     maxLength={SMALL_TEXT_LENGTH}
                   />
                 </Grid>

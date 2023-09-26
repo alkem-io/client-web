@@ -57,7 +57,7 @@ interface FormikCommentInputFieldProps extends InputProps {
   submitting?: boolean;
   maxLength?: number;
   helpText?: string;
-  withCounter?: boolean;
+  counterDisabled?: boolean;
   submitOnReturnKey?: boolean;
   size?: OutlinedInputProps['size'];
   compactMode?: boolean;
@@ -70,7 +70,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   submitting = false,
   maxLength,
   helpText,
-  withCounter = false,
+  counterDisabled = false,
   submitOnReturnKey = false,
   size = 'medium',
   compactMode = false,
@@ -96,6 +96,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   }, [isError, meta.error, helpText, name, tErr]);
 
   const inactive = disabled || submitting;
+  const submitDisabled = inactive || (maxLength ? field.value?.length > maxLength : false);
 
   const cursorPositionRef = useRef<number | null>(null);
 
@@ -228,7 +229,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             }
             endAdornment={
               <InputAdornment position="end">
-                <IconButton aria-label="post comment" size="small" type="submit" disabled={inactive}>
+                <IconButton aria-label="post comment" size="small" type="submit" disabled={submitDisabled}>
                   <SendIcon />
                 </IconButton>
               </InputAdornment>
@@ -251,7 +252,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         <CharacterCounter
           count={field.value?.length}
           maxLength={maxLength}
-          disabled={!withCounter}
+          disabled={counterDisabled || !maxLength}
           flexWrap={compactMode ? 'wrap' : 'nowrap'}
         >
           {compactMode && (

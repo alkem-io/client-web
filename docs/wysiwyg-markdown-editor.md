@@ -181,7 +181,6 @@ Note that every time we change the State, the cursor returns to the initial posi
   title="Description"
   placeholder="Write the description here"
   disabled={isSubmitting}
-  withCounter
   maxLength={2000}
 />
 ```

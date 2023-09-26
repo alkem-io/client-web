@@ -142,7 +142,6 @@ const SpaceEditForm: FC<Props> = ({
                   title={t('context.space.tagline.title')}
                   rows={3}
                   maxLength={SMALL_TEXT_LENGTH}
-                  withCounter
                 />
                 <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
                 <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
