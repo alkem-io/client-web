@@ -154,11 +154,7 @@ export const FormikMarkdownField = ({
         />
         <CharacterCountContainer>
           {({ characterCount }) => (
-            <CharacterCounter
-              count={characterCount}
-              maxLength={maxLength}
-              disabled={counterDisabled || !maxLength || maxLength - characterCount > 10}
-            >
+            <CharacterCounter count={characterCount} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
               <FormHelperText error={isError}>{helperText}</FormHelperText>
             </CharacterCounter>
           )}

@@ -59,6 +59,10 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
 
   const validationSchema = yup.object().shape({
     url: yup.string().required(t('forms.validations.required')),
+    message: yup
+      .string()
+      .required(t('forms.validations.required'))
+      .max(LONG_TEXT_LENGTH, t('forms.validations.maxLength', { max: LONG_TEXT_LENGTH })),
     users: yup.array().min(1, t('forms.validations.atLeastOne', { item: t('common.user') })),
   });
 
@@ -111,7 +115,6 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
               multiline
               rows={5}
               onFocus={() => setMessageSent(false)}
-              withCounter
               maxLength={LONG_TEXT_LENGTH}
             />
 
