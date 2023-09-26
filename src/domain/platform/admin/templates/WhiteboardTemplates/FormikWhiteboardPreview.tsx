@@ -6,6 +6,7 @@ import WhiteboardDialog from '../../../../collaboration/whiteboard/WhiteboardDia
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
 import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { useFullscreen } from '../../../../../core/ui/fullscreen/useFullscreen';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
@@ -39,10 +40,17 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleClickEditButton = () => {
     setEditDialogOpen(true);
     helpers.setTouched(true);
+  };
+  const handleClose = () => {
+    setEditDialogOpen(false);
+    if (fullscreen) {
+      setFullscreen(false);
+    }
   };
 
   const whiteboardFromTemplate = useMemo(() => {
@@ -93,7 +101,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   lockedBy: undefined,
                 }}
                 actions={{
-                  onCancel: () => setEditDialogOpen(false),
+                  onCancel: handleClose,
                   onCheckin: undefined,
                   onCheckout: undefined,
                   onUpdate: (whiteboard, previewImages) => {
@@ -118,6 +126,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                       {dialogProps?.title}
                     </BlockTitle>
                   ),
+                  fullscreen,
                 }}
               />
             </>
