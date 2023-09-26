@@ -8,7 +8,6 @@ import { useUserContext } from '../../../community/user';
 import FormikCommentInputField from './FormikCommentInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { MarkdownFieldMaxLength } from '../../../../core/ui/forms/field-length.constants';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -78,7 +77,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
                 placeholder={placeholder}
                 disabled={disabled}
                 submitting={isSubmitting}
-                maxLength={maxLength && MarkdownFieldMaxLength[maxLength]}
+                maxLength={maxLength}
                 submitOnReturnKey
                 withCounter
                 required
