@@ -16,10 +16,12 @@ import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import { createPortal } from 'react-dom';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import { useMediaQuery } from '@mui/material';
+import { useFullscreen } from '../../../core/ui/fullscreen/useFullscreen';
 
 const ChatWidget = () => {
   const [newMessage, setNewMessage] = useState(null);
   const { t, i18n } = useTranslation();
+  const { fullscreen } = useFullscreen();
   const { data, loading } = useAskChatGuidanceQuestionQuery({
     variables: { chatData: { question: newMessage!, language: i18n.language.toUpperCase() } },
     skip: !newMessage,
@@ -29,7 +31,9 @@ const ChatWidget = () => {
   const guidanceEnabled: boolean = isFeatureEnabled(FEATURE_GUIDANCE_ENGINE);
   const { user: currentUser } = useUserContext();
   const enableWidget =
-    currentUser?.hasPlatformPrivilege(AuthorizationPrivilege.AccessInteractiveGuidance) && guidanceEnabled;
+    !fullscreen && // Never show the widget when there's something in fullscreen
+    currentUser?.hasPlatformPrivilege(AuthorizationPrivilege.AccessInteractiveGuidance) &&
+    guidanceEnabled;
 
   useEffect(() => {
     if (data && !loading) {

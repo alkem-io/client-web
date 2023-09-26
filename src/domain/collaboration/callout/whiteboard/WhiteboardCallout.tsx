@@ -19,6 +19,7 @@ import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import WhiteboardDialog from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
+import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 
 interface WhiteboardCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
@@ -44,11 +45,17 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
   ) => {
     const [showCreateWhiteboardDialog, setShowCreateWhiteboardDialog] = useState(false);
     const navigate = useNavigate();
+    const { fullscreen, setFullscreen } = useFullscreen();
 
     const openCreateDialog = () => {
       setShowCreateWhiteboardDialog(true);
     };
-    const closeCreateDialog = () => setShowCreateWhiteboardDialog(false);
+    const closeCreateDialog = () => {
+      setShowCreateWhiteboardDialog(false);
+      if (fullscreen) {
+        setFullscreen(false);
+      }
+    };
 
     const createButton = canCreate && callout.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={openCreateDialog} />
@@ -135,6 +142,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                 show: showCreateWhiteboardDialog,
                 canEdit: true,
                 checkedOutByMe: true,
+                fullscreen,
               }}
               state={{}}
             />

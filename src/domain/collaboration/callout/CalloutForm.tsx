@@ -9,7 +9,7 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikEffectFactory from '../../../core/ui/forms/FormikEffect';
 import { FormikSwitch } from '../../../core/ui/forms/FormikSwitch';
@@ -170,7 +170,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator.concat(uniqueNameValidator),
-    description: MarkdownValidator(LONG_TEXT_LENGTH),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     postTemplateData: yup.object().when('type', {
@@ -257,8 +257,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               name="description"
               title={t('components.callout-creation.info-step.description')}
               rows={7}
-              maxLength={LONG_TEXT_LENGTH}
-              withCounter
+              maxLength={MARKDOWN_TEXT_LENGTH}
             />
             {editMode && formConfiguration.references && (
               <ProfileReferenceSegment

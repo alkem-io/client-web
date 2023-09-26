@@ -10,7 +10,7 @@ import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -61,7 +61,7 @@ const TemplateForm = <Values extends TemplateProfileValues>({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator,
-    description: MarkdownValidator(LONG_TEXT_LENGTH).required(),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
     tags: yup.array().of(yup.string().min(2)),
     ...validator,
   });
@@ -85,8 +85,7 @@ const TemplateForm = <Values extends TemplateProfileValues>({
                 <FormikMarkdownField
                   name="description"
                   title={t('common.description')}
-                  maxLength={LONG_TEXT_LENGTH}
-                  withCounter
+                  maxLength={MARKDOWN_TEXT_LENGTH}
                 />
                 <TagsetField
                   name="tags"
