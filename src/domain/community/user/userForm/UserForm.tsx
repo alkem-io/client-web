@@ -259,7 +259,6 @@ export const UserForm: FC<UserProps> = ({
                     readOnly={isReadOnlyMode}
                     placeholder={t('components.profile.fields.tagline.title')}
                     disabled={isSubmitting}
-                    withCounter
                     maxLength={ALT_TEXT_LENGTH}
                   />
                   <FormikMarkdownField

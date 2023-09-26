@@ -80,7 +80,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             title={t('context.challenge.displayName.title')}
             helperText={t('context.challenge.displayName.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />
@@ -89,7 +88,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             title={t('context.challenge.tagline.title')}
             helperText={t('context.challenge.tagline.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />

@@ -19,7 +19,7 @@ export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> 
   helpIconText?: string;
   helpText?: string;
   loading?: boolean;
-  withCounter?: boolean;
+  counterDisabled?: boolean;
   maxLength?: number;
   endAdornment?: ReactNode;
 };
@@ -38,7 +38,7 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
   helperText: _helperText,
   loading,
   rows,
-  withCounter,
+  counterDisabled = false,
   maxLength,
   fullWidth,
   endAdornment,
@@ -54,10 +54,6 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
 
     return tErr(meta.error as TranslationKey, { field: title });
   }, [isError, meta.error, _helperText, tErr, title]);
-
-  if (withCounter && (maxLength === undefined || maxLength < 0)) {
-    throw new Error('Counter requires "maxLength" property to be defined and with a positive value!');
-  }
 
   return (
     <Box width={fullWidth ? '100%' : undefined}>
@@ -89,7 +85,7 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
         }}
         {...rest}
       />
-      <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={!withCounter}>
+      <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
         <FormHelperText error={isError}>{helperText}</FormHelperText>
       </CharacterCounter>
     </Box>
