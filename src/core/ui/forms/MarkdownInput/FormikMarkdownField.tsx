@@ -10,6 +10,7 @@ import { gutters } from '../../grid/utils';
 import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '../../../logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
+import { useTranslation } from 'react-i18next';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -58,12 +59,12 @@ export const FormikMarkdownField = ({
   helperText: validInputHelperText,
 }: MarkdownFieldProps) => {
   const tErr = useValidationMessageTranslation();
-
+  const { t } = useTranslation();
   const validate = () => {
     const characterCount = inputElementRef.current?.value?.length ?? 0;
     const isAboveCharacterLimit = maxLength && characterCount > maxLength;
     if (isAboveCharacterLimit) {
-      return isAboveCharacterLimit ? 'max length reached' : undefined;
+      return isAboveCharacterLimit ? t('forms.validations.maxLength', { max: maxLength }) : undefined;
     }
   };
 
