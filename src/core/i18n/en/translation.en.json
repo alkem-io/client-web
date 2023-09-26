@@ -130,7 +130,6 @@
     "import": "Import",
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
-    "read-more": "Read more",
     "reply": "Reply",
     "select": "Select",
     "change-field": "Change {{field}}",

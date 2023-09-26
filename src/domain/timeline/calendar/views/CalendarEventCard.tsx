@@ -43,7 +43,7 @@ const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ 
         </CardDescription>
       </CardDetails>
       <CardFooter flexDirection="row-reverse">
-        <CaptionSmall>{t('buttons.read-more')}</CaptionSmall>
+        <CaptionSmall>{t('buttons.readMore')}</CaptionSmall>
       </CardFooter>
     </ContributeCard>
   );
