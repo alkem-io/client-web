@@ -1,0 +1,2 @@
+export const TOP_CALLOUTS_LIMIT = 25;
+export const RECENT_ACTIVITIES_LIMIT = 50;
