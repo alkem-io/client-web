@@ -37,7 +37,9 @@ export interface CalloutsViewProps {
   onCalloutUpdate?: (calloutId: string) => void;
   loading?: boolean;
   calloutNames: string[];
-  blockProps?: CalloutViewProps['blockProps'];
+  blockProps?:
+    | CalloutViewProps['blockProps']
+    | ((callout: TypedCallout, index: number) => CalloutViewProps['blockProps']);
   disableMarginal?: boolean;
 }
 
@@ -151,7 +153,7 @@ const CalloutsView = ({
               onCalloutDelete={handleDelete}
               calloutUri={calloutUri}
               onExpand={() => handleExpand(callout)}
-              blockProps={blockProps}
+              blockProps={typeof blockProps === 'function' ? blockProps(callout, index) : blockProps}
               disableMarginal={disableMarginal}
               {...sortEvents}
               {...sortProps}

@@ -8,52 +8,48 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
-import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
-import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
-import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { useTranslation } from 'react-i18next';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
+import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
+import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { useTranslation } from 'react-i18next';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
 }
 
 const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog }) => {
+  const { t } = useTranslation();
+
   const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
   const { spaceNameId } = useUrlParams();
 
-  const { t } = useTranslation();
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
+      {directMessageDialog}
       <OpportunityPageContainer>
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
-              vision={
-                <JourneyDashboardVision
-                  header={
-                    <PageContentBlockHeader
-                      title={`${t('common.welcome')}!`}
-                      actions={
-                        <ApplicationButtonContainer>
-                          {({ applicationButtonProps }) =>
-                            applicationButtonProps.isMember && <DashboardMemberIcon journeyTypeName="opportunity" />
-                          }
-                        </ApplicationButtonContainer>
-                      }
-                    />
-                  }
-                  vision={entities.opportunity?.context?.vision}
-                  journeyTypeName="opportunity"
-                />
+              welcome={
+                <JourneyDashboardWelcomeBlock
+                  vision={entities.opportunity?.context?.vision ?? ''}
+                  leadUsers={entities.opportunity?.community?.leadUsers}
+                  onContactLeadUser={receiver => sendMessage('user', receiver)}
+                  leadOrganizations={entities.opportunity?.community?.leadOrganizations}
+                  onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
+                  journeyTypeName="space"
+                >
+                  {props => <MembershipContainer {...props} />}
+                </JourneyDashboardWelcomeBlock>
               }
               spaceNameId={entities.spaceNameId}
               challengeNameId={entities.challengeNameId}
@@ -69,55 +65,12 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.opportunity?.community?.leadUsers}
-              leadOrganizations={entities.opportunity?.community?.leadOrganizations}
               activities={entities.activities}
               activityLoading={state.activityLoading}
               journeyTypeName="opportunity"
               topCallouts={entities.topCallouts}
+              callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
-              recommendations={
-                callouts.groupedCallouts[CalloutDisplayLocation.HomeTop] && (
-                  <CalloutsGroupView
-                    callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeTop]}
-                    spaceId={spaceNameId!}
-                    canCreateCallout={false}
-                    loading={callouts.loading}
-                    journeyTypeName="opportunity"
-                    calloutNames={callouts.calloutNames}
-                    onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                    onCalloutUpdate={callouts.refetchCallout}
-                    displayLocation={CalloutDisplayLocation.HomeTop}
-                    disableMarginal
-                    blockProps={{ sx: { minHeight: '100%' } }}
-                  />
-                )
-              }
-              childrenLeft={
-                <CalloutsGroupView
-                  callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
-                  spaceId={spaceNameId!}
-                  canCreateCallout={callouts.canCreateCallout}
-                  loading={callouts.loading}
-                  journeyTypeName="opportunity"
-                  calloutNames={callouts.calloutNames}
-                  onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={callouts.refetchCallout}
-                  displayLocation={CalloutDisplayLocation.HomeLeft}
-                />
-              }
-              childrenRight={
-                <CalloutsGroupView
-                  callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
-                  spaceId={spaceNameId!}
-                  canCreateCallout={callouts.canCreateCallout}
-                  loading={callouts.loading}
-                  journeyTypeName="opportunity"
-                  calloutNames={callouts.calloutNames}
-                  onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={callouts.refetchCallout}
-                  displayLocation={CalloutDisplayLocation.HomeRight}
-                />
-              }
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}

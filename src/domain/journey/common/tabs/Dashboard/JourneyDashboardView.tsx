@@ -1,8 +1,11 @@
-import React, { ReactElement, ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import References from '../../../../shared/components/References/References';
-import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildCalloutUrl, buildJourneyUrl, JourneyLocation } from '../../../../../main/routing/urlBuilders';
+import {
+  CalloutDisplayLocation,
+  CalloutsQueryVariables,
+  Reference,
+} from '../../../../../core/apollo/generated/graphql-schema';
+import { buildJourneyUrl, JourneyLocation } from '../../../../../main/routing/urlBuilders';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
@@ -10,35 +13,30 @@ import {
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import withOptionalCount from '../../../../shared/utils/withOptionalCount';
-import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { ActivityComponent, ActivityLogResultType } from '../../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityLogResultType } from '../../../../shared/components/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
-import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
-import ScrollableCardsLayout from '../../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
-import { Caption } from '../../../../../core/ui/typography/components';
 import ContactLeadsButton from '../../../../community/community/ContactLeadsButton/ContactLeadsButton';
 import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
+import CalloutsGroupView from '../../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { OrderUpdate, TypedCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
+import DashboardRecentContributionsBlock, {
+  DashboardRecentContributionsBlockProps,
+} from '../../dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
 
-export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
+export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
-    EntityDashboardLeads,
+    Omit<EntityDashboardLeads, 'leadOrganizations'>,
     Partial<CoreEntityIdTypes> {
-  vision?: ReactNode;
+  welcome?: ReactNode;
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
@@ -47,28 +45,30 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
-  childEntities?: ChildEntity[];
   entityReadAccess: boolean;
   readUsersAccess: boolean;
-  childEntitiesCount?: number;
-  renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
-  childEntityTitle?: string;
-  topCallouts: DashboardTopCalloutFragment[] | undefined;
+  topCallouts: DashboardRecentContributionsBlockProps['topCallouts'];
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
-  recommendations?: ReactNode;
-  childrenLeft?: ReactNode;
-  childrenRight?: ReactNode;
+  callouts: {
+    groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
+    canCreateCallout: boolean;
+    calloutNames: string[];
+    loading: boolean;
+    refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
+    refetchCallout: (calloutId: string) => void;
+    onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
+  };
 }
 
-const JourneyDashboardView = <ChildEntity extends Identifiable>({
-  vision = '',
+const JourneyDashboardView = ({
+  welcome,
   spaceNameId,
   challengeNameId,
   opportunityNameId,
   communityId = '',
-  childEntitiesCount,
-  references,
+  callouts,
+  topCallouts,
   communityReadAccess = false,
   timelineReadAccess = false,
   entityReadAccess,
@@ -77,20 +77,12 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
-  leadOrganizations,
   leadUsers,
   activities,
   activityLoading,
-  childEntities = [],
-  renderChildEntityCard,
   journeyTypeName,
-  childEntityTitle,
-  topCallouts,
   sendMessageToCommunityLeads,
-  recommendations,
-  childrenLeft,
-  childrenRight,
-}: JourneyDashboardViewProps<ChildEntity>) => {
+}: JourneyDashboardViewProps) => {
   const { t } = useTranslation();
   const [isOpenContactLeadUsersDialog, setIsOpenContactLeadUsersDialog] = useState(false);
   const openContactLeadsDialog = () => {
@@ -109,16 +101,11 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           opportunityNameId,
         };
 
-  const showActivities = activities || activityLoading;
-
   const isSpace = journeyTypeName === 'space';
-  const leadOrganizationsHeader = isSpace
-    ? 'pages.space.sections.dashboard.organization'
-    : 'community.leading-organizations';
+
   const leadUsersHeader = isSpace ? 'community.host' : 'community.leads';
 
-  const hasTopCallouts = (topCallouts ?? []).length > 0;
-  const messageReceivers = useMemo(
+  const contactLeadsMessageReceivers = useMemo(
     () =>
       (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
         id: user.id,
@@ -133,21 +120,13 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   return (
     <PageContent>
       <PageContentColumn columns={4}>
-        {vision}
+        {welcome}
         <ShareButton
           title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
           url={journeyLocation && buildJourneyUrl(journeyLocation)}
           entityTypeName={journeyTypeName}
         />
-        {communityReadAccess && (
-          <EntityDashboardLeadsSection
-            usersHeader={t(leadUsersHeader)}
-            organizationsHeader={t(leadOrganizationsHeader)}
-            leadUsers={leadUsers}
-            leadOrganizations={leadOrganizations}
-          />
-        )}
-        {communityReadAccess && (
+        {communityReadAccess && contactLeadsMessageReceivers.length > 0 && (
           <ContactLeadsButton onClick={openContactLeadsDialog}>
             {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
           </ContactLeadsButton>
@@ -157,15 +136,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           open={isOpenContactLeadUsersDialog}
           onClose={closeContactLeadsDialog}
           onSendMessage={sendMessageToCommunityLeads}
-          messageReceivers={messageReceivers}
+          messageReceivers={contactLeadsMessageReceivers}
         />
         {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-          <References references={references} />
-          {/* TODO figure out the URL for references */}
-          <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
-        </PageContentBlock>
         {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
         {communityReadAccess && (
           <EntityDashboardContributorsSection
@@ -177,66 +150,48 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <SeeMore subject={t('common.contributors')} to={`${EntityPageSection.Dashboard}/contributors`} />
           </EntityDashboardContributorsSection>
         )}
-        {childrenLeft}
+        <CalloutsGroupView
+          callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+          spaceId={spaceNameId!}
+          canCreateCallout={callouts.canCreateCallout}
+          loading={callouts.loading}
+          journeyTypeName={journeyTypeName}
+          calloutNames={callouts.calloutNames}
+          onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+          onCalloutUpdate={callouts.refetchCallout}
+          displayLocation={CalloutDisplayLocation.HomeLeft}
+        />
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        {recommendations && (
-          <PageContentBlockSeamless halfWidth={hasTopCallouts} disablePadding>
-            {recommendations}
-          </PageContentBlockSeamless>
-        )}
-        {hasTopCallouts && (
-          <PageContentBlock halfWidth={!!recommendations}>
-            <PageContentBlockHeader title={t('components.top-callouts.title')} />
-            {topCallouts?.map(callout => (
-              <TopCalloutDetails
-                key={callout.id}
-                title={callout.profile.displayName}
-                description={callout.profile.description || ''}
-                activity={callout.activity}
-                type={callout.type}
-                calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
-              />
-            ))}
-          </PageContentBlock>
-        )}
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('components.activity-log-section.title')} />
-          {readUsersAccess && entityReadAccess && showActivities && (
-            <>
-              <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-              <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
-            </>
-          )}
-          {!entityReadAccess && readUsersAccess && (
-            <Caption>
-              {t('components.activity-log-section.activity-join-error-message', {
-                journeyType: t(`common.${journeyTypeName}` as const),
-              })}
-            </Caption>
-          )}
-          {!readUsersAccess && entityReadAccess && (
-            <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
-          )}
-          {!entityReadAccess && !readUsersAccess && (
-            <Caption>
-              {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
-                journeyType: t(`common.${journeyTypeName}` as const),
-              })}
-            </Caption>
-          )}
-        </PageContentBlock>
-        {entityReadAccess && renderChildEntityCard && childEntityTitle && (
-          <PageContentBlock>
-            <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
-            <ScrollableCardsLayout items={childEntities} deps={[spaceNameId]}>
-              {renderChildEntityCard}
-            </ScrollableCardsLayout>
-            <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />
-          </PageContentBlock>
-        )}
-        {childrenRight}
+        <DashboardRecentContributionsBlock
+          halfWidth={(callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]?.length ?? 0) > 0}
+          readUsersAccess={readUsersAccess}
+          entityReadAccess={entityReadAccess}
+          activitiesLoading={activityLoading}
+          topCallouts={topCallouts}
+          activities={activities}
+          journeyTypeName={journeyTypeName}
+          journeyLocation={journeyLocation}
+        />
+        <CalloutsGroupView
+          callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
+          spaceId={spaceNameId!}
+          canCreateCallout={callouts.canCreateCallout}
+          loading={callouts.loading}
+          journeyTypeName={journeyTypeName}
+          calloutNames={callouts.calloutNames}
+          onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+          onCalloutUpdate={callouts.refetchCallout}
+          displayLocation={CalloutDisplayLocation.HomeRight}
+          blockProps={(callout, index) => {
+            if (index === 0) {
+              return {
+                halfWidth: true,
+              };
+            }
+          }}
+        />
       </PageContentColumn>
     </PageContent>
   );

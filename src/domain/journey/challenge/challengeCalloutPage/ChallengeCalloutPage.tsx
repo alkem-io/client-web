@@ -11,7 +11,6 @@ import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeTop:
     case CalloutDisplayLocation.HomeLeft:
     case CalloutDisplayLocation.HomeRight:
       return <ChallengeDashboardPage />;
@@ -28,7 +27,6 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeTop:
     case CalloutDisplayLocation.HomeLeft:
     case CalloutDisplayLocation.HomeRight:
       return EntityPageSection.Dashboard;
