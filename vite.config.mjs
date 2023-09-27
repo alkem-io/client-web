@@ -9,6 +9,9 @@ export default defineConfig({
     host: 'localhost',
   },
   build: {
+    sourcemap: process.env.NODE_ENV === 'development',
+    sourcemapFile: '/static',
+    emptyOutDir: true,
     outDir: 'build',
   },
   plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
