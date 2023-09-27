@@ -94,6 +94,7 @@
     "edit": "Edit",
     "see-more": "See more",
     "see-all": "More {{subject}}",
+    "readMore": "Read more",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -129,7 +130,6 @@
     "import": "Import",
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
-    "read-more": "Read more",
     "reply": "Reply",
     "select": "Select",
     "change-field": "Change {{field}}",
@@ -804,6 +804,13 @@
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
+    },
+    "dashboardRecentContributions": {
+      "title": "Contributions",
+      "modes": {
+        "recentActivity": "Most Recent",
+        "topCallouts": "Most Active"
+      }
     },
     "innovationFlowStateSelector": {
       "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."

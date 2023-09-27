@@ -59,9 +59,6 @@ fragment ChallengeProfile on Challenge {
     myMembershipStatus
     ...EntityDashboardCommunity
   }
-  opportunities {
-    ...OpportunityCard
-  }
 }
 
 query ChallengeDashboardReferences($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {

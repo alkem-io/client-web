@@ -7,7 +7,7 @@ interface AltToggleOption<Value> {
   value: Value;
 }
 
-interface TwoSideToggleProps<Value1, Value2> {
+interface AltToggleProps<Value1, Value2> {
   value: Value1 | Value2;
   options: AltToggleOption<Value1 | Value2>[]; // [AltToggleOption<Value1>, AltToggleOption<Value2>] is harder to pass
   onChange: (nextValue: Value1 | Value2) => void;
@@ -19,7 +19,7 @@ const AltToggle = <Value1, Value2>({
   onChange,
   sx,
   ...stackProps
-}: TwoSideToggleProps<Value1, Value2> & Omit<StackProps, 'onChange'>) => {
+}: AltToggleProps<Value1, Value2> & Omit<StackProps, 'onChange'>) => {
   const [leftOption, rightOption] = options;
 
   const isLeftOptionSelected = value === leftOption.value;
@@ -35,10 +35,8 @@ const AltToggle = <Value1, Value2>({
       alignItems="center"
       sx={{
         '.MuiSwitch-track': {
-          backgroundColor: theme => theme.palette.secondary.main,
-        },
-        '.Mui-checked+.MuiSwitch-track': {
-          backgroundColor: theme => theme.palette.secondary.main,
+          backgroundColor: theme => theme.palette.primary.main,
+          opacity: 0.5,
         },
         '.MuiSwitch-thumb': {
           backgroundColor: theme => theme.palette.primary.main,

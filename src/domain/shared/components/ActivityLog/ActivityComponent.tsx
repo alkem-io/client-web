@@ -1,26 +1,26 @@
 import React, { FC, useMemo } from 'react';
-import { Box, styled } from '@mui/material';
+import { Box, styled, SxProps } from '@mui/material';
 import {
   ActivityEventType,
-  ActivityLogCalloutWhiteboardCreatedFragment,
+  ActivityLogCalendarEventCreatedFragment,
   ActivityLogCalloutDiscussionCommentFragment,
-  ActivityLogCalloutPublishedFragment,
   ActivityLogCalloutLinkCreatedFragment,
-  ActivityLogCalloutPostCreatedFragment,
   ActivityLogCalloutPostCommentFragment,
+  ActivityLogCalloutPostCreatedFragment,
+  ActivityLogCalloutPublishedFragment,
+  ActivityLogCalloutWhiteboardCreatedFragment,
   ActivityLogChallengeCreatedFragment,
   ActivityLogEntry,
   ActivityLogMemberJoinedFragment,
   ActivityLogOpportunityCreatedFragment,
   ActivityLogUpdateSentFragment,
-  ActivityLogCalendarEventCreatedFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { LATEST_ACTIVITIES_COUNT } from './constants';
 import {
-  ActivityCalloutPublishedView,
-  ActivityCalloutWhiteboardCreatedView,
+  ActivityCalloutLinkCreatedView,
   ActivityCalloutPostCommentCreatedView,
   ActivityCalloutPostCreatedView,
+  ActivityCalloutPublishedView,
+  ActivityCalloutWhiteboardCreatedView,
   ActivityChallengeCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
@@ -32,8 +32,8 @@ import { getJourneyLocationKey, JourneyLocation } from '../../../../main/routing
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { ActivityCalloutLinkCreatedView } from './views';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
+import { Theme } from '@mui/material/styles';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -67,6 +67,8 @@ export type ActivityLogResultType = ActivityLogResult<
 export interface ActivityLogComponentProps {
   activities: ActivityLogResultType[] | undefined;
   journeyLocation: JourneyLocation | undefined;
+  limit?: number;
+  sx?: SxProps<Theme>;
 }
 
 const getActivityOriginJourneyTypeName = (
@@ -82,7 +84,7 @@ const getActivityOriginJourneyTypeName = (
   return 'challenge';
 };
 
-export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation }) => {
+export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation, limit, sx }) => {
   const display = useMemo(() => {
     if (!activities || !journeyLocation) {
       return null;
@@ -90,7 +92,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
 
     return (
       <>
-        {activities.map(activity => {
+        {activities.slice(0, limit).map(activity => {
           const activityOriginJourneyTypeName = getActivityOriginJourneyTypeName(activity, journeyLocation);
           const activityOriginJourneyLocation = activityOriginJourneyTypeName
             ? {
@@ -112,7 +114,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
     );
   }, [activities, journeyLocation]);
 
-  return <Root>{display ?? <ActivityLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
+  return <Root sx={sx}>{display ?? <ActivityLoadingView rows={3} />}</Root>;
 };
 
 interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyLocation'> {
