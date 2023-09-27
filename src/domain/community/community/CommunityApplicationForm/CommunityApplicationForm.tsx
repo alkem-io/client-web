@@ -17,7 +17,7 @@ import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitBut
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface CommunityApplicationFormProps {
   spaceId: string;
@@ -35,7 +35,7 @@ interface FormValues {
 }
 
 const validationSchema = yup.object().shape({
-  description: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
+  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
   questions: yup.array().of(questionSchema),
 });
 
@@ -153,7 +153,7 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ spaceId, 
               title={t('common.introduction')}
               name="description"
               disabled={disabled || loading}
-              maxLength={VERY_LONG_TEXT_LENGTH}
+              maxLength={MARKDOWN_TEXT_LENGTH}
             />
             <Gutters />
             <BlockSectionTitle>

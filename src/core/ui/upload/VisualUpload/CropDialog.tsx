@@ -209,7 +209,6 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
                   title={t('common.description')}
                   placeholder={t('pages.visualEdit.form.altText.placeholder')}
                   name="altText"
-                  withCounter
                   maxLength={ALT_TEXT_LENGTH}
                   helpIconText={t('pages.visualEdit.form.altText.helpText')}
                 />

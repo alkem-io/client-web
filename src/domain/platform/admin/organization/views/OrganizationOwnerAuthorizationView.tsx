@@ -40,8 +40,8 @@ export const OrganizationOwnerAuthorizationView: FC = () => {
             executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignOwner}
             onRemove={actions.handleRemoveOwner}
-            loadingMembers={state.loading}
-            loadingAvailableMembers={state.loading}
+            loadingMembers={state.loadingUsers}
+            loadingAvailableMembers={state.loadingUsers}
             onSearchTermChange={actions.setSearchTerm}
           />
         )}

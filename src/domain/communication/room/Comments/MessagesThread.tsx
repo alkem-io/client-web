@@ -1,6 +1,5 @@
 import React from 'react';
 import PostMessageToCommentsForm from './PostMessageToCommentsForm';
-import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MessageView, { MessageViewProps } from './MessageView';
 import MessageWithRepliesView from './MessageWithRepliesView';
 import { Message } from '../models/Message';
@@ -60,7 +59,6 @@ const MessagesThread = ({
                     messageText,
                   })
                 }
-                maxLength={MID_TEXT_LENGTH}
                 disabled={loading}
               />
             )

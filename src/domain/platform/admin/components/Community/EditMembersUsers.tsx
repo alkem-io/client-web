@@ -11,7 +11,7 @@ export interface EditMemberUsersProps {
   members: Member[];
   availableMembers: UserDisplayNameFragment[];
   updating: boolean;
-  loadingAvailableMembers?: boolean;
+  loadingAvailableMembers: boolean;
   loadingMembers?: boolean;
   onAdd: (memberId: string) => void;
   onRemove: (memberId: string) => void;

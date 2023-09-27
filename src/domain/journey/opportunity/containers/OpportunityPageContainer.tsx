@@ -143,7 +143,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   }, [opportunityPrivileges, communityPrivileges, user]);
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
-    skipCondition: !permissions.opportunityReadAccess || !permissions.readUsers,
+    skip: !permissions.opportunityReadAccess || !permissions.readUsers,
   });
 
   const { profile, collaboration, metrics = [] } = opportunity ?? {};
@@ -201,11 +201,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const callouts = useCallouts({
     spaceNameId,
     opportunityNameId,
-    displayLocations: [
-      CalloutDisplayLocation.HomeTop,
-      CalloutDisplayLocation.HomeLeft,
-      CalloutDisplayLocation.HomeRight,
-    ],
+    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
   });
 
   return (

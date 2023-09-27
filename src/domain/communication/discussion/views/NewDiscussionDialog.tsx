@@ -8,11 +8,7 @@ import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikM
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from './DiscussionIcon';
-import {
-  LONG_TEXT_LENGTH,
-  SMALL_TEXT_LENGTH,
-  VERY_LONG_TEXT_LENGTH,
-} from '../../../../core/ui/forms/field-length.constants';
+import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { LoadingButton } from '@mui/lab';
@@ -64,7 +60,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
   const validationSchema = yup.object().shape({
     title: yup.string().trim().max(SMALL_TEXT_LENGTH).required(t('forms.validations.required')),
     category: yup.string().nullable().required(t('forms.validations.required')),
-    description: MarkdownValidator(VERY_LONG_TEXT_LENGTH).trim().required(t('forms.validations.required')),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(t('forms.validations.required')),
   });
 
   const handleSubmit = async (values: formValues) => {
@@ -105,7 +101,6 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
                     title={t('components.new-discussion.title.title')}
                     placeholder={t('components.new-discussion.title.placeholder')}
                     disabled={isSubmitting}
-                    withCounter
                     maxLength={SMALL_TEXT_LENGTH}
                   />
                 </Grid>
@@ -124,8 +119,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
                     rows={10}
                     multiline
                     disabled={isSubmitting}
-                    withCounter
-                    maxLength={LONG_TEXT_LENGTH}
+                    maxLength={MARKDOWN_TEXT_LENGTH}
                   />
                 </Grid>
                 <Grid item>
