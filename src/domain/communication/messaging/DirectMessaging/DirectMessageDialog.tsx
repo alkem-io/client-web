@@ -111,7 +111,6 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
                   multiline
                   rows={5}
                   onFocus={() => setMessageSent(false)}
-                  withCounter
                   maxLength={LONG_TEXT_LENGTH}
                 />
                 <Caption>{t('share-dialog.warning')}</Caption>

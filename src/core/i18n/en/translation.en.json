@@ -94,6 +94,7 @@
     "edit": "Edit",
     "see-more": "See more",
     "see-all": "More {{subject}}",
+    "readMore": "Read more",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -129,7 +130,6 @@
     "import": "Import",
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
-    "read-more": "Read more",
     "reply": "Reply",
     "select": "Select",
     "change-field": "Change {{field}}",
@@ -139,7 +139,8 @@
     "moveDown": "Move down",
     "moveToTop": "Move to top",
     "moveToBottom": "Move to bottom",
-    "use": "Use"
+    "use": "Use",
+    "fullscreen": "Toggle full screen"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -548,7 +549,7 @@
     "memberSettings": {
       "title": "Member Settings",
       "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the Community. ",
-      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors.",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this community and all of its content and contributors.",
       "maxLeadsWarning": "Note that there is a specific <b>maximum number of leads</b> for the communities. If the maximum number if reached, this option will be disabled for others.",
       "removeMember": {
         "sectionTitle": "Remove member",
@@ -804,6 +805,13 @@
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
     },
+    "dashboardRecentContributions": {
+      "title": "Contributions",
+      "modes": {
+        "recentActivity": "Most Recent",
+        "topCallouts": "Most Active"
+      }
+    },
     "innovationFlowStateSelector": {
       "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
     },
@@ -879,7 +887,7 @@
       }
     },
     "top-callouts": {
-      "title": "Top Callouts"
+      "title": "Top Activity"
     },
     "associated-organization": {
       "confirmation-dialog": {
@@ -988,7 +996,7 @@
         "post-template-label": "Choose Post template"
       },
       "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, **who have their notifications for these actions turned on**, to receive a notification?",
         "checkbox-label": "Yes, notify the community."
       }
     },
@@ -1462,7 +1470,7 @@
       }
     },
     "contribute": {
-      "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
+      "initial-text": "In the Knowledge Base you will find relevant documents, insights and other materials about the topic. The leads of the Space can provide the content, but also community members can contribute.",
       "innovationFlow": {
         "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
         "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"

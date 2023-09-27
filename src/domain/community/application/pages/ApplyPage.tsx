@@ -161,7 +161,6 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
                             autoCapitalize="sentences"
                             autoCorrect="on"
                             maxLength={x.maxLength}
-                            withCounter
                           />
                         </Grid>
                       ))}

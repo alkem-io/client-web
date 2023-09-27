@@ -4,7 +4,6 @@ import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import { last } from 'lodash';
 import { Message } from '../models/Message';
-import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import MessageView from './MessageView';
@@ -146,7 +145,6 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
         <PostMessageToCommentsForm
           placeholder={t('pages.post.dashboard.comment.placeholder')}
           onPostComment={postMessage}
-          maxLength={MID_TEXT_LENGTH}
           disabled={loading}
         />
       )}

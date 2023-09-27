@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { Form, Formik } from 'formik';
 import { MessageWithPayload } from '../../../shared/i18n/ValidationMessageTranslation';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH, VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
@@ -59,8 +59,8 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       .min(3, MessageWithPayload('forms.validations.minLength'))
       .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    background: MarkdownValidator(VERY_LONG_TEXT_LENGTH).trim().required(validationRequiredString),
-    vision: MarkdownValidator(VERY_LONG_TEXT_LENGTH).trim().required(validationRequiredString),
+    background: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
+    vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
   });
 
@@ -80,7 +80,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             title={t('context.challenge.displayName.title')}
             helperText={t('context.challenge.displayName.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />
@@ -89,7 +88,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             title={t('context.challenge.tagline.title')}
             helperText={t('context.challenge.tagline.description')}
             disabled={isSubmitting}
-            withCounter
             maxLength={SMALL_TEXT_LENGTH}
           />
           <SectionSpacer />
@@ -99,8 +97,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             rows={5}
             helperText={t('context.challenge.background.description')}
             disabled={isSubmitting}
-            withCounter
-            maxLength={VERY_LONG_TEXT_LENGTH}
+            maxLength={MARKDOWN_TEXT_LENGTH}
           />
           <SectionSpacer />
           <MarkdownInput
@@ -109,8 +106,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             rows={5}
             helperText={t('context.challenge.vision.description')}
             disabled={isSubmitting}
-            withCounter
-            maxLength={VERY_LONG_TEXT_LENGTH}
+            maxLength={MARKDOWN_TEXT_LENGTH}
           />
           <SectionSpacer double />
           <TagsetField

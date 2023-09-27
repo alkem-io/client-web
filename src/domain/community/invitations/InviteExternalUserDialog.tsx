@@ -82,7 +82,6 @@ const InviteExternalUserDialog = ({
                   multiline
                   rows={5}
                   onFocus={() => setMessageSent(false)}
-                  withCounter
                   maxLength={LONG_TEXT_LENGTH}
                 />
               </Gutters>
