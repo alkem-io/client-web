@@ -23,6 +23,7 @@ import useCommunityMembersAsCardProps from '../../../community/community/utils/u
 import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
+import { RECENT_ACTIVITIES_LIMIT } from '../../common/journeyDashboard/constants';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -65,6 +66,7 @@ const SpaceCommunityPage = () => {
 
   const { activities } = useActivityOnCollaboration(data?.space.collaboration?.id, {
     types: [ActivityEventType.MemberJoined],
+    limit: RECENT_ACTIVITIES_LIMIT,
   });
 
   const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.space.community, {
