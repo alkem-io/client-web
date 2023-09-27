@@ -19,6 +19,8 @@ jobs:
       - name: 'Install dependencies'
         run: npm install
       - name: 'Upload sourcemaps to Sentry'
+        env:
+          VITE_APP_SENTRY_AUTH_TOKEN: ${{ secrets.VITE_APP_SENTRY_AUTH_TOKEN }}
         run: npm run build:sentry
   build-and-deploy:
     runs-on: ubuntu-latest
