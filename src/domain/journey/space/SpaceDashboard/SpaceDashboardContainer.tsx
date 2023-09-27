@@ -23,6 +23,7 @@ import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whi
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
+import { RECENT_ACTIVITIES_LIMIT, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
@@ -102,6 +103,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID || '', {
     skip: !permissions.spaceReadAccess || !permissions.readUsers,
     types: activityTypes,
+    limit: RECENT_ACTIVITIES_LIMIT,
   });
 
   const postsCount = usePostsCount(_space?.space.metrics);
@@ -111,7 +113,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const hostOrganizations = useMemo(() => (_space?.space.host ? [_space.space.host] : []), [_space]);
 
-  const topCallouts = _space?.space.collaboration?.callouts?.slice(0, 3);
+  const topCallouts = _space?.space.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   const communityId = _space?.space.community?.id ?? '';
 
