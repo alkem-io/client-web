@@ -1,6 +1,7 @@
 import { Excalidraw } from '@alkemio/excalidraw';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import {
+  BinaryFileData,
   BinaryFiles,
   ExcalidrawAPIRefValue,
   ExcalidrawImperativeAPI,
@@ -48,7 +49,7 @@ export interface WhiteboardWhiteboardProps {
 }
 
 const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
-type RefreshWhiteboardStateParam = Parameters<ExcalidrawImperativeAPI['updateScene']>[0] & { files: BinaryFiles };
+type RefreshWhiteboardStateParam = Parameters<ExcalidrawImperativeAPI['updateScene']>[0] & { files?: BinaryFiles };
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
@@ -74,13 +75,14 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
         excalidraw?.zoomToFit();
 
         // Find the properties present in `state.files` and missing in currentFiles
-        // And put them into a BinaryFileData[]
+        // and put them into missingFiles: BinaryFileData[]
         const currentFiles = excalidraw?.getFiles() ?? {};
-        const missingFiles = compact(
-          Object.keys(state.files).map(key => (currentFiles[key] ? undefined : state.files[key]))
+        const newFiles = state.files ?? {};
+        const missingFiles: BinaryFileData[] = compact(
+          Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
         );
-        if (missingFiles.length > 0) {
-          excalidraw?.addFiles(missingFiles);
+        if (excalidraw && missingFiles.length > 0) {
+          excalidraw.addFiles(missingFiles);
         }
       }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
     ).current;
