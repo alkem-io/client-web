@@ -1742,6 +1742,11 @@ export type PaginatedOrganizationFieldPolicy = {
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedSpacesKeySpecifier = ('pageInfo' | 'spaces' | PaginatedSpacesKeySpecifier)[];
+export type PaginatedSpacesFieldPolicy = {
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PaginatedUsersKeySpecifier = ('pageInfo' | 'users' | PaginatedUsersKeySpecifier)[];
 export type PaginatedUsersFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1936,6 +1941,7 @@ export type QueryKeySpecifier = (
   | 'search'
   | 'space'
   | 'spaces'
+  | 'spacesPaginated'
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
@@ -1960,6 +1966,7 @@ export type QueryFieldPolicy = {
   search?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2011,6 +2018,72 @@ export type RelationFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RelayPaginatedSpaceKeySpecifier = (
+  | 'agent'
+  | 'authorization'
+  | 'challenge'
+  | 'challenges'
+  | 'collaboration'
+  | 'community'
+  | 'context'
+  | 'group'
+  | 'groups'
+  | 'host'
+  | 'id'
+  | 'metrics'
+  | 'nameID'
+  | 'opportunities'
+  | 'opportunity'
+  | 'preferences'
+  | 'profile'
+  | 'project'
+  | 'projects'
+  | 'storageBucket'
+  | 'templates'
+  | 'visibility'
+  | RelayPaginatedSpaceKeySpecifier
+)[];
+export type RelayPaginatedSpaceFieldPolicy = {
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  challenges?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  community?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  group?: FieldPolicy<any> | FieldReadFunction<any>;
+  groups?: FieldPolicy<any> | FieldReadFunction<any>;
+  host?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  project?: FieldPolicy<any> | FieldReadFunction<any>;
+  projects?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  templates?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
+export type RelayPaginatedSpaceEdgeFieldPolicy = {
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RelayPaginatedSpacePageInfoKeySpecifier = (
+  | 'endCursor'
+  | 'hasNextPage'
+  | 'hasPreviousPage'
+  | 'startCursor'
+  | RelayPaginatedSpacePageInfoKeySpecifier
+)[];
+export type RelayPaginatedSpacePageInfoFieldPolicy = {
+  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedUserKeySpecifier = (
   | 'accountUpn'
@@ -3084,6 +3157,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PaginatedOrganizationKeySpecifier | (() => undefined | PaginatedOrganizationKeySpecifier);
     fields?: PaginatedOrganizationFieldPolicy;
   };
+  PaginatedSpaces?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedSpacesKeySpecifier | (() => undefined | PaginatedSpacesKeySpecifier);
+    fields?: PaginatedSpacesFieldPolicy;
+  };
   PaginatedUsers?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedUsersKeySpecifier | (() => undefined | PaginatedUsersKeySpecifier);
     fields?: PaginatedUsersFieldPolicy;
@@ -3150,6 +3227,21 @@ export type StrictTypedTypePolicies = {
   Relation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RelationKeySpecifier | (() => undefined | RelationKeySpecifier);
     fields?: RelationFieldPolicy;
+  };
+  RelayPaginatedSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RelayPaginatedSpaceKeySpecifier | (() => undefined | RelayPaginatedSpaceKeySpecifier);
+    fields?: RelayPaginatedSpaceFieldPolicy;
+  };
+  RelayPaginatedSpaceEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RelayPaginatedSpaceEdgeKeySpecifier | (() => undefined | RelayPaginatedSpaceEdgeKeySpecifier);
+    fields?: RelayPaginatedSpaceEdgeFieldPolicy;
+  };
+  RelayPaginatedSpacePageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | RelayPaginatedSpacePageInfoKeySpecifier
+      | (() => undefined | RelayPaginatedSpacePageInfoKeySpecifier);
+    fields?: RelayPaginatedSpacePageInfoFieldPolicy;
   };
   RelayPaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RelayPaginatedUserKeySpecifier | (() => undefined | RelayPaginatedUserKeySpecifier);
