@@ -3,3 +3,14 @@ query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     ...SpaceDetailsProvider
   }
 }
+
+query DashboardSpacesPaginated($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
+  spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
+    spaces {
+      ...SpaceDetailsProvider
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

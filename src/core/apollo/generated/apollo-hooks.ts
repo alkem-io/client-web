@@ -18342,6 +18342,75 @@ export function refetchDashboardSpacesQuery(variables?: SchemaTypes.DashboardSpa
   return { query: DashboardSpacesDocument, variables: variables };
 }
 
+export const DashboardSpacesPaginatedDocument = gql`
+  query DashboardSpacesPaginated($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
+    spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
+      spaces {
+        ...SpaceDetailsProvider
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${SpaceDetailsProviderFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useDashboardSpacesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useDashboardSpacesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardSpacesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardSpacesPaginatedQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      visibilities: // value for 'visibilities'
+ *   },
+ * });
+ */
+export function useDashboardSpacesPaginatedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardSpacesPaginatedQuery, SchemaTypes.DashboardSpacesPaginatedQueryVariables>(
+    DashboardSpacesPaginatedDocument,
+    options
+  );
+}
+
+export function useDashboardSpacesPaginatedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >(DashboardSpacesPaginatedDocument, options);
+}
+
+export type DashboardSpacesPaginatedQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedQuery>;
+export type DashboardSpacesPaginatedLazyQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedLazyQuery>;
+export type DashboardSpacesPaginatedQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardSpacesPaginatedQuery,
+  SchemaTypes.DashboardSpacesPaginatedQueryVariables
+>;
+export function refetchDashboardSpacesPaginatedQuery(variables: SchemaTypes.DashboardSpacesPaginatedQueryVariables) {
+  return { query: DashboardSpacesPaginatedDocument, variables: variables };
+}
+
 export const SpaceCommunityPageDocument = gql`
   query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {

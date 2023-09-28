@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AssociatedOrganizationDetailsFragment,
@@ -6,7 +6,6 @@ import {
   CalloutsQueryVariables,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
-  Reference,
   SpaceVisibility,
   SpaceWelcomeBlockContributorProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -20,11 +19,9 @@ import { JourneyTypeName } from '../../JourneyTypeName';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
-import { IconButton, Theme } from '@mui/material';
+import { Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
-import { Metric } from '../../../platform/metrics/utils/getMetricCount';
-import { Close, InfoOutlined } from '@mui/icons-material';
+import { InfoOutlined } from '@mui/icons-material';
 import { DashboardNavigationItem } from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation from '../SpaceDashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -34,6 +31,8 @@ import DashboardRecentContributionsBlock from '../../common/dashboardRecentContr
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -41,19 +40,12 @@ interface SpaceWelcomeBlockContributor {
 
 interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
   displayName: ReactNode;
-  tagline: ReactNode;
-  metrics: Metric[] | undefined;
-  description: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
-  who: string | undefined;
-  impact: string | undefined;
   spaceVisibility?: SpaceVisibility;
   vision?: string;
   communityId?: string;
   organization?: unknown;
-  references: Reference[] | undefined;
-  hostOrganizations: (SpaceWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
   leadOrganizations: (SpaceWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
   leadUsers: (SpaceWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
   communityReadAccess: boolean;
@@ -66,7 +58,6 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
   journeyTypeName: JourneyTypeName;
   recommendations?: ReactNode;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
-  sendMessageToCommunityLeads: (message: string) => Promise<void>;
   loading: boolean;
   callouts: {
     groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
@@ -82,25 +73,17 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
 const SpaceDashboardView = ({
   vision = '',
   displayName,
-  tagline,
-  metrics,
-  description,
   dashboardNavigation,
   dashboardNavigationLoading,
-  who,
-  impact,
   spaceVisibility,
-  loading,
   spaceNameId,
   challengeNameId,
   opportunityNameId,
   communityId = '',
-  references,
   communityReadAccess = false,
   timelineReadAccess = false,
   entityReadAccess,
   readUsersAccess,
-  hostOrganizations,
   leadOrganizations,
   leadUsers,
   activities,
@@ -108,7 +91,6 @@ const SpaceDashboardView = ({
   journeyTypeName,
   callouts,
   topCallouts,
-  sendMessageToCommunityLeads,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
 
@@ -122,8 +104,6 @@ const SpaceDashboardView = ({
         };
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-
-  const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
@@ -164,7 +144,12 @@ const SpaceDashboardView = ({
           >
             {props => <MembershipContainer {...props} />}
           </JourneyDashboardWelcomeBlock>
-          <FullWidthButton startIcon={<InfoOutlined />} onClick={() => setIsAboutDialogOpen(true)} variant="contained">
+          <FullWidthButton
+            startIcon={<InfoOutlined />}
+            component={RouterLink}
+            to={EntityPageSection.About}
+            variant="contained"
+          >
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
           <DashboardNavigation
@@ -220,28 +205,6 @@ const SpaceDashboardView = ({
           />
         </PageContentColumn>
       </PageContent>
-      <JourneyAboutDialog
-        open={isAboutDialogOpen}
-        journeyTypeName="space"
-        displayName={displayName}
-        tagline={tagline}
-        references={references}
-        sendMessageToCommunityLeads={sendMessageToCommunityLeads}
-        metrics={metrics}
-        description={vision}
-        background={description}
-        who={who}
-        impact={impact}
-        loading={loading}
-        leadUsers={leadUsers}
-        hostOrganizations={hostOrganizations}
-        leadOrganizations={leadOrganizations}
-        endButton={
-          <IconButton onClick={() => setIsAboutDialogOpen(false)}>
-            <Close />
-          </IconButton>
-        }
-      />
     </>
   );
 };

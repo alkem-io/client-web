@@ -11,9 +11,12 @@ import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import useSpaceDashboardNavigation from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
+import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
+import { IconButton } from '@mui/material';
+import { Close } from '@mui/icons-material';
 
 export interface SpaceDashboardPageProps {
-  dialog?: 'updates' | 'contributors' | 'calendar';
+  dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
 }
 
 const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
@@ -40,29 +43,21 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               vision={entities.space?.context?.vision}
               spaceNameId={entities.space?.nameID}
               displayName={entities.space?.profile.displayName}
-              tagline={entities.space?.profile.tagline}
-              description={entities.space?.profile.description}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={dashboardNavigationLoading}
-              who={entities.space?.context?.who}
-              impact={entities.space?.context?.impact}
               spaceVisibility={entities.space?.visibility}
-              metrics={entities.space?.metrics}
               loading={state.loading}
               communityId={entities.space?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
               timelineReadAccess={entities.permissions.timelineReadAccess}
               entityReadAccess={entities.permissions.spaceReadAccess}
               readUsersAccess={entities.permissions.readUsers}
-              references={entities.references}
               leadUsers={entities.space?.community?.leadUsers}
-              hostOrganizations={entities.hostOrganizations}
               leadOrganizations={entities.space?.community?.leadOrganizations}
               activities={entities.activities}
               activityLoading={entities.activityLoading}
               callouts={callouts}
               topCallouts={entities.topCallouts}
-              sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               journeyTypeName="space"
             />
             <CommunityUpdatesDialog
@@ -83,6 +78,28 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 spaceNameId={entities.space?.nameID}
               />
             )}
+            <JourneyAboutDialog
+              open={dialog === 'about'}
+              journeyTypeName="space"
+              displayName={entities.space?.profile.displayName}
+              tagline={entities.space?.profile.tagline}
+              references={entities.references}
+              sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
+              metrics={entities.space?.metrics}
+              description={entities.space?.context?.vision}
+              background={entities.space?.profile.description}
+              who={entities.space?.context?.who}
+              impact={entities.space?.context?.impact}
+              loading={state.loading}
+              leadUsers={entities.space?.community?.leadUsers}
+              hostOrganizations={entities.hostOrganizations}
+              leadOrganizations={entities.space?.community?.leadOrganizations}
+              endButton={
+                <IconButton onClick={backToDashboard}>
+                  <Close />
+                </IconButton>
+              }
+            />
           </>
         )}
       </SpaceDashboardContainer>
