@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Box, styled, SxProps } from '@mui/material';
+import { SxProps } from '@mui/material';
 import {
   ActivityEventType,
   ActivityLogCalendarEventCreatedFragment,
@@ -34,11 +34,9 @@ import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 import { Theme } from '@mui/material/styles';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
-const Root = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(2),
+const styles = {
   '& a': {
     textDecoration: 'none',
     color: 'inherit',
@@ -46,7 +44,7 @@ const Root = styled(Box)(({ theme }) => ({
   '& a:hover': {
     textDecoration: 'underline',
   },
-}));
+};
 
 export type ActivityLogResult<T> = T & Omit<ActivityLogEntry, 'parentDisplayName'> & { journeyDisplayName: string };
 
@@ -114,7 +112,11 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
     );
   }, [activities, journeyLocation]);
 
-  return <Root sx={sx}>{display ?? <ActivityLoadingView rows={3} />}</Root>;
+  return (
+    <Gutters disablePadding sx={{ ...styles, ...sx }}>
+      {display ?? <ActivityLoadingView rows={3} />}
+    </Gutters>
+  );
 };
 
 interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyLocation'> {

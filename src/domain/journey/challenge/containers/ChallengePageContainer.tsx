@@ -35,6 +35,7 @@ import useCallouts, {
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
+import { RECENT_ACTIVITIES_LIMIT, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   spaceId: string;
@@ -107,6 +108,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.challengeReadAccess || !permissions.readUsers,
+    limit: RECENT_ACTIVITIES_LIMIT,
   });
 
   const canReadReferences = _challenge?.space?.challenge?.context?.authorization?.myPrivileges?.includes(
@@ -138,7 +140,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const references = referenceData?.space?.challenge?.profile.references;
 
-  const topCallouts = _challenge?.space.challenge.collaboration?.callouts?.slice(0, 3);
+  const topCallouts = _challenge?.space.challenge.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   const communityId = _challenge?.space.challenge.community?.id ?? '';
 

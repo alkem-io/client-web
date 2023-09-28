@@ -12,8 +12,6 @@ import {
   ActivityLogOnCollaborationFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
-export const LATEST_ACTIVITIES_COUNT = 100;
-
 const useActivityOnCollaborationSubscription = (
   collaborationID: string,
   { includeChild, types }: { types?: ActivityEventType[]; includeChild?: boolean }
@@ -42,7 +40,7 @@ interface ActivityOnCollaborationReturnType {
 interface UseActivityOnCollaborationOptions {
   types?: ActivityEventType[];
   includeChild?: boolean;
-  limit?: number;
+  limit: number;
   skip?: boolean;
 }
 
@@ -50,7 +48,7 @@ const useActivityOnCollaboration = (
   collaborationID: string | undefined,
   options: UseActivityOnCollaborationOptions
 ): ActivityOnCollaborationReturnType => {
-  const { types, skip, limit = LATEST_ACTIVITIES_COUNT, includeChild = true } = options;
+  const { types, skip, limit, includeChild = true } = options;
 
   const {
     data: activityLogData,
