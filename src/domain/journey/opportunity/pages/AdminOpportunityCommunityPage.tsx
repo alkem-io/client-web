@@ -19,6 +19,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     communityPolicy,
     permissions,
     onUserLeadChange,
+    onUserAuthorizationChange,
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
@@ -41,6 +42,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
             <CommunityUsers
               users={users}
               onUserLeadChange={onUserLeadChange}
+              onUserAuthorizationChange={onUserAuthorizationChange}
               canAddMembers={permissions.canAddMembers}
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
