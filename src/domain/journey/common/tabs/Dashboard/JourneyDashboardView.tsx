@@ -31,6 +31,9 @@ import { OrderUpdate, TypedCallout } from '../../../../collaboration/callout/use
 import DashboardRecentContributionsBlock, {
   DashboardRecentContributionsBlockProps,
 } from '../../dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
+import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
+import { InfoOutlined } from '@mui/icons-material';
+import RouterLink from '../../../../../core/ui/link/RouterLink';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
@@ -117,10 +120,20 @@ const JourneyDashboardView = ({
     [leadUsers]
   );
 
+  const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
         {welcome}
+        <FullWidthButton
+          startIcon={<InfoOutlined />}
+          component={RouterLink}
+          to={EntityPageSection.About}
+          variant="contained"
+        >
+          {t('common.aboutThis', { entity: translatedJourneyTypeName })}
+        </FullWidthButton>
         <ShareButton
           title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
           url={journeyLocation && buildJourneyUrl(journeyLocation)}
