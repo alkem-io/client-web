@@ -10,7 +10,6 @@ import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphq
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeTop:
     case CalloutDisplayLocation.HomeLeft:
     case CalloutDisplayLocation.HomeRight:
       return <OpportunityDashboardPage />;
@@ -24,7 +23,6 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeTop:
     case CalloutDisplayLocation.HomeLeft:
     case CalloutDisplayLocation.HomeRight:
       return EntityPageSection.Dashboard;

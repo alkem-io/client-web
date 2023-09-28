@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { Caption, CardText } from '../../../../../core/ui/typography';
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { PostTemplateWithValue } from '../../../post/PostTemplateCard/PostTemplate';
@@ -41,8 +41,7 @@ export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) =>
       <FormikMarkdownField
         name={`${name}.defaultDescription`}
         title={t('components.callout-creation.template-step.post-template-default-description')}
-        maxLength={LONG_TEXT_LENGTH}
-        withCounter
+        maxLength={MARKDOWN_TEXT_LENGTH}
       />
     </>
   );

@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import useProfileStyles from './useProfileStyles';
-import { TextFieldMaxLength } from '../../../../../core/ui/forms/field-length.constants';
+import { MarkdownTextMaxLength } from '../../../../../core/ui/forms/field-length.constants';
 
 interface MarkdownInputFieldProps {
   name: string;
@@ -11,8 +11,7 @@ interface MarkdownInputFieldProps {
   rows?: number;
   disabled?: boolean;
   required?: boolean;
-  maxLength?: TextFieldMaxLength;
-  withCounter?: boolean;
+  maxLength?: MarkdownTextMaxLength;
   helperText?: string;
   loading?: boolean;
 }
@@ -28,7 +27,6 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
   disabled = false,
   required,
   maxLength,
-  withCounter,
   helperText,
   loading,
 }: MarkdownInputFieldProps) => {
@@ -45,7 +43,6 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
         rows={rows}
         required={required}
         maxLength={maxLength}
-        withCounter={withCounter}
         helperText={helperText}
         loading={loading}
       />

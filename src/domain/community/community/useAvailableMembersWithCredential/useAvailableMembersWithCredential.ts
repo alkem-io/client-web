@@ -28,10 +28,10 @@ interface CommunityMembersAttrs {
 
 export type UseAvailableMembersOptions = CurrentUserAttrs & CommunityMembersAttrs;
 
-const EMPTY_MEMBERS_LIST: UserDisplayNameFragment[] = [];
+const EMPTY_LIST = [];
 
 /***
- * Hook to fetch available users in a curtain context, defined by the parent members (if applicable),
+ * Hook to fetch available users in a certain context, defined by the parent members (if applicable),
  * the credential type of the authorization group and the resource
  * @param options.credential The credential type of the authorization group
  * @param options.resourceId The resource
@@ -51,7 +51,7 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
   });
 
   const {
-    data: _current,
+    data: existingMembers,
     loading: loadingMembers,
     error: membersError,
   } = useUsersWithCredentialsSimpleListQuery({
@@ -65,23 +65,21 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
     },
   });
 
-  const current = useMemo(
-    () => _current?.usersWithAuthorizationCredential || [],
-    [_current?.usersWithAuthorizationCredential]
-  );
-
   const isLoading = loadingAllPossibleMembers || loadingMembers;
   const hasError = errorOnLoadingAllPossibleMembers || !!membersError;
-  const entityMembers = allPossibleMemberUsers || EMPTY_MEMBERS_LIST;
 
-  const availableMembers = useMemo<UserDisplayNameFragment[]>(
-    () => entityMembers.filter(member => !current.some(user => user.id === member.id)),
-    [entityMembers, current]
-  );
+  const availableMembers = useMemo<UserDisplayNameFragment[] | undefined>(() => {
+    if (!existingMembers?.usersWithAuthorizationCredential) {
+      return allPossibleMemberUsers;
+    }
+    return allPossibleMemberUsers?.filter(
+      member => !existingMembers.usersWithAuthorizationCredential.some(user => user.id === member.id)
+    );
+  }, [allPossibleMemberUsers, existingMembers]);
 
   return {
-    availableMembers: availableMembers,
-    currentMembers: current,
+    availableMembers: availableMembers ?? EMPTY_LIST,
+    currentMembers: existingMembers?.usersWithAuthorizationCredential ?? EMPTY_LIST,
     error: hasError,
     loading: isLoading,
     ...allPossibleMembersProvided,

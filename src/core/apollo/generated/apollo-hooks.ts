@@ -2041,6 +2041,123 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
+export const ChallengeProfileFragmentDoc = gql`
+  fragment ChallengeProfile on Challenge {
+    id
+    nameID
+    metrics {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      tagline
+      displayName
+      visuals {
+        ...VisualFull
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    innovationFlow {
+      id
+      lifecycle {
+        id
+        machineDef
+        state
+        nextEvents
+        stateIsFinal
+      }
+    }
+    context {
+      id
+      vision
+      authorization {
+        id
+        myPrivileges
+        anonymousReadAccess
+      }
+    }
+    collaboration {
+      id
+      ...DashboardTopCallouts
+      ...DashboardTimelineAuthorization
+    }
+    community {
+      id
+      myMembershipStatus
+      ...EntityDashboardCommunity
+    }
+  }
+  ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${DashboardTopCalloutsFragmentDoc}
+  ${DashboardTimelineAuthorizationFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+`;
+export const ChallengeInfoFragmentDoc = gql`
+  fragment ChallengeInfo on Challenge {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        uri
+      }
+      visuals {
+        ...VisualFull
+      }
+      location {
+        ...fullLocation
+      }
+    }
+    community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    context {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
+`;
+export const NewChallengeFragmentDoc = gql`
+  fragment NewChallenge on Challenge {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -2105,127 +2222,6 @@ export const OpportunityCardFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
-`;
-export const ChallengeProfileFragmentDoc = gql`
-  fragment ChallengeProfile on Challenge {
-    id
-    nameID
-    metrics {
-      id
-      name
-      value
-    }
-    profile {
-      id
-      tagline
-      displayName
-      visuals {
-        ...VisualFull
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    innovationFlow {
-      id
-      lifecycle {
-        id
-        machineDef
-        state
-        nextEvents
-        stateIsFinal
-      }
-    }
-    context {
-      id
-      vision
-      authorization {
-        id
-        myPrivileges
-        anonymousReadAccess
-      }
-    }
-    collaboration {
-      id
-      ...DashboardTopCallouts
-      ...DashboardTimelineAuthorization
-    }
-    community {
-      id
-      myMembershipStatus
-      ...EntityDashboardCommunity
-    }
-    opportunities {
-      ...OpportunityCard
-    }
-  }
-  ${VisualFullFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${DashboardTopCalloutsFragmentDoc}
-  ${DashboardTimelineAuthorizationFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
-  ${OpportunityCardFragmentDoc}
-`;
-export const ChallengeInfoFragmentDoc = gql`
-  fragment ChallengeInfo on Challenge {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      tagline
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        uri
-      }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
-      }
-    }
-    community {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    context {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
-`;
-export const NewChallengeFragmentDoc = gql`
-  fragment NewChallenge on Challenge {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-  }
 `;
 export const OpportunitiesOnChallengeFragmentDoc = gql`
   fragment OpportunitiesOnChallenge on Challenge {
@@ -2536,50 +2532,6 @@ export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
     }
   }
 `;
-export const ChallengeCardFragmentDoc = gql`
-  fragment ChallengeCard on Challenge {
-    id
-    nameID
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    metrics {
-      id
-      name
-      value
-    }
-    profile {
-      id
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    context {
-      id
-      vision
-    }
-    innovationFlow {
-      id
-      lifecycle {
-        id
-        state
-      }
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2639,9 +2591,6 @@ export const SpacePageFragmentDoc = gql`
         }
       }
     }
-    challenges(limit: 3, shuffle: true) {
-      ...ChallengeCard
-    }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${SpaceWelcomeBlockContributorProfileFragmentDoc}
@@ -2650,7 +2599,6 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
-  ${ChallengeCardFragmentDoc}
 `;
 export const SpaceDashboardNavigationProfileFragmentDoc = gql`
   fragment SpaceDashboardNavigationProfile on Profile {
@@ -2735,6 +2683,50 @@ export const SpaceTemplatesFragmentDoc = gql`
   ${PostTemplateCardFragmentDoc}
   ${WhiteboardTemplateCardFragmentDoc}
   ${InnovationFlowTemplateFragmentDoc}
+`;
+export const ChallengeCardFragmentDoc = gql`
+  fragment ChallengeCard on Challenge {
+    id
+    nameID
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    metrics {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      tagline
+      displayName
+      description
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    context {
+      id
+      vision
+    }
+    innovationFlow {
+      id
+      lifecycle {
+        id
+        state
+      }
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ChallengesOnSpaceFragmentDoc = gql`
   fragment ChallengesOnSpace on Space {
@@ -15526,95 +15518,6 @@ export function refetchUserSpacesQuery(variables?: SchemaTypes.UserSpacesQueryVa
   return { query: UserSpacesDocument, variables: variables };
 }
 
-export const HomePageSpacesDocument = gql`
-  query HomePageSpaces($includeMembershipStatus: Boolean!) {
-    platform {
-      innovationHub {
-        spaceListFilter {
-          id
-          nameID
-          profile {
-            id
-            displayName
-            tagline
-            tagset {
-              ...TagsetDetails
-            }
-            cardBanner: visual(type: CARD) {
-              id
-              uri
-              alternativeText
-            }
-          }
-          context {
-            id
-            vision
-          }
-          metrics {
-            id
-            name
-            value
-          }
-          ... on Space @include(if: $includeMembershipStatus) {
-            community {
-              id
-              myMembershipStatus
-            }
-          }
-          visibility
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-
-/**
- * __useHomePageSpacesQuery__
- *
- * To run a query within a React component, call `useHomePageSpacesQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomePageSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHomePageSpacesQuery({
- *   variables: {
- *      includeMembershipStatus: // value for 'includeMembershipStatus'
- *   },
- * });
- */
-export function useHomePageSpacesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>(
-    HomePageSpacesDocument,
-    options
-  );
-}
-
-export function useHomePageSpacesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HomePageSpacesQuery, SchemaTypes.HomePageSpacesQueryVariables>(
-    HomePageSpacesDocument,
-    options
-  );
-}
-
-export type HomePageSpacesQueryHookResult = ReturnType<typeof useHomePageSpacesQuery>;
-export type HomePageSpacesLazyQueryHookResult = ReturnType<typeof useHomePageSpacesLazyQuery>;
-export type HomePageSpacesQueryResult = Apollo.QueryResult<
-  SchemaTypes.HomePageSpacesQuery,
-  SchemaTypes.HomePageSpacesQueryVariables
->;
-export function refetchHomePageSpacesQuery(variables: SchemaTypes.HomePageSpacesQueryVariables) {
-  return { query: HomePageSpacesDocument, variables: variables };
-}
-
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
     spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
@@ -18437,6 +18340,75 @@ export type DashboardSpacesQueryResult = Apollo.QueryResult<
 >;
 export function refetchDashboardSpacesQuery(variables?: SchemaTypes.DashboardSpacesQueryVariables) {
   return { query: DashboardSpacesDocument, variables: variables };
+}
+
+export const DashboardSpacesPaginatedDocument = gql`
+  query DashboardSpacesPaginated($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
+    spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
+      spaces {
+        ...SpaceDetailsProvider
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${SpaceDetailsProviderFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useDashboardSpacesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useDashboardSpacesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardSpacesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardSpacesPaginatedQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      visibilities: // value for 'visibilities'
+ *   },
+ * });
+ */
+export function useDashboardSpacesPaginatedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardSpacesPaginatedQuery, SchemaTypes.DashboardSpacesPaginatedQueryVariables>(
+    DashboardSpacesPaginatedDocument,
+    options
+  );
+}
+
+export function useDashboardSpacesPaginatedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >(DashboardSpacesPaginatedDocument, options);
+}
+
+export type DashboardSpacesPaginatedQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedQuery>;
+export type DashboardSpacesPaginatedLazyQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedLazyQuery>;
+export type DashboardSpacesPaginatedQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardSpacesPaginatedQuery,
+  SchemaTypes.DashboardSpacesPaginatedQueryVariables
+>;
+export function refetchDashboardSpacesPaginatedQuery(variables: SchemaTypes.DashboardSpacesPaginatedQueryVariables) {
+  return { query: DashboardSpacesPaginatedDocument, variables: variables };
 }
 
 export const SpaceCommunityPageDocument = gql`

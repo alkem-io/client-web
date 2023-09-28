@@ -10,7 +10,7 @@ import InnovationHubBanner from './InnovationHubBanner';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { useHomePageSpacesQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useDashboardSpacesQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '../../../core/apollo/generated/graphql-schema';
 import SpaceCard from '../../journey/space/SpaceCard/SpaceCard';
 import getMetricCount from '../../platform/metrics/utils/getMetricCount';
@@ -20,7 +20,6 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../platform/routes/constants';
 import { useConfig } from '../../platform/config/useConfig';
-import { useUserContext } from '../../community/user';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
@@ -32,15 +31,9 @@ const isMember = (journey: { community?: { myMembershipStatus?: CommunityMembers
 const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) => {
   const { t } = useTranslation();
 
-  const { isAuthenticated } = useUserContext();
+  const { data: spacesData } = useDashboardSpacesQuery({});
 
-  const { data: spacesData } = useHomePageSpacesQuery({
-    variables: {
-      includeMembershipStatus: isAuthenticated,
-    },
-  });
-
-  const allSpaces = spacesData?.platform.innovationHub?.spaceListFilter || [];
+  const allSpaces = spacesData?.spaces;
 
   const { platform } = useConfig();
 

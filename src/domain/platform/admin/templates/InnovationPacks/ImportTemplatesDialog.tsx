@@ -17,8 +17,8 @@ export interface ImportTemplatesDialogProps<
   headerText: string;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
-  getImportedTemplateValue?: (template: Q) => void;
-  importedTemplateValue?: V | undefined;
+  getImportedTemplateContent?: (template: Q) => void;
+  importedTemplateContent?: V | undefined;
   innovationPacks: InnovationPack<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
@@ -36,8 +36,8 @@ const ImportTemplatesDialog = <
   headerText,
   templateImportCardComponent,
   templatePreviewComponent,
-  getImportedTemplateValue,
-  importedTemplateValue,
+  getImportedTemplateContent,
+  importedTemplateContent,
   innovationPacks,
   loading,
   open,
@@ -50,7 +50,7 @@ const ImportTemplatesDialog = <
   const [previewTemplate, setPreviewTemplate] = useState<Q>();
 
   const handleImportTemplate = async () => {
-    previewTemplate && (await onImportTemplate?.(previewTemplate, importedTemplateValue));
+    previewTemplate && (await onImportTemplate?.(previewTemplate, importedTemplateContent));
     handleClosePreview();
   };
 
@@ -93,8 +93,8 @@ const ImportTemplatesDialog = <
               onClose={handleClosePreview}
               templatePreviewCardComponent={templateImportCardComponent}
               templatePreviewComponent={templatePreviewComponent}
-              getImportedTemplateValue={getImportedTemplateValue}
-              importedTemplateValue={importedTemplateValue}
+              getImportedTemplateContent={getImportedTemplateContent}
+              importedTemplateContent={importedTemplateContent}
               actions={cloneElement(actionButton, { onClick: handleImportTemplate })}
             />
           ))}

@@ -4,7 +4,6 @@ import {
   ActivityCreatedDocument,
   useActivityLogOnCollaborationQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { LATEST_ACTIVITIES_COUNT } from '../../../shared/components/ActivityLog/constants';
 import createUseSubscriptionToSubEntityHook from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 import {
   ActivityCreatedSubscription,
@@ -30,7 +29,6 @@ const useActivityOnCollaborationSubscription = (
       }
 
       subEntity.unshift(activityCreated.activity);
-      subEntity.splice(LATEST_ACTIVITIES_COUNT, 1);
     },
   });
 
@@ -39,11 +37,19 @@ interface ActivityOnCollaborationReturnType {
   loading: boolean;
 }
 
+interface UseActivityOnCollaborationOptions {
+  types?: ActivityEventType[];
+  includeChild?: boolean;
+  limit: number;
+  skip?: boolean;
+}
+
 const useActivityOnCollaboration = (
   collaborationID: string | undefined,
-  options: { types?: ActivityEventType[]; includeChild?: boolean; skipCondition?: boolean }
+  options: UseActivityOnCollaborationOptions
 ): ActivityOnCollaborationReturnType => {
-  const { types, skipCondition, includeChild = true } = options;
+  const { types, skip, limit, includeChild = true } = options;
+
   const {
     data: activityLogData,
     loading,
@@ -52,12 +58,12 @@ const useActivityOnCollaboration = (
     variables: {
       queryData: {
         collaborationID: collaborationID!,
-        limit: LATEST_ACTIVITIES_COUNT,
+        limit,
         includeChild: true,
         types,
       },
     },
-    skip: !collaborationID || skipCondition,
+    skip: !collaborationID || skip,
     fetchPolicy: 'cache-and-network',
   });
 

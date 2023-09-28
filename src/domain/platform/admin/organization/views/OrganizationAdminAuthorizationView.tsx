@@ -40,10 +40,10 @@ export const OrganizationAdminAuthorizationView: FC = () => {
             executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
-            fetchMore={actions.handleLoadMore}
+            fetchMore={actions.fetchMoreUsers}
             hasMore={state.hasMoreUsers}
-            loadingMembers={state.loading}
-            loadingAvailableMembers={state.loading}
+            loadingMembers={state.loadingUsers}
+            loadingAvailableMembers={state.loadingUsers}
             onSearchTermChange={actions.setSearchTerm}
           />
         )}

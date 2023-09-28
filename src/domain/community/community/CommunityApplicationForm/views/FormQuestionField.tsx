@@ -51,7 +51,6 @@ const FormQuestionField: FC<FormQuestionFieldProps> = ({
           readOnly={readOnly}
           disabled={disabled}
           maxLength={MID_TEXT_LENGTH}
-          withCounter
         />
       </Box>
       <Tooltip title={t('community.application-form.move-up')} placement={'bottom'}>

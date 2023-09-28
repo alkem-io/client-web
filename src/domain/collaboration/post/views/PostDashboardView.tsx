@@ -16,7 +16,6 @@ import PostDashboardTagLabel from './PostDashboardTagLabel';
 import DashboardColumn from './DashboardColumn';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
-import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -184,7 +183,6 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
                 <PostMessageToCommentsForm
                   placeholder={t('pages.post.dashboard.comment.placeholder')}
                   onPostComment={postMessage}
-                  maxLength={MID_TEXT_LENGTH}
                 />
               )}
               {!canPostComments && (

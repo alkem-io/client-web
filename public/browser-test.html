@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Latency Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #logo {
+            max-width: 300px; /* or whatever max size you'd prefer */
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo Image -->
+    <img id="logo" src="logo.png" alt="Logo">
+
+    <p><b>Browser & OS Information</b></p>
+    <ul>
+        <li><b>Browser Name</b>: <span id="browserName"></span></li>
+        <li><b>User Agent</b>: <span id="userAgent"></span></li>
+        <li><b>Operating System</b>: <span id="os"></span></li>
+    </ul>
+
+    <!-- Button and Result Display -->
+    <div id="latency-label">Click the button to test latency.</div>
+    <button id="latencyBtn">Test Latency</button>
+    <div id="latency-result">...</div>
+    <p></p>
+    <div id="compute-label">Click the button to test compute speed</div>
+    <button id="computeBtn">Test compute speed</button>
+    <div id="compute-result">...</div>
+
+    <script>
+        document.getElementById('latencyBtn').addEventListener('click', async () => {
+            const query = `{
+                platform {
+                  configuration {
+                    platform {
+                      featureFlags {
+                        enabled
+                        name
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            const url = `${window.location.protocol}//${window.location.host}/graphql`;
+            console.log(`URL: ${url}`);
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any other headers if required, for example Authorization for secured endpoints
+                },
+                body: JSON.stringify({ query }),
+            };
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                const endTime = Date.now();
+
+                const latency = endTime - startTime;
+                document.getElementById('latency-result').textContent = `Latency: ${latency} ms`;
+            } catch (error) {
+                document.getElementById('latency-result').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+
+
+
+  <script>
+    document.getElementById('computeBtn').addEventListener('click', () => {
+        const numPrimes = 40000000; // you can adjust this value
+
+        const startTime = Date.now();
+        const result = computePrimes(numPrimes);
+        const endTime = Date.now();
+
+        const computationTime = endTime - startTime;
+        document.getElementById('compute-result').textContent = `Compute time for ${numPrimes} primes: ${computationTime} ms`;
+    });
+
+    function computePrimes(max) {
+            const sieve = [];
+            const primes = [];
+            for (let i = 2; i <= max; ++i) {
+                if (!sieve[i]) {
+                    primes.push(i);
+                    for (let j = i << 1; j <= max; j += i) {
+                        sieve[j] = true;
+                    }
+                }
+            }
+            return primes;
+        }
+    </script>
+    <script>
+      document.getElementById('userAgent').textContent = navigator.userAgent;
+
+      function getBrowserName() {
+          const userAgent = navigator.userAgent;
+
+          if (userAgent.indexOf("Firefox") > -1) return "Mozilla Firefox";
+          else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) return "Opera";
+          else if (userAgent.indexOf("Trident") > -1) return "Microsoft Internet Explorer";
+          else if (userAgent.indexOf("Edge") > -1) return "Microsoft Edge";
+          else if (userAgent.indexOf("Chrome") > -1) return "Google Chrome";
+          else if (userAgent.indexOf("Safari") > -1) return "Apple Safari";
+          else return "Unknown";
+      }
+
+      function getOperatingSystem() {
+          const userAgent = window.navigator.userAgent;
+          let os = "Unknown";
+
+          if (userAgent.indexOf("Win") !== -1) os = "Windows";
+          if (userAgent.indexOf("Mac") !== -1) os = "Macintosh";
+          if (userAgent.indexOf("Linux") !== -1) os = "Linux";
+          if (userAgent.indexOf("Android") !== -1) os = "Android";
+          if (userAgent.indexOf("like Mac") !== -1) os = "iOS";
+
+          return os;
+      }
+
+      document.getElementById('browserName').textContent = getBrowserName();
+      document.getElementById('os').textContent = getOperatingSystem();
+  </script>
+</body>
+</html>

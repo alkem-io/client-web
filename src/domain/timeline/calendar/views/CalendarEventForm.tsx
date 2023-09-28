@@ -22,7 +22,7 @@ import { displayNameValidator } from '../../../../core/ui/forms/validator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
 import { LoadingButton } from '@mui/lab';
-import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 interface CalendarEventFormProps {
@@ -90,7 +90,7 @@ const CalendarEventForm = ({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator,
-    description: MarkdownValidator(VERY_LONG_TEXT_LENGTH)
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH)
       .required(t('common.field-required'))
       .min(3, ({ min }) => t('common.field-min-length', { min })),
     type: yup.string().required(t('common.field-required')),
@@ -138,8 +138,7 @@ const CalendarEventForm = ({
               <FormikMarkdownField
                 name="description"
                 title={t('common.description')}
-                maxLength={VERY_LONG_TEXT_LENGTH}
-                withCounter
+                maxLength={MARKDOWN_TEXT_LENGTH}
                 sx={{ marginBottom: gutters(-1) }}
               />
               <TagsetField name="tags" title={t('common.tags')} />

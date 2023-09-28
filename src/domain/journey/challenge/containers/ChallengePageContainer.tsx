@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useUserContext } from '../../../community/user';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import { useChallenge } from '../hooks/useChallenge';
@@ -35,6 +35,7 @@ import useCallouts, {
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
+import { RECENT_ACTIVITIES_LIMIT, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   spaceId: string;
@@ -42,7 +43,6 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   spaceDisplayName: string;
   spaceVisibility: SpaceVisibility;
   challenge?: ChallengeProfileFragment;
-  opportunitiesCount: number | undefined;
   posts: PostFragmentWithCallout[];
   postsCount: number | undefined;
   references: Reference[] | undefined;
@@ -107,7 +107,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   };
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
-    skipCondition: !permissions.challengeReadAccess || !permissions.readUsers,
+    skip: !permissions.challengeReadAccess || !permissions.readUsers,
+    limit: RECENT_ACTIVITIES_LIMIT,
   });
 
   const canReadReferences = _challenge?.space?.challenge?.context?.authorization?.myPrivileges?.includes(
@@ -124,8 +125,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { metrics = [] } = _challenge?.space.challenge || {};
 
-  const opportunitiesCount = useMemo(() => getMetricCount(metrics, MetricType.Opportunity), [metrics]);
-
   const posts = getPostsFromPublishedCallouts(_challenge?.space.challenge.collaboration?.callouts).slice(0, 2);
   const postsCount = usePostsCount(_challenge?.space.challenge.metrics);
 
@@ -141,7 +140,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const references = referenceData?.space?.challenge?.profile.references;
 
-  const topCallouts = _challenge?.space.challenge.collaboration?.callouts?.slice(0, 3);
+  const topCallouts = _challenge?.space.challenge.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   const communityId = _challenge?.space.challenge.community?.id ?? '';
 
@@ -150,11 +149,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const callouts = useCallouts({
     spaceNameId,
     challengeNameId,
-    displayLocations: [
-      CalloutDisplayLocation.HomeTop,
-      CalloutDisplayLocation.HomeLeft,
-      CalloutDisplayLocation.HomeRight,
-    ],
+    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
   });
 
   const isMember = _challenge?.space.challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;
@@ -168,7 +163,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           spaceDisplayName: space.profile.displayName,
           spaceVisibility: space.visibility,
           challenge: _challenge?.space.challenge,
-          opportunitiesCount,
           posts,
           postsCount,
           whiteboards,

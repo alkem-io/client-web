@@ -59,6 +59,7 @@ export const typePolicies: TypedTypePolicies = {
     fields: {
       usersPaginated: paginationFieldPolicy(['filter'], 'User'),
       organizationsPaginated: paginationFieldPolicy(['filter'], 'Organization'),
+      spacesPaginated: paginationFieldPolicy(['filter'], 'Space'),
     },
   },
 };

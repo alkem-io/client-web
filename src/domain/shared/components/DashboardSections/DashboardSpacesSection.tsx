@@ -10,6 +10,8 @@ import { Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-
 import { Visual } from '../../../common/visual/Visual';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
+export const ITEMS_PER_PAGE = 16;
+
 export interface SpaceAttrs extends Identifiable {
   nameID: string;
   context?: { vision?: string };
@@ -32,6 +34,8 @@ export interface DashboardSpaceSectionProps<ExtraAttrs extends {}> {
   getSpaceCardProps?: (space: SpaceAttrs & ExtraAttrs) => Partial<SpaceCardProps>;
   headerText: ReactNode;
   primaryAction?: ReactNode;
+  loader?: ReactNode;
+  scrollable?: boolean;
 }
 
 const DashboardSpacesSection = <ExtraAttrs extends {}>({
@@ -40,13 +44,15 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
   spaces,
   getSpaceCardProps,
   children,
+  loader,
+  scrollable = false,
   ...props
 }: PropsWithChildren<DashboardSpaceSectionProps<ExtraAttrs>>) => {
   return (
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
       {children}
-      <ScrollableCardsLayoutContainer>
+      <ScrollableCardsLayoutContainer maxHeight={scrollable ? theme => theme.spacing(45) : undefined}>
         {spaces.map(space => (
           <SpaceCard
             key={space.id}
@@ -62,6 +68,7 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
             {...getSpaceCardProps?.(space)}
           />
         ))}
+        {loader}
       </ScrollableCardsLayoutContainer>
     </PageContentBlock>
   );

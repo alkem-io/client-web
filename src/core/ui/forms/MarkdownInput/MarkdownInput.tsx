@@ -1,5 +1,15 @@
-import React, { FormEvent, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import { Box, lighten, useTheme } from '@mui/material';
+import React, {
+  FormEvent,
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Box, useTheme } from '@mui/material';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
@@ -44,252 +54,257 @@ const proseMirrorStyles = {
   '& img': { maxWidth: '100%' },
 } as const;
 
-const editorSettings: Partial<EditorOptions> = {
+const editorOptions: Partial<EditorOptions> = {
   extensions: [StarterKit, ImageExtension, Link, Highlight],
 };
 
-export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-  ({ value, onChange, maxLength, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const toolbarRef = useRef<HTMLDivElement>(null);
+export const MarkdownInput = memo(
+  forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
+    ({ value, onChange, maxLength, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
+      const containerRef = useRef<HTMLDivElement>(null);
+      const toolbarRef = useRef<HTMLDivElement>(null);
 
-    const [hasFocus, setHasFocus] = useState(false);
-    const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
-    const isInteractingWithInput = hasFocus || isControlsDialogOpen;
+      const [hasFocus, setHasFocus] = useState(false);
+      const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
+      const isInteractingWithInput = hasFocus || isControlsDialogOpen;
 
-    const [htmlContent, setHtmlContent] = useState('');
+      const [htmlContent, setHtmlContent] = useState('');
 
-    const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
+      const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
 
-    const updateHtmlContent = async () => {
-      const content = await markdownToHTML(value);
-      setHtmlContent(String(content));
-    };
-
-    const editor = useEditor(
-      {
-        ...editorSettings,
-        content: htmlContent,
-      },
-      [htmlContent]
-    );
-
-    // Currently used to highlight overflow but can be reused for other similar features as well
-    const shadowEditor = useEditor({
-      ...editorSettings,
-      content: '',
-      editable: false,
-    });
-
-    useLayoutEffect(() => {
-      if (!editor || !isInteractingWithInput || editor.getText() === '') {
-        updateHtmlContent();
-      }
-    }, [value, hasFocus]);
-
-    const theme = useTheme();
-
-    const areControlsVisible = () => {
-      if (controlsVisible === 'always') {
-        return true;
-      }
-      if (controlsVisible === 'focused') {
-        return isInteractingWithInput;
-      }
-    };
-
-    const getLabelOffset = () => {
-      const offsetY = areControlsVisible()
-        ? toolbarRef.current
-          ? `${toolbarRef.current.clientHeight + 20}px`
-          : gutters(3)(theme)
-        : gutters(1)(theme);
-
-      return {
-        x: gutters()(theme),
-        y: offsetY,
+      const updateHtmlContent = async () => {
+        const content = await markdownToHTML(value);
+        setHtmlContent(String(content));
       };
-    };
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        getLabelOffset,
-        focus: () => editor?.commands.focus(),
-        get value() {
-          return editor?.getText();
+      const editor = useEditor(
+        {
+          ...editorOptions,
+          content: htmlContent,
         },
-      }),
-      [editor, areControlsVisible()]
-    );
+        [htmlContent]
+      );
 
-    const setCharacterCount = useSetCharacterCount();
+      // Currently used to highlight overflow but can be reused for other similar features as well
+      const shadowEditor = useEditor({
+        ...editorOptions,
+        content: '',
+        editable: false,
+      });
 
-    useLayoutEffect(() => {
-      setCharacterCount(editor?.getText().length ?? 0);
-    }, [editor]);
+      useLayoutEffect(() => {
+        if (!editor || !isInteractingWithInput || editor.getText() === '') {
+          updateHtmlContent();
+        }
+      }, [value, hasFocus]);
 
-    const emitChangeOnEditorUpdate = (editor: Editor) => {
-      const handleStateChange = async () => {
-        const markdown = await HTMLToMarkdown(editor.getHTML());
+      const theme = useTheme();
 
-        setCharacterCount(editor.getText().length);
-
-        onChange?.({
-          currentTarget: {
-            value: markdown,
-          },
-          target: {
-            value: markdown,
-          },
-        } as unknown as FormEvent<HTMLInputElement>);
+      const areControlsVisible = () => {
+        if (controlsVisible === 'always') {
+          return true;
+        }
+        if (controlsVisible === 'focused') {
+          return isInteractingWithInput;
+        }
       };
 
-      editor.on('update', handleStateChange);
+      const getLabelOffset = () => {
+        const offsetY = areControlsVisible()
+          ? toolbarRef.current
+            ? `${toolbarRef.current.clientHeight + 20}px`
+            : gutters(3)(theme)
+          : gutters(1)(theme);
 
-      return () => {
-        editor.off('update', handleStateChange);
+        return {
+          x: gutters()(theme),
+          y: offsetY,
+        };
       };
-    };
 
-    useEffect(() => {
-      if (editor) {
-        return emitChangeOnEditorUpdate(editor);
-      }
-    }, [editor]);
+      useImperativeHandle(
+        ref,
+        () => ({
+          getLabelOffset,
+          focus: () => editor?.commands.focus(),
+          get value() {
+            return editor?.getText();
+          },
+        }),
+        [editor, areControlsVisible()]
+      );
 
-    const updateShadowEditor = (editor: Editor, maxLength: number) => {
-      const highlightOverflow = () => {
-        if (!shadowEditor) {
+      const setCharacterCount = useSetCharacterCount();
+
+      useLayoutEffect(() => {
+        setCharacterCount(editor?.getText().length ?? 0);
+      }, [editor]);
+
+      const emitChangeOnEditorUpdate = (editor: Editor) => {
+        const handleStateChange = async () => {
+          const markdown = await HTMLToMarkdown(editor.getHTML());
+
+          setCharacterCount(editor.getText().length);
+
+          onChange?.({
+            currentTarget: {
+              value: markdown,
+            },
+            target: {
+              value: markdown,
+            },
+          } as unknown as FormEvent<HTMLInputElement>);
+        };
+
+        editor.on('update', handleStateChange);
+
+        return () => {
+          editor.off('update', handleStateChange);
+        };
+      };
+
+      useEffect(() => {
+        if (editor) {
+          return emitChangeOnEditorUpdate(editor);
+        }
+      }, [editor]);
+
+      const updateShadowEditor = (editor: Editor, maxLength: number) => {
+        const highlightOverflow = () => {
+          if (!shadowEditor) {
+            return;
+          }
+
+          const contentLength = editor.getText().length;
+
+          if (contentLength <= maxLength) {
+            return;
+          }
+
+          try {
+            shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
+          } catch (error) {
+            // In some states the "shadow" editor fails to update, but this doesn't break the highlight
+          }
+
+          const end = Selection.atEnd(shadowEditor.state.doc).from;
+          const overflow = contentLength - maxLength;
+
+          shadowEditor
+            .chain()
+            .setTextSelection({
+              from: end - overflow,
+              to: end,
+            })
+            .setHighlight() // Passing a highlight color doesn't work well here, styled later in sx={mark:{...}}
+            .run();
+        };
+
+        highlightOverflow();
+
+        editor.on('update', highlightOverflow);
+
+        return () => {
+          editor.off('update', highlightOverflow);
+        };
+      };
+
+      useEffect(() => {
+        if (editor && typeof maxLength === 'number') {
+          return updateShadowEditor(editor, maxLength);
+        }
+      }, [editor, maxLength]);
+
+      const [prevEditorHeight, setPrevEditorHeight] = useState(0);
+
+      const keepScrollPositionOnEditorReset = (editor: Editor) => {
+        const handleCreate = () => {
+          setPrevEditorHeight(0);
+        };
+
+        const handleDestroy = () => {
+          setPrevEditorHeight(editor.view.dom.clientHeight);
+        };
+
+        editor.on('create', handleCreate);
+        editor.on('destroy', handleDestroy);
+
+        return () => {
+          editor.off('create', handleCreate);
+          editor.off('destroy', handleDestroy);
+        };
+      };
+
+      useEffect(() => {
+        if (editor) {
+          return keepScrollPositionOnEditorReset(editor);
+        }
+      }, [editor]);
+
+      const handleFocus = (event: React.FocusEvent<HTMLDivElement>) => {
+        setHasFocus(true);
+        onFocus?.(event as React.FocusEvent<HTMLInputElement>);
+      };
+
+      const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+        if (containerRef.current?.contains(event.relatedTarget)) {
           return;
         }
-
-        const contentLength = editor.getText().length;
-
-        if (contentLength <= maxLength) {
-          return;
-        }
-
-        try {
-          shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
-        } catch (error) {
-          // In some states the "shadow" editor fails to update, but this doesn't break the highlight
-        }
-
-        const end = Selection.atEnd(shadowEditor.state.doc).from;
-        const overflow = contentLength - maxLength;
-
-        shadowEditor
-          .chain()
-          .setTextSelection({
-            from: end - overflow,
-            to: end,
-          })
-          .setHighlight()
-          .run();
+        setHasFocus(false);
+        onBlur?.(event as React.FocusEvent<HTMLInputElement>);
       };
 
-      highlightOverflow();
+      const handleDialogOpen = useCallback(() => setIsControlsDialogOpen(true), [setIsControlsDialogOpen]);
+      const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
 
-      editor.on('update', highlightOverflow);
-
-      return () => {
-        editor.off('update', highlightOverflow);
-      };
-    };
-
-    useEffect(() => {
-      if (editor && typeof maxLength === 'number') {
-        return updateShadowEditor(editor, maxLength);
-      }
-    }, [editor, maxLength]);
-
-    const [prevEditorHeight, setPrevEditorHeight] = useState(0);
-
-    const keepScrollPositionOnEditorReset = (editor: Editor) => {
-      const handleCreate = () => {
-        setPrevEditorHeight(0);
-      };
-
-      const handleDestroy = () => {
-        setPrevEditorHeight(editor.view.dom.clientHeight);
-      };
-
-      editor.on('create', handleCreate);
-      editor.on('destroy', handleDestroy);
-
-      return () => {
-        editor.off('create', handleCreate);
-        editor.off('destroy', handleDestroy);
-      };
-    };
-
-    useEffect(() => {
-      if (editor) {
-        return keepScrollPositionOnEditorReset(editor);
-      }
-    }, [editor]);
-
-    const handleFocus = (event: React.FocusEvent<HTMLDivElement>) => {
-      setHasFocus(true);
-      onFocus?.(event as React.FocusEvent<HTMLInputElement>);
-    };
-
-    const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
-      if (containerRef.current?.contains(event.relatedTarget)) {
-        return;
-      }
-      setHasFocus(false);
-      onBlur?.(event as React.FocusEvent<HTMLInputElement>);
-    };
-
-    return (
-      <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
-        <MarkdownInputControls
-          ref={toolbarRef}
-          editor={editor}
-          visible={areControlsVisible()}
-          onDialogOpen={() => setIsControlsDialogOpen(true)}
-          onDialogClose={() => setIsControlsDialogOpen(false)}
-        />
-        <Box
-          width="100%"
-          maxHeight="50vh"
-          sx={{
-            overflowY: 'auto',
-            '.ProseMirror': proseMirrorStyles,
-          }}
-        >
-          <Box position="relative" style={{ minHeight: prevEditorHeight }}>
-            <EditorContent editor={editor} />
-            <CharacterCountContainer>
-              {({ characterCount }) =>
-                typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
-                  <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    bottom={0}
-                    right={0}
-                    sx={{
-                      pointerEvents: 'none',
-                      color: 'transparent',
-                      mark: {
-                        color: theme.palette.background.paper,
-                        backgroundColor: lighten(theme.palette.negative.main, 0.2),
-                      },
-                    }}
-                  >
-                    <EditorContent editor={shadowEditor} />
-                  </Box>
-                )
-              }
-            </CharacterCountContainer>
+      return (
+        <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
+          <MarkdownInputControls
+            ref={toolbarRef}
+            editor={editor}
+            visible={areControlsVisible()}
+            onDialogOpen={handleDialogOpen}
+            onDialogClose={handleDialogClose}
+          />
+          <Box
+            width="100%"
+            maxHeight="50vh"
+            sx={{
+              overflowY: 'auto',
+              '.ProseMirror': proseMirrorStyles,
+            }}
+          >
+            <Box position="relative" style={{ minHeight: prevEditorHeight }}>
+              <EditorContent editor={editor} />
+              <CharacterCountContainer>
+                {({ characterCount }) =>
+                  typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
+                    <Box
+                      position="absolute"
+                      top={0}
+                      left={0}
+                      bottom={0}
+                      right={0}
+                      sx={{
+                        pointerEvents: 'none',
+                        color: 'transparent',
+                        mark: {
+                          color: theme.palette.error.main,
+                          backgroundColor: 'transparent',
+                        },
+                      }}
+                    >
+                      <EditorContent editor={shadowEditor} />
+                    </Box>
+                  )
+                }
+              </CharacterCountContainer>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    );
-  }
+      );
+    }
+  )
 );
 
 export default MarkdownInput;

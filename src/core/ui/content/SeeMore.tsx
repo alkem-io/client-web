@@ -1,20 +1,24 @@
 import { useTranslation } from 'react-i18next';
 import RouterLink from '../link/RouterLink';
 import { CaptionSmall } from '../typography';
-import { ButtonBase } from '@mui/material';
+import { ButtonBase, SxProps } from '@mui/material';
+import TranslationKey from '../../i18n/utils/TranslationKey';
+import { Theme } from '@mui/material/styles';
 
 interface SeeMoreProps {
-  subject: string;
+  label?: TranslationKey;
+  subject?: string;
   to?: string;
   onClick?: () => void;
+  sx?: SxProps<Theme>;
 }
 
-const SeeMore = ({ subject, to, onClick }: SeeMoreProps) => {
+const SeeMore = ({ label = 'buttons.see-all', subject, to, onClick, sx }: SeeMoreProps) => {
   const { t } = useTranslation();
 
   return (
-    <CaptionSmall component={to ? RouterLink : ButtonBase} to={to} textAlign="right" onClick={onClick}>
-      {t('buttons.see-all', { subject })}
+    <CaptionSmall component={to ? RouterLink : ButtonBase} to={to} textAlign="right" onClick={onClick} sx={sx}>
+      {t(label, { subject })}
     </CaptionSmall>
   );
 };

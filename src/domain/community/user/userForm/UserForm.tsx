@@ -19,7 +19,7 @@ import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../common/location/countries.constants';
 import { LocationSegment } from '../../../common/location/LocationSegment';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { ALT_TEXT_LENGTH, LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import GridItem from '../../../../core/ui/grid/GridItem';
@@ -129,7 +129,7 @@ export const UserForm: FC<UserProps> = ({
     github: yup.string().url('github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentWithSocialSchema,
-    bio: MarkdownValidator(LONG_TEXT_LENGTH),
+    bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tagline: yup.string().max(ALT_TEXT_LENGTH),
   });
 
@@ -259,7 +259,6 @@ export const UserForm: FC<UserProps> = ({
                     readOnly={isReadOnlyMode}
                     placeholder={t('components.profile.fields.tagline.title')}
                     disabled={isSubmitting}
-                    withCounter
                     maxLength={ALT_TEXT_LENGTH}
                   />
                   <FormikMarkdownField
@@ -270,8 +269,7 @@ export const UserForm: FC<UserProps> = ({
                     multiline
                     rows={5}
                     disabled={isSubmitting}
-                    withCounter
-                    maxLength={LONG_TEXT_LENGTH}
+                    maxLength={MARKDOWN_TEXT_LENGTH}
                   />
                   <TagsetSegment tagsets={tagsets} template={[]} readOnly={isReadOnlyMode} disabled={isSubmitting} />
 
