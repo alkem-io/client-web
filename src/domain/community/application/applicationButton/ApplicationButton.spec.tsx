@@ -57,7 +57,7 @@ test.skip('is member', () => {
     isAuthenticated: true,
     onJoin: () => void 0,
     isMember: true,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -82,7 +82,7 @@ test.skip('is member', () => {
       onJoin: () => void 0,
       isMember: false,
       applicationState: x,
-    };
+    } as ApplicationButtonProps;
 
     render(
       <MemoryRouter>
@@ -107,7 +107,7 @@ test.skip('can join community', () => {
     onJoin: () => void 0,
     isMember: false,
     canJoinCommunity: true,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -132,7 +132,7 @@ test.skip('can apply to community', () => {
     isMember: false,
     canApplyToCommunity: true,
     applyUrl: 'space1/apply',
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -159,7 +159,7 @@ test.skip('isParentMember & CANT apply & CANT join', () => {
     isParentMember: true,
     canJoinCommunity: false,
     canApplyToCommunity: false,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -184,7 +184,7 @@ test.skip('parent has pending application', () => {
     isMember: false,
     isParentMember: false,
     parentApplicationState: APPLICATION_STATE_NEW,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -211,7 +211,7 @@ test.skip('can join parent', () => {
     canJoinCommunity: false,
     canApplyToCommunity: false,
     canJoinParentCommunity: true,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -239,7 +239,7 @@ test.skip('can apply to parent', () => {
     canApplyToCommunity: false,
     canJoinParentCommunity: false,
     canApplyToParentCommunity: true,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -267,7 +267,7 @@ test.skip('cant do anything - default state', () => {
     canApplyToCommunity: false,
     canJoinParentCommunity: false,
     canApplyToParentCommunity: false,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -291,7 +291,7 @@ test.skip('is opening', async () => {
     onJoin: () => void 0,
     isMember: false,
     canJoinCommunity: true,
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>
@@ -322,7 +322,7 @@ test.skip('parent type & is opening', async () => {
     canJoinParentCommunity: false,
     canApplyToParentCommunity: true,
     parentApplyUrl: '/parent/apply',
-  };
+  } as ApplicationButtonProps;
 
   render(
     <MemoryRouter>

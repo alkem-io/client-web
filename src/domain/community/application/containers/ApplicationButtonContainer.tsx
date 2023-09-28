@@ -15,7 +15,7 @@ import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 
 interface ApplicationContainerEntities {
-  applicationButtonProps: ApplicationButtonProps;
+  applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'>;
 }
 interface ApplicationContainerActions {}
 interface ApplicationContainerState {
@@ -104,7 +104,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     refetchSpace();
   };
 
-  const applicationButtonProps: ApplicationButtonProps = {
+  const applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'> = {
     isAuthenticated,
     isMember,
     isParentMember,
