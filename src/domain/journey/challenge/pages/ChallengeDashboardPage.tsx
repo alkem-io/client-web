@@ -77,6 +77,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               journeyTypeName="challenge"
+              enableJoin
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}

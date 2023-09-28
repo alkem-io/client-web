@@ -12,6 +12,7 @@ import RootThemeProvider from '../../../../core/ui/themes/RootThemeProvider';
 import { InvitationItem } from '../../user/providers/UserProvider/InvitationItem';
 import InvitationActionsContainer from '../../invitations/InvitationActionsContainer';
 import InvitationDialog from '../../invitations/InvitationDialog';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
@@ -34,6 +35,7 @@ export interface ApplicationButtonProps {
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
+  journeyTypeName: JourneyTypeName;
 }
 
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
@@ -56,6 +58,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       canJoinParentCommunity,
       canApplyToParentCommunity,
       onJoin,
+      journeyTypeName,
       loading = false,
       component: Button = MuiButton,
       extended = false,
@@ -127,7 +130,12 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
    */
 
     const getButtonLabel = (verb: string) =>
-      extended ? t('components.application-button.extendedMessage', { join: verb }) : verb;
+      extended
+        ? t('components.application-button.extendedMessage', {
+            join: verb,
+            journey: journeyTypeName === 'challenge' ? t('common.challenge') : t('common.community'),
+          })
+        : verb;
 
     const renderApplicationButton = () => {
       if (loading) {

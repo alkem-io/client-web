@@ -153,7 +153,13 @@ export const AboutSection: FC<AboutSectionProps> = ({
                 challengeNameId={challengeNameId}
                 challengeName={challengeName}
               >
-                {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+                {(e, s) => (
+                  <ApplicationButton
+                    {...e?.applicationButtonProps}
+                    loading={s.loading}
+                    journeyTypeName={journeyTypeName}
+                  />
+                )}
               </ApplicationButtonContainer>
             </Actions>
           </PageContentBlock>
