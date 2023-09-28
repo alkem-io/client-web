@@ -24,6 +24,10 @@ import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apol
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import { RECENT_ACTIVITIES_LIMIT } from '../../common/journeyDashboard/constants';
+import SeeMore from '../../../../core/ui/content/SeeMore';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -76,6 +80,8 @@ const SpaceCommunityPage = () => {
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.space.community?.id);
 
+  const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
+
   return (
     <SpacePageLayout currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer spaceNameId={spaceNameId}>
@@ -114,7 +120,21 @@ const SpaceCommunityPage = () => {
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <PageContentBlock>
                 <PageContentBlockHeader title={t('common.activity')} />
-                <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                <ActivityComponent activities={activities} journeyLocation={journeyLocation} limit={5} />
+                <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
+                <DialogWithGrid
+                  columns={8}
+                  open={isActivitiesDialogOpen}
+                  onClose={() => setIsActivitiesDialogOpen(false)}
+                >
+                  <DialogHeader
+                    title={t('components.activity-log-section.title')}
+                    onClose={() => setIsActivitiesDialogOpen(false)}
+                  />
+                  <Gutters>
+                    <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                  </Gutters>
+                </DialogWithGrid>
               </PageContentBlock>
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.CommunityRight]}
