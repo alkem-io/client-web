@@ -1091,7 +1091,7 @@
       "goToChallenge": "Go to $t(common.challenge)",
       "parent-pending": "Parent application pending",
       "applyTo": "Apply to",
-      "extendedMessage": "{{join}} our Community and start making change!",
+      "extendedMessage": "{{join}} our {{journey}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the challenge you want to join in the Spaces' application form."

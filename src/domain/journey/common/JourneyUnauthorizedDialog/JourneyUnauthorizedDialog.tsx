@@ -28,6 +28,7 @@ const JourneyUnauthorizedDialog = ({
   challengeId,
   challengeNameId,
   challengeName,
+  journeyTypeName,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
   const { t } = useTranslation();
@@ -45,7 +46,12 @@ const JourneyUnauthorizedDialog = ({
       endButton={
         <ApplicationButtonContainer {...{ challengeId, challengeNameId, challengeName }}>
           {(e, s) => (
-            <ApplicationButton ref={applicationButtonRef} {...e?.applicationButtonProps} loading={s.loading} />
+            <ApplicationButton
+              ref={applicationButtonRef}
+              {...e?.applicationButtonProps}
+              loading={s.loading}
+              journeyTypeName={journeyTypeName}
+            />
           )}
         </ApplicationButtonContainer>
       }
@@ -57,6 +63,7 @@ const JourneyUnauthorizedDialog = ({
           </Box>
         </PageContentRibbon>
       }
+      journeyTypeName={journeyTypeName}
       {...aboutDialogProps}
     />
   );
