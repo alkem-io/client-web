@@ -6,6 +6,7 @@ import {
 } from '../../../core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
 import { useSpace } from '../../journey/space/SpaceContext/useSpace';
+import { compact } from 'lodash';
 
 interface InvitationActionsContainerProvided {
   updating: boolean;
@@ -22,7 +23,7 @@ interface InvitationActionsContainerProps extends SimpleContainerProps<Invitatio
 const InvitationActionsContainer = ({ onUpdate, children }: InvitationActionsContainerProps) => {
   const { spaceId } = useSpace();
   const [invitationStateEventMutation] = useInvitationStateEventMutation({
-    refetchQueries: [refetchUserProviderQuery(), refetchSpacePageQuery({ spaceId })],
+    refetchQueries: compact([refetchUserProviderQuery(), spaceId ? refetchSpacePageQuery({ spaceId }) : undefined]),
   });
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(

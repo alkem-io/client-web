@@ -35,6 +35,7 @@ import { ActivityLogResultType } from '../../../shared/components/ActivityLog/Ac
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
+import { RECENT_ACTIVITIES_LIMIT, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   spaceId: string;
@@ -144,6 +145,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.opportunityReadAccess || !permissions.readUsers,
+    limit: RECENT_ACTIVITIES_LIMIT,
   });
 
   const { profile, collaboration, metrics = [] } = opportunity ?? {};
@@ -175,7 +177,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const memberUsersCount = membersCount - (opportunity?.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(opportunity?.community, { memberUsersCount });
 
-  const topCallouts = collaboration?.callouts?.slice(0, 3);
+  const topCallouts = collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   const communityId = opportunity?.community?.id;
 

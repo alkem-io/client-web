@@ -15,6 +15,8 @@ import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
+import { Box } from '@mui/material';
 
 export interface DashboardRecentContributionsBlockProps extends PageContentBlockProps, ActivityLogComponentProps {
   readUsersAccess: boolean;
@@ -77,66 +79,72 @@ const DashboardRecentContributionsBlock = ({
         <AltToggle value={mode} options={modeOptions} onChange={setMode} sx={{ height: gutters() }} />
       </PageContentBlockHeader>
 
-      {mode === Mode.RecentActivity && (
-        <>
-          {readUsersAccess && entityReadAccess && showActivities && (
+      <Box position="relative" flexGrow={1} flexBasis={gutters(12)}>
+        <Box position="absolute" top={0} left={0} bottom={0} right={0} display="flex" flexDirection="column">
+          {mode === Mode.RecentActivity && (
             <>
-              <ActivityComponent
-                activities={activities}
-                journeyLocation={journeyLocation}
-                limit={3}
-                sx={{ flexGrow: 1, justifyContent: 'space-around' }}
-              />
-              <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
-              <DialogWithGrid
-                columns={8}
-                open={isActivitiesDialogOpen}
-                onClose={() => setIsActivitiesDialogOpen(false)}
-              >
-                <DialogHeader
-                  title={t('components.activity-log-section.title')}
-                  onClose={() => setIsActivitiesDialogOpen(false)}
-                />
-                <Gutters>
-                  <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-                </Gutters>
-              </DialogWithGrid>
+              {readUsersAccess && entityReadAccess && showActivities && (
+                <>
+                  <OverflowGradient
+                    overflowMarker={
+                      <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
+                    }
+                  >
+                    <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                  </OverflowGradient>
+                  <DialogWithGrid
+                    columns={8}
+                    open={isActivitiesDialogOpen}
+                    onClose={() => setIsActivitiesDialogOpen(false)}
+                  >
+                    <DialogHeader
+                      title={t('components.activity-log-section.title')}
+                      onClose={() => setIsActivitiesDialogOpen(false)}
+                    />
+                    <Gutters>
+                      <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                    </Gutters>
+                  </DialogWithGrid>
+                </>
+              )}
+              {!entityReadAccess && readUsersAccess && (
+                <Caption>
+                  {t('components.activity-log-section.activity-join-error-message', {
+                    journeyType: t(`common.${journeyTypeName}` as const),
+                  })}
+                </Caption>
+              )}
+              {!readUsersAccess && entityReadAccess && (
+                <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
+              )}
+              {!entityReadAccess && !readUsersAccess && (
+                <Caption>
+                  {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
+                    journeyType: t(`common.${journeyTypeName}` as const),
+                  })}
+                </Caption>
+              )}
             </>
           )}
-          {!entityReadAccess && readUsersAccess && (
-            <Caption>
-              {t('components.activity-log-section.activity-join-error-message', {
-                journeyType: t(`common.${journeyTypeName}` as const),
-              })}
-            </Caption>
-          )}
-          {!readUsersAccess && entityReadAccess && (
-            <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
-          )}
-          {!entityReadAccess && !readUsersAccess && (
-            <Caption>
-              {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
-                journeyType: t(`common.${journeyTypeName}` as const),
-              })}
-            </Caption>
-          )}
-        </>
-      )}
 
-      {mode === Mode.TopCallouts && (
-        <>
-          {topCallouts?.map(callout => (
-            <TopCalloutDetails
-              key={callout.id}
-              title={callout.profile.displayName}
-              description={callout.profile.description ?? ''}
-              activity={callout.activity}
-              type={callout.type}
-              calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
-            />
-          ))}
-        </>
-      )}
+          {mode === Mode.TopCallouts && (
+            <OverflowGradient>
+              <Gutters disablePadding>
+                {topCallouts?.map(callout => (
+                  <TopCalloutDetails
+                    key={callout.id}
+                    title={callout.profile.displayName}
+                    description={callout.profile.description ?? ''}
+                    activity={callout.activity}
+                    type={callout.type}
+                    calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
+                  />
+                ))}
+              </Gutters>
+            </OverflowGradient>
+          )}
+        </Box>
+      </Box>
     </PageContentBlock>
   );
 };
