@@ -5,7 +5,7 @@ import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import Resizer from 'react-image-file-resizer';
+import * as Resizer from 'react-image-file-resizer';
 import Gutters from '../../grid/Gutters';
 import FormikInputField from '../../forms/FormikInputField/FormikInputField';
 import { Actions } from '../../actions/Actions';
@@ -13,6 +13,11 @@ import { ALT_TEXT_LENGTH } from '../../forms/field-length.constants';
 import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 import { TranslateWithElements } from '../../../../domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '../../../../domain/platform/config/useConfig';
+
+// VITE is not importing properly the resizer,
+// importing with: import Resizer from 'react-image-file-resizer';
+// it should be enough with Resizer.imageFileResizer, this is a workaround
+const imageFileResizer = Resizer.default.imageFileResizer;
 
 interface CropDialogConfig {
   aspectRatio?: number;
@@ -142,7 +147,7 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
           blob => {
             if (blob) {
               try {
-                Resizer.imageFileResizer(
+                imageFileResizer(
                   blob,
                   maxWidth,
                   maxHeight,
