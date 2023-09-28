@@ -16,7 +16,6 @@ import {
   CommunityMembershipStatus,
   DashboardSpacesPaginatedQuery,
   DashboardSpacesPaginatedQueryVariables,
-  SpaceDetailsProviderFragment,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import FilterByTag from '../FilterByTag/FilterByTag';
@@ -24,7 +23,6 @@ import FilterButtons from '../FilterByTag/FilterButtons';
 import { useTranslation } from 'react-i18next';
 import useLazyLoading from '../../../shared/pagination/useLazyLoading';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
-import { PaginatedResult } from '../../../community/contributor/ContributorsSearch/ContributorsSearchContainer';
 
 const SPACES_PAGE_SIZE = 10;
 
@@ -45,7 +43,7 @@ const SpacesSection = () => {
     getPageInfo: result => result.spacesPaginated.pageInfo,
   });
 
-  const spaces: PaginatedResult<SpaceDetailsProviderFragment> = {
+  const spaces = {
     items: spacesQueryResult.data?.spacesPaginated.spaces,
     loading: spacesQueryResult.loading,
     hasMore: spacesQueryResult.hasMore,
