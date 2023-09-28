@@ -52,6 +52,7 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
             element={<SpaceDashboardPage dialog="calendar" />}
           />
           <Route path={routes.Community} element={<SpaceCommunityPage />} />
+          <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
           <Route path={routes.Challenges} element={<SpaceChallengesPage />} />
           <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
           <Route path={routes.Search} element={<SpaceSearchPage />} />
