@@ -128,6 +128,7 @@ const SpaceDashboardView = ({
                   loading={loading}
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
+                  journeyTypeName="space"
                 />
               </PageContentColumn>
             );
