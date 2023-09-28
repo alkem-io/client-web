@@ -12,7 +12,7 @@
     "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
     "ts:watch": "tsc --noEmit --watch",
     "build": "cross-env NODE_ENV=production node buildConfiguration && NODE_OPTIONS=--max-old-space-size=8192 vite build",
-    "build:dev": "cross-env NODE_ENV=development node buildConfiguration && NODE_OPTIONS=--max-old-space-size=8192 vite build",
+    "build:dev": "cross-env NODE_ENV=development node buildConfiguration && NODE_ENV=development NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "build:sentry": "cross-env NODE_ENV=production node buildConfiguration && NODE_OPTIONS=--max-old-space-size=8192 vite -c vite.sentry.config.mjs build",
     "test": "vitest",
     "test:coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
