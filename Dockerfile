@@ -36,8 +36,6 @@ RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
   npm run-script build; \
   fi
 
-RUN npm run-script build
-
 FROM nginx:alpine as production-build
 COPY ./.build/.nginx/nginx.conf /etc/nginx/nginx.conf
 
