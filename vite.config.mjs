@@ -13,6 +13,13 @@ export default defineConfig({
     sourcemapFile: '/static',
     emptyOutDir: true,
     outDir: 'build',
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
   },
   plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
 });
