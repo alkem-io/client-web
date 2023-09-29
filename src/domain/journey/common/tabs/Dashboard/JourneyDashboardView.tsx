@@ -34,16 +34,13 @@ import DashboardRecentContributionsBlock, {
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
-import ApplicationButtonContainer from '../../../../community/application/containers/ApplicationButtonContainer';
-import ApplicationButton from '../../../../community/application/applicationButton/ApplicationButton';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Theme } from '@mui/material';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
     Omit<EntityDashboardLeads, 'leadOrganizations'>,
     Partial<CoreEntityIdTypes> {
   welcome?: ReactNode;
+  ribbon?: ReactNode;
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
@@ -66,11 +63,11 @@ export interface JourneyDashboardViewProps
     refetchCallout: (calloutId: string) => void;
     onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   };
-  enableJoin?: boolean;
 }
 
 const JourneyDashboardView = ({
   welcome,
+  ribbon,
   spaceNameId,
   challengeNameId,
   opportunityNameId,
@@ -90,7 +87,6 @@ const JourneyDashboardView = ({
   activityLoading,
   journeyTypeName,
   sendMessageToCommunityLeads,
-  enableJoin = false,
 }: JourneyDashboardViewProps) => {
   const { t } = useTranslation();
   const [isOpenContactLeadUsersDialog, setIsOpenContactLeadUsersDialog] = useState(false);
@@ -128,31 +124,9 @@ const JourneyDashboardView = ({
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-
   return (
     <PageContent>
-      {enableJoin && (
-        <ApplicationButtonContainer>
-          {({ applicationButtonProps }, { loading }) => {
-            if (loading || applicationButtonProps.isMember) {
-              return null;
-            }
-
-            return (
-              <PageContentColumn columns={12}>
-                <ApplicationButton
-                  {...applicationButtonProps}
-                  loading={loading}
-                  component={FullWidthButton}
-                  extended={hasExtendedApplicationButton}
-                  journeyTypeName={journeyTypeName}
-                />
-              </PageContentColumn>
-            );
-          }}
-        </ApplicationButtonContainer>
-      )}
+      {ribbon}
       <PageContentColumn columns={4}>
         {welcome}
         <FullWidthButton
