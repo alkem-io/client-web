@@ -17,6 +17,7 @@ ARG ARG_BUILD_REVISION
 ENV VITE_APP_BUILD_VERSION=${ARG_BUILD_VERSION}
 ENV VITE_APP_BUILD_DATE=${ARG_BUILD_DATE}
 ENV VITE_APP_BUILD_REVISION=${ARG_BUILD_REVISION}
+ENV VITE_APP_SENTRY_AUTH_TOKEN=${ARG_SENTRY_AUTH_TOKEN}
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -33,7 +34,7 @@ COPY . .
 RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
   npm run-script build:dev; \
   else \
-  npm run-script build; \
+  npm run-script build:sentry; \
   fi
 
 FROM nginx:alpine as production-build
@@ -44,6 +45,9 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy from the stage 1
 COPY --from=builder /app/build /usr/share/nginx/html
+RUN if [ "$ARG_BUILD_ENVIRONMENT" = "production" ]; then \
+  find ./build -name "*.map" -type f -delete \
+  fi
 
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/.build/docker/env.sh .
