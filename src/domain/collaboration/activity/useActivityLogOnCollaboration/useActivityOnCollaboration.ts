@@ -12,17 +12,14 @@ import {
   ActivityLogOnCollaborationFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
-const useActivityOnCollaborationSubscription = (
-  collaborationID: string,
-  { includeChild, types }: { types?: ActivityEventType[]; includeChild?: boolean }
-) =>
+const useActivityOnCollaborationSubscription = (collaborationID: string, { types }: { types?: ActivityEventType[] }) =>
   createUseSubscriptionToSubEntityHook<
     Array<ActivityLogOnCollaborationFragment>,
     ActivityCreatedSubscription,
     ActivityCreatedSubscriptionVariables
   >({
     subscriptionDocument: ActivityCreatedDocument,
-    getSubscriptionVariables: () => ({ input: { collaborationID, types, includeChild } }),
+    getSubscriptionVariables: () => ({ input: { collaborationID, types, includeChild: true } }),
     updateSubEntity: (subEntity, { activityCreated }) => {
       if (!subEntity) {
         return;
@@ -35,11 +32,11 @@ const useActivityOnCollaborationSubscription = (
 interface ActivityOnCollaborationReturnType {
   activities: ActivityLogResultType[] | undefined;
   loading: boolean;
+  fetchMoreActivities: (limit: number) => void;
 }
 
 interface UseActivityOnCollaborationOptions {
   types?: ActivityEventType[];
-  includeChild?: boolean;
   limit: number;
   skip?: boolean;
 }
@@ -48,26 +45,24 @@ const useActivityOnCollaboration = (
   collaborationID: string | undefined,
   options: UseActivityOnCollaborationOptions
 ): ActivityOnCollaborationReturnType => {
-  const { types, skip, limit, includeChild = true } = options;
+  const { types, skip, limit } = options;
 
   const {
     data: activityLogData,
     loading,
     subscribeToMore,
+    refetch,
   } = useActivityLogOnCollaborationQuery({
     variables: {
-      queryData: {
-        collaborationID: collaborationID!,
-        limit,
-        includeChild: true,
-        types,
-      },
+      collaborationID: collaborationID!,
+      types,
+      limit,
     },
     skip: !collaborationID || skip,
     fetchPolicy: 'cache-and-network',
   });
 
-  useActivityOnCollaborationSubscription(collaborationID!, { types, includeChild })(
+  useActivityOnCollaborationSubscription(collaborationID!, { types })(
     activityLogData,
     data => data?.activityLogOnCollaboration,
     subscribeToMore,
@@ -81,9 +76,18 @@ const useActivityOnCollaboration = (
 
     return activityLogData.activityLogOnCollaboration as ActivityLogResultType[];
   }, [activityLogData]);
+
+  const fetchMoreActivities = (limit: number) => {
+    refetch({
+      // Can't use fetchMore because the query isn't paginated
+      limit,
+    });
+  };
+
   return {
     activities,
     loading,
+    fetchMoreActivities,
   };
 };
 

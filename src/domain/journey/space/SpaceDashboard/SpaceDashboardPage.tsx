@@ -55,6 +55,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               leadUsers={entities.space?.community?.leadUsers}
               leadOrganizations={entities.space?.community?.leadOrganizations}
               activities={entities.activities}
+              fetchMoreActivities={entities.fetchMoreActivities}
               activityLoading={entities.activityLoading}
               callouts={callouts}
               topCallouts={entities.topCallouts}

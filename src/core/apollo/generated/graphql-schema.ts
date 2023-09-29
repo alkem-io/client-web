@@ -3662,7 +3662,7 @@ export type Query = {
   search: ISearchResults;
   /** An space. If no ID is specified then the first Space is returned. */
   space: Space;
-  /** The Spaces on this platform */
+  /** The Spaces on this platform; If accessed through an Innovation Hub will return ONLY the Spaces defined in it. */
   spaces: Array<Space>;
   /** The Spaces on this platform */
   spacesPaginated: PaginatedSpaces;
@@ -8273,7 +8273,9 @@ export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment;
 
 export type ActivityLogOnCollaborationQueryVariables = Exact<{
-  queryData: ActivityLogInput;
+  collaborationID: Scalars['UUID'];
+  limit: Scalars['Float'];
+  types?: InputMaybe<Array<ActivityEventType> | ActivityEventType>;
 }>;
 
 export type ActivityLogOnCollaborationQuery = {
