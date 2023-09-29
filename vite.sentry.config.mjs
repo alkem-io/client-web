@@ -32,7 +32,7 @@ export default defineConfig({
       project: 'alkemio',
       debug: true,
       release: {
-        name: `client-web@${version}`,
+        name: `client-web@v${version}`,
         version,
         create: process.env.NODE_ENV === 'production',
       },
