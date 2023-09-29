@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { ActivityComponent, ActivityLogComponentProps } from '../../../shared/components/ActivityLog/ActivityComponent';
@@ -22,6 +22,7 @@ export interface DashboardRecentContributionsBlockProps extends PageContentBlock
   readUsersAccess: boolean;
   entityReadAccess: boolean;
   activitiesLoading: boolean;
+  onActivitiesDialogOpen: () => void;
   topCallouts:
     | (Identifiable & {
         nameID: string;
@@ -46,6 +47,7 @@ const DashboardRecentContributionsBlock = ({
   entityReadAccess,
   activities,
   activitiesLoading,
+  onActivitiesDialogOpen,
   topCallouts,
   journeyLocation,
   journeyTypeName,
@@ -73,6 +75,12 @@ const DashboardRecentContributionsBlock = ({
 
   const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
 
+  useEffect(() => {
+    if (isActivitiesDialogOpen) {
+      onActivitiesDialogOpen();
+    }
+  }, [isActivitiesDialogOpen]);
+
   return (
     <PageContentBlock {...blockProps}>
       <PageContentBlockHeader title={t('components.dashboardRecentContributions.title')}>
@@ -80,18 +88,15 @@ const DashboardRecentContributionsBlock = ({
       </PageContentBlockHeader>
 
       <Box position="relative" flexGrow={1} flexBasis={gutters(12)}>
-        <Box position="absolute" top={0} left={0} bottom={0} right={0} display="flex" flexDirection="column">
+        <Gutters position="absolute" top={0} left={0} bottom={0} right={0} disablePadding>
           {mode === Mode.RecentActivity && (
             <>
               {readUsersAccess && entityReadAccess && showActivities && (
                 <>
-                  <OverflowGradient
-                    overflowMarker={
-                      <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
-                    }
-                  >
+                  <OverflowGradient>
                     <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
                   </OverflowGradient>
+                  <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
                   <DialogWithGrid
                     columns={8}
                     open={isActivitiesDialogOpen}
@@ -143,7 +148,7 @@ const DashboardRecentContributionsBlock = ({
               </Gutters>
             </OverflowGradient>
           )}
-        </Box>
+        </Gutters>
       </Box>
     </PageContentBlock>
   );

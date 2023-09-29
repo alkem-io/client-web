@@ -14,6 +14,12 @@ import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
+import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Theme } from '@mui/material';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -32,6 +38,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
+  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
       {directMessageDialog}
@@ -39,6 +47,31 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
+              ribbon={
+                <ApplicationButtonContainer
+                  challengeId={entities.challenge?.id}
+                  challengeNameId={challengeNameId}
+                  challengeName={entities.challenge?.profile.displayName}
+                >
+                  {({ applicationButtonProps }, { loading }) => {
+                    if (loading || applicationButtonProps.isMember) {
+                      return null;
+                    }
+
+                    return (
+                      <PageContentColumn columns={12}>
+                        <ApplicationButton
+                          {...applicationButtonProps}
+                          loading={loading}
+                          component={FullWidthButton}
+                          extended={hasExtendedApplicationButton}
+                          journeyTypeName="challenge"
+                        />
+                      </PageContentColumn>
+                    );
+                  }}
+                </ApplicationButtonContainer>
+              }
               welcome={
                 <JourneyDashboardWelcomeBlock
                   vision={entities.challenge?.context?.vision ?? ''}
@@ -72,12 +105,12 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.challenge?.community?.leadUsers}
               activities={entities.activities}
+              fetchMoreActivities={entities.fetchMoreActivities}
               activityLoading={state.activityLoading}
               topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               journeyTypeName="challenge"
-              enableJoin
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}

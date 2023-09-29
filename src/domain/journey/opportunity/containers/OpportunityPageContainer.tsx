@@ -35,7 +35,7 @@ import { ActivityLogResultType } from '../../../shared/components/ActivityLog/Ac
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { RECENT_ACTIVITIES_LIMIT, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
+import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   spaceId: string;
@@ -75,6 +75,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   whiteboardsCount: number | undefined;
   references: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
+  fetchMoreActivities: (limit: number) => void;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
@@ -143,9 +144,13 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [opportunityPrivileges, communityPrivileges, user]);
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
+  const {
+    activities,
+    loading: activityLoading,
+    fetchMoreActivities,
+  } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.opportunityReadAccess || !permissions.readUsers,
-    limit: RECENT_ACTIVITIES_LIMIT,
+    limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
   const { profile, collaboration, metrics = [] } = opportunity ?? {};
@@ -239,6 +244,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           references,
           ...contributors,
           activities,
+          fetchMoreActivities,
           topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
           callouts,
