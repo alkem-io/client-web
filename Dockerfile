@@ -46,11 +46,11 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy from the stage 1
 COPY --from=builder /app/build /usr/share/nginx/html
-RUN if [ "$ARG_BUILD_ENVIRONMENT" = "production" ]; then \
-  find ./assets -name "*.map" -type f -delete \
-  fi
-
 WORKDIR /usr/share/nginx/html
+
+RUN if [ "$ARG_BUILD_ENVIRONMENT" = "production" ]; then \
+  find ./assets -name "*.map" -type f -delete; \
+  fi
 COPY --from=builder /app/.build/docker/env.sh .
 COPY --from=builder /app/.build/docker/.env.base .
 RUN chmod +x env.sh
