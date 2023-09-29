@@ -1086,7 +1086,14 @@
       "apply-not-signed": "Sign in to apply",
       "apply-pending": "Application pending",
       "join": "Join",
-      "acceptInvitation": "Accept Invitation",
+      "acceptInvitation": {
+        "full": "You are invited to become a member of this Space, please click here to accept",
+        "short": "Accept Invitation"
+      },
+      "joinParentFirst": {
+        "full": "To become a member of this Challenge, first become a member of the parent Space",
+        "short": "Please join parent Space first"
+      },
       "goToSpace": "Go to $t(common.space)",
       "goToChallenge": "Go to $t(common.challenge)",
       "parent-pending": "Parent application pending",

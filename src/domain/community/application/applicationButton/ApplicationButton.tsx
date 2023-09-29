@@ -129,7 +129,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
      </ol>
    */
 
-    const getButtonLabel = (verb: string) =>
+    const getApplyJoinButtonLabel = (verb: string) =>
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
@@ -183,17 +183,34 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       }
 
       if (canAcceptInvitation) {
-        return (
-          <Button
-            ref={ref as Ref<HTMLButtonElement>}
-            startIcon={extended ? <AddOutlined /> : undefined}
-            onClick={handleClickAcceptInvitation}
-            variant="contained"
-            sx={extended ? { textTransform: 'none' } : undefined}
-          >
-            {getButtonLabel(t('components.application-button.acceptInvitation'))}
-          </Button>
-        );
+        if (journeyTypeName === 'challenge' && !isMember && !isParentMember) {
+          return (
+            joinParentUrl && (
+              <Button
+                ref={ref as Ref<HTMLAnchorElement>}
+                component={RouterLink}
+                startIcon={<AddOutlined />}
+                to={joinParentUrl}
+                variant="contained"
+                sx={{ textTransform: 'none' }}
+              >
+                {t(`components.application-button.joinParentFirst.${extended ? 'full' : 'short'}` as const)}
+              </Button>
+            )
+          );
+        } else {
+          return (
+            <Button
+              ref={ref as Ref<HTMLButtonElement>}
+              startIcon={extended ? <AddOutlined /> : undefined}
+              onClick={handleClickAcceptInvitation}
+              variant="contained"
+              sx={extended ? { textTransform: 'none' } : undefined}
+            >
+              {t(`components.application-button.acceptInvitation.${extended ? 'full' : 'short'}` as const)}
+            </Button>
+          );
+        }
       }
 
       if (canJoinCommunity) {
@@ -205,7 +222,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             variant="contained"
             sx={extended ? { textTransform: 'none' } : undefined}
           >
-            {getButtonLabel(t('components.application-button.join'))}
+            {getApplyJoinButtonLabel(t('components.application-button.join'))}
           </Button>
         );
       }
@@ -222,7 +239,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             to={applyUrl}
             sx={extended ? { textTransform: 'none' } : undefined}
           >
-            {getButtonLabel(verb)}
+            {getApplyJoinButtonLabel(verb)}
           </Button>
         );
       }
