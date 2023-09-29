@@ -66,6 +66,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.opportunity?.community?.leadUsers}
               activities={entities.activities}
+              fetchMoreActivities={entities.fetchMoreActivities}
               activityLoading={state.activityLoading}
               journeyTypeName="opportunity"
               topCallouts={entities.topCallouts}

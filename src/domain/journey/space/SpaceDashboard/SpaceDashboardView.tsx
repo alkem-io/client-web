@@ -33,6 +33,7 @@ import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBl
 import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -51,6 +52,7 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
+  fetchMoreActivities: (limit: number) => void;
   activityLoading: boolean;
   entityReadAccess: boolean;
   readUsersAccess: boolean;
@@ -87,6 +89,7 @@ const SpaceDashboardView = ({
   leadOrganizations,
   leadUsers,
   activities,
+  fetchMoreActivities,
   activityLoading,
   journeyTypeName,
   callouts,
@@ -185,6 +188,7 @@ const SpaceDashboardView = ({
             activities={activities}
             journeyTypeName={journeyTypeName}
             journeyLocation={journeyLocation}
+            onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
           />
           <CalloutsGroupView
             callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}

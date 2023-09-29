@@ -23,7 +23,7 @@ import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whi
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { RECENT_ACTIVITIES_LIMIT, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
+import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
@@ -38,6 +38,7 @@ export interface SpaceContainerEntities {
   isAuthenticated: boolean;
   isMember: boolean;
   activities: ActivityLogResultType[] | undefined;
+  fetchMoreActivities: (limit: number) => void;
   activityLoading: boolean;
   postsCount: number | undefined;
   whiteboardsCount: number | undefined;
@@ -100,10 +101,14 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID || '', {
+  const {
+    activities,
+    loading: activityLoading,
+    fetchMoreActivities,
+  } = useActivityOnCollaboration(collaborationID || '', {
     skip: !permissions.spaceReadAccess || !permissions.readUsers,
     types: activityTypes,
-    limit: RECENT_ACTIVITIES_LIMIT,
+    limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
   const postsCount = usePostsCount(_space?.space.metrics);
@@ -151,6 +156,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
           whiteboardsCount,
           references,
           activities,
+          fetchMoreActivities,
           activityLoading,
           hostOrganizations,
           topCallouts,

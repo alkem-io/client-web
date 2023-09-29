@@ -38,6 +38,7 @@ import ApplicationButtonContainer from '../../../../community/application/contai
 import ApplicationButton from '../../../../community/application/applicationButton/ApplicationButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Theme } from '@mui/material';
+import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constants';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
@@ -51,6 +52,7 @@ export interface JourneyDashboardViewProps
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
+  fetchMoreActivities: (limit: number) => void;
   activityLoading: boolean;
   entityReadAccess: boolean;
   readUsersAccess: boolean;
@@ -87,6 +89,7 @@ const JourneyDashboardView = ({
   memberOrganizationsCount,
   leadUsers,
   activities,
+  fetchMoreActivities,
   activityLoading,
   journeyTypeName,
   sendMessageToCommunityLeads,
@@ -215,6 +218,7 @@ const JourneyDashboardView = ({
           activities={activities}
           journeyTypeName={journeyTypeName}
           journeyLocation={journeyLocation}
+          onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
         />
         <CalloutsGroupView
           callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}

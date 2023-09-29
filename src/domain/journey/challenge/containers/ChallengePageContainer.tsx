@@ -35,7 +35,7 @@ import useCallouts, {
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
-import { RECENT_ACTIVITIES_LIMIT, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
+import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   spaceId: string;
@@ -58,6 +58,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   isAuthenticated: boolean;
   isMember: boolean;
   activities: ActivityLogResultType[] | undefined;
+  fetchMoreActivities: (limit: number) => void;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
@@ -106,9 +107,13 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
+  const {
+    activities,
+    loading: activityLoading,
+    fetchMoreActivities,
+  } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.challengeReadAccess || !permissions.readUsers,
-    limit: RECENT_ACTIVITIES_LIMIT,
+    limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
   const canReadReferences = _challenge?.space?.challenge?.context?.authorization?.myPrivileges?.includes(
@@ -173,6 +178,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isMember,
           ...contributors,
           activities,
+          fetchMoreActivities,
           topCallouts,
           sendMessageToCommunityLeads,
           callouts,

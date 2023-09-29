@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -23,7 +23,7 @@ import useCommunityMembersAsCardProps from '../../../community/community/utils/u
 import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import { RECENT_ACTIVITIES_LIMIT } from '../../common/journeyDashboard/constants';
+import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -68,9 +68,9 @@ const SpaceCommunityPage = () => {
 
   const hostOrganizations = useMemo(() => data?.space.host && [data?.space.host], [data?.space.host]);
 
-  const { activities } = useActivityOnCollaboration(data?.space.collaboration?.id, {
+  const { activities, fetchMoreActivities } = useActivityOnCollaboration(data?.space.collaboration?.id, {
     types: [ActivityEventType.MemberJoined],
-    limit: RECENT_ACTIVITIES_LIMIT,
+    limit: 5,
   });
 
   const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.space.community, {
@@ -81,6 +81,12 @@ const SpaceCommunityPage = () => {
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.space.community?.id);
 
   const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (isActivitiesDialogOpen) {
+      fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
+    }
+  }, [isActivitiesDialogOpen]);
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Community}>
