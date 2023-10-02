@@ -41,9 +41,6 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
             });
             return [...existingMessages, newMessage];
           },
-          messagesCount(amount: number) {
-            return amount++;
-          },
         },
       });
     },

@@ -56,7 +56,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       displayLocationTagset?: Tagset;
     };
     comments: {
-      messagesCount: number; // this is not updated
       messages: MessageDetailsFragment[];
     };
     type: CalloutType;
@@ -158,7 +157,6 @@ const CalloutLayout = ({
       return undefined;
     }
 
-    // callout.comments.messagesCount is not updated
     if (!callout.comments.messages.length) {
       return;
     }
