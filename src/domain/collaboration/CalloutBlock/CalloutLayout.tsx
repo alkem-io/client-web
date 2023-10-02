@@ -157,12 +157,12 @@ const CalloutLayout = ({
       return undefined;
     }
 
-    if (!callout.comments.messages.length) {
+    if (!callout?.comments?.messages.length) {
       return;
     }
 
     return t('callout.closed');
-  }, [callout?.state, callout.comments.messages, t]);
+  }, [callout?.state, callout?.comments?.messages, t]);
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
