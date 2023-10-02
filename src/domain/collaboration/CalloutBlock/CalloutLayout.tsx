@@ -55,7 +55,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       tagset?: Tagset;
       displayLocationTagset?: Tagset;
     };
-    comments: {
+    comments?: {
       messages: MessageDetailsFragment[];
     };
     type: CalloutType;
