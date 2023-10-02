@@ -20,6 +20,7 @@ import ApplicationButton from '../../../community/application/applicationButton/
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Theme } from '@mui/material';
+import { buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -39,6 +40,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
+  const shareUrl = buildUpdatesUrl({ spaceNameId: spaceNameId ?? '', challengeNameId });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -117,6 +120,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               onClose={backToDashboard}
               spaceId={entities.spaceId}
               communityId={entities.challenge?.community?.id}
+              shareUrl={shareUrl}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

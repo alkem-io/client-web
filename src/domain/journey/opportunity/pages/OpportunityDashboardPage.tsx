@@ -14,6 +14,7 @@ import MembershipContainer from '../../../community/membership/membershipContain
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
+import { buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -26,11 +27,13 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
+
+  const shareUrl = buildUpdatesUrl({ spaceNameId: spaceNameId ?? '', challengeNameId, opportunityNameId });
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -78,6 +81,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               onClose={backToDashboard}
               spaceId={entities.spaceId}
               communityId={entities.opportunity?.community?.id}
+              shareUrl={shareUrl}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}
