@@ -36,7 +36,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { id, description, author, authors, createdAt, comments, myPrivileges, nameID } = discussion;
+  const { id, description, author, createdAt, comments, myPrivileges, nameID } = discussion;
 
   const canPost = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessage) ?? false;
   const canDeleteDiscussion = myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false;
@@ -78,7 +78,6 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                 <BlockSectionTitle>
                   {t('components.discussion.summary', {
                     comment: comments.messagesCount,
-                    contributed: authors.length,
                   })}
                 </BlockSectionTitle>
               </Box>
