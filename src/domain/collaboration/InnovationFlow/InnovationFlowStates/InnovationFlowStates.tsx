@@ -31,17 +31,17 @@ const InnovationFlowStates = ({
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   const getStateButtonVariant = (state: InnovationFlowState) => {
-    if (state === currentState) {
+    if (state === selectedState) {
       return 'contained';
     }
     return 'outlined';
   };
 
   const getStateButtonSx = (state: InnovationFlowState) => {
-    if (state === currentState) {
+    if (state === selectedState) {
       return {};
     }
-    if (state === selectedState) {
+    if (state === currentState) {
       return {
         backgroundColor: theme.palette.highlight.light,
       };
