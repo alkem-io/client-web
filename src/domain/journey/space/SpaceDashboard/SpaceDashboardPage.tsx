@@ -35,7 +35,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     spaceId: spaceNameId,
   });
 
-  const shareUrl = buildUpdatesUrl({ spaceNameId });
+  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId });
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -63,13 +63,14 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               callouts={callouts}
               topCallouts={entities.topCallouts}
               journeyTypeName="space"
+              shareUpdatesUrl={shareUpdatesUrl}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
               spaceId={entities.space?.id}
               communityId={entities.space?.community?.id}
-              shareUrl={shareUrl}
+              shareUrl={shareUpdatesUrl}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

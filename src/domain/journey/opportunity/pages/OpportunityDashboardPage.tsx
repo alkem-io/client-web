@@ -36,7 +36,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
   if (!spaceNameId) {
     throw new Error('Must be within a Space route.');
   }
-  const shareUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
+  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -78,13 +78,14 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
+              shareUpdatesUrl={shareUpdatesUrl}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
               spaceId={entities.spaceId}
               communityId={entities.opportunity?.community?.id}
-              shareUrl={shareUrl}
+              shareUrl={shareUpdatesUrl}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

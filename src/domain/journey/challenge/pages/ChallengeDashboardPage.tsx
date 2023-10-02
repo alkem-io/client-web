@@ -44,7 +44,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
   if (!spaceNameId) {
     throw new Error('Must be within a Space route.');
   }
-  const shareUrl = buildUpdatesUrl({ spaceNameId, challengeNameId });
+  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -117,13 +117,14 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               journeyTypeName="challenge"
+              shareUpdatesUrl={shareUpdatesUrl}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
               spaceId={entities.spaceId}
               communityId={entities.challenge?.community?.id}
-              shareUrl={shareUrl}
+              shareUrl={shareUpdatesUrl}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

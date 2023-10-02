@@ -29,11 +29,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
       <DialogHeader
         onClose={onClose}
-        actions={
-          <>
-            <ShareButton url={shareUrl} entityTypeName="updates" />
-          </>
-        }
+        actions={<ShareButton url={shareUrl} entityTypeName="updates" />}
         title={t('dashboard-updates-section.dialog-title')}
       />
       <DialogContent dividers>
