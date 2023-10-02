@@ -117,6 +117,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     setIsCalloutCreationDialogOpen(true);
   }, []);
   const handleCreateCalloutClosed = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
+
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
       if (!collaborationID) {
@@ -125,19 +126,22 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       setIsCreating(true);
 
-      const result = await createCallout({
-        variables: {
-          calloutData: {
-            collaborationID,
-            ...callout,
+      try {
+        const result = await createCallout({
+          variables: {
+            calloutData: {
+              collaborationID,
+              ...callout,
+            },
           },
-        },
-      });
+        });
 
-      setIsCreating(false);
-      setIsCalloutCreationDialogOpen(false);
+        setIsCalloutCreationDialogOpen(false);
 
-      return result.data?.createCalloutOnCollaboration;
+        return result.data?.createCalloutOnCollaboration;
+      } finally {
+        setIsCreating(false);
+      }
     },
     [collaborationID, createCallout]
   );
