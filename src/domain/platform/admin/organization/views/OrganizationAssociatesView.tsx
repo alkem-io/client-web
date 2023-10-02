@@ -5,10 +5,15 @@ import { useOrganization } from '../../../../community/contributor/organization/
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
+import Loading from '../../../../../core/ui/loading/Loading';
 
 export const OrganizationAssociatesView: FC = () => {
-  const { organizationId } = useOrganization();
+  const { organizationId, loading } = useOrganization();
   const { t } = useTranslation();
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <DashboardGenericSection headerText={t('common.members')}>
