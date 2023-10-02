@@ -66,6 +66,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                         spaceDisplayName={challenge.spaceDisplayName}
                         spaceUri={buildSpaceUrl(challenge.spaceNameId)}
                         spaceVisibility={challenge.spaceVisibility}
+                        member={challenge.member}
                         hideJoin
                       />
                     ))}
