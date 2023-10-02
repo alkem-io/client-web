@@ -41,7 +41,10 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const shareUrl = buildUpdatesUrl({ spaceNameId: spaceNameId ?? '', challengeNameId });
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space route.');
+  }
+  const shareUrl = buildUpdatesUrl({ spaceNameId, challengeNameId });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>

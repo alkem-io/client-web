@@ -33,7 +33,10 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const shareUrl = buildUpdatesUrl({ spaceNameId: spaceNameId ?? '', challengeNameId, opportunityNameId });
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space route.');
+  }
+  const shareUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>

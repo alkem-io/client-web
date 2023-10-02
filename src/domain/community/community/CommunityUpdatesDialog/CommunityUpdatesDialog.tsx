@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import { Box, Button, DialogActions, IconButton } from '@mui/material';
+import { Box, Button, DialogActions } from '@mui/material';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { Close } from '@mui/icons-material';
 
 export interface CommunityUpdatesDialogProps {
   open: boolean;
@@ -29,9 +28,9 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
       <DialogHeader
+        onClose={onClose}
         actions={
           <>
-            <IconButton onClick={onClose}>{<Close />}</IconButton>
             <ShareButton url={shareUrl} entityTypeName="updates" />
           </>
         }
