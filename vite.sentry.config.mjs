@@ -35,9 +35,6 @@ export default defineConfig({
         name: `client-web@v${version}`,
         version,
         create: process.env.NODE_ENV === 'production',
-        setCommits: {
-          auto: true,
-        },
       },
       authToken: process.env.VITE_APP_SENTRY_AUTH_TOKEN,
     }),
