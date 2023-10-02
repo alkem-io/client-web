@@ -178,8 +178,8 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           ...callout,
           // Add calloutNameId to all whiteboards
           whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
-          whiteboardRt: { ...callout.whiteboardRt, calloutNameId: callout.nameID },
-          comments: { ...callout.comments, calloutNameId: callout.nameID },
+          whiteboardRt: callout.whiteboardRt ? { ...callout.whiteboardRt, calloutNameId: callout.nameID } : undefined,
+          comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
           authorization,
           draft,
           editable,
