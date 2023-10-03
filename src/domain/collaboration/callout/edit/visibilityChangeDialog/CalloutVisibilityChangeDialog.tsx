@@ -82,10 +82,6 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
                   <BlockTitle>{t('common.description')}</BlockTitle>
                   <WrapperMarkdown>{callout?.profile.description ?? ''}</WrapperMarkdown>
                 </Box>
-                <Box>
-                  <BlockTitle>{t('components.callout-creation.callout-type-label')}</BlockTitle>
-                  <Text>{callout?.type}</Text>
-                </Box>
                 {callout?.draft && (
                   <FormRow>
                     <BlockTitle>{t('common.notifications')}</BlockTitle>

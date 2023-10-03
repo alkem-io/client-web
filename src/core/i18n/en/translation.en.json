@@ -961,7 +961,6 @@
     "callout-creation": {
       "title": "What do you want to ask your community?",
       "titleWithType": "Create {{type}}",
-      "callout-type-label": "Callout type",
       "post-type-label": "Post label",
       "custom-template": "Custom Template",
       "info-step": {
@@ -2037,10 +2036,8 @@
       }
     },
     "four-ou-four": {
-      "message": "The resource you are looking for could not be found.",
-      "buttons": {
-        "home": "Take me home"
-      }
+      "title": "Something went wrong..",
+      "message": "Sorry, the page you are looking for doesn't exist or has been moved. Don't worry, our team is there to help!"
     },
     "logout": {
       "loading": "Signing off ..."
