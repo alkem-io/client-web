@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
-import TopBar, { TopBarSpacer } from './topBar/TopBar';
+import PlatformNavigationBar from '../platformNavigation/PlatformNavigationBar';
 import Footer from '../platformFooter/PlatformFooter';
 import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
 import PageContent from '../../../core/ui/content/PageContent';
@@ -17,8 +17,7 @@ const TopLevelDesktopLayout = ({
 }: PropsWithChildren<TopLevelDesktopLayoutProps>) => {
   return (
     <>
-      <TopBar />
-      <TopBarSpacer />
+      <PlatformNavigationBar />
       {heading}
       <PageContent>{children}</PageContent>
       <Footer />
