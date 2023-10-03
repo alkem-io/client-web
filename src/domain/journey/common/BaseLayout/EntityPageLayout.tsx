@@ -1,6 +1,6 @@
 import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { useMediaQuery, useTheme } from '@mui/material';
-import TopBar, { TopBarSpacer } from '../../../../main/ui/layout/topBar/TopBar';
+import PlatformNavigationBar from '../../../../main/ui/platformNavigation/PlatformNavigationBar';
 import Footer from '../../../../main/ui/platformFooter/PlatformFooter';
 import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
@@ -20,8 +20,7 @@ const BasePageLayout = ({
 
   return (
     <>
-      <TopBar />
-      <TopBarSpacer />
+      <PlatformNavigationBar />
       {PageBanner ? <PageBanner /> : pageBanner}
       {children}
       {!isMobile && (
