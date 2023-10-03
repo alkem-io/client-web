@@ -2,30 +2,40 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
-import { DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
+import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 export interface CommunityUpdatesDialogProps {
   open: boolean;
   onClose: () => void;
   spaceId?: string;
   communityId?: string;
+  shareUrl: string;
 }
 
-const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({ open, onClose, spaceId, communityId = '' }) => {
+const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
+  open,
+  onClose,
+  spaceId,
+  communityId = '',
+  shareUrl,
+}) => {
   const { t } = useTranslation();
-  const handleClose = () => {
-    onClose();
-  };
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
-      <DialogTitle id="community-updates-dialog-title" onClose={handleClose}>
-        <Box display="flex" alignItems="center">
-          {t('dashboard-updates-section.dialog-title')}
-        </Box>
-      </DialogTitle>
+      <DialogHeader
+        onClose={onClose}
+        actions={
+          <>
+            <ShareButton url={shareUrl} entityTypeName="updates" />
+          </>
+        }
+        title={t('dashboard-updates-section.dialog-title')}
+      />
       <DialogContent dividers>
         <Box marginBottom={2} marginTop={4}>
           <CommunityUpdatesContainer entities={{ spaceId, communityId }}>

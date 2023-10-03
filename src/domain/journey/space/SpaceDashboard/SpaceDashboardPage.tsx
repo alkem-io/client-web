@@ -14,6 +14,7 @@ import useSpaceDashboardNavigation from '../SpaceDashboardNavigation/useSpaceDas
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import { buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
@@ -33,6 +34,8 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
     spaceId: spaceNameId,
   });
+
+  const shareUrl = buildUpdatesUrl({ spaceNameId });
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -66,6 +69,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               onClose={backToDashboard}
               spaceId={entities.space?.id}
               communityId={entities.space?.community?.id}
+              shareUrl={shareUrl}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

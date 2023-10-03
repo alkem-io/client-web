@@ -1326,7 +1326,7 @@
       "initiate": "Initiate Discussion",
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
       "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
       "comment": "{{count}} Comment",
       "comment_plural": "{{count}} Comments",
       "contributed": "{{count}} Person contributed",
