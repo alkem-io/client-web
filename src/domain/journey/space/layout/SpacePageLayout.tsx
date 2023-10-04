@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
+import { EntityPageLayout, EntityPageLayoutProps, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import SpacePageBanner from './SpacePageBanner';
 import SpaceTabs from './SpaceTabs';
 import React, { PropsWithChildren } from 'react';
@@ -9,7 +9,6 @@ import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorized
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import { NotFoundErrorBoundary } from '../../../../core/notfound/NotFoundErrorBoundary';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
 export interface SpacePageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
@@ -27,9 +26,9 @@ const SpacePageLayout = ({
   return (
     <NotFoundErrorBoundary
       errorComponent={
-        <TopLevelDesktopLayout>
+        <NotFoundPageLayout>
           <Error404 />
-        </TopLevelDesktopLayout>
+        </NotFoundPageLayout>
       }
     >
       <EntityPageLayout
