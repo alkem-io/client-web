@@ -19,9 +19,7 @@ export const getPostsFromPublishedCallouts = <
   return filteredCallouts.reduce((acc, curr) => {
     const currPosts = curr?.posts ?? [];
     const allPosts = [...acc, ...currPosts];
-    return allPosts.map(post => {
-      return { calloutNameId: curr!.nameID, ...post };
-    });
+    return allPosts.map(post => ({ calloutNameId: curr!.nameID, ...post }));
   }, [] as PostFragmentWithCallout[]);
 };
 
@@ -40,8 +38,6 @@ export const getWhiteboardsFromPublishedCallouts = <
   return filteredCallouts.reduce((acc, curr) => {
     const currWhiteboards = curr?.whiteboards ?? [];
     const allWhiteboards = [...acc, ...currWhiteboards];
-    return allWhiteboards.map(whiteboard => {
-      return { calloutNameId: curr!.nameID, ...whiteboard };
-    });
+    return allWhiteboards.map(whiteboard => ({ calloutNameId: curr!.nameID, ...whiteboard }));
   }, [] as WhiteboardFragmentWithCallout[]);
 };
