@@ -56,6 +56,7 @@ export interface JourneyDashboardViewProps
   journeyTypeName: JourneyTypeName;
   topCallouts: DashboardRecentContributionsBlockProps['topCallouts'];
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  shareUpdatesUrl: string;
   callouts: {
     groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
@@ -90,6 +91,7 @@ const JourneyDashboardView = ({
   activityLoading,
   journeyTypeName,
   sendMessageToCommunityLeads,
+  shareUpdatesUrl,
 }: JourneyDashboardViewProps) => {
   const { t } = useTranslation();
   const [isOpenContactLeadUsersDialog, setIsOpenContactLeadUsersDialog] = useState(false);
@@ -158,7 +160,9 @@ const JourneyDashboardView = ({
           messageReceivers={contactLeadsMessageReceivers}
         />
         {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
-        {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
+        {communityReadAccess && (
+          <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
+        )}
         {communityReadAccess && (
           <EntityDashboardContributorsSection
             memberUsers={memberUsers}
