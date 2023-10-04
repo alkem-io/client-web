@@ -9,12 +9,17 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../core/ui/content/SeeMore';
+import ShareButton from '../ShareDialog/ShareButton';
 
 export interface DashboardUpdatesSectionProps {
   entities: CommunityUpdatesContainerProps['entities'];
+  shareUrl: string;
 }
 
-const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: { spaceId, communityId } }) => {
+const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({
+  entities: { spaceId, communityId },
+  shareUrl,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -26,7 +31,10 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
 
         return (
           <PageContentBlock>
-            <PageContentBlockHeader title={t('dashboard-updates-section.title', { count: messages.length })} />
+            <PageContentBlockHeader
+              title={t('dashboard-updates-section.title', { count: messages.length })}
+              actions={<ShareButton url={shareUrl} entityTypeName="updates" />}
+            />
             {retrievingUpdateMessages ? (
               <SingleUpdateView loading={retrievingUpdateMessages} />
             ) : !messages.length && !retrievingUpdateMessages ? (
