@@ -166,12 +166,8 @@ const JourneyAboutDialog = ({
             <JourneyIcon fontSize="small" color="primary" />
             <PageTitle paddingY={gutters(0.5)}>{displayName}</PageTitle>
           </DialogHeaderItem>
-          {shareUrl && (
-            <DialogHeaderItem align="end">
-              <ShareButton url={shareUrl} entityTypeName="about" />
-            </DialogHeaderItem>
-          )}
           <DialogHeaderItem minWidth="30%" align="end">
+            {shareUrl && <ShareButton url={shareUrl} entityTypeName="about" />}
             {endButton}
           </DialogHeaderItem>
         </Box>
