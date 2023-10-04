@@ -198,7 +198,7 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="404"
+          path="*"
           element={
             <WithApmTransaction path="*">
               <NotFoundPageLayout>

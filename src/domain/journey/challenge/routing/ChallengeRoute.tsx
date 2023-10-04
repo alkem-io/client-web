@@ -23,6 +23,7 @@ import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import ChallengeCalloutPage from '../challengeCalloutPage/ChallengeCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -45,7 +46,11 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   }
 
   if (!challengeId) {
-    return <Error404 />;
+    return (
+      <TopLevelDesktopLayout>
+        <Error404 />
+      </TopLevelDesktopLayout>
+    );
   }
 
   return (

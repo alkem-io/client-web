@@ -15,6 +15,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { isNotFoundError } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '../../../../core/notfound/NotFoundErrorBoundary';
+import { compact } from 'lodash';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   displayName: string | undefined;
@@ -137,7 +138,9 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
   );
 
   // If any of these errors is an Apollo Entity Not Found
-  if ([privilegesError, journeyCommunityPrivilegesError, journeyDataError].map(isNotFoundError).includes(true)) {
+  if (
+    compact([privilegesError, journeyCommunityPrivilegesError, journeyDataError]).map(isNotFoundError).includes(true)
+  ) {
     throw new NotFoundError();
   }
 
