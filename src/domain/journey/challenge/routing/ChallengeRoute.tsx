@@ -23,13 +23,11 @@ import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import ChallengeCalloutPage from '../challengeCalloutPage/ChallengeCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
 interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const {
-    challengeId,
     challengeNameId,
     spaceNameId,
     profile: { displayName },
@@ -43,14 +41,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
 
   if (loading) {
     return <Loading text="Loading challenge" />;
-  }
-
-  if (!challengeId) {
-    return (
-      <TopLevelDesktopLayout>
-        <Error404 />
-      </TopLevelDesktopLayout>
-    );
   }
 
   return (

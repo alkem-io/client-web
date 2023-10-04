@@ -31,10 +31,6 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
     return <Loading text={'Loading opportunity'} />;
   }
 
-  if (!opportunityNameId) {
-    return <Error404 />;
-  }
-
   return (
     <StorageConfigContextProvider
       locationType="journey"
