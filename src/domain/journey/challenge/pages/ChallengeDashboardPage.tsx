@@ -125,6 +125,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               spaceId={entities.spaceId}
               communityId={entities.challenge?.community?.id}
               shareUrl={shareUpdatesUrl}
+              loading={state.loading}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

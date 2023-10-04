@@ -86,6 +86,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               spaceId={entities.spaceId}
               communityId={entities.opportunity?.community?.id}
               shareUrl={shareUpdatesUrl}
+              loading={state.loading}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

@@ -71,6 +71,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               spaceId={entities.space?.id}
               communityId={entities.space?.community?.id}
               shareUrl={shareUpdatesUrl}
+              loading={state.loading}
             />
             <ContributorsDialog
               open={dialog === 'contributors'}

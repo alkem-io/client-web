@@ -14,6 +14,7 @@ export interface CommunityUpdatesDialogProps {
   spaceId?: string;
   communityId?: string;
   shareUrl: string;
+  loading?: boolean;
 }
 
 const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
@@ -22,6 +23,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
   spaceId,
   communityId = '',
   shareUrl,
+  loading = false,
 }) => {
   const { t } = useTranslation();
 
@@ -35,7 +37,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
       <DialogContent dividers>
         <Box marginBottom={2} marginTop={4}>
           <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
-            {({ messages, authors }, actions, loading) => (
+            {({ messages, authors }, actions, { retrievingUpdateMessages }) => (
               <CommunityUpdatesView
                 entities={{ messages, authors }}
                 actions={{
@@ -43,7 +45,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
                   onRemove: messageId => actions.onRemove(messageId, communityId),
                 }}
                 state={{
-                  loadingMessages: loading.retrievingUpdateMessages,
+                  loadingMessages: retrievingUpdateMessages || loading,
                   submittingMessage: false,
                   removingMessage: false,
                 }}
