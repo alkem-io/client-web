@@ -61,6 +61,13 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
       stateOrProvince: '',
       postalCode: '',
     },
+    storageBucket: {
+      id: '',
+      allowedMimeTypes: [],
+      documents: [],
+      maxFileSize: -1,
+      size: -1,
+    },
   },
   preferences: [],
 };

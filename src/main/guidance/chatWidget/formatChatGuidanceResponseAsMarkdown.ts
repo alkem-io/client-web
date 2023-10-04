@@ -4,7 +4,6 @@ export const SOURCES_HEADING_TAG_HTML = 'h5';
 const SOURCES_HEADING_TAG_MARKDOWN = '#####';
 
 interface Source {
-  title: string;
   uri: string;
 }
 
@@ -22,7 +21,7 @@ const formatChatGuidanceResponseAsMarkdown = (question: ChatGuidanceQuestionResp
 
 ${SOURCES_HEADING_TAG_MARKDOWN} ${t('common.sources')}:
 
-${sources.map(source => `- [${source.title}](${source.uri})`).join('\n')}
+${sources.map(source => `- [${source.uri}](${source.uri})`).join('\n')}
   `;
 
   return `${answer}${sourcesMarkdown}`;
