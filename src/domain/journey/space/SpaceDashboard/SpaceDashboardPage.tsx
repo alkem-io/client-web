@@ -15,8 +15,6 @@ import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDial
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
-import { NotFoundErrorBoundary } from '../../../../core/notfound/NotFoundErrorBoundary';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';

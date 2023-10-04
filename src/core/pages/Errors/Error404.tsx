@@ -1,8 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { log404NotFound } from '../../logging/sentry/log';
-import useInnovationHubOutsideRibbon from '../../../domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
-import TopLevelDesktopLayout from '../../../main/ui/layout/TopLevelDesktopLayout';
 import PageContentBlock from '../../ui/content/PageContentBlock';
 import { Box, Link, LinkProps, TextField, styled } from '@mui/material';
 import ImageFadeIn from '../../ui/image/ImageFadeIn';
@@ -104,7 +102,7 @@ export const Error404: FC = () => {
                 {t('common.home')}
               </StyledLink>
               <StyledLink href={platform?.help} subtitle={'Small text'}>
-                {t('common.help-center')}
+                {t('common.helpCenter')}
               </StyledLink>
             </UsefulLinks>
           </LeftArea>

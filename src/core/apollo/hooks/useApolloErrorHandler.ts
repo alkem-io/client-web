@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Severity } from '../../state/global/notifications/notificationMachine';
 import { error as logError } from '../../logging/sentry/log';
 import { useNotification } from '../../ui/notifications/useNotification';
-import { compact } from 'lodash';
 
 const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) => {
   const { message } = error;
@@ -46,7 +45,6 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     graphqlErrors.forEach((error: GraphQLError) => {
       const translation = getTranslationForCode(error, t, i18n);
       notify(translation, severity);
-      //console.log('logError', error, translation);
       logError(error);
     });
   };
@@ -64,12 +62,12 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
   };
 };
 
-export const isApolloEntityNotFound = (errors?: (ApolloError | undefined)[]) => {
-  const extensions = compact(errors ?? []).flatMap(error => error.graphQLErrors).map(graphQLError => graphQLError.extensions);
-  if (extensions.find(extension => extension.code === 'ENTITY_NOT_FOUND')) {
-    console.log('isApolloEntityNotFound', true);
-    return true;
+export const isNotFoundError = (error: ApolloError | undefined) => {
+  if (error && error.graphQLErrors) {
+    const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
+    if (extensions.find(extension => extension.code === 'ENTITY_NOT_FOUND')) {
+      return true;
+    }
   }
-  console.log('isApolloEntityNotFound', false);
   return false;
-}
+};

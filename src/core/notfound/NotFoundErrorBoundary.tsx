@@ -1,4 +1,3 @@
-import { compact } from 'lodash';
 import React from 'react';
 
 interface Props {
@@ -18,13 +17,13 @@ export class NotFoundErrorBoundary extends React.Component<Props, State> {
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
-    console.log('getDerivedStateFromError', error);
     if (error instanceof NotFoundError) {
-      console.log('getDerivedStateFromError', error);
+      console.log('getDerivedStateFromError: true', error);
+      return { hasError: true, error };
     } else {
-      throw error;
+      console.log('getDerivedStateFromError: false', error);
+      return { hasError: false, error: null };
     }
-    return { hasError: true, error };
   }
 
   componentDidCatch(error, info) {
