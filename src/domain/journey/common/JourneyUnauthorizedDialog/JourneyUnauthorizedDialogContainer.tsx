@@ -138,7 +138,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
 
   // If any of these errors is an Apollo Entity Not Found
   if ([privilegesError, journeyCommunityPrivilegesError, journeyDataError].map(isNotFoundError).includes(true)) {
-    throw new NotFoundError('Apollo entity not found');
+    throw new NotFoundError();
   }
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
