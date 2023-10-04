@@ -12,6 +12,7 @@ import ContributorsDialog from '../../../community/community/ContributorsDialog/
 import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
+import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
 
 const ChallengeAboutPage: FC = () => {
   const { spaceNameId, profile, challengeNameId, communityId } = useChallenge();
@@ -23,6 +24,8 @@ const ChallengeAboutPage: FC = () => {
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
+
+  const shareAboutUrl = buildAboutUrl({ spaceNameId });
 
   return (
     <>
@@ -64,6 +67,7 @@ const ChallengeAboutPage: FC = () => {
                 <Close />
               </IconButton>
             }
+            shareUrl={shareAboutUrl}
             leftColumnChildren={
               <EntityDashboardContributorsSection
                 memberUsers={memberUsers}
