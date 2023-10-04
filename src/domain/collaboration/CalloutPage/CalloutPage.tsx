@@ -95,7 +95,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       draft,
       editable,
       whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
-      comments: { ...callout.comments, calloutNameId: callout.nameID },
+      comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
     } as unknown as TypedCallout;
   }, [callout, locationState]);
 
