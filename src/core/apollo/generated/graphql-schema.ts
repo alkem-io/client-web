@@ -1490,7 +1490,7 @@ export type CreatePostOnCalloutInput = {
 
 export type CreatePostTemplateInput = {
   /** The default description to be pre-filled when users create Posts based on this template. */
-  defaultDescription: Scalars['Markdown'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   /** The type of Posts created from this Template. */
@@ -1500,7 +1500,7 @@ export type CreatePostTemplateInput = {
 
 export type CreatePostTemplateOnTemplatesSetInput = {
   /** The default description to be pre-filled when users create Posts based on this template. */
-  defaultDescription: Scalars['Markdown'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -1575,10 +1575,8 @@ export type CreateTagsetOnProfileInput = {
 };
 
 export type CreateUserGroupInput = {
-  /** The name of the UserGroup. Minimum length 2. */
-  name: Scalars['String'];
   parentID: Scalars['UUID'];
-  profile: CreateProfileInput;
+  profileData: CreateProfileInput;
 };
 
 export type CreateUserInput = {
@@ -4333,8 +4331,6 @@ export type ServiceMetadata = {
 
 export type Source = {
   __typename?: 'Source';
-  /** The title of the source */
-  title: Scalars['String'];
   /** The URI of the source */
   uri: Scalars['String'];
 };
