@@ -13,6 +13,8 @@ import {
   MetricsItemFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
+import { isApolloEntityNotFound } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { NotFoundError } from '../../../../core/notfound/NotFoundErrorBoundary';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   displayName: string | undefined;
@@ -133,6 +135,11 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     () => journeyDataQueryData?.space.host && [journeyDataQueryData?.space.host],
     [journeyDataQueryData]
   );
+  if (isApolloEntityNotFound([privilegesError, journeyCommunityPrivilegesError, journeyDataError])) {
+    console.log('JourneyUnauthorizedDialog, isApolloEntityNotFound');
+    throw new NotFoundError('Apollo entity not found');
+  }
+  console.log({ privilegesError, journeyCommunityPrivilegesError, journeyDataError });
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: isAuthorized,

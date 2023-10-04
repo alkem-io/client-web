@@ -197,7 +197,7 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="*"
+          path="404"
           element={
             <WithApmTransaction path="*">
               <Error404 />

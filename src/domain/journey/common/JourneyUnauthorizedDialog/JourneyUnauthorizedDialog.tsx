@@ -19,6 +19,7 @@ interface JourneyUnauthorizedDialogProps
   privilegesLoading: boolean;
   authorized: boolean | undefined;
   disabled?: boolean;
+  error?: Error;
 }
 
 const JourneyUnauthorizedDialog = ({
@@ -29,6 +30,7 @@ const JourneyUnauthorizedDialog = ({
   challengeNameId,
   challengeName,
   journeyTypeName,
+  error,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
   const { t } = useTranslation();
@@ -41,7 +43,7 @@ const JourneyUnauthorizedDialog = ({
 
   return (
     <JourneyAboutDialog
-      open={!disabled && !privilegesLoading && !authorized}
+      open={!disabled && !privilegesLoading && !authorized && !error}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
         <ApplicationButtonContainer {...{ challengeId, challengeNameId, challengeName }}>

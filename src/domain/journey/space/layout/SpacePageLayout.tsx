@@ -7,6 +7,9 @@ import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { useSpace } from '../SpaceContext/useSpace';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
+import { NotFoundErrorBoundary } from '../../../../core/notfound/NotFoundErrorBoundary';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
 export interface SpacePageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
@@ -22,7 +25,13 @@ const SpacePageLayout = ({
   const { spaceNameId } = useSpace();
 
   return (
-    <>
+    <NotFoundErrorBoundary
+      errorComponent={
+        <TopLevelDesktopLayout>
+          <Error404 />
+        </TopLevelDesktopLayout>
+      }
+    >
       <EntityPageLayout
         {...props}
         pageBannerComponent={SpacePageBanner}
@@ -40,7 +49,7 @@ const SpacePageLayout = ({
           />
         )}
       </JourneyUnauthorizedDialogContainer>
-    </>
+    </NotFoundErrorBoundary>
   );
 };
 
