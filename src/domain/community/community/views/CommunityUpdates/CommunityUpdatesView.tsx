@@ -205,7 +205,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             </Card>
           </Grid>
         )}
-        {orderedMessages.length === 0 && !stubMessageId && (
+        {orderedMessages.length === 0 && !stubMessageId && !loadingMessages && (
           <Grid item>
             <Typography align={'center'} variant={'subtitle1'}>
               {t('common.no-updates')}
