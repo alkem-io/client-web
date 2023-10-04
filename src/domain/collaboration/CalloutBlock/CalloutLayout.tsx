@@ -157,7 +157,7 @@ const CalloutLayout = ({
       return undefined;
     }
 
-    if (!callout?.comments?.messages.length) {
+    if (!callout?.comments?.messages?.length) {
       return;
     }
 
