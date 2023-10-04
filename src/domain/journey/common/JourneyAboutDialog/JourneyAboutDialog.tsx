@@ -33,6 +33,7 @@ import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -51,6 +52,7 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   impact: string | undefined;
   loading: boolean;
   leftColumnChildren?: ReactNode;
+  shareUrl?: string;
 }
 
 interface DialogHeaderItemProps extends BoxProps {
@@ -97,6 +99,7 @@ const JourneyAboutDialog = ({
   startButton,
   endButton,
   leftColumnChildren,
+  shareUrl,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
@@ -163,6 +166,11 @@ const JourneyAboutDialog = ({
             <JourneyIcon fontSize="small" color="primary" />
             <PageTitle paddingY={gutters(0.5)}>{displayName}</PageTitle>
           </DialogHeaderItem>
+          {shareUrl && (
+            <DialogHeaderItem align="end">
+              <ShareButton url={shareUrl} entityTypeName="about" />
+            </DialogHeaderItem>
+          )}
           <DialogHeaderItem minWidth="30%" align="end">
             {endButton}
           </DialogHeaderItem>
