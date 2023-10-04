@@ -1,8 +1,0 @@
-fragment SpaceName on Space {
-  id
-  nameID
-  profile {
-    id
-    displayName
-  }
-}

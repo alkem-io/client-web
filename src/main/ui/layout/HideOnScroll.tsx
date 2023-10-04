@@ -5,6 +5,11 @@ interface HideOnScrollProps {
   children: React.ReactElement;
 }
 
+/**
+ * @deprecated
+ * @param props
+ * @constructor
+ */
 const HideOnScroll = (props: HideOnScrollProps) => {
   const { children } = props;
 

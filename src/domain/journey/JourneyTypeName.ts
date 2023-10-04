@@ -13,3 +13,15 @@ export const getJourneyTypeName = (journeyLocation: ChildJourneyLocation): Journ
   }
   return 'space';
 };
+
+export const getRawJourneyTypeName = (journeyLocation: Partial<JourneyLocation>): JourneyTypeName | undefined => {
+  if (journeyLocation.opportunityNameId) {
+    return 'opportunity';
+  }
+  if (journeyLocation.challengeNameId) {
+    return 'challenge';
+  }
+  if (journeyLocation.spaceNameId) {
+    return 'space';
+  }
+};

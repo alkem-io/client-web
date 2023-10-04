@@ -2,7 +2,6 @@ import { Box, Link, Skeleton, styled, useTheme } from '@mui/material';
 import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../core/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
-import BreadcrumbsView from './BreadcrumbsView';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import getEntityColor from '../../utils/getEntityColor';
 import { Caption, PageTitle, Tagline } from '../../../../core/ui/typography';
@@ -139,7 +138,6 @@ export interface JourneyPageBannerProps {
   tagline?: string;
   bannerUrl?: string;
   bannerAltText?: string;
-  showBreadcrumbs?: boolean;
   ribbon?: ReactNode;
   loading?: boolean;
   journeyTypeName: JourneyTypeName | 'admin';
@@ -154,7 +152,6 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   tagline,
   bannerUrl,
   bannerAltText,
-  showBreadcrumbs,
   ribbon,
   journeyTypeName,
   loading: dataLoading = false,
@@ -180,8 +177,7 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
       {!dataLoading && (
         <>
           <TopNotices>
-            {<PageNotice journeyTypeName={journeyTypeName} />}
-            {showBreadcrumbs && <BreadcrumbsView />}
+            <PageNotice journeyTypeName={journeyTypeName} />
           </TopNotices>
           <ImageBlurredSides
             src={bannerUrl}

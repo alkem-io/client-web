@@ -108,6 +108,25 @@ export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
   }
 };
 
+export const buildJourneyUrlByJourneyTypeName = (
+  journeyLocation: Partial<JourneyLocation>,
+  journeyTypeName: JourneyTypeName
+) => {
+  if (journeyTypeName === 'space') {
+    return buildSpaceUrl(journeyLocation.spaceNameId!);
+  }
+  if (journeyTypeName === 'challenge') {
+    return buildChallengeUrl(journeyLocation.spaceNameId!, journeyLocation.challengeNameId!);
+  }
+  if (journeyTypeName === 'opportunity') {
+    return buildOpportunityUrl(
+      journeyLocation.spaceNameId!,
+      journeyLocation.challengeNameId!,
+      journeyLocation.opportunityNameId!
+    );
+  }
+};
+
 export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation) => {
   const calloutUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${calloutUrl}`;

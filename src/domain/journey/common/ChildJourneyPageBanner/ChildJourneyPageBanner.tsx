@@ -32,11 +32,9 @@ const CardContainer = (props: JourneyPageBannerCardProps) => {
       marginX="auto"
       alignItems={cardStickSide === 'left' ? 'start' : 'stretch'}
       position="relative"
-      paddingX={columns > 8 ? 0 : undefined}
+      paddingTop={gutters(3)}
     >
-      <GridItem columns={8}>
-        {({ width }) => <JourneyPageBannerCard maxWidth={width} stick={cardStickSide} {...props} />}
-      </GridItem>
+      <GridItem columns={8}>{({ width }) => <JourneyPageBannerCard maxWidth={width} {...props} />}</GridItem>
     </Gutters>
   );
 };
