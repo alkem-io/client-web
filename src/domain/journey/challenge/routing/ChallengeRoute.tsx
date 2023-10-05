@@ -69,6 +69,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
             element={<ChallengeCalloutPage>{props => <CalloutRoute {...props} />}</ChallengeCalloutPage>}
           />
+          <Route path="*" element={<Error404 />} />
         </Route>
         <Route
           path="apply/*"
@@ -92,7 +93,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           }
         />
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-        <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
   );

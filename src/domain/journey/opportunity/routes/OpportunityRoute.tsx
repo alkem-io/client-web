@@ -59,9 +59,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
           />
           <Route path={routes.About} element={<OpportunityAboutPage />} />
           <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
+          <Route path="*" element={<Error404 />} />
         </Route>
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-        <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
   );

@@ -11,7 +11,7 @@ import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import SpaceChallengesPage from '../pages/SpaceChallengesPage';
 import { routes } from '../routes/spaceRoutes';
-import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
+import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
@@ -56,6 +56,14 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
           <Route path={routes.Challenges} element={<SpaceChallengesPage />} />
           <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
           <Route path={routes.Search} element={<SpaceSearchPage />} />
+          <Route
+            path="*"
+            element={
+              <NotFoundPageLayout>
+                <Error404 />
+              </NotFoundPageLayout>
+            }
+          />
         </Route>
         <Route
           path="apply"
@@ -78,7 +86,6 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
           }
         />
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-        <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
   );
