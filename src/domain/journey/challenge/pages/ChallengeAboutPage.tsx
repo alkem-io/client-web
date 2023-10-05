@@ -25,7 +25,7 @@ const ChallengeAboutPage: FC = () => {
 
   const { t } = useTranslation();
 
-  const shareAboutUrl = buildAboutUrl({ spaceNameId });
+  const shareAboutUrl = buildAboutUrl({ spaceNameId, challengeNameId });
 
   return (
     <>
