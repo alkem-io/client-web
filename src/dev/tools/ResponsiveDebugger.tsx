@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 
-export const ResponsiveDebugger = () => (
+const ResponsiveDebugger = () => (
   <Box>
     <Box sx={{ display: { xs: 'block', sm: 'none' } }}>XS</Box>
     <Box sx={{ display: { xs: 'none', sm: 'block', md: 'none' } }}>SM</Box>
@@ -9,3 +9,5 @@ export const ResponsiveDebugger = () => (
     <Box sx={{ display: { xs: 'none', xl: 'block' } }}>XL</Box>
   </Box>
 );
+
+export default import.meta.env.MODE === 'development' ? ResponsiveDebugger : () => null;
