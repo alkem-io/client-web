@@ -15,11 +15,9 @@ export class NotFoundErrorBoundary extends React.Component<Props, State> {
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
-    if (error instanceof NotFoundError) {
-      return { hasError: true };
-    } else {
-      return { hasError: false };
-    }
+    return {
+      hasError: error instanceof NotFoundError,
+    };
   }
 
   render() {
