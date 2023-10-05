@@ -2037,8 +2037,12 @@
       }
     },
     "four-ou-four": {
-      "title": "Something went wrong..",
-      "message": "Sorry, the page you are looking for doesn't exist or has been moved. Don't worry, our team is there to help!"
+      "title": "Something went wrong...",
+      "message": "Sorry, the page you are looking for either doesn't exist or has been moved, or you don't have the rights to access it. This may happen because you aren't a member of the community yet or are not signed in. Don't worry, our team is there to help!",
+      "links": {
+        "home": "",
+        "faq": "Have a look in our FAQ and documentation to find what you are looking for, or contact the team."
+      }
     },
     "logout": {
       "loading": "Signing off ..."

@@ -56,6 +56,7 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
           <Route path={routes.Challenges} element={<SpaceChallengesPage />} />
           <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
           <Route path={routes.Search} element={<SpaceSearchPage />} />
+          <Route path="*" element={<Error404 />} />
         </Route>
         <Route
           path="apply"
@@ -78,7 +79,6 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
           }
         />
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-        <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
   );

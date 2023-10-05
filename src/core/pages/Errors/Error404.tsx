@@ -2,12 +2,12 @@ import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { log404NotFound } from '../../logging/sentry/log';
 import PageContentBlock from '../../ui/content/PageContentBlock';
-import { Box, Link, LinkProps, TextField, styled } from '@mui/material';
+import { Box, Link, LinkProps, styled } from '@mui/material';
 import ImageFadeIn from '../../ui/image/ImageFadeIn';
 import { PageTitle, PlatformTitle, Tagline, Text } from '../../ui/typography';
-import { EastOutlined, Search } from '@mui/icons-material';
+import { EastOutlined } from '@mui/icons-material';
 import { useConfig } from '../../../domain/platform/config/useConfig';
-import PageContent from '../../ui/content/PageContent';
+import SearchBar from '../../../main/ui/layout/topBar/SearchBar';
 
 const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
@@ -17,7 +17,11 @@ const Container = styled(Box)(({ theme }) => ({
 }));
 
 const LeftArea = styled(Box)(({ theme }) => ({
-  width: theme.spacing(55),
+  width: theme.spacing(56),
+  [theme.breakpoints.down('md')]: {
+    width: '75%',
+    margin: theme.spacing(0, 'auto'),
+  },
   [theme.breakpoints.down('sm')]: {
     width: '100%',
   },
@@ -25,12 +29,8 @@ const LeftArea = styled(Box)(({ theme }) => ({
 
 const RightArea = styled(Box)(({ theme }) => ({
   marginLeft: theme.spacing(-10),
-  [theme.breakpoints.only('xs')]: {
-    display: 'none',
-  },
   [theme.breakpoints.down('md')]: {
-    marginLeft: theme.spacing(-5),
-    width: '100%',
+    display: 'none',
   },
 }));
 
@@ -49,21 +49,20 @@ const Picture = styled(ImageFadeIn)(({ theme }) => ({
 }));
 
 const UsefulLinks = styled(Box)(({ theme }) => ({
+  width: '75%',
   marginBottom: theme.spacing(20), // Empty white area after links, remove pixeles if you are modre links
   [theme.breakpoints.only('xs')]: {
     marginBottom: 0,
   },
 }));
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+const StyledSearchBox = styled(SearchBar)(({ theme }) => ({
   margin: theme.spacing(4, 0),
   width: '75%',
-  [theme.breakpoints.only('xs')]: {
-    width: '100%',
-  },
+  [theme.breakpoints.down('md')]: { width: '100%' },
 }));
 
-const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle: string }) => {
+const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle?: string }) => {
   return (
     <Box marginBottom={theme => theme.spacing(2)}>
       <Link {...props}>
@@ -71,7 +70,7 @@ const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle: st
           {children} <EastOutlined sx={{ verticalAlign: 'middle' }} fontSize="small" />
         </PageTitle>
       </Link>
-      <Text>{subtitle}</Text>
+      {subtitle && <Text>{subtitle}</Text>}
     </Box>
   );
 };
@@ -82,35 +81,38 @@ export const Error404: FC = () => {
   const { platform } = useConfig();
 
   return (
-    <PageContent>
-      <PageContentBlock>
-        <Container>
-          <LeftArea>
-            <PlatformTitle>{t('pages.four-ou-four.title')}</PlatformTitle>
-            <Picture src="/404.svg" sx={{ display: { xs: 'block', sm: 'none' } }} />
-            <Tagline>{t('pages.four-ou-four.message')}</Tagline>
-            <StyledTextField
-              size="small"
-              placeholder={t('common.search')}
-              InputProps={{
-                endAdornment: <Search color="primary" />,
-              }}
-              sx={{}}
-            />
-            <UsefulLinks>
-              <StyledLink href="/" subtitle={'Small text'}>
-                {t('common.home')}
-              </StyledLink>
-              <StyledLink href={platform?.help} subtitle={'Small text'}>
-                {t('common.helpCenter')}
-              </StyledLink>
-            </UsefulLinks>
-          </LeftArea>
-          <RightArea>
-            <Picture src="/404.svg" sx={{ display: 'block', xs: { display: 'none' } }} />
-          </RightArea>
-        </Container>
-      </PageContentBlock>
-    </PageContent>
+    <PageContentBlock>
+      <Container>
+        <LeftArea>
+          <PlatformTitle sx={theme => ({ [theme.breakpoints.down('md')]: { textAlign: 'center' } })}>
+            {t('pages.four-ou-four.title')}
+          </PlatformTitle>
+          <Picture
+            src="/404.svg"
+            sx={theme => ({
+              marginBottom: theme.spacing(2),
+              display: 'block',
+              [theme.breakpoints.up('md')]: { display: 'none' },
+            })}
+          />
+          <Tagline>{t('pages.four-ou-four.message')}</Tagline>
+          <StyledSearchBox />
+          <UsefulLinks>
+            <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>
+              {t('common.home')}
+            </StyledLink>
+            <StyledLink href={platform?.help} subtitle={t('pages.four-ou-four.links.faq')}>
+              {t('common.helpCenter')}
+            </StyledLink>
+          </UsefulLinks>
+        </LeftArea>
+        <RightArea>
+          <Picture
+            src="/404.svg"
+            sx={theme => ({ display: 'none', [theme.breakpoints.up('md')]: { display: 'block' } })}
+          />
+        </RightArea>
+      </Container>
+    </PageContentBlock>
   );
 };
