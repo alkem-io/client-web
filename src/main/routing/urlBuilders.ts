@@ -118,6 +118,10 @@ export const buildUpdatesUrl = (journeyLocation: JourneyLocation) => {
   return `${buildJourneyUrl(journeyLocation)}${updatesPath}`;
 };
 
+export const buildAboutUrl = (journeyLocation: JourneyLocation) => {
+  return `${buildJourneyUrl(journeyLocation)}/about`;
+};
+
 export const buildPostUrl = (calloutNameId: string, postNameId: string, journeyLocation: JourneyLocation) => {
   const postUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/posts/${postNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${postUrl}`;
