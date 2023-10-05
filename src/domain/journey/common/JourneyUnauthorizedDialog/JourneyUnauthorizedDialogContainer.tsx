@@ -13,9 +13,7 @@ import {
   MetricsItemFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { isNotFoundError } from '../../../../core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundError } from '../../../../core/notfound/NotFoundErrorBoundary';
-import { compact } from 'lodash';
+import mainQuery from '../../../../core/apollo/utils/mainQuery';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   displayName: string | undefined;
@@ -38,6 +36,10 @@ interface JourneyUnauthorizedDialogContainerProps {
   children: (provided: JourneyUnauthorizedDialogContainerProvided) => ReactNode;
 }
 
+const fetchPrivileges = mainQuery(useJourneyPrivilegesQuery);
+const fetchCommunityPrivileges = mainQuery(useJourneyCommunityPrivilegesQuery);
+const fetchJourneyData = mainQuery(useJourneyDataQuery);
+
 const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: JourneyUnauthorizedDialogContainerProps) => {
   // TODO move to Page components, pass from there
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
@@ -50,7 +52,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     data: journeyPrivilegesQueryData,
     loading: privilegesLoading,
     error: privilegesError,
-  } = useJourneyPrivilegesQuery({
+  } = fetchPrivileges({
     variables: {
       spaceNameId,
       challengeNameId,
@@ -75,7 +77,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     data: journeyCommunityPrivilegesQueryData,
     loading: journeyCommunityPrivilegesLoading,
     error: journeyCommunityPrivilegesError,
-  } = useJourneyCommunityPrivilegesQuery({
+  } = fetchCommunityPrivileges({
     variables: {
       spaceNameId,
       challengeNameId,
@@ -95,7 +97,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
 
   const communityReadAccess = communityAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: journeyDataQueryData, error: journeyDataError } = useJourneyDataQuery({
+  const { data: journeyDataQueryData, error: journeyDataError } = fetchJourneyData({
     variables: {
       spaceNameId,
       challengeNameId,
@@ -136,13 +138,6 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     () => journeyDataQueryData?.space.host && [journeyDataQueryData?.space.host],
     [journeyDataQueryData]
   );
-
-  // If any of these errors is an Apollo Entity Not Found
-  if (
-    compact([privilegesError, journeyCommunityPrivilegesError, journeyDataError]).map(isNotFoundError).includes(true)
-  ) {
-    throw new NotFoundError();
-  }
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: isAuthorized,

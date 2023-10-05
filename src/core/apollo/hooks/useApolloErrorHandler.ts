@@ -62,7 +62,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
   };
 };
 
-export const isNotFoundError = (error: ApolloError | undefined) => {
+export const isApolloNotFoundError = (error: ApolloError | undefined) => {
   if (error && error.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
     if (extensions.find(extension => extension.code === 'ENTITY_NOT_FOUND')) {

@@ -13,7 +13,7 @@ import useCanGoBack from '../../../core/routing/useCanGoBack';
 import { Theme, useMediaQuery } from '@mui/material';
 import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 import Loading from '../../../core/ui/loading/Loading';
-import { isNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundPageLayout } from '../../journey/common/EntityPageLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
 
@@ -110,7 +110,8 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
   if (isCalloutLoading) {
     return <Loading />;
   }
-  if (isNotFoundError(error)) {
+
+  if (isApolloNotFoundError(error)) {
     return (
       <NotFoundPageLayout>
         <Error404 />
