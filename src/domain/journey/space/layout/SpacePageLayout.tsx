@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps, NotFoundPageLayout } from '../../common/EntityPageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
 import SpacePageBanner from './SpacePageBanner';
 import SpaceTabs from './SpaceTabs';
 import React, { PropsWithChildren } from 'react';
@@ -7,8 +7,6 @@ import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { useSpace } from '../SpaceContext/useSpace';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
-import { NotFoundErrorBoundary } from '../../../../core/notfound/NotFoundErrorBoundary';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
 
 export interface SpacePageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
@@ -19,24 +17,14 @@ export interface SpacePageLayoutProps
 const SpacePageLayout = ({
   searchDisabled = false,
   unauthorizedDialogDisabled = false,
+  children,
   ...props
 }: PropsWithChildren<SpacePageLayoutProps>) => {
   const { spaceNameId } = useSpace();
 
   return (
-    <NotFoundErrorBoundary
-      errorComponent={
-        <NotFoundPageLayout>
-          <Error404 />
-        </NotFoundPageLayout>
-      }
-    >
-      <EntityPageLayout
-        {...props}
-        pageBannerComponent={SpacePageBanner}
-        tabsComponent={SpaceTabs}
-        entityTypeName="space"
-      />
+    <EntityPageLayout {...props} pageBannerComponent={SpacePageBanner} tabsComponent={SpaceTabs} entityTypeName="space">
+      {children}
       {!searchDisabled && <SearchDialog searchRoute={`${buildSpaceUrl(spaceNameId)}/search`} />}
       <JourneyUnauthorizedDialogContainer journeyTypeName="space">
         {({ vision, ...props }) => (
@@ -48,7 +36,7 @@ const SpacePageLayout = ({
           />
         )}
       </JourneyUnauthorizedDialogContainer>
-    </NotFoundErrorBoundary>
+    </EntityPageLayout>
   );
 };
 
