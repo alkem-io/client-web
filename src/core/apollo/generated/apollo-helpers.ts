@@ -1283,6 +1283,7 @@ export type LookupQueryResultsFieldPolicy = {
 };
 export type MeQueryResultsKeySpecifier = (
   | 'applications'
+  | 'id'
   | 'invitations'
   | 'spaceMemberships'
   | 'user'
@@ -1290,6 +1291,7 @@ export type MeQueryResultsKeySpecifier = (
 )[];
 export type MeQueryResultsFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1322,7 +1324,6 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'adminInnovationFlowSynchronizeStates'
-  | 'adminStorageMigrateIpfsUrls'
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
@@ -1477,7 +1478,6 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminInnovationFlowSynchronizeStates?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminStorageMigrateIpfsUrls?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2374,9 +2374,8 @@ export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SourceKeySpecifier = ('title' | 'uri' | SourceKeySpecifier)[];
+export type SourceKeySpecifier = ('uri' | SourceKeySpecifier)[];
 export type SourceFieldPolicy = {
-  title?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceKeySpecifier = (
