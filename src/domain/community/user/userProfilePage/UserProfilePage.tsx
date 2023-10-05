@@ -27,7 +27,13 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
-  if (!userMetadata) return <Error404 />;
+  if (!userMetadata) {
+    return (
+      <UserPageLayout currentSection={EntityPageSection.Profile}>
+        <Error404 />
+      </UserPageLayout>
+    );
+  }
 
   return (
     <UserPageLayout currentSection={EntityPageSection.Profile}>
