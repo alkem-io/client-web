@@ -28,7 +28,6 @@ interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const {
-    challengeId,
     challengeNameId,
     spaceNameId,
     profile: { displayName },
@@ -42,10 +41,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
 
   if (loading) {
     return <Loading text="Loading challenge" />;
-  }
-
-  if (!challengeId) {
-    return <Error404 />;
   }
 
   return (

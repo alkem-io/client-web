@@ -17,18 +17,14 @@ export interface SpacePageLayoutProps
 const SpacePageLayout = ({
   searchDisabled = false,
   unauthorizedDialogDisabled = false,
+  children,
   ...props
 }: PropsWithChildren<SpacePageLayoutProps>) => {
   const { spaceNameId } = useSpace();
 
   return (
-    <>
-      <EntityPageLayout
-        {...props}
-        pageBannerComponent={SpacePageBanner}
-        tabsComponent={SpaceTabs}
-        entityTypeName="space"
-      />
+    <EntityPageLayout {...props} pageBannerComponent={SpacePageBanner} tabsComponent={SpaceTabs} entityTypeName="space">
+      {children}
       {!searchDisabled && <SearchDialog searchRoute={`${buildSpaceUrl(spaceNameId)}/search`} />}
       <JourneyUnauthorizedDialogContainer journeyTypeName="space">
         {({ vision, ...props }) => (
@@ -40,7 +36,7 @@ const SpacePageLayout = ({
           />
         )}
       </JourneyUnauthorizedDialogContainer>
-    </>
+    </EntityPageLayout>
   );
 };
 
