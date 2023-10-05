@@ -22707,7 +22707,6 @@ export const AskChatGuidanceQuestionDocument = gql`
       answer
       question
       sources {
-        title
         uri
       }
     }
