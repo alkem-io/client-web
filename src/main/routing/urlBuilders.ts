@@ -141,4 +141,5 @@ export const buildEventUrl = (eventNameId: string, journeyLocation: JourneyLocat
   return `${buildJourneyUrl(journeyLocation)}${eventUrl}`;
 };
 
-export const buildDocumentUrl = (documentId: string) => `/api/private/rest/storage/document/${documentId}`;
+export const buildDocumentUrl = (platformDomain: string, documentId: string) =>
+  `//${platformDomain}/api/private/rest/storage/document/${documentId}`;
