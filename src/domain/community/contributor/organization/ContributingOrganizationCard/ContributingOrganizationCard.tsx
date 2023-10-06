@@ -7,7 +7,7 @@ interface ContributingOrganizationCardProps extends ContributorCardProps {
 }
 
 const ContributingOrganizationCard = ({ member, ...contributorCardProps }: ContributingOrganizationCardProps) => {
-  return <ContributorCard bannerOverlay={<CardMemberIcon />} {...contributorCardProps} />;
+  return <ContributorCard bannerOverlay={member ? <CardMemberIcon /> : undefined} {...contributorCardProps} />;
 };
 
 export default ContributingOrganizationCard;
