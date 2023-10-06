@@ -792,6 +792,12 @@
   },
   "components": {
     "myDashboard": "My Dashboard",
+    "search": {
+      "scope": {
+        "platform": "Entire platform",
+        "space": "{{displayName}}"
+      }
+    },
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
