@@ -1821,9 +1821,6 @@ export const InnovationHubProfileFragmentDoc = gql`
     visual(type: BANNER_WIDE) {
       ...VisualFull
     }
-    storageBucket {
-      id
-    }
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}

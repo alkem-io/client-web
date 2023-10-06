@@ -19692,7 +19692,6 @@ export type InnovationHubProfileFragment = {
         alternativeText?: string | undefined;
       }
     | undefined;
-  storageBucket: { __typename?: 'StorageBucket'; id: string };
 };
 
 export type AdminInnovationHubQueryVariables = Exact<{
@@ -19742,7 +19741,6 @@ export type AdminInnovationHubQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           spaceListFilter?:
             | Array<{
@@ -19801,7 +19799,6 @@ export type AdminInnovationHubFragment = {
           alternativeText?: string | undefined;
         }
       | undefined;
-    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
   spaceListFilter?:
     | Array<{
@@ -19863,7 +19860,6 @@ export type CreateInnovationHubMutation = {
             alternativeText?: string | undefined;
           }
         | undefined;
-      storageBucket: { __typename?: 'StorageBucket'; id: string };
     };
     spaceListFilter?:
       | Array<{
@@ -19926,7 +19922,6 @@ export type UpdateInnovationHubMutation = {
             alternativeText?: string | undefined;
           }
         | undefined;
-      storageBucket: { __typename?: 'StorageBucket'; id: string };
     };
     spaceListFilter?:
       | Array<{

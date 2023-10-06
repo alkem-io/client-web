@@ -30,9 +30,6 @@ fragment InnovationHubProfile on Profile {
   visual(type: BANNER_WIDE) {
     ...VisualFull
   }
-  storageBucket {
-    id
-  }
 }
 
 query AdminInnovationHub($innovationHubId: UUID_NAMEID!) {
