@@ -36,6 +36,7 @@ export const ProfileChipView: FC<ProfileChipViewProps> = ({
           width={gutters(2)}
           height={gutters(2)}
           marginRight={gutters(1)}
+          borderRadius={theme => `${theme.shape.borderRadius}px`}
           src={avatarUrl}
           loading="lazy"
           alt={t('common.avatar-of', { user: displayName })}
