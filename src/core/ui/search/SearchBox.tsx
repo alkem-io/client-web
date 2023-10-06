@@ -70,7 +70,6 @@ const SearchBox = <Option extends string | number>({
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box
         display="flex"
-        height={gutters(2)}
         marginY={1}
         borderRadius={theme => `${theme.shape.borderRadius}px`}
         sx={{ backgroundColor: theme => theme.palette.background.paper }}
