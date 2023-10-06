@@ -7,7 +7,7 @@ import { useSpace } from '../../space/SpaceContext/useSpace';
 import ChildJourneyPageBanner from '../../common/ChildJourneyPageBanner/ChildJourneyPageBanner';
 
 const ChallengePageBanner: FC = () => {
-  const { profile: spaceProfile, spaceNameId } = useSpace();
+  const { profile: spaceProfile } = useSpace();
   const { challenge, spaceId } = useChallenge();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, challenge?.profile.visuals);
@@ -27,13 +27,6 @@ const ChallengePageBanner: FC = () => {
       journeyTags={challenge?.profile.tagset?.tags}
       journeyDisplayName={challenge?.profile.displayName ?? ''}
       journeyTagline={challenge?.profile.tagline ?? ''}
-      parentJourneys={[
-        {
-          displayName: spaceProfile.displayName,
-          journeyLocation: { spaceNameId },
-          journeyTypeName: 'space',
-        },
-      ]}
     />
   );
 };

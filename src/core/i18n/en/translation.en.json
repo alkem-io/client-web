@@ -791,6 +791,12 @@
     }
   },
   "components": {
+    "search": {
+      "scope": {
+        "platform": "Entire platform",
+        "space": "{{displayName}}"
+      }
+    },
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
@@ -1823,6 +1829,7 @@
       "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
+      "title": "My Dashboard",
       "sections": {
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",

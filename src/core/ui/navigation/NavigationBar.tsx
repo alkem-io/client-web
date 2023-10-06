@@ -23,7 +23,13 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
         transition: 'background-color .25s',
       }}
     >
-      <GridContainer maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto" display="flex" flexDirection="row">
+      <GridContainer
+        maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
+        marginX="auto"
+        display="flex"
+        flexDirection="row"
+        paddingY={gutters(0.5)}
+      >
         <GridProvider columns={globalGridColumns}>{children}</GridProvider>
       </GridContainer>
     </Box>
@@ -35,12 +41,14 @@ interface NavigationBarProps {
   childrenRight?: ReactNode;
 }
 
+export const NAVIGATION_HEIGHT_GUTTERS = 4;
+
 const NavigationBar = ({ childrenLeft, childrenRight }: NavigationBarProps) => {
   const scrollTop = useScrollTop();
 
   const hasScrolledUp = useScrolledUp();
 
-  const navigationHeight = GUTTER_PX * 4;
+  const navigationHeight = GUTTER_PX * NAVIGATION_HEIGHT_GUTTERS;
 
   const hasScrolledPast = scrollTop > navigationHeight;
 
@@ -55,11 +63,11 @@ const NavigationBar = ({ childrenLeft, childrenRight }: NavigationBarProps) => {
         }}
       >
         <NavigationBarContent transparent={!hasScrolledPast}>
-          <Box display="flex" flexDirection="row" gap={gutters(0.5)} paddingX={gutters()}>
+          <Box display="flex" flexDirection="row" gap={gutters(0.5)} paddingX={gutters(0.5)}>
             {childrenLeft}
           </Box>
           <FlexSpacer />
-          <Box display="flex" flexDirection="row" gap={gutters(0.5)} paddingX={gutters()}>
+          <Box display="flex" flexDirection="row" gap={gutters(0.5)} paddingX={gutters(0.5)}>
             {childrenRight}
           </Box>
         </NavigationBarContent>

@@ -1,4 +1,4 @@
-import { KeyboardArrowDownOutlined, KeyboardArrowUpOutlined, LockOutlined } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
 import { Box, Collapse, IconButton, Skeleton, Tooltip, TooltipProps } from '@mui/material';
 import React, { PropsWithChildren, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -61,11 +61,7 @@ const DashboardNavigationItemView = ({
                 </IconButton>
               </Tooltip>
             ) : (
-              children && (
-                <IconButton onClick={toggleExpand}>
-                  {isExpanded ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
-                </IconButton>
-              )
+              children && <IconButton onClick={toggleExpand}>{isExpanded ? <ExpandLess /> : <ExpandMore />}</IconButton>
             )
           }
         >
