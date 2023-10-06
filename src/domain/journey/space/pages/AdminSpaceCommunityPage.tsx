@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
@@ -42,6 +42,23 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     inviteExistingUser,
   } = useCommunityAdmin({ communityId, spaceId });
 
+  const currentApplicationsUserIds = useMemo(
+    () =>
+      applications
+        ?.filter(application => application.lifecycle.state === 'new')
+        .map(application => application.user.id) ?? [],
+    [applications, loading]
+  );
+
+  const currentInvitationsUserIds = useMemo(
+    () =>
+      invitations
+        ?.filter(invitation => invitation.lifecycle.state === 'invited')
+        .map(invitation => invitation.user.id) ?? [],
+    [invitations, loading]
+  );
+  const currentMembersIds = useMemo(() => users.map(user => user.id), [users, loading]);
+
   if (!spaceId || isLoadingSpace) {
     return null;
   }
@@ -68,6 +85,9 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               spaceDisplayName={spaceProfile.displayName}
               inviteExistingUser={inviteExistingUser}
               inviteExternalUser={inviteExternalUser}
+              currentApplicationsUserIds={currentApplicationsUserIds}
+              currentInvitationsUserIds={currentInvitationsUserIds}
+              currentMembersIds={currentMembersIds}
             />
           </PageContentBlockSeamless>
         </PageContentColumn>

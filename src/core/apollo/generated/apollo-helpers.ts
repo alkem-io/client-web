@@ -1248,6 +1248,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
+  | 'document'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
   | 'invitation'
@@ -1270,6 +1271,7 @@ export type LookupQueryResultsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;

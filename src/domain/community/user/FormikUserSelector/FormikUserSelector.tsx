@@ -4,8 +4,8 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { without } from 'lodash';
 import { FC, useMemo, useState } from 'react';
-import { useMessagingAvailableRecipientsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
+import { useUserSelectorQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { User, UserFilterInput, UserSelectorQuery } from '../../../../core/apollo/generated/graphql-schema';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -14,16 +14,21 @@ import { ProfileChipView } from '../../contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
 import { useUserContext } from '../hooks/useUserContext';
 import { useTranslation } from 'react-i18next';
+import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import { CaptionSmall } from '../../../../core/ui/typography';
 
 const MAX_USERS_SHOWN = 10;
 const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
 
+type UserChipData = UserSelectorQuery['usersPaginated']['users'][0];
 interface FormikUserSelectorProps {
   name: string;
   required?: boolean;
   readonly?: boolean;
   onChange?: (userIds: string[]) => void;
+  resultsSorter?: (users: UserChipData[]) => UserChipData[];
+  resultsExpander?: (users: UserChipData[]) => (UserChipData & { message?: string; disabled?: boolean })[];
 }
 
 export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
@@ -31,6 +36,8 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   required,
   readonly,
   onChange,
+  resultsSorter = users => users,
+  resultsExpander = users => users.map(user => ({ ...user, message: undefined, disabled: false })),
   ...containerProps
 }) => {
   // This field is the array of user Ids
@@ -39,7 +46,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
 
   const [filter, setFilter] = useState<UserFilterInput>();
 
-  const { data } = useMessagingAvailableRecipientsQuery({
+  const { data } = useUserSelectorQuery({
     variables: { filter, first: MAX_USERS_SHOWN },
     skip: !filter,
   });
@@ -57,9 +64,13 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
       return [];
     }
     const users = data?.usersPaginated.users ?? [];
-    return users
-      .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
-      .filter(user => user.id !== currentUser?.user.id);
+    return resultsExpander(
+      resultsSorter(
+        users
+          .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
+          .filter(user => user.id !== currentUser?.user.id)
+      )
+    );
   }, [currentUser?.user.id, data?.usersPaginated.users, field.value, inputValue]);
 
   const breakpoint = useCurrentBreakpoint();
@@ -102,6 +113,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
         <>
           <Autocomplete
             options={listedUsers}
+            getOptionDisabled={option => option.disabled ?? false}
             value={autocompleteValue}
             inputValue={inputValue}
             onInputChange={(event, value) => setInputValue(value)}
@@ -123,7 +135,11 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
                   avatarUrl={user.profile.visual?.uri}
                   city={user.profile.location?.city}
                   country={user.profile.location?.country}
-                />
+                  width="100%"
+                >
+                  <FlexSpacer />
+                  <CaptionSmall sx={{ maxWidth: '50%' }}>{user.message}</CaptionSmall>
+                </ProfileChipView>
               </li>
             )}
             renderInput={params => (
