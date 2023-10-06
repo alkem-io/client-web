@@ -46,18 +46,28 @@ const SearchBox = <Option extends string | number>({
 
   const handleExpand = () => {
     inputRef.current?.focus();
-    console.log(inputRef.current);
     setIsExpanded(true);
   };
 
-  const handleCollapse = () => {
-    if (!searchTerms) {
+  // Ref is chosen instead of state because we need relevant value immediately.
+  // Also this flag doesn't affect the rendered state.
+  const selectOpenStateRef = useRef(false);
+
+  const handleClickAway = () => {
+    if (!searchTerms && !selectOpenStateRef.current) {
       setIsExpanded(false);
     }
   };
 
+  const handleSelectOpen = () => {
+    selectOpenStateRef.current = true;
+  };
+  const handleSelectClose = () => {
+    selectOpenStateRef.current = false;
+  };
+
   return (
-    <ClickAwayListener onClickAway={handleCollapse}>
+    <ClickAwayListener onClickAway={handleClickAway}>
       <Box
         display="flex"
         height={gutters(2)}
@@ -70,6 +80,8 @@ const SearchBox = <Option extends string | number>({
             {searchOptions && (
               <>
                 <Select
+                  onOpen={handleSelectOpen}
+                  onClose={handleSelectClose}
                   value={searchOption}
                   onChange={event => setSearchOption(event.target.value as Option)}
                   size="small"
