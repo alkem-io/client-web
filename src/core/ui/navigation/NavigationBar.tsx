@@ -63,13 +63,9 @@ const NavigationBar = ({ childrenLeft, childrenRight }: NavigationBarProps) => {
         }}
       >
         <NavigationBarContent transparent={!hasScrolledPast}>
-          <Box display="flex" flexDirection="row" gap={gutters(0.5)} paddingX={gutters(0.5)}>
-            {childrenLeft}
-          </Box>
+          {childrenLeft}
           <FlexSpacer />
-          <Box display="flex" flexDirection="row" gap={gutters(0.5)} paddingX={gutters(0.5)}>
-            {childrenRight}
-          </Box>
+          {childrenRight}
         </NavigationBarContent>
       </AppBar>
     </Slide>
