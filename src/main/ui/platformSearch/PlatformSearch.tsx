@@ -42,7 +42,8 @@ const PlatformSearch = () => {
 
   const defaultSearchOption = spaceNameId ? SearchScope.Space : SearchScope.Platform;
 
-  // search terms
+  // The code below is taken from the old SearchBar
+  // TODO refactor when there are no bigger priorities
 
   const navigate = useNavigate();
   const match = useMatch(SEARCH_ROUTE);
@@ -68,7 +69,7 @@ const PlatformSearch = () => {
     [setValue]
   );
 
-  const handleNavigateToSearchPage = useCallback(() => {
+  const handlePlatformSearch = useCallback(() => {
     if (match && isTermValid) {
       return;
     }
@@ -81,8 +82,6 @@ const PlatformSearch = () => {
     const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
     navigate(`${SEARCH_ROUTE}?${params}`);
   }, [match, isTermValid, value, navigate]);
-
-  // eof st
 
   const spaceSearchRoute = `${buildSpaceUrl(spaceNameId)}/search`;
 
@@ -97,7 +96,7 @@ const PlatformSearch = () => {
   const handleSearch = (scope: SearchScope) => {
     switch (scope) {
       case SearchScope.Platform: {
-        return handleNavigateToSearchPage();
+        return handlePlatformSearch();
       }
       case SearchScope.Space: {
         return handleSpaceSearch([getSearchTerms(value)]);
