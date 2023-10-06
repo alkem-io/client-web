@@ -50,7 +50,11 @@ const SearchBox = <Option extends string | number>({
     setIsExpanded(true);
   };
 
-  const handleCollapse = () => setIsExpanded(false);
+  const handleCollapse = () => {
+    if (!searchTerms) {
+      setIsExpanded(false);
+    }
+  };
 
   return (
     <ClickAwayListener onClickAway={handleCollapse}>
