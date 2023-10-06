@@ -79,7 +79,7 @@ const JourneyBreadcrumbs = () => {
   const breadcrumbItems: (JourneyBreadcrumbsItemProps & { key: string })[] = [
     {
       key: '_topLevel',
-      displayName: profile?.displayName ?? t('components.myDashboard'),
+      displayName: profile?.displayName ?? t('pages.home.title'),
       avatar: profile?.avatar,
       iconComponent: profile ? undefined : Logo,
       uri: ROUTE_HOME,

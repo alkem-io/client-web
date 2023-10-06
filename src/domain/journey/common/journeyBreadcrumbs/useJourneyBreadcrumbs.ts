@@ -6,7 +6,7 @@ import {
   useJourneyBreadcrumbsOpportunityQuery,
   useJourneyBreadcrumbsSpaceQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { getRawJourneyTypeName, JourneyTypeName } from '../../JourneyTypeName';
+import { getJourneyTypeName, JourneyTypeName } from '../../JourneyTypeName';
 
 export interface BreadcrumbsItem {
   displayName: string;
@@ -22,7 +22,7 @@ const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'challenge', 'opportunity']
 export const useJourneyBreadcrumbs = () => {
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  const journeyTypeName = getRawJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId });
+  const journeyTypeName = getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId });
 
   const currentJourneyIndex = journeyTypeName && JOURNEY_NESTING.indexOf(journeyTypeName);
 

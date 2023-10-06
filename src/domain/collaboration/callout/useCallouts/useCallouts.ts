@@ -7,16 +7,16 @@ import {
 import {
   AuthorizationPrivilege,
   Callout,
+  CalloutDisplayLocation,
+  CalloutsQueryVariables,
   CalloutType,
   CalloutVisibility,
+  CommentsWithMessagesFragment,
+  ContributeTabPostFragment,
+  ReferenceDetailsFragment,
   WhiteboardDetailsFragment,
   WhiteboardRtDetailsFragment,
   WhiteboardTemplate,
-  CommentsWithMessagesFragment,
-  ContributeTabPostFragment,
-  CalloutsQueryVariables,
-  ReferenceDetailsFragment,
-  CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutPostTemplate } from '../creationDialog/CalloutCreationDialog';
 import { useCallback, useMemo } from 'react';

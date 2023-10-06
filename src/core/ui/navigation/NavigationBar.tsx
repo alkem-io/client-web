@@ -41,12 +41,14 @@ interface NavigationBarProps {
   childrenRight?: ReactNode;
 }
 
+export const NAVIGATION_HEIGHT_GUTTERS = 4;
+
 const NavigationBar = ({ childrenLeft, childrenRight }: NavigationBarProps) => {
   const scrollTop = useScrollTop();
 
   const hasScrolledUp = useScrolledUp();
 
-  const navigationHeight = GUTTER_PX * 4;
+  const navigationHeight = GUTTER_PX * NAVIGATION_HEIGHT_GUTTERS;
 
   const hasScrolledPast = scrollTop > navigationHeight;
 

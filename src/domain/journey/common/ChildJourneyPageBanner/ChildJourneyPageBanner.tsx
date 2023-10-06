@@ -14,6 +14,7 @@ import { DEFAULT_BANNER_URL } from '../../../shared/components/PageHeader/Journe
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { NAVIGATION_HEIGHT_GUTTERS } from '../../../../core/ui/navigation/NavigationBar';
 
 interface ChildJourneyPageBannerProps extends JourneyPageBannerCardProps {
   banner: Visual | undefined;
@@ -32,7 +33,7 @@ const CardContainer = (props: JourneyPageBannerCardProps) => {
       marginX="auto"
       alignItems={cardStickSide === 'left' ? 'start' : 'stretch'}
       position="relative"
-      paddingTop={gutters(3)}
+      paddingTop={gutters(NAVIGATION_HEIGHT_GUTTERS - 1)}
     >
       <GridItem columns={8}>{({ width }) => <JourneyPageBannerCard maxWidth={width} {...props} />}</GridItem>
     </Gutters>
