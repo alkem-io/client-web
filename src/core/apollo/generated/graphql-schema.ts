@@ -1836,6 +1836,8 @@ export type Document = {
   tagset: Tagset;
   /** The uploaded date of this Document */
   uploadedDate: Scalars['DateTime'];
+  /** The URL to be used to retrieve the Document */
+  url: Scalars['String'];
 };
 
 export type EcosystemModel = {
@@ -2144,6 +2146,8 @@ export type LookupQueryResults = {
   community?: Maybe<Community>;
   /** Lookup the specified Context */
   context?: Maybe<Context>;
+  /** Lookup the specified Document */
+  document?: Maybe<Document>;
   /** Lookup the specified InnovationFlow */
   innovationFlow?: Maybe<InnovationFlow>;
   /** Lookup the specified InnovationFlow Template */
@@ -2199,6 +2203,10 @@ export type LookupQueryResultsCommunityArgs = {
 };
 
 export type LookupQueryResultsContextArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsDocumentArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3585,6 +3593,10 @@ export type Profile = {
   tagset?: Maybe<Tagset>;
   /** A list of named tagsets, each of which has a list of tags. */
   tagsets?: Maybe<Array<Tagset>>;
+  /** A type of entity that this Profile is being used with. */
+  type?: Maybe<ProfileType>;
+  /** The URL at which this profile can be viewed. */
+  url: Scalars['String'];
   /** A particular type of visual for this Profile. */
   visual?: Maybe<Visual>;
   /** A list of visuals for this Profile. */
@@ -3606,6 +3618,29 @@ export type ProfileCredentialVerified = {
   /** The vc. */
   vc: Scalars['String'];
 };
+
+export enum ProfileType {
+  CalendarEvent = 'CALENDAR_EVENT',
+  Callout = 'CALLOUT',
+  CalloutFraming = 'CALLOUT_FRAMING',
+  CalloutTemplate = 'CALLOUT_TEMPLATE',
+  Challenge = 'CHALLENGE',
+  Discussion = 'DISCUSSION',
+  InnovationFlow = 'INNOVATION_FLOW',
+  InnovationFlowTemplate = 'INNOVATION_FLOW_TEMPLATE',
+  InnovationHub = 'INNOVATION_HUB',
+  InnovationPack = 'INNOVATION_PACK',
+  Opportunity = 'OPPORTUNITY',
+  Organization = 'ORGANIZATION',
+  Post = 'POST',
+  PostTemplate = 'POST_TEMPLATE',
+  Space = 'SPACE',
+  User = 'USER',
+  UserGroup = 'USER_GROUP',
+  Whiteboard = 'WHITEBOARD',
+  WhiteboardRt = 'WHITEBOARD_RT',
+  WhiteboardTemplate = 'WHITEBOARD_TEMPLATE',
+}
 
 export type Project = {
   __typename?: 'Project';
@@ -4444,6 +4479,8 @@ export type StorageBucket = {
   allowedMimeTypes: Array<Scalars['String']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The list of child entries for this StorageBucket. */
+  childStorage: Array<StorageBucket>;
   /** A single Document */
   document?: Maybe<Document>;
   /** The list of Documents for this StorageBucket. */
@@ -4452,6 +4489,8 @@ export type StorageBucket = {
   id: Scalars['UUID'];
   /** Maximum allowed file size on this StorageBucket. */
   maxFileSize: Scalars['Float'];
+  /** The key information about the entity using this StorageBucket, if any. */
+  parentEntity?: Maybe<StorageBucketParent>;
   /** The aggregate size of all Documents for this StorageBucket. */
   size: Scalars['Float'];
 };
@@ -4463,6 +4502,16 @@ export type StorageBucketDocumentArgs = {
 export type StorageBucketDocumentsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type StorageBucketParent = {
+  __typename?: 'StorageBucketParent';
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The type of entity that this StorageBucket is being used with. */
+  type: ProfileType;
+  /** The URL that can be used to access the parent entity. */
+  url: Scalars['String'];
 };
 
 export type StorageBucketUploadFileInput = {
@@ -16831,7 +16880,11 @@ export type CreateGroupOnCommunityMutationVariables = Exact<{
 
 export type CreateGroupOnCommunityMutation = {
   __typename?: 'Mutation';
-  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
+  createGroupOnCommunity: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type ChallengesWithProfileQueryVariables = Exact<{
@@ -18683,7 +18736,11 @@ export type UserCardFragment = {
   };
 };
 
-export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
+export type GroupDetailsFragment = {
+  __typename?: 'UserGroup';
+  id: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+};
 
 export type GroupInfoFragment = {
   __typename?: 'UserGroup';

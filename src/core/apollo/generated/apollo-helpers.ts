@@ -959,6 +959,7 @@ export type DocumentKeySpecifier = (
   | 'size'
   | 'tagset'
   | 'uploadedDate'
+  | 'url'
   | DocumentKeySpecifier
 )[];
 export type DocumentFieldPolicy = {
@@ -971,6 +972,7 @@ export type DocumentFieldPolicy = {
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
@@ -1248,6 +1250,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
+  | 'document'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
   | 'invitation'
@@ -1270,6 +1273,7 @@ export type LookupQueryResultsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1893,6 +1897,8 @@ export type ProfileKeySpecifier = (
   | 'tagline'
   | 'tagset'
   | 'tagsets'
+  | 'type'
+  | 'url'
   | 'visual'
   | 'visuals'
   | ProfileKeySpecifier
@@ -1908,6 +1914,8 @@ export type ProfileFieldPolicy = {
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
   visual?: FieldPolicy<any> | FieldReadFunction<any>;
   visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2430,21 +2438,31 @@ export type SpaceFieldPolicy = {
 export type StorageBucketKeySpecifier = (
   | 'allowedMimeTypes'
   | 'authorization'
+  | 'childStorage'
   | 'document'
   | 'documents'
   | 'id'
   | 'maxFileSize'
+  | 'parentEntity'
   | 'size'
   | StorageBucketKeySpecifier
 )[];
 export type StorageBucketFieldPolicy = {
   allowedMimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  childStorage?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   documents?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentEntity?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type StorageBucketParentKeySpecifier = ('displayName' | 'type' | 'url' | StorageBucketParentKeySpecifier)[];
+export type StorageBucketParentFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageConfigKeySpecifier = ('file' | StorageConfigKeySpecifier)[];
 export type StorageConfigFieldPolicy = {
@@ -3349,6 +3367,10 @@ export type StrictTypedTypePolicies = {
   StorageBucket?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageBucketKeySpecifier | (() => undefined | StorageBucketKeySpecifier);
     fields?: StorageBucketFieldPolicy;
+  };
+  StorageBucketParent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | StorageBucketParentKeySpecifier | (() => undefined | StorageBucketParentKeySpecifier);
+    fields?: StorageBucketParentFieldPolicy;
   };
   StorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageConfigKeySpecifier | (() => undefined | StorageConfigKeySpecifier);

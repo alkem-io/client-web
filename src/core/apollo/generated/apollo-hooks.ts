@@ -1664,7 +1664,10 @@ export const MessagingUserInformationFragmentDoc = gql`
 export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
-    name
+    profile {
+      id
+      displayName
+    }
   }
 `;
 export const GroupInfoFragmentDoc = gql`
