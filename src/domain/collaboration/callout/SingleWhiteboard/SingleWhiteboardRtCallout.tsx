@@ -91,7 +91,7 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
             <ImageWithCaption
               caption={t('callout.singleWhiteboard.clickToSee')}
               src={callout.whiteboardRt.profile.preview?.uri}
-              alt={callout.profile.displayName}
+              alt={callout.framing.profile.displayName}
               defaultImage={<WhiteboardIcon />}
               onClick={() => setIsWhiteboardDialogOpen(true)}
             />

@@ -17,7 +17,7 @@ const JourneyCalloutsListItemTitle = ({ callout }: JourneyCalloutsListItemTitleP
 
   return (
     <EllipsableWithCount count={callout.activity}>
-      {callout.profile.displayName}
+      {callout.framing.profile.displayName}
       {SEPARATOR}
       {flowState && (
         <strong>

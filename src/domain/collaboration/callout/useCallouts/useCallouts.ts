@@ -36,6 +36,16 @@ interface CalloutChildTypePropName {
 }
 
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
+// export type CalloutFraming = {
+//   profile: {
+//     id: string;
+//     displayName: string;
+//     description?: string;
+//     tagset?: Tagset;
+//     displayLocationTagset?: Tagset;
+//   };
+//   whiteboard:
+// };
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
 export type WhiteboardRtFragmentWithCallout = WhiteboardRtDetailsFragment & { calloutNameId: string };
@@ -79,12 +89,16 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
     | CalloutTypesWithChildTypes[CalloutType.Whiteboard]
     | CalloutTypesWithChildTypes[CalloutType.WhiteboardRt]
   ) & {
-    profile: {
-      id: string;
-      displayName: string;
-      description?: string;
-      tagset?: Tagset;
-      displayLocationTagset?: Tagset;
+    framing: {
+      profile: {
+        id: string;
+        displayName: string;
+        description?: string;
+        tagset?: Tagset;
+        displayLocationTagset?: Tagset;
+      };
+      whiteboard: WhiteboardFragmentWithCallout;
+      whiteboardRt: WhiteboardRtFragmentWithCallout;
     };
     draft: boolean;
     editable: boolean;
@@ -167,18 +181,27 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       collaboration?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const innovationFlowTagset = callout.profile.tagsets?.find(
+        const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
-        const displayLocationTagset = callout.profile.tagsets?.find(
+        const displayLocationTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
         );
         const flowStates = innovationFlowTagset?.tags;
         return {
           ...callout,
+          framing: {
+            profile: callout.framing.profile,
+            whiteboard: callout.framing.whiteboard
+              ? { ...callout.framing.whiteboard, calloutNameId: callout.nameID }
+              : undefined,
+            whiteboardRt: callout.framing.whiteboardRt
+              ? { ...callout.framing.whiteboardRt, calloutNameId: callout.nameID }
+              : undefined,
+          },
           // Add calloutNameId to all whiteboards
           whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
-          whiteboardRt: callout.whiteboardRt ? { ...callout.whiteboardRt, calloutNameId: callout.nameID } : undefined,
+          // whiteboardRt: callout.whiteboardRt ? { ...callout.whiteboardRt, calloutNameId: callout.nameID } : undefined,
           comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
           authorization,
           draft,
@@ -205,7 +228,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     [collaboration]
   );
 
-  const calloutNames = useMemo(() => callouts?.map(c => c.profile.displayName) ?? [], [callouts]);
+  const calloutNames = useMemo(() => callouts?.map(c => c.framing.profile.displayName) ?? [], [callouts]);
 
   const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
 
@@ -229,7 +252,8 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const groupedCallouts = useMemo(() => {
     return groupBy(
       sortedCallouts,
-      callout => getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags) ?? UNGROUPED_CALLOUTS_GROUP
+      callout =>
+        getCalloutDisplayLocationValue(callout.framing.profile.displayLocationTagset?.tags) ?? UNGROUPED_CALLOUTS_GROUP
     ) as Record<CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP, TypedCallout[] | undefined>;
   }, [sortedCallouts]);
 

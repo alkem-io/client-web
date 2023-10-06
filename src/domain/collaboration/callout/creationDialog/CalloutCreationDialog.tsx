@@ -131,11 +131,16 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       let result: Identifiable | undefined;
       try {
         const newCallout: CalloutCreationTypeWithPreviewImages = {
-          profile: {
-            displayName: callout.displayName!,
-            description: callout.description!,
-            referencesData: callout.references!,
-            tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+          framing: {
+            profile: {
+              displayName: callout.displayName!,
+              description: callout.description!,
+              referencesData: callout.references!,
+              tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+            },
+            whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
+            whiteboardRt:
+              callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           },
           tags: callout.tags,
           type: callout.type!,
@@ -144,9 +149,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           whiteboardTemplate:
             callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
           displayLocation,
-          whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
-          whiteboardRt:
-            callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
+
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
         };

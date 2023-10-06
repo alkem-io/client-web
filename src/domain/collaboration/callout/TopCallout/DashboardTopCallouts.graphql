@@ -7,10 +7,12 @@ fragment DashboardTopCallouts on Collaboration {
 fragment DashboardTopCallout on Callout {
   id
   nameID
-  profile {
-    id
-    displayName
-    description
+  framing {
+    profile {
+      id
+      displayName
+      description
+    }
   }
   type
   visibility

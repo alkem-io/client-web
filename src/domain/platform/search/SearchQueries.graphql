@@ -111,9 +111,11 @@ fragment PostParent on SearchResultPost {
   callout {
     id
     nameID
-    profile {
-      id
-      displayName
+    framing {
+      profile {
+        id
+        displayName
+      }
     }
   }
 }

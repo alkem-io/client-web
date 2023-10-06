@@ -156,8 +156,10 @@ fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
   id
   callouts(IDs: [$calloutId]) {
     id
-    profile {
-      ...ProfileStorageConfig
+    framing {
+      profile {
+        ...ProfileStorageConfig
+      }
     }
   }
 }

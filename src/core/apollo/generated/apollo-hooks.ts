@@ -99,11 +99,13 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       type
       activity
       sortOrder
-      profile {
-        id
-        displayName
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
+      framing {
+        profile {
+          id
+          displayName
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
         }
       }
     }
@@ -165,9 +167,11 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
       id
       nameID
       type
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -177,9 +181,11 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     post {
@@ -199,9 +205,11 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     reference {
@@ -217,9 +225,11 @@ export const ActivityLogCalloutPostCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     post {
@@ -237,9 +247,11 @@ export const ActivityLogCalloutWhiteboardCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     whiteboard {
@@ -257,9 +269,11 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -602,21 +616,29 @@ export const CalloutFragmentDoc = gql`
     id
     nameID
     type
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
+    framing {
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        tagsets {
+          ...TagsetDetails
+        }
+        references {
+          ...ReferenceDetails
+        }
+        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          ...TagsetDetails
+        }
       }
-      tagsets {
-        ...TagsetDetails
+      whiteboard {
+        ...WhiteboardDetails
       }
-      references {
-        ...ReferenceDetails
-      }
-      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-        ...TagsetDetails
+      whiteboardRt {
+        ...WhiteboardRtDetails
       }
     }
     state
@@ -624,9 +646,6 @@ export const CalloutFragmentDoc = gql`
     activity
     whiteboards {
       ...WhiteboardDetails
-    }
-    whiteboardRt {
-      ...WhiteboardRtDetails
     }
     comments {
       ...CommentsWithMessages
@@ -1002,8 +1021,10 @@ export const CalloutWithWhiteboardRtFragmentDoc = gql`
       anonymousReadAccess
       myPrivileges
     }
-    whiteboardRt {
-      ...WhiteboardRtDetails
+    framing {
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
     }
   }
   ${WhiteboardRtDetailsFragmentDoc}
@@ -1023,8 +1044,10 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
       whiteboards {
         ...WhiteboardDetails
       }
-      whiteboardRt {
-        ...WhiteboardRtDetails
+      framing {
+        whiteboardRt {
+          ...WhiteboardRtDetails
+        }
       }
     }
   }
@@ -1879,10 +1902,12 @@ export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
     nameID
-    profile {
-      id
-      displayName
-      description
+    framing {
+      profile {
+        id
+        displayName
+        description
+      }
     }
     type
     visibility
@@ -3022,9 +3047,11 @@ export const PostParentFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -3260,8 +3287,10 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
     id
     callouts(IDs: [$calloutId]) {
       id
-      profile {
-        ...ProfileStorageConfig
+      framing {
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }
@@ -4860,10 +4889,12 @@ export const UpdateCalloutFlowStateDocument = gql`
     ) {
       id
       sortOrder
-      profile {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
+      framing {
+        profile {
+          id
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
         }
       }
     }
@@ -5787,20 +5818,22 @@ export const UpdateCalloutDocument = gql`
   mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
     updateCallout(calloutData: $calloutData) {
       id
-      profile {
-        id
-        description
-        displayName
-        tagset {
-          ...TagsetDetails
-        }
-        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-          ...TagsetDetails
-        }
-        references {
+      framing {
+        profile {
           id
-          name
-          uri
+          description
+          displayName
+          tagset {
+            ...TagsetDetails
+          }
+          displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+          }
         }
       }
       state

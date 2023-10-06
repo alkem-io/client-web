@@ -182,7 +182,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
 
   const { profile } =
     journey ??
-    callout ??
+    callout?.framing ??
     post ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??

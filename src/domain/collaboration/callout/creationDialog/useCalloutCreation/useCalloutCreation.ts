@@ -22,19 +22,21 @@ import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/Callou
 import { WhiteboardRtFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
 
 export interface CalloutCreationType {
-  profile: {
-    description: string;
-    displayName: string;
-    referencesData: Reference[];
-    tagsets?: CreateTagsetInput[];
+  framing: {
+    profile: {
+      description: string;
+      displayName: string;
+      referencesData: Reference[];
+      tagsets?: CreateTagsetInput[];
+    };
+    whiteboard?: WhiteboardFieldSubmittedValues;
+    whiteboardRt?: WhiteboardRtFieldSubmittedValues;
   };
   tags?: string[];
   type: CalloutType;
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValues;
-  whiteboardRt?: WhiteboardRtFieldSubmittedValues;
   displayLocation?: CalloutDisplayLocation;
   visibility?: CalloutVisibility;
   sendNotification?: boolean;

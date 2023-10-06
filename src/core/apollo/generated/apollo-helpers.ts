@@ -546,18 +546,17 @@ export type CalloutKeySpecifier = (
   | 'authorization'
   | 'comments'
   | 'createdBy'
+  | 'framing'
   | 'id'
   | 'nameID'
   | 'postTemplate'
   | 'posts'
-  | 'profile'
   | 'publishedBy'
   | 'publishedDate'
   | 'sortOrder'
   | 'state'
   | 'type'
   | 'visibility'
-  | 'whiteboardRt'
   | 'whiteboardTemplate'
   | 'whiteboards'
   | CalloutKeySpecifier
@@ -567,18 +566,17 @@ export type CalloutFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  framing?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   posts?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -597,14 +595,16 @@ export type CalloutFramingKeySpecifier = (
   | 'authorization'
   | 'id'
   | 'profile'
-  | 'whiteboardContent'
+  | 'whiteboard'
+  | 'whiteboardRt'
   | CalloutFramingKeySpecifier
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
@@ -959,6 +959,7 @@ export type DocumentKeySpecifier = (
   | 'size'
   | 'tagset'
   | 'uploadedDate'
+  | 'url'
   | DocumentKeySpecifier
 )[];
 export type DocumentFieldPolicy = {
@@ -971,6 +972,7 @@ export type DocumentFieldPolicy = {
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
@@ -1248,6 +1250,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
+  | 'document'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
   | 'invitation'
@@ -1270,6 +1273,7 @@ export type LookupQueryResultsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;

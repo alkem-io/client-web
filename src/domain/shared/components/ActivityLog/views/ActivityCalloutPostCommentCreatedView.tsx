@@ -7,9 +7,10 @@ import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDesc
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { NameableEntity } from '../../../types/NameableEntity';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { ActivityCalloutValues } from '../../../types/ActivityCalloutValues';
 
 interface ActivityCalloutPostCommentCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
+  callout: ActivityCalloutValues;
   card: NameableEntity;
   description: string;
 }

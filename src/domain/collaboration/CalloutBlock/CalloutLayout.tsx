@@ -47,13 +47,15 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   callout: {
     id: string;
     nameID: string;
-    profile: {
-      id: string;
-      displayName: string;
-      description?: string;
-      references?: Reference[];
-      tagset?: Tagset;
-      displayLocationTagset?: Tagset;
+    framing: {
+      profile: {
+        id: string;
+        displayName: string;
+        description?: string;
+        references?: Reference[];
+        tagset?: Tagset;
+        displayLocationTagset?: Tagset;
+      };
     };
     comments?: {
       messages: MessageDetailsFragment[] | undefined;
@@ -213,16 +215,16 @@ const CalloutLayout = ({
             })}`}
           </Authorship>
         )}
-        {!hasCalloutDetails && <BlockTitle noWrap>{callout.profile.displayName}</BlockTitle>}
+        {!hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
       </DialogHeader>
       <Gutters minHeight={0} paddingTop={0}>
-        {hasCalloutDetails && <BlockTitle>{callout.profile.displayName}</BlockTitle>}
+        {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}
         <Box sx={{ wordWrap: 'break-word' }}>
-          <WrapperMarkdown>{callout.profile.description ?? ''}</WrapperMarkdown>
+          <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
         </Box>
-        {!skipReferences && <References compact references={callout.profile.references} />}
-        {callout.profile.tagset?.tags && callout.profile.tagset?.tags.length > 0 ? (
-          <TagsComponent tags={callout.profile.tagset?.tags} />
+        {!skipReferences && <References compact references={callout.framing.profile.references} />}
+        {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
+          <TagsComponent tags={callout.framing.profile.tagset?.tags} />
         ) : undefined}
         {children}
       </Gutters>

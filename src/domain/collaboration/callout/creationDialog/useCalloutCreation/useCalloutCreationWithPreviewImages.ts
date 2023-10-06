@@ -5,7 +5,7 @@ import { useUploadWhiteboardVisuals } from '../../../whiteboard/WhiteboardPrevie
 import { CalloutCreationType, CalloutCreationUtils, useCalloutCreation } from './useCalloutCreation';
 import { CalloutType, CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
 
-export interface CalloutCreationTypeWithPreviewImages extends Omit<CalloutCreationType, 'whiteboard'> {
+export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   whiteboardRt?: WhiteboardRtFieldSubmittedValuesWithPreviewImages;
 }
@@ -52,7 +52,7 @@ export const useCalloutCreationWithPreviewImages = (initialOpened = false): Call
           callout.type === CalloutType.Whiteboard
             ? result?.whiteboards?.[0]
             : callout.type === CalloutType.WhiteboardRt
-            ? result?.whiteboardRt
+            ? result?.framing.whiteboardRt
             : undefined;
         if (whiteboard && whiteboard.profile) {
           await uploadVisuals(

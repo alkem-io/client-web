@@ -187,7 +187,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
                       disablePortal
                       options={calloutsOfTypePost ?? []}
                       value={callouts?.find(({ id }) => id === targetCalloutId) ?? null!}
-                      getOptionLabel={callout => callout.profile.displayName}
+                      getOptionLabel={callout => callout.framing.profile.displayName}
                       onChange={(event, callout) => {
                         setTargetCalloutId(callout?.id);
                       }}

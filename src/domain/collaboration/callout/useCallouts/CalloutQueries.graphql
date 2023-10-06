@@ -50,21 +50,29 @@ fragment Callout on Callout {
   id
   nameID
   type
-  profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
+  framing {
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      references {
+        ...ReferenceDetails
+      }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
+      }
     }
-    tagsets {
-      ...TagsetDetails
+    whiteboard {
+      ...WhiteboardDetails
     }
-    references {
-      ...ReferenceDetails
-    }
-    displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-      ...TagsetDetails
+    whiteboardRt {
+      ...WhiteboardRtDetails
     }
   }
   state
@@ -72,9 +80,6 @@ fragment Callout on Callout {
   activity
   whiteboards {
     ...WhiteboardDetails
-  }
-  whiteboardRt {
-    ...WhiteboardRtDetails
   }
   comments {
     ...CommentsWithMessages

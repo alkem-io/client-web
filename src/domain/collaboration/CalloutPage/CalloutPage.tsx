@@ -123,7 +123,9 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     return renderPage();
   }
 
-  const calloutDisplayLocation = getCalloutDisplayLocationValue(typedCallout.profile.displayLocationTagset?.tags);
+  const calloutDisplayLocation = getCalloutDisplayLocationValue(
+    typedCallout.framing.profile.displayLocationTagset?.tags
+  );
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 

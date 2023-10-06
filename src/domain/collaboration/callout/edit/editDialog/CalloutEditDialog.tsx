@@ -58,13 +58,13 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
-    displayName: callout.profile.displayName,
+    displayName: callout.framing.profile.displayName,
     type: callout.type,
-    description: callout.profile.description,
+    description: callout.framing.profile.description,
     state: callout.state,
-    references: callout.profile.references,
-    profileId: callout.profile.id,
-    tags: callout.profile.tagset?.tags,
+    references: callout.framing.profile.references,
+    profileId: callout.framing.profile.id,
+    tags: callout.framing.profile.tagset?.tags,
     postTemplateData: {
       profile: {
         displayName: '',
@@ -79,7 +79,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
-    displayLocation: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
+    displayLocation: getCalloutDisplayLocationValue(callout.framing.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
@@ -101,7 +101,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         references: newCallout.references,
         tagsets: [
           {
-            id: callout.profile.tagset?.id,
+            id: callout.framing.profile.tagset?.id,
             name: 'default',
             tags: newCallout.tags,
             allowedValues: [],

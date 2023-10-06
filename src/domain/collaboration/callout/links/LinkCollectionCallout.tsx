@@ -146,9 +146,12 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     }, [deletingReferenceId, closeEditDialog, setDeletingReferenceId, onCalloutUpdate, deleteReference, callout]);
 
     // List References:
-    const limitedReferences = useMemo(() => callout.profile.references?.slice(0, MAX_REFERENCES_NORMALVIEW), [callout]);
+    const limitedReferences = useMemo(
+      () => callout.framing.profile.references?.slice(0, MAX_REFERENCES_NORMALVIEW),
+      [callout]
+    );
     const isListTruncated = useMemo(
-      () => (callout.profile.references?.length ?? 0) > MAX_REFERENCES_NORMALVIEW,
+      () => (callout.framing.profile.references?.length ?? 0) > MAX_REFERENCES_NORMALVIEW,
       [callout]
     );
 
@@ -173,7 +176,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             disableMarginal
           >
             <References
-              references={expanded ? callout.profile.references : limitedReferences}
+              references={expanded ? callout.framing.profile.references : limitedReferences}
               noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
               canEdit={canEditLinks}
               onEdit={ref => setEditReference(ref)}
@@ -185,7 +188,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             >
               {isListTruncated && !expanded && (
                 <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-                  {t('callout.link-collection.more-links', { count: callout.profile.references?.length })}
+                  {t('callout.link-collection.more-links', { count: callout.framing.profile.references?.length })}
                 </Caption>
               )}
               {canAddLinks && (
@@ -196,7 +199,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             </Box>
             <CreateReferencesDialog
               open={addNewReferenceDialogOpen}
-              title={<Box>{t('callout.link-collection.add-link', { title: callout.profile.displayName })}</Box>}
+              title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
               onClose={closeAddNewDialog}
               onAddMore={getNewReferenceId}
               onRemove={removeNewReference}
@@ -221,7 +224,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               }}
               entities={{
                 titleId: 'callout.link-collection.delete-confirm-title',
-                content: t('callout.link-collection.delete-confirm', { title: callout.profile.displayName }),
+                content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
                 confirmButtonTextId: 'buttons.delete',
               }}
             />

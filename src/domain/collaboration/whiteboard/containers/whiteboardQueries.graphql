@@ -144,8 +144,10 @@ fragment CalloutWithWhiteboardRt on Callout {
     anonymousReadAccess
     myPrivileges
   }
-  whiteboardRt {
-    ...WhiteboardRtDetails
+  framing {
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
   }
 }
 
@@ -163,8 +165,10 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
     whiteboards {
       ...WhiteboardDetails
     }
-    whiteboardRt {
-      ...WhiteboardRtDetails
+    framing {
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
     }
   }
 }
