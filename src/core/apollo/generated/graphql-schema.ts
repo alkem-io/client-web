@@ -2144,6 +2144,8 @@ export type LookupQueryResults = {
   community?: Maybe<Community>;
   /** Lookup the specified Context */
   context?: Maybe<Context>;
+  /** Lookup the specified Document */
+  document?: Maybe<Document>;
   /** Lookup the specified InnovationFlow */
   innovationFlow?: Maybe<InnovationFlow>;
   /** Lookup the specified InnovationFlow Template */
@@ -2199,6 +2201,10 @@ export type LookupQueryResultsCommunityArgs = {
 };
 
 export type LookupQueryResultsContextArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsDocumentArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -28344,6 +28350,36 @@ export type InnovationPackStorageConfigQuery = {
           }
         | undefined;
     };
+  };
+};
+
+export type InnovationHubStorageConfigQueryVariables = Exact<{
+  innovationHubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type InnovationHubStorageConfigQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
   };
 };
 

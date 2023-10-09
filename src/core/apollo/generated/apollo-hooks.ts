@@ -21934,6 +21934,74 @@ export function refetchInnovationPackStorageConfigQuery(
   return { query: InnovationPackStorageConfigDocument, variables: variables };
 }
 
+export const InnovationHubStorageConfigDocument = gql`
+  query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
+    platform {
+      id
+      innovationHub(id: $innovationHubId) {
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubStorageConfigQuery({
+ *   variables: {
+ *      innovationHubId: // value for 'innovationHubId'
+ *   },
+ * });
+ */
+export function useInnovationHubStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >(InnovationHubStorageConfigDocument, options);
+}
+
+export function useInnovationHubStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >(InnovationHubStorageConfigDocument, options);
+}
+
+export type InnovationHubStorageConfigQueryHookResult = ReturnType<typeof useInnovationHubStorageConfigQuery>;
+export type InnovationHubStorageConfigLazyQueryHookResult = ReturnType<typeof useInnovationHubStorageConfigLazyQuery>;
+export type InnovationHubStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubStorageConfigQuery,
+  SchemaTypes.InnovationHubStorageConfigQueryVariables
+>;
+export function refetchInnovationHubStorageConfigQuery(
+  variables: SchemaTypes.InnovationHubStorageConfigQueryVariables
+) {
+  return { query: InnovationHubStorageConfigDocument, variables: variables };
+}
+
 export const PlatformStorageConfigDocument = gql`
   query PlatformStorageConfig {
     platform {

@@ -107,7 +107,7 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
           <Button component={RouterLink} to="../" startIcon={<ArrowBackIcon />}>
             {t('pages.admin.innovationHubs.back')}
           </Button>
-          <StorageConfigContextProvider locationType="organization" organizationId={undefined}>
+          <StorageConfigContextProvider locationType="innovationHub" innovationHubId={data?.platform.innovationHub?.id}>
             <InnovationHubForm
               nameID={innovationHub?.nameID}
               profile={innovationHub?.profile}
