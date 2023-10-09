@@ -582,6 +582,17 @@ export type CalloutFieldPolicy = {
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributionDefaultsKeySpecifier = (
+  | 'id'
+  | 'postDescription'
+  | 'whiteboardContent'
+  | CalloutContributionDefaultsKeySpecifier
+)[];
+export type CalloutContributionDefaultsFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutContributionPolicyKeySpecifier = (
   | 'allowedContributionTypes'
   | 'id'
@@ -595,49 +606,38 @@ export type CalloutContributionPolicyFieldPolicy = {
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
+  | 'content'
   | 'id'
   | 'profile'
-  | 'whiteboardContent'
   | CalloutFramingKeySpecifier
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CalloutResponseDefaultsKeySpecifier = (
-  | 'id'
-  | 'postDescription'
-  | 'whiteboardContent'
-  | CalloutResponseDefaultsKeySpecifier
-)[];
-export type CalloutResponseDefaultsFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type CalloutTemplateKeySpecifier = (
   | 'authorization'
+  | 'contributionDefaults'
+  | 'contributionPolicy'
   | 'framing'
   | 'id'
   | 'profile'
-  | 'responseDefaults'
-  | 'responsePolicy'
   | CalloutTemplateKeySpecifier
 )[];
 export type CalloutTemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  responseDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
-  responsePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
   | 'agent'
@@ -1897,8 +1897,6 @@ export type ProfileKeySpecifier = (
   | 'tagline'
   | 'tagset'
   | 'tagsets'
-  | 'type'
-  | 'url'
   | 'visual'
   | 'visuals'
   | ProfileKeySpecifier
@@ -1914,8 +1912,6 @@ export type ProfileFieldPolicy = {
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  url?: FieldPolicy<any> | FieldReadFunction<any>;
   visual?: FieldPolicy<any> | FieldReadFunction<any>;
   visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2438,31 +2434,21 @@ export type SpaceFieldPolicy = {
 export type StorageBucketKeySpecifier = (
   | 'allowedMimeTypes'
   | 'authorization'
-  | 'childStorage'
   | 'document'
   | 'documents'
   | 'id'
   | 'maxFileSize'
-  | 'parentEntity'
   | 'size'
   | StorageBucketKeySpecifier
 )[];
 export type StorageBucketFieldPolicy = {
   allowedMimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  childStorage?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   documents?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentEntity?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type StorageBucketParentKeySpecifier = ('displayName' | 'type' | 'url' | StorageBucketParentKeySpecifier)[];
-export type StorageBucketParentFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageConfigKeySpecifier = ('file' | StorageConfigKeySpecifier)[];
 export type StorageConfigFieldPolicy = {
@@ -2919,6 +2905,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutKeySpecifier | (() => undefined | CalloutKeySpecifier);
     fields?: CalloutFieldPolicy;
   };
+  CalloutContributionDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributionDefaultsKeySpecifier
+      | (() => undefined | CalloutContributionDefaultsKeySpecifier);
+    fields?: CalloutContributionDefaultsFieldPolicy;
+  };
   CalloutContributionPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -2933,10 +2926,6 @@ export type StrictTypedTypePolicies = {
   CalloutPostCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);
     fields?: CalloutPostCreatedFieldPolicy;
-  };
-  CalloutResponseDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CalloutResponseDefaultsKeySpecifier | (() => undefined | CalloutResponseDefaultsKeySpecifier);
-    fields?: CalloutResponseDefaultsFieldPolicy;
   };
   CalloutTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutTemplateKeySpecifier | (() => undefined | CalloutTemplateKeySpecifier);
@@ -3367,10 +3356,6 @@ export type StrictTypedTypePolicies = {
   StorageBucket?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageBucketKeySpecifier | (() => undefined | StorageBucketKeySpecifier);
     fields?: StorageBucketFieldPolicy;
-  };
-  StorageBucketParent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | StorageBucketParentKeySpecifier | (() => undefined | StorageBucketParentKeySpecifier);
-    fields?: StorageBucketParentFieldPolicy;
   };
   StorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageConfigKeySpecifier | (() => undefined | StorageConfigKeySpecifier);

@@ -12794,7 +12794,10 @@ export const CreateGroupOnOrganizationDocument = gql`
   mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
     createGroupOnOrganization(groupData: $input) {
       id
-      name
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
