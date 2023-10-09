@@ -1,13 +1,17 @@
-import React, { MouseEventHandler, ReactElement, useState } from 'react';
+import React, { cloneElement, MouseEventHandler, ReactElement, useState } from 'react';
 import { ClickAwayListener, Tooltip, TooltipProps } from '@mui/material';
 
 export interface TriggerProps {
   onClick?: MouseEventHandler;
 }
 
+interface TitleProps {
+  onClose?: () => void;
+}
+
 interface ClickableTooltipProps extends Omit<TooltipProps, 'children'> {
   children: ({ onClick }: TriggerProps) => ReactElement;
-  title: ReactElement;
+  title: ReactElement<TitleProps>;
 }
 
 enum OpenTriggerAction {
@@ -25,7 +29,7 @@ const ClickableTooltip = ({ title, children, ...tooltipProps }: ClickableTooltip
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Tooltip
-        title={title}
+        title={cloneElement(title, { onClose: () => setOpenBy(null) })}
         open={!!openBy}
         onOpen={() => setOpenBy(OpenTriggerAction.Hover)}
         onClose={() => setOpenBy(prevOpenBy => (prevOpenBy === OpenTriggerAction.Hover ? null : prevOpenBy))}
