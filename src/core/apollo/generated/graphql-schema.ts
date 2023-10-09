@@ -18203,7 +18203,13 @@ export type OrganizationGroupsQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
-    groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
+    groups?:
+      | Array<{
+          __typename?: 'UserGroup';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
   };
 };
 

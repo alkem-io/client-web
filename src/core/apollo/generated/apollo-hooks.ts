@@ -13065,7 +13065,10 @@ export const OrganizationGroupsDocument = gql`
       id
       groups {
         id
-        name
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
