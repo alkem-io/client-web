@@ -75,7 +75,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
           .filter(user => user.id !== currentUser?.user.id)
       )
     );
-  }, [currentUser?.user.id, data?.usersPaginated.users, field.value, inputValue]);
+  }, [currentUser?.user.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
 
   const breakpoint = useCurrentBreakpoint();
 

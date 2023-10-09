@@ -47,7 +47,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
       applications
         ?.filter(application => application.lifecycle.state === 'new')
         .map(application => application.user.id) ?? [],
-    [applications, loading]
+    [applications]
   );
 
   const currentInvitationsUserIds = useMemo(
@@ -55,9 +55,10 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
       invitations
         ?.filter(invitation => invitation.lifecycle.state === 'invited')
         .map(invitation => invitation.user.id) ?? [],
-    [invitations, loading]
+    [invitations]
   );
-  const currentMembersIds = useMemo(() => users.map(user => user.id), [users, loading]);
+
+  const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
   if (!spaceId || isLoadingSpace) {
     return null;
