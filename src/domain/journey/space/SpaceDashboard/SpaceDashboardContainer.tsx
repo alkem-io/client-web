@@ -18,8 +18,6 @@ import {
   Reference,
   SpacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
-import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
@@ -40,8 +38,6 @@ export interface SpaceContainerEntities {
   activities: ActivityLogResultType[] | undefined;
   fetchMoreActivities: (limit: number) => void;
   activityLoading: boolean;
-  postsCount: number | undefined;
-  whiteboardsCount: number | undefined;
   references: Reference[] | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
@@ -111,9 +107,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
-  const postsCount = usePostsCount(_space?.space.metrics);
-  const whiteboardsCount = useWhiteboardsCount(_space?.space.metrics);
-
   const references = referencesData?.space?.profile.references;
 
   const hostOrganizations = useMemo(() => (_space?.space.host ? [_space.space.host] : []), [_space]);
@@ -152,8 +145,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
           permissions,
           isAuthenticated,
           isMember,
-          postsCount,
-          whiteboardsCount,
           references,
           activities,
           fetchMoreActivities,

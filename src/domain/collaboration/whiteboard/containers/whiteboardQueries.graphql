@@ -130,8 +130,10 @@ fragment CalloutWithWhiteboard on Callout {
     anonymousReadAccess
     myPrivileges
   }
-  whiteboards(IDs: [$whiteboardId]) {
-    ...WhiteboardDetails
+  contributions(IDs: [$whiteboardId]) {
+    whiteboard {
+      ...WhiteboardDetails
+    }
   }
 }
 
@@ -162,8 +164,10 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       anonymousReadAccess
       myPrivileges
     }
-    whiteboards {
-      ...WhiteboardDetails
+    contributions {
+      whiteboard {
+        ...WhiteboardDetails
+      }
     }
     framing {
       whiteboardRt {
@@ -237,9 +241,11 @@ query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $white
   }
 }
 
-mutation createWhiteboardOnCallout($input: CreateWhiteboardOnCalloutInput!) {
-  createWhiteboardOnCallout(whiteboardData: $input) {
-    ...WhiteboardDetails
+mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $input) {
+    whiteboard {
+      ...WhiteboardDetails
+    }
   }
 }
 

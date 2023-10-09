@@ -142,14 +142,14 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             whiteboardRt:
               callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           },
+          // add contribution defaults
           tags: callout.tags,
           type: callout.type!,
-          state: callout.state!,
-          postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
-          whiteboardTemplate:
-            callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
+          contributionPolicy: {
+            allowedContributionTypes: [],
+            state: callout.state!,
+          },
           displayLocation,
-
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
         };

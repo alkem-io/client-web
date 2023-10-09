@@ -77,9 +77,9 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
     fetchPolicy: 'cache-and-network',
   });
-  const spacePost = getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(
-    x => x.nameID === postNameId
-  );
+  const spacePost = getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.contributions?.find(
+    x => x.post && x.post.nameID === postNameId
+  )?.post;
 
   const {
     data: challengeData,
@@ -93,7 +93,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   const challengePost = getCardCallout(
     challengeData?.space?.challenge?.collaboration?.callouts,
     postNameId
-  )?.posts?.find(x => x.nameID === postNameId);
+  )?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
 
   const {
     data: opportunityData,
@@ -107,21 +107,22 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   const opportunityPost = getCardCallout(
     opportunityData?.space?.opportunity?.collaboration?.callouts,
     postNameId
-  )?.posts?.find(x => x.nameID === postNameId);
+  )?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
 
   const post = spacePost ?? challengePost ?? opportunityPost;
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 
   const roomId = compact([
-    getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(x => x.nameID === postNameId)
-      ?.comments.id,
-    getCardCallout(challengeData?.space?.challenge?.collaboration?.callouts, postNameId)?.posts?.find(
-      x => x.nameID === postNameId
-    )?.comments.id,
-    getCardCallout(opportunityData?.space?.opportunity?.collaboration?.callouts, postNameId)?.posts?.find(
-      x => x.nameID === postNameId
-    )?.comments.id,
+    getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.contributions?.find(
+      x => x.post && x.post.nameID === postNameId
+    )?.post?.comments.id,
+    getCardCallout(challengeData?.space?.challenge?.collaboration?.callouts, postNameId)?.contributions?.find(
+      x => x.post && x.post.nameID === postNameId
+    )?.post?.comments.id,
+    getCardCallout(opportunityData?.space?.opportunity?.collaboration?.callouts, postNameId)?.contributions?.find(
+      x => x.post && x.post.nameID === postNameId
+    )?.post?.comments.id,
   ])[0];
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);

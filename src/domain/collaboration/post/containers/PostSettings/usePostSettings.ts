@@ -104,7 +104,7 @@ const usePostSettings = ({
   const parentCallout = getCardCallout(collaborationCallouts, postNameId);
   const parentCalloutPostNames = parentCallout?.postNames?.map(x => x.profile.displayName);
 
-  const post = parentCallout?.posts?.find(x => x.nameID === postNameId);
+  const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId);
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 
@@ -113,7 +113,7 @@ const usePostSettings = ({
   });
 
   const handleUpdate = async (newPost: PostUpdateData) => {
-    if (post) {
+    if (postContribution?.post) {
       await updatePost({
         variables: {
           input: {
@@ -129,7 +129,7 @@ const usePostSettings = ({
               })),
               tagsets: [
                 {
-                  ID: post.profile.tagset?.id ?? '',
+                  ID: postContribution.post.profile.tagset?.id ?? '',
                   tags: newPost.tags,
                 },
               ],
@@ -157,9 +157,9 @@ const usePostSettings = ({
 
   const handleAddReference = (push: PushFunc, referencesLength: number) => {
     setPush(push);
-    if (post) {
+    if (postContribution?.post) {
       addReference({
-        profileId: post.profile.id,
+        profileId: postContribution.post.profile.id,
         name: newReferenceName(referencesLength),
       });
     }
@@ -173,7 +173,7 @@ const usePostSettings = ({
   };
 
   return {
-    post,
+    post: postContribution?.post,
     postsNames: parentCalloutPostNames,
     parentCallout,
     loading,

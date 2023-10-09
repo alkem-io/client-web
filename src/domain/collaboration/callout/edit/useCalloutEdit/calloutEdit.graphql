@@ -19,11 +19,11 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
         }
       }
     }
-    state
+    contributionPolicy {
+      state
+    }
     type
     visibility
-    ...CalloutPostTemplate
-    ...CalloutWhiteboardTemplate
   }
 }
 

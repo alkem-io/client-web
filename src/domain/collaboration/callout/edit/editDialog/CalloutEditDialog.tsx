@@ -61,23 +61,13 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     displayName: callout.framing.profile.displayName,
     type: callout.type,
     description: callout.framing.profile.description,
-    state: callout.state,
+    state: callout.contributionPolicy.state,
     references: callout.framing.profile.references,
     profileId: callout.framing.profile.id,
     tags: callout.framing.profile.tagset?.tags,
-    postTemplateData: {
-      profile: {
-        displayName: '',
-      },
-      defaultDescription: callout.postTemplate?.defaultDescription ?? '',
-      type: callout.postTemplate?.type ?? '',
-    },
-    whiteboardTemplateData: {
-      content: callout.whiteboardTemplate?.content ?? JSON.stringify(EmptyWhiteboard),
-      profile: {
-        displayName:
-          callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
-      },
+    contributionDefaults: {
+      postDescription: callout.contributionDefaults.postDescription ?? '',
+      whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
     },
     displayLocation: getCalloutDisplayLocationValue(callout.framing.profile.displayLocationTagset?.tags),
   };
@@ -109,9 +99,11 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           },
         ],
       },
+      contributionDefaults: {
+        postDescription: newCallout.contributionDefaults?.postDescription,
+        whiteboardContent: newCallout.contributionDefaults?.whiteboardContent,
+      },
       state: newCallout.state,
-      postTemplate: newCallout.postTemplateData,
-      whiteboardTemplate: newCallout.whiteboardTemplateData,
       displayLocation: newCallout.displayLocation,
     });
     setLoading(false);

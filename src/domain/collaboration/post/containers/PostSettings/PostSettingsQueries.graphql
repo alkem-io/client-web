@@ -81,8 +81,10 @@ fragment PostSettings on Post {
 fragment PostSettingsCallout on Callout {
   id
   type
-  posts(IDs: [$postNameId]) {
-    ...PostSettings
+  contributions(IDs: [$postNameId]) {
+    post {
+      ...PostSettings
+    }
   }
   postNames: posts {
     id

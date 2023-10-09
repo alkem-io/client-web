@@ -7,12 +7,11 @@
  */
 import { ReactNode, forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import ImageWithCaption from '../../../shared/components/ImageWithCaption';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { WhiteboardCardWhiteboard } from '../whiteboard/types';
 import { WhiteboardRtProvider } from '../../whiteboard/containers/WhiteboardRtProvider';
 import WhiteboardsRtManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsRtManagementViewWrapper';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
@@ -21,10 +20,7 @@ import { useUserContext } from '../../../community/user';
 import { Box } from '@mui/material';
 
 interface SingleWhiteboardRtCalloutProps extends BaseCalloutViewProps {
-  callout: CalloutLayoutProps['callout'] & {
-    whiteboardRt: WhiteboardCardWhiteboard;
-    whiteboardTemplate: WhiteboardTemplate;
-  };
+  callout: CalloutLayoutProps['callout'];
 }
 
 const DisabledOverlay = ({ disabled, children }: { disabled: boolean; children: ReactNode }) => (
@@ -72,7 +68,7 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
       setIsWhiteboardDialogOpen(false);
     };
 
-    if (!callout.whiteboardRt) {
+    if (!callout.framing.whiteboardRt) {
       return null;
     }
 
@@ -90,7 +86,7 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
           >
             <ImageWithCaption
               caption={t('callout.singleWhiteboard.clickToSee')}
-              src={callout.whiteboardRt.profile.preview?.uri}
+              src={callout.framing.whiteboardRt.profile.preview?.uri}
               alt={callout.framing.profile.displayName}
               defaultImage={<WhiteboardIcon />}
               onClick={() => setIsWhiteboardDialogOpen(true)}
@@ -100,12 +96,12 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
                 {...{
                   spaceId: spaceNameId, // TODO: Should be spaceId in the future, but for now it works
                   calloutId: callout.id,
-                  whiteboardNameId: callout.whiteboardRt.id,
+                  whiteboardNameId: callout.framing.whiteboardRt.id,
                 }}
               >
                 {(entities, state) => (
                   <WhiteboardsRtManagementViewWrapper
-                    whiteboardNameId={callout.whiteboardRt.id}
+                    whiteboardNameId={callout.framing.whiteboardRt.id}
                     backToWhiteboards={handleCloseWhiteboardDialog}
                     journeyTypeName={journeyTypeName}
                     whiteboardShareUrl={buildCalloutUrl(callout.nameID, {

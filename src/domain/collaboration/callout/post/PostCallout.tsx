@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import PostCreationDialog from '../../post/PostCreationDialog/PostCreationDialog';
-import { CalloutState, CreatePostOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CreatePostInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { buildPostUrl } from '../../../../main/routing/urlBuilders';
 import PostCard, { PostCardPost } from './PostCard';
@@ -13,14 +13,12 @@ import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
-export type OnCreateInput = Omit<CreatePostOnCalloutInput, 'calloutID'>;
-
 interface PostCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
   posts: PostCardPost[] | undefined;
   loading: boolean;
   creatingPost: boolean;
-  onCreatePost: (post: OnCreateInput) => Promise<{ nameID: string } | undefined>;
+  onCreatePost: (post: CreatePostInput) => Promise<{ nameID: string } | undefined>;
 }
 
 const PostCallout = forwardRef<Element, PostCalloutProps>(
@@ -49,7 +47,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
 
     const postNames = useMemo(() => posts?.map(x => x.profile.displayName) ?? [], [posts]);
 
-    const createButton = canCreate && callout.state !== CalloutState.Closed && (
+    const createButton = canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={openCreateDialog} />
     );
 
@@ -79,7 +77,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
             >
               {post => <PostCard post={post} onClick={navigateToPost} />}
             </ScrollableCardsLayout>
-            {isMobile && canCreate && callout.state !== CalloutState.Closed && (
+            {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
               <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
             )}
           </CalloutLayout>
@@ -94,7 +92,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
           challengeNameId={challengeNameId}
           opportunityNameId={opportunityNameId}
           calloutId={callout.id}
-          postTemplate={callout.postTemplate}
+          defaultDescription={callout.contributionDefaults.postDescription}
           creating={creatingPost}
         />
       </>

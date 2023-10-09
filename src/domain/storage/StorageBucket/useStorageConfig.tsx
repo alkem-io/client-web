@@ -173,17 +173,17 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       calloutStorageConfigData?.space.collaboration
     )?.callouts ?? [];
 
-  const [post] =
+  const [contribution] =
     (
       postStorageConfigData?.space.opportunity?.collaboration ??
       postStorageConfigData?.space.challenge?.collaboration ??
       postStorageConfigData?.space.collaboration
-    )?.callouts?.[0]?.posts ?? [];
+    )?.callouts?.[0]?.contributions ?? [];
 
   const { profile } =
     journey ??
     callout?.framing ??
-    post ??
+    contribution.post ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??

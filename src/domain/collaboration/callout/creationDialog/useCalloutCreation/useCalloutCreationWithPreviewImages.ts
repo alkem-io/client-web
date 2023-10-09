@@ -50,7 +50,7 @@ export const useCalloutCreationWithPreviewImages = (initialOpened = false): Call
       if (result && previewImages) {
         const whiteboard =
           callout.type === CalloutType.Whiteboard
-            ? result?.whiteboards?.[0]
+            ? result?.framing.whiteboard
             : callout.type === CalloutType.WhiteboardRt
             ? result?.framing.whiteboardRt
             : undefined;

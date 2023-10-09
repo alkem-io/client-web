@@ -702,6 +702,12 @@ export type Callout = {
   authorization?: Maybe<Authorization>;
   /** The comments for this Callout. */
   comments?: Maybe<Room>;
+  /** The Contribution Defaults for this Callout. */
+  contributionDefaults: CalloutContributionDefaults;
+  /** The ContributionPolicy for this Callout. */
+  contributionPolicy: CalloutContributionPolicy;
+  /** The Contributions that have been made to this Callout. */
+  contributions?: Maybe<Array<CalloutContribution>>;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
   /** The Callout Framing associated with this Callout. */
@@ -710,8 +716,6 @@ export type Callout = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The Post template associated with this Callout. */
-  postTemplate?: Maybe<PostTemplate>;
   /** The Posts associated with this Callout. */
   posts?: Maybe<Array<Post>>;
   /** The user that published this Callout */
@@ -720,28 +724,42 @@ export type Callout = {
   publishedDate?: Maybe<Scalars['Float']>;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float'];
-  /** State of the Callout. */
-  state: CalloutState;
   /** The Callout type, e.g. Post, Whiteboard, Discussion */
   type: CalloutType;
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
-  /** The whiteboard template associated with this Callout. */
-  whiteboardTemplate?: Maybe<WhiteboardTemplate>;
-  /** The Whiteboard entities for this Callout. */
-  whiteboards?: Maybe<Array<Whiteboard>>;
 };
 
-export type CalloutPostsArgs = {
+export type CalloutContributionsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
-export type CalloutWhiteboardsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  limit?: InputMaybe<Scalars['Float']>;
-  shuffle?: InputMaybe<Scalars['Boolean']>;
+export type CalloutContribution = {
+  __typename?: 'CalloutContribution';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The user that created this Document */
+  createdBy?: Maybe<User>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Link that was contributed. */
+  link?: Maybe<Reference>;
+  /** The Post that was contributed. */
+  post?: Maybe<Post>;
+  /** The Whiteboard that was contributed. */
+  whiteboard?: Maybe<Whiteboard>;
+};
+
+export type CalloutContributionDefaults = {
+  __typename?: 'CalloutContributionDefaults';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The default description to use for new contributions. */
+  postDescription?: Maybe<Scalars['Markdown']>;
+  /** The default whiteboard content for whiteboard responses. */
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export type CalloutContributionPolicy = {
@@ -755,11 +773,9 @@ export type CalloutContributionPolicy = {
 };
 
 export enum CalloutContributionType {
-  Comments = 'COMMENTS',
   Link = 'LINK',
   Post = 'POST',
   Whiteboard = 'WHITEBOARD',
-  WhiteboardRt = 'WHITEBOARD_RT',
 }
 
 export enum CalloutDisplayLocation {
@@ -784,9 +800,9 @@ export type CalloutFraming = {
   id: Scalars['UUID'];
   /** The Profile for framing the associated Callout. */
   profile: Profile;
-  /** The Whiteboard for this Callout Framing. */
+  /** The Whiteboard for framing the associated Callout. */
   whiteboard?: Maybe<Whiteboard>;
-  /** The WhiteboardRT for this Callout Framing. */
+  /** The WhiteboardRt for framing the associated Callout. */
   whiteboardRt?: Maybe<WhiteboardRt>;
 };
 
@@ -796,16 +812,6 @@ export type CalloutPostCreated = {
   calloutID: Scalars['String'];
   /** The post that has been created. */
   post: Post;
-};
-
-export type CalloutResponseDefaults = {
-  __typename?: 'CalloutResponseDefaults';
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The default description to use for new contributions. */
-  postDescription?: Maybe<Scalars['Markdown']>;
-  /** The default whiteboard content for whiteboard responses. */
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export enum CalloutState {
@@ -818,16 +824,16 @@ export type CalloutTemplate = {
   __typename?: 'CalloutTemplate';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The defaults to use for Callouts created from this template.   */
+  contributionDefaults: CalloutContributionDefaults;
+  /** The response policy to use for Callouts created from this template.   */
+  contributionPolicy: CalloutContributionPolicy;
   /** The framing for callouts created from this template. */
   framing: CalloutFraming;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
-  /** The defaults to use for Callouts created from this template.   */
-  responseDefaults: CalloutResponseDefaults;
-  /** The response policy to use for Callouts created from this template.   */
-  responsePolicy: CalloutContributionPolicy;
 };
 
 export enum CalloutType {
@@ -1300,40 +1306,34 @@ export type CreateCalloutContributionDefaultsInput = {
 };
 
 export type CreateCalloutContributionPolicyInput = {
-  /** The allowed contribution types for this callout. */
-  allowedContributionTypes?: InputMaybe<Array<CalloutContributionType>>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
 };
 
 export type CreateCalloutFramingInput = {
   profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   whiteboardRt?: InputMaybe<CreateWhiteboardRtInput>;
 };
 
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
+  contributionDefaults?: InputMaybe<CreateCalloutContributionDefaultsInput>;
+  contributionPolicy?: InputMaybe<CreateCalloutContributionPolicyInput>;
   /** Set callout display location for this Callout. */
   displayLocation?: InputMaybe<CalloutDisplayLocation>;
   framing: CreateCalloutFramingInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** PostTemplate data for Post Callouts. */
-  postTemplate?: InputMaybe<CreatePostTemplateInput>;
   /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
   sendNotification?: InputMaybe<Scalars['Boolean']>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
-  /** State of the callout. */
-  state?: InputMaybe<CalloutState>;
-  tags?: InputMaybe<Array<Scalars['String']>>;
   /** Callout type. */
   type: CalloutType;
   /** Visibility of the Callout. Defaults to DRAFT. */
   visibility?: InputMaybe<CalloutVisibility>;
-  /** WhiteboardTemplate data for whiteboard Callouts. */
-  whiteboardTemplate?: InputMaybe<CreateWhiteboardTemplateInput>;
 };
 
 export type CreateCalloutTemplateOnTemplatesSetInput = {
@@ -1343,6 +1343,8 @@ export type CreateCalloutTemplateOnTemplatesSetInput = {
   responsePolicy: CreateCalloutContributionPolicyInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
+  /** Callout type. */
+  type: CalloutType;
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
@@ -1376,6 +1378,13 @@ export type CreateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
   who?: InputMaybe<Scalars['Markdown']>;
+};
+
+export type CreateContributionOnCalloutInput = {
+  calloutID: Scalars['UUID'];
+  link?: InputMaybe<CreateReferenceInput>;
+  post?: InputMaybe<CreatePostInput>;
+  whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
 export type CreateFeedbackOnCommunityContextInput = {
@@ -1432,13 +1441,6 @@ export type CreateInvitationExternalUserOnCommunityInput = {
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateLinkOnCalloutInput = {
-  calloutID: Scalars['UUID'];
-  description?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  uri?: InputMaybe<Scalars['String']>;
-};
-
 export type CreateLocationInput = {
   addressLine1?: InputMaybe<Scalars['String']>;
   addressLine2?: InputMaybe<Scalars['String']>;
@@ -1475,22 +1477,11 @@ export type CreateOrganizationInput = {
   website?: InputMaybe<Scalars['String']>;
 };
 
-export type CreatePostOnCalloutInput = {
-  calloutID: Scalars['UUID'];
+export type CreatePostInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
-  type: Scalars['String'];
-  visualUri?: InputMaybe<Scalars['String']>;
-};
-
-export type CreatePostTemplateInput = {
-  /** The default description to be pre-filled when users create Posts based on this template. */
-  defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  /** The type of Posts created from this Template. */
   type: Scalars['String'];
   visualUri?: InputMaybe<Scalars['String']>;
 };
@@ -1595,28 +1586,11 @@ export type CreateWhiteboardInput = {
   profileData: CreateProfileInput;
 };
 
-export type CreateWhiteboardOnCalloutInput = {
-  calloutID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  profileData: CreateProfileInput;
-};
-
 export type CreateWhiteboardRtInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-};
-
-export type CreateWhiteboardTemplateInput = {
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  visualUri?: InputMaybe<Scalars['String']>;
-  /** Use the specified Whiteboard as the initial value for this WhiteboardTemplate */
-  whiteboardID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateWhiteboardTemplateOnTemplatesSetInput = {
@@ -2382,6 +2356,8 @@ export type Mutation = {
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
   createChildChallenge: Challenge;
+  /** Create a new Contribution on the Callout. */
+  createContributionOnCallout: CalloutContribution;
   /** Creates a new Discussion as part of this Communication. */
   createDiscussion: Discussion;
   /** Create a new CalendarEvent on the Calendar. */
@@ -2398,14 +2374,10 @@ export type Mutation = {
   createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
-  /** Create a new Link on the Callout. */
-  createLinkOnCallout: Reference;
   /** Creates a new Opportunity within the parent Challenge. */
   createOpportunity: Opportunity;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
-  /** Create a new Post on the Callout. */
-  createPostOnCallout: Post;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
   createPostTemplate: PostTemplate;
   /** Create a new Project on the Opportunity */
@@ -2422,8 +2394,6 @@ export type Mutation = {
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
   createUserNewRegistration: User;
-  /** Create a new Whiteboard on the Callout. */
-  createWhiteboardOnCallout: Whiteboard;
   /** Creates a new WhiteboardTemplate on the specified TemplatesSet. */
   createWhiteboardTemplate: WhiteboardTemplate;
   /** Deletes the specified Actor. */
@@ -2736,6 +2706,10 @@ export type MutationCreateChildChallengeArgs = {
   challengeData: CreateChallengeOnChallengeInput;
 };
 
+export type MutationCreateContributionOnCalloutArgs = {
+  contributionData: CreateContributionOnCalloutInput;
+};
+
 export type MutationCreateDiscussionArgs = {
   createData: CommunicationCreateDiscussionInput;
 };
@@ -2768,20 +2742,12 @@ export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
 };
 
-export type MutationCreateLinkOnCalloutArgs = {
-  linkData: CreateLinkOnCalloutInput;
-};
-
 export type MutationCreateOpportunityArgs = {
   opportunityData: CreateOpportunityInput;
 };
 
 export type MutationCreateOrganizationArgs = {
   organizationData: CreateOrganizationInput;
-};
-
-export type MutationCreatePostOnCalloutArgs = {
-  postData: CreatePostOnCalloutInput;
 };
 
 export type MutationCreatePostTemplateArgs = {
@@ -2810,10 +2776,6 @@ export type MutationCreateTagsetOnProfileArgs = {
 
 export type MutationCreateUserArgs = {
   userData: CreateUserInput;
-};
-
-export type MutationCreateWhiteboardOnCalloutArgs = {
-  whiteboardData: CreateWhiteboardOnCalloutInput;
 };
 
 export type MutationCreateWhiteboardTemplateArgs = {
@@ -4673,8 +4635,6 @@ export type UpdateCalloutContributionDefaultsInput = {
 };
 
 export type UpdateCalloutContributionPolicyInput = {
-  /** The allowed contribution types for this callout. */
-  allowedResponseTypes?: InputMaybe<Array<CalloutContributionType>>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
 };
@@ -4688,29 +4648,15 @@ export type UpdateCalloutFramingInput = {
 
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
+  contributionDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
+  contributionPolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
   /** Set display location for this Callout. */
   displayLocation?: InputMaybe<CalloutDisplayLocation>;
+  framing?: InputMaybe<UpdateCalloutFramingInput>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** PostTemplate data for this Callout. */
-  postTemplate?: InputMaybe<UpdateCalloutPostTemplateInput>;
-  /** The Profile of this entity. */
-  profileData?: InputMaybe<UpdateProfileInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
-  /** State of the callout. */
-  state?: InputMaybe<CalloutState>;
-  /** WhiteboardTemplate data for this Callout. */
-  whiteboardTemplate?: InputMaybe<UpdateCalloutWhiteboardTemplateInput>;
-};
-
-export type UpdateCalloutPostTemplateInput = {
-  /** The default description to be pre-filled when users create Posts based on this template. */
-  defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  /** The Profile of the Template. */
-  profileData?: InputMaybe<UpdateProfileInput>;
-  /** The type of Posts created from this Template. */
-  type?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateCalloutPublishInfoInput = {
@@ -4738,12 +4684,6 @@ export type UpdateCalloutVisibilityInput = {
   sendNotification?: InputMaybe<Scalars['Boolean']>;
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
-};
-
-export type UpdateCalloutWhiteboardTemplateInput = {
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  /** The Profile of the Template. */
-  profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateChallengeInput = {
@@ -5633,7 +5573,6 @@ export type CalloutPageCalloutQuery = {
                 id: string;
                 nameID: string;
                 type: CalloutType;
-                state: CalloutState;
                 sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
@@ -5853,92 +5792,108 @@ export type CalloutPageCalloutQuery = {
                       }
                     | undefined;
                 };
-                whiteboards?:
+                contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+                contributionDefaults: {
+                  __typename?: 'CalloutContributionDefaults';
+                  id: string;
+                  postDescription?: string | undefined;
+                  whiteboardContent?: string | undefined;
+                };
+                contributions?:
                   | Array<{
-                      __typename?: 'Whiteboard';
-                      id: string;
-                      nameID: string;
-                      createdDate: Date;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        visual?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                      };
-                      authorization?:
+                      __typename?: 'CalloutContribution';
+                      whiteboard?:
                         | {
-                            __typename?: 'Authorization';
+                            __typename?: 'Whiteboard';
                             id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            anonymousReadAccess: boolean;
-                          }
-                        | undefined;
-                      checkout?:
-                        | {
-                            __typename?: 'WhiteboardCheckout';
-                            id: string;
-                            lockedBy: string;
-                            status: WhiteboardCheckoutStateEnum;
-                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                            nameID: string;
+                            createdDate: Date;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              visual?:
+                                | {
+                                    __typename?: 'Visual';
+                                    id: string;
+                                    uri: string;
+                                    name: string;
+                                    allowedTypes: Array<string>;
+                                    aspectRatio: number;
+                                    maxHeight: number;
+                                    maxWidth: number;
+                                    minHeight: number;
+                                    minWidth: number;
+                                    alternativeText?: string | undefined;
+                                  }
+                                | undefined;
+                              preview?:
+                                | {
+                                    __typename?: 'Visual';
+                                    id: string;
+                                    uri: string;
+                                    name: string;
+                                    allowedTypes: Array<string>;
+                                    aspectRatio: number;
+                                    maxHeight: number;
+                                    maxWidth: number;
+                                    minHeight: number;
+                                    minWidth: number;
+                                    alternativeText?: string | undefined;
+                                  }
+                                | undefined;
+                              tagset?:
+                                | {
+                                    __typename?: 'Tagset';
+                                    id: string;
+                                    name: string;
+                                    tags: Array<string>;
+                                    allowedValues: Array<string>;
+                                    type: TagsetType;
+                                  }
+                                | undefined;
+                            };
                             authorization?:
                               | {
                                   __typename?: 'Authorization';
                                   id: string;
                                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  anonymousReadAccess: boolean;
                                 }
                               | undefined;
-                          }
-                        | undefined;
-                      createdBy?:
-                        | {
-                            __typename?: 'User';
-                            id: string;
-                            profile: {
-                              __typename?: 'Profile';
-                              id: string;
-                              displayName: string;
-                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                            };
+                            checkout?:
+                              | {
+                                  __typename?: 'WhiteboardCheckout';
+                                  id: string;
+                                  lockedBy: string;
+                                  status: WhiteboardCheckoutStateEnum;
+                                  lifecycle: {
+                                    __typename?: 'Lifecycle';
+                                    id: string;
+                                    nextEvents?: Array<string> | undefined;
+                                  };
+                                  authorization?:
+                                    | {
+                                        __typename?: 'Authorization';
+                                        id: string;
+                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                      }
+                                    | undefined;
+                                }
+                              | undefined;
+                            createdBy?:
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  profile: {
+                                    __typename?: 'Profile';
+                                    id: string;
+                                    displayName: string;
+                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  };
+                                }
+                              | undefined;
                           }
                         | undefined;
                     }>
@@ -6006,52 +5961,6 @@ export type CalloutPageCalloutQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
-                postTemplate?:
-                  | {
-                      __typename?: 'PostTemplate';
-                      id: string;
-                      type: string;
-                      defaultDescription: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      };
-                    }
-                  | undefined;
-                whiteboardTemplate?:
-                  | {
-                      __typename?: 'WhiteboardTemplate';
-                      id: string;
-                      content: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      };
-                    }
-                  | undefined;
               }>
             | undefined;
         }
@@ -6069,7 +5978,6 @@ export type CalloutPageCalloutQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  state: CalloutState;
                   sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
@@ -6289,96 +6197,108 @@ export type CalloutPageCalloutQuery = {
                         }
                       | undefined;
                   };
-                  whiteboards?:
+                  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+                  contributionDefaults: {
+                    __typename?: 'CalloutContributionDefaults';
+                    id: string;
+                    postDescription?: string | undefined;
+                    whiteboardContent?: string | undefined;
+                  };
+                  contributions?:
                     | Array<{
-                        __typename?: 'Whiteboard';
-                        id: string;
-                        nameID: string;
-                        createdDate: Date;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visual?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          preview?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                        };
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        whiteboard?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Whiteboard';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'WhiteboardCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: WhiteboardCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
+                              nameID: string;
+                              createdDate: Date;
+                              profile: {
+                                __typename?: 'Profile';
                                 id: string;
-                                nextEvents?: Array<string> | undefined;
+                                displayName: string;
+                                description?: string | undefined;
+                                visual?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                preview?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                tagset?:
+                                  | {
+                                      __typename?: 'Tagset';
+                                      id: string;
+                                      name: string;
+                                      tags: Array<string>;
+                                      allowedValues: Array<string>;
+                                      type: TagsetType;
+                                    }
+                                  | undefined;
                               };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
                                     id: string;
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    anonymousReadAccess: boolean;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              };
+                              checkout?:
+                                | {
+                                    __typename?: 'WhiteboardCheckout';
+                                    id: string;
+                                    lockedBy: string;
+                                    status: WhiteboardCheckoutStateEnum;
+                                    lifecycle: {
+                                      __typename?: 'Lifecycle';
+                                      id: string;
+                                      nextEvents?: Array<string> | undefined;
+                                    };
+                                    authorization?:
+                                      | {
+                                          __typename?: 'Authorization';
+                                          id: string;
+                                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                        }
+                                      | undefined;
+                                  }
+                                | undefined;
+                              createdBy?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    };
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -6446,52 +6366,6 @@ export type CalloutPageCalloutQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                  postTemplate?:
-                    | {
-                        __typename?: 'PostTemplate';
-                        id: string;
-                        type: string;
-                        defaultDescription: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                  whiteboardTemplate?:
-                    | {
-                        __typename?: 'WhiteboardTemplate';
-                        id: string;
-                        content: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
                       }
                     | undefined;
                 }>
@@ -6512,7 +6386,6 @@ export type CalloutPageCalloutQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  state: CalloutState;
                   sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
@@ -6732,96 +6605,108 @@ export type CalloutPageCalloutQuery = {
                         }
                       | undefined;
                   };
-                  whiteboards?:
+                  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+                  contributionDefaults: {
+                    __typename?: 'CalloutContributionDefaults';
+                    id: string;
+                    postDescription?: string | undefined;
+                    whiteboardContent?: string | undefined;
+                  };
+                  contributions?:
                     | Array<{
-                        __typename?: 'Whiteboard';
-                        id: string;
-                        nameID: string;
-                        createdDate: Date;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visual?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          preview?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                        };
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        whiteboard?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Whiteboard';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'WhiteboardCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: WhiteboardCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
+                              nameID: string;
+                              createdDate: Date;
+                              profile: {
+                                __typename?: 'Profile';
                                 id: string;
-                                nextEvents?: Array<string> | undefined;
+                                displayName: string;
+                                description?: string | undefined;
+                                visual?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                preview?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                tagset?:
+                                  | {
+                                      __typename?: 'Tagset';
+                                      id: string;
+                                      name: string;
+                                      tags: Array<string>;
+                                      allowedValues: Array<string>;
+                                      type: TagsetType;
+                                    }
+                                  | undefined;
                               };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
                                     id: string;
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    anonymousReadAccess: boolean;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              };
+                              checkout?:
+                                | {
+                                    __typename?: 'WhiteboardCheckout';
+                                    id: string;
+                                    lockedBy: string;
+                                    status: WhiteboardCheckoutStateEnum;
+                                    lifecycle: {
+                                      __typename?: 'Lifecycle';
+                                      id: string;
+                                      nextEvents?: Array<string> | undefined;
+                                    };
+                                    authorization?:
+                                      | {
+                                          __typename?: 'Authorization';
+                                          id: string;
+                                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                        }
+                                      | undefined;
+                                  }
+                                | undefined;
+                              createdBy?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    };
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -6889,52 +6774,6 @@ export type CalloutPageCalloutQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                  postTemplate?:
-                    | {
-                        __typename?: 'PostTemplate';
-                        id: string;
-                        type: string;
-                        defaultDescription: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                  whiteboardTemplate?:
-                    | {
-                        __typename?: 'WhiteboardTemplate';
-                        id: string;
-                        content: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
                       }
                     | undefined;
                 }>
@@ -9303,151 +9142,6 @@ export type DashboardTopCalloutsFragment = {
           __typename?: 'CalloutFraming';
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         };
-        posts?:
-          | Array<{
-              __typename?: 'Post';
-              id: string;
-              nameID: string;
-              type: string;
-              createdDate: Date;
-              createdBy?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string };
-                  }
-                | undefined;
-              comments: { __typename?: 'Room'; id: string; messagesCount: number };
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                visuals: Array<{
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }>;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                references?:
-                  | Array<{
-                      __typename?: 'Reference';
-                      id: string;
-                      name: string;
-                      uri: string;
-                      description?: string | undefined;
-                    }>
-                  | undefined;
-              };
-            }>
-          | undefined;
-        whiteboards?:
-          | Array<{
-              __typename?: 'Whiteboard';
-              id: string;
-              nameID: string;
-              createdDate: Date;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                preview?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-              authorization?:
-                | {
-                    __typename?: 'Authorization';
-                    id: string;
-                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    anonymousReadAccess: boolean;
-                  }
-                | undefined;
-              checkout?:
-                | {
-                    __typename?: 'WhiteboardCheckout';
-                    id: string;
-                    lockedBy: string;
-                    status: WhiteboardCheckoutStateEnum;
-                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                  }
-                | undefined;
-              createdBy?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    };
-                  }
-                | undefined;
-            }>
-          | undefined;
       }>
     | undefined;
 };
@@ -9463,143 +9157,6 @@ export type DashboardTopCalloutFragment = {
     __typename?: 'CalloutFraming';
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
-  posts?:
-    | Array<{
-        __typename?: 'Post';
-        id: string;
-        nameID: string;
-        type: string;
-        createdDate: Date;
-        createdBy?:
-          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-          | undefined;
-        comments: { __typename?: 'Room'; id: string; messagesCount: number };
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          visuals: Array<{
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }>;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
-        };
-      }>
-    | undefined;
-  whiteboards?:
-    | Array<{
-        __typename?: 'Whiteboard';
-        id: string;
-        nameID: string;
-        createdDate: Date;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          visual?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-          preview?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        };
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-        checkout?:
-          | {
-              __typename?: 'WhiteboardCheckout';
-              id: string;
-              lockedBy: string;
-              status: WhiteboardCheckoutStateEnum;
-              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
-        createdBy?:
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              };
-            }
-          | undefined;
-      }>
-    | undefined;
 };
 
 export type PostTemplatesOnCalloutCreationQueryVariables = Exact<{
@@ -9661,7 +9218,6 @@ export type CreateCalloutMutation = {
     id: string;
     nameID: string;
     type: CalloutType;
-    state: CalloutState;
     sortOrder: number;
     activity: number;
     visibility: CalloutVisibility;
@@ -9871,92 +9427,104 @@ export type CreateCalloutMutation = {
           }
         | undefined;
     };
-    whiteboards?:
+    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      postDescription?: string | undefined;
+      whiteboardContent?: string | undefined;
+    };
+    contributions?:
       | Array<{
-          __typename?: 'Whiteboard';
-          id: string;
-          nameID: string;
-          createdDate: Date;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            visual?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            preview?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-          authorization?:
+          __typename?: 'CalloutContribution';
+          whiteboard?:
             | {
-                __typename?: 'Authorization';
+                __typename?: 'Whiteboard';
                 id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
-          checkout?:
-            | {
-                __typename?: 'WhiteboardCheckout';
-                id: string;
-                lockedBy: string;
-                status: WhiteboardCheckoutStateEnum;
-                lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                nameID: string;
+                createdDate: Date;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  preview?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
                 authorization?:
                   | {
                       __typename?: 'Authorization';
                       id: string;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      anonymousReadAccess: boolean;
                     }
                   | undefined;
-              }
-            | undefined;
-          createdBy?:
-            | {
-                __typename?: 'User';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                };
+                checkout?:
+                  | {
+                      __typename?: 'WhiteboardCheckout';
+                      id: string;
+                      lockedBy: string;
+                      status: WhiteboardCheckoutStateEnum;
+                      lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+                createdBy?:
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
               }
             | undefined;
         }>
@@ -10018,52 +9586,6 @@ export type CreateCalloutMutation = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    postTemplate?:
-      | {
-          __typename?: 'PostTemplate';
-          id: string;
-          type: string;
-          defaultDescription: string;
-          profile: {
-            __typename?: 'Profile';
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        }
-      | undefined;
-    whiteboardTemplate?:
-      | {
-          __typename?: 'WhiteboardTemplate';
-          id: string;
-          content: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        }
-      | undefined;
   };
 };
 
@@ -10121,7 +9643,6 @@ export type UpdateCalloutMutation = {
   updateCallout: {
     __typename?: 'Callout';
     id: string;
-    state: CalloutState;
     type: CalloutType;
     visibility: CalloutVisibility;
     framing: {
@@ -10154,52 +9675,7 @@ export type UpdateCalloutMutation = {
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       };
     };
-    postTemplate?:
-      | {
-          __typename?: 'PostTemplate';
-          id: string;
-          type: string;
-          defaultDescription: string;
-          profile: {
-            __typename?: 'Profile';
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        }
-      | undefined;
-    whiteboardTemplate?:
-      | {
-          __typename?: 'WhiteboardTemplate';
-          id: string;
-          content: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        }
-      | undefined;
+    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
   };
 };
 
@@ -10266,33 +9742,38 @@ export type CalloutIdQuery = {
 };
 
 export type CreatePostFromContributeTabMutationVariables = Exact<{
-  postData: CreatePostOnCalloutInput;
+  postData: CreateContributionOnCalloutInput;
 }>;
 
 export type CreatePostFromContributeTabMutation = {
   __typename?: 'Mutation';
-  createPostOnCallout: {
-    __typename?: 'Post';
-    id: string;
-    nameID: string;
-    type: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
+  createContributionOnCallout: {
+    __typename?: 'CalloutContribution';
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          nameID: string;
+          type: string;
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
+            displayName: string;
+            description?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -10303,17 +9784,16 @@ export type RemoveCommentFromCalloutMutationVariables = Exact<{
 export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
 export type CreateLinkOnCalloutMutationVariables = Exact<{
-  input: CreateLinkOnCalloutInput;
+  input: CreateContributionOnCalloutInput;
 }>;
 
 export type CreateLinkOnCalloutMutation = {
   __typename?: 'Mutation';
-  createLinkOnCallout: {
-    __typename?: 'Reference';
-    id: string;
-    name: string;
-    uri: string;
-    description?: string | undefined;
+  createContributionOnCallout: {
+    __typename?: 'CalloutContribution';
+    link?:
+      | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+      | undefined;
   };
 };
 
@@ -10483,7 +9963,6 @@ export type CalloutsQuery = {
                 id: string;
                 nameID: string;
                 type: CalloutType;
-                state: CalloutState;
                 sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
@@ -10703,92 +10182,108 @@ export type CalloutsQuery = {
                       }
                     | undefined;
                 };
-                whiteboards?:
+                contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+                contributionDefaults: {
+                  __typename?: 'CalloutContributionDefaults';
+                  id: string;
+                  postDescription?: string | undefined;
+                  whiteboardContent?: string | undefined;
+                };
+                contributions?:
                   | Array<{
-                      __typename?: 'Whiteboard';
-                      id: string;
-                      nameID: string;
-                      createdDate: Date;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        visual?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                      };
-                      authorization?:
+                      __typename?: 'CalloutContribution';
+                      whiteboard?:
                         | {
-                            __typename?: 'Authorization';
+                            __typename?: 'Whiteboard';
                             id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            anonymousReadAccess: boolean;
-                          }
-                        | undefined;
-                      checkout?:
-                        | {
-                            __typename?: 'WhiteboardCheckout';
-                            id: string;
-                            lockedBy: string;
-                            status: WhiteboardCheckoutStateEnum;
-                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                            nameID: string;
+                            createdDate: Date;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              visual?:
+                                | {
+                                    __typename?: 'Visual';
+                                    id: string;
+                                    uri: string;
+                                    name: string;
+                                    allowedTypes: Array<string>;
+                                    aspectRatio: number;
+                                    maxHeight: number;
+                                    maxWidth: number;
+                                    minHeight: number;
+                                    minWidth: number;
+                                    alternativeText?: string | undefined;
+                                  }
+                                | undefined;
+                              preview?:
+                                | {
+                                    __typename?: 'Visual';
+                                    id: string;
+                                    uri: string;
+                                    name: string;
+                                    allowedTypes: Array<string>;
+                                    aspectRatio: number;
+                                    maxHeight: number;
+                                    maxWidth: number;
+                                    minHeight: number;
+                                    minWidth: number;
+                                    alternativeText?: string | undefined;
+                                  }
+                                | undefined;
+                              tagset?:
+                                | {
+                                    __typename?: 'Tagset';
+                                    id: string;
+                                    name: string;
+                                    tags: Array<string>;
+                                    allowedValues: Array<string>;
+                                    type: TagsetType;
+                                  }
+                                | undefined;
+                            };
                             authorization?:
                               | {
                                   __typename?: 'Authorization';
                                   id: string;
                                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  anonymousReadAccess: boolean;
                                 }
                               | undefined;
-                          }
-                        | undefined;
-                      createdBy?:
-                        | {
-                            __typename?: 'User';
-                            id: string;
-                            profile: {
-                              __typename?: 'Profile';
-                              id: string;
-                              displayName: string;
-                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                            };
+                            checkout?:
+                              | {
+                                  __typename?: 'WhiteboardCheckout';
+                                  id: string;
+                                  lockedBy: string;
+                                  status: WhiteboardCheckoutStateEnum;
+                                  lifecycle: {
+                                    __typename?: 'Lifecycle';
+                                    id: string;
+                                    nextEvents?: Array<string> | undefined;
+                                  };
+                                  authorization?:
+                                    | {
+                                        __typename?: 'Authorization';
+                                        id: string;
+                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                      }
+                                    | undefined;
+                                }
+                              | undefined;
+                            createdBy?:
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  profile: {
+                                    __typename?: 'Profile';
+                                    id: string;
+                                    displayName: string;
+                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  };
+                                }
+                              | undefined;
                           }
                         | undefined;
                     }>
@@ -10856,52 +10351,6 @@ export type CalloutsQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
-                postTemplate?:
-                  | {
-                      __typename?: 'PostTemplate';
-                      id: string;
-                      type: string;
-                      defaultDescription: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      };
-                    }
-                  | undefined;
-                whiteboardTemplate?:
-                  | {
-                      __typename?: 'WhiteboardTemplate';
-                      id: string;
-                      content: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      };
-                    }
-                  | undefined;
               }>
             | undefined;
         }
@@ -10923,7 +10372,6 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  state: CalloutState;
                   sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
@@ -11143,96 +10591,108 @@ export type CalloutsQuery = {
                         }
                       | undefined;
                   };
-                  whiteboards?:
+                  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+                  contributionDefaults: {
+                    __typename?: 'CalloutContributionDefaults';
+                    id: string;
+                    postDescription?: string | undefined;
+                    whiteboardContent?: string | undefined;
+                  };
+                  contributions?:
                     | Array<{
-                        __typename?: 'Whiteboard';
-                        id: string;
-                        nameID: string;
-                        createdDate: Date;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visual?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          preview?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                        };
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        whiteboard?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Whiteboard';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'WhiteboardCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: WhiteboardCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
+                              nameID: string;
+                              createdDate: Date;
+                              profile: {
+                                __typename?: 'Profile';
                                 id: string;
-                                nextEvents?: Array<string> | undefined;
+                                displayName: string;
+                                description?: string | undefined;
+                                visual?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                preview?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                tagset?:
+                                  | {
+                                      __typename?: 'Tagset';
+                                      id: string;
+                                      name: string;
+                                      tags: Array<string>;
+                                      allowedValues: Array<string>;
+                                      type: TagsetType;
+                                    }
+                                  | undefined;
                               };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
                                     id: string;
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    anonymousReadAccess: boolean;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              };
+                              checkout?:
+                                | {
+                                    __typename?: 'WhiteboardCheckout';
+                                    id: string;
+                                    lockedBy: string;
+                                    status: WhiteboardCheckoutStateEnum;
+                                    lifecycle: {
+                                      __typename?: 'Lifecycle';
+                                      id: string;
+                                      nextEvents?: Array<string> | undefined;
+                                    };
+                                    authorization?:
+                                      | {
+                                          __typename?: 'Authorization';
+                                          id: string;
+                                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                        }
+                                      | undefined;
+                                  }
+                                | undefined;
+                              createdBy?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    };
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -11300,52 +10760,6 @@ export type CalloutsQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                  postTemplate?:
-                    | {
-                        __typename?: 'PostTemplate';
-                        id: string;
-                        type: string;
-                        defaultDescription: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                  whiteboardTemplate?:
-                    | {
-                        __typename?: 'WhiteboardTemplate';
-                        id: string;
-                        content: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
                       }
                     | undefined;
                 }>
@@ -11370,7 +10784,6 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  state: CalloutState;
                   sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
@@ -11590,96 +11003,108 @@ export type CalloutsQuery = {
                         }
                       | undefined;
                   };
-                  whiteboards?:
+                  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+                  contributionDefaults: {
+                    __typename?: 'CalloutContributionDefaults';
+                    id: string;
+                    postDescription?: string | undefined;
+                    whiteboardContent?: string | undefined;
+                  };
+                  contributions?:
                     | Array<{
-                        __typename?: 'Whiteboard';
-                        id: string;
-                        nameID: string;
-                        createdDate: Date;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visual?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          preview?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                        };
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        whiteboard?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Whiteboard';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'WhiteboardCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: WhiteboardCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
+                              nameID: string;
+                              createdDate: Date;
+                              profile: {
+                                __typename?: 'Profile';
                                 id: string;
-                                nextEvents?: Array<string> | undefined;
+                                displayName: string;
+                                description?: string | undefined;
+                                visual?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                preview?:
+                                  | {
+                                      __typename?: 'Visual';
+                                      id: string;
+                                      uri: string;
+                                      name: string;
+                                      allowedTypes: Array<string>;
+                                      aspectRatio: number;
+                                      maxHeight: number;
+                                      maxWidth: number;
+                                      minHeight: number;
+                                      minWidth: number;
+                                      alternativeText?: string | undefined;
+                                    }
+                                  | undefined;
+                                tagset?:
+                                  | {
+                                      __typename?: 'Tagset';
+                                      id: string;
+                                      name: string;
+                                      tags: Array<string>;
+                                      allowedValues: Array<string>;
+                                      type: TagsetType;
+                                    }
+                                  | undefined;
                               };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
                                     id: string;
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    anonymousReadAccess: boolean;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              };
+                              checkout?:
+                                | {
+                                    __typename?: 'WhiteboardCheckout';
+                                    id: string;
+                                    lockedBy: string;
+                                    status: WhiteboardCheckoutStateEnum;
+                                    lifecycle: {
+                                      __typename?: 'Lifecycle';
+                                      id: string;
+                                      nextEvents?: Array<string> | undefined;
+                                    };
+                                    authorization?:
+                                      | {
+                                          __typename?: 'Authorization';
+                                          id: string;
+                                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                        }
+                                      | undefined;
+                                  }
+                                | undefined;
+                              createdBy?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    };
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -11749,52 +11174,6 @@ export type CalloutsQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
-                  postTemplate?:
-                    | {
-                        __typename?: 'PostTemplate';
-                        id: string;
-                        type: string;
-                        defaultDescription: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                  whiteboardTemplate?:
-                    | {
-                        __typename?: 'WhiteboardTemplate';
-                        id: string;
-                        content: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
                 }>
               | undefined;
           }
@@ -11815,7 +11194,6 @@ export type CollaborationWithCalloutsFragment = {
         id: string;
         nameID: string;
         type: CalloutType;
-        state: CalloutState;
         sortOrder: number;
         activity: number;
         visibility: CalloutVisibility;
@@ -12031,92 +11409,104 @@ export type CollaborationWithCalloutsFragment = {
               }
             | undefined;
         };
-        whiteboards?:
+        contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+        contributionDefaults: {
+          __typename?: 'CalloutContributionDefaults';
+          id: string;
+          postDescription?: string | undefined;
+          whiteboardContent?: string | undefined;
+        };
+        contributions?:
           | Array<{
-              __typename?: 'Whiteboard';
-              id: string;
-              nameID: string;
-              createdDate: Date;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                preview?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-              authorization?:
+              __typename?: 'CalloutContribution';
+              whiteboard?:
                 | {
-                    __typename?: 'Authorization';
+                    __typename?: 'Whiteboard';
                     id: string;
-                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    anonymousReadAccess: boolean;
-                  }
-                | undefined;
-              checkout?:
-                | {
-                    __typename?: 'WhiteboardCheckout';
-                    id: string;
-                    lockedBy: string;
-                    status: WhiteboardCheckoutStateEnum;
-                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    nameID: string;
+                    createdDate: Date;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
                     authorization?:
                       | {
                           __typename?: 'Authorization';
                           id: string;
                           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          anonymousReadAccess: boolean;
                         }
                       | undefined;
-                  }
-                | undefined;
-              createdBy?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    };
+                    checkout?:
+                      | {
+                          __typename?: 'WhiteboardCheckout';
+                          id: string;
+                          lockedBy: string;
+                          status: WhiteboardCheckoutStateEnum;
+                          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
+                    createdBy?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          };
+                        }
+                      | undefined;
                   }
                 | undefined;
             }>
@@ -12178,52 +11568,6 @@ export type CollaborationWithCalloutsFragment = {
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        postTemplate?:
-          | {
-              __typename?: 'PostTemplate';
-              id: string;
-              type: string;
-              defaultDescription: string;
-              profile: {
-                __typename?: 'Profile';
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              };
-            }
-          | undefined;
-        whiteboardTemplate?:
-          | {
-              __typename?: 'WhiteboardTemplate';
-              id: string;
-              content: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              };
-            }
-          | undefined;
       }>
     | undefined;
 };
@@ -12233,7 +11577,6 @@ export type CalloutFragment = {
   id: string;
   nameID: string;
   type: CalloutType;
-  state: CalloutState;
   sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
@@ -12443,88 +11786,104 @@ export type CalloutFragment = {
         }
       | undefined;
   };
-  whiteboards?:
+  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+  contributionDefaults: {
+    __typename?: 'CalloutContributionDefaults';
+    id: string;
+    postDescription?: string | undefined;
+    whiteboardContent?: string | undefined;
+  };
+  contributions?:
     | Array<{
-        __typename?: 'Whiteboard';
-        id: string;
-        nameID: string;
-        createdDate: Date;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          visual?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-          preview?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        };
-        authorization?:
+        __typename?: 'CalloutContribution';
+        whiteboard?:
           | {
-              __typename?: 'Authorization';
+              __typename?: 'Whiteboard';
               id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-        checkout?:
-          | {
-              __typename?: 'WhiteboardCheckout';
-              id: string;
-              lockedBy: string;
-              status: WhiteboardCheckoutStateEnum;
-              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
-        createdBy?:
-          | {
-              __typename?: 'User';
-              id: string;
+              nameID: string;
+              createdDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
               };
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+              checkout?:
+                | {
+                    __typename?: 'WhiteboardCheckout';
+                    id: string;
+                    lockedBy: string;
+                    status: WhiteboardCheckoutStateEnum;
+                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    };
+                  }
+                | undefined;
             }
           | undefined;
       }>
@@ -12585,106 +11944,6 @@ export type CalloutFragment = {
     | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-  postTemplate?:
-    | {
-        __typename?: 'PostTemplate';
-        id: string;
-        type: string;
-        defaultDescription: string;
-        profile: {
-          __typename?: 'Profile';
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-        };
-      }
-    | undefined;
-  whiteboardTemplate?:
-    | {
-        __typename?: 'WhiteboardTemplate';
-        id: string;
-        content: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-        };
-      }
-    | undefined;
-};
-
-export type CalloutPostTemplateFragment = {
-  __typename?: 'Callout';
-  postTemplate?:
-    | {
-        __typename?: 'PostTemplate';
-        id: string;
-        type: string;
-        defaultDescription: string;
-        profile: {
-          __typename?: 'Profile';
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-        };
-      }
-    | undefined;
-};
-
-export type CalloutWhiteboardTemplateFragment = {
-  __typename?: 'Callout';
-  whiteboardTemplate?:
-    | {
-        __typename?: 'WhiteboardTemplate';
-        id: string;
-        content: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-        };
-      }
     | undefined;
 };
 
@@ -12850,115 +12109,120 @@ export type SpacePostQuery = {
                 __typename?: 'Callout';
                 id: string;
                 type: CalloutType;
-                posts?:
+                contributions?:
                   | Array<{
-                      __typename?: 'Post';
-                      id: string;
-                      nameID: string;
-                      type: string;
-                      createdDate: Date;
-                      createdBy?:
+                      __typename?: 'CalloutContribution';
+                      post?:
                         | {
-                            __typename?: 'User';
+                            __typename?: 'Post';
                             id: string;
+                            nameID: string;
+                            type: string;
+                            createdDate: Date;
+                            createdBy?:
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  profile: {
+                                    __typename?: 'Profile';
+                                    id: string;
+                                    displayName: string;
+                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    tagsets?:
+                                      | Array<{
+                                          __typename?: 'Tagset';
+                                          id: string;
+                                          name: string;
+                                          tags: Array<string>;
+                                          allowedValues: Array<string>;
+                                          type: TagsetType;
+                                        }>
+                                      | undefined;
+                                  };
+                                }
+                              | undefined;
                             profile: {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
-                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              tagsets?:
-                                | Array<{
+                              description?: string | undefined;
+                              tagset?:
+                                | {
                                     __typename?: 'Tagset';
                                     id: string;
                                     name: string;
                                     tags: Array<string>;
                                     allowedValues: Array<string>;
                                     type: TagsetType;
+                                  }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                            };
+                            comments: {
+                              __typename?: 'Room';
+                              id: string;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                              messages: Array<{
+                                __typename?: 'Message';
+                                id: string;
+                                message: string;
+                                timestamp: number;
+                                threadID?: string | undefined;
+                                reactions: Array<{
+                                  __typename?: 'Reaction';
+                                  id: string;
+                                  emoji: string;
+                                  sender?:
+                                    | { __typename?: 'User'; id: string; firstName: string; lastName: string }
+                                    | undefined;
+                                }>;
+                                sender?:
+                                  | {
+                                      __typename?: 'User';
+                                      id: string;
+                                      nameID: string;
+                                      firstName: string;
+                                      lastName: string;
+                                      profile: {
+                                        __typename?: 'Profile';
+                                        id: string;
+                                        displayName: string;
+                                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                        tagsets?:
+                                          | Array<{
+                                              __typename?: 'Tagset';
+                                              id: string;
+                                              name: string;
+                                              tags: Array<string>;
+                                              allowedValues: Array<string>;
+                                              type: TagsetType;
+                                            }>
+                                          | undefined;
+                                        location?:
+                                          | { __typename?: 'Location'; id: string; city: string; country: string }
+                                          | undefined;
+                                      };
+                                    }
+                                  | undefined;
+                              }>;
                             };
                           }
                         | undefined;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        references?:
-                          | Array<{
-                              __typename?: 'Reference';
-                              id: string;
-                              name: string;
-                              uri: string;
-                              description?: string | undefined;
-                            }>
-                          | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      };
-                      comments: {
-                        __typename?: 'Room';
-                        id: string;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                        messages: Array<{
-                          __typename?: 'Message';
-                          id: string;
-                          message: string;
-                          timestamp: number;
-                          threadID?: string | undefined;
-                          reactions: Array<{
-                            __typename?: 'Reaction';
-                            id: string;
-                            emoji: string;
-                            sender?:
-                              | { __typename?: 'User'; id: string; firstName: string; lastName: string }
-                              | undefined;
-                          }>;
-                          sender?:
-                            | {
-                                __typename?: 'User';
-                                id: string;
-                                nameID: string;
-                                firstName: string;
-                                lastName: string;
-                                profile: {
-                                  __typename?: 'Profile';
-                                  id: string;
-                                  displayName: string;
-                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                  tagsets?:
-                                    | Array<{
-                                        __typename?: 'Tagset';
-                                        id: string;
-                                        name: string;
-                                        tags: Array<string>;
-                                        allowedValues: Array<string>;
-                                        type: TagsetType;
-                                      }>
-                                    | undefined;
-                                  location?:
-                                    | { __typename?: 'Location'; id: string; city: string; country: string }
-                                    | undefined;
-                                };
-                              }
-                            | undefined;
-                        }>;
-                      };
                     }>
                   | undefined;
               }>
@@ -12995,115 +12259,120 @@ export type ChallengePostQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        type: string;
-                        createdDate: Date;
-                        createdBy?:
+                        __typename?: 'CalloutContribution';
+                        post?:
                           | {
-                              __typename?: 'User';
+                              __typename?: 'Post';
                               id: string;
+                              nameID: string;
+                              type: string;
+                              createdDate: Date;
+                              createdBy?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                      tagsets?:
+                                        | Array<{
+                                            __typename?: 'Tagset';
+                                            id: string;
+                                            name: string;
+                                            tags: Array<string>;
+                                            allowedValues: Array<string>;
+                                            type: TagsetType;
+                                          }>
+                                        | undefined;
+                                    };
+                                  }
+                                | undefined;
                               profile: {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                tagsets?:
-                                  | Array<{
+                                description?: string | undefined;
+                                tagset?:
+                                  | {
                                       __typename?: 'Tagset';
                                       id: string;
                                       name: string;
                                       tags: Array<string>;
                                       allowedValues: Array<string>;
                                       type: TagsetType;
+                                    }
+                                  | undefined;
+                                references?:
+                                  | Array<{
+                                      __typename?: 'Reference';
+                                      id: string;
+                                      name: string;
+                                      uri: string;
+                                      description?: string | undefined;
                                     }>
                                   | undefined;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                              };
+                              comments: {
+                                __typename?: 'Room';
+                                id: string;
+                                authorization?:
+                                  | {
+                                      __typename?: 'Authorization';
+                                      id: string;
+                                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    }
+                                  | undefined;
+                                messages: Array<{
+                                  __typename?: 'Message';
+                                  id: string;
+                                  message: string;
+                                  timestamp: number;
+                                  threadID?: string | undefined;
+                                  reactions: Array<{
+                                    __typename?: 'Reaction';
+                                    id: string;
+                                    emoji: string;
+                                    sender?:
+                                      | { __typename?: 'User'; id: string; firstName: string; lastName: string }
+                                      | undefined;
+                                  }>;
+                                  sender?:
+                                    | {
+                                        __typename?: 'User';
+                                        id: string;
+                                        nameID: string;
+                                        firstName: string;
+                                        lastName: string;
+                                        profile: {
+                                          __typename?: 'Profile';
+                                          id: string;
+                                          displayName: string;
+                                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                          tagsets?:
+                                            | Array<{
+                                                __typename?: 'Tagset';
+                                                id: string;
+                                                name: string;
+                                                tags: Array<string>;
+                                                allowedValues: Array<string>;
+                                                type: TagsetType;
+                                              }>
+                                            | undefined;
+                                          location?:
+                                            | { __typename?: 'Location'; id: string; city: string; country: string }
+                                            | undefined;
+                                        };
+                                      }
+                                    | undefined;
+                                }>;
                               };
                             }
                           | undefined;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          references?:
-                            | Array<{
-                                __typename?: 'Reference';
-                                id: string;
-                                name: string;
-                                uri: string;
-                                description?: string | undefined;
-                              }>
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        };
-                        comments: {
-                          __typename?: 'Room';
-                          id: string;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                          messages: Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            threadID?: string | undefined;
-                            reactions: Array<{
-                              __typename?: 'Reaction';
-                              id: string;
-                              emoji: string;
-                              sender?:
-                                | { __typename?: 'User'; id: string; firstName: string; lastName: string }
-                                | undefined;
-                            }>;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{
-                                          __typename?: 'Tagset';
-                                          id: string;
-                                          name: string;
-                                          tags: Array<string>;
-                                          allowedValues: Array<string>;
-                                          type: TagsetType;
-                                        }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
-                              | undefined;
-                          }>;
-                        };
                       }>
                     | undefined;
                 }>
@@ -13141,115 +12410,120 @@ export type OpportunityPostQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        type: string;
-                        createdDate: Date;
-                        createdBy?:
+                        __typename?: 'CalloutContribution';
+                        post?:
                           | {
-                              __typename?: 'User';
+                              __typename?: 'Post';
                               id: string;
+                              nameID: string;
+                              type: string;
+                              createdDate: Date;
+                              createdBy?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                      tagsets?:
+                                        | Array<{
+                                            __typename?: 'Tagset';
+                                            id: string;
+                                            name: string;
+                                            tags: Array<string>;
+                                            allowedValues: Array<string>;
+                                            type: TagsetType;
+                                          }>
+                                        | undefined;
+                                    };
+                                  }
+                                | undefined;
                               profile: {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                tagsets?:
-                                  | Array<{
+                                description?: string | undefined;
+                                tagset?:
+                                  | {
                                       __typename?: 'Tagset';
                                       id: string;
                                       name: string;
                                       tags: Array<string>;
                                       allowedValues: Array<string>;
                                       type: TagsetType;
+                                    }
+                                  | undefined;
+                                references?:
+                                  | Array<{
+                                      __typename?: 'Reference';
+                                      id: string;
+                                      name: string;
+                                      uri: string;
+                                      description?: string | undefined;
                                     }>
                                   | undefined;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                              };
+                              comments: {
+                                __typename?: 'Room';
+                                id: string;
+                                authorization?:
+                                  | {
+                                      __typename?: 'Authorization';
+                                      id: string;
+                                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    }
+                                  | undefined;
+                                messages: Array<{
+                                  __typename?: 'Message';
+                                  id: string;
+                                  message: string;
+                                  timestamp: number;
+                                  threadID?: string | undefined;
+                                  reactions: Array<{
+                                    __typename?: 'Reaction';
+                                    id: string;
+                                    emoji: string;
+                                    sender?:
+                                      | { __typename?: 'User'; id: string; firstName: string; lastName: string }
+                                      | undefined;
+                                  }>;
+                                  sender?:
+                                    | {
+                                        __typename?: 'User';
+                                        id: string;
+                                        nameID: string;
+                                        firstName: string;
+                                        lastName: string;
+                                        profile: {
+                                          __typename?: 'Profile';
+                                          id: string;
+                                          displayName: string;
+                                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                          tagsets?:
+                                            | Array<{
+                                                __typename?: 'Tagset';
+                                                id: string;
+                                                name: string;
+                                                tags: Array<string>;
+                                                allowedValues: Array<string>;
+                                                type: TagsetType;
+                                              }>
+                                            | undefined;
+                                          location?:
+                                            | { __typename?: 'Location'; id: string; city: string; country: string }
+                                            | undefined;
+                                        };
+                                      }
+                                    | undefined;
+                                }>;
                               };
                             }
                           | undefined;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          references?:
-                            | Array<{
-                                __typename?: 'Reference';
-                                id: string;
-                                name: string;
-                                uri: string;
-                                description?: string | undefined;
-                              }>
-                            | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        };
-                        comments: {
-                          __typename?: 'Room';
-                          id: string;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                          messages: Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            threadID?: string | undefined;
-                            reactions: Array<{
-                              __typename?: 'Reaction';
-                              id: string;
-                              emoji: string;
-                              sender?:
-                                | { __typename?: 'User'; id: string; firstName: string; lastName: string }
-                                | undefined;
-                            }>;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{
-                                          __typename?: 'Tagset';
-                                          id: string;
-                                          name: string;
-                                          tags: Array<string>;
-                                          allowedValues: Array<string>;
-                                          type: TagsetType;
-                                        }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
-                              | undefined;
-                          }>;
-                        };
                       }>
                     | undefined;
                 }>
@@ -13271,111 +12545,118 @@ export type PostDashboardDataFragment = {
         __typename?: 'Callout';
         id: string;
         type: CalloutType;
-        posts?:
+        contributions?:
           | Array<{
-              __typename?: 'Post';
-              id: string;
-              nameID: string;
-              type: string;
-              createdDate: Date;
-              createdBy?:
+              __typename?: 'CalloutContribution';
+              post?:
                 | {
-                    __typename?: 'User';
+                    __typename?: 'Post';
                     id: string;
+                    nameID: string;
+                    type: string;
+                    createdDate: Date;
+                    createdBy?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            tagsets?:
+                              | Array<{
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }>
+                              | undefined;
+                          };
+                        }
+                      | undefined;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      tagsets?:
-                        | Array<{
+                      description?: string | undefined;
+                      tagset?:
+                        | {
                             __typename?: 'Tagset';
                             id: string;
                             name: string;
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      references?:
+                        | Array<{
+                            __typename?: 'Reference';
+                            id: string;
+                            name: string;
+                            uri: string;
+                            description?: string | undefined;
                           }>
                         | undefined;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    };
+                    comments: {
+                      __typename?: 'Room';
+                      id: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                      messages: Array<{
+                        __typename?: 'Message';
+                        id: string;
+                        message: string;
+                        timestamp: number;
+                        threadID?: string | undefined;
+                        reactions: Array<{
+                          __typename?: 'Reaction';
+                          id: string;
+                          emoji: string;
+                          sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+                        }>;
+                        sender?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              nameID: string;
+                              firstName: string;
+                              lastName: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                tagsets?:
+                                  | Array<{
+                                      __typename?: 'Tagset';
+                                      id: string;
+                                      name: string;
+                                      tags: Array<string>;
+                                      allowedValues: Array<string>;
+                                      type: TagsetType;
+                                    }>
+                                  | undefined;
+                                location?:
+                                  | { __typename?: 'Location'; id: string; city: string; country: string }
+                                  | undefined;
+                              };
+                            }
+                          | undefined;
+                      }>;
                     };
                   }
                 | undefined;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                references?:
-                  | Array<{
-                      __typename?: 'Reference';
-                      id: string;
-                      name: string;
-                      uri: string;
-                      description?: string | undefined;
-                    }>
-                  | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-              comments: {
-                __typename?: 'Room';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-                messages: Array<{
-                  __typename?: 'Message';
-                  id: string;
-                  message: string;
-                  timestamp: number;
-                  threadID?: string | undefined;
-                  reactions: Array<{
-                    __typename?: 'Reaction';
-                    id: string;
-                    emoji: string;
-                    sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
-                  }>;
-                  sender?:
-                    | {
-                        __typename?: 'User';
-                        id: string;
-                        nameID: string;
-                        firstName: string;
-                        lastName: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          tagsets?:
-                            | Array<{
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }>
-                            | undefined;
-                          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                }>;
-              };
             }>
           | undefined;
       }>
@@ -13530,57 +12811,62 @@ export type SpacePostSettingsQuery = {
                 __typename?: 'Callout';
                 id: string;
                 type: CalloutType;
-                posts?:
+                contributions?:
                   | Array<{
-                      __typename?: 'Post';
-                      id: string;
-                      nameID: string;
-                      type: string;
-                      authorization?:
+                      __typename?: 'CalloutContribution';
+                      post?:
                         | {
-                            __typename?: 'Authorization';
+                            __typename?: 'Post';
                             id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            nameID: string;
+                            type: string;
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              tagset?:
+                                | {
+                                    __typename?: 'Tagset';
+                                    id: string;
+                                    name: string;
+                                    tags: Array<string>;
+                                    allowedValues: Array<string>;
+                                    type: TagsetType;
+                                  }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description?: string | undefined;
+                                  }>
+                                | undefined;
+                              visuals: Array<{
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }>;
+                            };
                           }
                         | undefined;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        references?:
-                          | Array<{
-                              __typename?: 'Reference';
-                              id: string;
-                              name: string;
-                              uri: string;
-                              description?: string | undefined;
-                            }>
-                          | undefined;
-                        visuals: Array<{
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          allowedTypes: Array<string>;
-                          aspectRatio: number;
-                          maxHeight: number;
-                          maxWidth: number;
-                          minHeight: number;
-                          minWidth: number;
-                          alternativeText?: string | undefined;
-                        }>;
-                      };
                     }>
                   | undefined;
                 postNames?:
@@ -13621,57 +12907,62 @@ export type ChallengePostSettingsQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        type: string;
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        post?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Post';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              nameID: string;
+                              type: string;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                description?: string | undefined;
+                                tagset?:
+                                  | {
+                                      __typename?: 'Tagset';
+                                      id: string;
+                                      name: string;
+                                      tags: Array<string>;
+                                      allowedValues: Array<string>;
+                                      type: TagsetType;
+                                    }
+                                  | undefined;
+                                references?:
+                                  | Array<{
+                                      __typename?: 'Reference';
+                                      id: string;
+                                      name: string;
+                                      uri: string;
+                                      description?: string | undefined;
+                                    }>
+                                  | undefined;
+                                visuals: Array<{
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: string;
+                                  allowedTypes: Array<string>;
+                                  aspectRatio: number;
+                                  maxHeight: number;
+                                  maxWidth: number;
+                                  minHeight: number;
+                                  minWidth: number;
+                                  alternativeText?: string | undefined;
+                                }>;
+                              };
                             }
                           | undefined;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          references?:
-                            | Array<{
-                                __typename?: 'Reference';
-                                id: string;
-                                name: string;
-                                uri: string;
-                                description?: string | undefined;
-                              }>
-                            | undefined;
-                          visuals: Array<{
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }>;
-                        };
                       }>
                     | undefined;
                   postNames?:
@@ -13713,57 +13004,62 @@ export type OpportunityPostSettingsQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        type: string;
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        post?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Post';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              nameID: string;
+                              type: string;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                description?: string | undefined;
+                                tagset?:
+                                  | {
+                                      __typename?: 'Tagset';
+                                      id: string;
+                                      name: string;
+                                      tags: Array<string>;
+                                      allowedValues: Array<string>;
+                                      type: TagsetType;
+                                    }
+                                  | undefined;
+                                references?:
+                                  | Array<{
+                                      __typename?: 'Reference';
+                                      id: string;
+                                      name: string;
+                                      uri: string;
+                                      description?: string | undefined;
+                                    }>
+                                  | undefined;
+                                visuals: Array<{
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: string;
+                                  allowedTypes: Array<string>;
+                                  aspectRatio: number;
+                                  maxHeight: number;
+                                  maxWidth: number;
+                                  minHeight: number;
+                                  minWidth: number;
+                                  alternativeText?: string | undefined;
+                                }>;
+                              };
                             }
                           | undefined;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          references?:
-                            | Array<{
-                                __typename?: 'Reference';
-                                id: string;
-                                name: string;
-                                uri: string;
-                                description?: string | undefined;
-                              }>
-                            | undefined;
-                          visuals: Array<{
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }>;
-                        };
                       }>
                     | undefined;
                   postNames?:
@@ -13827,53 +13123,58 @@ export type PostSettingsCalloutFragment = {
   __typename?: 'Callout';
   id: string;
   type: CalloutType;
-  posts?:
+  contributions?:
     | Array<{
-        __typename?: 'Post';
-        id: string;
-        nameID: string;
-        type: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
+        __typename?: 'CalloutContribution';
+        post?:
+          | {
+              __typename?: 'Post';
+              id: string;
+              nameID: string;
+              type: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
+                displayName: string;
                 description?: string | undefined;
-              }>
-            | undefined;
-          visuals: Array<{
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }>;
-        };
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+                references?:
+                  | Array<{
+                      __typename?: 'Reference';
+                      id: string;
+                      name: string;
+                      uri: string;
+                      description?: string | undefined;
+                    }>
+                  | undefined;
+                visuals: Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }>;
+              };
+            }
+          | undefined;
       }>
     | undefined;
   postNames?:
@@ -13901,20 +13202,25 @@ export type SpacePostProviderQuery = {
                 __typename?: 'Callout';
                 id: string;
                 type: CalloutType;
-                posts?:
+                contributions?:
                   | Array<{
-                      __typename?: 'Post';
-                      id: string;
-                      nameID: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
-                      authorization?:
+                      __typename?: 'CalloutContribution';
+                      post?:
                         | {
-                            __typename?: 'Authorization';
+                            __typename?: 'Post';
                             id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            nameID: string;
+                            profile: { __typename?: 'Profile'; id: string; displayName: string };
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                            comments: { __typename?: 'Room'; id: string; messagesCount: number };
                           }
                         | undefined;
-                      comments: { __typename?: 'Room'; id: string; messagesCount: number };
                     }>
                   | undefined;
               }>
@@ -13948,20 +13254,25 @@ export type ChallengePostProviderQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        post?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Post';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              nameID: string;
+                              profile: { __typename?: 'Profile'; id: string; displayName: string };
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                              comments: { __typename?: 'Room'; id: string; messagesCount: number };
                             }
                           | undefined;
-                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                       }>
                     | undefined;
                 }>
@@ -13996,20 +13307,25 @@ export type OpportunityPostProviderQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        authorization?:
+                        __typename?: 'CalloutContribution';
+                        post?:
                           | {
-                              __typename?: 'Authorization';
+                              __typename?: 'Post';
                               id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              nameID: string;
+                              profile: { __typename?: 'Profile'; id: string; displayName: string };
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                              comments: { __typename?: 'Room'; id: string; messagesCount: number };
                             }
                           | undefined;
-                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
                       }>
                     | undefined;
                 }>
@@ -14028,16 +13344,25 @@ export type PostProviderDataFragment = {
         __typename?: 'Callout';
         id: string;
         type: CalloutType;
-        posts?:
+        contributions?:
           | Array<{
-              __typename?: 'Post';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              __typename?: 'CalloutContribution';
+              post?:
+                | {
+                    __typename?: 'Post';
+                    id: string;
+                    nameID: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
+                  }
                 | undefined;
-              comments: { __typename?: 'Room'; id: string; messagesCount: number };
             }>
           | undefined;
       }>
@@ -14683,88 +14008,97 @@ export type CalloutWithWhiteboardFragment = {
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
       }
     | undefined;
-  whiteboards?:
+  contributions?:
     | Array<{
-        __typename?: 'Whiteboard';
-        id: string;
-        nameID: string;
-        createdDate: Date;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          visual?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-          preview?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-          tagset?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        };
-        authorization?:
+        __typename?: 'CalloutContribution';
+        whiteboard?:
           | {
-              __typename?: 'Authorization';
+              __typename?: 'Whiteboard';
               id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-        checkout?:
-          | {
-              __typename?: 'WhiteboardCheckout';
-              id: string;
-              lockedBy: string;
-              status: WhiteboardCheckoutStateEnum;
-              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
-        createdBy?:
-          | {
-              __typename?: 'User';
-              id: string;
+              nameID: string;
+              createdDate: Date;
               profile: {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
               };
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+              checkout?:
+                | {
+                    __typename?: 'WhiteboardCheckout';
+                    id: string;
+                    lockedBy: string;
+                    status: WhiteboardCheckoutStateEnum;
+                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    };
+                  }
+                | undefined;
             }
           | undefined;
       }>
@@ -14880,92 +14214,97 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             }
           | undefined;
-        whiteboards?:
+        contributions?:
           | Array<{
-              __typename?: 'Whiteboard';
-              id: string;
-              nameID: string;
-              createdDate: Date;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                preview?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-              authorization?:
+              __typename?: 'CalloutContribution';
+              whiteboard?:
                 | {
-                    __typename?: 'Authorization';
+                    __typename?: 'Whiteboard';
                     id: string;
-                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    anonymousReadAccess: boolean;
-                  }
-                | undefined;
-              checkout?:
-                | {
-                    __typename?: 'WhiteboardCheckout';
-                    id: string;
-                    lockedBy: string;
-                    status: WhiteboardCheckoutStateEnum;
-                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    nameID: string;
+                    createdDate: Date;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
                     authorization?:
                       | {
                           __typename?: 'Authorization';
                           id: string;
                           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          anonymousReadAccess: boolean;
                         }
                       | undefined;
-                  }
-                | undefined;
-              createdBy?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    };
+                    checkout?:
+                      | {
+                          __typename?: 'WhiteboardCheckout';
+                          id: string;
+                          lockedBy: string;
+                          status: WhiteboardCheckoutStateEnum;
+                          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
+                    createdBy?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          };
+                        }
+                      | undefined;
                   }
                 | undefined;
             }>
@@ -15074,92 +14413,97 @@ export type WhiteboardFromCalloutQuery = {
                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
               }
             | undefined;
-          whiteboards?:
+          contributions?:
             | Array<{
-                __typename?: 'Whiteboard';
-                id: string;
-                nameID: string;
-                createdDate: Date;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  preview?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-                authorization?:
+                __typename?: 'CalloutContribution';
+                whiteboard?:
                   | {
-                      __typename?: 'Authorization';
+                      __typename?: 'Whiteboard';
                       id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      anonymousReadAccess: boolean;
-                    }
-                  | undefined;
-                checkout?:
-                  | {
-                      __typename?: 'WhiteboardCheckout';
-                      id: string;
-                      lockedBy: string;
-                      status: WhiteboardCheckoutStateEnum;
-                      lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                      nameID: string;
+                      createdDate: Date;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                        tagset?:
+                          | {
+                              __typename?: 'Tagset';
+                              id: string;
+                              name: string;
+                              tags: Array<string>;
+                              allowedValues: Array<string>;
+                              type: TagsetType;
+                            }
+                          | undefined;
+                      };
                       authorization?:
                         | {
                             __typename?: 'Authorization';
                             id: string;
                             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            anonymousReadAccess: boolean;
                           }
                         | undefined;
-                    }
-                  | undefined;
-                createdBy?:
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      };
+                      checkout?:
+                        | {
+                            __typename?: 'WhiteboardCheckout';
+                            id: string;
+                            lockedBy: string;
+                            status: WhiteboardCheckoutStateEnum;
+                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          }
+                        | undefined;
+                      createdBy?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            };
+                          }
+                        | undefined;
                     }
                   | undefined;
               }>
@@ -15555,92 +14899,101 @@ export type PlatformTemplateWhiteboardContentsQuery = {
 };
 
 export type CreateWhiteboardOnCalloutMutationVariables = Exact<{
-  input: CreateWhiteboardOnCalloutInput;
+  input: CreateContributionOnCalloutInput;
 }>;
 
 export type CreateWhiteboardOnCalloutMutation = {
   __typename?: 'Mutation';
-  createWhiteboardOnCallout: {
-    __typename?: 'Whiteboard';
-    id: string;
-    nameID: string;
-    createdDate: Date;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      visual?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      preview?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
-    authorization?:
+  createContributionOnCallout: {
+    __typename?: 'CalloutContribution';
+    whiteboard?:
       | {
-          __typename?: 'Authorization';
+          __typename?: 'Whiteboard';
           id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          anonymousReadAccess: boolean;
-        }
-      | undefined;
-    checkout?:
-      | {
-          __typename?: 'WhiteboardCheckout';
-          id: string;
-          lockedBy: string;
-          status: WhiteboardCheckoutStateEnum;
-          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-    createdBy?:
-      | {
-          __typename?: 'User';
-          id: string;
+          nameID: string;
+          createdDate: Date;
           profile: {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
           };
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          checkout?:
+            | {
+                __typename?: 'WhiteboardCheckout';
+                id: string;
+                lockedBy: string;
+                status: WhiteboardCheckoutStateEnum;
+                lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -21162,155 +20515,6 @@ export type ChallengePageQuery = {
                       description?: string | undefined;
                     };
                   };
-                  posts?:
-                    | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        type: string;
-                        createdDate: Date;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: { __typename?: 'Profile'; id: string; displayName: string };
-                            }
-                          | undefined;
-                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visuals: Array<{
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }>;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          references?:
-                            | Array<{
-                                __typename?: 'Reference';
-                                id: string;
-                                name: string;
-                                uri: string;
-                                description?: string | undefined;
-                              }>
-                            | undefined;
-                        };
-                      }>
-                    | undefined;
-                  whiteboards?:
-                    | Array<{
-                        __typename?: 'Whiteboard';
-                        id: string;
-                        nameID: string;
-                        createdDate: Date;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visual?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          preview?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                        };
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'WhiteboardCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: WhiteboardCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
-                                id: string;
-                                nextEvents?: Array<string> | undefined;
-                              };
-                              authorization?:
-                                | {
-                                    __typename?: 'Authorization';
-                                    id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                  }
-                                | undefined;
-                            }
-                          | undefined;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              };
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
                 }>
               | undefined;
             timeline?:
@@ -21521,151 +20725,6 @@ export type ChallengeProfileFragment = {
                 __typename?: 'CalloutFraming';
                 profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               };
-              posts?:
-                | Array<{
-                    __typename?: 'Post';
-                    id: string;
-                    nameID: string;
-                    type: string;
-                    createdDate: Date;
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        }
-                      | undefined;
-                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      visuals: Array<{
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }>;
-                      tagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                      references?:
-                        | Array<{
-                            __typename?: 'Reference';
-                            id: string;
-                            name: string;
-                            uri: string;
-                            description?: string | undefined;
-                          }>
-                        | undefined;
-                    };
-                  }>
-                | undefined;
-              whiteboards?:
-                | Array<{
-                    __typename?: 'Whiteboard';
-                    id: string;
-                    nameID: string;
-                    createdDate: Date;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                      tagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                    };
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          anonymousReadAccess: boolean;
-                        }
-                      | undefined;
-                    checkout?:
-                      | {
-                          __typename?: 'WhiteboardCheckout';
-                          id: string;
-                          lockedBy: string;
-                          status: WhiteboardCheckoutStateEnum;
-                          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        }
-                      | undefined;
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: {
-                            __typename?: 'Profile';
-                            id: string;
-                            displayName: string;
-                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          };
-                        }
-                      | undefined;
-                  }>
-                | undefined;
             }>
           | undefined;
         timeline?:
@@ -23584,155 +22643,6 @@ export type OpportunityPageQuery = {
                       description?: string | undefined;
                     };
                   };
-                  posts?:
-                    | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        nameID: string;
-                        type: string;
-                        createdDate: Date;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: { __typename?: 'Profile'; id: string; displayName: string };
-                            }
-                          | undefined;
-                        comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visuals: Array<{
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }>;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                          references?:
-                            | Array<{
-                                __typename?: 'Reference';
-                                id: string;
-                                name: string;
-                                uri: string;
-                                description?: string | undefined;
-                              }>
-                            | undefined;
-                        };
-                      }>
-                    | undefined;
-                  whiteboards?:
-                    | Array<{
-                        __typename?: 'Whiteboard';
-                        id: string;
-                        nameID: string;
-                        createdDate: Date;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          description?: string | undefined;
-                          visual?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          preview?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: string;
-                                allowedTypes: Array<string>;
-                                aspectRatio: number;
-                                maxHeight: number;
-                                maxWidth: number;
-                                minHeight: number;
-                                minWidth: number;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagset?:
-                            | {
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }
-                            | undefined;
-                        };
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'WhiteboardCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: WhiteboardCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
-                                id: string;
-                                nextEvents?: Array<string> | undefined;
-                              };
-                              authorization?:
-                                | {
-                                    __typename?: 'Authorization';
-                                    id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                  }
-                                | undefined;
-                            }
-                          | undefined;
-                        createdBy?:
-                          | {
-                              __typename?: 'User';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              };
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
                 }>
               | undefined;
             timeline?:
@@ -23947,151 +22857,6 @@ export type OpportunityPageFragment = {
                 __typename?: 'CalloutFraming';
                 profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               };
-              posts?:
-                | Array<{
-                    __typename?: 'Post';
-                    id: string;
-                    nameID: string;
-                    type: string;
-                    createdDate: Date;
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        }
-                      | undefined;
-                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      visuals: Array<{
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }>;
-                      tagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                      references?:
-                        | Array<{
-                            __typename?: 'Reference';
-                            id: string;
-                            name: string;
-                            uri: string;
-                            description?: string | undefined;
-                          }>
-                        | undefined;
-                    };
-                  }>
-                | undefined;
-              whiteboards?:
-                | Array<{
-                    __typename?: 'Whiteboard';
-                    id: string;
-                    nameID: string;
-                    createdDate: Date;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                      tagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                    };
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          anonymousReadAccess: boolean;
-                        }
-                      | undefined;
-                    checkout?:
-                      | {
-                          __typename?: 'WhiteboardCheckout';
-                          id: string;
-                          lockedBy: string;
-                          status: WhiteboardCheckoutStateEnum;
-                          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        }
-                      | undefined;
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: {
-                            __typename?: 'Profile';
-                            id: string;
-                            displayName: string;
-                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          };
-                        }
-                      | undefined;
-                  }>
-                | undefined;
             }>
           | undefined;
         timeline?:
@@ -25379,151 +24144,6 @@ export type SpacePageQuery = {
                     description?: string | undefined;
                   };
                 };
-                posts?:
-                  | Array<{
-                      __typename?: 'Post';
-                      id: string;
-                      nameID: string;
-                      type: string;
-                      createdDate: Date;
-                      createdBy?:
-                        | {
-                            __typename?: 'User';
-                            id: string;
-                            profile: { __typename?: 'Profile'; id: string; displayName: string };
-                          }
-                        | undefined;
-                      comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        visuals: Array<{
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          allowedTypes: Array<string>;
-                          aspectRatio: number;
-                          maxHeight: number;
-                          maxWidth: number;
-                          minHeight: number;
-                          minWidth: number;
-                          alternativeText?: string | undefined;
-                        }>;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        references?:
-                          | Array<{
-                              __typename?: 'Reference';
-                              id: string;
-                              name: string;
-                              uri: string;
-                              description?: string | undefined;
-                            }>
-                          | undefined;
-                      };
-                    }>
-                  | undefined;
-                whiteboards?:
-                  | Array<{
-                      __typename?: 'Whiteboard';
-                      id: string;
-                      nameID: string;
-                      createdDate: Date;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        visual?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                      };
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            anonymousReadAccess: boolean;
-                          }
-                        | undefined;
-                      checkout?:
-                        | {
-                            __typename?: 'WhiteboardCheckout';
-                            id: string;
-                            lockedBy: string;
-                            status: WhiteboardCheckoutStateEnum;
-                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                            authorization?:
-                              | {
-                                  __typename?: 'Authorization';
-                                  id: string;
-                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                }
-                              | undefined;
-                          }
-                        | undefined;
-                      createdBy?:
-                        | {
-                            __typename?: 'User';
-                            id: string;
-                            profile: {
-                              __typename?: 'Profile';
-                              id: string;
-                              displayName: string;
-                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                            };
-                          }
-                        | undefined;
-                    }>
-                  | undefined;
               }>
             | undefined;
           timeline?:
@@ -25752,151 +24372,6 @@ export type SpacePageFragment = {
                 __typename?: 'CalloutFraming';
                 profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               };
-              posts?:
-                | Array<{
-                    __typename?: 'Post';
-                    id: string;
-                    nameID: string;
-                    type: string;
-                    createdDate: Date;
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        }
-                      | undefined;
-                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      visuals: Array<{
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }>;
-                      tagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                      references?:
-                        | Array<{
-                            __typename?: 'Reference';
-                            id: string;
-                            name: string;
-                            uri: string;
-                            description?: string | undefined;
-                          }>
-                        | undefined;
-                    };
-                  }>
-                | undefined;
-              whiteboards?:
-                | Array<{
-                    __typename?: 'Whiteboard';
-                    id: string;
-                    nameID: string;
-                    createdDate: Date;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                      tagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                    };
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          anonymousReadAccess: boolean;
-                        }
-                      | undefined;
-                    checkout?:
-                      | {
-                          __typename?: 'WhiteboardCheckout';
-                          id: string;
-                          lockedBy: string;
-                          status: WhiteboardCheckoutStateEnum;
-                          lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        }
-                      | undefined;
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: {
-                            __typename?: 'Profile';
-                            id: string;
-                            displayName: string;
-                            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          };
-                        }
-                      | undefined;
-                  }>
-                | undefined;
             }>
           | undefined;
         timeline?:
@@ -29136,27 +27611,32 @@ export type CalloutPostStorageConfigQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
-                posts?:
+                contributions?:
                   | Array<{
-                      __typename?: 'Post';
-                      id: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        storageBucket: {
-                          __typename?: 'StorageBucket';
-                          id: string;
-                          allowedMimeTypes: Array<string>;
-                          maxFileSize: number;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
+                      __typename?: 'CalloutContribution';
+                      post?:
+                        | {
+                            __typename?: 'Post';
+                            id: string;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              storageBucket: {
+                                __typename?: 'StorageBucket';
                                 id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        };
-                      };
+                                allowedMimeTypes: Array<string>;
+                                maxFileSize: number;
+                                authorization?:
+                                  | {
+                                      __typename?: 'Authorization';
+                                      id: string;
+                                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                    }
+                                  | undefined;
+                              };
+                            };
+                          }
+                        | undefined;
                     }>
                   | undefined;
               }>
@@ -29174,27 +27654,32 @@ export type CalloutPostStorageConfigQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          storageBucket: {
-                            __typename?: 'StorageBucket';
-                            id: string;
-                            allowedMimeTypes: Array<string>;
-                            maxFileSize: number;
-                            authorization?:
-                              | {
-                                  __typename?: 'Authorization';
+                        __typename?: 'CalloutContribution';
+                        post?:
+                          | {
+                              __typename?: 'Post';
+                              id: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                storageBucket: {
+                                  __typename?: 'StorageBucket';
                                   id: string;
-                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                }
-                              | undefined;
-                          };
-                        };
+                                  allowedMimeTypes: Array<string>;
+                                  maxFileSize: number;
+                                  authorization?:
+                                    | {
+                                        __typename?: 'Authorization';
+                                        id: string;
+                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                      }
+                                    | undefined;
+                                };
+                              };
+                            }
+                          | undefined;
                       }>
                     | undefined;
                 }>
@@ -29213,27 +27698,32 @@ export type CalloutPostStorageConfigQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
-                  posts?:
+                  contributions?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          storageBucket: {
-                            __typename?: 'StorageBucket';
-                            id: string;
-                            allowedMimeTypes: Array<string>;
-                            maxFileSize: number;
-                            authorization?:
-                              | {
-                                  __typename?: 'Authorization';
+                        __typename?: 'CalloutContribution';
+                        post?:
+                          | {
+                              __typename?: 'Post';
+                              id: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                storageBucket: {
+                                  __typename?: 'StorageBucket';
                                   id: string;
-                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                }
-                              | undefined;
-                          };
-                        };
+                                  allowedMimeTypes: Array<string>;
+                                  maxFileSize: number;
+                                  authorization?:
+                                    | {
+                                        __typename?: 'Authorization';
+                                        id: string;
+                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                      }
+                                    | undefined;
+                                };
+                              };
+                            }
+                          | undefined;
                       }>
                     | undefined;
                 }>
@@ -29400,27 +27890,32 @@ export type PostInCalloutOnCollaborationWithStorageConfigFragment = {
     | Array<{
         __typename?: 'Callout';
         id: string;
-        posts?:
+        contributions?:
           | Array<{
-              __typename?: 'Post';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                storageBucket: {
-                  __typename?: 'StorageBucket';
-                  id: string;
-                  allowedMimeTypes: Array<string>;
-                  maxFileSize: number;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
+              __typename?: 'CalloutContribution';
+              post?:
+                | {
+                    __typename?: 'Post';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      storageBucket: {
+                        __typename?: 'StorageBucket';
                         id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                };
-              };
+                        allowedMimeTypes: Array<string>;
+                        maxFileSize: number;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                      };
+                    };
+                  }
+                | undefined;
             }>
           | undefined;
       }>

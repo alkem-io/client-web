@@ -103,7 +103,7 @@ mutation UpdateInnovationFlow($updateInnovationFlowData: UpdateInnovationFlowInp
 
 mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
   updateCallout(
-    calloutData: { ID: $calloutId, profileData: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
+    calloutData: { ID: $calloutId, framing: { profile: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } } }
   ) {
     id
     sortOrder

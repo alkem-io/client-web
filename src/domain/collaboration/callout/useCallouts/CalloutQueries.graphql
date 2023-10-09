@@ -75,11 +75,20 @@ fragment Callout on Callout {
       ...WhiteboardRtDetails
     }
   }
-  state
+  contributionPolicy {
+    state
+  }
+  contributionDefaults {
+    id
+    postDescription
+    whiteboardContent
+  }
   sortOrder
   activity
-  whiteboards {
-    ...WhiteboardDetails
+  contributions {
+    whiteboard {
+      ...WhiteboardDetails
+    }
   }
   comments {
     ...CommentsWithMessages
@@ -89,42 +98,4 @@ fragment Callout on Callout {
     myPrivileges
   }
   visibility
-  ...CalloutPostTemplate
-  ...CalloutWhiteboardTemplate
-}
-
-fragment CalloutPostTemplate on Callout {
-  postTemplate {
-    id
-    type
-    defaultDescription
-    profile {
-      tagset {
-        ...TagsetDetails
-      }
-      visual(type: CARD) {
-        id
-        uri
-      }
-    }
-  }
-}
-
-fragment CalloutWhiteboardTemplate on Callout {
-  whiteboardTemplate {
-    id
-    content
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      visual(type: CARD) {
-        id
-        uri
-      }
-    }
-  }
 }

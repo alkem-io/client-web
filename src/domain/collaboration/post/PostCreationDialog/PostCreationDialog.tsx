@@ -5,12 +5,11 @@ import { Box, Button, DialogActions } from '@mui/material';
 import { CalloutIcon } from '../../callout/icon/CalloutIcon';
 import { DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
-import { CreatePostOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
-import { CalloutPostTemplate } from '../../callout/creationDialog/CalloutCreationDialog';
+import { CreatePostInput } from '../../../../core/apollo/generated/graphql-schema';
 
-export type PostCreationType = Partial<CreatePostOnCalloutInput>;
-export type PostCreationOutput = Omit<CreatePostOnCalloutInput, 'calloutID'>;
+export type PostCreationType = Partial<CreatePostInput>;
+export type PostCreationOutput = CreatePostInput;
 
 export type PostCreationDialogProps = {
   open: boolean;
@@ -19,7 +18,7 @@ export type PostCreationDialogProps = {
   onCreate: (post: PostCreationOutput) => Promise<{ nameID: string } | undefined>;
   calloutDisplayName: string;
   calloutId: string;
-  postTemplate: CalloutPostTemplate | undefined;
+  defaultDescription?: string;
   creating: boolean;
 } & CoreEntityIdTypes;
 
@@ -29,7 +28,7 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
   onClose,
   onCreate,
   calloutDisplayName,
-  postTemplate,
+  defaultDescription,
   creating,
 }) => {
   const { t } = useTranslation();
@@ -44,11 +43,10 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
   const handleCreate = async () => {
     await onCreate({
       profileData: {
-        displayName: post?.profileData?.displayName ?? '',
-        description: post?.profileData?.description ?? '',
+        displayName: post.profileData?.displayName ?? '',
+        description: post.profileData?.description ?? '',
       },
-      type: postTemplate?.type ?? '',
-      visualUri: postTemplate?.profile?.visual?.uri,
+      type: post.type ?? '',
       tags: post.tags,
     });
     handleClose();
@@ -91,7 +89,7 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
             postNames={postNames}
             onChange={handleFormChange}
             onStatusChanged={handleFormStatusChange}
-            descriptionTemplate={postTemplate?.defaultDescription}
+            descriptionTemplate={defaultDescription}
             tags={[]}
           />
         </Box>

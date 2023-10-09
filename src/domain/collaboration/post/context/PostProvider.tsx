@@ -48,9 +48,10 @@ const PostProvider: FC = ({ children }) => {
     variables: { spaceNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
   });
-  const spacePost = getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.posts?.find(
-    x => x.nameID === postNameId
-  );
+  const spacePostContribution = getCardCallout(
+    spaceData?.space?.collaboration?.callouts,
+    postNameId
+  )?.contributions?.find(x => x.post && x.post.nameID === postNameId);
   const {
     data: challengeData,
     loading: challengeLoading,
@@ -59,10 +60,10 @@ const PostProvider: FC = ({ children }) => {
     variables: { spaceNameId, challengeNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
   });
-  const challengePost = getCardCallout(
+  const challengePostContribution = getCardCallout(
     challengeData?.space?.challenge?.collaboration?.callouts,
     postNameId
-  )?.posts?.find(x => x.nameID === postNameId);
+  )?.contributions?.find(x => x.post && x.post.nameID === postNameId);
 
   const {
     data: opportunityData,
@@ -72,12 +73,12 @@ const PostProvider: FC = ({ children }) => {
     variables: { spaceNameId, opportunityNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !opportunityNameId,
   });
-  const opportunityPost = getCardCallout(
+  const opportunityPostContribution = getCardCallout(
     opportunityData?.space?.opportunity?.collaboration?.callouts,
     postNameId
-  )?.posts?.find(x => x.nameID === postNameId);
+  )?.contributions?.find(x => x.post && x.post.nameID === postNameId);
 
-  const post = spacePost ?? challengePost ?? opportunityPost;
+  const post = spacePostContribution?.post ?? challengePostContribution?.post ?? opportunityPostContribution?.post;
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 

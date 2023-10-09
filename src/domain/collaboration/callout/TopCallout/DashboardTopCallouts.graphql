@@ -16,11 +16,5 @@ fragment DashboardTopCallout on Callout {
   }
   type
   visibility
-  posts(limit: 2, shuffle: true) {
-    ...PostCard
-  }
-  whiteboards(limit: 2, shuffle: true) {
-    ...WhiteboardDetails
-  }
   activity
 }

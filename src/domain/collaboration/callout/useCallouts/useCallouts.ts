@@ -11,14 +11,14 @@ import {
   CalloutVisibility,
   WhiteboardDetailsFragment,
   WhiteboardRtDetailsFragment,
-  WhiteboardTemplate,
   CommentsWithMessagesFragment,
   ContributeTabPostFragment,
   CalloutsQueryVariables,
   ReferenceDetailsFragment,
   CalloutDisplayLocation,
+  CalloutContributionPolicy,
+  CalloutContribution,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutPostTemplate } from '../creationDialog/CalloutCreationDialog';
 import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
 import { Tagset } from '../../../common/profile/Profile';
@@ -26,26 +26,16 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/Innovat
 import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 
-interface CalloutChildTypePropName {
-  [CalloutType.PostCollection]: 'posts';
-  [CalloutType.WhiteboardCollection]: 'whiteboards';
-  [CalloutType.Post]: 'comments';
-  [CalloutType.LinkCollection]: 'links';
-  [CalloutType.Whiteboard]: 'whiteboards';
-  [CalloutType.WhiteboardRt]: 'whiteboardRt';
-}
+// interface CalloutChildTypePropName {
+//   [CalloutType.PostCollection]: 'posts';
+//   [CalloutType.WhiteboardCollection]: 'whiteboards';
+//   [CalloutType.Post]: 'comments';
+//   [CalloutType.LinkCollection]: 'links';
+//   [CalloutType.Whiteboard]: 'whiteboards';
+//   [CalloutType.WhiteboardRt]: 'whiteboardRt';
+// }
 
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
-// export type CalloutFraming = {
-//   profile: {
-//     id: string;
-//     displayName: string;
-//     description?: string;
-//     tagset?: Tagset;
-//     displayLocationTagset?: Tagset;
-//   };
-//   whiteboard:
-// };
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
 export type WhiteboardRtFragmentWithCallout = WhiteboardRtDetailsFragment & { calloutNameId: string };
@@ -54,57 +44,46 @@ export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragme
 
 export type ReferencesFragmentWithCallout = ReferenceDetailsFragment & { calloutNameId: string };
 
-interface CalloutChildPropValue {
-  posts: never;
-  whiteboards: WhiteboardFragmentWithCallout[];
-  comments: CommentsWithMessagesFragmentWithCallout;
-  links: ReferencesFragmentWithCallout;
-  whiteboardRt: WhiteboardRtFragmentWithCallout;
-}
+// interface CalloutChildPropValue {
+//   posts: never;
+//   whiteboards: WhiteboardFragmentWithCallout[];
+//   comments: CommentsWithMessagesFragmentWithCallout;
+//   links: ReferencesFragmentWithCallout;
+//   whiteboardRt: WhiteboardRtFragmentWithCallout;
+// }
 
-type CalloutCardTemplateType = {
-  [CalloutType.PostCollection]: { postTemplate: CalloutPostTemplate };
-  [CalloutType.WhiteboardCollection]: { whiteboardTemplate: WhiteboardTemplate };
-  [CalloutType.Post]: {};
-  [CalloutType.LinkCollection]: {};
-  [CalloutType.Whiteboard]: { whiteboardTemplate: WhiteboardTemplate };
-  [CalloutType.WhiteboardRt]: { whiteboardTemplate: WhiteboardTemplate };
-};
+// type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
+//   [P in PropName]: CalloutChildPropValue[P];
+// };
 
-type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
-  [P in PropName]: CalloutChildPropValue[P];
-};
+// type CalloutTypesWithChildTypes = {
+//   [Type in keyof CalloutChildTypePropName]: { type: Type } & CalloutWithChildType<CalloutChildTypePropName[Type]>;
+// };
 
-type CalloutTypesWithChildTypes = {
-  [Type in keyof CalloutChildTypePropName]: { type: Type } & CalloutWithChildType<CalloutChildTypePropName[Type]> &
-    CalloutCardTemplateType[Type];
-};
-
-export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' | 'authorization' | 'sortOrder'> &
-  (
-    | CalloutTypesWithChildTypes[CalloutType.PostCollection]
-    | CalloutTypesWithChildTypes[CalloutType.WhiteboardCollection]
-    | CalloutTypesWithChildTypes[CalloutType.Post]
-    | CalloutTypesWithChildTypes[CalloutType.LinkCollection]
-    | CalloutTypesWithChildTypes[CalloutType.Whiteboard]
-    | CalloutTypesWithChildTypes[CalloutType.WhiteboardRt]
-  ) & {
-    framing: {
-      profile: {
-        id: string;
-        displayName: string;
-        description?: string;
-        tagset?: Tagset;
-        displayLocationTagset?: Tagset;
-      };
-      whiteboard: WhiteboardFragmentWithCallout;
-      whiteboardRt: WhiteboardRtFragmentWithCallout;
+export type TypedCallout = Pick<
+  Callout,
+  'id' | 'nameID' | 'activity' | 'authorization' | 'sortOrder' | 'contributionDefaults'
+> & {
+  framing: {
+    profile: {
+      id: string;
+      displayName: string;
+      description?: string;
+      tagset?: Tagset;
+      displayLocationTagset?: Tagset;
     };
-    draft: boolean;
-    editable: boolean;
-    flowStates: string[] | undefined;
-    displayLocation: string;
+    whiteboard: WhiteboardFragmentWithCallout;
+    whiteboardRt: WhiteboardRtFragmentWithCallout;
   };
+  contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
+  type: CalloutType;
+  contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
+  draft: boolean;
+  editable: boolean;
+  flowStates: string[] | undefined;
+  displayLocation: string;
+  comments: CommentsWithMessagesFragmentWithCallout;
+};
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {
   displayLocations?: CalloutDisplayLocation[];
@@ -199,10 +178,18 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
               ? { ...callout.framing.whiteboardRt, calloutNameId: callout.nameID }
               : undefined,
           },
-          // Add calloutNameId to all whiteboards
-          whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
-          // whiteboardRt: callout.whiteboardRt ? { ...callout.whiteboardRt, calloutNameId: callout.nameID } : undefined,
+          whiteboards: callout.contributions
+            ?.map(contribution =>
+              contribution.whiteboard
+                ? {
+                    ...contribution.whiteboard,
+                    calloutNameId: callout.nameID,
+                  }
+                : undefined
+            )
+            .filter(whiteboard => whiteboard !== undefined),
           comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
+          contributions: callout.contributions ?? [],
           authorization,
           draft,
           editable,

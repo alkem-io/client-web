@@ -11,14 +11,14 @@ import { ContainerChildProps } from '../../../../core/container/container';
 import {
   WhiteboardDetailsFragment,
   WhiteboardContentFragment,
-  CreateWhiteboardOnCalloutInput,
   DeleteWhiteboardInput,
+  CreateContributionOnCalloutInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface IWhiteboardActions {
-  onCreate: (whiteboard: CreateWhiteboardOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
+  onCreate: (whiteboard: CreateContributionOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
   onDelete: (whiteboard: DeleteWhiteboardInput) => Promise<void>;
   onCheckout: (whiteboard: WhiteboardDetailsFragment) => Promise<void>;
   onCheckin: (whiteboard: WhiteboardDetailsFragment) => Promise<void>;
@@ -43,8 +43,8 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
   const handleCreateWhiteboard = useCallback(
-    async (whiteboard: CreateWhiteboardOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => {
-      if (!whiteboard.calloutID) {
+    async (whiteboardContribution: CreateContributionOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => {
+      if (!whiteboardContribution.calloutID) {
         throw new Error('[whiteboard:onCreate]: Missing contextID');
       }
 
@@ -52,14 +52,14 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         update(cache, { data }) {
           cache.modify({
             id: cache.identify({
-              id: whiteboard.calloutID,
+              id: whiteboardContribution.calloutID,
               __typename: 'Callout',
             }),
             fields: {
               whiteboards(existingWhiteboards = []) {
                 if (data) {
                   const newWhiteboard = cache.writeFragment({
-                    data: data?.createWhiteboardOnCallout,
+                    data: data?.createContributionOnCallout.whiteboard,
                     fragment: WhiteboardDetailsFragmentDoc,
                     fragmentName: 'WhiteboardDetails',
                   });
@@ -71,17 +71,17 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           });
         },
         variables: {
-          input: whiteboard,
+          input: whiteboardContribution,
         },
       });
 
       await uploadVisuals(
         previewImages,
         {
-          cardVisualId: result.data?.createWhiteboardOnCallout.profile.visual?.id,
-          previewVisualId: result.data?.createWhiteboardOnCallout.profile.preview?.id,
+          cardVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.visual?.id,
+          previewVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.preview?.id,
         },
-        whiteboard.nameID
+        whiteboardContribution.whiteboard?.nameID
       );
     },
     [createWhiteboard]

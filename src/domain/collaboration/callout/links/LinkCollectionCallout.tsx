@@ -59,19 +59,21 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
         variables: {
           input: {
             calloutID: callout.id,
-            // References names have to be unique, if everything goes well this name will never be shown:
-            name: t('callout.link-collection.new-temporary-reference', {
-              temp: nanoid(4),
-            }),
-            description: '',
-            uri: '',
+            link: {
+              // References names have to be unique, if everything goes well this name will never be shown:
+              name: t('callout.link-collection.new-temporary-reference', {
+                temp: nanoid(4),
+              }),
+              description: '',
+              uri: '',
+            },
           },
         },
       });
-      if (!data?.createLinkOnCallout.id) {
+      if (!data?.createContributionOnCallout.link?.id) {
         throw new Error('Error creating the new Link');
       }
-      return data.createLinkOnCallout.id;
+      return data.createContributionOnCallout.link?.id;
     }, [createLinkOnCallout, callout]);
 
     const removeNewReference = (referenceId: string) =>
@@ -89,11 +91,13 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           variables: {
             calloutData: {
               ID: callout.id,
-              profileData: {
-                references: references.map(({ id, ...reference }) => ({
-                  ...reference,
-                  ID: id,
-                })),
+              framing: {
+                profile: {
+                  references: references.map(({ id, ...reference }) => ({
+                    ...reference,
+                    ID: id,
+                  })),
+                },
               },
             },
           },
@@ -111,14 +115,16 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           variables: {
             calloutData: {
               ID: callout.id,
-              profileData: {
-                references: [
-                  {
-                    // Map to UpdateReferenceInput
-                    ID: id,
-                    ...rest,
-                  },
-                ],
+              framing: {
+                profile: {
+                  references: [
+                    {
+                      // Map to UpdateReferenceInput
+                      ID: id,
+                      ...rest,
+                    },
+                  ],
+                },
               },
             },
           },
