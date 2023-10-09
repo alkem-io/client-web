@@ -1,4 +1,4 @@
-import { Button, Paper, SvgIconProps } from '@mui/material';
+import { Button, Divider, Paper, SvgIconProps } from '@mui/material';
 import Gutters from '../../../core/ui/grid/Gutters';
 import React, { ComponentType, PropsWithChildren } from 'react';
 import RouterLink from '../../../core/ui/link/RouterLink';
@@ -9,6 +9,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../core/ui/grid/utils';
+import PoweredBy from '../poweredBy/PoweredBy';
 
 interface PlatformNavigationMenuItemProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -21,8 +22,8 @@ const PlatformNavigationMenuItem = ({
   children,
 }: PropsWithChildren<PlatformNavigationMenuItemProps>) => {
   return (
-    <Button component={RouterLink} to={route}>
-      <Gutters alignItems="center" width={gutters(12)}>
+    <Button component={RouterLink} to={route} sx={{ padding: 0 }}>
+      <Gutters alignItems="center" width={gutters(7)}>
         <Icon fontSize="large" />
         {children}
       </Gutters>
@@ -43,6 +44,11 @@ const PLATFORM_NAVIGATION_MENU_ITEMS: MenuItem[] = [
     route: '/innovation-library',
   },
   {
+    label: 'common.forum',
+    iconComponent: ForumOutlinedIcon,
+    route: '/forum',
+  },
+  {
     label: 'common.challenges',
     iconComponent: ChallengeIcon,
     route: '/challenges',
@@ -52,11 +58,6 @@ const PLATFORM_NAVIGATION_MENU_ITEMS: MenuItem[] = [
     iconComponent: GroupOutlinedIcon,
     route: '/contributors',
   },
-  {
-    label: 'common.forum',
-    iconComponent: ForumOutlinedIcon,
-    route: '/forum',
-  },
 ];
 
 const PlatformNavigationMenu = () => {
@@ -64,12 +65,14 @@ const PlatformNavigationMenu = () => {
 
   return (
     <Paper>
-      <Gutters row width={gutters(30)} flexWrap="wrap">
+      <Gutters row disableGap paddingBottom={1} width={gutters(16)} flexWrap="wrap" justifyContent="center">
         {PLATFORM_NAVIGATION_MENU_ITEMS.map(({ label, ...props }) => (
           <PlatformNavigationMenuItem key={label} {...props}>
             {t(label)}
           </PlatformNavigationMenuItem>
         ))}
+        <Divider sx={{ width: '75%', marginY: 1 }} />
+        <PoweredBy />
       </Gutters>
     </Paper>
   );

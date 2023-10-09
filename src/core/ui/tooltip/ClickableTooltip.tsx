@@ -5,7 +5,7 @@ export interface TriggerProps {
   onClick?: MouseEventHandler;
 }
 
-interface ClickableTooltipProps extends TooltipProps {
+interface ClickableTooltipProps extends Omit<TooltipProps, 'children'> {
   children: ({ onClick }: TriggerProps) => ReactElement;
   title: ReactElement;
 }

@@ -79,6 +79,7 @@ const SearchBox = <Option extends string | number>({
                   }}
                   renderValue={() => (
                     <Box display="flex">
+                      {/* TODO translate */}
                       <BlockSectionTitle>Search in:</BlockSectionTitle>
                       <BlockSectionTitle whiteSpace="pre"> </BlockSectionTitle>
                       <BlockSectionTitle color="primary">

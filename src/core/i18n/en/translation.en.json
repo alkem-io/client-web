@@ -797,6 +797,9 @@
         "space": "{{displayName}}"
       }
     },
+    "poweredBy": {
+      "label": "Powered by"
+    },
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
