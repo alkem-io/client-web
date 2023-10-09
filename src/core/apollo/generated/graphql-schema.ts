@@ -28373,6 +28373,36 @@ export type InnovationPackStorageConfigQuery = {
   };
 };
 
+export type InnovationHubStorageConfigQueryVariables = Exact<{
+  innovationHubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type InnovationHubStorageConfigQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type PlatformStorageConfigQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformStorageConfigQuery = {
