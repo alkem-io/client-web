@@ -45,7 +45,7 @@ const BadgeCardView = forwardRef(
         gap={gutters()}
         {...containerProps}
         border={outlined ? theme => `1px solid ${theme.palette.divider}` : undefined}
-        borderRadius={theme => theme.spacing(1.2)}
+        borderRadius={theme => `${theme.shape.borderRadius}px`}
         padding={outlined ? gutters(0.5) : undefined}
       >
         {cloneVisual(visual)}
