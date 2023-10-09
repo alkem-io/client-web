@@ -5,7 +5,7 @@ import { useField } from 'formik';
 import { without } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { useUserSelectorQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput, UserSelectorQuery } from '../../../../core/apollo/generated/graphql-schema';
+import { User, UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -16,28 +16,32 @@ import { useUserContext } from '../hooks/useUserContext';
 import { useTranslation } from 'react-i18next';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import { CaptionSmall } from '../../../../core/ui/typography';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const MAX_USERS_SHOWN = 10;
 const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
 
-type UserChipData = UserSelectorQuery['usersPaginated']['users'][0];
+type HydratorFn = <U extends Identifiable>(users: U[]) => (U & { message?: string; disabled?: boolean })[];
+
 interface FormikUserSelectorProps {
   name: string;
   required?: boolean;
   readonly?: boolean;
   onChange?: (userIds: string[]) => void;
-  resultsSorter?: (users: UserChipData[]) => UserChipData[];
-  resultsExpander?: (users: UserChipData[]) => (UserChipData & { message?: string; disabled?: boolean })[];
+  sortUsers?: <U extends Identifiable>(results: U[]) => U[];
+  hydrateUsers?: HydratorFn;
 }
+
+const identityFn = <U extends Identifiable>(results: U[]) => results;
 
 export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   name,
   required,
   readonly,
   onChange,
-  resultsSorter = users => users,
-  resultsExpander = users => users.map(user => ({ ...user, message: undefined, disabled: false })),
+  sortUsers = identityFn,
+  hydrateUsers = identityFn as HydratorFn,
   ...containerProps
 }) => {
   // This field is the array of user Ids
@@ -64,8 +68,8 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
       return [];
     }
     const users = data?.usersPaginated.users ?? [];
-    return resultsExpander(
-      resultsSorter(
+    return hydrateUsers(
+      sortUsers(
         users
           .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
           .filter(user => user.id !== currentUser?.user.id)

@@ -13,6 +13,7 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelector';
 import { InviteExistingUserData } from './useInviteUsers';
 import { Identifiable } from '../../../core/utils/Identifiable';
+import { sortBy } from 'lodash';
 
 interface MessageDialogProps {
   open: boolean;
@@ -25,6 +26,14 @@ interface MessageDialogProps {
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
 }
+
+enum SortCriteria {
+  HasApplication,
+  HasInvitation,
+  IsMember,
+}
+
+const SORT_CRITERIA_PRIORITY = [SortCriteria.HasApplication, SortCriteria.HasInvitation, SortCriteria.IsMember];
 
 const InviteExistingUserDialog = ({
   open,
@@ -66,43 +75,40 @@ const InviteExistingUserDialog = ({
     message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
-  const usersSorting = useCallback(
-    <T extends Identifiable>(users: T[]) => {
-      return users.sort((a, b) => {
-        const [aHasApplication, bHasApplication, aHasInvitation, bHasInvitation, aIsMember, bIsMember] = [
-          currentApplicationsUserIds.includes(a.id),
-          currentApplicationsUserIds.includes(b.id),
-          currentInvitationsUserIds.includes(a.id),
-          currentInvitationsUserIds.includes(b.id),
-          currentMembersIds.includes(a.id),
-          currentMembersIds.includes(b.id),
-        ];
+  const getSortFact: Record<SortCriteria, ({ id }: Identifiable) => boolean> = {
+    [SortCriteria.HasApplication]: ({ id }) => currentApplicationsUserIds.includes(id),
+    [SortCriteria.HasInvitation]: ({ id }) => currentInvitationsUserIds.includes(id),
+    [SortCriteria.IsMember]: ({ id }) => currentMembersIds.includes(id),
+  };
 
-        if (aHasApplication !== bHasApplication) {
-          return aHasApplication && !bHasApplication ? 1 : -1;
-        }
-        if (aHasInvitation !== bHasInvitation) {
-          return aHasInvitation && !bHasInvitation ? 1 : -1;
-        }
-        if (aIsMember !== bIsMember) {
-          return aIsMember && !bIsMember ? 1 : -1;
-        }
-        return 0;
+  const sortUsers = useCallback(
+    <T extends Identifiable>(users: T[]) => {
+      return sortBy(users, user => {
+        return SORT_CRITERIA_PRIORITY.reduce<number>((totalWeight, criteria, priority) => {
+          const weight = getSortFact[criteria](user) ? Math.pow(2, priority) : 0;
+          return totalWeight + weight;
+        }, 0);
       });
     },
     [currentApplicationsUserIds, currentInvitationsUserIds, currentMembersIds]
   );
 
-  const usersExpander = useCallback(
-    <T extends Identifiable>(users: T[]) => {
-      const alreadyAppliedTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyApplied');
-      const alreadyInvitedTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyInvited');
-      const alreadyMemberTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyMember');
+  const alreadyAppliedTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyApplied');
+  const alreadyInvitedTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyInvited');
+  const alreadyMemberTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyMember');
 
+  const hydrateUsers = useCallback(
+    <T extends Identifiable>(users: T[]) => {
       return users.map(user => {
         const hasApplication = currentApplicationsUserIds.includes(user.id);
         const hasInvitation = currentInvitationsUserIds.includes(user.id);
         const isMember = currentMembersIds.includes(user.id);
+        const hasMembershipLike = hasApplication || hasInvitation || isMember;
+
+        if (!hasMembershipLike) {
+          return user;
+        }
+
         return {
           ...user,
           message: hasApplication
@@ -112,11 +118,18 @@ const InviteExistingUserDialog = ({
             : isMember
             ? alreadyMemberTranslation
             : undefined,
-          disabled: hasApplication || hasInvitation || isMember,
+          disabled: hasMembershipLike,
         };
       });
     },
-    [currentApplicationsUserIds, currentInvitationsUserIds, currentMembersIds]
+    [
+      currentApplicationsUserIds,
+      currentInvitationsUserIds,
+      currentMembersIds,
+      alreadyAppliedTranslation,
+      alreadyInvitedTranslation,
+      alreadyMemberTranslation,
+    ]
   );
 
   return (
@@ -134,7 +147,7 @@ const InviteExistingUserDialog = ({
         >
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
-              <FormikUserSelector name="userIds" resultsSorter={usersSorting} resultsExpander={usersExpander} />
+              <FormikUserSelector name="userIds" sortUsers={sortUsers} hydrateUsers={hydrateUsers} />
               <FormikInputField
                 name="message"
                 title={t('messaging.message')}
