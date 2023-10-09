@@ -129,7 +129,6 @@ const InviteExistingUserDialog = ({
       alreadyAppliedTranslation,
       alreadyInvitedTranslation,
       alreadyMemberTranslation,
-      t,
     ]
   );
 
