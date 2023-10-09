@@ -18,7 +18,11 @@ export const OrganizationGroupsView: FC = () => {
   const { organizationNameId = '' } = useUrlParams();
 
   const { data } = useOrganizationGroupsQuery({ variables: { id: organizationNameId } });
-  const groups = data?.organization?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/groups/${g.id}` }));
+  const groups = data?.organization?.groups?.map(g => ({
+    id: g.id,
+    value: g.profile?.displayName,
+    url: `${url}/groups/${g.id}`,
+  }));
 
   const [deleteGroup] = useDeleteGroupMutation({
     onCompleted: notifySuccess,
