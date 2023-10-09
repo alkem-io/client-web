@@ -20,7 +20,7 @@ export const OrganizationGroupsView: FC = () => {
   const { data } = useOrganizationGroupsQuery({ variables: { id: organizationNameId } });
   const groups = data?.organization?.groups?.map(g => ({
     id: g.id,
-    value: g.profile?.displayName,
+    value: g.profile?.displayName || '',
     url: `${url}/groups/${g.id}`,
   }));
 
