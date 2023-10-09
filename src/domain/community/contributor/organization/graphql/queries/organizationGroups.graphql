@@ -3,7 +3,10 @@ query organizationGroups($id: UUID_NAMEID!) {
     id
     groups {
       id
-      name
+      profile {
+        id
+        displayName
+      }
     }
   }
 }
