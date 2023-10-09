@@ -1664,7 +1664,10 @@ export const MessagingUserInformationFragmentDoc = gql`
 export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
-    name
+    profile {
+      id
+      displayName
+    }
   }
 `;
 export const GroupInfoFragmentDoc = gql`
@@ -12791,7 +12794,10 @@ export const CreateGroupOnOrganizationDocument = gql`
   mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
     createGroupOnOrganization(groupData: $input) {
       id
-      name
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -13059,7 +13065,10 @@ export const OrganizationGroupsDocument = gql`
       id
       groups {
         id
-        name
+        profile {
+          id
+          displayName
+        }
       }
     }
   }

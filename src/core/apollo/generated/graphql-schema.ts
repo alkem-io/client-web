@@ -746,6 +746,16 @@ export type CalloutWhiteboardsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type CalloutContributionDefaults = {
+  __typename?: 'CalloutContributionDefaults';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The default description to use for new contributions. */
+  postDescription?: Maybe<Scalars['Markdown']>;
+  /** The default whiteboard content for whiteboard responses. */
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
+};
+
 export type CalloutContributionPolicy = {
   __typename?: 'CalloutContributionPolicy';
   /** The allowed contribution types for this callout. */
@@ -782,12 +792,12 @@ export type CalloutFraming = {
   __typename?: 'CalloutFraming';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The whiteboard template content for this Callout Framing. */
+  content?: Maybe<Scalars['WhiteboardContent']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for framing the associated Callout. */
   profile: Profile;
-  /** The whiteboard template content for this Callout Framing. */
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export type CalloutPostCreated = {
@@ -796,16 +806,6 @@ export type CalloutPostCreated = {
   calloutID: Scalars['String'];
   /** The post that has been created. */
   post: Post;
-};
-
-export type CalloutResponseDefaults = {
-  __typename?: 'CalloutResponseDefaults';
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The default description to use for new contributions. */
-  postDescription?: Maybe<Scalars['Markdown']>;
-  /** The default whiteboard content for whiteboard responses. */
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export enum CalloutState {
@@ -818,16 +818,16 @@ export type CalloutTemplate = {
   __typename?: 'CalloutTemplate';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The defaults to use for Callouts created from this template.   */
+  contributionDefaults: CalloutContributionDefaults;
+  /** The response policy to use for Callouts created from this template.   */
+  contributionPolicy: CalloutContributionPolicy;
   /** The framing for callouts created from this template. */
   framing: CalloutFraming;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
-  /** The defaults to use for Callouts created from this template.   */
-  responseDefaults: CalloutResponseDefaults;
-  /** The response policy to use for Callouts created from this template.   */
-  responsePolicy: CalloutContributionPolicy;
 };
 
 export enum CalloutType {
@@ -1836,6 +1836,8 @@ export type Document = {
   tagset: Tagset;
   /** The uploaded date of this Document */
   uploadedDate: Scalars['DateTime'];
+  /** The URL to be used to retrieve the Document */
+  url: Scalars['String'];
 };
 
 export type EcosystemModel = {
@@ -16837,7 +16839,11 @@ export type CreateGroupOnCommunityMutationVariables = Exact<{
 
 export type CreateGroupOnCommunityMutation = {
   __typename?: 'Mutation';
-  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
+  createGroupOnCommunity: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type ChallengesWithProfileQueryVariables = Exact<{
@@ -18031,7 +18037,11 @@ export type CreateGroupOnOrganizationMutationVariables = Exact<{
 
 export type CreateGroupOnOrganizationMutation = {
   __typename?: 'Mutation';
-  createGroupOnOrganization: { __typename?: 'UserGroup'; id: string; name: string };
+  createGroupOnOrganization: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type CreateOrganizationMutationVariables = Exact<{
@@ -18193,7 +18203,13 @@ export type OrganizationGroupsQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
-    groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
+    groups?:
+      | Array<{
+          __typename?: 'UserGroup';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -18689,7 +18705,11 @@ export type UserCardFragment = {
   };
 };
 
-export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
+export type GroupDetailsFragment = {
+  __typename?: 'UserGroup';
+  id: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+};
 
 export type GroupInfoFragment = {
   __typename?: 'UserGroup';
