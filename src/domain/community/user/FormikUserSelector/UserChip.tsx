@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useMessagingUserDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUserSelectorUserDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 
 interface UserChipProps {
@@ -9,7 +9,7 @@ interface UserChipProps {
 }
 
 export const UserChip: FC<UserChipProps> = ({ userId, ...props }) => {
-  const { data, loading } = useMessagingUserDetailsQuery({
+  const { data, loading } = useUserSelectorUserDetailsQuery({
     variables: { id: userId },
   });
 
