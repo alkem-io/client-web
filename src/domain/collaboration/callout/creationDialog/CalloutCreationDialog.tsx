@@ -116,6 +116,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     },
     [callout]
   );
+
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSelectCalloutType = (value: CalloutType | undefined) => {

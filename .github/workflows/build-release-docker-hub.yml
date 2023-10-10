@@ -5,23 +5,6 @@ on:
     types: [published]
 
 jobs:
-  upload-sourcemap:
-    runs-on: ubuntu-latest
-    steps:
-      # checkout the repo
-      - name: 'Checkout github Action'
-        uses: actions/checkout@master
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16.15.0
-      - name: 'Setup cross-env'
-        run: npm install -g cross-env
-      - name: 'Install dependencies'
-        run: npm install
-      - name: 'Upload sourcemaps to Sentry'
-        env:
-          VITE_APP_SENTRY_AUTH_TOKEN: ${{ secrets.VITE_APP_SENTRY_AUTH_TOKEN }}
-        run: npm run build:sentry
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -78,6 +61,7 @@ jobs:
             ARG_BUILD_VERSION=${{ steps.prep.outputs.version }}
             ARG_BUILD_DATE=${{ steps.prep.outputs.created }}
             ARG_BUILD_REVISION=${{ github.sha }}
+            ARG_SENTRY_AUTH_TOKEN=${{ secrets.ARG_SENTRY_AUTH_TOKEN }}
             ARG_BUILD_ENVIRONMENT=production
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}

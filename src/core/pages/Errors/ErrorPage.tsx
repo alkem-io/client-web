@@ -26,6 +26,7 @@ export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
         <WrapperTypography as="h2" variant="h3" color="neutral">
           {t('pages.error.line2', { graphQLEndpoint: privateGraphQLEndpoint })}
         </WrapperTypography>
+        {import.meta.env.MODE === 'development' && <WrapperTypography as="pre">{error.stack}</WrapperTypography>}
         <WrapperTypography as="h5" variant="h5" color="neutralMedium">
           {t('pages.error.line3')}
         </WrapperTypography>

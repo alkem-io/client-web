@@ -9,15 +9,19 @@ import { useTranslation } from 'react-i18next';
 import { useOrganizationAssociatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export const OrganizationOwnerAuthorizationView: FC = () => {
-  const { organizationId } = useOrganization();
+  const { organizationId, loading: isLoadingOrganization } = useOrganization();
   const { t } = useTranslation();
 
-  const { data, loading } = useOrganizationAssociatesQuery({ variables: { id: organizationId } });
-  const orgAssociates = data?.organization.associates;
+  const { data, loading: isLoadingAssociates } = useOrganizationAssociatesQuery({
+    variables: { id: organizationId },
+    skip: isLoadingOrganization,
+  });
 
-  if (loading) {
+  if (isLoadingOrganization || isLoadingAssociates) {
     return <Loading />;
   }
+
+  const orgAssociates = data?.organization.associates;
 
   return (
     <DashboardGenericSection

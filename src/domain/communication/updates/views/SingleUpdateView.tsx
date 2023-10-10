@@ -4,6 +4,8 @@ import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { Caption } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
+import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 
 export interface SingleUpdateViewProps {
   author?: Author;
@@ -35,7 +37,9 @@ const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, cont
           <Skeleton sx={{ marginBottom: t => t.spacing(0.5) }} />
         </Box>
       ) : (
-        <WrapperMarkdown>{content}</WrapperMarkdown>
+        <OverflowGradient maxHeight={gutters(11)}>
+          <WrapperMarkdown disableParagraphPadding>{content}</WrapperMarkdown>
+        </OverflowGradient>
       )}
     </>
   );

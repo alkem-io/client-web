@@ -13,18 +13,19 @@ export interface ChallengePageLayoutProps
 
 const ChallengePageLayout = ({
   unauthorizedDialogDisabled = false,
+  children,
   ...props
 }: PropsWithChildren<ChallengePageLayoutProps>) => {
   const { challengeId, challengeNameId, profile } = useChallenge();
 
   return (
-    <>
-      <EntityPageLayout
-        {...props}
-        pageBannerComponent={ChallengePageBanner}
-        tabsComponent={ChallengeTabs}
-        entityTypeName="challenge"
-      />
+    <EntityPageLayout
+      {...props}
+      pageBannerComponent={ChallengePageBanner}
+      tabsComponent={ChallengeTabs}
+      entityTypeName="challenge"
+    >
+      {children}
       <JourneyUnauthorizedDialogContainer journeyTypeName="challenge">
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
@@ -38,7 +39,7 @@ const ChallengePageLayout = ({
           />
         )}
       </JourneyUnauthorizedDialogContainer>
-    </>
+    </EntityPageLayout>
   );
 };
 

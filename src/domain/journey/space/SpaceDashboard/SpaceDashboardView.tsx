@@ -61,6 +61,7 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
   recommendations?: ReactNode;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   loading: boolean;
+  shareUpdatesUrl: string;
   callouts: {
     groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
@@ -94,6 +95,7 @@ const SpaceDashboardView = ({
   journeyTypeName,
   callouts,
   topCallouts,
+  shareUpdatesUrl,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
 
@@ -164,7 +166,9 @@ const SpaceDashboardView = ({
             loading={dashboardNavigationLoading}
           />
           {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
-          {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
+          {communityReadAccess && (
+            <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
+          )}
           <CalloutsGroupView
             callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
             spaceId={spaceNameId!}

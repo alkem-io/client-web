@@ -17,7 +17,7 @@ export interface UserProfileViewPageProps extends UserProfileViewProps {
 
 export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contributions, organizationIds, entities }) => {
   const { t } = useTranslation();
-  const { pendingApplications, user } = entities.userMetadata;
+  const { user } = entities.userMetadata;
   const { id } = user;
 
   const { isFeatureEnabled } = useConfig();
@@ -46,12 +46,6 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
           title={t('pages.user-profile.communities.title')}
           helpText={t('pages.user-profile.communities.help')}
           contributions={contributions}
-          cards
-        />
-        <ContributionsView
-          title={t('pages.user-profile.pending-applications.title')}
-          helpText={t('pages.user-profile.pending-applications.help')}
-          contributions={pendingApplications}
           cards
         />
       </PageContentColumn>

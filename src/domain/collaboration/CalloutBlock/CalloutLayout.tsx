@@ -8,6 +8,7 @@ import {
   CalloutState,
   CalloutType,
   CalloutVisibility,
+  MessageDetailsFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { CalloutSummary } from '../callout/CalloutSummary';
@@ -53,6 +54,9 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       references?: Reference[];
       tagset?: Tagset;
       displayLocationTagset?: Tagset;
+    };
+    comments?: {
+      messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
     state: CalloutState;
@@ -153,8 +157,12 @@ const CalloutLayout = ({
       return undefined;
     }
 
+    if (!callout?.comments?.messages?.length) {
+      return;
+    }
+
     return t('callout.closed');
-  }, [callout?.state, t]);
+  }, [callout?.state, callout?.comments?.messages, t]);
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 

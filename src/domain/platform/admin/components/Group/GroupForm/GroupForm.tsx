@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import {
   GroupInfoFragment,
   Reference,
+  StorageBucket,
   Tagset,
   User,
   UserGroup,
@@ -67,6 +68,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
         tagsets: tagsets as Tagset[],
         tagline: '',
         visuals: [],
+        storageBucket: {} as StorageBucket,
       },
     };
     onSave && (await onSave(group));

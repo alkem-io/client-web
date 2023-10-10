@@ -13,6 +13,7 @@ import {
   MetricsItemFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
+import mainQuery from '../../../../core/apollo/utils/mainQuery';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   displayName: string | undefined;
@@ -35,6 +36,10 @@ interface JourneyUnauthorizedDialogContainerProps {
   children: (provided: JourneyUnauthorizedDialogContainerProvided) => ReactNode;
 }
 
+const fetchPrivileges = mainQuery(useJourneyPrivilegesQuery);
+const fetchCommunityPrivileges = mainQuery(useJourneyCommunityPrivilegesQuery);
+const fetchJourneyData = mainQuery(useJourneyDataQuery);
+
 const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: JourneyUnauthorizedDialogContainerProps) => {
   // TODO move to Page components, pass from there
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
@@ -47,7 +52,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     data: journeyPrivilegesQueryData,
     loading: privilegesLoading,
     error: privilegesError,
-  } = useJourneyPrivilegesQuery({
+  } = fetchPrivileges({
     variables: {
       spaceNameId,
       challengeNameId,
@@ -72,7 +77,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     data: journeyCommunityPrivilegesQueryData,
     loading: journeyCommunityPrivilegesLoading,
     error: journeyCommunityPrivilegesError,
-  } = useJourneyCommunityPrivilegesQuery({
+  } = fetchCommunityPrivileges({
     variables: {
       spaceNameId,
       challengeNameId,
@@ -92,7 +97,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
 
   const communityReadAccess = communityAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: journeyDataQueryData, error: journeyDataError } = useJourneyDataQuery({
+  const { data: journeyDataQueryData, error: journeyDataError } = fetchJourneyData({
     variables: {
       spaceNameId,
       challengeNameId,

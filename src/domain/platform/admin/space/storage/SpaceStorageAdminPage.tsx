@@ -33,6 +33,7 @@ import { compact, sortBy } from 'lodash';
 import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
 import { formatDateTime } from '../../../../../core/utils/time/utils';
 import DataGridTable from '../../../../../core/ui/table/DataGridTable';
+import { useConfig } from '../../../config/useConfig';
 
 interface SpaceStorageAdminPageProps extends SettingsPageProps {
   spaceId: string | undefined;
@@ -60,6 +61,9 @@ const initialPagination = {
 
 const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
+  const { platform } = useConfig();
+  const environmentDomain = platform?.domain ?? '';
+
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const [filterString, setFilterString] = useState('');
@@ -142,7 +146,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
       field: 'displayName',
       minWidth: 400,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={buildDocumentUrl(row.id)} target="_blank">
+        <Link href={buildDocumentUrl(environmentDomain, row.id)} target="_blank">
           {row.displayName}
         </Link>
       ),
@@ -218,7 +222,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
                 {
                   name: 'view',
                   render: ({ row }) => (
-                    <IconButton component={Link} href={buildDocumentUrl(row.id)} target="_blank">
+                    <IconButton component={Link} href={buildDocumentUrl(environmentDomain, row.id)} target="_blank">
                       <VisibilityOutlinedIcon color="primary" />
                     </IconButton>
                   ),

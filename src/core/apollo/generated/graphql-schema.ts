@@ -746,6 +746,16 @@ export type CalloutWhiteboardsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type CalloutContributionDefaults = {
+  __typename?: 'CalloutContributionDefaults';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The default description to use for new contributions. */
+  postDescription?: Maybe<Scalars['Markdown']>;
+  /** The default whiteboard content for whiteboard responses. */
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
+};
+
 export type CalloutContributionPolicy = {
   __typename?: 'CalloutContributionPolicy';
   /** The allowed contribution types for this callout. */
@@ -782,12 +792,12 @@ export type CalloutFraming = {
   __typename?: 'CalloutFraming';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The whiteboard template content for this Callout Framing. */
+  content?: Maybe<Scalars['WhiteboardContent']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for framing the associated Callout. */
   profile: Profile;
-  /** The whiteboard template content for this Callout Framing. */
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export type CalloutPostCreated = {
@@ -796,16 +806,6 @@ export type CalloutPostCreated = {
   calloutID: Scalars['String'];
   /** The post that has been created. */
   post: Post;
-};
-
-export type CalloutResponseDefaults = {
-  __typename?: 'CalloutResponseDefaults';
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The default description to use for new contributions. */
-  postDescription?: Maybe<Scalars['Markdown']>;
-  /** The default whiteboard content for whiteboard responses. */
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export enum CalloutState {
@@ -818,16 +818,16 @@ export type CalloutTemplate = {
   __typename?: 'CalloutTemplate';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The defaults to use for Callouts created from this template.   */
+  contributionDefaults: CalloutContributionDefaults;
+  /** The response policy to use for Callouts created from this template.   */
+  contributionPolicy: CalloutContributionPolicy;
   /** The framing for callouts created from this template. */
   framing: CalloutFraming;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
-  /** The defaults to use for Callouts created from this template.   */
-  responseDefaults: CalloutResponseDefaults;
-  /** The response policy to use for Callouts created from this template.   */
-  responsePolicy: CalloutContributionPolicy;
 };
 
 export enum CalloutType {
@@ -1490,7 +1490,7 @@ export type CreatePostOnCalloutInput = {
 
 export type CreatePostTemplateInput = {
   /** The default description to be pre-filled when users create Posts based on this template. */
-  defaultDescription: Scalars['Markdown'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   /** The type of Posts created from this Template. */
@@ -1500,7 +1500,7 @@ export type CreatePostTemplateInput = {
 
 export type CreatePostTemplateOnTemplatesSetInput = {
   /** The default description to be pre-filled when users create Posts based on this template. */
-  defaultDescription: Scalars['Markdown'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -1575,10 +1575,8 @@ export type CreateTagsetOnProfileInput = {
 };
 
 export type CreateUserGroupInput = {
-  /** The name of the UserGroup. Minimum length 2. */
-  name: Scalars['String'];
   parentID: Scalars['UUID'];
-  profileData?: InputMaybe<CreateProfileInput>;
+  profileData: CreateProfileInput;
 };
 
 export type CreateUserInput = {
@@ -1838,6 +1836,8 @@ export type Document = {
   tagset: Tagset;
   /** The uploaded date of this Document */
   uploadedDate: Scalars['DateTime'];
+  /** The URL to be used to retrieve the Document */
+  url: Scalars['String'];
 };
 
 export type EcosystemModel = {
@@ -2146,6 +2146,8 @@ export type LookupQueryResults = {
   community?: Maybe<Community>;
   /** Lookup the specified Context */
   context?: Maybe<Context>;
+  /** Lookup the specified Document */
+  document?: Maybe<Document>;
   /** Lookup the specified InnovationFlow */
   innovationFlow?: Maybe<InnovationFlow>;
   /** Lookup the specified InnovationFlow Template */
@@ -2204,6 +2206,10 @@ export type LookupQueryResultsContextArgs = {
   ID: Scalars['UUID'];
 };
 
+export type LookupQueryResultsDocumentArgs = {
+  ID: Scalars['UUID'];
+};
+
 export type LookupQueryResultsInnovationFlowArgs = {
   ID: Scalars['UUID'];
 };
@@ -2248,6 +2254,8 @@ export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** The applications of the current authenticated user */
   applications: Array<ApplicationForRoleResult>;
+  /** The query id */
+  id: Scalars['String'];
   /** The invitations of the current authenticated user */
   invitations: Array<InvitationForRoleResult>;
   /** The applications of the current authenticated user */
@@ -2325,8 +2333,6 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Updates the States tagset to be synchronized with the Lifecycle states. */
   adminInnovationFlowSynchronizeStates: Tagset;
-  /** Migrate all ipfs links to use new storage access api */
-  adminStorageMigrateIpfsUrls: Scalars['Boolean'];
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -3580,7 +3586,7 @@ export type Profile = {
   /** A list of URLs to relevant information. */
   references?: Maybe<Array<Reference>>;
   /** The storage bucket for this Profile. */
-  storageBucket?: Maybe<StorageBucket>;
+  storageBucket: StorageBucket;
   /** The taglie for this entity. */
   tagline: Scalars['String'];
   /** The default or named tagset. */
@@ -4333,8 +4339,6 @@ export type ServiceMetadata = {
 
 export type Source = {
   __typename?: 'Source';
-  /** The title of the source */
-  title: Scalars['String'];
   /** The URI of the source */
   uri: Scalars['String'];
 };
@@ -16835,7 +16839,11 @@ export type CreateGroupOnCommunityMutationVariables = Exact<{
 
 export type CreateGroupOnCommunityMutation = {
   __typename?: 'Mutation';
-  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
+  createGroupOnCommunity: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type ChallengesWithProfileQueryVariables = Exact<{
@@ -18029,7 +18037,11 @@ export type CreateGroupOnOrganizationMutationVariables = Exact<{
 
 export type CreateGroupOnOrganizationMutation = {
   __typename?: 'Mutation';
-  createGroupOnOrganization: { __typename?: 'UserGroup'; id: string; name: string };
+  createGroupOnOrganization: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type CreateOrganizationMutationVariables = Exact<{
@@ -18191,7 +18203,13 @@ export type OrganizationGroupsQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
-    groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
+    groups?:
+      | Array<{
+          __typename?: 'UserGroup';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -18567,12 +18585,12 @@ export type OpportunityContributionDetailsQuery = {
   };
 };
 
-export type MessagingAvailableRecipientsQueryVariables = Exact<{
+export type UserSelectorQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
 }>;
 
-export type MessagingAvailableRecipientsQuery = {
+export type UserSelectorQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
@@ -18590,11 +18608,11 @@ export type MessagingAvailableRecipientsQuery = {
   };
 };
 
-export type MessagingUserDetailsQueryVariables = Exact<{
+export type UserSelectorUserDetailsQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
-export type MessagingUserDetailsQuery = {
+export type UserSelectorUserDetailsQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'User';
@@ -18609,7 +18627,7 @@ export type MessagingUserDetailsQuery = {
   };
 };
 
-export type MessagingUserInformationFragment = {
+export type UserSelectorUserInformationFragment = {
   __typename?: 'User';
   id: string;
   profile: {
@@ -18687,7 +18705,11 @@ export type UserCardFragment = {
   };
 };
 
-export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
+export type GroupDetailsFragment = {
+  __typename?: 'UserGroup';
+  id: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+};
 
 export type GroupInfoFragment = {
   __typename?: 'UserGroup';
@@ -27970,17 +27992,15 @@ export type JourneyStorageConfigQuery = {
     profile?: {
       __typename?: 'Profile';
       id: string;
-      storageBucket?:
-        | {
-            __typename?: 'StorageBucket';
-            id: string;
-            allowedMimeTypes: Array<string>;
-            maxFileSize: number;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
+      storageBucket: {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      };
     };
     challenge?: {
       __typename?: 'Challenge';
@@ -27988,17 +28008,15 @@ export type JourneyStorageConfigQuery = {
       profile: {
         __typename?: 'Profile';
         id: string;
-        storageBucket?:
-          | {
-              __typename?: 'StorageBucket';
-              id: string;
-              allowedMimeTypes: Array<string>;
-              maxFileSize: number;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
+        storageBucket: {
+          __typename?: 'StorageBucket';
+          id: string;
+          allowedMimeTypes: Array<string>;
+          maxFileSize: number;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        };
       };
     };
     opportunity?: {
@@ -28007,17 +28025,15 @@ export type JourneyStorageConfigQuery = {
       profile: {
         __typename?: 'Profile';
         id: string;
-        storageBucket?:
-          | {
-              __typename?: 'StorageBucket';
-              id: string;
-              allowedMimeTypes: Array<string>;
-              maxFileSize: number;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
+        storageBucket: {
+          __typename?: 'StorageBucket';
+          id: string;
+          allowedMimeTypes: Array<string>;
+          maxFileSize: number;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        };
       };
     };
   };
@@ -28049,21 +28065,19 @@ export type CalloutStorageConfigQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
-                  storageBucket?:
-                    | {
-                        __typename?: 'StorageBucket';
-                        id: string;
-                        allowedMimeTypes: Array<string>;
-                        maxFileSize: number;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                      }
-                    | undefined;
+                  storageBucket: {
+                    __typename?: 'StorageBucket';
+                    id: string;
+                    allowedMimeTypes: Array<string>;
+                    maxFileSize: number;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  };
                 };
               }>
             | undefined;
@@ -28083,21 +28097,19 @@ export type CalloutStorageConfigQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
-                    storageBucket?:
-                      | {
-                          __typename?: 'StorageBucket';
-                          id: string;
-                          allowedMimeTypes: Array<string>;
-                          maxFileSize: number;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        }
-                      | undefined;
+                    storageBucket: {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    };
                   };
                 }>
               | undefined;
@@ -28118,21 +28130,19 @@ export type CalloutStorageConfigQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
-                    storageBucket?:
-                      | {
-                          __typename?: 'StorageBucket';
-                          id: string;
-                          allowedMimeTypes: Array<string>;
-                          maxFileSize: number;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        }
-                      | undefined;
+                    storageBucket: {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    };
                   };
                 }>
               | undefined;
@@ -28173,21 +28183,19 @@ export type CalloutPostStorageConfigQuery = {
                       profile: {
                         __typename?: 'Profile';
                         id: string;
-                        storageBucket?:
-                          | {
-                              __typename?: 'StorageBucket';
-                              id: string;
-                              allowedMimeTypes: Array<string>;
-                              maxFileSize: number;
-                              authorization?:
-                                | {
-                                    __typename?: 'Authorization';
-                                    id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                  }
-                                | undefined;
-                            }
-                          | undefined;
+                        storageBucket: {
+                          __typename?: 'StorageBucket';
+                          id: string;
+                          allowedMimeTypes: Array<string>;
+                          maxFileSize: number;
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
+                        };
                       };
                     }>
                   | undefined;
@@ -28213,21 +28221,19 @@ export type CalloutPostStorageConfigQuery = {
                         profile: {
                           __typename?: 'Profile';
                           id: string;
-                          storageBucket?:
-                            | {
-                                __typename?: 'StorageBucket';
-                                id: string;
-                                allowedMimeTypes: Array<string>;
-                                maxFileSize: number;
-                                authorization?:
-                                  | {
-                                      __typename?: 'Authorization';
-                                      id: string;
-                                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                    }
-                                  | undefined;
-                              }
-                            | undefined;
+                          storageBucket: {
+                            __typename?: 'StorageBucket';
+                            id: string;
+                            allowedMimeTypes: Array<string>;
+                            maxFileSize: number;
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          };
                         };
                       }>
                     | undefined;
@@ -28254,21 +28260,19 @@ export type CalloutPostStorageConfigQuery = {
                         profile: {
                           __typename?: 'Profile';
                           id: string;
-                          storageBucket?:
-                            | {
-                                __typename?: 'StorageBucket';
-                                id: string;
-                                allowedMimeTypes: Array<string>;
-                                maxFileSize: number;
-                                authorization?:
-                                  | {
-                                      __typename?: 'Authorization';
-                                      id: string;
-                                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                    }
-                                  | undefined;
-                              }
-                            | undefined;
+                          storageBucket: {
+                            __typename?: 'StorageBucket';
+                            id: string;
+                            allowedMimeTypes: Array<string>;
+                            maxFileSize: number;
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          };
                         };
                       }>
                     | undefined;
@@ -28292,17 +28296,15 @@ export type UserStorageConfigQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
-      storageBucket?:
-        | {
-            __typename?: 'StorageBucket';
-            id: string;
-            allowedMimeTypes: Array<string>;
-            maxFileSize: number;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
+      storageBucket: {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      };
     };
   };
 };
@@ -28319,17 +28321,15 @@ export type OrganizationStorageConfigQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
-      storageBucket?:
-        | {
-            __typename?: 'StorageBucket';
-            id: string;
-            allowedMimeTypes: Array<string>;
-            maxFileSize: number;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
+      storageBucket: {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      };
     };
   };
 };
@@ -28353,25 +28353,53 @@ export type InnovationPackStorageConfigQuery = {
             profile: {
               __typename?: 'Profile';
               id: string;
-              storageBucket?:
-                | {
-                    __typename?: 'StorageBucket';
-                    id: string;
-                    allowedMimeTypes: Array<string>;
-                    maxFileSize: number;
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                  }
-                | undefined;
+              storageBucket: {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              };
             };
           }
         | undefined;
     };
+  };
+};
+
+export type InnovationHubStorageConfigQueryVariables = Exact<{
+  innovationHubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type InnovationHubStorageConfigQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
   };
 };
 
@@ -28397,17 +28425,15 @@ export type PlatformStorageConfigQuery = {
 export type ProfileStorageConfigFragment = {
   __typename?: 'Profile';
   id: string;
-  storageBucket?:
-    | {
-        __typename?: 'StorageBucket';
-        id: string;
-        allowedMimeTypes: Array<string>;
-        maxFileSize: number;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      }
-    | undefined;
+  storageBucket: {
+    __typename?: 'StorageBucket';
+    id: string;
+    allowedMimeTypes: Array<string>;
+    maxFileSize: number;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
 };
 
 export type CalloutOnCollaborationWithStorageConfigFragment = {
@@ -28420,21 +28446,15 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
         profile: {
           __typename?: 'Profile';
           id: string;
-          storageBucket?:
-            | {
-                __typename?: 'StorageBucket';
-                id: string;
-                allowedMimeTypes: Array<string>;
-                maxFileSize: number;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
+          storageBucket: {
+            __typename?: 'StorageBucket';
+            id: string;
+            allowedMimeTypes: Array<string>;
+            maxFileSize: number;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          };
         };
       }>
     | undefined;
@@ -28454,21 +28474,19 @@ export type PostInCalloutOnCollaborationWithStorageConfigFragment = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
-                storageBucket?:
-                  | {
-                      __typename?: 'StorageBucket';
-                      id: string;
-                      allowedMimeTypes: Array<string>;
-                      maxFileSize: number;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                    }
-                  | undefined;
+                storageBucket: {
+                  __typename?: 'StorageBucket';
+                  id: string;
+                  allowedMimeTypes: Array<string>;
+                  maxFileSize: number;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                };
               };
             }>
           | undefined;
@@ -29591,7 +29609,7 @@ export type AskChatGuidanceQuestionQuery = {
     __typename?: 'ChatGuidanceResult';
     answer: string;
     question: string;
-    sources: Array<{ __typename?: 'Source'; title: string; uri: string }>;
+    sources: Array<{ __typename?: 'Source'; uri: string }>;
   };
 };
 
