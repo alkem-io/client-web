@@ -178,16 +178,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
               ? { ...callout.framing.whiteboardRt, calloutNameId: callout.nameID }
               : undefined,
           },
-          whiteboards: callout.contributions
-            ?.map(contribution =>
-              contribution.whiteboard
-                ? {
-                    ...contribution.whiteboard,
-                    calloutNameId: callout.nameID,
-                  }
-                : undefined
-            )
-            .filter(whiteboard => whiteboard !== undefined),
           comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
           contributions: callout.contributions ?? [],
           authorization,

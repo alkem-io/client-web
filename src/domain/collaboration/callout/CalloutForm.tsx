@@ -25,8 +25,6 @@ import PostTemplatesChooser from './creationDialog/CalloutTemplate/PostTemplateC
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
 import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
-import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import FormikSelect from '../../../core/ui/forms/FormikSelect';
 import { FormikSelectValue } from '../../../core/ui/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
@@ -46,8 +44,8 @@ type FormValueType = {
   references: Reference[];
   opened: boolean;
   displayLocation: CalloutDisplayLocation;
-  postTemplateData?: PostTemplateFormSubmittedValues;
-  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  postDescription?: string;
+  whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
@@ -78,8 +76,10 @@ export type CalloutFormOutput = {
   type: CalloutType;
   state: CalloutState;
   displayLocation: CalloutDisplayLocation;
-  postTemplateData?: PostTemplateFormSubmittedValues;
-  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  contributionDefaults?: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
@@ -130,18 +130,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       displayLocation: callout?.displayLocation ?? CalloutDisplayLocation.Knowledge,
-      postTemplateData: {
-        profile: {
-          displayName: '',
-        },
-        defaultDescription: callout.contributionDefaults?.postDescription ?? '',
-        type: '',
-      },
-      whiteboardTemplateData: {
-        profile: {
-          displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
-        },
-        content: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+      contributionDefaults: {
+        postDescription: callout.contributionDefaults?.postDescription ?? '',
+        whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
       },
       whiteboard: callout?.whiteboard
         ? {
@@ -193,6 +184,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   });
 
   const handleChange = (values: FormValueType) => {
+    // console.log(values);
     const callout: CalloutFormOutput = {
       displayName: values.displayName,
       description: values.description,
@@ -201,8 +193,10 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
       displayLocation: values.displayLocation,
-      postTemplateData: values.postTemplateData,
-      whiteboardTemplateData: values.whiteboardTemplateData,
+      contributionDefaults: {
+        postDescription: values.postDescription,
+        whiteboardContent: values.whiteboardContent,
+      },
       whiteboard: values.whiteboard,
     };
     onChange?.(callout);
@@ -276,8 +270,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {!editMode && formConfiguration.linkCollectionAdd && (
               <Caption>{t('callout.link-collection.save-to-add')}</Caption>
             )}
-            {formConfiguration.postTemplate && <PostTemplatesChooser name="postTemplateData" />}
-            {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
+            {formConfiguration.postTemplate && <PostTemplatesChooser name="postDescription" />}
+            {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardContent" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
             {formConfiguration.locationChange && (
               <FormControlLabel

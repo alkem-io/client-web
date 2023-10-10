@@ -1306,6 +1306,8 @@ export type CreateCalloutContributionDefaultsInput = {
 };
 
 export type CreateCalloutContributionPolicyInput = {
+  /** Contribution types of the callout. */
+  allowedContributionTypes?: InputMaybe<Array<CalloutContributionType>>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
 };
@@ -9866,66 +9868,71 @@ export type CalloutPostsQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          posts?:
+          contributions?:
             | Array<{
-                __typename?: 'Post';
-                id: string;
-                nameID: string;
-                type: string;
-                createdDate: Date;
-                authorization?:
+                __typename?: 'CalloutContribution';
+                post?:
                   | {
-                      __typename?: 'Authorization';
+                      __typename?: 'Post';
                       id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-                createdBy?:
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
-                    }
-                  | undefined;
-                comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  visuals: Array<{
-                    __typename?: 'Visual';
-                    id: string;
-                    uri: string;
-                    name: string;
-                    allowedTypes: Array<string>;
-                    aspectRatio: number;
-                    maxHeight: number;
-                    maxWidth: number;
-                    minHeight: number;
-                    minWidth: number;
-                    alternativeText?: string | undefined;
-                  }>;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
+                      nameID: string;
+                      type: string;
+                      createdDate: Date;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                      createdBy?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            profile: { __typename?: 'Profile'; id: string; displayName: string };
+                          }
+                        | undefined;
+                      comments: { __typename?: 'Room'; id: string; messagesCount: number };
+                      profile: {
+                        __typename?: 'Profile';
                         id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                  references?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        uri: string;
+                        displayName: string;
                         description?: string | undefined;
-                      }>
-                    | undefined;
-                };
+                        visuals: Array<{
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }>;
+                        tagset?:
+                          | {
+                              __typename?: 'Tagset';
+                              id: string;
+                              name: string;
+                              tags: Array<string>;
+                              allowedValues: Array<string>;
+                              type: TagsetType;
+                            }
+                          | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
               }>
             | undefined;
         }

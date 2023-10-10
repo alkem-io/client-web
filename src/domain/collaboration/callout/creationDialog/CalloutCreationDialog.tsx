@@ -43,6 +43,10 @@ export type CalloutCreationDialogFields = {
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   profileId?: string;
   flowState?: string;
+  contributionDefaults?: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
 };
 
 export interface CalloutCreationDialogProps {
@@ -142,8 +146,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             whiteboardRt:
               callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           },
-          // add contribution defaults
-          tags: callout.tags,
+          contributionDefaults: {
+            postDescription: callout.contributionDefaults?.postDescription,
+            whiteboardContent: callout.contributionDefaults?.whiteboardContent,
+          },
           type: callout.type!,
           contributionPolicy: {
             allowedContributionTypes: [],

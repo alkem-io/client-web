@@ -6252,8 +6252,10 @@ export const CalloutPostsDocument = gql`
     lookup {
       callout(ID: $calloutId) {
         id
-        posts {
-          ...ContributeTabPost
+        contributions {
+          post {
+            ...ContributeTabPost
+          }
         }
       }
     }

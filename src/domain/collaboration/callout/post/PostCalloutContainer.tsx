@@ -14,7 +14,7 @@ import { forwardRef, Ref } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 
 interface PostCalloutContainerProvided {
-  posts: ContributeTabPostFragment[] | undefined;
+  posts: ContributeTabPostFragment[];
   ref: Ref<Element>;
   loading: boolean;
   creatingPost: boolean;

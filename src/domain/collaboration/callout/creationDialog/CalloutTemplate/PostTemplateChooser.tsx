@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { Caption, CardText } from '../../../../../core/ui/typography';
-import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { PostTemplateWithValue } from '../../../post/PostTemplateCard/PostTemplate';
 import PostTemplatesLibrary from '../../../post/PostTemplatesLibrary/PostTemplatesLibrary';
 
@@ -15,16 +14,12 @@ interface PostTemplatesChooserProps {
 
 export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) => {
   const { t } = useTranslation();
-  const [, , helpers] = useField<PostTemplateFormSubmittedValues>(name);
+  const [field, , helpers] = useField<String>(name);
 
   const handleSelectTemplate = (template: PostTemplateWithValue) => {
-    helpers.setValue({
-      profile: {
-        displayName: t('components.callout-creation.custom-template'),
-      },
-      defaultDescription: template.defaultDescription,
-      type: template.type,
-    });
+    console.log(field.value);
+    console.log(template.defaultDescription);
+    helpers.setValue(template.defaultDescription);
   };
 
   return (
@@ -39,7 +34,7 @@ export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) =>
         </Box>
       </Box>
       <FormikMarkdownField
-        name={`${name}.defaultDescription`}
+        name={`${name}`}
         title={t('components.callout-creation.template-step.post-template-default-description')}
         maxLength={MARKDOWN_TEXT_LENGTH}
       />
