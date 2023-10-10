@@ -18585,12 +18585,12 @@ export type OpportunityContributionDetailsQuery = {
   };
 };
 
-export type MessagingAvailableRecipientsQueryVariables = Exact<{
+export type UserSelectorQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
 }>;
 
-export type MessagingAvailableRecipientsQuery = {
+export type UserSelectorQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
@@ -18608,11 +18608,11 @@ export type MessagingAvailableRecipientsQuery = {
   };
 };
 
-export type MessagingUserDetailsQueryVariables = Exact<{
+export type UserSelectorUserDetailsQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
-export type MessagingUserDetailsQuery = {
+export type UserSelectorUserDetailsQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'User';
@@ -18627,7 +18627,7 @@ export type MessagingUserDetailsQuery = {
   };
 };
 
-export type MessagingUserInformationFragment = {
+export type UserSelectorUserInformationFragment = {
   __typename?: 'User';
   id: string;
   profile: {
