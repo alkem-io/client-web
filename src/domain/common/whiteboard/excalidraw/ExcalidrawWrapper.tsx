@@ -16,6 +16,7 @@ import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
+import useWhiteboardFilesManager from './useWhiteboardFilesManager';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -34,6 +35,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
+  storageBucketId?: string;
 }
 
 export interface WhiteboardWhiteboardActions {
@@ -55,18 +57,35 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options }, excalidrawRef) => {
-    const { whiteboard } = entities;
+    const { whiteboard, storageBucketId } = entities;
 
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
+    const { addNewFile, loadFiles, importFilesToExcalidraw, fileStoreVersion } = useWhiteboardFilesManager({
+      storageBucketId,
+      excalidrawApi: combinedRef.current,
+    });
+
     const data = useMemo(() => {
+      console.log('whiteboard data changed', whiteboard?.content);
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
+
+      const { files, ...elements } = parsedData;
+      loadFiles({ files });
+
       return {
-        ...parsedData,
+        ...elements,
         zoomToFit: true,
       };
-    }, [whiteboard?.content]);
+    }, [whiteboard?.content, combinedRef, combinedRef.current, combinedRef.current?.ready]);
+
+    useEffect(() => {
+      console.log('useEffect importing files');
+      console.log('useEffect fileManager.loading.downloadingFiles', fileStoreVersion);
+      importFilesToExcalidraw();
+    }, [fileStoreVersion]);
+    console.log('render fileManager.loading.downloadingFiles', fileStoreVersion);
 
     const refreshOnDataChange = useRef(
       debounce(async (state: RefreshWhiteboardStateParam) => {
@@ -83,6 +102,7 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
         );
         if (excalidraw && missingFiles.length > 0) {
           excalidraw.addFiles(missingFiles);
+          excalidraw.refresh();
         }
       }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
     ).current;
@@ -171,7 +191,10 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
     return (
-      <div className={styles.container}>
+      <div
+        className={styles.container}
+        title={`storageBucketId: ${storageBucketId} whiteboardId: ${whiteboard?.id}` /* //!! */}
+      >
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
@@ -181,6 +204,7 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
             isCollaborating={false}
             gridModeEnabled
             viewModeEnabled
+            generateIdForFile={addNewFile}
             {...restOptions}
           />
         )}

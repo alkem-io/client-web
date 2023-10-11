@@ -35,6 +35,7 @@ import {
   WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -130,15 +131,19 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     return { appState, elements, files };
   };
 
+  const { saveFilesExternally } = useWhiteboardFilesManager({
+    excalidrawApi: excalidrawApiRef.current,
+    storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+  });
+
   const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
       return;
     }
-
-    const { appState, elements, files } = state;
+    const { appState, elements, files } = await saveFilesExternally(state);
+    console.log('saveFilesExternally', files);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
-
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
@@ -291,7 +296,10 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardContent && whiteboard && (
                 <ExcalidrawWrapper
-                  entities={{ whiteboard }}
+                  entities={{
+                    whiteboard,
+                    storageBucketId: whiteboard.profile?.storageBucket.id ?? '', //!!
+                  }}
                   ref={excalidrawApiRef}
                   options={{
                     viewModeEnabled: !options.canEdit,
