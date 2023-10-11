@@ -1,4 +1,4 @@
-import React, { ComponentType, MouseEventHandler, PropsWithChildren, useMemo, useState } from 'react';
+import React, { ComponentType, forwardRef, MouseEventHandler, PropsWithChildren, useMemo, useState } from 'react';
 import { Divider, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, SvgIconProps } from '@mui/material';
 import Avatar from '../../../core/ui/image/Avatar';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../core/ui/typography';
@@ -23,6 +23,7 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import LanguageSelect from '../../../core/ui/language/LanguageSelect';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
+import { PLATFORM_NAVIGATION_MENU_ELEVATION } from './constants';
 
 interface PlatformNavigationUserMenuProps {
   onClose?: () => void;
@@ -54,12 +55,7 @@ const PlatformNavigationUserMenuItem = ({
   );
 };
 
-/**
- * This one is partially taken from old UserSegment
- * TODO refactor
- * @constructor
- */
-const PlatformNavigationUserMenu = ({ onClose }: PlatformNavigationUserMenuProps) => {
+const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigationUserMenuProps>(({ onClose }, ref) => {
   const { t } = useTranslation();
 
   const { user: { user, hasPlatformPrivilege } = {} } = useUserContext();
@@ -73,11 +69,11 @@ const PlatformNavigationUserMenu = ({ onClose }: PlatformNavigationUserMenuProps
       // TODO change role name path
       return t('common.enums.authorization-credentials.GLOBAL_ADMIN.name');
     }
-  }, [isAdmin]);
+  }, [isAdmin, t]);
 
   return (
     <>
-      <Paper sx={{ width: 320, maxWidth: '100%' }}>
+      <Paper ref={ref} sx={{ width: 320, maxWidth: '100%' }} elevation={PLATFORM_NAVIGATION_MENU_ELEVATION}>
         {user && (
           <Gutters disableGap alignItems="center">
             <Avatar size="lg" src={user.profile.visual?.uri} />
@@ -90,24 +86,34 @@ const PlatformNavigationUserMenu = ({ onClose }: PlatformNavigationUserMenuProps
           </Gutters>
         )}
         <MenuList disablePadding sx={{ paddingBottom: 1 }}>
-          <PlatformNavigationUserMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME}>
+          <PlatformNavigationUserMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
             {t('pages.home.title')}
           </PlatformNavigationUserMenuItem>
           {user && (
-            <PlatformNavigationUserMenuItem iconComponent={AssignmentIndOutlined} route={buildUserProfileUrl(user.id)}>
+            <PlatformNavigationUserMenuItem
+              iconComponent={AssignmentIndOutlined}
+              route={buildUserProfileUrl(user.id)}
+              onClick={onClose}
+            >
               {t('pages.user-profile.title')}
             </PlatformNavigationUserMenuItem>
           )}
           <PendingMembershipsUserMenuItem>
             {({ header, openDialog }) => (
-              <PlatformNavigationUserMenuItem iconComponent={HdrStrongOutlined} onClick={openDialog}>
+              <PlatformNavigationUserMenuItem
+                iconComponent={HdrStrongOutlined}
+                onClick={() => {
+                  openDialog();
+                  onClose?.();
+                }}
+              >
                 {header}
               </PlatformNavigationUserMenuItem>
             )}
           </PendingMembershipsUserMenuItem>
           <Divider sx={{ width: '85%', marginX: 'auto' }} />
           {isAdmin && (
-            <PlatformNavigationUserMenuItem iconComponent={SettingsIcon} route="/admin">
+            <PlatformNavigationUserMenuItem iconComponent={SettingsIcon} route="/admin" onClick={onClose}>
               {t('common.administration')}
             </PlatformNavigationUserMenuItem>
           )}
@@ -139,7 +145,11 @@ const PlatformNavigationUserMenu = ({ onClose }: PlatformNavigationUserMenuProps
           >
             {t('buttons.getHelp')}
           </PlatformNavigationUserMenuItem>
-          <PlatformNavigationUserMenuItem iconComponent={MeetingRoomOutlined} route={AUTH_LOGOUT_PATH}>
+          <PlatformNavigationUserMenuItem
+            iconComponent={MeetingRoomOutlined}
+            route={AUTH_LOGOUT_PATH}
+            onClick={onClose}
+          >
             {t('buttons.sign-out')}
           </PlatformNavigationUserMenuItem>
         </MenuList>
@@ -147,6 +157,6 @@ const PlatformNavigationUserMenu = ({ onClose }: PlatformNavigationUserMenuProps
       <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
     </>
   );
-};
+});
 
 export default PlatformNavigationUserMenu;

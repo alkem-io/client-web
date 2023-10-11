@@ -1,17 +1,30 @@
-import React, { cloneElement, MouseEventHandler, ReactElement, useState } from 'react';
-import { ClickAwayListener, Tooltip, TooltipProps } from '@mui/material';
+import React, { MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
+import { ClickAwayListener, Popper, PopperProps } from '@mui/material';
+import { debounce } from 'lodash';
 
 export interface TriggerProps {
+  ref: Ref<Element>;
   onClick?: MouseEventHandler;
+  onMouseEnter?: MouseEventHandler;
+  onMouseLeave?: MouseEventHandler;
 }
 
-interface TitleProps {
-  onClose?: () => void;
+interface ContentProps {
+  onClose: () => void;
+  onClickAway: (event: MouseEvent | TouchEvent) => void;
+  onMouseEnter?: MouseEventHandler;
+  onMouseLeave?: MouseEventHandler;
+  TransitionProps?: {
+    in: boolean;
+    onEnter: () => {};
+    onExited: () => {};
+  };
 }
 
-interface ClickableTooltipProps extends Omit<TooltipProps, 'children'> {
-  children: ({ onClick }: TriggerProps) => ReactElement;
-  title: ReactElement<TitleProps>;
+interface ClickableTooltipProps extends Omit<PopperProps, 'open' | 'children'> {
+  renderTrigger: ({ onClick }: TriggerProps) => ReactElement;
+  children: ({ onClose }: ContentProps) => ReactElement;
+  mouseLeaveDebounceWait?: number;
 }
 
 enum OpenTriggerAction {
@@ -19,25 +32,96 @@ enum OpenTriggerAction {
   Hover = 'Hover',
 }
 
-const ClickableTooltip = ({ title, children, ...tooltipProps }: ClickableTooltipProps) => {
-  const [openBy, setOpenBy] = useState<OpenTriggerAction | null>(null);
+interface OpenState {
+  anchor: HTMLElement;
+  action: OpenTriggerAction;
+}
 
-  const handleClickAway = () => setOpenBy(null);
+const MOUSE_LEAVE_DEBOUNCE_WAIT_DEFAULT = 100;
 
-  const handleTriggerClick = () => setOpenBy(OpenTriggerAction.Click);
+const ClickableTooltip = ({
+  renderTrigger,
+  children,
+  mouseLeaveDebounceWait = MOUSE_LEAVE_DEBOUNCE_WAIT_DEFAULT,
+  ...props
+}: ClickableTooltipProps) => {
+  const [openState, setOpenState] = useState<OpenState | null>(null);
+
+  const handleClose = () => {
+    setOpenState(null);
+  };
+
+  const handleTriggerClick: MouseEventHandler<HTMLElement> = event => {
+    setOpenState({
+      action: OpenTriggerAction.Click,
+      anchor: event.currentTarget,
+    });
+  };
+
+  const handleTriggerMouseEnter: MouseEventHandler<HTMLElement> = event => {
+    handleMouseLeaveDebounced.cancel();
+
+    setOpenState(prevState => {
+      if (prevState?.action === OpenTriggerAction.Click) {
+        return prevState;
+      }
+
+      return {
+        action: OpenTriggerAction.Hover,
+        anchor: event.currentTarget,
+      };
+    });
+  };
+
+  const handleMouseLeave: MouseEventHandler<HTMLElement> = () =>
+    setOpenState(prevState => {
+      return prevState?.action === OpenTriggerAction.Click ? prevState : null;
+    });
+
+  const handleMouseLeaveDebounced = useRef(debounce(handleMouseLeave, mouseLeaveDebounceWait)).current;
+
+  const handleTriggerClickAway = (event: MouseEvent | TouchEvent) => {
+    if (!popperRef.current?.contains(event.target as Node)) {
+      handleClose();
+    }
+  };
+
+  const triggerRef = useRef<Element>(null);
+
+  const handleContentClickAway = (event: MouseEvent | TouchEvent) => {
+    if (!triggerRef.current?.contains(event.target as Node)) {
+      handleClose();
+    }
+  };
+
+  const handleContentMouseEnter = () => {
+    handleMouseLeaveDebounced.cancel();
+  };
+
+  const popperRef = useRef<HTMLDivElement>(null);
 
   return (
-    <ClickAwayListener onClickAway={handleClickAway}>
-      <Tooltip
-        title={cloneElement(title, { onClose: () => setOpenBy(null) })}
-        open={!!openBy}
-        onOpen={() => setOpenBy(OpenTriggerAction.Hover)}
-        onClose={() => setOpenBy(prevOpenBy => (prevOpenBy === OpenTriggerAction.Hover ? null : prevOpenBy))}
-        {...tooltipProps}
-      >
-        {children({ onClick: handleTriggerClick })}
-      </Tooltip>
-    </ClickAwayListener>
+    <>
+      <ClickAwayListener onClickAway={handleTriggerClickAway}>
+        {renderTrigger({
+          ref: triggerRef,
+          onClick: handleTriggerClick,
+          onMouseEnter: handleTriggerMouseEnter,
+          onMouseLeave: handleMouseLeaveDebounced,
+        })}
+      </ClickAwayListener>
+      <Popper ref={popperRef} open={!!openState} anchorEl={openState?.anchor} {...props} transition>
+        {({ TransitionProps }) =>
+          children({
+            onClose: handleClose,
+            onClickAway: handleContentClickAway,
+            onMouseEnter: handleContentMouseEnter,
+            onMouseLeave: handleMouseLeaveDebounced,
+            TransitionProps,
+          })
+        }
+      </Popper>
+    </>
   );
 };
 
