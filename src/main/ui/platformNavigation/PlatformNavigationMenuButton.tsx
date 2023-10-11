@@ -6,6 +6,7 @@ import { gutters } from '../../../core/ui/grid/utils';
 import NavigationItemButton from '../../../core/ui/navigation/NavigationItemButton';
 import ClickableTooltip from '../../../core/ui/tooltip/ClickableTooltip';
 import PlatformNavigationMenu from './PlatformNavigationMenu';
+import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 
 const PlatformNavigationMenuButton = () => {
   return (
@@ -21,15 +22,16 @@ const PlatformNavigationMenuButton = () => {
           </NavigationItemButton>
         </NavigationItemContainer>
       )}
+      zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX}
     >
-      {({ onClose, onClickAway, TransitionProps, onMouseEnter, onMouseLeave }) => (
+      {({ onClose, onClickAway, TransitionProps }) => (
         <Grow
           {...TransitionProps}
           style={{
             transformOrigin: 'right top',
           }}
         >
-          <Box padding={gutters(0.5)} paddingRight={0} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+          <Box padding={gutters(0.5)} paddingRight={0}>
             <ClickAwayListener onClickAway={onClickAway}>
               <PlatformNavigationMenu onClose={onClose} />
             </ClickAwayListener>

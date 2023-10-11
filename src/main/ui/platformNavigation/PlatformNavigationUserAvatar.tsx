@@ -6,6 +6,7 @@ import { gutters } from '../../../core/ui/grid/utils';
 import SwapColors from '../../../core/ui/palette/SwapColors';
 import ClickableTooltip from '../../../core/ui/tooltip/ClickableTooltip';
 import PlatformNavigationUserMenu from './PlatformNavigationUserMenu';
+import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 
 const PlatformNavigationUserAvatar = () => {
   const { user, isAuthenticated, loadingMe } = useUserContext();
@@ -31,15 +32,16 @@ const PlatformNavigationUserAvatar = () => {
           {!loadingMe && !isAuthenticated && <Person />}
         </Avatar>
       )}
+      zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX}
     >
-      {({ onClose, onClickAway, TransitionProps, onMouseEnter, onMouseLeave }) => (
+      {({ onClose, onClickAway, TransitionProps }) => (
         <Grow
           {...TransitionProps}
           style={{
             transformOrigin: 'right top',
           }}
         >
-          <Box padding={gutters(0.5)} paddingRight={0} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+          <Box padding={gutters(0.5)} paddingRight={0}>
             <ClickAwayListener onClickAway={onClickAway}>
               <PlatformNavigationUserMenu onClose={onClose} />
             </ClickAwayListener>

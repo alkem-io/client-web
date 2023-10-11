@@ -12,8 +12,6 @@ export interface TriggerProps {
 interface ContentProps {
   onClose: () => void;
   onClickAway: (event: MouseEvent | TouchEvent) => void;
-  onMouseEnter?: MouseEventHandler;
-  onMouseLeave?: MouseEventHandler;
   TransitionProps?: {
     in: boolean;
     onEnter: () => {};
@@ -25,6 +23,7 @@ interface ClickableTooltipProps extends Omit<PopperProps, 'open' | 'children'> {
   renderTrigger: ({ onClick }: TriggerProps) => ReactElement;
   children: ({ onClose }: ContentProps) => ReactElement;
   mouseLeaveDebounceWait?: number;
+  zIndex?: number;
 }
 
 enum OpenTriggerAction {
@@ -43,6 +42,8 @@ const ClickableTooltip = ({
   renderTrigger,
   children,
   mouseLeaveDebounceWait = MOUSE_LEAVE_DEBOUNCE_WAIT_DEFAULT,
+  zIndex,
+  sx,
   ...props
 }: ClickableTooltipProps) => {
   const [openState, setOpenState] = useState<OpenState | null>(null);
@@ -110,13 +111,23 @@ const ClickableTooltip = ({
           onMouseLeave: handleMouseLeaveDebounced,
         })}
       </ClickAwayListener>
-      <Popper ref={popperRef} open={!!openState} anchorEl={openState?.anchor} {...props} transition>
+      <Popper
+        ref={popperRef}
+        open={!!openState}
+        anchorEl={openState?.anchor}
+        {...props}
+        sx={{
+          ...sx,
+          zIndex,
+        }}
+        transition
+        onMouseEnter={handleContentMouseEnter}
+        onMouseLeave={handleMouseLeaveDebounced}
+      >
         {({ TransitionProps }) =>
           children({
             onClose: handleClose,
             onClickAway: handleContentClickAway,
-            onMouseEnter: handleContentMouseEnter,
-            onMouseLeave: handleMouseLeaveDebounced,
             TransitionProps,
           })
         }
