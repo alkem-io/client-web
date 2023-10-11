@@ -582,6 +582,17 @@ export type CalloutFieldPolicy = {
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributionDefaultsKeySpecifier = (
+  | 'id'
+  | 'postDescription'
+  | 'whiteboardContent'
+  | CalloutContributionDefaultsKeySpecifier
+)[];
+export type CalloutContributionDefaultsFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutContributionPolicyKeySpecifier = (
   | 'allowedContributionTypes'
   | 'id'
@@ -595,49 +606,38 @@ export type CalloutContributionPolicyFieldPolicy = {
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
+  | 'content'
   | 'id'
   | 'profile'
-  | 'whiteboardContent'
   | CalloutFramingKeySpecifier
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CalloutResponseDefaultsKeySpecifier = (
-  | 'id'
-  | 'postDescription'
-  | 'whiteboardContent'
-  | CalloutResponseDefaultsKeySpecifier
-)[];
-export type CalloutResponseDefaultsFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type CalloutTemplateKeySpecifier = (
   | 'authorization'
+  | 'contributionDefaults'
+  | 'contributionPolicy'
   | 'framing'
   | 'id'
   | 'profile'
-  | 'responseDefaults'
-  | 'responsePolicy'
   | CalloutTemplateKeySpecifier
 )[];
 export type CalloutTemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  responseDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
-  responsePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
   | 'agent'
@@ -959,6 +959,7 @@ export type DocumentKeySpecifier = (
   | 'size'
   | 'tagset'
   | 'uploadedDate'
+  | 'url'
   | DocumentKeySpecifier
 )[];
 export type DocumentFieldPolicy = {
@@ -971,6 +972,7 @@ export type DocumentFieldPolicy = {
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
@@ -1248,6 +1250,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
+  | 'document'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
   | 'invitation'
@@ -1270,6 +1273,7 @@ export type LookupQueryResultsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2901,6 +2905,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutKeySpecifier | (() => undefined | CalloutKeySpecifier);
     fields?: CalloutFieldPolicy;
   };
+  CalloutContributionDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributionDefaultsKeySpecifier
+      | (() => undefined | CalloutContributionDefaultsKeySpecifier);
+    fields?: CalloutContributionDefaultsFieldPolicy;
+  };
   CalloutContributionPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -2915,10 +2926,6 @@ export type StrictTypedTypePolicies = {
   CalloutPostCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);
     fields?: CalloutPostCreatedFieldPolicy;
-  };
-  CalloutResponseDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CalloutResponseDefaultsKeySpecifier | (() => undefined | CalloutResponseDefaultsKeySpecifier);
-    fields?: CalloutResponseDefaultsFieldPolicy;
   };
   CalloutTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutTemplateKeySpecifier | (() => undefined | CalloutTemplateKeySpecifier);

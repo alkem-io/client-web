@@ -1,4 +1,7 @@
 fragment GroupDetails on UserGroup {
   id
-  name
+  profile {
+    id
+    displayName
+  }
 }

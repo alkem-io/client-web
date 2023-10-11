@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import { Alert, Dialog, DialogActions } from '@mui/material';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import useLoadingState from '../../shared/utils/useLoadingState';
@@ -12,6 +12,8 @@ import SendButton from '../../shared/components/SendButton';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelector';
 import { InviteExistingUserData } from './useInviteUsers';
+import { Identifiable } from '../../../core/utils/Identifiable';
+import { sortBy } from 'lodash';
 
 interface MessageDialogProps {
   open: boolean;
@@ -20,7 +22,18 @@ interface MessageDialogProps {
   onInviteUser: (params: InviteExistingUserData) => Promise<void>;
   title?: ReactNode;
   subtitle?: ReactNode;
+  currentApplicationsUserIds: string[];
+  currentInvitationsUserIds: string[];
+  currentMembersIds: string[];
 }
+
+enum SortCriteria {
+  HasApplication,
+  HasInvitation,
+  IsMember,
+}
+
+const SORT_CRITERIA_PRIORITY = [SortCriteria.HasApplication, SortCriteria.HasInvitation, SortCriteria.IsMember];
 
 const InviteExistingUserDialog = ({
   open,
@@ -29,13 +42,16 @@ const InviteExistingUserDialog = ({
   title,
   subtitle,
   spaceDisplayName,
+  currentApplicationsUserIds,
+  currentInvitationsUserIds,
+  currentMembersIds,
 }: MessageDialogProps) => {
   const { t } = useTranslation();
 
   const [isMessageSent, setMessageSent] = useState(false);
 
   const [handleSendMessage, isLoading, error] = useLoadingState(
-    async (values: InviteExistingUserData, { resetForm }) => {
+    async (values: InviteExistingUserData, { resetForm }: FormikHelpers<InviteExistingUserData>) => {
       await onInviteUser(values);
       if (!error) {
         setMessageSent(true);
@@ -59,6 +75,63 @@ const InviteExistingUserDialog = ({
     message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
+  const getSortFact: Record<SortCriteria, ({ id }: Identifiable) => boolean> = {
+    [SortCriteria.HasApplication]: ({ id }) => currentApplicationsUserIds.includes(id),
+    [SortCriteria.HasInvitation]: ({ id }) => currentInvitationsUserIds.includes(id),
+    [SortCriteria.IsMember]: ({ id }) => currentMembersIds.includes(id),
+  };
+
+  const sortUsers = useCallback(
+    <T extends Identifiable>(users: T[]) => {
+      return sortBy(users, user => {
+        return SORT_CRITERIA_PRIORITY.reduce<number>((totalWeight, criteria, priority) => {
+          const weight = getSortFact[criteria](user) ? Math.pow(2, priority) : 0;
+          return totalWeight + weight;
+        }, 0);
+      });
+    },
+    [currentApplicationsUserIds, currentInvitationsUserIds, currentMembersIds]
+  );
+
+  const alreadyAppliedTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyApplied');
+  const alreadyInvitedTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyInvited');
+  const alreadyMemberTranslation = t('components.invitations.inviteExistingUserDialog.selector.alreadyMember');
+
+  const hydrateUsers = useCallback(
+    <T extends Identifiable>(users: T[]) => {
+      return users.map(user => {
+        const hasApplication = currentApplicationsUserIds.includes(user.id);
+        const hasInvitation = currentInvitationsUserIds.includes(user.id);
+        const isMember = currentMembersIds.includes(user.id);
+        const hasMembershipLike = hasApplication || hasInvitation || isMember;
+
+        if (!hasMembershipLike) {
+          return user;
+        }
+
+        return {
+          ...user,
+          message: hasApplication
+            ? alreadyAppliedTranslation
+            : hasInvitation
+            ? alreadyInvitedTranslation
+            : isMember
+            ? alreadyMemberTranslation
+            : undefined,
+          disabled: hasMembershipLike,
+        };
+      });
+    },
+    [
+      currentApplicationsUserIds,
+      currentInvitationsUserIds,
+      currentMembersIds,
+      alreadyAppliedTranslation,
+      alreadyInvitedTranslation,
+      alreadyMemberTranslation,
+    ]
+  );
+
   return (
     <Dialog open={open} fullWidth maxWidth="md">
       <DialogHeader onClose={handleClose}>
@@ -74,7 +147,7 @@ const InviteExistingUserDialog = ({
         >
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
-              <FormikUserSelector name="userIds" />
+              <FormikUserSelector name="userIds" sortUsers={sortUsers} hydrateUsers={hydrateUsers} />
               <FormikInputField
                 name="message"
                 title={t('messaging.message')}
