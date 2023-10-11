@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { ApmBase, init as initApm, UserObject } from '@elastic/apm-rum';
+import { init as initApm, UserObject } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
-import { error as logError } from '../logging/sentry/log';
-import { useUserContext } from '../../domain/community/user/hooks/useUserContext';
-import { useConfig } from '../../domain/platform/config/useConfig';
-import { useUserGeo } from '../../domain/community/user/hooks/useUserGeo';
-import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../../main/cookies/useAlkemioCookies';
+import { error as logError } from '../../logging/sentry/log';
+import { useUserContext } from '../../../domain/community/user/hooks/useUserContext';
+import { useConfig } from '../../../domain/platform/config/useConfig';
+import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../../../main/cookies/useAlkemioCookies';
+import { useUserGeo } from '../geo';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
 const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
@@ -15,8 +15,6 @@ const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
 const APM_ORIENTATION_TYPE_NOT_SUPPORTED = 'orientation type not supported on this device';
-
-const skipOnLocal = import.meta.env.MODE !== 'production';
 
 export interface ApmCustomContext {
   authenticated?: boolean;
@@ -38,19 +36,18 @@ export interface ApmCustomContext {
   language?: string;
 }
 
-export const useApm = (): ApmBase | undefined => {
+export const useApmInit = () => {
   const userObject = useUserObject();
   const customContext = useCustomContext();
   const { apm: apmConfig, platform: platformConfig } = useConfig();
-  const [apm, setApm] = useState<ApmBase | undefined>();
 
   const rumEnabled = apmConfig?.rumEnabled ?? false;
   const endpoint = apmConfig?.endpoint;
   const environment = platformConfig?.environment;
 
-  useEffect(() => {
+  return useCallback(() => {
     if (!endpoint || !environment) {
-      return;
+      return undefined;
     }
 
     const enabled = (rumEnabled && !!endpoint) ?? false;
@@ -66,10 +63,8 @@ export const useApm = (): ApmBase | undefined => {
     apmInit.setUserContext(userObject);
     apmInit.setCustomContext(customContext);
 
-    setApm(apmInit);
+    return apmInit;
   }, [endpoint, rumEnabled, environment, userObject, customContext]);
-
-  return apm;
 };
 
 const useGetOrSetApmCookie = (): string | undefined => {
@@ -119,7 +114,7 @@ const useCustomContext = () => {
   const { user: userMetadata, isAuthenticated, loading: userLoading } = useUserContext();
   const user = userMetadata?.user;
 
-  const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo(skipOnLocal);
+  const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo();
 
   return useMemo<ApmCustomContext>(() => {
     const context: ApmCustomContext = {};
