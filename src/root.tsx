@@ -77,11 +77,11 @@ const Root: FC = () => (
               <GlobalStateProvider>
                 <BrowserRouter>
                   <AuthenticationProvider>
-                    <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                      <NavigationProvider>
-                        <UserProvider>
-                          <UserGeoProvider>
-                            <ApmProvider>
+                    <UserGeoProvider>
+                      <ApmProvider>
+                        <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                          <NavigationProvider>
+                            <UserProvider>
                               <CookiesProvider>
                                 <ScrollToTop />
                                 <SearchContextProvider>
@@ -89,11 +89,11 @@ const Root: FC = () => (
                                 </SearchContextProvider>
                                 <ChatWidget />
                               </CookiesProvider>
-                            </ApmProvider>
-                          </UserGeoProvider>
-                        </UserProvider>
-                      </NavigationProvider>
-                    </AlkemioApolloProvider>
+                            </UserProvider>
+                          </NavigationProvider>
+                        </AlkemioApolloProvider>
+                      </ApmProvider>
+                    </UserGeoProvider>
                   </AuthenticationProvider>
                 </BrowserRouter>
               </GlobalStateProvider>
