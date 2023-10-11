@@ -419,6 +419,9 @@ export const WhiteboardProfileFragmentDoc = gql`
     tagset {
       ...TagsetDetails
     }
+    storageBucket {
+      id
+    }
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}

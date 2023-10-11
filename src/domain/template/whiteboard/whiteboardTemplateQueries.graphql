@@ -9,19 +9,3 @@ query whiteboardTemplateContent($whiteboardTemplateId: UUID!) {
     }
   }
 }
-
-fragment WhiteboardProfile on Profile {
-  id
-  displayName
-  description
-  visual(type: CARD) {
-    ...VisualFull
-  }
-  preview: visual(type: BANNER) {
-    ...VisualFull
-  }
-  tagset {
-    ...TagsetDetails
-  }
-}
-
