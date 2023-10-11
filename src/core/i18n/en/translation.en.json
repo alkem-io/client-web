@@ -140,7 +140,9 @@
     "moveToTop": "Move to top",
     "moveToBottom": "Move to bottom",
     "use": "Use",
-    "fullscreen": "Toggle full screen"
+    "fullscreen": "Toggle full screen",
+    "changeLanguage": "Change language",
+    "getHelp": "Get help"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -264,6 +266,7 @@
     "admin": "Admin",
     "member": "Member",
     "members": "Members",
+    "administration": "Administration",
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
@@ -2094,6 +2097,7 @@
       "header": "User Settings"
     },
     "user-profile": {
+      "title": "My profile",
       "tooltips": {
         "settings": "User profile settings"
       },
