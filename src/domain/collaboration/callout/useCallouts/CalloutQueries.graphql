@@ -66,6 +66,9 @@ fragment Callout on Callout {
     displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
       ...TagsetDetails
     }
+    storageBucket {
+      id
+    }
   }
   state
   sortOrder

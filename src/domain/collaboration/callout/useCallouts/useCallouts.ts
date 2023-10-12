@@ -85,6 +85,9 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
       description?: string;
       tagset?: Tagset;
       displayLocationTagset?: Tagset;
+      storageBucket: {
+        id: string;
+      };
     };
     draft: boolean;
     editable: boolean;

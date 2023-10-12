@@ -621,6 +621,9 @@ export const CalloutFragmentDoc = gql`
       displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
         ...TagsetDetails
       }
+      storageBucket {
+        id
+      }
     }
     state
     sortOrder

@@ -5665,6 +5665,7 @@ export type CalloutPageCalloutQuery = {
                         type: TagsetType;
                       }
                     | undefined;
+                  storageBucket: { __typename?: 'StorageBucket'; id: string };
                 };
                 whiteboards?:
                   | Array<{
@@ -6006,6 +6007,7 @@ export type CalloutPageCalloutQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -6354,6 +6356,7 @@ export type CalloutPageCalloutQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -9350,6 +9353,7 @@ export type CreateCalloutMutation = {
             type: TagsetType;
           }
         | undefined;
+      storageBucket: { __typename?: 'StorageBucket'; id: string };
     };
     whiteboards?:
       | Array<{
@@ -10084,6 +10088,7 @@ export type CalloutsQuery = {
                         type: TagsetType;
                       }
                     | undefined;
+                  storageBucket: { __typename?: 'StorageBucket'; id: string };
                 };
                 whiteboards?:
                   | Array<{
@@ -10429,6 +10434,7 @@ export type CalloutsQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -10781,6 +10787,7 @@ export type CalloutsQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -11131,6 +11138,7 @@ export type CollaborationWithCalloutsFragment = {
                 type: TagsetType;
               }
             | undefined;
+          storageBucket: { __typename?: 'StorageBucket'; id: string };
         };
         whiteboards?:
           | Array<{
@@ -11452,6 +11460,7 @@ export type CalloutFragment = {
           type: TagsetType;
         }
       | undefined;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
   whiteboards?:
     | Array<{
