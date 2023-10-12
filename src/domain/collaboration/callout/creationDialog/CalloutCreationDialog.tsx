@@ -8,6 +8,7 @@ import {
   WhiteboardTemplateCardFragment,
   CalloutVisibility,
   CalloutDisplayLocation,
+  CalloutContributionType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -25,8 +26,6 @@ import { Reference } from '../../../common/profile/Profile';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -38,15 +37,11 @@ export type CalloutCreationDialogFields = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  postTemplateData?: PostTemplateFormSubmittedValues;
-  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   profileId?: string;
   flowState?: string;
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
+  postDescription?: string;
+  whiteboardContent?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -130,6 +125,13 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const openPublishDialog = () => setIsConfirmPublishDialogOpen(true);
   const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
 
+  const getAllowedContributionTypes = (calloutType: CalloutType | undefined): CalloutContributionType[] => {
+    if (calloutType === CalloutType.PostCollection) return [CalloutContributionType.Post];
+    if (calloutType === CalloutType.WhiteboardCollection) return [CalloutContributionType.Whiteboard];
+    if (calloutType === CalloutType.LinkCollection) return [CalloutContributionType.Link];
+    return [];
+  };
+
   const handleSaveCallout = useCallback(
     async (visibility: CalloutVisibility, sendNotification: boolean) => {
       let result: Identifiable | undefined;
@@ -147,12 +149,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           },
           contributionDefaults: {
-            postDescription: callout.contributionDefaults?.postDescription,
-            whiteboardContent: callout.contributionDefaults?.whiteboardContent,
+            postDescription: callout.postDescription,
+            whiteboardContent: callout.whiteboardContent,
           },
           type: callout.type!,
           contributionPolicy: {
-            allowedContributionTypes: [],
+            allowedContributionTypes: getAllowedContributionTypes(callout.type),
             state: callout.state!,
           },
           displayLocation,

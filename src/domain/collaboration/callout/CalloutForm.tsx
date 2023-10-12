@@ -76,10 +76,8 @@ export type CalloutFormOutput = {
   type: CalloutType;
   state: CalloutState;
   displayLocation: CalloutDisplayLocation;
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
+  postDescription?: string;
+  whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
@@ -130,10 +128,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       displayLocation: callout?.displayLocation ?? CalloutDisplayLocation.Knowledge,
-      contributionDefaults: {
-        postDescription: callout.contributionDefaults?.postDescription ?? '',
-        whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
-      },
+      postDescription: callout.contributionDefaults?.postDescription ?? '',
+      whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
       whiteboard: callout?.whiteboard
         ? {
             ...callout.whiteboard,
@@ -166,25 +162,16 @@ const CalloutForm: FC<CalloutFormProps> = ({
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    whiteboardTemplateData: yup.object().when('type', {
-      is: CalloutType.WhiteboardCollection,
-      then: yup.object().shape({
-        profile: yup.object().shape({
-          displayName: yup.string(),
-        }),
-        content: yup.string().required(),
-      }),
-    }),
-    whiteboard: yup.object().when('type', {
+    contributionDefaults: yup.object().when('type', {
       is: CalloutType.Whiteboard || CalloutType.WhiteboardRt,
       then: yup.object().shape({
-        content: yup.string().required(),
+        whiteboardContent: yup.string().required(),
       }),
     }),
   });
 
   const handleChange = (values: FormValueType) => {
-    // console.log(values);
+    console.log(values);
     const callout: CalloutFormOutput = {
       displayName: values.displayName,
       description: values.description,
@@ -193,10 +180,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
       displayLocation: values.displayLocation,
-      contributionDefaults: {
-        postDescription: values.postDescription,
-        whiteboardContent: values.whiteboardContent,
-      },
+      postDescription: values.postDescription,
+      whiteboardContent: values.whiteboardContent,
       whiteboard: values.whiteboard,
     };
     onChange?.(callout);

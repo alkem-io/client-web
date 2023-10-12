@@ -56,13 +56,20 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
       (contribution.whiteboard.nameID === whiteboardId || contribution.whiteboard.id === whiteboardId)
   );
 
+  const framingWhiteboard = callout?.framing.whiteboard;
+
   const templates = whiteboardTemplates?.space.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.authorization;
 
   return (
     <>
       {children(
-        { whiteboard: whiteboardContribution?.whiteboard, templates, calloutId, authorization },
+        {
+          whiteboard: framingWhiteboard ?? whiteboardContribution?.whiteboard,
+          templates,
+          calloutId,
+          authorization,
+        },
         { loadingWhiteboards: loading, loadingTemplates }
       )}
     </>

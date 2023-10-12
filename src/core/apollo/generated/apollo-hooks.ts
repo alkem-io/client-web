@@ -976,7 +976,12 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
       anonymousReadAccess
       myPrivileges
     }
-    contributions(IDs: [$whiteboardId]) {
+    framing {
+      whiteboard {
+        ...WhiteboardDetails
+      }
+    }
+    contributions(filter: { whiteboardIDs: [$whiteboardId] }) {
       whiteboard {
         ...WhiteboardDetails
       }

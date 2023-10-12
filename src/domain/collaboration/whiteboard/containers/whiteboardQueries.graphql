@@ -130,7 +130,12 @@ fragment CalloutWithWhiteboard on Callout {
     anonymousReadAccess
     myPrivileges
   }
-  contributions(IDs: [$whiteboardId]) {
+  framing {
+    whiteboard {
+      ...WhiteboardDetails
+    }
+  }
+  contributions(filter: { whiteboardIDs: [$whiteboardId] }) {
     whiteboard {
       ...WhiteboardDetails
     }
