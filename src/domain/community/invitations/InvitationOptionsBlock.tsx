@@ -16,6 +16,9 @@ interface InvitationOptionsBlockProps {
   spaceDisplayName: string | undefined;
   inviteExistingUser: (params: InviteExistingUserData) => Promise<void>;
   inviteExternalUser: (params: InviteExternalUserData) => Promise<void>;
+  currentApplicationsUserIds: string[];
+  currentInvitationsUserIds: string[];
+  currentMembersIds: string[];
 }
 
 enum UserInvite {
@@ -27,6 +30,9 @@ const InvitationOptionsBlock = ({
   spaceDisplayName = '',
   inviteExistingUser,
   inviteExternalUser,
+  currentApplicationsUserIds,
+  currentInvitationsUserIds,
+  currentMembersIds,
 }: InvitationOptionsBlockProps) => {
   const [currentInvitation, setCurrentInvitation] = useState<UserInvite>();
 
@@ -72,6 +78,9 @@ const InvitationOptionsBlock = ({
         open={currentInvitation === UserInvite.Existing}
         onClose={closeInvitationDialog}
         onInviteUser={inviteExistingUser}
+        currentApplicationsUserIds={currentApplicationsUserIds}
+        currentInvitationsUserIds={currentInvitationsUserIds}
+        currentMembersIds={currentMembersIds}
       />
       <InviteExternalUserDialog
         title={t('components.invitations.inviteExternalUserDialog.title')}

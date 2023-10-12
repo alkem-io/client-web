@@ -39,6 +39,7 @@ RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
   fi
 
 FROM nginx:alpine as production-build
+ARG ARG_BUILD_ENVIRONMENT=development
 COPY ./.build/.nginx/nginx.conf /etc/nginx/nginx.conf
 
 ## Remove default nginx index page
@@ -49,7 +50,7 @@ COPY --from=builder /app/build /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 
 RUN if [ "$ARG_BUILD_ENVIRONMENT" = "production" ]; then \
-  find ./assets -name "*.map" -type f -delete; \
+  find /usr/share/nginx/html/assets -name "*.map" -type f -delete; \
   fi
 COPY --from=builder /app/.build/docker/env.sh .
 COPY --from=builder /app/.build/docker/.env.base .

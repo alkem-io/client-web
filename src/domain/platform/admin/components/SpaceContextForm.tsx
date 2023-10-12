@@ -7,7 +7,7 @@ import { SpaceContextSegment } from '../space/SpaceContextSegment';
 
 interface SpaceEditFormProps {
   context?: Context;
-  profile?: Profile;
+  profile?: Omit<Profile, 'storageBucket'>;
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   isEdit: boolean;

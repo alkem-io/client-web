@@ -303,6 +303,7 @@
     "welcome": "Welcome",
     "preview": "Preview",
     "help": "Help",
+    "helpCenter": "Help Center",
     "loading": "Loading...",
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
@@ -836,7 +837,12 @@
       "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
       "inviteExistingUserDialog": {
         "title": "Invite other Alkemio users to join this Space",
-        "subtitle": "You can search for Alkemio users below and attach a personalized message."
+        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
+        "selector": {
+          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
+          "alreadyInvited": "This user is already invited",
+          "alreadyMember": "This user is already a member"
+        }
       },
       "inviteExternalUserDialog": {
         "title": "Send an email invitation"
@@ -973,7 +979,6 @@
     "callout-creation": {
       "title": "What do you want to ask your community?",
       "titleWithType": "Create {{type}}",
-      "callout-type-label": "Callout type",
       "post-type-label": "Post label",
       "custom-template": "Custom Template",
       "info-step": {
@@ -2050,9 +2055,11 @@
       }
     },
     "four-ou-four": {
-      "message": "The resource you are looking for could not be found.",
-      "buttons": {
-        "home": "Take me home"
+      "title": "Something went wrong...",
+      "message": "Sorry, the page you are looking for either doesn't exist or has been moved, or you don't have the rights to access it. This may happen because you aren't a member of the community yet or are not signed in. Don't worry, our team is there to help!",
+      "links": {
+        "home": "",
+        "faq": "Have a look in our FAQ and documentation to find what you are looking for, or contact the team."
       }
     },
     "logout": {

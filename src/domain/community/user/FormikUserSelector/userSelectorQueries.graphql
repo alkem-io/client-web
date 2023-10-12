@@ -1,21 +1,18 @@
-query MessagingAvailableRecipients(
-  $filter: UserFilterInput
-  $first: Int
-) {
-	usersPaginated(filter: $filter, first: $first) {
+query UserSelector($filter: UserFilterInput, $first: Int) {
+  usersPaginated(filter: $filter, first: $first) {
     users {
-      ...MessagingUserInformation
+      ...UserSelectorUserInformation
     }
   }
 }
 
-query MessagingUserDetails ($id: UUID_NAMEID_EMAIL!) {
+query UserSelectorUserDetails($id: UUID_NAMEID_EMAIL!) {
   user(ID: $id) {
-    ...MessagingUserInformation
+    ...UserSelectorUserInformation
   }
 }
 
-fragment MessagingUserInformation on User {
+fragment UserSelectorUserInformation on User {
   id
   profile {
     id

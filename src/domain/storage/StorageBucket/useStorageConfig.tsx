@@ -3,6 +3,7 @@ import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import {
   useCalloutPostStorageConfigQuery,
   useCalloutStorageConfigQuery,
+  useInnovationHubStorageConfigQuery,
   useInnovationPackStorageConfigQuery,
   useJourneyStorageConfigQuery,
   useOrganizationStorageConfigQuery,
@@ -19,7 +20,15 @@ export interface StorageConfig {
   canUpload: boolean;
 }
 
-type StorageConfigLocation = 'journey' | 'user' | 'organization' | 'callout' | 'post' | 'innovationPack' | 'platform';
+type StorageConfigLocation =
+  | 'journey'
+  | 'user'
+  | 'organization'
+  | 'callout'
+  | 'post'
+  | 'innovationPack'
+  | 'innovationHub'
+  | 'platform';
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
@@ -59,6 +68,11 @@ interface UseStorageConfigOptionsInnovationPack extends UseStorageConfigOptionsB
   locationType: 'innovationPack';
 }
 
+interface UseStorageConfigOptionsInnovationHub extends UseStorageConfigOptionsBase {
+  innovationHubId: string | undefined;
+  locationType: 'innovationHub';
+}
+
 interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
   locationType: 'platform';
 }
@@ -70,6 +84,7 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsCallout
   | UseStorageConfigOptionsPost
   | UseStorageConfigOptionsInnovationPack
+  | UseStorageConfigOptionsInnovationHub
   | UseStorageConfigOptionsPlatform;
 
 export interface StorageConfigProvided {
@@ -157,6 +172,14 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'innovationPack' || !innovationPackOptions.innovationPackId,
   });
 
+  const innovationHubOptions = options as UseStorageConfigOptionsInnovationHub;
+  const { data: innovationHubStorageConfigData } = useInnovationHubStorageConfigQuery({
+    variables: {
+      innovationHubId: innovationHubOptions.innovationHubId!, // presence ensured by skip
+    },
+    skip: skip || locationType !== 'innovationHub' || !innovationHubOptions.innovationHubId,
+  });
+
   const { data: platformStorageConfigData } = usePlatformStorageConfigQuery({
     skip: skip || locationType !== 'platform',
   });
@@ -187,6 +210,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??
+    innovationHubStorageConfigData?.platform.innovationHub ??
     {};
 
   const storageConfig = profile?.storageBucket ?? platformStorageConfigData?.platform.storageBucket;

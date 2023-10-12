@@ -13,7 +13,7 @@ import { CommunityContextProvider } from '../../../community/community/Community
 import OpportunityRoute from '../../opportunity/routes/OpportunityRoute';
 import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
-import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
+import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/ChallengeAboutPage';
@@ -28,7 +28,6 @@ interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const {
-    challengeId,
     challengeNameId,
     spaceNameId,
     profile: { displayName },
@@ -42,10 +41,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
 
   if (loading) {
     return <Loading text="Loading challenge" />;
-  }
-
-  if (!challengeId) {
-    return <Error404 />;
   }
 
   return (
@@ -74,6 +69,14 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
             element={<ChallengeCalloutPage>{props => <CalloutRoute {...props} />}</ChallengeCalloutPage>}
           />
+          <Route
+            path="*"
+            element={
+              <NotFoundPageLayout>
+                <Error404 />
+              </NotFoundPageLayout>
+            }
+          />
         </Route>
         <Route
           path="apply/*"
@@ -97,7 +100,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           }
         />
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-        <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
   );

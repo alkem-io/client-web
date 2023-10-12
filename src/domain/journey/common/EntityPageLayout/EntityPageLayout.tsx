@@ -2,6 +2,9 @@ import React, { cloneElement, PropsWithChildren } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 import { useMediaQuery, useTheme } from '@mui/material';
 import BasePageLayout from '../BaseLayout/EntityPageLayout';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
 const EntityPageLayout = ({
   currentSection,
@@ -20,11 +23,19 @@ const EntityPageLayout = ({
   );
 
   return (
-    <BasePageLayout {...props}>
-      {!isMobile && tabs}
-      {children}
-      {isMobile && tabs}
-    </BasePageLayout>
+    <NotFoundErrorBoundary
+      errorComponent={
+        <TopLevelDesktopLayout>
+          <Error404 />
+        </TopLevelDesktopLayout>
+      }
+    >
+      <BasePageLayout {...props}>
+        {!isMobile && tabs}
+        {children}
+        {isMobile && tabs}
+      </BasePageLayout>
+    </NotFoundErrorBoundary>
   );
 };
 

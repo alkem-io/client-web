@@ -45,7 +45,6 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     graphqlErrors.forEach((error: GraphQLError) => {
       const translation = getTranslationForCode(error, t, i18n);
       notify(translation, severity);
-
       logError(error);
     });
   };
@@ -61,4 +60,14 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     handleGraphQLErrors(error);
     handleClientErrors(error);
   };
+};
+
+export const isApolloNotFoundError = (error: ApolloError | undefined) => {
+  if (error && error.graphQLErrors) {
+    const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
+    if (extensions.find(extension => extension.code === 'ENTITY_NOT_FOUND')) {
+      return true;
+    }
+  }
+  return false;
 };

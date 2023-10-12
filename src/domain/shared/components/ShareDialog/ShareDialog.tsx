@@ -23,7 +23,8 @@ export interface ShareDialogProps extends ShareComponentProps {
     | 'discussion'
     | 'event'
     | 'innovationPack'
-    | 'updates';
+    | 'updates'
+    | 'about';
 }
 
 export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, entityTypeName, ...props }) => {

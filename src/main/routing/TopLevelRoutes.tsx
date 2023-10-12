@@ -30,6 +30,7 @@ import InnovationPackRoute from '../../domain/collaboration/InnovationPack/Innov
 import { innovationPacksPath } from '../../domain/collaboration/InnovationPack/urlBuilders';
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
+import { NotFoundPageLayout } from '../../domain/journey/common/EntityPageLayout';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -200,7 +201,9 @@ export const TopLevelRoutes: FC = () => {
           path="*"
           element={
             <WithApmTransaction path="*">
-              <Error404 />
+              <NotFoundPageLayout>
+                <Error404 />
+              </NotFoundPageLayout>
             </WithApmTransaction>
           }
         />

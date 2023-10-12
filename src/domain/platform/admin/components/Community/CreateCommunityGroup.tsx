@@ -47,7 +47,9 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ communityI
           variables: {
             input: {
               parentID: communityId,
-              name,
+              profileData: {
+                displayName: name,
+              },
             },
           },
         });

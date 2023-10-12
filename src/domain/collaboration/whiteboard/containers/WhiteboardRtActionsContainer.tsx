@@ -33,26 +33,25 @@ const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ c
       whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
       previewImages?: WhiteboardPreviewImage[]
     ) => {
-      await Promise.all([
-        updateWhiteboard({
-          variables: {
-            input: {
-              ID: whiteboard.id,
-              content: whiteboard.content,
-              profileData: {
-                displayName: whiteboard.profile.displayName,
-              },
+      if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
+        uploadVisuals(
+          previewImages,
+          { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
+          whiteboard.nameID
+        );
+      }
+
+      await updateWhiteboard({
+        variables: {
+          input: {
+            ID: whiteboard.id,
+            content: whiteboard.content,
+            profileData: {
+              displayName: whiteboard.profile.displayName,
             },
           },
-        }),
-        (whiteboard.profile.visual || whiteboard.profile.preview) &&
-          previewImages &&
-          uploadVisuals(
-            previewImages,
-            { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
-            whiteboard.nameID
-          ),
-      ]);
+        },
+      });
     },
     [updateWhiteboard, uploadVisuals]
   );

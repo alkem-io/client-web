@@ -300,6 +300,7 @@
     "welcome": "Welkom",
     "preview": "Voorbeeld",
     "help": "Help",
+    "helpCenter": "Help",
     "loading": "Laden...",
     "innovation-flow": "Innovatie flow",
     "innovation-flows": "Innovatie flows",
@@ -961,7 +962,6 @@
     "callout-creation": {
       "title": "Wat wil je je community vragen?",
       "titleWithType": "{{type}} toevoegen",
-      "callout-type-label": "Oproep type",
       "post-type-label": "Post label",
       "custom-template": "Eigen template",
       "info-step": {
@@ -1086,12 +1086,19 @@
       "apply-not-signed": "Log in om in te schrijven",
       "apply-pending": "Uw aanmelding is in behandeling",
       "join": "Word lid",
-      "acceptInvitation": "Uitnodiging accepteren",
+      "acceptInvitation": {
+        "full": "Je bent uitgenodigd om lid te worden van deze Space. Klik hier om te accepteren",
+        "short": "Uitnodiging accepteren"
+      },
+      "joinParentFirst": {
+        "full": "Om lid te worden van deze Challenge, moet je eerst lid worden van de bijbehorende Space",
+        "short": "Sluit je eerst aan bij de bijbehorende Space"
+      },
       "goToSpace": "Ga naar $t(common.space)",
       "goToChallenge": "Ga naar $t(common.challenge)",
       "parent-pending": "Inschrijving van bovenliggende groep loopt",
       "applyTo": "Word lid",
-      "extendedMessage": "{{join}} onze Community en start met impact maken!",
+      "extendedMessage": "{{join}} onze {{journey}} en start making a change!",
       "dialog-apply-parent": {
         "title": "Pas toe op <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Space."
@@ -1319,7 +1326,7 @@
       "initiate": "Nieuwe Discussie starten",
       "posted": "{{name}} gestart op {{- date}} - {{count}} operking",
       "posted_plural": "{{name}} gestart op {{- date}} - {{count}} operkingen",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
       "comment": "{{count}} Opmerking",
       "comment_plural": "{{count}} Opmerkingen",
       "contributed": "{{count}} Persoon heeft bijgedragen",
@@ -2030,9 +2037,11 @@
       }
     },
     "four-ou-four": {
-      "message": "De bron waarnaar je op zoek bent kan niet gevonden worden.",
-      "buttons": {
-        "home": "Naar startpagina"
+      "title": "Er is iets fout gegaan...",
+      "message": "Sorry, de pagina die je zoekt bestaat niet of is verplaatst. Het is ook mogelijk dat je geen toegangsrechten (meer) hebt, bijvoorbeeld omdat je nog geen lid bent van de community of niet bent ingelogd. Maak je geen zorgen, ons team is er om je te helpen!",
+      "links": {
+        "home": "",
+        "faq": "Neem een kijkje in onze FAQ en documentatie om te vinden wat je zoekt, of neem contact op met het team."
       }
     },
     "logout": {
@@ -2270,42 +2279,27 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": [
-          "Publieke Dienstverlening",
-          "Publieke Dienstverlening"
-        ]
+        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   },
