@@ -62,27 +62,25 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
-    const { addNewFile, loadFiles, importFilesToExcalidraw, fileStoreVersion } = filesManager;
+    const { addNewFile, loadFiles, importFilesToExcalidraw, loading } = filesManager;
 
     const data = useMemo(() => {
       console.log('whiteboard data changed', whiteboard?.content);
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
-
-      const { files, ...elements } = parsedData;
-      loadFiles({ files });
+      loadFiles(parsedData);
 
       return {
-        ...elements,
+        ...parsedData,
         zoomToFit: true,
       };
     }, [whiteboard?.content, combinedRef, combinedRef.current, combinedRef.current?.ready]);
 
     useEffect(() => {
       console.log('useEffect importing files');
-      console.log('useEffect fileManager.loading.downloadingFiles', fileStoreVersion);
+      console.log('useEffect fileManager.loading.downloadingFiles');
       importFilesToExcalidraw();
-    }, [fileStoreVersion]);
-    console.log('render fileManager.loading.downloadingFiles', fileStoreVersion);
+    }, [loading.downloadingFiles]);
+    console.log('render fileManager.loading.downloadingFiles');
 
     const refreshOnDataChange = useRef(
       debounce(async (state: RefreshWhiteboardStateParam) => {

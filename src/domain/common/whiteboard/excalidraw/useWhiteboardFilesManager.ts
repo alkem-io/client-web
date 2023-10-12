@@ -80,13 +80,12 @@ export interface WhiteboardFilesManager {
   addNewFile: (file: File) => Promise<string>;
   loadFiles: (data: WhiteboardWithFiles) => Promise<void>;
   importFilesToExcalidraw: () => Promise<void>;
-  removeExcalidrawAttachments: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>
-  fileStoreVersion: number;
+  removeExcalidrawAttachments: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>;
   loading: {
     uploadingFile: boolean;
     downloadingFiles: boolean;
-  },
-  storageBucketId: string;  //!!
+  };
+  storageBucketId: string; //!!
 }
 
 const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): WhiteboardFilesManager => {
@@ -96,15 +95,12 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
    * - Files that are added by the user to the wb when editing and are uploaded
    * - ... something for the realtime
    */
-  //const fileStore = useRef<Record<string, BinaryFileDataExtended>>({});
-  const [fileStoreVersion, setFileStoreVersion] = useState(0);
   const [fileStore, setFileStore] = useState<Record<string, BinaryFileDataExtended>>({});
   const fileStoreAddFile = (fileId: string, file: BinaryFileDataExtended) => {
     setFileStore(current => {
       console.log('changing fileStore from', current, ' to ', { ...current, [fileId]: file });
       return { ...current, [fileId]: file };
     });
-    setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
   };
 
   const [downloadingFiles, setDownloadingFiles] = useState(false);
@@ -150,6 +146,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
         url: data.uploadFileOnStorageBucket,
       });
     } else {
+      console.error('this shouldnt be needed');
       fileStoreAddFile(fileId, {
         id: fileId,
         mimeType: 'application/octet-stream',
@@ -185,7 +182,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
         newFiles[fileId] = { ...file, dataURL } as BinaryFileDataExtended;
         fileStoreAddFile(fileId, newFiles[fileId]);
       } else {
-        log('Cannot download', file);
+        console.error('Cannot download', file);
       }
     }
     setDownloadingFiles(false);
@@ -242,12 +239,11 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
     loadFiles, // Load external files into Excalidraw
     importFilesToExcalidraw,
     removeExcalidrawAttachments,
-    fileStoreVersion,
     loading: {
       uploadingFile,
       downloadingFiles,
     },
-    storageBucketId: storageBucketId ?? 'Undefined!!' //!!
+    storageBucketId: storageBucketId ?? 'Undefined!!', //!!
   };
 };
 
