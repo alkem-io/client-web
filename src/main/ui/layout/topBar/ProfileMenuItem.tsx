@@ -13,6 +13,12 @@ interface ProfileMenuItemProps {
   signInButtonComponent: ComponentType<ButtonProps>;
 }
 
+/**
+ * @deprecated as part of the old App bar
+ * @param Button
+ * @param SignInButton
+ * @constructor
+ */
 const ProfileMenuItem = ({ buttonComponent: Button, signInButtonComponent: SignInButton }: ProfileMenuItemProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const theme = useTheme();

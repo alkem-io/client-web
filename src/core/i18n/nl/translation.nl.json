@@ -2279,42 +2279,27 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": [
-          "Publieke Dienstverlening",
-          "Publieke Dienstverlening"
-        ]
+        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   },

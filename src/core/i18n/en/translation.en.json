@@ -140,7 +140,9 @@
     "moveToTop": "Move to top",
     "moveToBottom": "Move to bottom",
     "use": "Use",
-    "fullscreen": "Toggle full screen"
+    "fullscreen": "Toggle full screen",
+    "changeLanguage": "Change language",
+    "getHelp": "Get help"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -264,6 +266,7 @@
     "admin": "Admin",
     "member": "Member",
     "members": "Members",
+    "administration": "Administration",
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
@@ -793,10 +796,14 @@
   },
   "components": {
     "search": {
+      "searchIn": "Search In:",
       "scope": {
         "platform": "Entire platform",
         "space": "{{displayName}}"
       }
+    },
+    "poweredBy": {
+      "label": "Powered by"
     },
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
@@ -2098,6 +2105,7 @@
       "header": "User Settings"
     },
     "user-profile": {
+      "title": "My profile",
       "tooltips": {
         "settings": "User profile settings"
       },

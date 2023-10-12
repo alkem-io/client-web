@@ -1,19 +1,12 @@
 import React, { useRef, useState } from 'react';
-import {
-  Box,
-  ClickAwayListener,
-  Collapse,
-  Divider,
-  IconButton,
-  InputBase,
-  InputBaseProps,
-  MenuItem,
-  Select,
-} from '@mui/material';
+import { Box, ClickAwayListener, Collapse, Divider, InputBase, InputBaseProps, MenuItem, Select } from '@mui/material';
 import { ExpandMore, Search } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { BlockSectionTitle } from '../typography';
 import { SelectOption } from '@mui/base/SelectUnstyled/useSelect.types';
+import NavigationItemContainer from '../navigation/NavigationItemContainer';
+import NavigationItemButton from '../navigation/NavigationItemButton';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBoxProps<Option> {
   searchTerms: string;
@@ -30,6 +23,7 @@ const SearchBox = <Option extends string | number>({
   searchOptions,
   onChange,
 }: SearchBoxProps<Option>) => {
+  const { t } = useTranslation();
   const [searchOption, setSearchOption] = useState(defaultSearchOption);
 
   const handleClickSearch = () => onSearch?.(searchOption);
@@ -68,12 +62,7 @@ const SearchBox = <Option extends string | number>({
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <Box
-        display="flex"
-        marginY={1}
-        borderRadius={theme => `${theme.shape.borderRadius}px`}
-        sx={{ backgroundColor: theme => theme.palette.background.paper }}
-      >
+      <NavigationItemContainer display="flex">
         <Collapse in={isExpanded} orientation="horizontal" collapsedSize="1px" sx={{ marginRight: '-1px' }}>
           <Box display="flex" alignItems="center">
             {searchOptions && (
@@ -92,7 +81,7 @@ const SearchBox = <Option extends string | number>({
                   }}
                   renderValue={() => (
                     <Box display="flex">
-                      <BlockSectionTitle>Search in:</BlockSectionTitle>
+                      <BlockSectionTitle>{t('components.search.searchIn')}</BlockSectionTitle>
                       <BlockSectionTitle whiteSpace="pre"> </BlockSectionTitle>
                       <BlockSectionTitle color="primary">
                         {searchOptions?.find(({ value }) => value === searchOption)?.label}
@@ -124,13 +113,10 @@ const SearchBox = <Option extends string | number>({
             />
           </Box>
         </Collapse>
-        <IconButton
-          sx={{ borderRadius: theme => `${theme.shape.borderRadius}px` }}
-          onClick={isExpanded ? handleClickSearch : handleExpand}
-        >
+        <NavigationItemButton onClick={isExpanded ? handleClickSearch : handleExpand}>
           <Search color="primary" />
-        </IconButton>
-      </Box>
+        </NavigationItemButton>
+      </NavigationItemContainer>
     </ClickAwayListener>
   );
 };
