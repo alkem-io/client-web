@@ -18,6 +18,7 @@ import { generateCollaborationLinkData, getCollabServer, SocketUpdateDataSource 
 import Portal from './Portal';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { atom, createStore } from 'jotai';
+import { WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 
 const appJotaiStore = createStore();
 
@@ -47,6 +48,7 @@ interface PublicProps {
   username: string;
   collabAPIRef?: MutableRefObject<CollabAPI | null> | RefCallback<CollabAPI | null>;
   onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
+  filesManager: WhiteboardFilesManager;
 }
 
 type Props = PublicProps;
@@ -54,6 +56,7 @@ type Props = PublicProps;
 class Collab extends PureComponent<Props, CollabState> {
   portal: Portal;
   excalidrawAPI: Props['excalidrawAPI'];
+  filesManager: Props['filesManager'];
   activeIntervalId: number | null;
   idleTimeoutId: number | null;
 
@@ -72,6 +75,7 @@ class Collab extends PureComponent<Props, CollabState> {
     };
     this.portal = new Portal(this);
     this.excalidrawAPI = props.excalidrawAPI;
+    this.filesManager = props.filesManager;
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
     this.onSavedToDatabase = props.onSavedToDatabase;
@@ -264,6 +268,7 @@ class Collab extends PureComponent<Props, CollabState> {
               scrollToContent: true,
             });
 
+            // Download files from the storageBucket here:
             // Files included in the canvas:
             const requiredFilesIds = reconciledElements.reduce<string[]>((files, element) => {
               if (element.type === 'image' && element.fileId) {
@@ -277,6 +282,7 @@ class Collab extends PureComponent<Props, CollabState> {
             if (missingFiles.length > 0) {
               this.portal.broadcastFileRequest(missingFiles);
             }
+            this.filesManager.loadFiles({ files: this.excalidrawAPI.getFiles() });
           }
           break;
         }
@@ -289,7 +295,7 @@ class Collab extends PureComponent<Props, CollabState> {
           const currentFiles = this.excalidrawAPI.getFiles();
           if (!currentFiles[payload.file.id]) {
             this.excalidrawAPI.addFiles([payload.file]);
-            this.alreadySharedFiles.push(payload.file.id);
+            this.filesManager.loadFiles({ files: { [payload.file.id]: payload.file } });
           }
           break;
         }

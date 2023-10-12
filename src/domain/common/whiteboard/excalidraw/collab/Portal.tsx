@@ -5,7 +5,8 @@ import { WS_EVENTS, WS_SCENE_EVENT_TYPES, PRECEDING_ELEMENT_KEY } from './excali
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
-import { BinaryFileData } from '@alkemio/excalidraw/types/types';
+import { BinaryFileDataWithUrl } from '../useWhiteboardFilesManager';
+import { DataURL } from '@alkemio/excalidraw/types/types';
 
 class Portal {
   collab: TCollabClass;
@@ -108,13 +109,16 @@ class Portal {
     await this._broadcastSocketData(data as SocketUpdateData);
   };
 
-  broadcastFile = async (file: BinaryFileData) => {
+  broadcastFile = async (file: BinaryFileDataWithUrl) => {
     if (this.socket?.id) {
       const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
         type: 'FILE_UPLOAD',
         payload: {
           socketId: this.socket.id,
-          file,
+          file: {
+            ...file,
+            dataURL: '' as DataURL, // Never share the full base64 of the file, the other clients will download the file from the storageBucket
+          },
         },
       };
 

@@ -43,7 +43,7 @@ const fetchFileToDataURL = async (url: string): Promise<string> => {
   return blobToDataURL(blob);
 };
 
-type BinaryFileDataExtended = BinaryFileData & { url?: string };
+export type BinaryFileDataWithUrl = BinaryFileData & { url?: string };
 
 interface Props {
   storageBucketId?: string; // FilesManagers without storageBucketId will throw an exception on file upload
@@ -51,7 +51,7 @@ interface Props {
 }
 
 interface WhiteboardWithFiles {
-  files?: Record<string, BinaryFileDataExtended>;
+  files?: Record<string, BinaryFileDataWithUrl>;
 }
 export interface WhiteboardFilesManager {
   addNewFile: (file: File) => Promise<string>;
@@ -78,9 +78,9 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
    * - Files that are added by the user to the wb when editing and are uploaded
    * - ... something for the realtime
    */
-  const fileStore = useRef<Record<string, BinaryFileDataExtended>>({});
+  const fileStore = useRef<Record<string, BinaryFileDataWithUrl>>({});
   const [fileStoreVersion, setFileStoreVersion] = useState(0);
-  const fileStoreAddFile = (fileId: string, file: BinaryFileDataExtended) => {
+  const fileStoreAddFile = (fileId: string, file: BinaryFileDataWithUrl) => {
     log('changing fileStore from', fileStore.current, ' to ', { ...fileStore.current, [fileId]: file });
     fileStore.current = {
       ...fileStore.current,
@@ -167,7 +167,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
       if (file.url) {
         log('DOWNLOADING ', file);
         const dataURL = await fetchFileToDataURL(file.url);
-        newFiles[fileId] = { ...file, dataURL } as BinaryFileDataExtended;
+        newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
         fileStoreAddFile(fileId, newFiles[fileId]);
       } else {
         console.error('Cannot download', file);
@@ -207,23 +207,23 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
       return whiteboard;
     }
     const { files, ...rest } = whiteboard;
-    const filesNext: Record<string, BinaryFileDataExtended> = {};
+    const filesNext: Record<string, BinaryFileDataWithUrl> = {};
 
     for (const fileId of Object.keys(files)) {
-      const file = files[fileId] as BinaryFileDataExtended;
+      const file = files[fileId] as BinaryFileDataWithUrl;
       if (file.url) {
         // The url was already set, just copy it and remove dataURL to the output:
-        filesNext[fileId] = { ...file, dataURL: '' } as BinaryFileDataExtended;
+        filesNext[fileId] = { ...file, dataURL: '' } as BinaryFileDataWithUrl;
       } else if (fileStore.current[fileId]) {
         // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
-        filesNext[fileId] = { ...file, dataURL: '', url: fileStore.current[fileId].url } as BinaryFileDataExtended;
+        filesNext[fileId] = { ...file, dataURL: '', url: fileStore.current[fileId].url } as BinaryFileDataWithUrl;
       } else if (file.dataURL) {
         log('NEED TO UPLOAD ', fileId, file);
         const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
         // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
         const id = await addNewFile(fileObject);
         log('Uploaded ', fileId, file, id);
-        filesNext[fileId] = { ...file, url: fileStore.current[id].url, dataURL: '' } as BinaryFileDataExtended;
+        filesNext[fileId] = { ...file, url: fileStore.current[id].url, dataURL: '' } as BinaryFileDataWithUrl;
       } else {
         console.error('File without url or dataURL. IGNORED', file);
       }

@@ -73,12 +73,13 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
         ...parsedData,
         zoomToFit: true,
       };
-    }, [whiteboard?.content, combinedRef, combinedRef.current, combinedRef.current?.ready]);
+    }, [whiteboard?.content]);
 
     useEffect(() => {
       console.log('useEffect importing files', fileStoreVersion);
       importFilesToExcalidraw();
     }, [fileStoreVersion]);
+
     console.log('render ExcalidrawWrapper');
 
     const refreshOnDataChange = useRef(
@@ -96,7 +97,6 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
         );
         if (excalidraw && missingFiles.length > 0) {
           excalidraw.addFiles(missingFiles);
-          excalidraw.refresh();
         }
       }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
     ).current;
