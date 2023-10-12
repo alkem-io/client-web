@@ -53,9 +53,15 @@ const ClickableTooltip = ({
   };
 
   const handleTriggerClick: MouseEventHandler<HTMLElement> = event => {
-    setOpenState({
-      action: OpenTriggerAction.Click,
-      anchor: event.currentTarget,
+    setOpenState(prevState => {
+      if (prevState?.action === OpenTriggerAction.Click) {
+        return null;
+      }
+
+      return {
+        action: OpenTriggerAction.Click,
+        anchor: event.currentTarget,
+      };
     });
   };
 
