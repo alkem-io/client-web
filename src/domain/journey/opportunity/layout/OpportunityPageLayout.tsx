@@ -8,21 +8,21 @@ import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/Jo
 interface OpportunityPageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
 
-const OpportunityPageLayout = (props: PropsWithChildren<OpportunityPageLayoutProps>) => {
+const OpportunityPageLayout = ({ children, ...props }: PropsWithChildren<OpportunityPageLayoutProps>) => {
   return (
-    <>
-      <EntityPageLayout
-        {...props}
-        pageBannerComponent={OpportunityPageBanner}
-        tabsComponent={OpportunityTabs}
-        entityTypeName="opportunity"
-      />
+    <EntityPageLayout
+      {...props}
+      pageBannerComponent={OpportunityPageBanner}
+      tabsComponent={OpportunityTabs}
+      entityTypeName="opportunity"
+    >
+      {children}
       <JourneyUnauthorizedDialogContainer journeyTypeName="opportunity">
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog journeyTypeName="opportunity" description={vision} {...props} />
         )}
       </JourneyUnauthorizedDialogContainer>
-    </>
+    </EntityPageLayout>
   );
 };
 

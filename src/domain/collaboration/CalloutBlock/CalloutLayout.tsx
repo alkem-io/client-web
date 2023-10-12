@@ -56,7 +56,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       displayLocationTagset?: Tagset;
     };
     comments?: {
-      messages: MessageDetailsFragment[];
+      messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
     state: CalloutState;
@@ -157,7 +157,7 @@ const CalloutLayout = ({
       return undefined;
     }
 
-    if (!callout?.comments?.messages.length) {
+    if (!callout?.comments?.messages?.length) {
       return;
     }
 

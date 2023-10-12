@@ -35,12 +35,6 @@ export const CalloutSummary: FC<{
           {callout?.profile.description}
         </Typography>
       </Box>
-      <Box>
-        <TypographyTitle>{t('components.callout-creation.callout-type-label')}</TypographyTitle>
-        <Typography variant="h6" color="primary">
-          {callout?.type}
-        </Typography>
-      </Box>
       {TemplatePreview && <TemplatePreview callout={callout} />}
     </>
   );

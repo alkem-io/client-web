@@ -36,6 +36,8 @@ import { useChallenge } from '../../../challenge/hooks/useChallenge';
 import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
+import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -119,6 +121,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
     profile: { displayName: challengeName },
   } = useChallenge();
 
+  const { opportunityNameId } = useUrlParams();
+
   const { scrollable } = useScrollToElement(dialogSectionName, { method: 'element', defer: true });
 
   const openDialog = (field: JourneyContextField) => {
@@ -137,6 +141,11 @@ export const AboutSection: FC<AboutSectionProps> = ({
     impact,
     who,
   } as const;
+
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space route.');
+  }
+  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
 
   return (
     <>
@@ -219,7 +228,9 @@ export const AboutSection: FC<AboutSectionProps> = ({
             />
             <FixedHeightBlockContent>{who}</FixedHeightBlockContent>
           </FixedHeightContentBlock>
-          {communityReadAccess && <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} />}
+          {communityReadAccess && (
+            <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
+          )}
           <PageContentBlock halfWidth>
             <PageContentBlockHeader title={t('common.references')} />
             <References references={references} noItemsView={t('common.no-references')} />

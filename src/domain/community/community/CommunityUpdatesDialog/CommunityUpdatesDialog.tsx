@@ -14,6 +14,7 @@ export interface CommunityUpdatesDialogProps {
   spaceId?: string;
   communityId?: string;
   shareUrl: string;
+  loading?: boolean;
 }
 
 const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
@@ -22,6 +23,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
   spaceId,
   communityId = '',
   shareUrl,
+  loading = false,
 }) => {
   const { t } = useTranslation();
 
@@ -29,17 +31,13 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
       <DialogHeader
         onClose={onClose}
-        actions={
-          <>
-            <ShareButton url={shareUrl} entityTypeName="updates" />
-          </>
-        }
+        actions={<ShareButton url={shareUrl} entityTypeName="updates" />}
         title={t('dashboard-updates-section.dialog-title')}
       />
       <DialogContent dividers>
         <Box marginBottom={2} marginTop={4}>
           <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
-            {({ messages, authors }, actions, loading) => (
+            {({ messages, authors }, actions, { retrievingUpdateMessages }) => (
               <CommunityUpdatesView
                 entities={{ messages, authors }}
                 actions={{
@@ -47,7 +45,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
                   onRemove: messageId => actions.onRemove(messageId, communityId),
                 }}
                 state={{
-                  loadingMessages: loading.retrievingUpdateMessages,
+                  loadingMessages: retrievingUpdateMessages || loading,
                   submittingMessage: false,
                   removingMessage: false,
                 }}

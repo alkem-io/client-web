@@ -7,7 +7,7 @@ import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
-import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
+import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from './opportunityRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import OpportunityAboutPage from '../pages/OpportunityAboutPage';
@@ -29,10 +29,6 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
 
   if (loading) {
     return <Loading text={'Loading opportunity'} />;
-  }
-
-  if (!opportunityNameId) {
-    return <Error404 />;
   }
 
   return (
@@ -63,9 +59,16 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
           />
           <Route path={routes.About} element={<OpportunityAboutPage />} />
           <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
+          <Route
+            path="*"
+            element={
+              <NotFoundPageLayout>
+                <Error404 />
+              </NotFoundPageLayout>
+            }
+          />
         </Route>
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-        <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
   );

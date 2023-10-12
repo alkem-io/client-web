@@ -13,6 +13,9 @@ import useCanGoBack from '../../../core/routing/useCanGoBack';
 import { Theme, useMediaQuery } from '@mui/material';
 import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 import Loading from '../../../core/ui/loading/Loading';
+import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { NotFoundPageLayout } from '../../journey/common/EntityPageLayout';
+import { Error404 } from '../../../core/pages/Errors/Error404';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -58,6 +61,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     data: calloutData,
     loading: isCalloutLoading,
     refetch: refetchCalloutData,
+    error,
   } = useCalloutPageCalloutQuery({
     variables: {
       calloutNameId,
@@ -95,7 +99,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       draft,
       editable,
       whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
-      comments: { ...callout.comments, calloutNameId: callout.nameID },
+      comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
     } as unknown as TypedCallout;
   }, [callout, locationState]);
 
@@ -105,6 +109,14 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   if (isCalloutLoading) {
     return <Loading />;
+  }
+
+  if (isApolloNotFoundError(error)) {
+    return (
+      <NotFoundPageLayout>
+        <Error404 />
+      </NotFoundPageLayout>
+    );
   }
 
   if (!typedCallout) {
