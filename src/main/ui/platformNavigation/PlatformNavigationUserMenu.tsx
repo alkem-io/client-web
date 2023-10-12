@@ -23,7 +23,7 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import LanguageSelect from '../../../core/ui/language/LanguageSelect';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
-import { PLATFORM_NAVIGATION_MENU_ELEVATION } from './constants';
+import { PLATFORM_NAVIGATION_MENU_ELEVATION, PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 
 interface PlatformNavigationUserMenuProps {
   onClose?: () => void;
@@ -126,6 +126,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigation
               vertical: 'top',
               horizontal: 'left',
             }}
+            zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
           >
             {({ openSelect }) => (
               <PlatformNavigationUserMenuItem

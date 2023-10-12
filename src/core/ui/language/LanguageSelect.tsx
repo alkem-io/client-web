@@ -11,9 +11,10 @@ interface ChildProps {
 
 interface LanguageSelectProps extends Pick<MenuProps, 'anchorOrigin' | 'transformOrigin'> {
   children: ({ openSelect, closeSelect }: ChildProps) => ReactNode;
+  zIndex?: number;
 }
 
-const LanguageSelect = ({ children }: LanguageSelectProps) => {
+const LanguageSelect = ({ zIndex, children }: LanguageSelectProps) => {
   const { i18n, t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -34,7 +35,7 @@ const LanguageSelect = ({ children }: LanguageSelectProps) => {
         openSelect: setAnchorEl,
         closeSelect: handleClose,
       })}
-      <Menu open={open} anchorEl={anchorEl} onClose={handleClose} sx={{ '.MuiMenu-list': { padding: 0 } }}>
+      <Menu open={open} anchorEl={anchorEl} onClose={handleClose} sx={{ '.MuiMenu-list': { padding: 0 }, zIndex }}>
         {supportedLngs.map(lng => (
           <MenuItem key={lng} selected={lng === i18n.language} onClick={() => handleLanguageSelection(lng)}>
             <Caption>{t(`languages.${lng}` as const)}</Caption>
