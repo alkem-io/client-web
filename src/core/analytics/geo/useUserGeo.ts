@@ -1,7 +1,7 @@
-import { useContext, useMemo } from 'react';
-import { UserGeoContext, UserGeoContextProps } from './UserGeoProvider';
+import { useContext } from 'react';
+import { UserGeoContext } from './UserGeoProvider';
 
 export const useUserGeo = () => {
   const { data, error, loading } = useContext(UserGeoContext);
-  return useMemo<UserGeoContextProps>(() => ({ data, loading, error }), [data, error, loading]);
+  return { data, loading, error };
 };
