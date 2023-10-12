@@ -1,24 +1,24 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { BinaryFileData, DataURL, ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 
-const isValidDataURL = (url: string) => url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},(.*)/gi) !== null;
+const isValidDataURL = (url: string) =>
+  url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
 
 const dataUrlToFile = async (
   dataUrl: string,
-  fileName: string = '',
+  fileName: string = 'from data',
   mimeType: string | undefined = undefined,
   lastModified: number = new Date().getTime()
 ): Promise<File> => {
   if (!isValidDataURL(dataUrl)) {
-    return Promise.reject('Error');
+    return Promise.reject('Not a valid dataURL detected');
   }
-  const res = await fetch(dataUrl); // Not a real request, it's supposed to be a dataURL. // TODO: Study XSS attacks here
-  const type = mimeType ?? dataUrl.substring(dataUrl.indexOf(':') + 1, dataUrl.indexOf(';'));
-  const data = new Uint8Array(await res.arrayBuffer());
-  const blob = new Blob([data], { type });
-  return new File([blob], fileName, { type, lastModified });
+  const mime = dataUrl.split(',')?.[0]?.match(/:(.*?);/)?.[1];
+  const blob = await (await fetch(dataUrl)).blob();
+  var file = new File([blob], fileName, { type: mime ?? mimeType ?? 'application/octet-stream', lastModified });
+  return file;
 };
 
 const blobToDataURL = (blob: Blob): Promise<string> => {
@@ -62,6 +62,7 @@ export interface WhiteboardFilesManager {
     uploadingFile: boolean;
     downloadingFiles: boolean;
   };
+  fileStoreVersion: number;
   storageBucketId: string; //!!
 }
 
@@ -77,12 +78,15 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
    * - Files that are added by the user to the wb when editing and are uploaded
    * - ... something for the realtime
    */
-  const [fileStore, setFileStore] = useState<Record<string, BinaryFileDataExtended>>({});
+  const fileStore = useRef<Record<string, BinaryFileDataExtended>>({});
+  const [fileStoreVersion, setFileStoreVersion] = useState(0);
   const fileStoreAddFile = (fileId: string, file: BinaryFileDataExtended) => {
-    setFileStore(current => {
-      log('changing fileStore from', current, ' to ', { ...current, [fileId]: file });
-      return { ...current, [fileId]: file };
-    });
+    log('changing fileStore from', fileStore.current, ' to ', { ...fileStore.current, [fileId]: file });
+    fileStore.current = {
+      ...fileStore.current,
+      [fileId]: file,
+    };
+    setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
   };
 
   const [downloadingFiles, setDownloadingFiles] = useState(false);
@@ -101,8 +105,8 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
     }
 
     const fileId = await generateIdFromFile(file);
-    if (fileStore[fileId]) {
-      log('file was already in our store', fileId, fileStore[fileId]);
+    if (fileStore.current[fileId]) {
+      log('file was already in our store', fileId, fileStore.current[fileId]);
       return fileId;
     }
 
@@ -180,11 +184,11 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
   const importFilesToExcalidraw = async () => {
     const excalidraw = await excalidrawApi?.readyPromise;
     if (!excalidraw) {
-      log('excalidrawApi not ready yet or no files', excalidraw, fileStore);
+      log('excalidrawApi not ready yet or no files', excalidraw, fileStore.current);
       return;
     }
 
-    const filesAsArray = Object.keys(fileStore).map(fileId => fileStore[fileId]);
+    const filesAsArray = Object.keys(fileStore.current).map(fileId => fileStore.current[fileId]);
     excalidraw.addFiles(filesAsArray);
   };
 
@@ -210,15 +214,16 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
       if (file.url) {
         // The url was already set, just copy it and remove dataURL to the output:
         filesNext[fileId] = { ...file, dataURL: '' } as BinaryFileDataExtended;
-      } else if (fileStore[fileId]) {
+      } else if (fileStore.current[fileId]) {
         // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
-        filesNext[fileId] = { ...file, dataURL: '', url: fileStore[fileId].url } as BinaryFileDataExtended;
+        filesNext[fileId] = { ...file, dataURL: '', url: fileStore.current[fileId].url } as BinaryFileDataExtended;
       } else if (file.dataURL) {
         log('NEED TO UPLOAD ', fileId, file);
         const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
+        // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
         const id = await addNewFile(fileObject);
         log('Uploaded ', fileId, file, id);
-        filesNext[fileId] = { ...file, url: fileStore[fileId].url, dataURL: '' } as BinaryFileDataExtended;
+        filesNext[fileId] = { ...file, url: fileStore.current[id].url, dataURL: '' } as BinaryFileDataExtended;
       } else {
         console.error('File without url or dataURL. IGNORED', file);
       }
@@ -231,6 +236,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
     loadFiles, // Load external files into Excalidraw
     importFilesToExcalidraw,
     removeExcalidrawAttachments,
+    fileStoreVersion,
     loading: {
       uploadingFile,
       downloadingFiles,
