@@ -23,6 +23,7 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 
 const MAX_REFERENCES_NORMALVIEW = 3;
 
@@ -83,6 +84,8 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             ID: referenceId,
           },
         },
+        update: (cache, { data }) =>
+          data?.deleteReference && evictFromCache(cache, data.deleteReference.id, 'Reference'),
       });
 
     const handleSaveNewLinks = useCallback(

@@ -124,6 +124,17 @@ query InnovationPackStorageConfig($innovationPackId: UUID_NAMEID!) {
   }
 }
 
+query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
+  platform {
+    id
+    innovationHub(id: $innovationHubId) {
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+}
+
 query PlatformStorageConfig {
   platform {
     id

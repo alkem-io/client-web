@@ -1646,8 +1646,8 @@ export const PendingMembershipsMembershipsFragmentDoc = gql`
   }
   ${PendingMembershipInvitationFragmentDoc}
 `;
-export const MessagingUserInformationFragmentDoc = gql`
-  fragment MessagingUserInformation on User {
+export const UserSelectorUserInformationFragmentDoc = gql`
+  fragment UserSelectorUserInformation on User {
     id
     profile {
       id
@@ -1667,7 +1667,10 @@ export const MessagingUserInformationFragmentDoc = gql`
 export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
-    name
+    profile {
+      id
+      displayName
+    }
   }
 `;
 export const GroupInfoFragmentDoc = gql`
@@ -12804,7 +12807,10 @@ export const CreateGroupOnOrganizationDocument = gql`
   mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
     createGroupOnOrganization(groupData: $input) {
       id
-      name
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -13072,7 +13078,10 @@ export const OrganizationGroupsDocument = gql`
       id
       groups {
         id
-        name
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -14063,133 +14072,123 @@ export function refetchOpportunityContributionDetailsQuery(
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
 
-export const MessagingAvailableRecipientsDocument = gql`
-  query MessagingAvailableRecipients($filter: UserFilterInput, $first: Int) {
+export const UserSelectorDocument = gql`
+  query UserSelector($filter: UserFilterInput, $first: Int) {
     usersPaginated(filter: $filter, first: $first) {
       users {
-        ...MessagingUserInformation
+        ...UserSelectorUserInformation
       }
     }
   }
-  ${MessagingUserInformationFragmentDoc}
+  ${UserSelectorUserInformationFragmentDoc}
 `;
 
 /**
- * __useMessagingAvailableRecipientsQuery__
+ * __useUserSelectorQuery__
  *
- * To run a query within a React component, call `useMessagingAvailableRecipientsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMessagingAvailableRecipientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserSelectorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserSelectorQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useMessagingAvailableRecipientsQuery({
+ * const { data, loading, error } = useUserSelectorQuery({
  *   variables: {
  *      filter: // value for 'filter'
  *      first: // value for 'first'
  *   },
  * });
  */
-export function useMessagingAvailableRecipientsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >
+export function useUserSelectorQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >(MessagingAvailableRecipientsDocument, options);
+  return Apollo.useQuery<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables>(
+    UserSelectorDocument,
+    options
+  );
 }
 
-export function useMessagingAvailableRecipientsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >
+export function useUserSelectorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >(MessagingAvailableRecipientsDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables>(
+    UserSelectorDocument,
+    options
+  );
 }
 
-export type MessagingAvailableRecipientsQueryHookResult = ReturnType<typeof useMessagingAvailableRecipientsQuery>;
-export type MessagingAvailableRecipientsLazyQueryHookResult = ReturnType<
-  typeof useMessagingAvailableRecipientsLazyQuery
+export type UserSelectorQueryHookResult = ReturnType<typeof useUserSelectorQuery>;
+export type UserSelectorLazyQueryHookResult = ReturnType<typeof useUserSelectorLazyQuery>;
+export type UserSelectorQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserSelectorQuery,
+  SchemaTypes.UserSelectorQueryVariables
 >;
-export type MessagingAvailableRecipientsQueryResult = Apollo.QueryResult<
-  SchemaTypes.MessagingAvailableRecipientsQuery,
-  SchemaTypes.MessagingAvailableRecipientsQueryVariables
->;
-export function refetchMessagingAvailableRecipientsQuery(
-  variables?: SchemaTypes.MessagingAvailableRecipientsQueryVariables
-) {
-  return { query: MessagingAvailableRecipientsDocument, variables: variables };
+export function refetchUserSelectorQuery(variables?: SchemaTypes.UserSelectorQueryVariables) {
+  return { query: UserSelectorDocument, variables: variables };
 }
 
-export const MessagingUserDetailsDocument = gql`
-  query MessagingUserDetails($id: UUID_NAMEID_EMAIL!) {
+export const UserSelectorUserDetailsDocument = gql`
+  query UserSelectorUserDetails($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
-      ...MessagingUserInformation
+      ...UserSelectorUserInformation
     }
   }
-  ${MessagingUserInformationFragmentDoc}
+  ${UserSelectorUserInformationFragmentDoc}
 `;
 
 /**
- * __useMessagingUserDetailsQuery__
+ * __useUserSelectorUserDetailsQuery__
  *
- * To run a query within a React component, call `useMessagingUserDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMessagingUserDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserSelectorUserDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserSelectorUserDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useMessagingUserDetailsQuery({
+ * const { data, loading, error } = useUserSelectorUserDetailsQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useMessagingUserDetailsQuery(
+export function useUserSelectorUserDetailsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.MessagingUserDetailsQuery,
-    SchemaTypes.MessagingUserDetailsQueryVariables
+    SchemaTypes.UserSelectorUserDetailsQuery,
+    SchemaTypes.UserSelectorUserDetailsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.MessagingUserDetailsQuery, SchemaTypes.MessagingUserDetailsQueryVariables>(
-    MessagingUserDetailsDocument,
+  return Apollo.useQuery<SchemaTypes.UserSelectorUserDetailsQuery, SchemaTypes.UserSelectorUserDetailsQueryVariables>(
+    UserSelectorUserDetailsDocument,
     options
   );
 }
 
-export function useMessagingUserDetailsLazyQuery(
+export function useUserSelectorUserDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.MessagingUserDetailsQuery,
-    SchemaTypes.MessagingUserDetailsQueryVariables
+    SchemaTypes.UserSelectorUserDetailsQuery,
+    SchemaTypes.UserSelectorUserDetailsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.MessagingUserDetailsQuery, SchemaTypes.MessagingUserDetailsQueryVariables>(
-    MessagingUserDetailsDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.UserSelectorUserDetailsQuery,
+    SchemaTypes.UserSelectorUserDetailsQueryVariables
+  >(UserSelectorUserDetailsDocument, options);
 }
 
-export type MessagingUserDetailsQueryHookResult = ReturnType<typeof useMessagingUserDetailsQuery>;
-export type MessagingUserDetailsLazyQueryHookResult = ReturnType<typeof useMessagingUserDetailsLazyQuery>;
-export type MessagingUserDetailsQueryResult = Apollo.QueryResult<
-  SchemaTypes.MessagingUserDetailsQuery,
-  SchemaTypes.MessagingUserDetailsQueryVariables
+export type UserSelectorUserDetailsQueryHookResult = ReturnType<typeof useUserSelectorUserDetailsQuery>;
+export type UserSelectorUserDetailsLazyQueryHookResult = ReturnType<typeof useUserSelectorUserDetailsLazyQuery>;
+export type UserSelectorUserDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserSelectorUserDetailsQuery,
+  SchemaTypes.UserSelectorUserDetailsQueryVariables
 >;
-export function refetchMessagingUserDetailsQuery(variables: SchemaTypes.MessagingUserDetailsQueryVariables) {
-  return { query: MessagingUserDetailsDocument, variables: variables };
+export function refetchUserSelectorUserDetailsQuery(variables: SchemaTypes.UserSelectorUserDetailsQueryVariables) {
+  return { query: UserSelectorUserDetailsDocument, variables: variables };
 }
 
 export const PlatformLevelAuthorizationDocument = gql`
@@ -21945,6 +21944,74 @@ export function refetchInnovationPackStorageConfigQuery(
   variables: SchemaTypes.InnovationPackStorageConfigQueryVariables
 ) {
   return { query: InnovationPackStorageConfigDocument, variables: variables };
+}
+
+export const InnovationHubStorageConfigDocument = gql`
+  query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
+    platform {
+      id
+      innovationHub(id: $innovationHubId) {
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubStorageConfigQuery({
+ *   variables: {
+ *      innovationHubId: // value for 'innovationHubId'
+ *   },
+ * });
+ */
+export function useInnovationHubStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >(InnovationHubStorageConfigDocument, options);
+}
+
+export function useInnovationHubStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubStorageConfigQuery,
+    SchemaTypes.InnovationHubStorageConfigQueryVariables
+  >(InnovationHubStorageConfigDocument, options);
+}
+
+export type InnovationHubStorageConfigQueryHookResult = ReturnType<typeof useInnovationHubStorageConfigQuery>;
+export type InnovationHubStorageConfigLazyQueryHookResult = ReturnType<typeof useInnovationHubStorageConfigLazyQuery>;
+export type InnovationHubStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubStorageConfigQuery,
+  SchemaTypes.InnovationHubStorageConfigQueryVariables
+>;
+export function refetchInnovationHubStorageConfigQuery(
+  variables: SchemaTypes.InnovationHubStorageConfigQueryVariables
+) {
+  return { query: InnovationHubStorageConfigDocument, variables: variables };
 }
 
 export const PlatformStorageConfigDocument = gql`

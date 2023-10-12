@@ -17381,7 +17381,11 @@ export type CreateGroupOnCommunityMutationVariables = Exact<{
 
 export type CreateGroupOnCommunityMutation = {
   __typename?: 'Mutation';
-  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
+  createGroupOnCommunity: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type ChallengesWithProfileQueryVariables = Exact<{
@@ -18575,7 +18579,11 @@ export type CreateGroupOnOrganizationMutationVariables = Exact<{
 
 export type CreateGroupOnOrganizationMutation = {
   __typename?: 'Mutation';
-  createGroupOnOrganization: { __typename?: 'UserGroup'; id: string; name: string };
+  createGroupOnOrganization: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type CreateOrganizationMutationVariables = Exact<{
@@ -18737,7 +18745,13 @@ export type OrganizationGroupsQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
-    groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
+    groups?:
+      | Array<{
+          __typename?: 'UserGroup';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -19113,12 +19127,12 @@ export type OpportunityContributionDetailsQuery = {
   };
 };
 
-export type MessagingAvailableRecipientsQueryVariables = Exact<{
+export type UserSelectorQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
 }>;
 
-export type MessagingAvailableRecipientsQuery = {
+export type UserSelectorQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
@@ -19136,11 +19150,11 @@ export type MessagingAvailableRecipientsQuery = {
   };
 };
 
-export type MessagingUserDetailsQueryVariables = Exact<{
+export type UserSelectorUserDetailsQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
-export type MessagingUserDetailsQuery = {
+export type UserSelectorUserDetailsQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'User';
@@ -19155,7 +19169,7 @@ export type MessagingUserDetailsQuery = {
   };
 };
 
-export type MessagingUserInformationFragment = {
+export type UserSelectorUserInformationFragment = {
   __typename?: 'User';
   id: string;
   profile: {
@@ -19233,7 +19247,11 @@ export type UserCardFragment = {
   };
 };
 
-export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
+export type GroupDetailsFragment = {
+  __typename?: 'UserGroup';
+  id: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+};
 
 export type GroupInfoFragment = {
   __typename?: 'UserGroup';
@@ -28066,6 +28084,36 @@ export type InnovationPackStorageConfigQuery = {
           }
         | undefined;
     };
+  };
+};
+
+export type InnovationHubStorageConfigQueryVariables = Exact<{
+  innovationHubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type InnovationHubStorageConfigQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
   };
 };
 
