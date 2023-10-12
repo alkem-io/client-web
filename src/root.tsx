@@ -19,6 +19,8 @@ import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
 import { SearchContextProvider } from './domain/platform/search/SearchContext';
 import ChatWidget from './main/guidance/chatWidget/ChatWidget';
+import { ApmProvider } from './core/analytics/apm/context';
+import { UserGeoProvider } from './core/analytics/geo';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -78,13 +80,17 @@ const Root: FC = () => (
                     <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                       <NavigationProvider>
                         <UserProvider>
-                          <CookiesProvider>
-                            <ScrollToTop />
-                            <SearchContextProvider>
-                              <TopLevelRoutes />
-                            </SearchContextProvider>
-                            <ChatWidget />
-                          </CookiesProvider>
+                          <UserGeoProvider>
+                            <ApmProvider>
+                              <CookiesProvider>
+                                <ScrollToTop />
+                                <SearchContextProvider>
+                                  <TopLevelRoutes />
+                                </SearchContextProvider>
+                                <ChatWidget />
+                              </CookiesProvider>
+                            </ApmProvider>
+                          </UserGeoProvider>
                         </UserProvider>
                       </NavigationProvider>
                     </AlkemioApolloProvider>
