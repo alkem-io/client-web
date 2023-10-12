@@ -6,6 +6,7 @@ import { BlockSectionTitle } from '../typography';
 import { SelectOption } from '@mui/base/SelectUnstyled/useSelect.types';
 import NavigationItemContainer from '../navigation/NavigationItemContainer';
 import NavigationItemButton from '../navigation/NavigationItemButton';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBoxProps<Option> {
   searchTerms: string;
@@ -22,6 +23,7 @@ const SearchBox = <Option extends string | number>({
   searchOptions,
   onChange,
 }: SearchBoxProps<Option>) => {
+  const { t } = useTranslation();
   const [searchOption, setSearchOption] = useState(defaultSearchOption);
 
   const handleClickSearch = () => onSearch?.(searchOption);
@@ -79,8 +81,7 @@ const SearchBox = <Option extends string | number>({
                   }}
                   renderValue={() => (
                     <Box display="flex">
-                      {/* TODO translate */}
-                      <BlockSectionTitle>Search in:</BlockSectionTitle>
+                      <BlockSectionTitle>{t('components.search.searchIn')}</BlockSectionTitle>
                       <BlockSectionTitle whiteSpace="pre"> </BlockSectionTitle>
                       <BlockSectionTitle color="primary">
                         {searchOptions?.find(({ value }) => value === searchOption)?.label}

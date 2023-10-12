@@ -796,6 +796,7 @@
   },
   "components": {
     "search": {
+      "searchIn": "Search In:",
       "scope": {
         "platform": "Entire platform",
         "space": "{{displayName}}"
