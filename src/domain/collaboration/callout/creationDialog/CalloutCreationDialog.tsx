@@ -8,7 +8,6 @@ import {
   WhiteboardTemplateCardFragment,
   CalloutVisibility,
   CalloutDisplayLocation,
-  CalloutContributionType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -125,13 +124,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const openPublishDialog = () => setIsConfirmPublishDialogOpen(true);
   const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
 
-  const getAllowedContributionTypes = (calloutType: CalloutType | undefined): CalloutContributionType[] => {
-    if (calloutType === CalloutType.PostCollection) return [CalloutContributionType.Post];
-    if (calloutType === CalloutType.WhiteboardCollection) return [CalloutContributionType.Whiteboard];
-    if (calloutType === CalloutType.LinkCollection) return [CalloutContributionType.Link];
-    return [];
-  };
-
   const handleSaveCallout = useCallback(
     async (visibility: CalloutVisibility, sendNotification: boolean) => {
       let result: Identifiable | undefined;
@@ -154,7 +146,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           },
           type: callout.type!,
           contributionPolicy: {
-            allowedContributionTypes: getAllowedContributionTypes(callout.type),
             state: callout.state!,
           },
           displayLocation,

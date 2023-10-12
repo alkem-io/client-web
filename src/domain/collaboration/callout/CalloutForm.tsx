@@ -162,16 +162,17 @@ const CalloutForm: FC<CalloutFormProps> = ({
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    contributionDefaults: yup.object().when('type', {
+    postDescription: yup.string().when('type', {
+      is: CalloutType.PostCollection,
+      then: yup.string().required(),
+    }),
+    whiteboardContent: yup.string().when('type', {
       is: CalloutType.Whiteboard || CalloutType.WhiteboardRt,
-      then: yup.object().shape({
-        whiteboardContent: yup.string().required(),
-      }),
+      then: yup.string().required(),
     }),
   });
 
   const handleChange = (values: FormValueType) => {
-    console.log(values);
     const callout: CalloutFormOutput = {
       displayName: values.displayName,
       description: values.description,

@@ -1316,8 +1316,6 @@ export type CreateCalloutContributionDefaultsInput = {
 };
 
 export type CreateCalloutContributionPolicyInput = {
-  /** Contribution types of the callout. */
-  allowedContributionTypes?: InputMaybe<Array<CalloutContributionType>>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
 };

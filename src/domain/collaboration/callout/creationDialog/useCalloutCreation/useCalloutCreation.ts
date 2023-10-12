@@ -8,7 +8,6 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
-  CalloutContributionType,
   CalloutDisplayLocation,
   CalloutState,
   CalloutType,
@@ -37,7 +36,6 @@ export interface CalloutCreationType {
   };
   type: CalloutType;
   contributionPolicy: {
-    allowedContributionTypes: CalloutContributionType[];
     state: CalloutState;
   };
   displayLocation?: CalloutDisplayLocation;
