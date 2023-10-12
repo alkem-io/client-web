@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   BinaryFileData,
@@ -6,6 +6,7 @@ import {
 } from '@alkemio/excalidraw/types/types';
 import { bytesToHexString } from './collab/utils';
 import { FileId } from '@alkemio/excalidraw/types/element/types';
+import { IMAGE_MIME_TYPES } from '@alkemio/excalidraw/types/constants';
 
 
 const dataUrlToFile = async (
@@ -91,6 +92,11 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props) =>
    */
   const fileStore = useRef<Record<string, BinaryFileDataExtended>>({});
   const [fileStoreVersion, setFileStoreVersion] = useState(0);
+  const fileStoreAddFile = (fileId: string, file: BinaryFileDataExtended) => {
+    fileStore.current = { ...fileStore.current, [fileId]: file };
+    setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
+  }
+
 
   const [downloadingFiles, setDownloadingFiles] = useState(false);
   const [uploadFile, { loading: uploadingFile }] = useUploadFileMutation();
@@ -102,7 +108,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props) =>
    * @param file: File
    * @returns FileId
    */
-  const addNewFile = useCallback(async (file: File): Promise<string> => {
+  const addNewFile = async (file: File): Promise<string> => {
     if (!storageBucketId) {
       throw new Error('Missing StorageBucket: Uploading images to this whiteboard is not supported');
     }
@@ -130,17 +136,22 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props) =>
     const excalidraw = await excalidrawApi?.readyPromise;
     const fileFromExcalidraw = excalidraw?.getFiles()?.[fileId];
     if (fileFromExcalidraw) {
-      fileStore.current[fileId] = {
+      fileStoreAddFile(fileId, {
         ...fileFromExcalidraw,
         url: data.uploadFileOnStorageBucket
-      }
-      setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
+      });
     } else {
-      console.log('THIS IS NOT WORKING, NOT GOOD')
+      fileStoreAddFile(fileId, {
+        id: fileId,
+        mimeType: 'application/octet-stream',
+        created: (new Date()).getTime(),
+        url: data.uploadFileOnStorageBucket,
+        dataURL: '' as string & { _brand: 'DataURL'; },
+      });
     }
 
     return fileId;
-  }, [storageBucketId, excalidrawApi, fileStore.current]);
+  }
 
 
   const log = (...args) => {
@@ -164,8 +175,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props) =>
         log('DOWNLOADING ', file);
         const dataURL = await fetchFileToDataURL(file.url);
         newFiles[fileId] = { ...file, dataURL } as BinaryFileDataExtended;
-        fileStore.current[fileId] = newFiles[fileId];
-        setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
+        fileStoreAddFile(fileId, newFiles[fileId]);
       } else {
         log('Cannot download', file);
       }
@@ -189,35 +199,41 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props) =>
   }
 
 
-  const saveFilesExternally = async <W extends WhiteboardFiles>(whiteboard: W): Promise<W> => {
+  const removeExcalidrawAttachedFiles = async <W extends WhiteboardFiles>(whiteboard: W): Promise<W> => {
     if (!whiteboard?.files) {
       log('no whiteboard or no files', whiteboard);
       return whiteboard;
     }
     const { files, ...rest } = whiteboard;
-    const newFiles: Record<string, BinaryFileDataExtended> = {};
+    const filesNext: Record<string, BinaryFileDataExtended> = {};
 
     for(const fileId of Object.keys(files)) {
       const file = files[fileId] as BinaryFileDataExtended;
-      if (!file.url && file.dataURL) {
+      if (file.url) {
+        // The url was already set, just copy the rest of the properties and remove dataURL:
+        filesNext[fileId] = { ...file, dataURL: '' } as BinaryFileDataExtended;
+      } else if (fileStore.current[fileId]) {
+        // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
+        filesNext[fileId] = { ...file, dataURL: '', url: fileStore.current[fileId].url } as BinaryFileDataExtended;
+      } else if (file.dataURL) {
         log('NEED TO UPLOAD ', fileId, file);
         const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
         const id = await addNewFile(fileObject);
-        console.log('Uploaded ', fileId, file, id);
-        file.url = fileStore.current[fileId].url;
-        const { dataURL: _ignoreDataURL, url: _ignoreUrl, ...rest } = file;
-        newFiles[fileId] = { url: file.url, dataURL: '', ...rest } as BinaryFileDataExtended;
+        log('Uploaded ', fileId, file, id);
+        filesNext[fileId] = { ...file, url: fileStore.current[fileId].url, dataURL: '' } as BinaryFileDataExtended;
+
+      } else {
+        log('I have no url or dataURL, ignore this file', file);
       }
     }
-    setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
-    return { files: newFiles, ...rest } as W;
+    return { files: filesNext, ...rest } as W;
   }
 
   return {
     addNewFile,
     loadFiles, // Load external files into Excalidraw
     importFilesToExcalidraw,
-    saveFilesExternally,
+    removeExcalidrawAttachedFiles,
     fileStoreVersion,
     loading: {
       uploadingFile,
