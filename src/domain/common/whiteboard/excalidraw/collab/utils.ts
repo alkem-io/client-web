@@ -4,6 +4,10 @@ import {
   InitializedExcalidrawImageElement,
 } from '@alkemio/excalidraw/types/element/types';
 import { unstable_batchedUpdates } from 'react-dom';
+import { FileId } from '@alkemio/excalidraw/types/element/types';
+
+///// This is copied from Excalidraw sources because VITE cannot import generateIdFromFile
+// TODO: import it properly
 
 export const debounce = <T extends unknown[]>(fn: (...args: T) => void, timeout: number) => {
   let handle = 0;
@@ -95,3 +99,57 @@ export enum UserIdleState {
   AWAY = 'away',
   IDLE = 'idle',
 }
+
+type IMAGE_MIME_TYPES =
+  | 'image/svg+xml'
+  | 'image/png'
+  | 'image/jpeg'
+  | 'image/gif'
+  | 'image/webp'
+  | 'image/bmp'
+  | 'image/x-icon'
+  | 'image/avif'
+  | 'image/jfif';
+
+function isImageMimeType(value: string): value is IMAGE_MIME_TYPES {
+  return [
+    'image/svg+xml',
+    'image/png',
+    'image/jpeg',
+    'image/gif',
+    'image/webp',
+    'image/bmp',
+    'image/x-icon',
+    'image/avif',
+    'image/jfif',
+  ].includes(value);
+}
+
+export const excalidrawFileMimeType = (type: string): IMAGE_MIME_TYPES | 'application/octet-stream' =>
+  isImageMimeType(type) ? type : 'application/octet-stream';
+
+export const blobToArrayBuffer = (blob: Blob): Promise<ArrayBuffer> => {
+  if ('arrayBuffer' in blob) {
+    return blob.arrayBuffer();
+  }
+  // Safari
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = event => {
+      if (!event.target?.result) {
+        return reject(new Error("Couldn't convert blob to ArrayBuffer"));
+      }
+      resolve(event.target.result as ArrayBuffer);
+    };
+    reader.readAsArrayBuffer(blob);
+  });
+};
+
+/** generates SHA-1 digest from supplied file */
+export const generateIdFromFile = async (file: File): Promise<FileId> => {
+  const hashBuffer = await window.crypto.subtle.digest('SHA-1', await blobToArrayBuffer(file));
+
+  const result = bytesToHexString(new Uint8Array(hashBuffer)) as FileId;
+  console.log('sha1 sum returned', result);
+  return result;
+};
