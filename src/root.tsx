@@ -19,7 +19,7 @@ import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
 import { SearchContextProvider } from './domain/platform/search/SearchContext';
 import ChatWidget from './main/guidance/chatWidget/ChatWidget';
-import { ApmProvider } from './core/analytics/apm/context';
+import { ApmProvider, ApmUserSetter } from './core/analytics/apm/context';
 import { UserGeoProvider } from './core/analytics/geo';
 
 const useGlobalStyles = makeStyles(theme => ({
@@ -71,35 +71,36 @@ const Root: FC = () => (
   <StyledEngineProvider injectFirst>
     <RootThemeProvider>
       <GlobalStyles>
-        <ConfigProvider url={publicGraphQLEndpoint}>
-          <ServerMetadataProvider url={publicGraphQLEndpoint}>
-            <SentryErrorBoundaryProvider>
-              <GlobalStateProvider>
-                <BrowserRouter>
-                  <AuthenticationProvider>
-                    <UserGeoProvider>
-                      <ApmProvider>
-                        <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                          <NavigationProvider>
-                            <UserProvider>
-                              <CookiesProvider>
+        <CookiesProvider>
+          <ConfigProvider url={publicGraphQLEndpoint}>
+            <ServerMetadataProvider url={publicGraphQLEndpoint}>
+              <SentryErrorBoundaryProvider>
+                <GlobalStateProvider>
+                  <BrowserRouter>
+                    <AuthenticationProvider>
+                      <UserGeoProvider>
+                        <ApmProvider>
+                          <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                            <NavigationProvider>
+                              <UserProvider>
+                                <ApmUserSetter />
                                 <ScrollToTop />
                                 <SearchContextProvider>
                                   <TopLevelRoutes />
                                 </SearchContextProvider>
                                 <ChatWidget />
-                              </CookiesProvider>
-                            </UserProvider>
-                          </NavigationProvider>
-                        </AlkemioApolloProvider>
-                      </ApmProvider>
-                    </UserGeoProvider>
-                  </AuthenticationProvider>
-                </BrowserRouter>
-              </GlobalStateProvider>
-            </SentryErrorBoundaryProvider>
-          </ServerMetadataProvider>
-        </ConfigProvider>
+                              </UserProvider>
+                            </NavigationProvider>
+                          </AlkemioApolloProvider>
+                        </ApmProvider>
+                      </UserGeoProvider>
+                    </AuthenticationProvider>
+                  </BrowserRouter>
+                </GlobalStateProvider>
+              </SentryErrorBoundaryProvider>
+            </ServerMetadataProvider>
+          </ConfigProvider>
+        </CookiesProvider>
       </GlobalStyles>
     </RootThemeProvider>
   </StyledEngineProvider>
