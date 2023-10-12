@@ -27,7 +27,7 @@ export interface ProfileFormValues {
 }
 
 interface ProfileFormProps {
-  profile?: Omit<Profile, 'storageBucket'>;
+  profile?: Omit<Profile, 'storageBucket' | 'url'>;
   journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;

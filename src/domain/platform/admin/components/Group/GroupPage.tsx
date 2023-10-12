@@ -8,14 +8,9 @@ import {
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationCredential,
-  GroupInfoFragment,
-  User,
-  UserGroup,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, GroupInfoFragment, User } from '../../../../../core/apollo/generated/graphql-schema';
 import { logger } from '../../../../../core/logging/winston/logger';
-import GroupForm from './GroupForm/GroupForm';
+import GroupForm, { UserGroupUpdateInput } from './GroupForm/GroupForm';
 import { getUpdateProfileInput } from '../../../../community/user/utils/getUpdateUserInput';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
@@ -58,7 +53,7 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
 
   const handleCancel = () => navigate(-1);
 
-  const handleSave = async (group: UserGroup) => {
+  const handleSave = async (group: UserGroupUpdateInput) => {
     const profileId = group.profile?.id || '';
     const tagsetsToAdd = group.profile?.tagsets?.filter(x => !x.id) || [];
 

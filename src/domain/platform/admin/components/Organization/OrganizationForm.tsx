@@ -50,6 +50,7 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
     tagline: '',
     visuals: [],
     description: '',
+    url: '',
     tagsets: undefined,
     references: [],
     location: {
@@ -67,6 +68,7 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
       documents: [],
       maxFileSize: -1,
       size: -1,
+      childStorage: [],
     },
   },
   preferences: [],

@@ -28,7 +28,7 @@ interface AboutPagePermissions {
 
 export interface AboutPageContainerEntities {
   context?: ContextTabFragment;
-  profile: Omit<Profile, 'storageBucket'>;
+  profile: Omit<Profile, 'storageBucket' | 'url'>;
   tagset?: Tagset;
   lifecycle?: LifecycleContextTabFragment;
   permissions: AboutPagePermissions;
