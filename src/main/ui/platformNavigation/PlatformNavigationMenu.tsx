@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Divider, MenuList, Paper, SvgIconProps } from '@mui/material';
+import { Box, Button, ButtonProps, Divider, MenuList, Paper, SvgIconProps } from '@mui/material';
 import Gutters from '../../../core/ui/grid/Gutters';
 import React, { ComponentType, forwardRef, PropsWithChildren } from 'react';
 import RouterLink from '../../../core/ui/link/RouterLink';
@@ -90,9 +90,9 @@ const PlatformNavigationMenu = forwardRef<HTMLDivElement, PlatformNavigationMenu
           </li>
         ))}
         <Divider component="li" sx={{ width: '75%', marginY: 1 }} />
-        <li>
-          <PoweredBy />
-        </li>
+        <Box component="li" paddingY={gutters(0.5)}>
+          <PoweredBy preview />
+        </Box>
       </MenuList>
     </Paper>
   );

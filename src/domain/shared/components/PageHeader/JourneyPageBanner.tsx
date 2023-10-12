@@ -15,6 +15,7 @@ import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '../../../../main/env';
+import PageBannerWatermark from '../../../../main/ui/platformNavigation/PageBannerWatermark';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
@@ -33,9 +34,8 @@ const Root = styled(Box)(({ theme }) => ({
 const Title = styled(Box)(({ theme }) => ({
   backgroundColor: hexToRGBA(theme.palette.common.black, 0.5),
   color: theme.palette.common.white,
-  position: 'absolute',
+  position: 'relative',
   width: '100%',
-  bottom: 0,
   textAlign: 'center',
   zIndex: 20,
   display: 'flex',
@@ -44,9 +44,6 @@ const Title = styled(Box)(({ theme }) => ({
   paddingLeft: theme.spacing(2),
   paddingRight: theme.spacing(2),
   justifyContent: 'space-evenly',
-  [theme.breakpoints.down('lg')]: {
-    bottom: theme.spacing(-TITLE_HEIGHT),
-  },
 }));
 
 // Placeholder at the top of the image to put notices and breadcrumbs
@@ -133,6 +130,12 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
   );
 };
 
+const WatermarkContainer = (props: BoxProps) => {
+  return (
+    <Box width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)} maxWidth="100%" margin="auto" position="relative" {...props} />
+  );
+};
+
 export interface JourneyPageBannerProps {
   title?: string;
   tagline?: string;
@@ -189,23 +192,36 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
             width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
             maxWidth="100%"
           />
-          <Title
+          <Box
+            position="absolute"
+            bottom={0}
+            width="100%"
             sx={{
               [theme.breakpoints.down('lg')]: {
-                backgroundColor: titleBackgroundColor /*, color: titleForegroundColor*/,
+                bottom: theme.spacing(-TITLE_HEIGHT),
               },
             }}
           >
-            <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
-              {title}
-            </PageTitle>
-            <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
-              {tagline}
-            </Tagline>
-          </Title>
+            <WatermarkContainer>
+              <PageBannerWatermark />
+            </WatermarkContainer>
+            <Title
+              sx={{
+                [theme.breakpoints.down('lg')]: {
+                  backgroundColor: titleBackgroundColor /*, color: titleForegroundColor*/,
+                },
+              }}
+            >
+              <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
+                {title}
+              </PageTitle>
+              <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
+                {tagline}
+              </Tagline>
+            </Title>
+          </Box>
         </>
       )}
-      {dataLoading && <Skeleton variant="rectangular" />}
     </Root>
   );
 };
