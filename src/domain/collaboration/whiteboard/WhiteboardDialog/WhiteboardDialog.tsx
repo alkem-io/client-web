@@ -131,7 +131,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     return { appState, elements, files };
   };
 
-  const { removeExcalidrawAttachedFiles } = useWhiteboardFilesManager({
+  const filesManager = useWhiteboardFilesManager({
     excalidrawApi: excalidrawApiRef.current,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
   });
@@ -140,7 +140,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     if (!state) {
       return;
     }
-    const { appState, elements, files } = await removeExcalidrawAttachedFiles(state);
+    const { appState, elements, files } = await filesManager.removeExcalidrawAttachments(state);
     console.log('saveFilesExternally', files);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
@@ -298,7 +298,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                 <ExcalidrawWrapper
                   entities={{
                     whiteboard,
-                    storageBucketId: whiteboard.profile?.storageBucket.id ?? '', //!!
+                    filesManager,
                   }}
                   ref={excalidrawApiRef}
                   options={{

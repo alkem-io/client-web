@@ -16,7 +16,7 @@ import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
-import useWhiteboardFilesManager from './useWhiteboardFilesManager';
+import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -35,7 +35,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
-  storageBucketId?: string;
+  filesManager: WhiteboardFilesManager;
 }
 
 export interface WhiteboardWhiteboardActions {
@@ -57,15 +57,12 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options }, excalidrawRef) => {
-    const { whiteboard, storageBucketId } = entities;
+    const { whiteboard, filesManager } = entities;
 
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
-    const { addNewFile, loadFiles, importFilesToExcalidraw, fileStoreVersion } = useWhiteboardFilesManager({
-      storageBucketId,
-      excalidrawApi: combinedRef.current,
-    });
+    const { addNewFile, loadFiles, importFilesToExcalidraw, fileStoreVersion } = filesManager;
 
     const data = useMemo(() => {
       console.log('whiteboard data changed', whiteboard?.content);
@@ -193,7 +190,7 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     return (
       <div
         className={styles.container}
-        title={`storageBucketId: ${storageBucketId} whiteboardId: ${whiteboard?.id}` /* //!! */}
+        title={`storageBucketId: ${filesManager.storageBucketId} whiteboardId: ${whiteboard?.id}` /* //!! */}
       >
         {whiteboard && (
           <Excalidraw
