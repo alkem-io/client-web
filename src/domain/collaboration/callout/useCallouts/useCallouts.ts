@@ -26,15 +26,6 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/Innovat
 import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 
-// interface CalloutChildTypePropName {
-//   [CalloutType.PostCollection]: 'posts';
-//   [CalloutType.WhiteboardCollection]: 'whiteboards';
-//   [CalloutType.Post]: 'comments';
-//   [CalloutType.LinkCollection]: 'links';
-//   [CalloutType.Whiteboard]: 'whiteboards';
-//   [CalloutType.WhiteboardRt]: 'whiteboardRt';
-// }
-
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
@@ -43,22 +34,6 @@ export type WhiteboardRtFragmentWithCallout = WhiteboardRtDetailsFragment & { ca
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
 export type ReferencesFragmentWithCallout = ReferenceDetailsFragment & { calloutNameId: string };
-
-// interface CalloutChildPropValue {
-//   posts: never;
-//   whiteboards: WhiteboardFragmentWithCallout[];
-//   comments: CommentsWithMessagesFragmentWithCallout;
-//   links: ReferencesFragmentWithCallout;
-//   whiteboardRt: WhiteboardRtFragmentWithCallout;
-// }
-
-// type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
-//   [P in PropName]: CalloutChildPropValue[P];
-// };
-
-// type CalloutTypesWithChildTypes = {
-//   [Type in keyof CalloutChildTypePropName]: { type: Type } & CalloutWithChildType<CalloutChildTypePropName[Type]>;
-// };
 
 export type TypedCallout = Pick<
   Callout,
