@@ -127,6 +127,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   canDelete: false,
                   checkedOutByMe: true,
                   headerActions: undefined,
+                  allowFilesAttached: true,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
                       {dialogProps?.title}

@@ -58,6 +58,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
     fullscreen?: boolean;
+    allowFilesAttached?: boolean;
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -134,6 +135,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const filesManager = useWhiteboardFilesManager({
     excalidrawApi: excalidrawApiRef.current,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    allowFallbackToAttached: options.allowFilesAttached,
   });
 
   const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
