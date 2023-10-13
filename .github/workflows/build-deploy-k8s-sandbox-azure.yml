@@ -37,33 +37,33 @@ jobs:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
-#      - name: 'Build and push image'
-#        uses: azure/docker-login@v1.0.1
-#        with:
-#          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-#          username: ${{ secrets.REGISTRY_USERNAME }}
-#          password: ${{ secrets.REGISTRY_PASSWORD }}
-#      - run: |
-#          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
-#          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
-#      - uses: Azure/aks-set-context@v3.2
-#        with:
-#          cluster-name: k8s-sandbox
-#          resource-group: res-grp-k8s-sandbox
-#
-#      - uses: Azure/k8s-create-secret@v4.0
-#        with:
-#          container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-#          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
-#          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-#          secret-name: alkemio-web-secret
-#
-#      - uses: Azure/k8s-deploy@v4.10
-#        with:
-#          manifests: |
-#            manifests/26-web-deployment-test.yaml
-#            manifests/30-web-service.yaml
-#          images: |
-#            ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
-#          imagepullsecrets: |
-#            alkemio-web-secret
+      - name: 'Build and push image'
+        uses: azure/docker-login@v1.0.1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
+      - uses: Azure/aks-set-context@v3.2
+        with:
+          cluster-name: k8s-sandbox
+          resource-group: res-grp-k8s-sandbox
+
+      - uses: Azure/k8s-create-secret@v4.0
+        with:
+          container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          secret-name: alkemio-web-secret
+
+      - uses: Azure/k8s-deploy@v4.10
+        with:
+          manifests: |
+            manifests/26-web-deployment-test.yaml
+            manifests/30-web-service.yaml
+          images: |
+            ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
+          imagepullsecrets: |
+            alkemio-web-secret
