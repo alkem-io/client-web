@@ -10,7 +10,7 @@ jobs:
     steps:
       # checkout the repo
       - name: 'Checkout github Action'
-        uses: actions/checkout@master
+        uses: actions/checkout@v3.0.2
 
       - name: Prepare
         id: prep
@@ -29,16 +29,16 @@ jobs:
           elif [[ $GITHUB_REF == refs/pull/* ]]; then
             VERSION=pr-${{ github.event.number }}
           fi
-          echo ::set-output name=version::${VERSION}
-          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "created={$(date -u +'%Y-%m-%dT%H:%M:%SZ')}" >> $GITHUB_OUTPUT
 
       - name: 'Login via Azure CLI'
-        uses: azure/login@v1
+        uses: azure/login@v1.4.7
         with:
           creds: ${{ secrets.AZURE_CRED_K8S_NEW }}
 
       - name: 'Build and push image'
-        uses: azure/docker-login@v1
+        uses: azure/docker-login@v1.0.1
         env:
           NODE_ENV: production
         with:
@@ -49,20 +49,19 @@ jobs:
           docker build --build-arg ARG_GRAPHQL_ENDPOINT=${{ secrets.GRAPHQL_ENDPOINT_ARG }} --build-arg ARG_BUILD_VERSION=${{ steps.prep.outputs.version }} --build-arg ARG_BUILD_REVISION=${{ github.sha }} --build-arg ARG_BUILD_DATE=${{ steps.prep.outputs.created }} -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
 
-      - uses: Azure/aks-set-context@v1
+      - uses: Azure/aks-set-context@v3.2
         with:
-          creds: ${{ secrets.AZURE_CRED_K8S_NEW }}
           cluster-name: ${{ secrets.CLUSTER_NAME }}
           resource-group: ${{ secrets.RESOURCE_GROUP_K8S }}
 
-      - uses: Azure/k8s-create-secret@v1
+      - uses: Azure/k8s-create-secret@v4.0
         with:
           container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
           container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           secret-name: alkemio-web-secret
 
-      - uses: Azure/k8s-deploy@v1
+      - uses: Azure/k8s-deploy@v4.10
         with:
           manifests: |
             manifests/25-web-deployment-dev.yaml

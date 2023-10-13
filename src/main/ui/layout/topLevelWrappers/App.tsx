@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '../../../../core/ui/notifications/NotificationHandler';
 import { useUserContext } from '../../../../domain/community/user';
 import { useUserScope } from '../../../../core/analytics/useSentry';
-import { useApm } from '../../../../core/analytics/useApm';
 import useServerMetadata from '../../../../domain/platform/metadata/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../domain/communication/updates/useCommunityUpdatesNotifier';
 import { useCookies } from 'react-cookie';
@@ -17,8 +16,6 @@ const App: FC = () => {
 
   useUserScope(user);
   useCommunityUpdatesNotifier();
-
-  useApm();
 
   const { services } = useServerMetadata();
 
