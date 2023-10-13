@@ -4,10 +4,11 @@ import { init as initApm, UserObject } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
 import { error as logError } from '../../logging/sentry/log';
-import { useUserContext } from '../../../domain/community/user/hooks/useUserContext';
 import { useConfig } from '../../../domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../../../main/cookies/useAlkemioCookies';
 import { useUserGeo } from '../geo';
+import { Identifiable } from '../../utils/Identifiable';
+import { User } from '../../apollo/generated/graphql-schema';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
 const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
@@ -36,9 +37,9 @@ export interface ApmCustomContext {
   language?: string;
 }
 
-export const useApmInit = () => {
-  const userObject = useUserObject();
-  const customContext = useCustomContext();
+export const useApmInit = (user: (User & { isAuthenticated: boolean }) | undefined) => {
+  const userObject = useUserObject(user);
+  const customContext = useCustomContext(user);
   const { apm: apmConfig, platform: platformConfig } = useConfig();
 
   const rumEnabled = apmConfig?.rumEnabled ?? false;
@@ -93,27 +94,18 @@ const useGetOrSetApmCookie = (): string | undefined => {
   }, [cookies, setCookie]);
 };
 
-const useUserObject = () => {
-  const { user: userMetadata, isAuthenticated, loading: userLoading } = useUserContext();
-  const user = userMetadata?.user;
+const useUserObject = (user: Identifiable | undefined) => {
   const cookieId = useGetOrSetApmCookie() ?? APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED;
 
   return useMemo<UserObject>(() => {
-    if (userLoading) {
-      return {};
-    }
-
-    if (isAuthenticated && !!user?.id) {
+    if (user) {
       return { id: user.id };
     }
 
     return { id: cookieId };
-  }, [isAuthenticated, userLoading, user?.id, cookieId]);
+  }, [user?.id, cookieId]);
 };
-const useCustomContext = () => {
-  const { user: userMetadata, isAuthenticated, loading: userLoading } = useUserContext();
-  const user = userMetadata?.user;
-
+const useCustomContext = (user: (User & { isAuthenticated: boolean }) | undefined) => {
   const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo();
 
   return useMemo<ApmCustomContext>(() => {
@@ -130,9 +122,9 @@ const useCustomContext = () => {
       logError(userGeoError);
     }
 
-    if (!userLoading) {
-      context.authenticated = isAuthenticated;
-      context.domain = user?.email?.split('@')?.[1];
+    if (user) {
+      context.authenticated = user.isAuthenticated;
+      context.domain = user.email.split('@')?.[1];
     }
 
     context.screen = getScreenInfo();
@@ -140,16 +132,7 @@ const useCustomContext = () => {
     context.language = getLanguage();
 
     return context;
-  }, [
-    userGeoData,
-    userGeoLoading,
-    userGeoError,
-    userLoading,
-    isAuthenticated,
-    user?.email,
-    getWindowSize,
-    getScreenInfo,
-  ]);
+  }, [userGeoData, userGeoLoading, userGeoError, user, getWindowSize, getScreenInfo]);
 };
 
 const getWindowSize = () => {
