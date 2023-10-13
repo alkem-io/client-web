@@ -22,8 +22,8 @@ jobs:
         with:
           download_translations: true
           download_translations_args: '--all --verbose'
-          source: develop/src/core/i18n/en/translation.en.json               # Sources pattern
-          translation: develop/src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json    # Translations pattern
+          source: /src/core/i18n/en/translation.en.json               # Sources pattern
+          translation: /src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json    # Translations pattern
 
           upload_sources: false
           upload_translations: false
