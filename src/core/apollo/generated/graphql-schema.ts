@@ -1799,8 +1799,6 @@ export enum DiscussionCategory {
 
 export type Document = {
   __typename?: 'Document';
-  /** Do we allow anonymous read access for this document? */
-  anonymousReadAccess: Scalars['Boolean'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The user that created this Document */
@@ -9728,7 +9726,13 @@ export type UpdateCalloutMutation = {
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       };
     };
-    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      postDescription?: string | undefined;
+      whiteboardContent?: string | undefined;
+    };
+    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; id: string; state: CalloutState };
   };
 };
 

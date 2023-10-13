@@ -5813,7 +5813,13 @@ export const UpdateCalloutDocument = gql`
           }
         }
       }
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
       contributionPolicy {
+        id
         state
       }
       type
