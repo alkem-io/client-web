@@ -17,8 +17,8 @@ jobs:
         with:
 #          download_translations: true
 #          download_translations_args: '--all --verbose'
-#          source: /src/core/i18n/en/translation.en.json
-#          translation: /src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
+          source: ./src/core/i18n/en/translation.en.json
+          translation: ./src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
 #
 #          upload_sources: false
 #          upload_translations: false
