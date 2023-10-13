@@ -21,10 +21,12 @@ jobs:
         uses: crowdin/github-action@v1.13.1
         with:
           download_translations: true
+          download_translations_args: '--all --verbose'
           upload_sources: false
           upload_translations: false
           create_pull_request: false
           push_translations: false
+          push_sources: false
           project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
         env:
