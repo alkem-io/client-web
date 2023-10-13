@@ -713,7 +713,7 @@ export const PostDashboardDataFragmentDoc = gql`
     callouts(IDs: [$calloutNameId]) {
       id
       type
-      contributions(IDs: [$postNameId]) {
+      contributions(filter: { postIDs: [$postNameId] }) {
         post {
           ...PostDashboard
         }
@@ -755,17 +755,20 @@ export const PostSettingsFragmentDoc = gql`
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {
     id
+    nameID
     type
-    contributions(IDs: [$postNameId]) {
+    contributions(filter: { postIDs: [$postNameId] }) {
       post {
         ...PostSettings
       }
     }
-    postNames: posts {
-      id
-      profile {
+    postNames: contributions {
+      post {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -794,8 +797,9 @@ export const PostProviderDataFragmentDoc = gql`
     id
     callouts(IDs: [$calloutNameId]) {
       id
+      nameID
       type
-      contributions(IDs: [$postNameId]) {
+      contributions(filter: { postIDs: [$postNameId] }) {
         post {
           ...PostProvided
         }
@@ -3276,7 +3280,7 @@ export const PostInCalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
     id
     callouts(IDs: [$calloutId]) {
       id
-      contributions(IDs: [$postId]) {
+      contributions(filter: { postIDs: [$postId] }) {
         post {
           id
           profile {

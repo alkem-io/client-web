@@ -12872,6 +12872,7 @@ export type SpacePostSettingsQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                nameID: string;
                 type: CalloutType;
                 contributions?:
                   | Array<{
@@ -12933,9 +12934,14 @@ export type SpacePostSettingsQuery = {
                   | undefined;
                 postNames?:
                   | Array<{
-                      __typename?: 'Post';
-                      id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      __typename?: 'CalloutContribution';
+                      post?:
+                        | {
+                            __typename?: 'Post';
+                            id: string;
+                            profile: { __typename?: 'Profile'; id: string; displayName: string };
+                          }
+                        | undefined;
                     }>
                   | undefined;
               }>
@@ -12968,6 +12974,7 @@ export type ChallengePostSettingsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   contributions?:
                     | Array<{
@@ -13029,9 +13036,14 @@ export type ChallengePostSettingsQuery = {
                     | undefined;
                   postNames?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        __typename?: 'CalloutContribution';
+                        post?:
+                          | {
+                              __typename?: 'Post';
+                              id: string;
+                              profile: { __typename?: 'Profile'; id: string; displayName: string };
+                            }
+                          | undefined;
                       }>
                     | undefined;
                 }>
@@ -13065,6 +13077,7 @@ export type OpportunityPostSettingsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   contributions?:
                     | Array<{
@@ -13126,9 +13139,14 @@ export type OpportunityPostSettingsQuery = {
                     | undefined;
                   postNames?:
                     | Array<{
-                        __typename?: 'Post';
-                        id: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        __typename?: 'CalloutContribution';
+                        post?:
+                          | {
+                              __typename?: 'Post';
+                              id: string;
+                              profile: { __typename?: 'Profile'; id: string; displayName: string };
+                            }
+                          | undefined;
                       }>
                     | undefined;
                 }>
@@ -13184,6 +13202,7 @@ export type PostSettingsFragment = {
 export type PostSettingsCalloutFragment = {
   __typename?: 'Callout';
   id: string;
+  nameID: string;
   type: CalloutType;
   contributions?:
     | Array<{
@@ -13240,7 +13259,12 @@ export type PostSettingsCalloutFragment = {
       }>
     | undefined;
   postNames?:
-    | Array<{ __typename?: 'Post'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }>
+    | Array<{
+        __typename?: 'CalloutContribution';
+        post?:
+          | { __typename?: 'Post'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | undefined;
+      }>
     | undefined;
 };
 
@@ -13263,6 +13287,7 @@ export type SpacePostProviderQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                nameID: string;
                 type: CalloutType;
                 contributions?:
                   | Array<{
@@ -13315,6 +13340,7 @@ export type ChallengePostProviderQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   contributions?:
                     | Array<{
@@ -13368,6 +13394,7 @@ export type OpportunityPostProviderQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   contributions?:
                     | Array<{
@@ -13405,6 +13432,7 @@ export type PostProviderDataFragment = {
     | Array<{
         __typename?: 'Callout';
         id: string;
+        nameID: string;
         type: CalloutType;
         contributions?:
           | Array<{

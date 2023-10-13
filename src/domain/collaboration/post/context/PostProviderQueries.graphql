@@ -45,8 +45,9 @@ fragment PostProviderData on Collaboration {
   id
   callouts(IDs: [$calloutNameId]) {
     id
+    nameID
     type
-    contributions(IDs: [$postNameId]) {
+    contributions(filter: { postIDs: [$postNameId] }) {
       post {
         ...PostProvided
       }

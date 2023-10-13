@@ -179,7 +179,7 @@ fragment PostInCalloutOnCollaborationWithStorageConfig on Collaboration {
   id
   callouts(IDs: [$calloutId]) {
     id
-    contributions(IDs: [$postId]) {
+    contributions(filter: { postIDs: [$postId] }) {
       post {
         id
         profile {

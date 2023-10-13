@@ -48,10 +48,9 @@ const PostProvider: FC = ({ children }) => {
     variables: { spaceNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
   });
-  const spacePostContribution = getCardCallout(
-    spaceData?.space?.collaboration?.callouts,
-    postNameId
-  )?.contributions?.find(x => x.post && x.post.nameID === postNameId);
+  const spacePostContribution = spaceData?.space?.collaboration?.callouts
+    ?.find(c => c.nameID === calloutNameId)
+    ?.contributions?.find(x => x.post && x.post.nameID === postNameId);
   const {
     data: challengeData,
     loading: challengeLoading,

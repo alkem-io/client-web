@@ -17,7 +17,7 @@ import {
 import { Reference } from '../../../../common/profile/Profile';
 import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
-import { getCardCallout } from '../getPostCallout';
+import { compact } from 'lodash';
 
 type PostUpdateData = Pick<Post, 'id' | 'type'> & {
   displayName: Profile['displayName'];
@@ -100,9 +100,10 @@ const usePostSettings = ({
     challengeData?.space?.challenge?.collaboration?.callouts ??
     opportunityData?.space?.opportunity?.collaboration?.callouts;
 
-  // TODO fetch calloutID for the Post for building a reliable link between entities
-  const parentCallout = getCardCallout(collaborationCallouts, postNameId);
-  const parentCalloutPostNames = parentCallout?.postNames?.map(x => x.profile.displayName);
+  const parentCallout = collaborationCallouts?.find(c => c.nameID === calloutNameId);
+  const parentCalloutPostNames = compact(
+    parentCallout?.postNames?.map(contribution => contribution.post?.profile.displayName)
+  );
 
   const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId);
   const loading = spaceLoading || challengeLoading || opportunityLoading;
