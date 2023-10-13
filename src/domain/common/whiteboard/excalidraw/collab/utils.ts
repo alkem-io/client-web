@@ -149,8 +149,5 @@ export const blobToArrayBuffer = (blob: Blob): Promise<ArrayBuffer> => {
 /** generates SHA-1 digest from supplied file */
 export const generateIdFromFile = async (file: File): Promise<FileId> => {
   const hashBuffer = await window.crypto.subtle.digest('SHA-1', await blobToArrayBuffer(file));
-
-  const result = bytesToHexString(new Uint8Array(hashBuffer)) as FileId;
-  console.log('sha1 sum returned', result);
-  return result;
+  return bytesToHexString(new Uint8Array(hashBuffer)) as FileId;
 };

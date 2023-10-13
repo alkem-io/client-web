@@ -71,11 +71,10 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     const { user } = useUserContext();
     const username = user?.user.profile.displayName ?? 'User';
 
-    const { addNewFile, loadFiles, pushFilesToExcalidraw, fileStoreVersion } = filesManager;
+    const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
     const data = useMemo(() => {
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
-      loadFiles(parsedData);
       return {
         ...parsedData,
         zoomToFit: true,
@@ -83,8 +82,11 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     }, [whiteboard?.content]);
 
     useEffect(() => {
+      loadFiles(data);
+    }, [data]);
+    useEffect(() => {
       pushFilesToExcalidraw();
-    }, [fileStoreVersion]);
+    }, [filesManager]);
 
     const scrollToContent = async () => {
       const excalidraw = await combinedRef.current?.readyPromise;
