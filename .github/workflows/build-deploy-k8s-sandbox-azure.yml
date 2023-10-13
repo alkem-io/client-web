@@ -41,12 +41,20 @@ jobs:
       - name: 'Latest translations PR'
         uses: crowdin/github-action@v1.13.1
         with:
-          download_translations: false
+          source: src/core/i18n/en/translation.en.json
+          translation: "src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json"
+
+          # Set PR labels
+          pull_request_labels: "translations"
+
+          # For testing purposes
+          # dryrun_action: true
+          download_translations: true
           create_pull_request: true
           pull_request_title: 'Latest Crowdin Translations'
           pull_request_body: 'Latest Crowdin translations by [Crowdin GH Action](https://github.com/crowdin/github-action)'
           pull_request_base_branch_name: 'develop'
-          localization_branch_name: 'crowdin_translations'
+          localization_branch_name: crowdin-translations
 
           upload_sources: false
           upload_translations: false
