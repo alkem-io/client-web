@@ -15,6 +15,7 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { NAVIGATION_HEIGHT_GUTTERS } from '../../../../core/ui/navigation/NavigationBar';
+import PageBannerWatermark from '../../../../main/ui/platformNavigation/PageBannerWatermark';
 
 interface ChildJourneyPageBannerProps extends JourneyPageBannerCardProps {
   banner: Visual | undefined;
@@ -36,6 +37,7 @@ const CardContainer = (props: JourneyPageBannerCardProps) => {
       paddingTop={gutters(NAVIGATION_HEIGHT_GUTTERS - 1)}
     >
       <GridItem columns={8}>{({ width }) => <JourneyPageBannerCard maxWidth={width} {...props} />}</GridItem>
+      <PageBannerWatermark />
     </Gutters>
   );
 };
