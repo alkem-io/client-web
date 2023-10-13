@@ -48,9 +48,6 @@ jobs:
           pull_request_base_branch_name: 'develop'
           localization_branch_name: 'crowdin_translations'
 
-          source: ./src/core/i18n/en/translation.en.json
-          translation: ./src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
-
           upload_sources: false
           upload_translations: false
           push_translations: false
