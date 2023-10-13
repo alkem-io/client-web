@@ -41,28 +41,33 @@ jobs:
       - name: 'Latest translations PR'
         uses: crowdin/github-action@v1.13.1
         with:
-          source: src/core/i18n/en/translation.en.json
-          translation: "src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json"
+          # Tokens
+          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
+          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+          source: nxdrive/data/i18n/i18n.json
+          # https://support.crowdin.com/configuration-file/#placeholders
+          translation: "nxdrive/data/i18n/i18n-%two_letters_code%.json"
+
+          # Name of the branch to create for the PR
+          localization_branch_name: crowdin-translations
+
+          # Create a branch and a PR on any changes
+          download_translations: true
+          create_pull_request: true
 
           # Set PR labels
           pull_request_labels: "translations"
 
           # For testing purposes
           # dryrun_action: true
-          download_translations: true
-          create_pull_request: true
-          pull_request_title: 'Latest Crowdin Translations'
-          pull_request_body: 'Latest Crowdin translations by [Crowdin GH Action](https://github.com/crowdin/github-action)'
+
           pull_request_base_branch_name: 'develop'
-          localization_branch_name: crowdin-translations
 
-          upload_sources: false
-          upload_translations: false
-          push_translations: false
-          push_sources: false
-
-          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
-          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+#          upload_sources: false
+#          upload_translations: false
+#          push_translations: false
+#          push_sources: false
         env:
           GITHUB_TOKEN: ${{ secrets.CROWDIN_GITHUB_TOKEN }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
