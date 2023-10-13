@@ -56,32 +56,33 @@ interface WhiteboardWithFiles {
 export interface WhiteboardFilesManager {
   addNewFile: (file: File) => Promise<string>;
   loadFiles: (data: WhiteboardWithFiles) => Promise<void>;
-  importFilesToExcalidraw: () => Promise<void>;
+  pushFilesToExcalidraw: () => Promise<void>;
   removeExcalidrawAttachments: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>;
   loading: {
     uploadingFile: boolean;
     downloadingFiles: boolean;
   };
   fileStoreVersion: number;
-  storageBucketId: string; //!!
 }
 
 const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): WhiteboardFilesManager => {
-  //!! Remove or mute
-  const log = (...args) => {
-    console.log('[FileManager]', ...args);
+  const log = (..._args) => {
+    // TODO: Remove those `log()`s when this is confirmed to be fully stable
+    //console.log('[FileManager]', ..._args);
   };
 
   /**
    * Stores all the files temporarily:
    * - Files that come from loadFiles, downloaded when the wb json is loaded into excalidraw and the files are requested from their Urls
    * - Files that are added by the user to the wb when editing and are uploaded
-   * - ... something for the realtime
    */
   const fileStore = useRef<Record<string, BinaryFileDataWithUrl>>({});
   const [fileStoreVersion, setFileStoreVersion] = useState(0);
   const fileStoreAddFile = (fileId: string, file: BinaryFileDataWithUrl) => {
-    log('changing fileStore from', fileStore.current, ' to ', { ...fileStore.current, [fileId]: file });
+    log(`changing fileStore version ${fileStoreVersion} from`, fileStore.current, ' to ', {
+      ...fileStore.current,
+      [fileId]: file,
+    });
     fileStore.current = {
       ...fileStore.current,
       [fileId]: file,
@@ -147,7 +148,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
   /**
    * Receives a whiteboard object { elements, files ... },
    * analyzes the files object and downloads all the files that have a url and don't have a dataURL
-   * once everything is downloaded the function importFilesToExcalidraw can be called
+   * once everything is downloaded the function pushFilesToExcalidraw can be called
    * @param whiteboard
    * @returns
    */
@@ -181,7 +182,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
    * Excalidraw will filter later if any of those files was deleted.
    * @returns
    */
-  const importFilesToExcalidraw = async () => {
+  const pushFilesToExcalidraw = async () => {
     const excalidraw = await excalidrawApi?.readyPromise;
     if (!excalidraw) {
       log('excalidrawApi not ready yet or no files', excalidraw, fileStore.current);
@@ -234,14 +235,13 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
   return {
     addNewFile,
     loadFiles, // Load external files into Excalidraw
-    importFilesToExcalidraw,
+    pushFilesToExcalidraw,
     removeExcalidrawAttachments,
     fileStoreVersion,
     loading: {
       uploadingFile,
       downloadingFiles,
     },
-    storageBucketId: storageBucketId ?? 'Undefined!!', //!!
   };
 };
 

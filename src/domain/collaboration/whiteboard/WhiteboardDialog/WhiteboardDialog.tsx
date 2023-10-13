@@ -141,7 +141,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       return;
     }
     const { appState, elements, files } = await filesManager.removeExcalidrawAttachments(state);
-    console.log('saveFilesExternally', files);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');

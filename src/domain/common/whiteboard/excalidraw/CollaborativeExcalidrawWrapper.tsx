@@ -71,7 +71,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     const { user } = useUserContext();
     const username = user?.user.profile.displayName ?? 'User';
 
-    const { addNewFile, loadFiles, importFilesToExcalidraw, fileStoreVersion } = filesManager;
+    const { addNewFile, loadFiles, pushFilesToExcalidraw, fileStoreVersion } = filesManager;
 
     const data = useMemo(() => {
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
@@ -83,10 +83,8 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     }, [whiteboard?.content]);
 
     useEffect(() => {
-      console.log('useEffect importing files', fileStoreVersion);
-      importFilesToExcalidraw();
+      pushFilesToExcalidraw();
     }, [fileStoreVersion]);
-    console.log('render ExcalidrawWrapper');
 
     const scrollToContent = async () => {
       const excalidraw = await combinedRef.current?.readyPromise;
@@ -191,10 +189,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     }, []);
 
     return (
-      <div
-        className={styles.container}
-        title={`storageBucketId: ${filesManager.storageBucketId} whiteboardId: ${whiteboard?.id}` /* //!! */}
-      >
+      <div className={styles.container}>
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard

@@ -62,10 +62,9 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
-    const { addNewFile, loadFiles, importFilesToExcalidraw, fileStoreVersion } = filesManager;
+    const { addNewFile, loadFiles, pushFilesToExcalidraw, fileStoreVersion } = filesManager;
 
     const data = useMemo(() => {
-      console.log('whiteboard data changed', whiteboard?.content);
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
       loadFiles(parsedData);
 
@@ -76,11 +75,8 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     }, [whiteboard?.content]);
 
     useEffect(() => {
-      console.log('useEffect importing files', fileStoreVersion);
-      importFilesToExcalidraw();
+      pushFilesToExcalidraw();
     }, [fileStoreVersion]);
-
-    console.log('render ExcalidrawWrapper');
 
     const refreshOnDataChange = useRef(
       debounce(async (state: RefreshWhiteboardStateParam) => {
@@ -185,10 +181,7 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
     return (
-      <div
-        className={styles.container}
-        title={`storageBucketId: ${filesManager.storageBucketId} whiteboardId: ${whiteboard?.id}` /* //!! */}
-      >
+      <div className={styles.container}>
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard

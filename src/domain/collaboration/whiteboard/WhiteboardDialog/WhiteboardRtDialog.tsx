@@ -165,7 +165,6 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     const { appState, elements, files } = await filesManager.removeExcalidrawAttachments(state);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
-    console.log('saveFilesExternally', files);
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
