@@ -45,9 +45,8 @@ jobs:
           project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
-          source: nxdrive/data/i18n/i18n.json
-          # https://support.crowdin.com/configuration-file/#placeholders
-          translation: "nxdrive/data/i18n/i18n-%two_letters_code%.json"
+          source: src/core/i18n/en/translation.en.json
+          translation: src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
 
           # Name of the branch to create for the PR
           localization_branch_name: crowdin-translations
