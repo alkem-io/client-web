@@ -160,10 +160,6 @@ const CalloutForm: FC<CalloutFormProps> = ({
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    postDescription: yup.string().when('type', {
-      is: CalloutType.PostCollection,
-      then: yup.string().required(),
-    }),
     whiteboardContent: yup.string().when('type', {
       is: CalloutType.Whiteboard || CalloutType.WhiteboardRt,
       then: yup.string().required(),
