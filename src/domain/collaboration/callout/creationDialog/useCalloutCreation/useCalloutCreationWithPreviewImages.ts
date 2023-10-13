@@ -3,11 +3,24 @@ import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../CalloutWhite
 import { WhiteboardRtFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
 import { useUploadWhiteboardVisuals } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { CalloutCreationType, CalloutCreationUtils, useCalloutCreation } from './useCalloutCreation';
-import { CalloutType, CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutType,
+  CreateCalloutMutation,
+  CreateTagsetInput,
+  Reference,
+} from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
-  whiteboardRt?: WhiteboardRtFieldSubmittedValuesWithPreviewImages;
+  framing: {
+    profile: {
+      description: string;
+      displayName: string;
+      referencesData: Reference[];
+      tagsets?: CreateTagsetInput[];
+    };
+    whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+    whiteboardRt?: WhiteboardRtFieldSubmittedValuesWithPreviewImages;
+  };
 }
 
 export interface CalloutCreationUtilsWithPreviewImages extends Omit<CalloutCreationUtils, 'handleCreateCallout'> {
@@ -21,19 +34,25 @@ export const useCalloutCreationWithPreviewImages = (initialOpened = false): Call
   const parentHook = useCalloutCreation(initialOpened);
 
   const handlePreviewImages = (callout: CalloutCreationTypeWithPreviewImages) => {
-    if (callout.whiteboard) {
+    if (callout.framing.whiteboard) {
       const {
-        whiteboard: { previewImages, ...restWhiteboard },
+        framing: {
+          whiteboard: { previewImages, ...restWhiteboard },
+          ...restFraming
+        },
         ...restCallout
       } = callout;
-      return { callout: { whiteboard: restWhiteboard, ...restCallout }, previewImages };
+      return { callout: { framing: { whiteboard: restWhiteboard, ...restFraming }, ...restCallout }, previewImages };
     }
-    if (callout.whiteboardRt) {
+    if (callout.framing.whiteboardRt) {
       const {
-        whiteboardRt: { previewImages, ...restWhiteboard },
+        framing: {
+          whiteboardRt: { previewImages, ...restWhiteboard },
+          ...restFraming
+        },
         ...restCallout
       } = callout;
-      return { callout: { whiteboardRt: restWhiteboard, ...restCallout }, previewImages };
+      return { callout: { framing: { whiteboardRt: restWhiteboard, ...restFraming }, ...restCallout }, previewImages };
     }
     return { callout };
   };

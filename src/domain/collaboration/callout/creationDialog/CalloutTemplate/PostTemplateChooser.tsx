@@ -14,11 +14,9 @@ interface PostTemplatesChooserProps {
 
 export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) => {
   const { t } = useTranslation();
-  const [field, , helpers] = useField<String>(name);
+  const [, , helpers] = useField<String>(name);
 
   const handleSelectTemplate = (template: PostTemplateWithValue) => {
-    console.log(field.value);
-    console.log(template.defaultDescription);
     helpers.setValue(template.defaultDescription);
   };
 
