@@ -83,11 +83,6 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
     });
 
     setFileStore(current => ({ ...current, [fileId]: file }));
-
-    fileStore.current = {
-      ...fileStore.current,
-      [fileId]: file,
-    };
   };
 
   const [downloadingFiles, setDownloadingFiles] = useState(false);
@@ -243,7 +238,7 @@ const useWhiteboardFilesManager = ({ storageBucketId, excalidrawApi }: Props): W
         downloadingFiles,
       },
     }),
-    [fileStore]
+    [storageBucketId, excalidrawApi, fileStore]
   );
 };
 
