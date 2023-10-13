@@ -60,10 +60,8 @@ export type CalloutFormInput = {
   type?: CalloutType;
   state?: CalloutState;
   displayLocation?: CalloutDisplayLocation;
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
+  postDescription?: string;
+  whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValues;
   profileId?: string;
 };
@@ -128,8 +126,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       displayLocation: callout?.displayLocation ?? CalloutDisplayLocation.Knowledge,
-      postDescription: callout.contributionDefaults?.postDescription ?? '',
-      whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+      postDescription: callout.postDescription ?? '',
+      whiteboardContent: callout.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
       whiteboard: callout?.whiteboard
         ? {
             ...callout.whiteboard,

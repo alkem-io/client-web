@@ -2,10 +2,7 @@ import { Callout, CalloutDisplayLocation } from '../../../../core/apollo/generat
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutFormInput } from '../CalloutForm';
 
-export type CalloutEditType = Omit<
-  CalloutFormInput,
-  'postTemplateType' | 'whiteboardTemplateData' | 'type' | 'sortOrder' | 'activity'
-> & {
+export type CalloutEditType = Omit<CalloutFormInput, 'type' | 'sortOrder'> & {
   id: Callout['id'];
   profile: {
     displayName?: string;
@@ -20,6 +17,6 @@ export type CalloutEditType = Omit<
   };
 };
 
-export type CalloutDeleteType = Omit<CalloutFormInput, 'postTemplateType' | 'whiteboardTemplateData' | 'type'> & {
+export type CalloutDeleteType = Omit<CalloutFormInput, 'type'> & {
   id: Callout['id'];
 };

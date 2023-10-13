@@ -65,10 +65,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     references: callout.framing.profile.references,
     profileId: callout.framing.profile.id,
     tags: callout.framing.profile.tagset?.tags,
-    contributionDefaults: {
-      postDescription: callout.contributionDefaults.postDescription ?? '',
-      whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
-    },
+    postDescription: callout.contributionDefaults.postDescription ?? '',
+    whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
     displayLocation: getCalloutDisplayLocationValue(callout.framing.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
@@ -100,8 +98,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         ],
       },
       contributionDefaults: {
-        postDescription: newCallout.contributionDefaults?.postDescription,
-        whiteboardContent: newCallout.contributionDefaults?.whiteboardContent,
+        postDescription: newCallout.postDescription,
+        whiteboardContent: newCallout.whiteboardContent,
       },
       state: newCallout.state,
       displayLocation: newCallout.displayLocation,
