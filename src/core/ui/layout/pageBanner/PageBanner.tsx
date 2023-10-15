@@ -40,7 +40,7 @@ const CardContainer = ({ children }: CardContainerProps) => {
       marginX="auto"
       alignItems={cardStickSide === 'left' ? 'start' : 'stretch'}
       position="relative"
-      paddingTop={gutters(NAVIGATION_HEIGHT_GUTTERS - 1)}
+      paddingTop={gutters(NAVIGATION_HEIGHT_GUTTERS)}
     >
       <GridItem columns={8}>{children}</GridItem>
       <PageBannerWatermark />
