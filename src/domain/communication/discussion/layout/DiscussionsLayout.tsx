@@ -1,8 +1,7 @@
-import { Box, Button, Grid, Paper } from '@mui/material';
+import { Button, Grid, Paper } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouterLink } from '../../../../core/ui/link/deprecated/RouterLink';
-import { PageTitle } from '../../../../core/ui/typography';
 import AddIcon from '@mui/icons-material/Add';
 import Gutters from '../../../../core/ui/grid/Gutters';
 
@@ -24,15 +23,14 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
     <>
       {/* TODO: Remove use of MUI Grid - We don't use MUI Grid anymore*/}
       <Grid item container alignItems="center">
-        <PageTitle>{t('pages.forum.title')}</PageTitle>
-        <Box sx={{ width: '100%', marginY: theme => theme.spacing(2) }}>{backButton}</Box>
+        {backButton}
         {canCreateDiscussion && (
           <Button
             variant="contained"
             component={RouterLink}
             startIcon={<AddIcon />}
             to="new"
-            sx={{ marginLeft: 'auto', marginY: theme => theme.spacing(1) }}
+            sx={{ marginLeft: 'auto' }}
           >
             {t('components.discussion.initiate')}
           </Button>

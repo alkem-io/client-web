@@ -278,7 +278,7 @@
     "people": "People",
     "settings": "Settings",
     "space-settings": "$t(common.settings)",
-    "search": "Search...",
+    "search": "Search",
     "storage": "Storage",
     "reference": "Reference",
     "references": "References",
@@ -1757,7 +1757,7 @@
       "search": {
         "title": "Find talent and expertise!",
         "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
-        "placeholder": "Search..."
+        "placeholder": "Search…"
       },
       "organizations": {
         "title": "Organizations"
@@ -1767,7 +1767,9 @@
       }
     },
     "search": {
-      "placeholder": "Search...",
+      "title": "Search",
+      "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
+      "placeholder": "Search…",
       "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "search-suggestions": "Search suggestions:",
@@ -2180,7 +2182,8 @@
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     },
     "forum": {
-      "title": "Questions, suggestions, or feedback? Get in touch with the Alkemio team or other users of the platform!",
+      "title": "Questions, suggestions, or feedback?",
+      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
     }

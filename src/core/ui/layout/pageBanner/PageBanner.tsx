@@ -42,7 +42,7 @@ const CardContainer = ({ children }: CardContainerProps) => {
       position="relative"
       paddingTop={gutters(NAVIGATION_HEIGHT_GUTTERS)}
     >
-      <GridItem columns={8}>{children}</GridItem>
+      <GridItem columns={10}>{children}</GridItem>
       <PageBannerWatermark />
     </Gutters>
   );

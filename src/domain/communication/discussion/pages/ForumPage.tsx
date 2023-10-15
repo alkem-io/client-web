@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import {
   CommunicationDiscussionUpdatedDocument,
   usePlatformDiscussionsQuery,
@@ -27,6 +27,7 @@ import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
 import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 import useInnovationHubOutsideRibbon from '../../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { ForumOutlined } from '@mui/icons-material';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -119,7 +120,12 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
 
   return (
     <StorageConfigContextProvider locationType="platform">
-      <TopLevelDesktopLayout heading={ribbon}>
+      <TopLevelPageLayout
+        title={t('pages.forum.title')}
+        subtitle={t('pages.forum.subtitle')}
+        iconComponent={ForumOutlined}
+        ribbon={ribbon}
+      >
         {!loading && !isAuthenticated ? (
           <ImageBackdrop
             src={FORUM_GRAYED_OUT_IMAGE}
@@ -168,7 +174,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
             )}
           </DiscussionsLayout>
         )}
-      </TopLevelDesktopLayout>
+      </TopLevelPageLayout>
     </StorageConfigContextProvider>
   );
 };

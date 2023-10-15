@@ -1,25 +1,25 @@
-import Gutters from '../../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Caption, PageTitle } from '../../../../../core/ui/typography';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import React from 'react';
 import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
-import { Box, BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 import JourneyAvatar from '../../JourneyAvatar/JourneyAvatar';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { Visual } from '../../../../common/visual/Visual';
-import { alpha } from '@mui/material/styles';
+import PageBannerCardWrapper, {
+  PageBannerCardWrapperProps,
+} from '../../../../../core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 
 type ChildJourneyTypeName = Exclude<JourneyTypeName, 'space'>;
 
-export interface JourneyPageBannerCardProps extends BoxProps {
+export interface JourneyPageBannerCardProps extends PageBannerCardWrapperProps {
   journeyTypeName: ChildJourneyTypeName;
   journeyDisplayName: string;
   journeyTagline: string;
   journeyAvatar: Visual | undefined;
   journeyTags: string[] | undefined;
-  maxWidth?: string | number;
 }
 
 const JourneyPageBannerCard = ({
@@ -28,19 +28,12 @@ const JourneyPageBannerCard = ({
   journeyTypeName,
   journeyAvatar,
   journeyTags = [],
-  ...boxProps
+  ...props
 }: JourneyPageBannerCardProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
   return (
-    <Gutters
-      gap={gutters(0.5)}
-      sx={{
-        backgroundColor: theme => alpha(theme.palette.background.paper, 0.7),
-        borderRadius: theme => `${theme.shape.borderRadius}px`,
-      }}
-      {...boxProps}
-    >
+    <PageBannerCardWrapper {...props}>
       <BadgeCardView
         visual={
           <JourneyAvatar
@@ -62,7 +55,7 @@ const JourneyPageBannerCard = ({
           <TagsComponent tags={journeyTags} color="primary" minHeight={gutters()} variant="filled" />
         </Box>
       </BadgeCardView>
-    </Gutters>
+    </PageBannerCardWrapper>
   );
 };
 
