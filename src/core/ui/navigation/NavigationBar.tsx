@@ -19,7 +19,8 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
     <Box
       flexGrow={1}
       sx={{
-        backgroundColor: theme => hexToRGBA(theme.palette.background.paper, transparent ? 0 : 1),
+        backgroundColor: theme => hexToRGBA(theme.palette.primary.main, transparent ? 0 : 0.25),
+        backdropFilter: `blur(${transparent ? 0 : '10px'})`,
         transition: 'background-color .25s',
       }}
     >
