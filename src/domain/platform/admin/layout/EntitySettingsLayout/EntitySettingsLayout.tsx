@@ -49,7 +49,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   const paddingBottom = isMobile ? 6 : 0;
 
   return (
-    <EntityPageLayout currentSection={EntityPageSection.Settings} entityTypeName={entityTypeName} {...props}>
+    <EntityPageLayout currentSection={EntityPageSection.Settings} {...props}>
       <Box>
         <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto">
           <EntitySettingsTabs

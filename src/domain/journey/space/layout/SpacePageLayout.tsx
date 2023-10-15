@@ -30,7 +30,6 @@ const SpacePageLayout = ({
       breadcrumbs={<JourneyBreadcrumbs />}
       pageBannerComponent={SpacePageBanner}
       tabsComponent={SpaceTabs}
-      entityTypeName="space"
     >
       {children}
       {!searchDisabled && <SearchDialog searchRoute={`${buildSpaceUrl(spaceNameId)}/search`} />}

@@ -8,7 +8,7 @@ interface UserPageLayoutProps
 
 const UserPageLayout = (props: PropsWithChildren<UserPageLayoutProps>) => {
   return (
-    <EntityPageLayout {...props} pageBannerComponent={UserPageBanner} tabsComponent={UserTabs} entityTypeName="user">
+    <EntityPageLayout {...props} pageBannerComponent={UserPageBanner} tabsComponent={UserTabs}>
       {props.children}
     </EntityPageLayout>
   );

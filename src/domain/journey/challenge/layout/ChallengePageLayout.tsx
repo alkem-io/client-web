@@ -26,7 +26,6 @@ const ChallengePageLayout = ({
       breadcrumbs={<JourneyBreadcrumbs />}
       pageBannerComponent={ChallengePageBanner}
       tabsComponent={ChallengeTabs}
-      entityTypeName="challenge"
     >
       {children}
       <JourneyUnauthorizedDialogContainer journeyTypeName="challenge">

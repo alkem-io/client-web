@@ -18,7 +18,6 @@ const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<O
       breadcrumbs={<JourneyBreadcrumbs />}
       pageBannerComponent={OpportunityPageBanner}
       tabsComponent={OpportunityTabs}
-      entityTypeName="opportunity"
     >
       {children}
       <JourneyUnauthorizedDialogContainer journeyTypeName="opportunity">

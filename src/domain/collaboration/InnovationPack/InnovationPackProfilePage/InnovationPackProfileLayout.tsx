@@ -33,7 +33,6 @@ const InnovationPackProfileLayout = ({
         />
       }
       tabs={<Tabs showSettings={showSettings} />}
-      entityTypeName="innovationPack"
     />
   );
 };
