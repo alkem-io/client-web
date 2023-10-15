@@ -3,7 +3,7 @@ import { Divider, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, SvgIcon
 import Avatar from '../../../core/ui/image/Avatar';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../core/ui/typography';
 import { gutters } from '../../../core/ui/grid/utils';
-import { buildUserProfileUrl } from '../../routing/urlBuilders';
+import { buildLoginUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
 import PendingMembershipsUserMenuItem from '../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 import {
   AssignmentIndOutlined,
@@ -24,6 +24,7 @@ import LanguageSelect from '../../../core/ui/language/LanguageSelect';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
 import { PLATFORM_NAVIGATION_MENU_ELEVATION, PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
+import { useLocation } from 'react-router-dom';
 
 interface PlatformNavigationUserMenuProps {
   onClose?: () => void;
@@ -58,7 +59,9 @@ const PlatformNavigationUserMenuItem = ({
 const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigationUserMenuProps>(({ onClose }, ref) => {
   const { t } = useTranslation();
 
-  const { user: { user, hasPlatformPrivilege } = {} } = useUserContext();
+  const { pathname } = useLocation();
+
+  const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated } = useUserContext();
 
   const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
@@ -72,10 +75,11 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigation
   }, [isAdmin, t]);
 
   return (
+    // TODO width
     <>
       <Paper ref={ref} sx={{ width: 320, maxWidth: '100%' }} elevation={PLATFORM_NAVIGATION_MENU_ELEVATION}>
         {user && (
-          <Gutters disableGap alignItems="center">
+          <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
             <Avatar size="lg" src={user.profile.visual?.uri} />
             <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
             {role && (
@@ -85,7 +89,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigation
             )}
           </Gutters>
         )}
-        <MenuList disablePadding sx={{ paddingBottom: 1 }}>
+        <MenuList disablePadding sx={{ paddingY: 1 }}>
           <PlatformNavigationUserMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
             {t('pages.home.title')}
           </PlatformNavigationUserMenuItem>
@@ -146,13 +150,23 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigation
           >
             {t('buttons.getHelp')}
           </PlatformNavigationUserMenuItem>
-          <PlatformNavigationUserMenuItem
-            iconComponent={MeetingRoomOutlined}
-            route={AUTH_LOGOUT_PATH}
-            onClick={onClose}
-          >
-            {t('buttons.sign-out')}
-          </PlatformNavigationUserMenuItem>
+          {isAuthenticated ? (
+            <PlatformNavigationUserMenuItem
+              iconComponent={MeetingRoomOutlined}
+              route={AUTH_LOGOUT_PATH}
+              onClick={onClose}
+            >
+              {t('buttons.sign-out')}
+            </PlatformNavigationUserMenuItem>
+          ) : (
+            <PlatformNavigationUserMenuItem
+              iconComponent={MeetingRoomOutlined}
+              route={buildLoginUrl(pathname)}
+              onClick={onClose}
+            >
+              {t('topbar.sign-in')}
+            </PlatformNavigationUserMenuItem>
+          )}
         </MenuList>
       </Paper>
       <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />

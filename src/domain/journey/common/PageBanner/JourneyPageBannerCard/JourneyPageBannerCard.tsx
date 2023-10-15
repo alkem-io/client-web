@@ -19,6 +19,7 @@ export interface JourneyPageBannerCardProps extends BoxProps {
   journeyTagline: string;
   journeyAvatar: Visual | undefined;
   journeyTags: string[] | undefined;
+  maxWidth?: string | number;
 }
 
 const JourneyPageBannerCard = ({
