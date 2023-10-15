@@ -23,10 +23,10 @@ const ChallengePageBanner: FC = () => {
       banner={banner}
       ribbon={ribbon}
       journeyTypeName="challenge"
-      journeyAvatar={avatar ?? cardImage}
-      journeyTags={challenge?.profile.tagset?.tags}
-      journeyDisplayName={challenge?.profile.displayName ?? ''}
-      journeyTagline={challenge?.profile.tagline ?? ''}
+      avatar={avatar ?? cardImage}
+      tags={challenge?.profile.tagset?.tags}
+      displayName={challenge?.profile.displayName ?? ''}
+      tagline={challenge?.profile.tagline ?? ''}
     />
   );
 };

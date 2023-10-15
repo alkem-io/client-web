@@ -23,10 +23,10 @@ const OpportunityPageBanner: FC = () => {
       banner={banner}
       ribbon={ribbon}
       journeyTypeName="opportunity"
-      journeyAvatar={avatar ?? cardImage}
-      journeyTags={opportunity?.profile.tagset?.tags}
-      journeyDisplayName={opportunity?.profile.displayName ?? ''}
-      journeyTagline={opportunity?.profile.tagline ?? ''}
+      avatar={avatar ?? cardImage}
+      tags={opportunity?.profile.tagset?.tags}
+      displayName={opportunity?.profile.displayName ?? ''}
+      tagline={opportunity?.profile.tagline ?? ''}
     />
   );
 };
