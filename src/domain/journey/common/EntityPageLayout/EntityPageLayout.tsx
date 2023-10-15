@@ -1,17 +1,17 @@
 import React, { cloneElement, PropsWithChildren } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 import { useMediaQuery, useTheme } from '@mui/material';
-import BasePageLayout from '../BaseLayout/EntityPageLayout';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
 import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
 const EntityPageLayout = ({
   currentSection,
+  pageBannerComponent: PageBanner,
+  pageBanner,
   tabsComponent: Tabs,
   tabs: tabsElement,
   children,
-  ...props
 }: PropsWithChildren<EntityPageLayoutProps>) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
@@ -30,11 +30,11 @@ const EntityPageLayout = ({
         </TopLevelDesktopLayout>
       }
     >
-      <BasePageLayout {...props}>
+      <TopLevelDesktopLayout heading={PageBanner ? <PageBanner /> : pageBanner}>
         {!isMobile && tabs}
         {children}
         {isMobile && tabs}
-      </BasePageLayout>
+      </TopLevelDesktopLayout>
     </NotFoundErrorBoundary>
   );
 };

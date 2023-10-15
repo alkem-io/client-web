@@ -1,4 +1,3 @@
-import BasePageLayout from '../../journey/common/BaseLayout/EntityPageLayout';
 import PageContent from '../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { InnovationHubAttrs } from './InnovationHubAttrs';
@@ -20,6 +19,7 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../platform/routes/constants';
 import { useConfig } from '../../platform/config/useConfig';
+import TopLevelDesktopLayout from '../../../main/ui/layout/TopLevelDesktopLayout';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
@@ -40,8 +40,8 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
   const mainHomeUrl = `//${platform?.domain}${ROUTE_HOME}`;
 
   return (
-    <BasePageLayout
-      pageBanner={
+    <TopLevelDesktopLayout
+      heading={
         <InnovationHubBanner
           banner={innovationHub.banner}
           displayName={innovationHub.displayName}
@@ -88,7 +88,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           </Gutters>
         </PageContentBlock>
       </PageContent>
-    </BasePageLayout>
+    </TopLevelDesktopLayout>
   );
 };
 

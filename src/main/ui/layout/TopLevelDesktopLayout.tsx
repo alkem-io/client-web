@@ -2,7 +2,6 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 import PlatformNavigationBar from '../platformNavigation/PlatformNavigationBar';
 import Footer from '../platformFooter/PlatformFooter';
 import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
-import PageContent from '../../../core/ui/content/PageContent';
 import PlatformHelpButton from '../helpButton/PlatformHelpButton';
 
 interface TopLevelDesktopLayoutProps {
@@ -19,7 +18,7 @@ const TopLevelDesktopLayout = ({
     <>
       <PlatformNavigationBar />
       {heading}
-      <PageContent>{children}</PageContent>
+      {children}
       <Footer />
       <FloatingActionButtons floatingActions={floatingActions ?? <PlatformHelpButton />} />
     </>

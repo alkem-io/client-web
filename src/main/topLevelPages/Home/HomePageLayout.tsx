@@ -1,14 +1,16 @@
 import React, { PropsWithChildren } from 'react';
-import TopBar, { TopBarSpacer } from '../../ui/layout/topBar/TopBar';
 import Footer from '../../ui/platformFooter/PlatformFooter';
 import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../../ui/helpButton/PlatformHelpButton';
+import PlatformNavigationBar from '../../ui/platformNavigation/PlatformNavigationBar';
+import PageBanner from '../../../core/ui/layout/pageBanner/PageBanner';
+import { Box } from '@mui/material';
 
 const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
   return (
     <>
-      <TopBar />
-      <TopBarSpacer />
+      <PlatformNavigationBar />
+      <PageBanner banner={undefined} cardComponent={Box} />
       {children}
       <Footer />
       <FloatingActionButtons floatingActions={<PlatformHelpButton />} />
