@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { addResponseMessage, Widget } from 'react-chat-widget';
 import { useAskChatGuidanceQuestionQuery } from '../../../core/apollo/generated/apollo-hooks';
-import logoSrc from '../../../domain/platform/Logo/Logo-Small.svg';
+import logoSrc from '../../ui/logo/logoSmall.svg';
 import { useTranslation } from 'react-i18next';
 import { FEATURE_GUIDANCE_ENGINE } from '../../../domain/platform/config/features.constants';
 import { useConfig } from '../../../domain/platform/config/useConfig';

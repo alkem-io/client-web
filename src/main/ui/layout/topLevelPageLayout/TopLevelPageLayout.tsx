@@ -4,6 +4,7 @@ import TopLevelDesktopLayout from '../TopLevelDesktopLayout';
 import PageBanner from '../../../../core/ui/layout/pageBanner/PageBanner';
 import { Visual } from '../../../../domain/common/visual/Visual';
 import PageContent from '../../../../core/ui/content/PageContent';
+import TopLevelPageBreadcrumbs from '../../../topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 interface TopLevelPageLayoutProps extends PageBannerCardProps {
   ribbon?: ReactNode;
@@ -13,16 +14,31 @@ const banner: Visual = {
   uri: '/public/alkemio-banner/global-banner.jpg',
 };
 
-const TopLevelPageLayout = ({ ribbon, children, ...props }: PropsWithChildren<TopLevelPageLayoutProps>) => {
-  const heading = (
+const TopLevelPageLayout = ({
+  ribbon,
+  children,
+  iconComponent,
+  title,
+  ...props
+}: PropsWithChildren<TopLevelPageLayoutProps>) => {
+  const header = (
     <>
-      <PageBanner banner={banner} cardComponent={PageBannerCard} {...props} />
+      <PageBanner
+        banner={banner}
+        cardComponent={PageBannerCard}
+        iconComponent={iconComponent}
+        title={title}
+        {...props}
+      />
       {ribbon}
     </>
   );
 
   return (
-    <TopLevelDesktopLayout heading={heading}>
+    <TopLevelDesktopLayout
+      header={header}
+      breadcrumbs={<TopLevelPageBreadcrumbs iconComponent={iconComponent}>{title}</TopLevelPageBreadcrumbs>}
+    >
       <PageContent>{children}</PageContent>
     </TopLevelDesktopLayout>
   );

@@ -7,6 +7,7 @@ import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLay
 
 const EntityPageLayout = ({
   currentSection,
+  breadcrumbs,
   pageBannerComponent: PageBanner,
   pageBanner,
   tabsComponent: Tabs,
@@ -30,7 +31,7 @@ const EntityPageLayout = ({
         </TopLevelDesktopLayout>
       }
     >
-      <TopLevelDesktopLayout heading={PageBanner ? <PageBanner /> : pageBanner}>
+      <TopLevelDesktopLayout breadcrumbs={breadcrumbs} header={PageBanner ? <PageBanner /> : pageBanner}>
         {!isMobile && tabs}
         {children}
         {isMobile && tabs}

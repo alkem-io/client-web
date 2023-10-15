@@ -16,7 +16,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
 
   return (
     <TopLevelDesktopLayout
-      heading={
+      header={
         <>
           <JourneyPageBanner title={t('common.administration')} journeyTypeName="admin" />
           <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Space}>

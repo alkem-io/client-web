@@ -1,11 +1,11 @@
-import React, { cloneElement, PropsWithChildren, ReactElement, ReactNode, useState } from 'react';
+import React, { Children, cloneElement, PropsWithChildren, ReactElement, ReactNode, useState } from 'react';
 import { Box } from '@mui/material';
 import { DoubleArrow } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
-import { BreadcrumbsItemProps } from './BreadcrumbsItemProps';
+import { Expandable } from './Expandable';
 
-interface BreadcrumbsProps<ItemProps extends BreadcrumbsItemProps> {
-  children: ReactElement<ItemProps>[];
+interface BreadcrumbsProps<ItemProps extends Expandable> {
+  children: ReactElement<ItemProps> | (ReactElement<ItemProps> | ReactElement<ItemProps>[])[];
 }
 
 const BreadcrumbsSeparator = () => {
@@ -27,12 +27,10 @@ const BreadcrumbsSeparator = () => {
 
 type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
 
-const Breadcrumbs = <ItemProps extends BreadcrumbsItemProps>({
-  children,
-}: PropsWithChildren<BreadcrumbsProps<ItemProps>>) => {
+const Breadcrumbs = <ItemProps extends Expandable>({ children }: PropsWithChildren<BreadcrumbsProps<ItemProps>>) => {
   const [expandedState, setExpandedState] = useState<JourneyBreadcrumbsExpandedState>({});
 
-  const [firstChild, ...restChildren] = children.map(child => {
+  const [firstChild, ...restChildren] = (Children.toArray(children) as ReactElement<ItemProps>[]).map(child => {
     const expanded = (child.key && expandedState[child.key]) || false;
 
     const onExpand = child.key ? () => onHoverItem(child.key!) : undefined;

@@ -3,7 +3,7 @@ import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { InnovationHubAttrs } from './InnovationHubAttrs';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '../../../core/ui/typography';
-import { ReactComponent as Logo } from '../../platform/Logo/Logo-Small.svg';
+import { ReactComponent as Logo } from '../../../main/ui/logo/logoSmall.svg';
 import { gutters } from '../../../core/ui/grid/utils';
 import InnovationHubBanner from './InnovationHubBanner';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
@@ -41,7 +41,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
 
   return (
     <TopLevelDesktopLayout
-      heading={
+      header={
         <InnovationHubBanner
           banner={innovationHub.banner}
           displayName={innovationHub.displayName}

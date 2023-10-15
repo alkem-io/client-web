@@ -1,26 +1,29 @@
 import React, { PropsWithChildren } from 'react';
-import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
+import { EntityPageLayout } from '../../common/EntityPageLayout';
 import ChallengePageBanner from './ChallengePageBanner';
 import ChallengeTabs from './ChallengeTabs';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import { useChallenge } from '../hooks/useChallenge';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 
-export interface ChallengePageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
+export interface ChallengePageLayoutProps {
+  currentSection: EntityPageSection;
   unauthorizedDialogDisabled?: boolean;
 }
 
 const ChallengePageLayout = ({
   unauthorizedDialogDisabled = false,
+  currentSection,
   children,
-  ...props
 }: PropsWithChildren<ChallengePageLayoutProps>) => {
   const { challengeId, challengeNameId, profile } = useChallenge();
 
   return (
     <EntityPageLayout
-      {...props}
+      currentSection={currentSection}
+      breadcrumbs={<JourneyBreadcrumbs />}
       pageBannerComponent={ChallengePageBanner}
       tabsComponent={ChallengeTabs}
       entityTypeName="challenge"
