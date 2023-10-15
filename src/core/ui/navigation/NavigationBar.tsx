@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { AppBar, Box, Slide } from '@mui/material';
 import { gutters } from '../grid/utils';
-import { GUTTER_PX, MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns } from '../grid/constants';
+import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import GridContainer from '../grid/GridContainer';
 import FlexSpacer from '../utils/FlexSpacer';
@@ -24,7 +24,7 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
       }}
     >
       <GridContainer
-        maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
+        maxWidth={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
         marginX="auto"
         display="flex"
         flexDirection="row"
