@@ -28,6 +28,7 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
         marginX="auto"
         display="flex"
         flexDirection="row"
+        flexWrap="nowrap"
         padding={gutters(0.5)}
       >
         <GridProvider columns={globalGridColumns}>{children}</GridProvider>
