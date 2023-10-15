@@ -4,8 +4,11 @@ import { ComponentType, PropsWithChildren } from 'react';
 import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
 import { useLocation } from 'react-router-dom';
 import { SvgIconProps } from '@mui/material';
+import { Visual } from '../../../domain/common/visual/Visual';
 
 interface TopLevelPageBreadcrumbsProps {
+  avatar?: Visual;
+  loading?: boolean;
   iconComponent?: ComponentType<SvgIconProps>;
 }
 
