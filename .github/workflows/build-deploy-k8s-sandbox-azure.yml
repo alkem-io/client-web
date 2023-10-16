@@ -32,9 +32,9 @@ jobs:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
-      - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@v6.0.0
-        env:
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
           gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
           passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
           git_user_signingkey: true
