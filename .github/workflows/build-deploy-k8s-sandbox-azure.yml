@@ -15,12 +15,6 @@ jobs:
       - name: 'Download translations'
         uses: crowdin/github-action@v1.13.1
         with:
-          create_pull_request: true
-          pull_request_title: 'Latest Crowdin Translations '
-          pull_request_body: 'Latest Crowdin translations by [Crowdin GH Action](https://github.com/crowdin/github-action)'
-          pull_request_base_branch_name: 'develop'
-          localization_branch_name: 'crowdin_translations'
-
           command: 'download'
           command_args: '--all --verbose'
           source: ./src/core/i18n/en/translation.en.json
