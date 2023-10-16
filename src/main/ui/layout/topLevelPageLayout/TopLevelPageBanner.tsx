@@ -9,7 +9,7 @@ import { Visual } from '../../../../domain/common/visual/Visual';
 const provideHubColor = providePrimaryColor(COLOR_HUB);
 
 const banner: Visual = {
-  uri: '/public/alkemio-banner/global-banner.jpg',
+  uri: '/alkemio-banner/global-banner.jpg',
 };
 
 interface TopLevelPageBannerProps extends PageBannerCardProps {}

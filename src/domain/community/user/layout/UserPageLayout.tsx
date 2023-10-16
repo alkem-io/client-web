@@ -10,7 +10,7 @@ import PageBannerCardWithVisual from '../../../journey/common/PageBanner/Journey
 import SizeableAvatar from '../../../../core/ui/avatar/SizeableAvatar';
 
 const banner: Visual = {
-  uri: '/public/alkemio-banner/global-banner.jpg',
+  uri: '/alkemio-banner/global-banner.jpg',
 };
 
 interface UserPageLayoutProps
