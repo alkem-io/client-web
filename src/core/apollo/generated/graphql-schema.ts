@@ -5665,6 +5665,7 @@ export type CalloutPageCalloutQuery = {
                         type: TagsetType;
                       }
                     | undefined;
+                  storageBucket: { __typename?: 'StorageBucket'; id: string };
                 };
                 whiteboards?:
                   | Array<{
@@ -5717,6 +5718,7 @@ export type CalloutPageCalloutQuery = {
                               type: TagsetType;
                             }
                           | undefined;
+                        storageBucket: { __typename?: 'StorageBucket'; id: string };
                       };
                       authorization?:
                         | {
@@ -5807,6 +5809,7 @@ export type CalloutPageCalloutQuery = {
                               type: TagsetType;
                             }
                           | undefined;
+                        storageBucket: { __typename?: 'StorageBucket'; id: string };
                       };
                       authorization?:
                         | {
@@ -6004,6 +6007,7 @@ export type CalloutPageCalloutQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -6056,6 +6060,7 @@ export type CalloutPageCalloutQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -6150,6 +6155,7 @@ export type CalloutPageCalloutQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -6350,6 +6356,7 @@ export type CalloutPageCalloutQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -6402,6 +6409,7 @@ export type CalloutPageCalloutQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -6496,6 +6504,7 @@ export type CalloutPageCalloutQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -9051,6 +9060,7 @@ export type DashboardTopCalloutsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
+                storageBucket: { __typename?: 'StorageBucket'; id: string };
               };
               authorization?:
                 | {
@@ -9204,6 +9214,7 @@ export type DashboardTopCalloutFragment = {
                 type: TagsetType;
               }
             | undefined;
+          storageBucket: { __typename?: 'StorageBucket'; id: string };
         };
         authorization?:
           | {
@@ -9342,6 +9353,7 @@ export type CreateCalloutMutation = {
             type: TagsetType;
           }
         | undefined;
+      storageBucket: { __typename?: 'StorageBucket'; id: string };
     };
     whiteboards?:
       | Array<{
@@ -9394,6 +9406,7 @@ export type CreateCalloutMutation = {
                   type: TagsetType;
                 }
               | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
             | {
@@ -9484,6 +9497,7 @@ export type CreateCalloutMutation = {
                   type: TagsetType;
                 }
               | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
             | {
@@ -10074,6 +10088,7 @@ export type CalloutsQuery = {
                         type: TagsetType;
                       }
                     | undefined;
+                  storageBucket: { __typename?: 'StorageBucket'; id: string };
                 };
                 whiteboards?:
                   | Array<{
@@ -10126,6 +10141,7 @@ export type CalloutsQuery = {
                               type: TagsetType;
                             }
                           | undefined;
+                        storageBucket: { __typename?: 'StorageBucket'; id: string };
                       };
                       authorization?:
                         | {
@@ -10216,6 +10232,7 @@ export type CalloutsQuery = {
                               type: TagsetType;
                             }
                           | undefined;
+                        storageBucket: { __typename?: 'StorageBucket'; id: string };
                       };
                       authorization?:
                         | {
@@ -10417,6 +10434,7 @@ export type CalloutsQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -10469,6 +10487,7 @@ export type CalloutsQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -10563,6 +10582,7 @@ export type CalloutsQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -10767,6 +10787,7 @@ export type CalloutsQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboards?:
                     | Array<{
@@ -10819,6 +10840,7 @@ export type CalloutsQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -10913,6 +10935,7 @@ export type CalloutsQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -11115,6 +11138,7 @@ export type CollaborationWithCalloutsFragment = {
                 type: TagsetType;
               }
             | undefined;
+          storageBucket: { __typename?: 'StorageBucket'; id: string };
         };
         whiteboards?:
           | Array<{
@@ -11167,6 +11191,7 @@ export type CollaborationWithCalloutsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
+                storageBucket: { __typename?: 'StorageBucket'; id: string };
               };
               authorization?:
                 | {
@@ -11257,6 +11282,7 @@ export type CollaborationWithCalloutsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
+                storageBucket: { __typename?: 'StorageBucket'; id: string };
               };
               authorization?:
                 | {
@@ -11434,6 +11460,7 @@ export type CalloutFragment = {
           type: TagsetType;
         }
       | undefined;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
   whiteboards?:
     | Array<{
@@ -11486,6 +11513,7 @@ export type CalloutFragment = {
                 type: TagsetType;
               }
             | undefined;
+          storageBucket: { __typename?: 'StorageBucket'; id: string };
         };
         authorization?:
           | {
@@ -11572,6 +11600,7 @@ export type CalloutFragment = {
                 type: TagsetType;
               }
             | undefined;
+          storageBucket: { __typename?: 'StorageBucket'; id: string };
         };
         authorization?:
           | {
@@ -13522,6 +13551,7 @@ export type WhiteboardProfileFragment = {
         type: TagsetType;
       }
     | undefined;
+  storageBucket: { __typename?: 'StorageBucket'; id: string };
 };
 
 export type WhiteboardDetailsFragment = {
@@ -13574,6 +13604,7 @@ export type WhiteboardDetailsFragment = {
           type: TagsetType;
         }
       | undefined;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
   authorization?:
     | {
@@ -13659,6 +13690,7 @@ export type WhiteboardRtDetailsFragment = {
           type: TagsetType;
         }
       | undefined;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
   authorization?:
     | {
@@ -13800,6 +13832,7 @@ export type CalloutWithWhiteboardFragment = {
                 type: TagsetType;
               }
             | undefined;
+          storageBucket: { __typename?: 'StorageBucket'; id: string };
         };
         authorization?:
           | {
@@ -13901,6 +13934,7 @@ export type CalloutWithWhiteboardRtFragment = {
                 type: TagsetType;
               }
             | undefined;
+          storageBucket: { __typename?: 'StorageBucket'; id: string };
         };
         authorization?:
           | {
@@ -13994,6 +14028,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
+                storageBucket: { __typename?: 'StorageBucket'; id: string };
               };
               authorization?:
                 | {
@@ -14084,6 +14119,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
+                storageBucket: { __typename?: 'StorageBucket'; id: string };
               };
               authorization?:
                 | {
@@ -14185,6 +14221,7 @@ export type WhiteboardFromCalloutQuery = {
                         type: TagsetType;
                       }
                     | undefined;
+                  storageBucket: { __typename?: 'StorageBucket'; id: string };
                 };
                 authorization?:
                   | {
@@ -14302,6 +14339,7 @@ export type WhiteboardRtFromCalloutQuery = {
                         type: TagsetType;
                       }
                     | undefined;
+                  storageBucket: { __typename?: 'StorageBucket'; id: string };
                 };
                 authorization?:
                   | {
@@ -14390,6 +14428,7 @@ export type WhiteboardWithContentQuery = {
                   type: TagsetType;
                 }
               | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
             | {
@@ -14492,6 +14531,7 @@ export type WhiteboardRtWithContentQuery = {
                   type: TagsetType;
                 }
               | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
             | {
@@ -14600,6 +14640,7 @@ export type PlatformTemplateWhiteboardContentsQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                       }
                     | undefined;
@@ -14667,6 +14708,7 @@ export type CreateWhiteboardOnCalloutMutation = {
             type: TagsetType;
           }
         | undefined;
+      storageBucket: { __typename?: 'StorageBucket'; id: string };
     };
     authorization?:
       | {
@@ -20340,6 +20382,7 @@ export type ChallengePageQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -20696,6 +20739,7 @@ export type ChallengeProfileFragment = {
                             type: TagsetType;
                           }
                         | undefined;
+                      storageBucket: { __typename?: 'StorageBucket'; id: string };
                     };
                     authorization?:
                       | {
@@ -22756,6 +22800,7 @@ export type OpportunityPageQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
                         };
                         authorization?:
                           | {
@@ -23116,6 +23161,7 @@ export type OpportunityPageFragment = {
                             type: TagsetType;
                           }
                         | undefined;
+                      storageBucket: { __typename?: 'StorageBucket'; id: string };
                     };
                     authorization?:
                       | {
@@ -24540,6 +24586,7 @@ export type SpacePageQuery = {
                               type: TagsetType;
                             }
                           | undefined;
+                        storageBucket: { __typename?: 'StorageBucket'; id: string };
                       };
                       authorization?:
                         | {
@@ -24910,6 +24957,7 @@ export type SpacePageFragment = {
                             type: TagsetType;
                           }
                         | undefined;
+                      storageBucket: { __typename?: 'StorageBucket'; id: string };
                     };
                     authorization?:
                       | {
@@ -28552,6 +28600,7 @@ export type WhiteboardTemplateContentQuery = {
                   type: TagsetType;
                 }
               | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
         }
       | undefined;

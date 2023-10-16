@@ -118,6 +118,11 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                   profile: {
                     id: '',
                     displayName: '',
+                    storageBucket: {
+                      // TODO: When creating a whiteboard a StorageBucketId is needed if we want to allow image uploading
+                      // in this case we are passing the parent's callout storageBucketId
+                      id: callout.profile.storageBucket.id,
+                    },
                   },
                   content: callout.whiteboardTemplate.content,
                 },
@@ -129,7 +134,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                     {
                       content: input.content,
                       profileData: {
-                        displayName: input.profile.displayName,
+                        displayName: input.profile?.displayName,
                       },
                       calloutID: callout.id,
                     } as CreateWhiteboardOnCalloutInput,
