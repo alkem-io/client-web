@@ -20,6 +20,8 @@ jobs:
           pull_request_body: 'Latest Crowdin translations by [Crowdin GH Action](https://github.com/crowdin/github-action)'
           pull_request_base_branch_name: 'develop'
           localization_branch_name: 'crowdin_translations'
+          gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
+          gpg_passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
 
           command: 'download'
           command_args: '--all --verbose'
