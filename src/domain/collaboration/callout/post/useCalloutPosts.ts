@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
 import { useCalloutPostsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContributeTabPostFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useCalloutPostCreatedSubscription from './useCalloutPostCreatedSubscription';
+import { compact } from 'lodash';
 
 export interface PostsData {
   subscriptionEnabled: boolean;
-  posts: ContributeTabPostFragment[] | undefined;
+  posts: ContributeTabPostFragment[];
   loading: boolean;
 }
 
@@ -25,8 +27,13 @@ export const useCalloutPosts = ({ calloutId, skip = false }: UsePostDataHookProp
     variables: { calloutId },
   });
 
+  const posts = useMemo(
+    () => compact(callout?.contributions?.map(contribution => contribution.post)),
+    [callout?.contributions]
+  );
+
   return {
-    posts: callout?.posts,
+    posts,
     loading,
     subscriptionEnabled: subscription.enabled,
   };

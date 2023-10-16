@@ -1,21 +1,17 @@
 import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import ImageWithCaption from '../../../shared/components/ImageWithCaption';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { WhiteboardCardWhiteboard } from '../whiteboard/types';
 import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
 import WhiteboardsManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsManagementViewWrapper';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
-  callout: CalloutLayoutProps['callout'] & {
-    whiteboards: WhiteboardCardWhiteboard[];
-    whiteboardTemplate: WhiteboardTemplate;
-  };
+  callout: CalloutLayoutProps['callout'];
 }
 
 const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCalloutProps>(
@@ -43,10 +39,10 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
       setIsWhiteboardDialogOpen(false);
     };
 
-    if (!callout.whiteboards || callout.whiteboards.length < 1) {
+    if (!callout.framing.whiteboard) {
       return null;
     }
-    const firstWhiteboard = callout.whiteboards[0];
+    const firstWhiteboard = callout.framing.whiteboard;
 
     return (
       <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
@@ -62,7 +58,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           <ImageWithCaption
             caption={t('callout.singleWhiteboard.clickToSee')}
             src={firstWhiteboard.profile.preview?.uri}
-            alt={callout.profile.displayName}
+            alt={callout.framing.profile.displayName}
             defaultImage={<WhiteboardIcon />}
             onClick={() => setIsWhiteboardDialogOpen(true)}
           />

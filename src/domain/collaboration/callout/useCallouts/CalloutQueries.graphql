@@ -50,34 +50,51 @@ fragment Callout on Callout {
   id
   nameID
   type
-  profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    tagsets {
-      ...TagsetDetails
-    }
-    references {
-      ...ReferenceDetails
-    }
-    displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-      ...TagsetDetails
-    }
-    storageBucket {
+  framing {
+    profile {
       id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      references {
+        ...ReferenceDetails
+      }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
+      }
+      storageBucket {
+        id
+      }
+    }
+    whiteboard {
+      ...WhiteboardDetails
+    }
+    whiteboardRt {
+      ...WhiteboardRtDetails
     }
   }
-  state
+  contributionPolicy {
+    state
+  }
+  contributionDefaults {
+    id
+    postDescription
+    whiteboardContent
+  }
   sortOrder
   activity
-  whiteboards {
-    ...WhiteboardDetails
-  }
-  whiteboardRt {
-    ...WhiteboardRtDetails
+  contributions {
+    whiteboard {
+      ...WhiteboardDetails
+    }
+    link {
+      ...ReferenceDetails
+    }
   }
   comments {
     ...CommentsWithMessages
@@ -87,42 +104,4 @@ fragment Callout on Callout {
     myPrivileges
   }
   visibility
-  ...CalloutPostTemplate
-  ...CalloutWhiteboardTemplate
-}
-
-fragment CalloutPostTemplate on Callout {
-  postTemplate {
-    id
-    type
-    defaultDescription
-    profile {
-      tagset {
-        ...TagsetDetails
-      }
-      visual(type: CARD) {
-        id
-        uri
-      }
-    }
-  }
-}
-
-fragment CalloutWhiteboardTemplate on Callout {
-  whiteboardTemplate {
-    id
-    content
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      visual(type: CARD) {
-        id
-        uri
-      }
-    }
-  }
 }

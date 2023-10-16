@@ -1,27 +1,35 @@
 mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
   updateCallout(calloutData: $calloutData) {
     id
-    profile {
-      id
-      description
-      displayName
-      tagset {
-        ...TagsetDetails
-      }
-      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-        ...TagsetDetails
-      }
-      references {
+    framing {
+      profile {
         id
-        name
-        uri
+        description
+        displayName
+        tagset {
+          ...TagsetDetails
+        }
+        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          uri
+        }
       }
     }
-    state
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+    contributionPolicy {
+      id
+      state
+    }
     type
     visibility
-    ...CalloutPostTemplate
-    ...CalloutWhiteboardTemplate
   }
 }
 

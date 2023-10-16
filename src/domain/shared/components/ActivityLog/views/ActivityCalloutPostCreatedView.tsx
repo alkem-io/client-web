@@ -6,9 +6,10 @@ import { buildPostUrl } from '../../../../../main/routing/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { ActivityCalloutValues } from '../../../types/ActivityCalloutValues';
 
 interface ActivityCalloutPostCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
+  callout: ActivityCalloutValues;
   post: NameableEntity;
   postType: string;
   postDescription: string;
@@ -53,7 +54,7 @@ export const ActivityCalloutPostCreatedView: FC<ActivityCalloutPostCreatedViewPr
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              calloutDisplayName: callout.framing.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}

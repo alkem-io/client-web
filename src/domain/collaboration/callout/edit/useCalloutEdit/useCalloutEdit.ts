@@ -45,33 +45,31 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
         variables: {
           calloutData: {
             ID: callout.id,
-            profileData: {
-              description: callout.profile.description,
-              displayName: callout.profile.displayName,
-              references: callout.profile.references?.map(reference => ({
-                ID: reference.id,
-                name: reference.name,
-                description: reference.description,
-                uri: reference.uri,
-              })),
-              tagsets: callout.profile.tagsets?.map(tagset => ({
-                ID: tagset.id || '',
-                name: tagset.name,
-                tags: tagset.tags ?? [],
-              })),
+            framing: {
+              profile: {
+                description: callout.profile.description,
+                displayName: callout.profile.displayName,
+                references: callout.profile.references?.map(reference => ({
+                  ID: reference.id,
+                  name: reference.name,
+                  description: reference.description,
+                  uri: reference.uri,
+                })),
+                tagsets: callout.profile.tagsets?.map(tagset => ({
+                  ID: tagset.id || '',
+                  name: tagset.name,
+                  tags: tagset.tags ?? [],
+                })),
+              },
             },
-            state: callout.state,
+            contributionPolicy: {
+              state: callout.state,
+            },
+            contributionDefaults: {
+              postDescription: callout.contributionDefaults?.postDescription,
+              whiteboardContent: callout.contributionDefaults?.whiteboardContent,
+            },
             displayLocation: callout.displayLocation,
-            postTemplate: callout.postTemplate
-              ? {
-                  type: callout.postTemplate.type,
-                  defaultDescription: callout.postTemplate.defaultDescription,
-                  profileData: callout.postTemplate.profile,
-                }
-              : undefined,
-            whiteboardTemplate: callout.whiteboardTemplate
-              ? { content: callout.whiteboardTemplate.content, profileData: callout.whiteboardTemplate.profile }
-              : undefined,
           },
         },
       });

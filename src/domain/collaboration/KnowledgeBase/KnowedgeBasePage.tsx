@@ -39,7 +39,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
   const { t } = useTranslation();
 
   const buildCalloutTitle = (callout: TypedCallout) => {
-    return <EllipsableWithCount count={callout.activity}>{callout.profile.displayName}</EllipsableWithCount>;
+    return <EllipsableWithCount count={callout.activity}>{callout.framing.profile.displayName}</EllipsableWithCount>;
   };
 
   const {

@@ -6,9 +6,10 @@ import { buildWhiteboardUrl } from '../../../../../main/routing/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { ActivityCalloutValues } from '../../../types/ActivityCalloutValues';
 
 interface ActivityCalloutWhiteboardCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
+  callout: ActivityCalloutValues;
   whiteboard: NameableEntity;
 }
 
@@ -47,7 +48,7 @@ export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardC
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              calloutDisplayName: callout.framing.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}

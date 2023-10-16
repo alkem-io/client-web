@@ -25,8 +25,6 @@ import PostTemplatesChooser from './creationDialog/CalloutTemplate/PostTemplateC
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
 import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
-import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import FormikSelect from '../../../core/ui/forms/FormikSelect';
 import { FormikSelectValue } from '../../../core/ui/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
@@ -46,8 +44,8 @@ type FormValueType = {
   references: Reference[];
   opened: boolean;
   displayLocation: CalloutDisplayLocation;
-  postTemplateData?: PostTemplateFormSubmittedValues;
-  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  postDescription?: string;
+  whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
@@ -62,8 +60,8 @@ export type CalloutFormInput = {
   type?: CalloutType;
   state?: CalloutState;
   displayLocation?: CalloutDisplayLocation;
-  postTemplateData?: PostTemplateFormSubmittedValues;
-  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  postDescription?: string;
+  whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValues;
   profileId?: string;
 };
@@ -76,8 +74,8 @@ export type CalloutFormOutput = {
   type: CalloutType;
   state: CalloutState;
   displayLocation: CalloutDisplayLocation;
-  postTemplateData?: PostTemplateFormSubmittedValues;
-  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  postDescription?: string;
+  whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
@@ -128,19 +126,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       displayLocation: callout?.displayLocation ?? CalloutDisplayLocation.Knowledge,
-      postTemplateData: callout?.postTemplateData ?? {
-        profile: {
-          displayName: '',
-        },
-        defaultDescription: '',
-        type: '',
-      },
-      whiteboardTemplateData: callout?.whiteboardTemplateData ?? {
-        profile: {
-          displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
-        },
-        content: JSON.stringify(EmptyWhiteboard),
-      },
+      postDescription: callout.postDescription ?? '',
+      whiteboardContent: callout.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
       whiteboard: callout?.whiteboard
         ? {
             ...callout.whiteboard,
@@ -173,20 +160,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    whiteboardTemplateData: yup.object().when('type', {
-      is: CalloutType.WhiteboardCollection,
-      then: yup.object().shape({
-        profile: yup.object().shape({
-          displayName: yup.string(),
-        }),
-        content: yup.string().required(),
-      }),
-    }),
-    whiteboard: yup.object().when('type', {
+    whiteboardContent: yup.string().when('type', {
       is: CalloutType.Whiteboard || CalloutType.WhiteboardRt,
-      then: yup.object().shape({
-        content: yup.string().required(),
-      }),
+      then: yup.string().required(),
     }),
   });
 
@@ -199,8 +175,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
       displayLocation: values.displayLocation,
-      postTemplateData: values.postTemplateData,
-      whiteboardTemplateData: values.whiteboardTemplateData,
+      postDescription: values.postDescription,
+      whiteboardContent: values.whiteboardContent,
       whiteboard: values.whiteboard,
     };
     onChange?.(callout);
@@ -274,8 +250,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {!editMode && formConfiguration.linkCollectionAdd && (
               <Caption>{t('callout.link-collection.save-to-add')}</Caption>
             )}
-            {formConfiguration.postTemplate && <PostTemplatesChooser name="postTemplateData" />}
-            {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
+            {formConfiguration.postTemplate && <PostTemplatesChooser name="postDescription" />}
+            {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardContent" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
             {formConfiguration.locationChange && (
               <FormControlLabel

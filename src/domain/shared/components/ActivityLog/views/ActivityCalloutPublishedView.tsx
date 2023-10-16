@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildCalloutUrl } from '../../../../../main/routing/urlBuilders';
-import { NameableEntity } from '../../../types/NameableEntity';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { ActivityCalloutValues } from '../../../types/ActivityCalloutValues';
 
 interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
+  callout: ActivityCalloutValues;
   calloutType: string;
 }
 
@@ -25,7 +25,7 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
   const { t } = useTranslation();
 
   const description = t('components.activity-log-view.activity-description.callout-published', {
-    displayName: callout.profile.displayName,
+    displayName: callout.framing.profile.displayName,
     type: calloutType,
     interpolation: {
       escapeValue: false,
@@ -47,7 +47,7 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              calloutDisplayName: callout.framing.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}

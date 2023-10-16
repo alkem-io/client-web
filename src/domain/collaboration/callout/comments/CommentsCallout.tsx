@@ -43,7 +43,8 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
     const canPostMessages =
-      commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage) && callout.state !== CalloutState.Closed;
+      commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage) &&
+      callout.contributionPolicy.state !== CalloutState.Closed;
     const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
     const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({

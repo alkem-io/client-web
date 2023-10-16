@@ -28,9 +28,11 @@ export interface DashboardRecentContributionsBlockProps extends PageContentBlock
         nameID: string;
         activity: number;
         type: CalloutType;
-        profile: {
-          displayName: string;
-          description?: string;
+        framing: {
+          profile: {
+            displayName: string;
+            description?: string;
+          };
         };
       })[]
     | undefined;
@@ -138,8 +140,8 @@ const DashboardRecentContributionsBlock = ({
                 {topCallouts?.map(callout => (
                   <TopCalloutDetails
                     key={callout.id}
-                    title={callout.profile.displayName}
-                    description={callout.profile.description ?? ''}
+                    title={callout.framing.profile.displayName}
+                    description={callout.framing.profile.description ?? ''}
                     activity={callout.activity}
                     type={callout.type}
                     calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
