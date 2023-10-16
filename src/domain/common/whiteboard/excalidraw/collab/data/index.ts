@@ -1,9 +1,10 @@
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { DELETED_ELEMENT_TIMEOUT, ROOM_ID_BYTES } from '../excalidrawAppConstants';
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
-import { AppState, BinaryFileData, UserIdleState } from '@alkemio/excalidraw/types/types';
+import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
 import { bytesToHexString } from '../utils';
 import { env } from '../../../../../../main/env';
+import { BinaryFileDataWithUrl } from '../../useWhiteboardFilesManager';
 
 export type SyncableExcalidrawElement = ExcalidrawElement & {
   _brand: 'SyncableExcalidrawElement';
@@ -87,7 +88,7 @@ export type SocketUpdateDataSource = {
     type: 'FILE_UPLOAD';
     payload: {
       socketId: string;
-      file: BinaryFileData;
+      file: BinaryFileDataWithUrl;
     };
   };
   FILE_REQUEST: {

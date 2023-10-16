@@ -43,7 +43,8 @@ const fetchFileToDataURL = async (url: string): Promise<string> => {
   return blobToDataURL(blob);
 };
 
-export type BinaryFileDataWithUrl = BinaryFileData & { url?: string };
+export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
+export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
 
 interface Props {
   storageBucketId?: string; // FilesManagers without storageBucketId will throw an exception on file upload
@@ -52,13 +53,14 @@ interface Props {
 }
 
 interface WhiteboardWithFiles {
-  files?: Record<string, BinaryFileDataWithUrl>;
+  files?: Record<string, BinaryFileDataWithOptionalUrl>;
 }
 export interface WhiteboardFilesManager {
   addNewFile: (file: File) => Promise<string>;
   loadFiles: (data: WhiteboardWithFiles) => Promise<void>;
   pushFilesToExcalidraw: () => Promise<void>;
-  removeExcalidrawAttachments: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>;
+  removeAllExcalidrawAttachments: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>;
+  removeExcalidrawAttachment: (file: BinaryFileData & { url?: string }) => Promise<BinaryFileDataWithUrl | undefined>;
   loading: {
     uploadingFile: boolean;
     downloadingFiles: boolean;
@@ -165,7 +167,7 @@ const useWhiteboardFilesManager = ({
 
     const pendingFileIds = Object.keys(files).filter(fileId => !files[fileId]?.dataURL);
     log('I need to download these files', pendingFileIds);
-    const newFiles: typeof files = {};
+    const newFiles: Record<string, BinaryFileDataWithUrl> = {};
     setDownloadingFiles(true);
     for (const fileId of pendingFileIds) {
       const file = whiteboard.files[fileId];
@@ -206,7 +208,7 @@ const useWhiteboardFilesManager = ({
    * @param whiteboard
    * @returns
    */
-  const removeExcalidrawAttachments = async <W extends WhiteboardWithFiles>(whiteboard: W): Promise<W> => {
+  const removeAllExcalidrawAttachments = async <W extends WhiteboardWithFiles>(whiteboard: W): Promise<W> => {
     if (!whiteboard?.files) {
       log('no whiteboard or no files', whiteboard);
       return whiteboard;
@@ -216,27 +218,41 @@ const useWhiteboardFilesManager = ({
 
     for (const fileId of Object.keys(files)) {
       const file = files[fileId] as BinaryFileDataWithUrl;
-      if (file.url) {
-        // The url was already set, just copy it and remove dataURL to the output:
-        filesNext[fileId] = { ...file, dataURL: '' } as BinaryFileDataWithUrl;
-      } else if (fileStore.current[fileId]) {
-        // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
-        filesNext[fileId] = { ...file, dataURL: '', url: fileStore.current[fileId].url } as BinaryFileDataWithUrl;
-      } else if (file.dataURL && storageBucketId) {
-        log('NEED TO UPLOAD ', fileId, file);
-        const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
-        // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
-        const id = await addNewFile(fileObject);
-        log('Uploaded ', fileId, file, id);
-        filesNext[fileId] = { ...file, url: fileStore.current[id].url, dataURL: '' } as BinaryFileDataWithUrl;
-      } else if (file.dataURL && !storageBucketId && allowFallbackToAttached) {
-        // no storageBucket was supplied, but allowFallbackToAttached was true, so we'll allow this file to be attached in the json for now
-        filesNext[fileId] = { ...file } as BinaryFileDataWithUrl;
-      } else {
-        console.error('File without url or dataURL. IGNORED', file);
+      const newFile = await removeExcalidrawAttachment(file);
+      if (newFile) {
+        filesNext[fileId] = newFile;
       }
     }
     return { files: filesNext, ...rest } as W;
+  };
+
+  /**
+   * Finds a file in the fileStore and prepares it to be sent:
+   * - Ensures that it has a url
+   * - Removes dataURL
+   */
+  const removeExcalidrawAttachment = async (
+    file: BinaryFileData & { url?: string }
+  ): Promise<BinaryFileDataWithUrl | undefined> => {
+    if (file.url) {
+      // The url was already set, just copy it and remove dataURL to the output:
+      return { ...file, dataURL: '' } as BinaryFileDataWithUrl;
+    } else if (fileStore.current[file.id]) {
+      // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
+      return { ...file, dataURL: '', url: fileStore.current[file.id].url } as BinaryFileDataWithUrl;
+    } else if (file.dataURL && storageBucketId) {
+      log('NEED TO UPLOAD ', file.id, file);
+      const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
+      // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
+      const id = await addNewFile(fileObject);
+      log('Uploaded ', file.id, file, id);
+      return { ...file, url: fileStore.current[id].url, dataURL: '' } as BinaryFileDataWithUrl;
+    } else if (file.dataURL && !storageBucketId && allowFallbackToAttached) {
+      // no storageBucket was supplied, but allowFallbackToAttached was true, so we'll allow this file to be attached in the json for now
+      return { ...file } as BinaryFileDataWithUrl;
+    } else {
+      console.error('File without url or dataURL. IGNORED', file);
+    }
   };
 
   return useMemo(
@@ -244,7 +260,8 @@ const useWhiteboardFilesManager = ({
       addNewFile,
       loadFiles, // Load external files into Excalidraw
       pushFilesToExcalidraw,
-      removeExcalidrawAttachments,
+      removeExcalidrawAttachment,
+      removeAllExcalidrawAttachments,
       loading: {
         uploadingFile,
         downloadingFiles,

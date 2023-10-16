@@ -73,7 +73,7 @@ class Collab extends PureComponent<Props, CollabState> {
       username: props.username,
       activeRoomLink: '',
     };
-    this.portal = new Portal(this);
+    this.portal = new Portal(this, props.filesManager);
     this.excalidrawAPI = props.excalidrawAPI;
     this.filesManager = props.filesManager;
     this.activeIntervalId = null;
@@ -296,6 +296,7 @@ class Collab extends PureComponent<Props, CollabState> {
           if (!currentFiles[payload.file.id]) {
             this.excalidrawAPI.addFiles([payload.file]);
             this.filesManager.loadFiles({ files: { [payload.file.id]: payload.file } });
+            this.alreadySharedFiles.push(payload.file.id);
           }
           break;
         }
@@ -305,7 +306,9 @@ class Collab extends PureComponent<Props, CollabState> {
           if (payload.fileIds && payload.fileIds.length > 0) {
             payload.fileIds.forEach(id => {
               if (currentFiles[id]) {
-                this.portal.broadcastFile(currentFiles[id]);
+                this.filesManager
+                  .removeExcalidrawAttachment(currentFiles[id])
+                  .then(file => file && this.portal.broadcastFile(file));
               }
             });
           }
@@ -528,14 +531,17 @@ class Collab extends PureComponent<Props, CollabState> {
     this.broadcastElements(elements);
   };
 
-  syncFiles = (files: BinaryFiles) => {
-    Object.keys(files).forEach(id => {
+  syncFiles = async (files: BinaryFiles) => {
+    for (const id of Object.keys(files)) {
       if (!this.alreadySharedFiles.includes(id)) {
         const file = files[id];
-        this.portal.broadcastFile(file);
-        this.alreadySharedFiles.push(id);
+        const fileWithUrl = await this.filesManager.removeExcalidrawAttachment(file);
+        if (fileWithUrl) {
+          this.portal.broadcastFile(fileWithUrl);
+          this.alreadySharedFiles.push(id);
+        }
       }
-    });
+    }
   };
 
   notifySavedToDatabase = () => {
