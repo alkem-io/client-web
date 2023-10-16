@@ -42,8 +42,7 @@ jobs:
 
       - name: Sign commit and push changes
         run: |
-          git fetch --all
-          git checkout -b crowdin-translations develop
+          git checkout -b crowdin-translations origin/develop
           git push --set-upstream origin crowdin-translations
           git add .
           git commit -S -m "This commit is signed!"
