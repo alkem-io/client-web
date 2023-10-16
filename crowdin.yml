@@ -1,5 +1,0 @@
-files:
-  - source: /src/core/i18n/en/translation.en.json
-    translation: /src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
-project_id: 540388
-api_token: 5b97022416812d1a780d821f45d07629771348f9c18331fee1c0fa32b22bb004b4907192bfd65e3f
