@@ -627,6 +627,7 @@ export enum AuthorizationPrivilege {
   FileUpload = 'FILE_UPLOAD',
   Grant = 'GRANT',
   GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
+  MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
@@ -741,6 +742,8 @@ export type CalloutContribution = {
   __typename?: 'CalloutContribution';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The parent Callout of the Contribution */
+  callout?: Maybe<Callout>;
   /** The user that created this Document */
   createdBy?: Maybe<User>;
   /** The ID of the entity */
@@ -2293,11 +2296,11 @@ export enum MimeType {
   Xpng = 'XPNG',
 }
 
-export type MovePostInput = {
-  /** ID of the Callout to move the Post to. */
+export type MoveCalloutContributionInput = {
+  /** ID of the Callout to move the Contribution to. */
   calloutID: Scalars['UUID'];
-  /** ID of the Post to move. */
-  postID: Scalars['UUID'];
+  /** ID of the Contribution to move. */
+  contributionID: Scalars['UUID'];
 };
 
 export type Mutation = {
@@ -2484,8 +2487,8 @@ export type Mutation = {
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
-  /** Moves the specified Post to another Callout. */
-  movePostToCallout: Post;
+  /** Moves the specified Contribution to another Callout. */
+  moveContributionToCallout: CalloutContribution;
   /** Removes an Organization from a Role in the specified Community. */
   removeCommunityRoleFromOrganization: Organization;
   /** Removes a User from a Role in the specified Community. */
@@ -2576,6 +2579,8 @@ export type Mutation = {
   updateProfile: Profile;
   /** Updates the specified Project. */
   updateProject: Project;
+  /** Updates the specified Reference. */
+  updateReference: Reference;
   /** Updates the Space. */
   updateSpace: Space;
   /** Update the platform settings, such as visibility, of the specified Space. */
@@ -2946,8 +2951,8 @@ export type MutationMessageUserArgs = {
   messageData: UserSendMessageInput;
 };
 
-export type MutationMovePostToCalloutArgs = {
-  movePostData: MovePostInput;
+export type MutationMoveContributionToCalloutArgs = {
+  moveContributionData: MoveCalloutContributionInput;
 };
 
 export type MutationRemoveCommunityRoleFromOrganizationArgs = {
@@ -3124,6 +3129,10 @@ export type MutationUpdateProfileArgs = {
 
 export type MutationUpdateProjectArgs = {
   projectData: UpdateProjectInput;
+};
+
+export type MutationUpdateReferenceArgs = {
+  referenceData: UpdateReferenceInput;
 };
 
 export type MutationUpdateSpaceArgs = {
@@ -3427,8 +3436,6 @@ export type Post = {
   __typename?: 'Post';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The parent Callout of the Post */
-  callout?: Maybe<Callout>;
   /** The comments on this Post. */
   comments: Room;
   /** The user that created this Post */
@@ -3588,7 +3595,6 @@ export type ProfileCredentialVerified = {
 
 export enum ProfileType {
   CalendarEvent = 'CALENDAR_EVENT',
-  Callout = 'CALLOUT',
   CalloutFraming = 'CALLOUT_FRAMING',
   CalloutTemplate = 'CALLOUT_TEMPLATE',
   Challenge = 'CHALLENGE',
@@ -5947,6 +5953,15 @@ export type CalloutPageCalloutQuery = {
                               | undefined;
                           }
                         | undefined;
+                      link?:
+                        | {
+                            __typename?: 'Reference';
+                            id: string;
+                            name: string;
+                            uri: string;
+                            description?: string | undefined;
+                          }
+                        | undefined;
                     }>
                   | undefined;
                 comments?:
@@ -6350,6 +6365,15 @@ export type CalloutPageCalloutQuery = {
                                     };
                                   }
                                 | undefined;
+                            }
+                          | undefined;
+                        link?:
+                          | {
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
                             }
                           | undefined;
                       }>
@@ -6758,6 +6782,15 @@ export type CalloutPageCalloutQuery = {
                                     };
                                   }
                                 | undefined;
+                            }
+                          | undefined;
+                        link?:
+                          | {
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
                             }
                           | undefined;
                       }>
@@ -9578,6 +9611,9 @@ export type CreateCalloutMutation = {
                   | undefined;
               }
             | undefined;
+          link?:
+            | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+            | undefined;
         }>
       | undefined;
     comments?:
@@ -9851,6 +9887,21 @@ export type CreateLinkOnCalloutMutation = {
     link?:
       | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
       | undefined;
+  };
+};
+
+export type UpdateReferenceMutationVariables = Exact<{
+  input: UpdateReferenceInput;
+}>;
+
+export type UpdateReferenceMutation = {
+  __typename?: 'Mutation';
+  updateReference: {
+    __typename?: 'Reference';
+    id: string;
+    name: string;
+    uri: string;
+    description?: string | undefined;
   };
 };
 
@@ -10348,6 +10399,15 @@ export type CalloutsQuery = {
                               | undefined;
                           }
                         | undefined;
+                      link?:
+                        | {
+                            __typename?: 'Reference';
+                            id: string;
+                            name: string;
+                            uri: string;
+                            description?: string | undefined;
+                          }
+                        | undefined;
                     }>
                   | undefined;
                 comments?:
@@ -10755,6 +10815,15 @@ export type CalloutsQuery = {
                                     };
                                   }
                                 | undefined;
+                            }
+                          | undefined;
+                        link?:
+                          | {
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
                             }
                           | undefined;
                       }>
@@ -11169,6 +11238,15 @@ export type CalloutsQuery = {
                                 | undefined;
                             }
                           | undefined;
+                        link?:
+                          | {
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }
+                          | undefined;
                       }>
                     | undefined;
                   comments?:
@@ -11571,6 +11649,9 @@ export type CollaborationWithCalloutsFragment = {
                       | undefined;
                   }
                 | undefined;
+              link?:
+                | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+                | undefined;
             }>
           | undefined;
         comments?:
@@ -11948,6 +12029,9 @@ export type CalloutFragment = {
                 | undefined;
             }
           | undefined;
+        link?:
+          | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+          | undefined;
       }>
     | undefined;
   comments?:
@@ -12170,10 +12254,12 @@ export type SpacePostQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                nameID: string;
                 type: CalloutType;
                 contributions?:
                   | Array<{
                       __typename?: 'CalloutContribution';
+                      id: string;
                       post?:
                         | {
                             __typename?: 'Post';
@@ -12320,10 +12406,12 @@ export type ChallengePostQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   contributions?:
                     | Array<{
                         __typename?: 'CalloutContribution';
+                        id: string;
                         post?:
                           | {
                               __typename?: 'Post';
@@ -12471,10 +12559,12 @@ export type OpportunityPostQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   contributions?:
                     | Array<{
                         __typename?: 'CalloutContribution';
+                        id: string;
                         post?:
                           | {
                               __typename?: 'Post';
@@ -12606,10 +12696,12 @@ export type PostDashboardDataFragment = {
     | Array<{
         __typename?: 'Callout';
         id: string;
+        nameID: string;
         type: CalloutType;
         contributions?:
           | Array<{
               __typename?: 'CalloutContribution';
+              id: string;
               post?:
                 | {
                     __typename?: 'Post';
@@ -12877,6 +12969,7 @@ export type SpacePostSettingsQuery = {
                 contributions?:
                   | Array<{
                       __typename?: 'CalloutContribution';
+                      id: string;
                       post?:
                         | {
                             __typename?: 'Post';
@@ -12979,6 +13072,7 @@ export type ChallengePostSettingsQuery = {
                   contributions?:
                     | Array<{
                         __typename?: 'CalloutContribution';
+                        id: string;
                         post?:
                           | {
                               __typename?: 'Post';
@@ -13082,6 +13176,7 @@ export type OpportunityPostSettingsQuery = {
                   contributions?:
                     | Array<{
                         __typename?: 'CalloutContribution';
+                        id: string;
                         post?:
                           | {
                               __typename?: 'Post';
@@ -13207,6 +13302,7 @@ export type PostSettingsCalloutFragment = {
   contributions?:
     | Array<{
         __typename?: 'CalloutContribution';
+        id: string;
         post?:
           | {
               __typename?: 'Post';
@@ -13581,18 +13677,18 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation'; deletePost: { __typename?: 'Post'; id: string } };
 
-export type MovePostToCalloutMutationVariables = Exact<{
-  postId: Scalars['UUID'];
+export type MoveContributionToCalloutMutationVariables = Exact<{
+  contributionId: Scalars['UUID'];
   calloutId: Scalars['UUID'];
 }>;
 
-export type MovePostToCalloutMutation = {
+export type MoveContributionToCalloutMutation = {
   __typename?: 'Mutation';
-  movePostToCallout: {
-    __typename?: 'Post';
+  moveContributionToCallout: {
+    __typename?: 'CalloutContribution';
     id: string;
-    nameID: string;
     callout?: { __typename?: 'Callout'; id: string; nameID: string } | undefined;
+    post?: { __typename?: 'Post'; id: string; nameID: string } | undefined;
   };
 };
 

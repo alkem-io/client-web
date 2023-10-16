@@ -49,8 +49,10 @@ fragment PostDashboardData on Collaboration {
   }
   callouts(IDs: [$calloutNameId]) {
     id
+    nameID
     type
     contributions(filter: { postIDs: [$postNameId] }) {
+      id
       post {
         ...PostDashboard
       }

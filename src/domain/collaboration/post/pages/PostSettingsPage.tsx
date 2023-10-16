@@ -20,7 +20,7 @@ import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import useCallouts from '../../callout/useCallouts/useCallouts';
-import { useMovePostToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useMoveContributionToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { buildPostUrl } from '../../../../main/routing/urlBuilders';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -69,7 +69,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const canMoveCard = postSettings.post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.MovePost);
 
-  const [movePostToCallout, { loading: isMovingPost }] = useMovePostToCalloutMutation({});
+  const [moveContributionToCallout, { loading: isMovingContribution }] = useMoveContributionToCalloutMutation({});
 
   const [targetCalloutId, setTargetCalloutId] = useState(postSettings.parentCallout?.id);
 
@@ -91,7 +91,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
   // either in a container/hook or a rendered view
   const visuals = (postSettings.post ? postSettings.post.profile.visuals : []) as Visual[];
   const isPostLoaded = Boolean(
-    post && postSettings.post && !postSettings.updating && !postSettings.deleting && !isMovingPost
+    post && postSettings.post && !postSettings.updating && !postSettings.deleting && !isMovingContribution
   );
 
   const handleDelete = async () => {
@@ -104,7 +104,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
   };
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
-    if (!postSettings.post || !post) {
+    if (!postSettings.contributionId || !postSettings.post || !post) {
       return;
     }
 
@@ -120,9 +120,9 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     }
 
     if (isMoveEnabled) {
-      const { data, errors } = await movePostToCallout({
+      const { data, errors } = await moveContributionToCallout({
         variables: {
-          postId: postSettings.post.id,
+          contributionId: postSettings.contributionId,
           calloutId: targetCalloutId!, // ensured by isMoveEnabled
         },
       });
@@ -131,8 +131,8 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       } else if (!shouldUpdate) {
         notify(t('post-edit.postLocation.success'), 'success');
       }
-      const targetCalloutNameId = data!.movePostToCallout.callout!.nameID;
-      const postNameId = data!.movePostToCallout.nameID;
+      const targetCalloutNameId = data!.moveContributionToCallout.callout!.nameID;
+      const postNameId = data!.moveContributionToCallout.post!.nameID;
       const postURL = buildPostUrl(targetCalloutNameId, postNameId, {
         spaceNameId,
         challengeNameId,
@@ -156,7 +156,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       >
         <PostForm
           edit
-          loading={postSettings.loading || postSettings.updating || isMovingPost}
+          loading={postSettings.loading || postSettings.updating || isMovingContribution}
           post={toPostFormInput(postSettings.post)}
           postNames={postSettings.postsNames}
           onChange={setPost}

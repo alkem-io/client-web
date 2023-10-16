@@ -615,6 +615,9 @@ export const CalloutFragmentDoc = gql`
       whiteboard {
         ...WhiteboardDetails
       }
+      link {
+        ...ReferenceDetails
+      }
     }
     comments {
       ...CommentsWithMessages
@@ -712,8 +715,10 @@ export const PostDashboardDataFragmentDoc = gql`
     }
     callouts(IDs: [$calloutNameId]) {
       id
+      nameID
       type
       contributions(filter: { postIDs: [$postNameId] }) {
+        id
         post {
           ...PostDashboard
         }
@@ -758,6 +763,7 @@ export const PostSettingsCalloutFragmentDoc = gql`
     nameID
     type
     contributions(filter: { postIDs: [$postNameId] }) {
+      id
       post {
         ...PostSettings
       }
@@ -6222,6 +6228,55 @@ export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateLinkOnCalloutMutation,
   SchemaTypes.CreateLinkOnCalloutMutationVariables
 >;
+export const UpdateReferenceDocument = gql`
+  mutation updateReference($input: UpdateReferenceInput!) {
+    updateReference(referenceData: $input) {
+      ...ReferenceDetails
+    }
+  }
+  ${ReferenceDetailsFragmentDoc}
+`;
+export type UpdateReferenceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateReferenceMutation,
+  SchemaTypes.UpdateReferenceMutationVariables
+>;
+
+/**
+ * __useUpdateReferenceMutation__
+ *
+ * To run a mutation, you first call `useUpdateReferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateReferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateReferenceMutation, { data, loading, error }] = useUpdateReferenceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateReferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateReferenceMutation,
+    SchemaTypes.UpdateReferenceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateReferenceMutation, SchemaTypes.UpdateReferenceMutationVariables>(
+    UpdateReferenceDocument,
+    options
+  );
+}
+
+export type UpdateReferenceMutationHookResult = ReturnType<typeof useUpdateReferenceMutation>;
+export type UpdateReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateReferenceMutation>;
+export type UpdateReferenceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateReferenceMutation,
+  SchemaTypes.UpdateReferenceMutationVariables
+>;
 export const CalloutPostCreatedDocument = gql`
   subscription CalloutPostCreated($calloutId: UUID!) {
     calloutPostCreated(calloutID: $calloutId) {
@@ -7307,59 +7362,63 @@ export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostMutation,
   SchemaTypes.DeletePostMutationVariables
 >;
-export const MovePostToCalloutDocument = gql`
-  mutation MovePostToCallout($postId: UUID!, $calloutId: UUID!) {
-    movePostToCallout(movePostData: { postID: $postId, calloutID: $calloutId }) {
+export const MoveContributionToCalloutDocument = gql`
+  mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
+    moveContributionToCallout(moveContributionData: { contributionID: $contributionId, calloutID: $calloutId }) {
       id
-      nameID
       callout {
+        id
+        nameID
+      }
+      post {
         id
         nameID
       }
     }
   }
 `;
-export type MovePostToCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.MovePostToCalloutMutation,
-  SchemaTypes.MovePostToCalloutMutationVariables
+export type MoveContributionToCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MoveContributionToCalloutMutation,
+  SchemaTypes.MoveContributionToCalloutMutationVariables
 >;
 
 /**
- * __useMovePostToCalloutMutation__
+ * __useMoveContributionToCalloutMutation__
  *
- * To run a mutation, you first call `useMovePostToCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMovePostToCalloutMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useMoveContributionToCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveContributionToCalloutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [movePostToCalloutMutation, { data, loading, error }] = useMovePostToCalloutMutation({
+ * const [moveContributionToCalloutMutation, { data, loading, error }] = useMoveContributionToCalloutMutation({
  *   variables: {
- *      postId: // value for 'postId'
+ *      contributionId: // value for 'contributionId'
  *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
-export function useMovePostToCalloutMutation(
+export function useMoveContributionToCalloutMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.MovePostToCalloutMutation,
-    SchemaTypes.MovePostToCalloutMutationVariables
+    SchemaTypes.MoveContributionToCalloutMutation,
+    SchemaTypes.MoveContributionToCalloutMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.MovePostToCalloutMutation, SchemaTypes.MovePostToCalloutMutationVariables>(
-    MovePostToCalloutDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.MoveContributionToCalloutMutation,
+    SchemaTypes.MoveContributionToCalloutMutationVariables
+  >(MoveContributionToCalloutDocument, options);
 }
 
-export type MovePostToCalloutMutationHookResult = ReturnType<typeof useMovePostToCalloutMutation>;
-export type MovePostToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MovePostToCalloutMutation>;
-export type MovePostToCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.MovePostToCalloutMutation,
-  SchemaTypes.MovePostToCalloutMutationVariables
+export type MoveContributionToCalloutMutationHookResult = ReturnType<typeof useMoveContributionToCalloutMutation>;
+export type MoveContributionToCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.MoveContributionToCalloutMutation>;
+export type MoveContributionToCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MoveContributionToCalloutMutation,
+  SchemaTypes.MoveContributionToCalloutMutationVariables
 >;
 export const SpaceWhiteboardTemplatesLibraryDocument = gql`
   query SpaceWhiteboardTemplatesLibrary($spaceId: UUID_NAMEID!) {

@@ -27,6 +27,7 @@ type PostUpdateData = Pick<Post, 'id' | 'type'> & {
 };
 
 export interface PostSettingsContainerEntities {
+  contributionId?: string;
   post?: PostSettingsFragment;
   postsNames?: string[] | undefined;
   parentCallout: PostSettingsCalloutFragment | undefined;
@@ -174,6 +175,7 @@ const usePostSettings = ({
   };
 
   return {
+    contributionId: postContribution?.id,
     post: postContribution?.post,
     postsNames: parentCalloutPostNames,
     parentCallout,

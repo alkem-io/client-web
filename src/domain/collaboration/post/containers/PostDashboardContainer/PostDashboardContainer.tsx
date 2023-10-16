@@ -18,7 +18,6 @@ import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../../../core/container/ComponentOrChildrenFn';
-import { getCardCallout } from '../getPostCallout';
 import { buildPostUrl } from '../../../../../main/routing/urlBuilders';
 import { buildAuthorFromUser } from '../../../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
@@ -77,9 +76,6 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
     fetchPolicy: 'cache-and-network',
   });
-  const spacePost = getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.contributions?.find(
-    x => x.post && x.post.nameID === postNameId
-  )?.post;
 
   const {
     data: challengeData,
@@ -90,10 +86,6 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
     fetchPolicy: 'cache-and-network',
   });
-  const challengePost = getCardCallout(
-    challengeData?.space?.challenge?.collaboration?.callouts,
-    postNameId
-  )?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
 
   const {
     data: opportunityData,
@@ -104,25 +96,22 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
     skip: !calloutNameId || !isPostDefined || !opportunityNameId,
     fetchPolicy: 'cache-and-network',
   });
-  const opportunityPost = getCardCallout(
-    opportunityData?.space?.opportunity?.collaboration?.callouts,
-    postNameId
-  )?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
 
-  const post = spacePost ?? challengePost ?? opportunityPost;
+  const collaborationCallouts =
+    spaceData?.space?.collaboration?.callouts ??
+    challengeData?.space?.challenge?.collaboration?.callouts ??
+    opportunityData?.space?.opportunity?.collaboration?.callouts;
+
+  const parentCallout = collaborationCallouts?.find(c => c.nameID === calloutNameId);
+
+  const post = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 
   const roomId = compact([
-    getCardCallout(spaceData?.space?.collaboration?.callouts, postNameId)?.contributions?.find(
-      x => x.post && x.post.nameID === postNameId
-    )?.post?.comments.id,
-    getCardCallout(challengeData?.space?.challenge?.collaboration?.callouts, postNameId)?.contributions?.find(
-      x => x.post && x.post.nameID === postNameId
-    )?.post?.comments.id,
-    getCardCallout(opportunityData?.space?.opportunity?.collaboration?.callouts, postNameId)?.contributions?.find(
-      x => x.post && x.post.nameID === postNameId
-    )?.post?.comments.id,
+    parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post?.comments.id,
+    parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post?.comments.id,
+    parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post?.comments.id,
   ])[0];
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);

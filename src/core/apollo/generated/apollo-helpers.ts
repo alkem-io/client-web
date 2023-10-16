@@ -580,6 +580,7 @@ export type CalloutFieldPolicy = {
 };
 export type CalloutContributionKeySpecifier = (
   | 'authorization'
+  | 'callout'
   | 'createdBy'
   | 'id'
   | 'link'
@@ -589,6 +590,7 @@ export type CalloutContributionKeySpecifier = (
 )[];
 export type CalloutContributionFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1427,7 +1429,7 @@ export type MutationKeySpecifier = (
   | 'inviteExternalUserForCommunityMembership'
   | 'joinCommunity'
   | 'messageUser'
-  | 'movePostToCallout'
+  | 'moveContributionToCallout'
   | 'removeCommunityRoleFromOrganization'
   | 'removeCommunityRoleFromUser'
   | 'removeMessageOnRoom'
@@ -1473,6 +1475,7 @@ export type MutationKeySpecifier = (
   | 'updatePreferenceOnUser'
   | 'updateProfile'
   | 'updateProject'
+  | 'updateReference'
   | 'updateSpace'
   | 'updateSpacePlatformSettings'
   | 'updateTagset'
@@ -1579,7 +1582,7 @@ export type MutationFieldPolicy = {
   inviteExternalUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  movePostToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1625,6 +1628,7 @@ export type MutationFieldPolicy = {
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1835,7 +1839,6 @@ export type PlatformLocationsFieldPolicy = {
 };
 export type PostKeySpecifier = (
   | 'authorization'
-  | 'callout'
   | 'comments'
   | 'createdBy'
   | 'createdDate'
@@ -1847,7 +1850,6 @@ export type PostKeySpecifier = (
 )[];
 export type PostFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  callout?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;

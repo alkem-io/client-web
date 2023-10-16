@@ -89,6 +89,9 @@ fragment Callout on Callout {
     whiteboard {
       ...WhiteboardDetails
     }
+    link {
+      ...ReferenceDetails
+    }
   }
   comments {
     ...CommentsWithMessages

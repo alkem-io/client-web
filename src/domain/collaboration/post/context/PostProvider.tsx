@@ -7,7 +7,6 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { getCardCallout } from '../containers/getPostCallout';
 
 interface PostPermissions {
   canUpdate: boolean;
@@ -48,9 +47,7 @@ const PostProvider: FC = ({ children }) => {
     variables: { spaceNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
   });
-  const spacePostContribution = spaceData?.space?.collaboration?.callouts
-    ?.find(c => c.nameID === calloutNameId)
-    ?.contributions?.find(x => x.post && x.post.nameID === postNameId);
+
   const {
     data: challengeData,
     loading: challengeLoading,
@@ -59,10 +56,6 @@ const PostProvider: FC = ({ children }) => {
     variables: { spaceNameId, challengeNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
   });
-  const challengePostContribution = getCardCallout(
-    challengeData?.space?.challenge?.collaboration?.callouts,
-    postNameId
-  )?.contributions?.find(x => x.post && x.post.nameID === postNameId);
 
   const {
     data: opportunityData,
@@ -72,12 +65,15 @@ const PostProvider: FC = ({ children }) => {
     variables: { spaceNameId, opportunityNameId, postNameId, calloutNameId },
     skip: !calloutNameId || !isPostDefined || !opportunityNameId,
   });
-  const opportunityPostContribution = getCardCallout(
-    opportunityData?.space?.opportunity?.collaboration?.callouts,
-    postNameId
-  )?.contributions?.find(x => x.post && x.post.nameID === postNameId);
 
-  const post = spacePostContribution?.post ?? challengePostContribution?.post ?? opportunityPostContribution?.post;
+  const collaborationCallouts =
+    spaceData?.space?.collaboration?.callouts ??
+    challengeData?.space?.challenge?.collaboration?.callouts ??
+    opportunityData?.space?.opportunity?.collaboration?.callouts;
+
+  const parentCallout = collaborationCallouts?.find(c => c.nameID === calloutNameId);
+
+  const post = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 

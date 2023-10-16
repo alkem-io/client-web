@@ -83,6 +83,7 @@ fragment PostSettingsCallout on Callout {
   nameID
   type
   contributions(filter: { postIDs: [$postNameId] }) {
+    id
     post {
       ...PostSettings
     }
