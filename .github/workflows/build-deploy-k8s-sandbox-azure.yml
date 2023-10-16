@@ -20,9 +20,6 @@ jobs:
           pull_request_body: 'Latest Crowdin translations by [Crowdin GH Action](https://github.com/crowdin/github-action)'
           pull_request_base_branch_name: 'develop'
           localization_branch_name: 'crowdin_translations'
-          github_user_email: svetoslav@alkem.io
-          gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
-          gpg_passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
 
           command: 'download'
           command_args: '--all --verbose'
@@ -41,7 +38,7 @@ jobs:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
-      - name: 'Latest translations PR '
+      - name: 'Latest translations PR'
         uses: crowdin/github-action@v1.13.1
         with:
           # Tokens
@@ -57,9 +54,12 @@ jobs:
           # Create a branch and a PR on any changes
           download_translations: true
           create_pull_request: true
+          push_translations: true
           pull_request_labels: "translations, crowdin"
           pull_request_base_branch_name: 'develop'
-          push_translations: true
+          github_user_email: svetoslav@alkem.io
+          gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
+          gpg_passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
 
           push_sources: false
           upload_sources: false
