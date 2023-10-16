@@ -2850,6 +2850,19 @@ export const DocumentDataFragmentDoc = gql`
     }
   }
 `;
+export const StorageAgregatorFragmentDoc = gql`
+  fragment StorageAgregator on StorageAggregator {
+    id
+    directStorageBucket {
+      id
+      size
+      documents {
+        ...DocumentData
+      }
+    }
+  }
+  ${DocumentDataFragmentDoc}
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -20047,12 +20060,8 @@ export const SpaceStorageAdminDocument = gql`
         id
         displayName
       }
-      storageBucket {
-        id
-        size
-        documents {
-          ...DocumentData
-        }
+      storageAggregator {
+        ...StorageAgregator
       }
       challenges {
         id
@@ -20061,16 +20070,13 @@ export const SpaceStorageAdminDocument = gql`
           id
           displayName
         }
-        storageBucket {
-          id
-          documents {
-            ...DocumentData
-          }
+        storageAggregator {
+          ...StorageAgregator
         }
       }
     }
   }
-  ${DocumentDataFragmentDoc}
+  ${StorageAgregatorFragmentDoc}
 `;
 
 /**
@@ -22093,13 +22099,20 @@ export const PlatformStorageConfigDocument = gql`
   query PlatformStorageConfig {
     platform {
       id
-      storageBucket {
+      storageAggregator {
         id
-        allowedMimeTypes
-        maxFileSize
         authorization {
           id
           myPrivileges
+        }
+        directStorageBucket {
+          id
+          allowedMimeTypes
+          maxFileSize
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }

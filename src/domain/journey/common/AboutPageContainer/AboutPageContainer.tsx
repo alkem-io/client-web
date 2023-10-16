@@ -156,13 +156,11 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const profile = useMemo(() => {
     return {
       id: nonMemberProfile?.id ?? '',
-      displayName: nonMemberProfile?.displayName || '',
+      displayName: nonMemberProfile?.displayName ?? '',
       description: nonMemberProfile?.description,
       tagset: nonMemberProfile?.tagset,
       visuals: nonMemberProfile?.visuals ?? [],
-      tagline: nonMemberProfile?.tagline || '',
-      // references: nonMemberProfile?.references ?? [],
-      // location: nonMemberProfile?.location,
+      tagline: nonMemberProfile?.tagline ?? '',
     };
   }, [nonMemberProfile]);
 

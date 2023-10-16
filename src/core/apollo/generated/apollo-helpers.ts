@@ -669,7 +669,7 @@ export type ChallengeKeySpecifier = (
   | 'preferences'
   | 'profile'
   | 'spaceID'
-  | 'storageBucket'
+  | 'storageAggregator'
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
@@ -687,7 +687,7 @@ export type ChallengeFieldPolicy = {
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'spaceID' | ChallengeCreatedKeySpecifier)[];
 export type ChallengeCreatedFieldPolicy = {
@@ -1207,7 +1207,7 @@ export type LibraryKeySpecifier = (
   | 'id'
   | 'innovationPack'
   | 'innovationPacks'
-  | 'storageBucket'
+  | 'storageAggregator'
   | LibraryKeySpecifier
 )[];
 export type LibraryFieldPolicy = {
@@ -1215,7 +1215,7 @@ export type LibraryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
   | 'id'
@@ -1695,7 +1695,7 @@ export type OrganizationKeySpecifier = (
   | 'owners'
   | 'preferences'
   | 'profile'
-  | 'storageBucket'
+  | 'storageAggregator'
   | 'verification'
   | 'website'
   | OrganizationKeySpecifier
@@ -1717,7 +1717,7 @@ export type OrganizationFieldPolicy = {
   owners?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1776,7 +1776,7 @@ export type PlatformKeySpecifier = (
   | 'innovationHubs'
   | 'library'
   | 'metadata'
-  | 'storageBucket'
+  | 'storageAggregator'
   | PlatformKeySpecifier
 )[];
 export type PlatformFieldPolicy = {
@@ -1788,7 +1788,7 @@ export type PlatformFieldPolicy = {
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformLocationsKeySpecifier = (
   | 'about'
@@ -2056,7 +2056,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'profile'
   | 'project'
   | 'projects'
-  | 'storageBucket'
+  | 'storageAggregator'
   | 'templates'
   | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
@@ -2081,7 +2081,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2118,6 +2118,7 @@ export type RelayPaginatedUserKeySpecifier = (
   | 'phone'
   | 'preferences'
   | 'profile'
+  | 'storageAggregator'
   | RelayPaginatedUserKeySpecifier
 )[];
 export type RelayPaginatedUserFieldPolicy = {
@@ -2136,6 +2137,7 @@ export type RelayPaginatedUserFieldPolicy = {
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedUserEdgeKeySpecifier = ('node' | RelayPaginatedUserEdgeKeySpecifier)[];
 export type RelayPaginatedUserEdgeFieldPolicy = {
@@ -2415,7 +2417,7 @@ export type SpaceKeySpecifier = (
   | 'profile'
   | 'project'
   | 'projects'
-  | 'storageBucket'
+  | 'storageAggregator'
   | 'templates'
   | 'visibility'
   | SpaceKeySpecifier
@@ -2440,14 +2442,43 @@ export type SpaceFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type StorageAggregatorKeySpecifier = (
+  | 'authorization'
+  | 'directStorageBucket'
+  | 'id'
+  | 'parentEntity'
+  | 'size'
+  | 'storageAggregators'
+  | 'storageBuckets'
+  | StorageAggregatorKeySpecifier
+)[];
+export type StorageAggregatorFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  directStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentEntity?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregators?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBuckets?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type StorageAggregatorParentKeySpecifier = (
+  | 'displayName'
+  | 'id'
+  | 'url'
+  | StorageAggregatorParentKeySpecifier
+)[];
+export type StorageAggregatorParentFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageBucketKeySpecifier = (
   | 'allowedMimeTypes'
   | 'authorization'
-  | 'childStorage'
   | 'document'
   | 'documents'
   | 'id'
@@ -2459,7 +2490,6 @@ export type StorageBucketKeySpecifier = (
 export type StorageBucketFieldPolicy = {
   allowedMimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  childStorage?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   documents?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2594,6 +2624,7 @@ export type UserKeySpecifier = (
   | 'phone'
   | 'preferences'
   | 'profile'
+  | 'storageAggregator'
   | UserKeySpecifier
 )[];
 export type UserFieldPolicy = {
@@ -2612,6 +2643,7 @@ export type UserFieldPolicy = {
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserGroupKeySpecifier = (
   | 'authorization'
@@ -3386,6 +3418,14 @@ export type StrictTypedTypePolicies = {
   Space?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);
     fields?: SpaceFieldPolicy;
+  };
+  StorageAggregator?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | StorageAggregatorKeySpecifier | (() => undefined | StorageAggregatorKeySpecifier);
+    fields?: StorageAggregatorFieldPolicy;
+  };
+  StorageAggregatorParent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | StorageAggregatorParentKeySpecifier | (() => undefined | StorageAggregatorParentKeySpecifier);
+    fields?: StorageAggregatorParentFieldPolicy;
   };
   StorageBucket?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageBucketKeySpecifier | (() => undefined | StorageBucketKeySpecifier);

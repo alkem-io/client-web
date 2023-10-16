@@ -70,6 +70,7 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
       size: -1,
       childStorage: [],
     },
+    url: '',
   },
   preferences: [],
 };
