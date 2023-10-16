@@ -42,6 +42,7 @@ jobs:
 
       - name: Sign commit and push changes
         run: |
+          git fetch --all
           git checkout -b crowdin-translations develop
           git push --set-upstream origin crowdin-translations
           git add .
@@ -80,10 +81,10 @@ jobs:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
-      - name: 'Login via Azure CLI'
-        uses: azure/login@v1.4.7
-        with:
-          creds: ${{ secrets.AZURE_CRED_K8S_NEW }}
+#      - name: 'Login via Azure CLI'
+#        uses: azure/login@v1.4.7
+#        with:
+#          creds: ${{ secrets.AZURE_CRED_K8S_NEW }}
 
 #      - name: 'Build and push image'
 #        uses: azure/docker-login@v1.0.1
