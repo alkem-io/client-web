@@ -60,9 +60,9 @@ jobs:
           push_translations: true
           pull_request_labels: "translations, crowdin"
           pull_request_base_branch_name: 'develop'
-          github_user_email: svetoslav@alkem.io
-          gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
-          gpg_passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
+#          github_user_email: svetoslav@alkem.io
+#          gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
+#          gpg_passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
 
           push_sources: false
           upload_sources: false
