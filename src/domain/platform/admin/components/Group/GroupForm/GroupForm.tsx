@@ -69,6 +69,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
         tagline: '',
         visuals: [],
         storageBucket: {} as StorageBucket,
+        url: '',
       },
     };
     onSave && (await onSave(group));

@@ -68,6 +68,7 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
       maxFileSize: -1,
       size: -1,
     },
+    url: '',
   },
   preferences: [],
 };
