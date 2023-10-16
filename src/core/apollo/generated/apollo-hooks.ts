@@ -419,6 +419,9 @@ export const WhiteboardProfileFragmentDoc = gql`
     tagset {
       ...TagsetDetails
     }
+    storageBucket {
+      id
+    }
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -617,6 +620,9 @@ export const CalloutFragmentDoc = gql`
       }
       displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
         ...TagsetDetails
+      }
+      storageBucket {
+        id
       }
     }
     state
