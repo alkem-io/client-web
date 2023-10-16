@@ -6,12 +6,8 @@ query SpaceStorageAdmin($spaceId: UUID_NAMEID!) {
       id
       displayName
     }
-    storageBucket {
-      id
-      size
-      documents {
-        ...DocumentData
-      }
+    storageAggregator {
+      ...StorageAgregator
     }
     challenges {
       id
@@ -20,12 +16,20 @@ query SpaceStorageAdmin($spaceId: UUID_NAMEID!) {
         id
         displayName
       }
-      storageBucket {
-        id
-        documents {
-          ...DocumentData
-        }
+      storageAggregator {
+        ...StorageAgregator
       }
+    }
+  }
+}
+
+fragment StorageAgregator on StorageAggregator {
+  id
+  directStorageBucket {
+    id
+    size
+    documents {
+      ...DocumentData
     }
   }
 }

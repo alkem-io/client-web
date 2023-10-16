@@ -874,8 +874,8 @@ export type Challenge = {
   profile: Profile;
   /** The ID of the containing Space. */
   spaceID: Scalars['String'];
-  /** The StorageBucket with documents in use by this Challenge */
-  storageBucket?: Maybe<StorageBucket>;
+  /** The StorageAggregator in use by this Challenge */
+  storageAggregator?: Maybe<StorageAggregator>;
 };
 
 export type ChallengeOpportunitiesArgs = {
@@ -1818,8 +1818,6 @@ export enum DiscussionCategory {
 
 export type Document = {
   __typename?: 'Document';
-  /** Do we allow anonymous read access for this document? */
-  anonymousReadAccess: Scalars['Boolean'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The user that created this Document */
@@ -2090,8 +2088,8 @@ export type Library = {
   innovationPack?: Maybe<InnovationPack>;
   /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
-  /** The StorageBucket with documents in use by this User */
-  storageBucket?: Maybe<StorageBucket>;
+  /** The StorageAggregator for storage used by this Library */
+  storageAggregator?: Maybe<StorageAggregator>;
 };
 
 export type LibraryInnovationPackArgs = {
@@ -3292,8 +3290,8 @@ export type Organization = Groupable & {
   preferences: Array<Preference>;
   /** The profile for this organization. */
   profile: Profile;
-  /** The StorageBucket with documents in use by this Organization */
-  storageBucket?: Maybe<StorageBucket>;
+  /** The StorageAggregator for managing storage buckets in use by this Organization */
+  storageAggregator?: Maybe<StorageAggregator>;
   verification: OrganizationVerification;
   /** Organization website */
   website?: Maybe<Scalars['String']>;
@@ -3403,8 +3401,8 @@ export type Platform = {
   library: Library;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
-  /** The StorageBucket with documents in use by Users + Organizations on the Platform. */
-  storageBucket: StorageBucket;
+  /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
+  storageAggregator: StorageAggregator;
 };
 
 export type PlatformInnovationHubArgs = {
@@ -3593,6 +3591,10 @@ export type Profile = {
   tagset?: Maybe<Tagset>;
   /** A list of named tagsets, each of which has a list of tags. */
   tagsets?: Maybe<Array<Tagset>>;
+  /** A type of entity that this Profile is being used with. */
+  type?: Maybe<ProfileType>;
+  /** The URL at which this profile can be viewed. */
+  url: Scalars['String'];
   /** A particular type of visual for this Profile. */
   visual?: Maybe<Visual>;
   /** A list of visuals for this Profile. */
@@ -3614,6 +3616,29 @@ export type ProfileCredentialVerified = {
   /** The vc. */
   vc: Scalars['String'];
 };
+
+export enum ProfileType {
+  CalendarEvent = 'CALENDAR_EVENT',
+  Callout = 'CALLOUT',
+  CalloutFraming = 'CALLOUT_FRAMING',
+  CalloutTemplate = 'CALLOUT_TEMPLATE',
+  Challenge = 'CHALLENGE',
+  Discussion = 'DISCUSSION',
+  InnovationFlow = 'INNOVATION_FLOW',
+  InnovationFlowTemplate = 'INNOVATION_FLOW_TEMPLATE',
+  InnovationHub = 'INNOVATION_HUB',
+  InnovationPack = 'INNOVATION_PACK',
+  Opportunity = 'OPPORTUNITY',
+  Organization = 'ORGANIZATION',
+  Post = 'POST',
+  PostTemplate = 'POST_TEMPLATE',
+  Space = 'SPACE',
+  User = 'USER',
+  UserGroup = 'USER_GROUP',
+  Whiteboard = 'WHITEBOARD',
+  WhiteboardRt = 'WHITEBOARD_RT',
+  WhiteboardTemplate = 'WHITEBOARD_TEMPLATE',
+}
 
 export type Project = {
   __typename?: 'Project';
@@ -3868,8 +3893,8 @@ export type RelayPaginatedSpace = {
   project: Project;
   /** All projects within this space */
   projects: Array<Project>;
-  /** The StorageBucket with documents in use by this Space */
-  storageBucket?: Maybe<StorageBucket>;
+  /** The StorageAggregator in use by this Space */
+  storageAggregator?: Maybe<StorageAggregator>;
   /** The templates in use by this Space */
   templates?: Maybe<TemplatesSet>;
   /** Visibility of the Space. */
@@ -3952,6 +3977,8 @@ export type RelayPaginatedUser = {
   preferences: Array<Preference>;
   /** The Profile for this User. */
   profile: Profile;
+  /** The StorageAggregator for managing storage buckets in use by this User */
+  storageAggregator?: Maybe<StorageAggregator>;
 };
 
 export type RelayPaginatedUserEdge = {
@@ -4383,8 +4410,8 @@ export type Space = {
   project: Project;
   /** All projects within this space */
   projects: Array<Project>;
-  /** The StorageBucket with documents in use by this Space */
-  storageBucket?: Maybe<StorageBucket>;
+  /** The StorageAggregator in use by this Space */
+  storageAggregator?: Maybe<StorageAggregator>;
   /** The templates in use by this Space */
   templates?: Maybe<TemplatesSet>;
   /** Visibility of the Space. */
@@ -4446,6 +4473,34 @@ export enum SpaceVisibility {
   Demo = 'DEMO',
 }
 
+export type StorageAggregator = {
+  __typename?: 'StorageAggregator';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The Storage Bucket for files directly on this Storage Aggregator (legacy). */
+  directStorageBucket: StorageBucket;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The key information about the entity using this StorageAggregator, if any. */
+  parentEntity?: Maybe<StorageAggregatorParent>;
+  /** The aggregate size of all StorageBuckets for this StorageAggregator. */
+  size: Scalars['Float'];
+  /** The list of child storageAggregators for this StorageAggregator. */
+  storageAggregators: Array<StorageAggregator>;
+  /** The Storage Buckets that are being managed via this StorageAggregators. */
+  storageBuckets: Array<StorageBucket>;
+};
+
+export type StorageAggregatorParent = {
+  __typename?: 'StorageAggregatorParent';
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The UUID of the parent entity. */
+  id: Scalars['UUID'];
+  /** The URL that can be used to access the parent entity. */
+  url: Scalars['String'];
+};
+
 export type StorageBucket = {
   __typename?: 'StorageBucket';
   /** Mime types allowed to be stored on this StorageBucket. */
@@ -4460,6 +4515,8 @@ export type StorageBucket = {
   id: Scalars['UUID'];
   /** Maximum allowed file size on this StorageBucket. */
   maxFileSize: Scalars['Float'];
+  /** The key information about the entity using this StorageBucket, if any. */
+  parentEntity?: Maybe<StorageBucketParent>;
   /** The aggregate size of all Documents for this StorageBucket. */
   size: Scalars['Float'];
 };
@@ -4471,6 +4528,18 @@ export type StorageBucketDocumentArgs = {
 export type StorageBucketDocumentsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type StorageBucketParent = {
+  __typename?: 'StorageBucketParent';
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The UUID of the parent entity. */
+  id: Scalars['UUID'];
+  /** The type of entity that this StorageBucket is being used with. */
+  type: ProfileType;
+  /** The URL that can be used to access the parent entity. */
+  url: Scalars['String'];
 };
 
 export type StorageBucketUploadFileInput = {
@@ -5092,6 +5161,8 @@ export type User = {
   preferences: Array<Preference>;
   /** The Profile for this User. */
   profile: Profile;
+  /** The StorageAggregator for managing storage buckets in use by this User */
+  storageAggregator?: Maybe<StorageAggregator>;
 };
 
 export type UserAuthorizationPrivilegesInput = {
@@ -26220,30 +26291,34 @@ export type SpaceStorageAdminQuery = {
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
-    storageBucket?:
+    storageAggregator?:
       | {
-          __typename?: 'StorageBucket';
+          __typename?: 'StorageAggregator';
           id: string;
-          size: number;
-          documents: Array<{
-            __typename?: 'Document';
+          directStorageBucket: {
+            __typename?: 'StorageBucket';
             id: string;
-            displayName: string;
             size: number;
-            mimeType: MimeType;
-            uploadedDate: Date;
-            createdBy?:
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  nameID: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
-                }
-              | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }>;
+            documents: Array<{
+              __typename?: 'Document';
+              id: string;
+              displayName: string;
+              size: number;
+              mimeType: MimeType;
+              uploadedDate: Date;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    nameID: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }>;
+          };
         }
       | undefined;
     challenges?:
@@ -26252,37 +26327,71 @@ export type SpaceStorageAdminQuery = {
           id: string;
           nameID: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
-          storageBucket?:
+          storageAggregator?:
             | {
-                __typename?: 'StorageBucket';
+                __typename?: 'StorageAggregator';
                 id: string;
-                documents: Array<{
-                  __typename?: 'Document';
+                directStorageBucket: {
+                  __typename?: 'StorageBucket';
                   id: string;
-                  displayName: string;
                   size: number;
-                  mimeType: MimeType;
-                  uploadedDate: Date;
-                  createdBy?:
-                    | {
-                        __typename?: 'User';
-                        id: string;
-                        nameID: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
-                      }
-                    | undefined;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                }>;
+                  documents: Array<{
+                    __typename?: 'Document';
+                    id: string;
+                    displayName: string;
+                    size: number;
+                    mimeType: MimeType;
+                    uploadedDate: Date;
+                    createdBy?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          nameID: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        }
+                      | undefined;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }>;
+                };
               }
             | undefined;
         }>
       | undefined;
+  };
+};
+
+export type StorageAgregatorFragment = {
+  __typename?: 'StorageAggregator';
+  id: string;
+  directStorageBucket: {
+    __typename?: 'StorageBucket';
+    id: string;
+    size: number;
+    documents: Array<{
+      __typename?: 'Document';
+      id: string;
+      displayName: string;
+      size: number;
+      mimeType: MimeType;
+      uploadedDate: Date;
+      createdBy?:
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    }>;
   };
 };
 
@@ -28458,11 +28567,9 @@ export type PlatformStorageConfigQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    storageBucket: {
-      __typename?: 'StorageBucket';
+    storageAggregator: {
+      __typename?: 'StorageAggregator';
       id: string;
-      allowedMimeTypes: Array<string>;
-      maxFileSize: number;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
