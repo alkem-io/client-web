@@ -1844,6 +1844,7 @@
     },
     "home": {
       "title": "My Dashboard",
+      "subtitle": "Ready to make some impact?",
       "sections": {
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",

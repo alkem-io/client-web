@@ -10,14 +10,14 @@ import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 export interface PageBannerCardProps extends PageBannerCardWrapperProps {
   title: ReactNode;
   subtitle?: ReactNode;
-  iconComponent: ComponentType<SvgIconProps>;
+  iconComponent?: ComponentType<SvgIconProps>;
 }
 
 const PageBannerCard = ({ title, subtitle, iconComponent: Icon, ...props }: PropsWithChildren<PageBannerCardProps>) => {
   return (
     <PageBannerCardWrapper {...props}>
       <Box display="flex" flexDirection="column" gap={gutters(0.5)}>
-        <BadgeCardView visual={<Icon color="primary" fontSize="large" />}>
+        <BadgeCardView visual={Icon && <Icon color="primary" fontSize="large" />}>
           <PageTitle color="primary" noWrap>
             {title}
           </PageTitle>
