@@ -28573,6 +28573,15 @@ export type PlatformStorageConfigQuery = {
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
+      directStorageBucket: {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      };
     };
   };
 };

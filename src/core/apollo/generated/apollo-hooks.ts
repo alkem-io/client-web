@@ -22023,6 +22023,15 @@ export const PlatformStorageConfigDocument = gql`
           id
           myPrivileges
         }
+        directStorageBucket {
+          id
+          allowedMimeTypes
+          maxFileSize
+          authorization {
+            id
+            myPrivileges
+          }
+        }
       }
     }
   }

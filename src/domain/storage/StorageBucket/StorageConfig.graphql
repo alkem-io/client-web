@@ -144,6 +144,15 @@ query PlatformStorageConfig {
         id
         myPrivileges
       }
+      directStorageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
+      }
     }
   }
 }

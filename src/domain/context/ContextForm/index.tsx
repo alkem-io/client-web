@@ -13,7 +13,7 @@ export interface ContextFormValues {
 
 interface ContextFormProps {
   context?: Context;
-  profile?: Omit<Profile, 'storageBucket'>;
+  profile?: Omit<Profile, 'storageBucket' | 'url'>;
   onSubmit: (formData: ContextFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextSegment: ElementType<ContextSegmentProps>;
