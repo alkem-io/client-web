@@ -15,26 +15,29 @@ import {
   CreateCalloutMutation,
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 import { WhiteboardRtFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
 
 export interface CalloutCreationType {
-  profile: {
-    description: string;
-    displayName: string;
-    referencesData: Reference[];
-    tagsets?: CreateTagsetInput[];
+  framing: {
+    profile: {
+      description: string;
+      displayName: string;
+      referencesData: Reference[];
+      tagsets?: CreateTagsetInput[];
+    };
+    whiteboard?: WhiteboardFieldSubmittedValues;
+    whiteboardRt?: WhiteboardRtFieldSubmittedValues;
   };
-  tags?: string[];
+  contributionDefaults?: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
   type: CalloutType;
-  state: CalloutState;
-  postTemplate?: PostTemplateFormSubmittedValues;
-  whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValues;
-  whiteboardRt?: WhiteboardRtFieldSubmittedValues;
+  contributionPolicy: {
+    state: CalloutState;
+  };
   displayLocation?: CalloutDisplayLocation;
   visibility?: CalloutVisibility;
   sendNotification?: boolean;

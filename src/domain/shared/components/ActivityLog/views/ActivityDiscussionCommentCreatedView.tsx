@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { buildCalloutUrl } from '../../../../../main/routing/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
-import { NameableEntity } from '../../../types/NameableEntity';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { ActivityCalloutValues } from '../../../types/ActivityCalloutValues';
 
 interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
+  callout: ActivityCalloutValues;
   description: string;
 }
 
@@ -49,7 +49,7 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              calloutDisplayName: callout.framing.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}

@@ -83,11 +83,13 @@ fragment InnovationFlowCollaboration on Collaboration {
     type
     activity
     sortOrder
-    profile {
-      id
-      displayName
-      flowState: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
+    framing {
+      profile {
+        id
+        displayName
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
       }
     }
   }
@@ -101,14 +103,16 @@ mutation UpdateInnovationFlow($updateInnovationFlowData: UpdateInnovationFlowInp
 
 mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
   updateCallout(
-    calloutData: { ID: $calloutId, profileData: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
+    calloutData: { ID: $calloutId, framing: { profile: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } } }
   ) {
     id
     sortOrder
-    profile {
-      id
-      flowState: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
+    framing {
+      profile {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
       }
     }
   }

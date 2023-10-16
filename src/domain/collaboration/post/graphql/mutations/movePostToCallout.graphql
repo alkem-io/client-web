@@ -1,10 +1,13 @@
-mutation MovePostToCallout($postId: UUID!, $calloutId: UUID!) {
-  movePostToCallout(movePostData: { postID: $postId, calloutID: $calloutId }) {
+mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
+  moveContributionToCallout(moveContributionData: { contributionID: $contributionId, calloutID: $calloutId }) {
     id
-    nameID
-    callout {
+    post {
       id
       nameID
+      profile {
+        id
+        url
+      }
     }
   }
 }

@@ -13,7 +13,7 @@ const useCalloutPostCreatedSubscription = createUseSubscriptionToSubEntityHook<
 >({
   subscriptionDocument: CalloutPostCreatedDocument,
   updateSubEntity: (callout, subscriptionData) => {
-    callout?.posts?.push(subscriptionData.calloutPostCreated.post);
+    callout?.contributions?.push({ post: subscriptionData.calloutPostCreated.post });
   },
 });
 

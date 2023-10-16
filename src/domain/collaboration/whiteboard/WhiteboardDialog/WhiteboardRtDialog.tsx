@@ -33,6 +33,7 @@ import { Caption } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
+import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
   const { t } = useTranslation();
@@ -152,12 +153,16 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     return { appState, elements, files };
   };
 
+  const filesManager = useWhiteboardFilesManager({
+    excalidrawApi: excalidrawApiRef.current,
+    storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+  });
+
   const handleUpdate = async (whiteboard: WhiteboardRtWithContent, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
       return;
     }
-
-    const { appState, elements, files } = state;
+    const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
 
@@ -285,7 +290,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardValue && whiteboard && (
                 <CollaborativeExcalidrawWrapper
-                  entities={{ whiteboard }}
+                  entities={{ whiteboard, filesManager }}
                   ref={excalidrawApiRef}
                   collabApiRef={collabApiRef}
                   options={{

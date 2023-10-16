@@ -99,11 +99,13 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       type
       activity
       sortOrder
-      profile {
-        id
-        displayName
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
+      framing {
+        profile {
+          id
+          displayName
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
         }
       }
     }
@@ -165,9 +167,11 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
       id
       nameID
       type
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -177,9 +181,11 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     post {
@@ -199,9 +205,11 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     reference {
@@ -217,9 +225,11 @@ export const ActivityLogCalloutPostCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     post {
@@ -237,9 +247,11 @@ export const ActivityLogCalloutWhiteboardCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
     whiteboard {
@@ -257,9 +269,11 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -419,6 +433,9 @@ export const WhiteboardProfileFragmentDoc = gql`
     tagset {
       ...TagsetDetails
     }
+    storageBucket {
+      id
+    }
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -557,30 +574,12 @@ export const CommentsWithMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-export const CalloutPostTemplateFragmentDoc = gql`
-  fragment CalloutPostTemplate on Callout {
-    postTemplate {
-      id
-      type
-      defaultDescription
-      profile {
-        tagset {
-          ...TagsetDetails
-        }
-        visual(type: CARD) {
-          id
-          uri
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const CalloutWhiteboardTemplateFragmentDoc = gql`
-  fragment CalloutWhiteboardTemplate on Callout {
-    whiteboardTemplate {
-      id
-      content
+export const CalloutFragmentDoc = gql`
+  fragment Callout on Callout {
+    id
+    nameID
+    type
+    framing {
       profile {
         id
         displayName
@@ -588,45 +587,43 @@ export const CalloutWhiteboardTemplateFragmentDoc = gql`
         tagset {
           ...TagsetDetails
         }
-        visual(type: CARD) {
+        tagsets {
+          ...TagsetDetails
+        }
+        references {
+          ...ReferenceDetails
+        }
+        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          ...TagsetDetails
+        }
+        storageBucket {
           id
-          uri
         }
       }
+      whiteboard {
+        ...WhiteboardDetails
+      }
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
     }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const CalloutFragmentDoc = gql`
-  fragment Callout on Callout {
-    id
-    nameID
-    type
-    profile {
+    contributionPolicy {
+      state
+    }
+    contributionDefaults {
       id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      references {
-        ...ReferenceDetails
-      }
-      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-        ...TagsetDetails
-      }
+      postDescription
+      whiteboardContent
     }
-    state
     sortOrder
     activity
-    whiteboards {
-      ...WhiteboardDetails
-    }
-    whiteboardRt {
-      ...WhiteboardRtDetails
+    contributions {
+      whiteboard {
+        ...WhiteboardDetails
+      }
+      link {
+        ...ReferenceDetails
+      }
     }
     comments {
       ...CommentsWithMessages
@@ -636,16 +633,12 @@ export const CalloutFragmentDoc = gql`
       myPrivileges
     }
     visibility
-    ...CalloutPostTemplate
-    ...CalloutWhiteboardTemplate
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardRtDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-  ${CalloutPostTemplateFragmentDoc}
-  ${CalloutWhiteboardTemplateFragmentDoc}
 `;
 export const CollaborationWithCalloutsFragmentDoc = gql`
   fragment CollaborationWithCallouts on Collaboration {
@@ -728,9 +721,13 @@ export const PostDashboardDataFragmentDoc = gql`
     }
     callouts(IDs: [$calloutNameId]) {
       id
+      nameID
       type
-      posts(IDs: [$postNameId]) {
-        ...PostDashboard
+      contributions(filter: { postIDs: [$postNameId] }) {
+        id
+        post {
+          ...PostDashboard
+        }
       }
     }
   }
@@ -769,15 +766,21 @@ export const PostSettingsFragmentDoc = gql`
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {
     id
+    nameID
     type
-    posts(IDs: [$postNameId]) {
-      ...PostSettings
-    }
-    postNames: posts {
+    contributions(filter: { postIDs: [$postNameId] }) {
       id
-      profile {
+      post {
+        ...PostSettings
+      }
+    }
+    postNames: contributions {
+      post {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -806,9 +809,12 @@ export const PostProviderDataFragmentDoc = gql`
     id
     callouts(IDs: [$calloutNameId]) {
       id
+      nameID
       type
-      posts(IDs: [$postNameId]) {
-        ...PostProvided
+      contributions(filter: { postIDs: [$postNameId] }) {
+        post {
+          ...PostProvided
+        }
       }
     }
   }
@@ -986,8 +992,15 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
       anonymousReadAccess
       myPrivileges
     }
-    whiteboards(IDs: [$whiteboardId]) {
-      ...WhiteboardDetails
+    framing {
+      whiteboard {
+        ...WhiteboardDetails
+      }
+    }
+    contributions(filter: { whiteboardIDs: [$whiteboardId] }) {
+      whiteboard {
+        ...WhiteboardDetails
+      }
     }
   }
   ${WhiteboardDetailsFragmentDoc}
@@ -1002,8 +1015,10 @@ export const CalloutWithWhiteboardRtFragmentDoc = gql`
       anonymousReadAccess
       myPrivileges
     }
-    whiteboardRt {
-      ...WhiteboardRtDetails
+    framing {
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
     }
   }
   ${WhiteboardRtDetailsFragmentDoc}
@@ -1020,11 +1035,15 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
         anonymousReadAccess
         myPrivileges
       }
-      whiteboards {
-        ...WhiteboardDetails
+      contributions {
+        whiteboard {
+          ...WhiteboardDetails
+        }
       }
-      whiteboardRt {
-        ...WhiteboardRtDetails
+      framing {
+        whiteboardRt {
+          ...WhiteboardRtDetails
+        }
       }
     }
   }
@@ -1882,23 +1901,17 @@ export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
     nameID
-    profile {
-      id
-      displayName
-      description
+    framing {
+      profile {
+        id
+        displayName
+        description
+      }
     }
     type
     visibility
-    posts(limit: 2, shuffle: true) {
-      ...PostCard
-    }
-    whiteboards(limit: 2, shuffle: true) {
-      ...WhiteboardDetails
-    }
     activity
   }
-  ${PostCardFragmentDoc}
-  ${WhiteboardDetailsFragmentDoc}
 `;
 export const DashboardTopCalloutsFragmentDoc = gql`
   fragment DashboardTopCallouts on Collaboration {
@@ -2838,6 +2851,19 @@ export const DocumentDataFragmentDoc = gql`
     }
   }
 `;
+export const StorageAgregatorFragmentDoc = gql`
+  fragment StorageAgregator on StorageAggregator {
+    id
+    directStorageBucket {
+      id
+      size
+      documents {
+        ...DocumentData
+      }
+    }
+  }
+  ${DocumentDataFragmentDoc}
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -3026,9 +3052,11 @@ export const PostParentFragmentDoc = gql`
     callout {
       id
       nameID
-      profile {
-        id
-        displayName
+      framing {
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -3264,8 +3292,10 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
     id
     callouts(IDs: [$calloutId]) {
       id
-      profile {
-        ...ProfileStorageConfig
+      framing {
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }
@@ -3276,10 +3306,12 @@ export const PostInCalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
     id
     callouts(IDs: [$calloutId]) {
       id
-      posts(IDs: [$postId]) {
-        id
-        profile {
-          ...ProfileStorageConfig
+      contributions(filter: { postIDs: [$postId] }) {
+        post {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
         }
       }
     }
@@ -4860,14 +4892,16 @@ export type UpdateInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateCalloutFlowStateDocument = gql`
   mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
     updateCallout(
-      calloutData: { ID: $calloutId, profileData: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
+      calloutData: { ID: $calloutId, framing: { profile: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } } }
     ) {
       id
       sortOrder
-      profile {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
+      framing {
+        profile {
+          id
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
         }
       }
     }
@@ -5791,32 +5825,38 @@ export const UpdateCalloutDocument = gql`
   mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
     updateCallout(calloutData: $calloutData) {
       id
-      profile {
-        id
-        description
-        displayName
-        tagset {
-          ...TagsetDetails
-        }
-        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-          ...TagsetDetails
-        }
-        references {
+      framing {
+        profile {
           id
-          name
-          uri
+          description
+          displayName
+          tagset {
+            ...TagsetDetails
+          }
+          displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+          }
         }
       }
-      state
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
+      contributionPolicy {
+        id
+        state
+      }
       type
       visibility
-      ...CalloutPostTemplate
-      ...CalloutWhiteboardTemplate
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${CalloutPostTemplateFragmentDoc}
-  ${CalloutWhiteboardTemplateFragmentDoc}
 `;
 export type UpdateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutMutation,
@@ -6045,20 +6085,22 @@ export function refetchCalloutIdQuery(variables: SchemaTypes.CalloutIdQueryVaria
 }
 
 export const CreatePostFromContributeTabDocument = gql`
-  mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
-    createPostOnCallout(postData: $postData) {
-      id
-      nameID
-      type
-      profile {
+  mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
+    createContributionOnCallout(contributionData: $postData) {
+      post {
         id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-        visual(type: CARD) {
-          ...VisualUri
+        nameID
+        type
+        profile {
+          id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          visual(type: CARD) {
+            ...VisualUri
+          }
         }
       }
     }
@@ -6156,9 +6198,11 @@ export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
 export const CreateLinkOnCalloutDocument = gql`
-  mutation createLinkOnCallout($input: CreateLinkOnCalloutInput!) {
-    createLinkOnCallout(linkData: $input) {
-      ...ReferenceDetails
+  mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
+    createContributionOnCallout(contributionData: $input) {
+      link {
+        ...ReferenceDetails
+      }
     }
   }
   ${ReferenceDetailsFragmentDoc}
@@ -6203,6 +6247,55 @@ export type CreateLinkOnCalloutMutationResult = Apollo.MutationResult<SchemaType
 export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateLinkOnCalloutMutation,
   SchemaTypes.CreateLinkOnCalloutMutationVariables
+>;
+export const UpdateReferenceDocument = gql`
+  mutation updateReference($input: UpdateReferenceInput!) {
+    updateReference(referenceData: $input) {
+      ...ReferenceDetails
+    }
+  }
+  ${ReferenceDetailsFragmentDoc}
+`;
+export type UpdateReferenceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateReferenceMutation,
+  SchemaTypes.UpdateReferenceMutationVariables
+>;
+
+/**
+ * __useUpdateReferenceMutation__
+ *
+ * To run a mutation, you first call `useUpdateReferenceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateReferenceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateReferenceMutation, { data, loading, error }] = useUpdateReferenceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateReferenceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateReferenceMutation,
+    SchemaTypes.UpdateReferenceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateReferenceMutation, SchemaTypes.UpdateReferenceMutationVariables>(
+    UpdateReferenceDocument,
+    options
+  );
+}
+
+export type UpdateReferenceMutationHookResult = ReturnType<typeof useUpdateReferenceMutation>;
+export type UpdateReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateReferenceMutation>;
+export type UpdateReferenceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateReferenceMutation,
+  SchemaTypes.UpdateReferenceMutationVariables
 >;
 export const CalloutPostCreatedDocument = gql`
   subscription CalloutPostCreated($calloutId: UUID!) {
@@ -6252,8 +6345,10 @@ export const CalloutPostsDocument = gql`
     lookup {
       callout(ID: $calloutId) {
         id
-        posts {
-          ...ContributeTabPost
+        contributions {
+          post {
+            ...ContributeTabPost
+          }
         }
       }
     }
@@ -7287,59 +7382,63 @@ export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePostMutation,
   SchemaTypes.DeletePostMutationVariables
 >;
-export const MovePostToCalloutDocument = gql`
-  mutation MovePostToCallout($postId: UUID!, $calloutId: UUID!) {
-    movePostToCallout(movePostData: { postID: $postId, calloutID: $calloutId }) {
+export const MoveContributionToCalloutDocument = gql`
+  mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
+    moveContributionToCallout(moveContributionData: { contributionID: $contributionId, calloutID: $calloutId }) {
       id
-      nameID
-      callout {
+      post {
         id
         nameID
+        profile {
+          id
+          url
+        }
       }
     }
   }
 `;
-export type MovePostToCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.MovePostToCalloutMutation,
-  SchemaTypes.MovePostToCalloutMutationVariables
+export type MoveContributionToCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MoveContributionToCalloutMutation,
+  SchemaTypes.MoveContributionToCalloutMutationVariables
 >;
 
 /**
- * __useMovePostToCalloutMutation__
+ * __useMoveContributionToCalloutMutation__
  *
- * To run a mutation, you first call `useMovePostToCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMovePostToCalloutMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useMoveContributionToCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveContributionToCalloutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [movePostToCalloutMutation, { data, loading, error }] = useMovePostToCalloutMutation({
+ * const [moveContributionToCalloutMutation, { data, loading, error }] = useMoveContributionToCalloutMutation({
  *   variables: {
- *      postId: // value for 'postId'
+ *      contributionId: // value for 'contributionId'
  *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
-export function useMovePostToCalloutMutation(
+export function useMoveContributionToCalloutMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.MovePostToCalloutMutation,
-    SchemaTypes.MovePostToCalloutMutationVariables
+    SchemaTypes.MoveContributionToCalloutMutation,
+    SchemaTypes.MoveContributionToCalloutMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.MovePostToCalloutMutation, SchemaTypes.MovePostToCalloutMutationVariables>(
-    MovePostToCalloutDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.MoveContributionToCalloutMutation,
+    SchemaTypes.MoveContributionToCalloutMutationVariables
+  >(MoveContributionToCalloutDocument, options);
 }
 
-export type MovePostToCalloutMutationHookResult = ReturnType<typeof useMovePostToCalloutMutation>;
-export type MovePostToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MovePostToCalloutMutation>;
-export type MovePostToCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.MovePostToCalloutMutation,
-  SchemaTypes.MovePostToCalloutMutationVariables
+export type MoveContributionToCalloutMutationHookResult = ReturnType<typeof useMoveContributionToCalloutMutation>;
+export type MoveContributionToCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.MoveContributionToCalloutMutation>;
+export type MoveContributionToCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MoveContributionToCalloutMutation,
+  SchemaTypes.MoveContributionToCalloutMutationVariables
 >;
 export const SpaceWhiteboardTemplatesLibraryDocument = gql`
   query SpaceWhiteboardTemplatesLibrary($spaceId: UUID_NAMEID!) {
@@ -8044,9 +8143,11 @@ export function refetchPlatformTemplateWhiteboardContentsQuery(
 }
 
 export const CreateWhiteboardOnCalloutDocument = gql`
-  mutation createWhiteboardOnCallout($input: CreateWhiteboardOnCalloutInput!) {
-    createWhiteboardOnCallout(whiteboardData: $input) {
-      ...WhiteboardDetails
+  mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
+    createContributionOnCallout(contributionData: $input) {
+      whiteboard {
+        ...WhiteboardDetails
+      }
     }
   }
   ${WhiteboardDetailsFragmentDoc}
@@ -20070,12 +20171,8 @@ export const SpaceStorageAdminDocument = gql`
         id
         displayName
       }
-      storageBucket {
-        id
-        size
-        documents {
-          ...DocumentData
-        }
+      storageAggregator {
+        ...StorageAgregator
       }
       challenges {
         id
@@ -20084,16 +20181,13 @@ export const SpaceStorageAdminDocument = gql`
           id
           displayName
         }
-        storageBucket {
-          id
-          documents {
-            ...DocumentData
-          }
+        storageAggregator {
+          ...StorageAgregator
         }
       }
     }
   }
-  ${DocumentDataFragmentDoc}
+  ${StorageAgregatorFragmentDoc}
 `;
 
 /**
@@ -22116,13 +22210,20 @@ export const PlatformStorageConfigDocument = gql`
   query PlatformStorageConfig {
     platform {
       id
-      storageBucket {
+      storageAggregator {
         id
-        allowedMimeTypes
-        maxFileSize
         authorization {
           id
           myPrivileges
+        }
+        directStorageBucket {
+          id
+          allowedMimeTypes
+          maxFileSize
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }

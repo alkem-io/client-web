@@ -115,7 +115,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
     return sortBy(
       [
         ...compact(
-          data?.space.storageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
+          data?.space.storageAggregator?.directStorageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
             ...doc,
             location: {
               type: 'space',
@@ -126,7 +126,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
         ),
         ...compact(
           data?.space.challenges?.flatMap(challenge =>
-            challenge.storageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
+            challenge.storageAggregator?.directStorageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
               ...doc,
               location: {
                 type: 'challenge',

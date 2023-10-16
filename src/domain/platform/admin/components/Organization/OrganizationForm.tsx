@@ -50,6 +50,7 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
     tagline: '',
     visuals: [],
     description: '',
+    url: '',
     tagsets: undefined,
     references: [],
     location: {

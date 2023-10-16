@@ -56,7 +56,7 @@ const WhiteboardRtProvider: FC<WhiteboardRtProviderProps> = ({
   return (
     <>
       {children(
-        { whiteboard: callout?.whiteboardRt, templates, calloutId, authorization },
+        { whiteboard: callout?.framing.whiteboardRt, templates, calloutId, authorization },
         { loadingWhiteboards: loading, loadingTemplates }
       )}
     </>

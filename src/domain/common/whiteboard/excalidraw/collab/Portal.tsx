@@ -5,17 +5,19 @@ import { WS_EVENTS, WS_SCENE_EVENT_TYPES, PRECEDING_ELEMENT_KEY } from './excali
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
-import { BinaryFileData } from '@alkemio/excalidraw/types/types';
+import { BinaryFileDataWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 
 class Portal {
   collab: TCollabClass;
+  filesManager: WhiteboardFilesManager;
   socket: Socket | null = null;
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
 
-  constructor(collab: TCollabClass) {
+  constructor(collab: TCollabClass, filesManager: WhiteboardFilesManager) {
     this.collab = collab;
+    this.filesManager = filesManager;
   }
 
   open(socket: Socket, id: string) {
@@ -108,17 +110,20 @@ class Portal {
     await this._broadcastSocketData(data as SocketUpdateData);
   };
 
-  broadcastFile = async (file: BinaryFileData) => {
+  broadcastFile = async (file: BinaryFileDataWithUrl) => {
     if (this.socket?.id) {
-      const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
-        type: 'FILE_UPLOAD',
-        payload: {
-          socketId: this.socket.id,
-          file,
-        },
-      };
+      const fileWithUrl = await this.filesManager.removeExcalidrawAttachment(file);
+      if (fileWithUrl) {
+        const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
+          type: 'FILE_UPLOAD',
+          payload: {
+            socketId: this.socket.id,
+            file: fileWithUrl,
+          },
+        };
 
-      await this._broadcastSocketData(data as SocketUpdateData);
+        await this._broadcastSocketData(data as SocketUpdateData);
+      }
     }
   };
 

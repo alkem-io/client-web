@@ -8,7 +8,9 @@ import {
   CalloutState,
   CalloutType,
   CalloutVisibility,
+  ContributeTabPostFragment,
   MessageDetailsFragment,
+  WhiteboardDetailsFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { CalloutSummary } from '../callout/CalloutSummary';
@@ -16,7 +18,6 @@ import CalloutVisibilityChangeDialog from '../callout/edit/visibilityChangeDialo
 import CalloutEditDialog from '../callout/edit/editDialog/CalloutEditDialog';
 import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import { CalloutPostTemplate, CalloutWhiteboardTemplate } from '../callout/creationDialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
 import { CalloutLayoutEvents, CalloutSortProps } from '../callout/CalloutViewTypes';
@@ -42,29 +43,46 @@ import { Reference, Tagset } from '../../common/profile/Profile';
 import References from '../../shared/components/References/References';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
+import { WhiteboardFragmentWithCallout, WhiteboardRtFragmentWithCallout } from '../callout/useCallouts/useCallouts';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
     id: string;
     nameID: string;
-    profile: {
-      id: string;
-      displayName: string;
-      description?: string;
-      references?: Reference[];
-      tagset?: Tagset;
-      displayLocationTagset?: Tagset;
+    framing: {
+      profile: {
+        id: string;
+        displayName: string;
+        description?: string;
+        references?: Reference[];
+        tagset?: Tagset;
+        displayLocationTagset?: Tagset;
+        storageBucket: {
+          id: string;
+        };
+      };
+      whiteboard: WhiteboardFragmentWithCallout;
+      whiteboardRt: WhiteboardRtFragmentWithCallout;
     };
     comments?: {
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
-    state: CalloutState;
+    contributionPolicy: {
+      state: CalloutState;
+    };
+    contributionDefaults: {
+      postDescription?: string;
+      whiteboardContent?: string;
+    };
+    contributions?: {
+      link?: Reference;
+      post?: ContributeTabPostFragment;
+      whiteboard?: WhiteboardDetailsFragment;
+    }[];
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
-    postTemplate?: CalloutPostTemplate;
-    whiteboardTemplate?: CalloutWhiteboardTemplate;
     authorName?: string;
     authorAvatarUri?: string;
     publishedAt?: string;
@@ -151,7 +169,7 @@ const CalloutLayout = ({
   );
 
   const calloutNotOpenStateName = useMemo(() => {
-    const state = callout?.state;
+    const state = callout?.contributionPolicy.state;
 
     if (!state || state === CalloutState.Open || disableMarginal) {
       return undefined;
@@ -162,7 +180,7 @@ const CalloutLayout = ({
     }
 
     return t('callout.closed');
-  }, [callout?.state, callout?.comments?.messages, t]);
+  }, [callout?.contributionPolicy.state, callout?.comments?.messages, t]);
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
@@ -213,16 +231,16 @@ const CalloutLayout = ({
             })}`}
           </Authorship>
         )}
-        {!hasCalloutDetails && <BlockTitle noWrap>{callout.profile.displayName}</BlockTitle>}
+        {!hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
       </DialogHeader>
       <Gutters minHeight={0} paddingTop={0}>
-        {hasCalloutDetails && <BlockTitle>{callout.profile.displayName}</BlockTitle>}
+        {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}
         <Box sx={{ wordWrap: 'break-word' }}>
-          <WrapperMarkdown>{callout.profile.description ?? ''}</WrapperMarkdown>
+          <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
         </Box>
-        {!skipReferences && <References compact references={callout.profile.references} />}
-        {callout.profile.tagset?.tags && callout.profile.tagset?.tags.length > 0 ? (
-          <TagsComponent tags={callout.profile.tagset?.tags} />
+        {!skipReferences && <References compact references={callout.framing.profile.references} />}
+        {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
+          <TagsComponent tags={callout.framing.profile.tagset?.tags} />
         ) : undefined}
         {children}
       </Gutters>

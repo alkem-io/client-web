@@ -11,6 +11,9 @@ fragment WhiteboardProfile on Profile {
   tagset {
     ...TagsetDetails
   }
+  storageBucket {
+    id
+  }
 }
 
 fragment WhiteboardDetails on Whiteboard {
@@ -130,8 +133,15 @@ fragment CalloutWithWhiteboard on Callout {
     anonymousReadAccess
     myPrivileges
   }
-  whiteboards(IDs: [$whiteboardId]) {
-    ...WhiteboardDetails
+  framing {
+    whiteboard {
+      ...WhiteboardDetails
+    }
+  }
+  contributions(filter: { whiteboardIDs: [$whiteboardId] }) {
+    whiteboard {
+      ...WhiteboardDetails
+    }
   }
 }
 
@@ -144,8 +154,10 @@ fragment CalloutWithWhiteboardRt on Callout {
     anonymousReadAccess
     myPrivileges
   }
-  whiteboardRt {
-    ...WhiteboardRtDetails
+  framing {
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
   }
 }
 
@@ -160,11 +172,15 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       anonymousReadAccess
       myPrivileges
     }
-    whiteboards {
-      ...WhiteboardDetails
+    contributions {
+      whiteboard {
+        ...WhiteboardDetails
+      }
     }
-    whiteboardRt {
-      ...WhiteboardRtDetails
+    framing {
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
     }
   }
 }
@@ -233,9 +249,11 @@ query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $white
   }
 }
 
-mutation createWhiteboardOnCallout($input: CreateWhiteboardOnCalloutInput!) {
-  createWhiteboardOnCallout(whiteboardData: $input) {
-    ...WhiteboardDetails
+mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $input) {
+    whiteboard {
+      ...WhiteboardDetails
+    }
   }
 }
 

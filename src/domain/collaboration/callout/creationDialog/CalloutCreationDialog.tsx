@@ -25,8 +25,6 @@ import { Reference } from '../../../common/profile/Profile';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -38,11 +36,11 @@ export type CalloutCreationDialogFields = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  postTemplateData?: PostTemplateFormSubmittedValues;
-  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   profileId?: string;
   flowState?: string;
+  postDescription?: string;
+  whiteboardContent?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -131,22 +129,26 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       let result: Identifiable | undefined;
       try {
         const newCallout: CalloutCreationTypeWithPreviewImages = {
-          profile: {
-            displayName: callout.displayName!,
-            description: callout.description!,
-            referencesData: callout.references!,
-            tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+          framing: {
+            profile: {
+              displayName: callout.displayName!,
+              description: callout.description!,
+              referencesData: callout.references!,
+              tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+            },
+            whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
+            whiteboardRt:
+              callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           },
-          tags: callout.tags,
+          contributionDefaults: {
+            postDescription: callout.postDescription,
+            whiteboardContent: callout.whiteboardContent,
+          },
           type: callout.type!,
-          state: callout.state!,
-          postTemplate: callout.type === CalloutType.PostCollection ? callout.postTemplateData : undefined,
-          whiteboardTemplate:
-            callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardTemplateData : undefined,
+          contributionPolicy: {
+            state: callout.state!,
+          },
           displayLocation,
-          whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
-          whiteboardRt:
-            callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
         };

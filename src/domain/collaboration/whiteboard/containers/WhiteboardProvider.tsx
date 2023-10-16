@@ -50,16 +50,28 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
 
   const callout = data?.lookup.callout;
 
-  const whiteboard = callout?.whiteboards?.find(
-    whiteboard => whiteboard.nameID === whiteboardId || whiteboard.id === whiteboardId
+  const whiteboardContribution = callout?.contributions?.find(
+    contribution =>
+      contribution.whiteboard &&
+      (contribution.whiteboard.nameID === whiteboardId || contribution.whiteboard.id === whiteboardId)
   );
+
+  const framingWhiteboard = callout?.framing.whiteboard;
 
   const templates = whiteboardTemplates?.space.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.authorization;
 
   return (
     <>
-      {children({ whiteboard, templates, calloutId, authorization }, { loadingWhiteboards: loading, loadingTemplates })}
+      {children(
+        {
+          whiteboard: framingWhiteboard ?? whiteboardContribution?.whiteboard,
+          templates,
+          calloutId,
+          authorization,
+        },
+        { loadingWhiteboards: loading, loadingTemplates }
+      )}
     </>
   );
 };

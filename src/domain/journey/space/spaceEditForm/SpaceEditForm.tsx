@@ -31,7 +31,7 @@ import SpaceProfileFixedInformation, { SpaceProfileFixedInformationProps } from 
 
 interface Props {
   context?: Context;
-  profile?: Omit<Profile, 'storageBucket'>;
+  profile?: Omit<Profile, 'storageBucket' | 'url'>;
   name?: string;
   nameID?: string;
   hostID?: string;

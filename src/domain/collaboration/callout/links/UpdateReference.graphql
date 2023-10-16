@@ -1,0 +1,5 @@
+mutation updateReference($input: UpdateReferenceInput!) {
+  updateReference(referenceData: $input) {
+    ...ReferenceDetails
+  }
+}

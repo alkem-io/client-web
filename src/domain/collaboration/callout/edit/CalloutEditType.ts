@@ -1,12 +1,8 @@
 import { Callout, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutFormInput } from '../CalloutForm';
-import { CalloutWhiteboardTemplate, CalloutPostTemplate } from '../creationDialog/CalloutCreationDialog';
 
-export type CalloutEditType = Omit<
-  CalloutFormInput,
-  'postTemplateType' | 'whiteboardTemplateData' | 'type' | 'sortOrder' | 'activity'
-> & {
+export type CalloutEditType = Omit<CalloutFormInput, 'type' | 'sortOrder'> & {
   id: Callout['id'];
   profile: {
     displayName?: string;
@@ -15,11 +11,12 @@ export type CalloutEditType = Omit<
     tagsets?: Tagset[];
   };
   displayLocation?: CalloutDisplayLocation;
-} & {
-  postTemplate?: CalloutPostTemplate;
-  whiteboardTemplate?: CalloutWhiteboardTemplate;
+  contributionDefaults?: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
 };
 
-export type CalloutDeleteType = Omit<CalloutFormInput, 'postTemplateType' | 'whiteboardTemplateData' | 'type'> & {
+export type CalloutDeleteType = Omit<CalloutFormInput, 'type'> & {
   id: Callout['id'];
 };

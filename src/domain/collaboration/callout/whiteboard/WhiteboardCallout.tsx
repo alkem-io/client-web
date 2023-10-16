@@ -4,11 +4,7 @@ import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLay
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import WhiteboardActionsContainer from '../../whiteboard/containers/WhiteboardActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import {
-  CalloutState,
-  WhiteboardTemplate,
-  CreateWhiteboardOnCalloutInput,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CreateContributionOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard from './WhiteboardCard';
 import { buildWhiteboardUrl } from '../../../../main/routing/urlBuilders';
@@ -22,10 +18,7 @@ import WhiteboardDialog from '../../whiteboard/WhiteboardDialog/WhiteboardDialog
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 
 interface WhiteboardCalloutProps extends BaseCalloutViewProps {
-  callout: CalloutLayoutProps['callout'] & {
-    whiteboards: WhiteboardCardWhiteboard[];
-    whiteboardTemplate: WhiteboardTemplate;
-  };
+  callout: CalloutLayoutProps['callout'];
 }
 
 const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
@@ -57,7 +50,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
       }
     };
 
-    const createButton = canCreate && callout.state !== CalloutState.Closed && (
+    const createButton = canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={openCreateDialog} />
     );
 
@@ -71,9 +64,16 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
       );
     };
 
+    const calloutWhiteboards =
+      callout.contributions
+        ?.map(contribution =>
+          contribution.whiteboard ? { ...contribution.whiteboard, calloutNameId: callout.nameID } : undefined
+        )
+        .filter(w => w !== undefined) ?? [];
+
     const showCards = useMemo(
-      () => (!loading && callout.whiteboards.length > 0) || callout.state !== CalloutState.Closed,
-      [loading, callout.whiteboards.length, callout.state]
+      () => (!loading && calloutWhiteboards.length > 0) || callout.contributionPolicy.state !== CalloutState.Closed,
+      [loading, calloutWhiteboards.length, callout.contributionPolicy.state]
     );
 
     const breakpoint = useCurrentBreakpoint();
@@ -91,7 +91,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
           >
             {showCards && (
               <ScrollableCardsLayout
-                items={loading ? [undefined, undefined] : callout.whiteboards}
+                items={loading ? [undefined, undefined] : calloutWhiteboards}
                 deps={[spaceNameId, challengeNameId, opportunityNameId]}
                 createButton={!isMobile && createButton}
                 maxHeight={gutters(22)}
@@ -105,7 +105,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                 }
               </ScrollableCardsLayout>
             )}
-            {isMobile && canCreate && callout.state !== CalloutState.Closed && (
+            {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
               <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
             )}
           </CalloutLayout>
@@ -118,8 +118,13 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                   profile: {
                     id: '',
                     displayName: '',
+                    storageBucket: {
+                      // TODO: When creating a whiteboard a StorageBucketId is needed if we want to allow image uploading
+                      // in this case we are passing the parent's callout storageBucketId
+                      id: callout.framing.profile.storageBucket.id,
+                    },
                   },
-                  content: callout.whiteboardTemplate.content,
+                  content: callout.contributionDefaults.whiteboardContent ?? '',
                 },
               }}
               actions={{
@@ -127,12 +132,14 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                 onUpdate: (input, previewImages) => {
                   actions.onCreate(
                     {
-                      content: input.content,
-                      profileData: {
-                        displayName: input.profile.displayName,
+                      whiteboard: {
+                        content: input.content,
+                        profileData: {
+                          displayName: input.profile.displayName,
+                        },
                       },
                       calloutID: callout.id,
-                    } as CreateWhiteboardOnCalloutInput,
+                    } as CreateContributionOnCalloutInput,
                     previewImages
                   );
                   setShowCreateWhiteboardDialog(false);
