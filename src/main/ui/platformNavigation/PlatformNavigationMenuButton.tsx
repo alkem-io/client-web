@@ -1,6 +1,6 @@
 import React, { Ref } from 'react';
 import { Box, ClickAwayListener, Grow } from '@mui/material';
-import { ReactComponent as AlkemioLogo } from '../../../domain/platform/Logo/Logo-Small.svg';
+import { ReactComponent as AlkemioLogo } from '../logo/logoSmall.svg';
 import NavigationItemContainer from '../../../core/ui/navigation/NavigationItemContainer';
 import { gutters } from '../../../core/ui/grid/utils';
 import NavigationItemButton from '../../../core/ui/navigation/NavigationItemButton';

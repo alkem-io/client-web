@@ -1,14 +1,18 @@
 import NavigationBar from '../../../core/ui/navigation/NavigationBar';
 import PlatformNavigationUserAvatar from './PlatformNavigationUserAvatar';
-import JourneyBreadcrumbs from '../../../domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PlatformSearch from '../platformSearch/PlatformSearch';
 import PlatformNavigationMenuButton from './PlatformNavigationMenuButton';
 import { Box } from '@mui/material';
+import { ReactNode } from 'react';
 
-const PlatformNavigationBar = () => {
+interface PlatformNavigationBarProps {
+  breadcrumbs: ReactNode;
+}
+
+const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
   return (
     <NavigationBar
-      childrenLeft={<JourneyBreadcrumbs />}
+      childrenLeft={breadcrumbs}
       childrenRight={
         <Box display="flex" padding={1} gap={1}>
           <PlatformSearch />

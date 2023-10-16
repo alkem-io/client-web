@@ -4,6 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import { EntityTypeName } from '../../../constants/EntityTypeName';
 
+/**
+ * @deprecated
+ * TODO clean up layout interfaces
+ */
 export interface SimplePageLayoutProps<Section extends string | number> {
   currentSection: Section;
   entityTypeName: EntityTypeName;

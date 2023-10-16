@@ -26,7 +26,13 @@ const SearchBox = <Option extends string | number>({
   const { t } = useTranslation();
   const [searchOption, setSearchOption] = useState(defaultSearchOption);
 
-  const handleClickSearch = () => onSearch?.(searchOption);
+  const handleClickSearch = () => {
+    if (searchTerms) {
+      onSearch?.(searchOption);
+    } else {
+      setIsExpanded(false);
+    }
+  };
 
   const handleKeyUp = ({ code }: React.KeyboardEvent<HTMLInputElement>) => {
     if (code === 'Enter' || code === 'NumpadEnter') {

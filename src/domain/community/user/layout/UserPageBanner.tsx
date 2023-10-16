@@ -7,6 +7,10 @@ import { isSocialLink } from '../../../shared/components/SocialLinks/SocialLinks
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * @deprecated
+ * TODO either remove or reimplement with PageBannerCardWithVisual
+ */
 const UserPageBanner: FC = () => {
   const { userNameId = '' } = useUrlParams();
   const { t } = useTranslation();

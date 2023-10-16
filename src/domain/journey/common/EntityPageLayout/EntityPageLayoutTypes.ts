@@ -1,4 +1,3 @@
-import { SimplePageLayoutProps } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsPageContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ComponentType, ReactElement, ReactNode } from 'react';
 
@@ -7,7 +6,9 @@ export interface EntityTabsProps {
   mobile?: boolean;
 }
 
-export interface EntityPageLayoutProps extends SimplePageLayoutProps<EntityPageSection> {
+export interface EntityPageLayoutProps {
+  currentSection: EntityPageSection;
+  breadcrumbs?: ReactNode;
   pageBannerComponent?: ComponentType;
   pageBanner?: ReactNode;
   tabsComponent?: ComponentType<EntityTabsProps>;

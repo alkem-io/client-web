@@ -1,20 +1,23 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
+import { EntityPageLayout } from '../../common/EntityPageLayout';
 import OpportunityPageBanner from './OpportunityPageBanner';
 import OpportunityTabs from './OpportunityTabs';
 import React, { PropsWithChildren } from 'react';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 
-interface OpportunityPageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
+interface OpportunityPageLayoutProps {
+  currentSection: EntityPageSection;
+}
 
-const OpportunityPageLayout = ({ children, ...props }: PropsWithChildren<OpportunityPageLayoutProps>) => {
+const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<OpportunityPageLayoutProps>) => {
   return (
     <EntityPageLayout
-      {...props}
+      currentSection={currentSection}
+      breadcrumbs={<JourneyBreadcrumbs />}
       pageBannerComponent={OpportunityPageBanner}
       tabsComponent={OpportunityTabs}
-      entityTypeName="opportunity"
     >
       {children}
       <JourneyUnauthorizedDialogContainer journeyTypeName="opportunity">

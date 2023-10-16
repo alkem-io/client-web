@@ -7,14 +7,7 @@ interface OrganizationPageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
 
 const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutProps>) => {
-  return (
-    <EntityPageLayout
-      {...props}
-      pageBannerComponent={OrganizationPageBanner}
-      tabsComponent={OrganizationTabs}
-      entityTypeName="organization"
-    />
-  );
+  return <EntityPageLayout {...props} pageBannerComponent={OrganizationPageBanner} tabsComponent={OrganizationTabs} />;
 };
 
 export default OrganizationPageLayout;

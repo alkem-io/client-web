@@ -26,7 +26,7 @@ const PlatformNavigationMenuItem = <D extends React.ElementType = ButtonTypeMap[
 }: ButtonProps<D, P> & PropsWithChildren<PlatformNavigationMenuItemProps>) => {
   return (
     <Button component={RouterLink} to={route} sx={{ padding: 0 }} {...props}>
-      <Gutters alignItems="center" width={gutters(7)}>
+      <Gutters alignItems="center" width={gutters(7)} paddingX={gutters(0.25)} sx={{ textAlign: 'center' }}>
         <Icon fontSize="large" />
         {children}
       </Gutters>
@@ -42,22 +42,22 @@ interface MenuItem {
 
 const PLATFORM_NAVIGATION_MENU_ITEMS: MenuItem[] = [
   {
-    label: 'pages.innovationLibrary.shortName',
+    label: 'pages.innovationLibrary.fullName',
     iconComponent: InnovationLibraryIcon,
     route: '/innovation-library',
   },
   {
-    label: 'common.forum',
+    label: 'pages.forum.fullName',
     iconComponent: ForumOutlinedIcon,
     route: '/forum',
   },
   {
-    label: 'common.challenges',
+    label: 'pages.challenge-explorer.fullName',
     iconComponent: ChallengeIcon,
     route: '/challenges',
   },
   {
-    label: 'common.contributors',
+    label: 'pages.contributors.fullName',
     iconComponent: GroupOutlinedIcon,
     route: '/contributors',
   },
