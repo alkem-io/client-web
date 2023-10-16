@@ -16,6 +16,7 @@ import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
+import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -34,6 +35,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
+  filesManager: WhiteboardFilesManager;
 }
 
 export interface WhiteboardWhiteboardActions {
@@ -55,18 +57,28 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options }, excalidrawRef) => {
-    const { whiteboard } = entities;
+    const { whiteboard, filesManager } = entities;
 
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
+    const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
+
     const data = useMemo(() => {
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
+
       return {
         ...parsedData,
         zoomToFit: true,
       };
     }, [whiteboard?.content]);
+
+    useEffect(() => {
+      loadFiles(data);
+    }, [data]);
+    useEffect(() => {
+      pushFilesToExcalidraw();
+    }, [filesManager]);
 
     const refreshOnDataChange = useRef(
       debounce(async (state: RefreshWhiteboardStateParam) => {
@@ -181,6 +193,7 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
             isCollaborating={false}
             gridModeEnabled
             viewModeEnabled
+            generateIdForFile={addNewFile}
             {...restOptions}
           />
         )}

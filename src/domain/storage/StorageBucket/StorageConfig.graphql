@@ -138,13 +138,20 @@ query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
 query PlatformStorageConfig {
   platform {
     id
-    storageBucket {
+    storageAggregator {
       id
-      allowedMimeTypes
-      maxFileSize
       authorization {
         id
         myPrivileges
+      }
+      directStorageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
       }
     }
   }

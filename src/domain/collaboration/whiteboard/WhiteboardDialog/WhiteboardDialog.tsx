@@ -35,6 +35,7 @@ import {
   WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -57,6 +58,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
     fullscreen?: boolean;
+    allowFilesAttached?: boolean;
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -130,15 +132,19 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     return { appState, elements, files };
   };
 
+  const filesManager = useWhiteboardFilesManager({
+    excalidrawApi: excalidrawApiRef.current,
+    storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    allowFallbackToAttached: options.allowFilesAttached,
+  });
+
   const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
       return;
     }
-
-    const { appState, elements, files } = state;
+    const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
-
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
@@ -291,7 +297,10 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardContent && whiteboard && (
                 <ExcalidrawWrapper
-                  entities={{ whiteboard }}
+                  entities={{
+                    whiteboard,
+                    filesManager,
+                  }}
                   ref={excalidrawApiRef}
                   options={{
                     viewModeEnabled: !options.canEdit,

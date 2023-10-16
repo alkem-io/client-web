@@ -213,7 +213,8 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     innovationHubStorageConfigData?.platform.innovationHub ??
     {};
 
-  const storageConfig = profile?.storageBucket ?? platformStorageConfigData?.platform.storageBucket;
+  const storageConfig =
+    profile?.storageBucket ?? platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
 
   return useMemo(
     () => ({
