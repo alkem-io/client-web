@@ -21,12 +21,12 @@ import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import useCallouts from '../../callout/useCallouts/useCallouts';
 import { useMoveContributionToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { buildPostUrl } from '../../../../main/routing/urlBuilders';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import { normalizeLink } from '../../../../core/utils/links';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
@@ -131,13 +131,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       } else if (!shouldUpdate) {
         notify(t('post-edit.postLocation.success'), 'success');
       }
-      const targetCalloutNameId = data!.moveContributionToCallout.callout!.nameID;
-      const postNameId = data!.moveContributionToCallout.post!.nameID;
-      const postURL = buildPostUrl(targetCalloutNameId, postNameId, {
-        spaceNameId,
-        challengeNameId,
-        opportunityNameId,
-      });
+      const postURL = normalizeLink(data?.moveContributionToCallout.post?.profile.url ?? '');
       await refetchCallouts();
       navigate(`${postURL}/settings`, { replace: true });
     }

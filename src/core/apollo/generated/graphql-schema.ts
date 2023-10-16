@@ -742,8 +742,6 @@ export type CalloutContribution = {
   __typename?: 'CalloutContribution';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The parent Callout of the Contribution */
-  callout?: Maybe<Callout>;
   /** The user that created this Document */
   createdBy?: Maybe<User>;
   /** The ID of the entity */
@@ -13687,8 +13685,14 @@ export type MoveContributionToCalloutMutation = {
   moveContributionToCallout: {
     __typename?: 'CalloutContribution';
     id: string;
-    callout?: { __typename?: 'Callout'; id: string; nameID: string } | undefined;
-    post?: { __typename?: 'Post'; id: string; nameID: string } | undefined;
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; url: string };
+        }
+      | undefined;
   };
 };
 

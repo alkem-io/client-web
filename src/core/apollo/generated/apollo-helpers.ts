@@ -580,7 +580,6 @@ export type CalloutFieldPolicy = {
 };
 export type CalloutContributionKeySpecifier = (
   | 'authorization'
-  | 'callout'
   | 'createdBy'
   | 'id'
   | 'link'
@@ -590,7 +589,6 @@ export type CalloutContributionKeySpecifier = (
 )[];
 export type CalloutContributionFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  callout?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;

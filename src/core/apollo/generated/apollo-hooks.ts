@@ -7366,13 +7366,13 @@ export const MoveContributionToCalloutDocument = gql`
   mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
     moveContributionToCallout(moveContributionData: { contributionID: $contributionId, calloutID: $calloutId }) {
       id
-      callout {
-        id
-        nameID
-      }
       post {
         id
         nameID
+        profile {
+          id
+          url
+        }
       }
     }
   }
