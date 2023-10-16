@@ -43,10 +43,10 @@ const BadgeCardView = forwardRef(
         display="flex"
         alignItems="center"
         gap={gutters()}
-        {...containerProps}
         border={outlined ? theme => `1px solid ${theme.palette.divider}` : undefined}
         borderRadius={theme => `${theme.shape.borderRadius}px`}
         padding={outlined ? gutters(0.5) : undefined}
+        {...containerProps}
       >
         {cloneVisual(visual)}
         <Box overflow="hidden" flexGrow={1} minWidth={0} {...contentProps}>

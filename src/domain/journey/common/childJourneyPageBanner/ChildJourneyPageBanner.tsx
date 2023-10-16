@@ -6,7 +6,7 @@ import PageBanner, { PageBannerProps } from '../../../../core/ui/layout/pageBann
 interface ChildJourneyPageBannerProps extends PageBannerProps, JourneyPageBannerCardProps {}
 
 const ChildJourneyPageBanner = (props: ChildJourneyPageBannerProps) => {
-  return <PageBanner cardComponent={JourneyPageBannerCard} fade {...props} />;
+  return <PageBanner cardComponent={JourneyPageBannerCard} {...props} />;
 };
 
 export default ChildJourneyPageBanner;

@@ -13,7 +13,7 @@ const LocationCaption: FC<LocationCaptionProps> = ({ city, country }: LocationCa
     <>
       {city || country ? (
         <Caption>
-          <LocationIcon color="primary" fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />
+          <LocationIcon color="primary" fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: gutters(0.25) }} />
           {[city, country].join(', ')}
         </Caption>
       ) : null}
