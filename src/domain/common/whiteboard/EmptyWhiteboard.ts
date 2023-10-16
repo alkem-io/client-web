@@ -9,6 +9,7 @@ const EmptyWhiteboard: ImportedDataState = {
     gridSize: null,
     viewBackgroundColor: '#ffffff',
   },
+  files: {},
 };
 
 export default EmptyWhiteboard;

@@ -46,6 +46,9 @@ export type TypedCallout = Pick<
       description?: string;
       tagset?: Tagset;
       displayLocationTagset?: Tagset;
+      storageBucket: {
+        id: string;
+      };
     };
     whiteboard: WhiteboardFragmentWithCallout;
     whiteboardRt: WhiteboardRtFragmentWithCallout;

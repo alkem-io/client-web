@@ -19,6 +19,7 @@ import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import Collab, { CollabAPI } from './collab/Collab';
 import { useUserContext } from '../../../community/user';
+import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -37,6 +38,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
+  filesManager: WhiteboardFilesManager;
 }
 
 export interface WhiteboardWhiteboardActions {
@@ -57,7 +59,7 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options, collabApiRef }, ref) => {
-    const { whiteboard } = entities;
+    const { whiteboard, filesManager } = entities;
 
     const [collabAPI, setCollabAPI] = useState<CollabAPI | null>(null);
     const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
@@ -69,6 +71,8 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     const { user } = useUserContext();
     const username = user?.user.profile.displayName ?? 'User';
 
+    const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
+
     const data = useMemo(() => {
       const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
       return {
@@ -76,6 +80,13 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
         zoomToFit: true,
       };
     }, [whiteboard?.content]);
+
+    useEffect(() => {
+      loadFiles(data);
+    }, [data]);
+    useEffect(() => {
+      pushFilesToExcalidraw();
+    }, [filesManager]);
 
     const scrollToContent = async () => {
       const excalidraw = await combinedRef.current?.readyPromise;
@@ -193,6 +204,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             onPointerUpdate={collabAPI?.onPointerUpdate}
             detectScroll={false}
             autoFocus
+            generateIdForFile={addNewFile}
             /*renderTopRightUI={_isMobile => {
               return <LiveCollaborationStatus />;
             }}*/
@@ -205,6 +217,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             excalidrawAPI={excalidrawAPI}
             collabAPIRef={collabRef}
             onSavedToDatabase={actions.onSavedToDatabase}
+            filesManager={filesManager}
           />
         )}
       </div>

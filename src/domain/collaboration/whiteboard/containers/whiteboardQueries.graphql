@@ -11,6 +11,9 @@ fragment WhiteboardProfile on Profile {
   tagset {
     ...TagsetDetails
   }
+  storageBucket {
+    id
+  }
 }
 
 fragment WhiteboardDetails on Whiteboard {

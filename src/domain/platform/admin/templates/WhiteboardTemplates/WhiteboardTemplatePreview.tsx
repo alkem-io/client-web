@@ -1,11 +1,13 @@
 import { Box, styled, Typography } from '@mui/material';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import ExcalidrawWrapper from '../../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { AdminWhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import useWhiteboardFilesManager from '../../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -23,6 +25,8 @@ const WhiteboardTemplatePreview = ({
   templateContent,
 }: WhiteboardTemplateViewProps) => {
   const { t } = useTranslation();
+  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const filesManager = useWhiteboardFilesManager({ excalidrawApi: excalidrawApiRef.current });
 
   const {
     profile: { tagset: { tags } = {}, description = '' },
@@ -55,8 +59,10 @@ const WhiteboardTemplatePreview = ({
       <Box height={theme => theme.spacing(40)}>
         {templateContent?.content && (
           <ExcalidrawWrapper
+            ref={excalidrawApiRef}
             entities={{
               whiteboard: whiteboardFromTemplate,
+              filesManager,
             }}
             actions={{}}
             options={{
