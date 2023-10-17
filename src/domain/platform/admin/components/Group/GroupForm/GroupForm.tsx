@@ -6,11 +6,11 @@ import {} from 'react-router-dom';
 import * as yup from 'yup';
 import {
   GroupInfoFragment,
+  Profile,
   Reference,
   StorageBucket,
   Tagset,
   User,
-  UserGroup,
 } from '../../../../../../core/apollo/generated/graphql-schema';
 import { GroupFormInput } from './GroupFormInput';
 import FormikInputField from '../../../../../../core/ui/forms/FormikInputField/FormikInputField';
@@ -26,9 +26,15 @@ interface GroupFormProps {
   title?: string;
   members?: User[];
   group: GroupInfoFragment;
-  onSave?: (group: UserGroup) => Promise<void>;
+  onSave?: (group: UserGroupUpdateInput) => Promise<void>;
   onCancel?: () => void;
   onDelete?: (groupId: string) => void;
+}
+
+export interface UserGroupUpdateInput {
+  id: string;
+  name: string;
+  profile: Omit<Profile, 'url'>;
 }
 
 export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, onCancel, onDelete }) => {
@@ -57,7 +63,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
 
   const handleSubmit = async (formData: GroupFormInput) => {
     const { tagsets, references, description, profileId, name } = formData;
-    const group: UserGroup = {
+    const group: UserGroupUpdateInput = {
       id: groupId,
       name,
       profile: {
@@ -69,7 +75,6 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
         tagline: '',
         visuals: [],
         storageBucket: {} as StorageBucket,
-        url: '',
       },
     };
     onSave && (await onSave(group));

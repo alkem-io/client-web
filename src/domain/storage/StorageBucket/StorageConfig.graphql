@@ -174,8 +174,10 @@ fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
   id
   callouts(IDs: [$calloutId]) {
     id
-    profile {
-      ...ProfileStorageConfig
+    framing {
+      profile {
+        ...ProfileStorageConfig
+      }
     }
   }
 }
@@ -184,10 +186,12 @@ fragment PostInCalloutOnCollaborationWithStorageConfig on Collaboration {
   id
   callouts(IDs: [$calloutId]) {
     id
-    posts(IDs: [$postId]) {
-      id
-      profile {
-        ...ProfileStorageConfig
+    contributions(filter: { postIDs: [$postId] }) {
+      post {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }

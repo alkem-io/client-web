@@ -545,42 +545,55 @@ export type CalloutKeySpecifier = (
   | 'activity'
   | 'authorization'
   | 'comments'
+  | 'contributionDefaults'
+  | 'contributionPolicy'
+  | 'contributions'
   | 'createdBy'
+  | 'framing'
   | 'id'
   | 'nameID'
-  | 'postTemplate'
   | 'posts'
-  | 'profile'
   | 'publishedBy'
   | 'publishedDate'
   | 'sortOrder'
-  | 'state'
   | 'type'
   | 'visibility'
-  | 'whiteboardRt'
-  | 'whiteboardTemplate'
-  | 'whiteboards'
   | CalloutKeySpecifier
 )[];
 export type CalloutFieldPolicy = {
   activity?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributions?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  framing?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   posts?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
-  state?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboards?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutContributionKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'id'
+  | 'link'
+  | 'post'
+  | 'whiteboard'
+  | CalloutContributionKeySpecifier
+)[];
+export type CalloutContributionFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
+  post?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionDefaultsKeySpecifier = (
   | 'id'
@@ -606,16 +619,18 @@ export type CalloutContributionPolicyFieldPolicy = {
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
-  | 'content'
   | 'id'
   | 'profile'
+  | 'whiteboard'
+  | 'whiteboardRt'
   | CalloutFramingKeySpecifier
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
@@ -1352,6 +1367,7 @@ export type MutationKeySpecifier = (
   | 'createCalloutTemplate'
   | 'createChallenge'
   | 'createChildChallenge'
+  | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
   | 'createFeedbackOnCommunityContext'
@@ -1360,10 +1376,8 @@ export type MutationKeySpecifier = (
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
-  | 'createLinkOnCallout'
   | 'createOpportunity'
   | 'createOrganization'
-  | 'createPostOnCallout'
   | 'createPostTemplate'
   | 'createProject'
   | 'createReferenceOnProfile'
@@ -1372,7 +1386,6 @@ export type MutationKeySpecifier = (
   | 'createTagsetOnProfile'
   | 'createUser'
   | 'createUserNewRegistration'
-  | 'createWhiteboardOnCallout'
   | 'createWhiteboardTemplate'
   | 'deleteActor'
   | 'deleteActorGroup'
@@ -1414,7 +1427,7 @@ export type MutationKeySpecifier = (
   | 'inviteExternalUserForCommunityMembership'
   | 'joinCommunity'
   | 'messageUser'
-  | 'movePostToCallout'
+  | 'moveContributionToCallout'
   | 'removeCommunityRoleFromOrganization'
   | 'removeCommunityRoleFromUser'
   | 'removeMessageOnRoom'
@@ -1460,6 +1473,7 @@ export type MutationKeySpecifier = (
   | 'updatePreferenceOnUser'
   | 'updateProfile'
   | 'updateProject'
+  | 'updateReference'
   | 'updateSpace'
   | 'updateSpacePlatformSettings'
   | 'updateTagset'
@@ -1506,6 +1520,7 @@ export type MutationFieldPolicy = {
   createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   createFeedbackOnCommunityContext?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1514,10 +1529,8 @@ export type MutationFieldPolicy = {
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
-  createLinkOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createPostOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1526,7 +1539,6 @@ export type MutationFieldPolicy = {
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
-  createWhiteboardOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1568,7 +1580,7 @@ export type MutationFieldPolicy = {
   inviteExternalUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  movePostToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1614,6 +1626,7 @@ export type MutationFieldPolicy = {
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1824,7 +1837,6 @@ export type PlatformLocationsFieldPolicy = {
 };
 export type PostKeySpecifier = (
   | 'authorization'
-  | 'callout'
   | 'comments'
   | 'createdBy'
   | 'createdDate'
@@ -1836,7 +1848,6 @@ export type PostKeySpecifier = (
 )[];
 export type PostFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  callout?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2955,6 +2966,10 @@ export type StrictTypedTypePolicies = {
   Callout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutKeySpecifier | (() => undefined | CalloutKeySpecifier);
     fields?: CalloutFieldPolicy;
+  };
+  CalloutContribution?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutContributionKeySpecifier | (() => undefined | CalloutContributionKeySpecifier);
+    fields?: CalloutContributionFieldPolicy;
   };
   CalloutContributionDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

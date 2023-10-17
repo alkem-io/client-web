@@ -1,17 +1,19 @@
-mutation CreatePostFromContributeTab($postData: CreatePostOnCalloutInput!) {
-  createPostOnCallout(postData: $postData) {
-    id
-    nameID
-    type
-    profile {
+mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $postData) {
+    post {
       id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      visual(type: CARD) {
-        ...VisualUri
+      nameID
+      type
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
   }
@@ -21,8 +23,10 @@ mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
   removeMessageOnRoom(messageData: $messageData)
 }
 
-mutation createLinkOnCallout($input: CreateLinkOnCalloutInput!) {
-  createLinkOnCallout(linkData: $input) {
-    ...ReferenceDetails
+mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $input) {
+    link {
+      ...ReferenceDetails
+    }
   }
 }
