@@ -1,5 +1,14 @@
-import React, { Children, cloneElement, PropsWithChildren, ReactElement, ReactNode, useState } from 'react';
-import { Box } from '@mui/material';
+import React, {
+  Children,
+  cloneElement,
+  MouseEventHandler,
+  PropsWithChildren,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
+import { Box, ClickAwayListener, Theme, useMediaQuery } from '@mui/material';
 import { DoubleArrow } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { Expandable } from './Expandable';
@@ -29,14 +38,22 @@ type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
 
 const Breadcrumbs = <ItemProps extends Expandable>({ children }: PropsWithChildren<BreadcrumbsProps<ItemProps>>) => {
   const [expandedState, setExpandedState] = useState<JourneyBreadcrumbsExpandedState>({});
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const [firstChild, ...restChildren] = (Children.toArray(children) as ReactElement<ItemProps>[]).map(child => {
-    const expanded = (child.key && expandedState[child.key]) || false;
+    const expanded = isExpanded || (child.key && expandedState[child.key]) || false;
 
-    const onExpand = child.key ? () => onHoverItem(child.key!) : undefined;
+    const onExpand = child.key ? () => handleItemHover(child.key!) : undefined;
 
     return cloneElement(child, { expanded, onExpand } as Partial<ItemProps>);
   });
+
+  const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+
+  useEffect(() => {
+    setExpandedState({});
+    setIsExpanded(false);
+  }, [isSmallScreen]);
 
   const childrenWithSeparator =
     firstChild &&
@@ -53,24 +70,39 @@ const Breadcrumbs = <ItemProps extends Expandable>({ children }: PropsWithChildr
     setExpandedState({});
   };
 
-  const onHoverItem = (childKey: string | number) => {
+  const handleItemHover = (childKey: string | number) => {
     setExpandedState(prevExpandedState => ({
       ...prevExpandedState,
       [childKey]: true,
     }));
   };
 
+  const handleClick: MouseEventHandler = event => {
+    if (!isSmallScreen) {
+      return;
+    }
+    if (!isExpanded) {
+      event.preventDefault();
+      setIsExpanded(true);
+    }
+  };
+
+  const handleClickAway = () => setIsExpanded(false);
+
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      gap={gutters(0.5)}
-      alignItems="center"
-      padding={gutters(0.5)}
-      onMouseLeave={onLeave}
-    >
-      {childrenWithSeparator}
-    </Box>
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <Box
+        display="flex"
+        flexDirection="row"
+        gap={gutters(0.5)}
+        alignItems="center"
+        padding={gutters(0.5)}
+        onMouseLeave={onLeave}
+        onClick={handleClick}
+      >
+        {childrenWithSeparator}
+      </Box>
+    </ClickAwayListener>
   );
 };
 
