@@ -16,7 +16,6 @@ import {
   CommentsWithMessagesFragment,
   ContributeTabPostFragment,
   ReferenceDetailsFragment,
-  CalloutDisplayLocation,
   CalloutContributionPolicy,
   CalloutContribution,
 } from '../../../../core/apollo/generated/graphql-schema';
