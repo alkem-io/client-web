@@ -1765,7 +1765,7 @@ export const UserDetailsFragmentDoc = gql`
         city
       }
       description
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualFull
       }
       references {
