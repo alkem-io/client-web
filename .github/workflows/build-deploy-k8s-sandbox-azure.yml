@@ -40,14 +40,14 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Sign commit and push changes
-        run: |
-          git checkout -b crowdin-translations
-          git push --set-upstream origin crowdin-translations
-          git add .
-          git commit -S -m "This commit is signed!"
-          git push
-          gh pr create --base develop --body "" --label translations --label crowdin --title "Latest translation from Crowdin"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5.0.2
+        with:
+          token: ${{ secrets.CROWDIN_GITHUB_TOKEN }}
+          commit-message: "Latest translation from Crowdin"
+          base: "develop"
+          title: "Latest translation from Crowdin"
+          body: "Latest translation from Crowdin"
 
       - name: 'Latest translations PR'
         uses: crowdin/github-action@v1.13.1
