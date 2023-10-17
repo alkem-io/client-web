@@ -1,8 +1,8 @@
 name: Build & Deploy to Sandbox on Azure
 
 on:
-  push:
-    branches: [crowdin-action]
+  release:
+    types: [published]
 
 jobs:
   build-and-deploy:
@@ -32,86 +32,38 @@ jobs:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1.4.7
         with:
-          gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
-          passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
+          creds: ${{ secrets.AZURE_CRED_K8S_NEW }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5.0.2
+      - name: 'Build and push image'
+        uses: azure/docker-login@v1.0.1
         with:
-          token: ${{ secrets.CROWDIN_GITHUB_TOKEN }}
-          commit-message: "Latest translation from Crowdin"
-          base: "develop"
-          title: "Latest translation from Crowdin "
-          body: "Latest translation from Crowdin"
-
-      - name: 'Latest translations PR'
-        uses: crowdin/github-action@v1.13.1
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
+      - uses: Azure/aks-set-context@v3.2
         with:
-          # Tokens
-          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
-          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          cluster-name: k8s-sandbox
+          resource-group: res-grp-k8s-sandbox
 
-          source: src/core/i18n/en/translation.en.json
-          translation: src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
+      - uses: Azure/k8s-create-secret@v4.0
+        with:
+          container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          secret-name: alkemio-web-secret
 
-          # Name of the branch to create for the PR
-          localization_branch_name: crowdin-translations
-
-          # Create a branch and a PR on any changes
-          download_translations: true
-          create_pull_request: true
-          push_translations: true
-          pull_request_labels: "translations, crowdin"
-          pull_request_base_branch_name: 'develop'
-#          github_user_email: svetoslav@alkem.io
-#          gpg_private_key: ${{ secrets.CROWDIN_GPG_KEY }}
-#          gpg_passphrase: ${{ secrets.CROWDIN_GPG_PASSKEY }}
-
-          push_sources: false
-          upload_sources: false
-          upload_translations: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.CROWDIN_GITHUB_TOKEN }}
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-
-#      - name: 'Login via Azure CLI'
-#        uses: azure/login@v1.4.7
-#        with:
-#          creds: ${{ secrets.AZURE_CRED_K8S_NEW }}
-
-#      - name: 'Build and push image'
-#        uses: azure/docker-login@v1.0.1
-#        with:
-#          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-#          username: ${{ secrets.REGISTRY_USERNAME }}
-#          password: ${{ secrets.REGISTRY_PASSWORD }}
-#      - run: |
-#          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
-#          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
-#      - uses: Azure/aks-set-context@v3.2
-#        with:
-#          cluster-name: k8s-sandbox
-#          resource-group: res-grp-k8s-sandbox
-
-#      - uses: Azure/k8s-create-secret@v4.0
-#        with:
-#          container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-#          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
-#          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-#          secret-name: alkemio-web-secret
-#
-#      - uses: Azure/k8s-deploy@v4.10
-#        with:
-#          manifests: |
-#            manifests/26-web-deployment-test.yaml
-#            manifests/30-web-service.yaml
-#          images: |
-#            ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
-#          imagepullsecrets: |
-#            alkemio-web-secret
+      - uses: Azure/k8s-deploy@v4.10
+        with:
+          manifests: |
+            manifests/26-web-deployment-test.yaml
+            manifests/30-web-service.yaml
+          images: |
+            ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
+          imagepullsecrets: |
+            alkemio-web-secret
