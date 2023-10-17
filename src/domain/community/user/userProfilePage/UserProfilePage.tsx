@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import Loading from '../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import UserPageLayout from '../layout/UserPageLayout';
@@ -29,14 +28,14 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   if (!userMetadata) {
     return (
-      <UserPageLayout currentSection={EntityPageSection.Profile}>
+      <UserPageLayout>
         <Error404 />
       </UserPageLayout>
     );
   }
 
   return (
-    <UserPageLayout currentSection={EntityPageSection.Profile}>
+    <UserPageLayout>
       <UserProfilePageView
         contributions={contributions}
         organizationIds={organizationIds}

@@ -1,46 +1,36 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../journey/common/EntityPageLayout';
 import React, { PropsWithChildren } from 'react';
-import UserTabs from './UserTabs';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { useUserContext } from '../hooks/useUserContext';
 import { AssignmentIndOutlined } from '@mui/icons-material';
-import { Visual } from '../../../common/visual/Visual';
-import PageBanner from '../../../../core/ui/layout/pageBanner/PageBanner';
-import PageBannerCardWithVisual from '../../../journey/common/PageBanner/JourneyPageBannerCard/PageBannerCardWithVisual';
-import SizeableAvatar from '../../../../core/ui/avatar/SizeableAvatar';
+import UserPageBanner from './UserPageBanner';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUserMetadata } from '../hooks/useUserMetadata';
+import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
-const banner: Visual = {
-  uri: '/alkemio-banner/global-banner.jpg',
-};
-
-interface UserPageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
+interface UserPageLayoutProps {}
 
 const UserPageLayout = (props: PropsWithChildren<UserPageLayoutProps>) => {
-  const { user, loadingMe } = useUserContext();
+  const { userNameId } = useUrlParams();
+
+  if (!userNameId) {
+    throw new Error('User nameID not present');
+  }
+
+  const { user, loading } = useUserMetadata(userNameId);
 
   return (
-    <EntityPageLayout
+    <TopLevelDesktopLayout
       breadcrumbs={
         <TopLevelPageBreadcrumbs
-          loading={loadingMe}
+          loading={loading}
           avatar={user?.user.profile.visual}
           iconComponent={AssignmentIndOutlined}
+          uri={buildUserProfileUrl(userNameId)}
         >
           {user?.user.profile.displayName}
         </TopLevelPageBreadcrumbs>
       }
-      pageBanner={
-        <PageBanner
-          banner={banner}
-          cardComponent={PageBannerCardWithVisual}
-          visual={<SizeableAvatar src={user?.user.profile.visual?.uri} />}
-          title={user?.user.profile.displayName}
-          subtitle={user?.user.profile.tagline}
-          tags={user?.user.profile.tagset?.tags}
-        />
-      }
-      tabsComponent={UserTabs}
+      header={<UserPageBanner />}
       {...props}
     />
   );

@@ -8,6 +8,9 @@ import ProfileTabs from '../../../shared/layout/ProfileTabs';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { buildUserProfileSettingsUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 
+/**
+ * @deprecated - TODO remove
+ */
 const UserTabs = (props: EntityTabsProps) => {
   const { user } = useUserContext();
 

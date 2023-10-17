@@ -12,6 +12,9 @@ export interface LocationViewProps {
   iconSize?: SvgIconProps['fontSize'];
 }
 
+/**
+ * @deprecated - use LocationCaption instead
+ */
 const LocationView: FC<LocationViewProps> = ({ location, mode = 'label', color = 'primary', iconSize = 'medium' }) => {
   const { t } = useTranslation();
 
