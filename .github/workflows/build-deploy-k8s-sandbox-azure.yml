@@ -46,7 +46,7 @@ jobs:
           token: ${{ secrets.CROWDIN_GITHUB_TOKEN }}
           commit-message: "Latest translation from Crowdin"
           base: "develop"
-          title: "Latest translation from Crowdin"
+          title: "Latest translation from Crowdin "
           body: "Latest translation from Crowdin"
 
       - name: 'Latest translations PR'
