@@ -21,7 +21,7 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
         elevation={transparent ? 0 : PLATFORM_NAVIGATION_MENU_ELEVATION}
         sx={{
           backgroundColor: theme => hexToRGBA(theme.palette.primary.main, transparent ? 0 : 0.25),
-          backdropFilter: `blur(${transparent ? 0 : '8px'})`,
+          backdropFilter: transparent ? 'none' : 'blur(8px)',
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'start',
