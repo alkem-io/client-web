@@ -143,7 +143,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   const callouts = useCallouts({
     spaceNameId,
     displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
-    skip: !permissions.spaceReadAccess,
   });
 
   return (
