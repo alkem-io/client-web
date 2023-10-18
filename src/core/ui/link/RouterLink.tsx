@@ -20,14 +20,14 @@ const RouterLink = ({ to, raw = false, loose = raw, blank, ...props }: RouterLin
 
   const isForeign = raw || isAbsoluteUrl(urlLike);
 
-  const newWindow = blank ?? isForeign;
+  const shouldOpenNewWindow = blank ?? isForeign;
 
   const componentProps = {
     component: isForeign ? undefined : ReactRouterLink,
     [isForeign ? 'href' : 'to']: urlLike,
   };
 
-  return <MuiLink target={newWindow ? '_blank' : undefined} {...componentProps} {...props} />;
+  return <MuiLink target={shouldOpenNewWindow ? '_blank' : undefined} {...componentProps} {...props} />;
 };
 
 export default RouterLink;
