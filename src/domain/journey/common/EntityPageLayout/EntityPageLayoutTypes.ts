@@ -4,6 +4,7 @@ import { ComponentType, ReactElement, ReactNode } from 'react';
 export interface EntityTabsProps {
   currentTab: EntityPageSection;
   mobile?: boolean;
+  onMenuOpen?: (open: boolean) => void;
 }
 
 export interface EntityPageLayoutProps {

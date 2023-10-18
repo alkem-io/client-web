@@ -10,8 +10,6 @@ import { EntityPageSection } from './EntityPageSection';
 import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
 import hexToRGBA from '../../../core/utils/hexToRGBA';
 import HeaderNavigationTabs from '../components/PageHeader/HeaderNavigationTabs';
-import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
-import PlatformHelpButton from '../../../main/ui/helpButton/PlatformHelpButton';
 import useShare from '../../../core/utils/Share';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
@@ -27,7 +25,9 @@ interface ProfileTabsProps extends EntityTabsProps {
 enum NavigationActions {
   Share = 'share',
 }
-
+/**
+ * @deprecated We should remove tabs for User, Organization and InnovationPack
+ */
 const ProfileTabs = ({
   currentTab,
   showSettings,
@@ -90,7 +90,6 @@ const ProfileTabs = ({
             )}
           </BottomNavigation>
         </Paper>
-        <FloatingActionButtons bottom={theme => theme.spacing(10)} floatingActions={<PlatformHelpButton />} />
         {shareDialog}
       </>
     );
