@@ -5,6 +5,9 @@ import JourneyPageBanner from '../../../../shared/components/PageHeader/JourneyP
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
 import TopLevelDesktopLayout from '../../../../../main/ui/layout/TopLevelDesktopLayout';
+import PageContent from '../../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
+import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 
 interface AdminLayoutProps {
   currentTab: AdminSection;
@@ -34,7 +37,11 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
         </>
       }
     >
-      {children}
+      <PageContent gridContainerProps={{ padding: 0 }}>
+        <PageContentColumn columns={12}>
+          <PageContentBlockSeamless>{children}</PageContentBlockSeamless>
+        </PageContentColumn>
+      </PageContent>
     </TopLevelDesktopLayout>
   );
 };
