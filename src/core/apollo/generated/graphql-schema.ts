@@ -1323,7 +1323,6 @@ export type CreateCalloutContributionPolicyInput = {
 
 export type CreateCalloutFramingInput = {
   profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   whiteboardRt?: InputMaybe<CreateWhiteboardRtInput>;
 };
