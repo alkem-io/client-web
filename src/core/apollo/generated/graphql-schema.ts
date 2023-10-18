@@ -19554,7 +19554,7 @@ export type UserDetailsFragment = {
     tagline: string;
     description?: string | undefined;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-    visual?:
+    avatar?:
       | {
           __typename?: 'Visual';
           id: string;
@@ -19680,7 +19680,7 @@ export type CreateUserMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -19741,7 +19741,7 @@ export type CreateUserNewRegistrationMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -19876,7 +19876,7 @@ export type UpdateUserMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -19950,7 +19950,7 @@ export type UserQuery = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20042,7 +20042,7 @@ export type UserProfileQuery = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20188,7 +20188,7 @@ export type UserProviderQuery = {
             tagline: string;
             description?: string | undefined;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-            visual?:
+            avatar?:
               | {
                   __typename?: 'Visual';
                   id: string;
