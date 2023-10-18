@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Caption } from '../../../../core/ui/typography';
 
 const splitIntoLines = (text: ReactNode, namespace?: string) => {
   if (Array.isArray(text)) {
@@ -9,15 +9,11 @@ const splitIntoLines = (text: ReactNode, namespace?: string) => {
   if (lines.length > 1) {
     return splitIntoLines(lines, namespace);
   }
-  return <Typography key={namespace}>{lines[0]}</Typography>;
+  return <Caption key={namespace}>{lines[0]}</Caption>;
 };
 
 const TabDescriptionHeader: FC = ({ children }) => {
-  return (
-    <Box paddingY={2} gap={1} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-      {splitIntoLines(children)}
-    </Box>
-  );
+  return <>{splitIntoLines(children)}</>;
 };
 
 export default TabDescriptionHeader;
