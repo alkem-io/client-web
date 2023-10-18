@@ -8,6 +8,10 @@ import { PageTitle, PlatformTitle, Tagline, Text } from '../../ui/typography';
 import { EastOutlined } from '@mui/icons-material';
 import { useConfig } from '../../../domain/platform/config/useConfig';
 import SearchBar from '../../../main/ui/layout/topBar/SearchBar';
+import PageContent from '../../ui/content/PageContent';
+import PageContentColumn from '../../ui/content/PageContentColumn';
+import { gutters } from '../../ui/grid/utils';
+import { NAVIGATION_HEIGHT_GUTTERS } from '../../ui/navigation/NavigationBar';
 
 const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
@@ -77,42 +81,47 @@ const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle?: s
 
 export const Error404: FC = () => {
   useEffect(() => log404NotFound());
+
   const { t } = useTranslation();
   const { platform } = useConfig();
 
   return (
-    <PageContentBlock>
-      <Container>
-        <LeftArea>
-          <PlatformTitle sx={theme => ({ [theme.breakpoints.down('md')]: { textAlign: 'center' } })}>
-            {t('pages.four-ou-four.title')}
-          </PlatformTitle>
-          <Picture
-            src="/404.svg"
-            sx={theme => ({
-              marginBottom: theme.spacing(2),
-              display: 'block',
-              [theme.breakpoints.up('md')]: { display: 'none' },
-            })}
-          />
-          <Tagline>{t('pages.four-ou-four.message')}</Tagline>
-          <StyledSearchBox />
-          <UsefulLinks>
-            <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>
-              {t('common.home')}
-            </StyledLink>
-            <StyledLink href={platform?.help} subtitle={t('pages.four-ou-four.links.faq')}>
-              {t('common.helpCenter')}
-            </StyledLink>
-          </UsefulLinks>
-        </LeftArea>
-        <RightArea>
-          <Picture
-            src="/404.svg"
-            sx={theme => ({ display: 'none', [theme.breakpoints.up('md')]: { display: 'block' } })}
-          />
-        </RightArea>
-      </Container>
-    </PageContentBlock>
+    <PageContent gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_HEIGHT_GUTTERS) } }}>
+      <PageContentColumn columns={12}>
+        <PageContentBlock>
+          <Container>
+            <LeftArea>
+              <PlatformTitle sx={theme => ({ [theme.breakpoints.down('md')]: { textAlign: 'center' } })}>
+                {t('pages.four-ou-four.title')}
+              </PlatformTitle>
+              <Picture
+                src="/404.svg"
+                sx={theme => ({
+                  marginBottom: theme.spacing(2),
+                  display: 'block',
+                  [theme.breakpoints.up('md')]: { display: 'none' },
+                })}
+              />
+              <Tagline>{t('pages.four-ou-four.message')}</Tagline>
+              <StyledSearchBox />
+              <UsefulLinks>
+                <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>
+                  {t('common.home')}
+                </StyledLink>
+                <StyledLink href={platform?.help} subtitle={t('pages.four-ou-four.links.faq')}>
+                  {t('common.helpCenter')}
+                </StyledLink>
+              </UsefulLinks>
+            </LeftArea>
+            <RightArea>
+              <Picture
+                src="/404.svg"
+                sx={theme => ({ display: 'none', [theme.breakpoints.up('md')]: { display: 'block' } })}
+              />
+            </RightArea>
+          </Container>
+        </PageContentBlock>
+      </PageContentColumn>
+    </PageContent>
   );
 };
