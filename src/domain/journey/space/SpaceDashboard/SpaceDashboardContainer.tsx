@@ -22,9 +22,13 @@ import { ActivityLogResultType } from '../../../shared/components/ActivityLog/Ac
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
+import useSpaceDashboardNavigation, {
+  DashboardNavigationItem,
+} from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
+  dashboardNavigation: DashboardNavigationItem[] | undefined;
   isPrivate: boolean | undefined;
   permissions: {
     canEdit: boolean;
@@ -63,7 +67,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: { spaceId: spaceNameId },
-    errorPolicy: 'all',
+    errorPolicy: 'ignore',
     skip: loadingSpace,
   });
 
@@ -107,6 +111,11 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
+  const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
+    spaceId: spaceNameId,
+    skip: !permissions.spaceReadAccess,
+  });
+
   const references = referencesData?.space?.profile.references;
 
   const hostOrganizations = useMemo(() => (_space?.space.host ? [_space.space.host] : []), [_space]);
@@ -134,6 +143,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   const callouts = useCallouts({
     spaceNameId,
     displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    skip: !permissions.spaceReadAccess,
   });
 
   return (
@@ -141,6 +151,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
       {children(
         {
           space: _space?.space,
+          dashboardNavigation,
           isPrivate,
           permissions,
           isAuthenticated,
@@ -156,7 +167,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
         },
         {
           error,
-          loading: loadingSpaceQuery || loadingSpace,
+          loading: loadingSpaceQuery || loadingSpace || dashboardNavigationLoading,
         },
         {}
       )}
