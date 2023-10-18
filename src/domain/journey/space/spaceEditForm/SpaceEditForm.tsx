@@ -28,6 +28,7 @@ import SaveButton from '../../../../core/ui/actions/SaveButton';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import SpaceProfileFixedInformation, { SpaceProfileFixedInformationProps } from './SpaceProfileFixedInformation';
+import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface Props {
   context?: Context;
@@ -74,7 +75,7 @@ const SpaceEditForm: FC<Props> = ({
     return [
       {
         id: '',
-        name: 'default',
+        name: DEFAULT_TAGSET,
         tags: [],
         allowedValues: [],
         type: TagsetType.Freeform,
