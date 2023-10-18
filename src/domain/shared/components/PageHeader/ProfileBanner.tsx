@@ -132,6 +132,8 @@ export interface ProfileBannerProps {
 }
 
 /**
+ * @deprecated - use ProfilePageBanner
+ * TODO remove this one
  * This is the common top banner for Users/Organizations or new things with a Profile.
  * For Spaces/Challenges/Opportunities and anything else see PageBanner
  */
