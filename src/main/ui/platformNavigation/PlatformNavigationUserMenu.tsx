@@ -96,7 +96,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigation
           {user && (
             <PlatformNavigationUserMenuItem
               iconComponent={AssignmentIndOutlined}
-              route={buildUserProfileUrl(user.id)}
+              route={buildUserProfileUrl(user.nameID)}
               onClick={onClose}
             >
               {t('pages.user-profile.title')}
