@@ -22,7 +22,7 @@ const TopLevelDesktopLayout = ({
       {header}
       {children}
       <Footer />
-      <FloatingActionButtons floatingActions={floatingActions ?? <PlatformHelpButton />} />
+      {floatingActions ?? <FloatingActionButtons floatingActions={<PlatformHelpButton />} />}
     </>
   );
 };
