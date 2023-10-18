@@ -62,11 +62,11 @@ export interface SpacePageContainerProps
 const NO_PRIVILEGES = [];
 
 export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children }) => {
-  const { spaceId, spaceNameId, loading: loadingSpace, isPrivate, error } = useSpace();
+  const { spaceId, spaceNameId, loading: loadingSpace, permissions: spacePermissions, isPrivate, error } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
-    variables: { spaceId: spaceNameId },
+    variables: { spaceId: spaceNameId, authorizedReadAccess: spacePermissions.canRead },
     errorPolicy: 'ignore',
     skip: loadingSpace,
   });
