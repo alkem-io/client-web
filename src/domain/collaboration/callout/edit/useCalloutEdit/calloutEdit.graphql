@@ -19,11 +19,6 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
         }
       }
     }
-    contributionDefaults {
-      id
-      postDescription
-      whiteboardContent
-    }
     contributionPolicy {
       id
       state

@@ -65,10 +65,6 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
             contributionPolicy: {
               state: callout.state,
             },
-            contributionDefaults: {
-              postDescription: callout.contributionDefaults?.postDescription,
-              whiteboardContent: callout.contributionDefaults?.whiteboardContent,
-            },
             displayLocation: callout.displayLocation,
           },
         },

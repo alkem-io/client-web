@@ -9806,12 +9806,6 @@ export type UpdateCalloutMutation = {
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       };
     };
-    contributionDefaults: {
-      __typename?: 'CalloutContributionDefaults';
-      id: string;
-      postDescription?: string | undefined;
-      whiteboardContent?: string | undefined;
-    };
     contributionPolicy: { __typename?: 'CalloutContributionPolicy'; id: string; state: CalloutState };
   };
 };
