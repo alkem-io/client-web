@@ -1530,7 +1530,7 @@ export const OrganizationInfoFragmentDoc = gql`
       displayName
       description
       tagline
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualUri
         alternativeText
       }

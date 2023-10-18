@@ -1323,6 +1323,7 @@ export type CreateCalloutContributionPolicyInput = {
 
 export type CreateCalloutFramingInput = {
   profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   whiteboardRt?: InputMaybe<CreateWhiteboardRtInput>;
 };
@@ -18553,7 +18554,7 @@ export type OrganizationInfoFragment = {
     displayName: string;
     description?: string | undefined;
     tagline: string;
-    visual?:
+    avatar?:
       | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
       | undefined;
     tagsets?:
@@ -18636,7 +18637,7 @@ export type OrganizationInfoQuery = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
-      visual?:
+      avatar?:
         | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
         | undefined;
       tagsets?:

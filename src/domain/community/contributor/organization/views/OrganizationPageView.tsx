@@ -38,7 +38,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
   const entity = useMemo(
     () =>
       ({
-        avatar: organization?.profile.visual?.uri,
+        avatar: organization?.profile.avatar?.uri,
         displayName: organization?.profile.displayName || '',
         settingsTooltip: t('pages.organization.settings.tooltip'),
         settingsUrl: buildAdminOrganizationUrl(organization?.nameID || ''),
