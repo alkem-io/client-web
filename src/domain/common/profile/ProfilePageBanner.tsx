@@ -25,6 +25,9 @@ export interface ProfilePageBannerProps {
         tagline?: string;
         avatar?: Visual;
         location?: Location;
+        tagset?: {
+          tags: string[];
+        };
         tagsets?: {
           tags: string[];
         }[];
@@ -49,7 +52,10 @@ const ProfilePageBanner = ({
   const closeMessageDialog = () => setIsMessageDialogOpen(false);
   const openMessageDialog = () => setIsMessageDialogOpen(true);
 
-  const tags = useMemo(() => profile?.tagsets?.flatMap(({ tags }) => tags), [profile?.tagsets]);
+  const tags = useMemo(
+    () => profile?.tagset?.tags ?? profile?.tagsets?.flatMap(({ tags }) => tags),
+    [profile?.tagsets]
+  );
 
   const messageReceivers = useMemo(() => {
     if (!entityId) {

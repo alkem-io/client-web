@@ -1,7 +1,6 @@
 import { Box } from '@mui/material';
 import { ComponentType, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 import {
   useInnovationPackProfilePageQuery,
   useWhiteboardTemplateContentQuery,
@@ -19,7 +18,6 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '../../../../core/ui/typography';
 import ReferencesListSmallItem from '../../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { PostTemplate, postTemplateMapper } from '../../post/PostTemplateCard/PostTemplate';
 import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
 import { whiteboardTemplateMapper } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
@@ -44,27 +42,24 @@ const InnovationPackProfilePage = () => {
     throw new Error('Must be within InnovationPack');
   }
 
-  const { data } = useInnovationPackProfilePageQuery({
+  const { data, loading } = useInnovationPackProfilePageQuery({
     variables: {
       innovationPackId: innovationPackNameId,
     },
   });
 
-  const { displayName, description, tagline, tagset, references } =
-    data?.platform.library.innovationPack?.profile ?? {};
+  const { displayName, description, tagset, references } = data?.platform.library.innovationPack?.profile ?? {};
 
   const { whiteboardTemplates, postTemplates, innovationFlowTemplates } =
     data?.platform.library.innovationPack?.templates ?? {};
 
-  const { nameID: providerNameId, profile: providerProfile } = data?.platform.library.innovationPack?.provider ?? {};
+  const { profile: providerProfile } = data?.platform.library.innovationPack?.provider ?? {};
 
   const { innovationPack } = data?.platform.library ?? {};
 
   const [selectedTemplate, setSelectedTemplate] = useState<TemplatePreview | undefined>();
 
   const { t } = useTranslation();
-
-  const providerUri = providerNameId && buildOrganizationUrl(providerNameId);
 
   const { data: whiteboardTemplateContentData, loading: loadingWhiteboardTemplateContent } =
     useWhiteboardTemplateContentQuery({
@@ -78,15 +73,7 @@ const InnovationPackProfilePage = () => {
 
   return (
     <>
-      <InnovationPackProfileLayout
-        displayName={displayName}
-        tagline={tagline}
-        providerDisplayName={providerProfile?.displayName ?? ''}
-        providerUri={providerUri ?? ''}
-        providerVisualUri={providerProfile?.avatar?.uri ?? ''}
-        currentSection={EntityPageSection.Profile}
-        showSettings={canUpdate}
-      >
+      <InnovationPackProfileLayout innovationPack={innovationPack} showSettings={canUpdate} loading={loading}>
         <PageContent>
           <PageContentColumn columns={12}>
             <PageContentBlock sx={{ flexDirection: 'row' }}>

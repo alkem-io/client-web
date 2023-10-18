@@ -16,7 +16,7 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
           breadcrumbs={
             <TopLevelPageBreadcrumbs
               loading={loading}
-              avatar={organization?.profile.visual}
+              avatar={organization?.profile.avatar}
               iconComponent={Diversity3Outlined}
               uri={organization?.nameID ? buildOrganizationUrl(organization?.nameID) : ''}
             >

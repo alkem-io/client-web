@@ -10,6 +10,10 @@ export interface InnovationPageTabsProps extends EntityTabsProps {
   showSettings: boolean;
 }
 
+/**
+ * @deprecated
+ * // TODO remove
+ */
 const InnovationPageTabs = ({ showSettings, ...props }: InnovationPageTabsProps) => {
   const { innovationPackNameId } = useUrlParams();
 
