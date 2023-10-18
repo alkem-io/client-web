@@ -5,6 +5,8 @@ import { isAbsoluteUrl, normalizeLink } from '../../utils/links';
 interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, Pick<MuiLinkProps, 'underline'> {
   to: string;
   loose?: boolean;
+  raw?: boolean;
+  blank?: boolean;
 }
 
 /**
@@ -13,17 +15,19 @@ interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, Pick<Mui
  * @param loose - allows domain to be specified without protocol, good for user-submitted content
  * @constructor
  */
-const RouterLink = ({ to, loose = false, ...props }: RouterLinkProps) => {
+const RouterLink = ({ to, raw = false, loose = raw, blank, ...props }: RouterLinkProps) => {
   const urlLike = loose ? normalizeLink(to) : to;
 
-  const isAbsolute = isAbsoluteUrl(urlLike);
+  const isForeign = raw || isAbsoluteUrl(urlLike);
+
+  const newWindow = blank ?? isForeign;
 
   const componentProps = {
-    component: isAbsolute ? undefined : ReactRouterLink,
-    [isAbsolute ? 'href' : 'to']: urlLike,
+    component: isForeign ? undefined : ReactRouterLink,
+    [isForeign ? 'href' : 'to']: urlLike,
   };
 
-  return <MuiLink target={isAbsolute ? '_blank' : undefined} {...componentProps} {...props} />;
+  return <MuiLink target={newWindow ? '_blank' : undefined} {...componentProps} {...props} />;
 };
 
 export default RouterLink;

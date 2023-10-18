@@ -18,12 +18,14 @@ const PoweredBy = ({ preview, sx, ...props }: PoweredByProps & BoxProps) => {
 
   const { isFeatureEnabled } = useConfig();
 
-  const route = isFeatureEnabled(FEATURE_LANDING_PAGE) ? '/landing' : ROUTE_HOME;
+  const hasLandingPage = isFeatureEnabled(FEATURE_LANDING_PAGE) || true;
 
   return (
     <Box
       component={RouterLink}
-      to={route}
+      to={hasLandingPage ? '/landing' : ROUTE_HOME}
+      raw={hasLandingPage}
+      blank={false}
       display="flex"
       alignItems="center"
       gap={gutters(0.5)}
