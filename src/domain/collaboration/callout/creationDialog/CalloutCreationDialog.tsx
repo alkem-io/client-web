@@ -150,8 +150,9 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
           },
           contributionDefaults: {
-            postDescription: callout.postDescription,
-            whiteboardContent: callout.whiteboardContent,
+            postDescription: callout.type === CalloutType.PostCollection ? callout.postDescription : undefined,
+            whiteboardContent:
+              callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardContent : undefined,
           },
           type: callout.type!,
           contributionPolicy: {
