@@ -18,7 +18,7 @@ const PoweredBy = ({ preview, sx, ...props }: PoweredByProps & BoxProps) => {
 
   const { isFeatureEnabled } = useConfig();
 
-  const hasLandingPage = isFeatureEnabled(FEATURE_LANDING_PAGE) || true;
+  const hasLandingPage = isFeatureEnabled(FEATURE_LANDING_PAGE);
 
   return (
     <Box
