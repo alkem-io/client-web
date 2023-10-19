@@ -2,6 +2,7 @@ import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import {
   useCalloutsLazyQuery,
   useCalloutsQuery,
+  useCollaborationAuthorizationQuery,
   useUpdateCalloutsSortOrderMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -58,6 +59,7 @@ export type TypedCallout = Pick<
   contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
   draft: boolean;
   editable: boolean;
+  movable: boolean;
   flowStates: string[] | undefined;
   displayLocation: string;
   comments: CommentsWithMessagesFragmentWithCallout;
@@ -101,6 +103,17 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     displayLocations: params.displayLocations,
   };
 
+  const { data: authorizationData } = useCollaborationAuthorizationQuery({
+    variables,
+    skip: !params.spaceNameId,
+  });
+  const authorization = (
+    authorizationData?.space.opportunity ??
+    authorizationData?.space.challenge ??
+    authorizationData?.space
+  )?.authorization;
+  const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
+
   const {
     data: calloutsData,
     loading: calloutsLoading,
@@ -108,7 +121,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
-    skip: !params.spaceNameId,
+    skip: !canReadCollaboration || !params.spaceNameId,
   });
 
   const [getCallouts] = useCalloutsLazyQuery({
@@ -138,6 +151,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       collaboration?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const movable = collaboration.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
@@ -161,6 +175,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           authorization,
           draft,
           editable,
+          movable,
           flowStates,
           displayLocation: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
         } as TypedCallout;

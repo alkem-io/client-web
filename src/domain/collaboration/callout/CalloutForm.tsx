@@ -35,6 +35,7 @@ import CalloutWhiteboardField, {
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { JourneyCalloutDisplayLocationOptions } from './CalloutsInContext/CalloutsGroup';
+import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
 
 type FormValueType = {
   displayName: string;
@@ -108,7 +109,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     () => [
       {
         id: '-1',
-        name: 'default',
+        name: DEFAULT_TAGSET,
         tags: callout?.tags ?? [],
         allowedValues: [],
         type: TagsetType.Freeform,
