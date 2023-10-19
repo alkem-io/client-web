@@ -16,7 +16,6 @@ import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInpu
 import { SMALL_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../core/ui/typography';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { DEFAULT_TAGSET } from '../tags/tagset.constants';
 
 export interface ProfileFormValues {
   name: string;
@@ -56,7 +55,7 @@ const ProfileForm: FC<ProfileFormProps> = ({
     return [
       {
         id: '',
-        name: DEFAULT_TAGSET,
+        name: 'default',
         tags: [],
         allowedValues: [],
         type: TagsetType.Freeform,

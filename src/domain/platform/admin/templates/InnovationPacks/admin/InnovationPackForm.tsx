@@ -15,7 +15,6 @@ import { referenceSegmentSchema } from '../../../components/Common/ReferenceSegm
 import { TagsetSegment, tagsetSegmentSchema } from '../../../components/Common/TagsetSegment';
 import Gutters from '../../../../../../core/ui/grid/Gutters';
 import MarkdownValidator from '../../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { DEFAULT_TAGSET } from '../../../../../common/tags/tagset.constants';
 
 export interface InnovationPackFormValues {
   nameID: string;
@@ -64,9 +63,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
     profile: {
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
-      tagsets: [
-        profile?.tagset ?? { id: '', name: DEFAULT_TAGSET, tags: [], allowedValues: [], type: TagsetType.Freeform },
-      ],
+      tagsets: [profile?.tagset ?? { id: '', name: 'default', tags: [], allowedValues: [], type: TagsetType.Freeform }],
       references: profile?.references ?? [],
     },
     providerId: providerId ?? '',

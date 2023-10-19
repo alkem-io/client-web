@@ -15,7 +15,6 @@ import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.con
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface FormValue {
   name: string;
@@ -70,7 +69,7 @@ const PostForm: FC<PostFormProps> = ({
   const tagsets: Tagset[] = [
     {
       id: '-1',
-      name: DEFAULT_TAGSET,
+      name: 'default',
       tags: tags ?? [],
       allowedValues: [],
       type: TagsetType.Freeform,
