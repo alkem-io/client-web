@@ -17,6 +17,7 @@ import { useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {
   spaceId: string;
+  skip?: boolean;
 }
 
 interface UseSpaceDashboardNavigationProvided {
@@ -75,9 +76,11 @@ const isReadable = ({ authorization }: { authorization?: Partial<Authorization> 
 
 const useSpaceDashboardNavigation = ({
   spaceId,
+  skip,
 }: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
   const { data: challengesQueryData, loading: challengesQueryLoading } = useSpaceDashboardNavigationChallengesQuery({
     variables: { spaceId },
+    skip,
   });
 
   const challenges = challengesQueryData?.space.challenges;
@@ -90,7 +93,7 @@ const useSpaceDashboardNavigation = ({
         spaceId,
         challengeIds: readableChallengeIds!,
       },
-      skip: !readableChallengeIds,
+      skip: !readableChallengeIds || skip,
     });
 
   const challengeToItem = DashboardNavigationItemPropsGetter('challenge');
