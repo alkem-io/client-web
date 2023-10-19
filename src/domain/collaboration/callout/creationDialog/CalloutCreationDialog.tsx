@@ -66,19 +66,6 @@ export interface TemplateProfile {
   };
 }
 
-export interface CalloutPostTemplate {
-  defaultDescription: string;
-  type: string;
-  profile: TemplateProfile;
-  tags?: string[];
-}
-
-export interface CalloutWhiteboardTemplate {
-  id?: string;
-  content: string;
-  profile: TemplateProfile;
-}
-
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
@@ -139,6 +126,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
             whiteboardRt:
               callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
+            tags: callout.tags ?? [],
           },
           contributionDefaults: {
             postDescription: callout.type === CalloutType.PostCollection ? callout.postDescription : undefined,

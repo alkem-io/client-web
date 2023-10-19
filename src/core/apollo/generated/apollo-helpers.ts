@@ -1658,6 +1658,7 @@ export type OpportunityKeySpecifier = (
   | 'parentNameID'
   | 'profile'
   | 'projects'
+  | 'storageAggregator'
   | OpportunityKeySpecifier
 )[];
 export type OpportunityFieldPolicy = {
@@ -1672,6 +1673,7 @@ export type OpportunityFieldPolicy = {
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OpportunityCreatedKeySpecifier = ('challengeID' | 'opportunity' | OpportunityCreatedKeySpecifier)[];
 export type OpportunityCreatedFieldPolicy = {
