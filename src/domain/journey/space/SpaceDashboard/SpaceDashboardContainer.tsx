@@ -67,7 +67,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: { spaceId: spaceNameId, authorizedReadAccess: spacePermissions.canRead },
-    errorPolicy: 'ignore',
+    errorPolicy: 'both',
     skip: loadingSpace,
   });
 
