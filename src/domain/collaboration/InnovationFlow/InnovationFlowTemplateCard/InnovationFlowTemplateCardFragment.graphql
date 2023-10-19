@@ -1,6 +1,5 @@
 fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
   id
-  definition
   type
   profile {
     ...TemplateCardProfileInfo

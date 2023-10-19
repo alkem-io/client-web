@@ -133,32 +133,6 @@ export const JourneyInnovationFlowStatesAllowedValuesFragmentDoc = gql`
     }
   }
 `;
-export const TemplateCardProfileInfoFragmentDoc = gql`
-  fragment TemplateCardProfileInfo on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: CARD) {
-      id
-      uri
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const InnovationFlowTemplateCardFragmentDoc = gql`
-  fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
-    id
-    definition
-    type
-    profile {
-      ...TemplateCardProfileInfo
-    }
-  }
-  ${TemplateCardProfileInfoFragmentDoc}
-`;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     communityType
@@ -2650,6 +2624,21 @@ export const SpaceDashboardNavigationCommunityFragmentDoc = gql`
     myMembershipStatus
   }
 `;
+export const TemplateCardProfileInfoFragmentDoc = gql`
+  fragment TemplateCardProfileInfo on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      id
+      uri
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
 export const PostTemplateCardFragmentDoc = gql`
   fragment PostTemplateCard on PostTemplate {
     id
@@ -2670,10 +2659,9 @@ export const WhiteboardTemplateCardFragmentDoc = gql`
   }
   ${TemplateCardProfileInfoFragmentDoc}
 `;
-export const InnovationFlowTemplateFragmentDoc = gql`
-  fragment InnovationFlowTemplate on InnovationFlowTemplate {
+export const InnovationFlowTemplateCardFragmentDoc = gql`
+  fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
     id
-    definition
     type
     profile {
       ...TemplateCardProfileInfo
@@ -2692,13 +2680,13 @@ export const SpaceTemplatesFragmentDoc = gql`
         ...WhiteboardTemplateCard
       }
       innovationFlowTemplates {
-        ...InnovationFlowTemplate
+        ...InnovationFlowTemplateCard
       }
     }
   }
   ${PostTemplateCardFragmentDoc}
   ${WhiteboardTemplateCardFragmentDoc}
-  ${InnovationFlowTemplateFragmentDoc}
+  ${InnovationFlowTemplateCardFragmentDoc}
 `;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
@@ -19410,12 +19398,12 @@ export const InnovationFlowTemplatesFromSpaceDocument = gql`
       templates {
         id
         innovationFlowTemplates {
-          ...InnovationFlowTemplate
+          ...InnovationFlowTemplateCard
         }
       }
     }
   }
-  ${InnovationFlowTemplateFragmentDoc}
+  ${InnovationFlowTemplateCardFragmentDoc}
 `;
 
 /**

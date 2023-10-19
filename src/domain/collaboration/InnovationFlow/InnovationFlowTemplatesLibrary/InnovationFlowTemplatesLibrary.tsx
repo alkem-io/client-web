@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import {
   useSpaceInnovationFlowTemplatesLibraryLazyQuery,
   usePlatformInnovationFlowTemplatesLibraryLazyQuery,
+  useInnovationFlowTemplateDefinitionLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 import {
   InnovationFlowTemplate,
-  InnovationFlowTemplateWithDefinition,
   innovationFlowTemplateMapper,
 } from '../InnovationFlowTemplateCard/InnovationFlowTemplate';
 import InnovationFlowTemplateCard from '../InnovationFlowTemplateCard/InnovationFlowTemplateCard';
@@ -76,12 +76,23 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
         .filter(filterByText(filter)),
     [platformData, filterType, filter]
   );
+  const [fetchInnovationFlowTemplateDefinition, { loading: loadingInnovationFlowTemplateDefinition }] =
+    useInnovationFlowTemplateDefinitionLazyQuery();
 
   // InnovationFlow templates include the definition and type, so no need to go to the server and fetch like with Whiteboards
-  const getInnovationFlowTemplateContent = (
-    template: InnovationFlowTemplate
-  ): Promise<InnovationFlowTemplateWithDefinition> => {
-    return Promise.resolve(template);
+  const getInnovationFlowTemplateDefinition = async (template: InnovationFlowTemplate) => {
+    const { data } = await fetchInnovationFlowTemplateDefinition({
+      variables: {
+        innovationFlowTemplateID: template.id,
+      },
+    });
+    if (!data?.lookup.innovationFlowTemplate) {
+      throw new Error(`Innovation Flow template id:'${template.id}' not found`);
+    }
+    return {
+      ...template,
+      definition: data.lookup.innovationFlowTemplate.definition,
+    };
   };
 
   return (
@@ -94,8 +105,8 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
       onFilterChange={setFilter}
       fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
-      loadingWhiteboardTemplateContent={false}
-      getWhiteboardTemplateWithContent={getInnovationFlowTemplateContent}
+      loadingWhiteboardTemplateContent={loadingInnovationFlowTemplateDefinition}
+      getWhiteboardTemplateWithContent={getInnovationFlowTemplateDefinition}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}

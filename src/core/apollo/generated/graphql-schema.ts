@@ -7407,7 +7407,6 @@ export type JourneyInnovationFlowStatesAllowedValuesFragment = {
 export type InnovationFlowTemplateCardFragment = {
   __typename?: 'InnovationFlowTemplate';
   id: string;
-  definition: string;
   type: InnovationFlowType;
   profile: {
     __typename?: 'Profile';
@@ -7444,7 +7443,6 @@ export type SpaceInnovationFlowTemplatesLibraryQuery = {
           innovationFlowTemplates: Array<{
             __typename?: 'InnovationFlowTemplate';
             id: string;
-            definition: string;
             type: InnovationFlowType;
             profile: {
               __typename?: 'Profile';
@@ -7516,7 +7514,6 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
               innovationFlowTemplates: Array<{
                 __typename?: 'InnovationFlowTemplate';
                 id: string;
-                definition: string;
                 type: InnovationFlowType;
                 profile: {
                   __typename?: 'Profile';
@@ -7689,7 +7686,6 @@ export type InnovationPackProfilePageQuery = {
                   innovationFlowTemplates: Array<{
                     __typename?: 'InnovationFlowTemplate';
                     id: string;
-                    definition: string;
                     type: InnovationFlowType;
                     profile: {
                       __typename?: 'Profile';
@@ -25388,7 +25384,6 @@ export type InnovationFlowTemplatesFromSpaceQuery = {
           innovationFlowTemplates: Array<{
             __typename?: 'InnovationFlowTemplate';
             id: string;
-            definition: string;
             type: InnovationFlowType;
             profile: {
               __typename?: 'Profile';
@@ -25466,7 +25461,6 @@ export type SpaceTemplatesFragment = {
         innovationFlowTemplates: Array<{
           __typename?: 'InnovationFlowTemplate';
           id: string;
-          definition: string;
           type: InnovationFlowType;
           profile: {
             __typename?: 'Profile';
@@ -25488,30 +25482,6 @@ export type SpaceTemplatesFragment = {
         }>;
       }
     | undefined;
-};
-
-export type InnovationFlowTemplateFragment = {
-  __typename?: 'InnovationFlowTemplate';
-  id: string;
-  definition: string;
-  type: InnovationFlowType;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
 };
 
 export type SpaceChallengeCardsQueryVariables = Exact<{

@@ -31,7 +31,7 @@ query InnovationFlowTemplatesFromSpace($spaceId: UUID_NAMEID!) {
     templates {
       id
       innovationFlowTemplates {
-        ...InnovationFlowTemplate
+        ...InnovationFlowTemplateCard
       }
     }
   }
@@ -47,16 +47,7 @@ fragment SpaceTemplates on Space {
       ...WhiteboardTemplateCard
     }
     innovationFlowTemplates {
-      ...InnovationFlowTemplate
+      ...InnovationFlowTemplateCard
     }
-  }
-}
-
-fragment InnovationFlowTemplate on InnovationFlowTemplate {
-  id
-  definition
-  type
-  profile {
-    ...TemplateCardProfileInfo
   }
 }
