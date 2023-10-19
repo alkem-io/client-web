@@ -22,6 +22,7 @@ import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLocationValue';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -90,7 +91,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         tagsets: [
           {
             id: callout.framing.profile.tagset?.id,
-            name: 'default',
+            name: DEFAULT_TAGSET,
             tags: newCallout.tags,
             allowedValues: [],
             type: TagsetType.Freeform,

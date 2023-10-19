@@ -12,6 +12,7 @@ import { useInView } from 'react-intersection-observer';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { forwardRef, Ref } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
+import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface PostCalloutContainerProvided {
   posts: ContributeTabPostFragment[];
@@ -103,7 +104,7 @@ const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ c
               },
               tagset: {
                 id: '-1',
-                name: 'default',
+                name: DEFAULT_TAGSET,
                 tags: [],
                 allowedValues: [],
                 type: TagsetType.Freeform,
