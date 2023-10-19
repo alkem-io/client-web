@@ -6962,6 +6962,30 @@ export type InnovationFlowBlockQuery = {
   };
 };
 
+export type DefaultInnovationFlowTemplateQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type DefaultInnovationFlowTemplateQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
+            id: string;
+            type: InnovationFlowType;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type ChallengeInnovationFlowEventMutationVariables = Exact<{
   eventName: Scalars['String'];
   innovationFlowID: Scalars['UUID'];
