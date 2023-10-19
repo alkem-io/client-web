@@ -1,6 +1,7 @@
-import React, { MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
-import { ClickAwayListener, Popper, PopperProps } from '@mui/material';
+import React, { cloneElement, MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
+import { Box, ClickAwayListener, Drawer, Grow, Popper, PopperProps } from '@mui/material';
 import { debounce } from 'lodash';
+import { gutters } from '../grid/utils';
 
 export interface TriggerProps {
   ref: Ref<Element>;
@@ -10,20 +11,15 @@ export interface TriggerProps {
 }
 
 interface ContentProps {
-  onClose: () => void;
-  onClickAway: (event: MouseEvent | TouchEvent) => void;
-  TransitionProps?: {
-    in: boolean;
-    onEnter: () => {};
-    onExited: () => {};
-  };
+  onClose?: () => void;
 }
 
 interface ClickableTooltipProps extends Omit<PopperProps, 'open' | 'children'> {
   renderTrigger: ({ onClick }: TriggerProps) => ReactElement;
-  children: ({ onClose }: ContentProps) => ReactElement;
+  children: ReactElement<ContentProps>;
   mouseLeaveDebounceWait?: number;
   zIndex?: number;
+  drawer?: boolean;
 }
 
 enum OpenTriggerAction {
@@ -38,12 +34,13 @@ interface OpenState {
 
 const MOUSE_LEAVE_DEBOUNCE_WAIT_DEFAULT = 100;
 
-const ClickableTooltip = ({
+const MenuTriggerButton = ({
   renderTrigger,
   children,
   mouseLeaveDebounceWait = MOUSE_LEAVE_DEBOUNCE_WAIT_DEFAULT,
   zIndex,
   sx,
+  drawer = false,
   ...props
 }: ClickableTooltipProps) => {
   const [openState, setOpenState] = useState<OpenState | null>(null);
@@ -117,29 +114,43 @@ const ClickableTooltip = ({
           onMouseLeave: handleMouseLeaveDebounced,
         })}
       </ClickAwayListener>
-      <Popper
-        ref={popperRef}
-        open={!!openState}
-        anchorEl={openState?.anchor}
-        {...props}
-        sx={{
-          ...sx,
-          zIndex,
-        }}
-        transition
-        onMouseEnter={handleContentMouseEnter}
-        onMouseLeave={handleMouseLeaveDebounced}
-      >
-        {({ TransitionProps }) =>
-          children({
-            onClose: handleClose,
-            onClickAway: handleContentClickAway,
-            TransitionProps,
-          })
-        }
-      </Popper>
+      {!drawer && (
+        <Popper
+          ref={popperRef}
+          open={!!openState}
+          anchorEl={openState?.anchor}
+          {...props}
+          sx={{
+            ...sx,
+            zIndex,
+          }}
+          transition
+          onMouseEnter={handleContentMouseEnter}
+          onMouseLeave={handleMouseLeaveDebounced}
+        >
+          {({ TransitionProps }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin: 'right top',
+              }}
+            >
+              <Box paddingY={gutters(0.5)}>
+                <ClickAwayListener onClickAway={handleContentClickAway}>
+                  {cloneElement(children, { onClose: handleClose })}
+                </ClickAwayListener>
+              </Box>
+            </Grow>
+          )}
+        </Popper>
+      )}
+      {drawer && (
+        <Drawer anchor="right" open={!!openState} onClose={handleClose}>
+          {cloneElement(children, { onClose: handleClose })}
+        </Drawer>
+      )}
     </>
   );
 };
 
-export default ClickableTooltip;
+export default MenuTriggerButton;

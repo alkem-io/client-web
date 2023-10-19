@@ -1,7 +1,7 @@
-import React, { ComponentType, forwardRef, MouseEventHandler, PropsWithChildren, useMemo, useState } from 'react';
-import { Divider, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, SvgIconProps } from '@mui/material';
+import React, { forwardRef, PropsWithChildren, useMemo, useState } from 'react';
+import { Box, Divider, MenuList } from '@mui/material';
 import Avatar from '../../../core/ui/image/Avatar';
-import { BlockSectionTitle, BlockTitle, Caption } from '../../../core/ui/typography';
+import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { gutters } from '../../../core/ui/grid/utils';
 import { buildLoginUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
 import PendingMembershipsUserMenuItem from '../../../domain/community/pendingMembership/PendingMembershipsUserMenuItem';
@@ -19,159 +19,136 @@ import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-s
 import { useUserContext } from '../../../domain/community/user';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../../domain/platform/routes/constants';
-import RouterLink from '../../../core/ui/link/RouterLink';
 import LanguageSelect from '../../../core/ui/language/LanguageSelect';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
-import { PLATFORM_NAVIGATION_MENU_ELEVATION, PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
+import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import { useLocation } from 'react-router-dom';
+import NavigatableMenuItem from '../../../core/ui/menu/NavigatableMenuItem';
+import GlobalMenuSurface from '../../../core/ui/menu/GlobalMenuSurface';
 
 interface PlatformNavigationUserMenuProps {
+  surface: boolean;
   onClose?: () => void;
 }
 
-interface PlatformNavigationUserMenuItemProps {
-  iconComponent: ComponentType<SvgIconProps>;
-  route?: string;
-  onClick?: MouseEventHandler;
-}
+const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<PlatformNavigationUserMenuProps>>(
+  ({ surface, onClose, children }, ref) => {
+    const { t } = useTranslation();
 
-const PlatformNavigationUserMenuItem = ({
-  iconComponent: Icon,
-  route,
-  onClick,
-  children,
-}: PropsWithChildren<PlatformNavigationUserMenuItemProps>) => {
-  const menuItemProps = route ? { component: RouterLink, to: route } : {};
+    const { pathname } = useLocation();
 
-  return (
-    <MenuItem {...menuItemProps} onClick={onClick} sx={{ paddingX: gutters() }}>
-      <ListItemIcon>
-        <Icon fontSize="small" />
-      </ListItemIcon>
-      <ListItemText disableTypography>
-        <BlockSectionTitle textTransform="uppercase">{children}</BlockSectionTitle>
-      </ListItemText>
-    </MenuItem>
-  );
-};
+    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated } = useUserContext();
 
-const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PlatformNavigationUserMenuProps>(({ onClose }, ref) => {
-  const { t } = useTranslation();
+    const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
-  const { pathname } = useLocation();
+    const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
-  const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated } = useUserContext();
+    const role = useMemo(() => {
+      if (isAdmin) {
+        // TODO change role name path
+        return t('common.enums.authorization-credentials.GLOBAL_ADMIN.name');
+      }
+    }, [isAdmin, t]);
 
-  const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
+    const Wrapper = surface ? GlobalMenuSurface : Box;
 
-  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
-
-  const role = useMemo(() => {
-    if (isAdmin) {
-      // TODO change role name path
-      return t('common.enums.authorization-credentials.GLOBAL_ADMIN.name');
-    }
-  }, [isAdmin, t]);
-
-  return (
-    // TODO width
-    <>
-      <Paper ref={ref} sx={{ width: 320, maxWidth: '100%' }} elevation={PLATFORM_NAVIGATION_MENU_ELEVATION}>
-        {user && (
-          <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
-            <Avatar size="lg" src={user.profile.visual?.uri} />
-            <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
-            {role && (
-              <Caption color="neutralMedium.main" textTransform="uppercase">
-                {role}
-              </Caption>
-            )}
-          </Gutters>
-        )}
-        <MenuList disablePadding sx={{ paddingY: 1 }}>
-          <PlatformNavigationUserMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
-            {t('pages.home.title')}
-          </PlatformNavigationUserMenuItem>
+    return (
+      <>
+        <Wrapper ref={ref}>
           {user && (
-            <PlatformNavigationUserMenuItem
-              iconComponent={AssignmentIndOutlined}
-              route={buildUserProfileUrl(user.nameID)}
-              onClick={onClose}
-            >
-              {t('pages.user-profile.title')}
-            </PlatformNavigationUserMenuItem>
+            <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
+              <Avatar size="lg" src={user.profile.visual?.uri} />
+              <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
+              {role && (
+                <Caption color="neutralMedium.main" textTransform="uppercase">
+                  {role}
+                </Caption>
+              )}
+            </Gutters>
           )}
-          <PendingMembershipsUserMenuItem>
-            {({ header, openDialog }) => (
-              <PlatformNavigationUserMenuItem
-                iconComponent={HdrStrongOutlined}
-                onClick={() => {
-                  openDialog();
-                  onClose?.();
-                }}
+          <MenuList disablePadding sx={{ paddingY: 1 }}>
+            <NavigatableMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
+              {t('pages.home.title')}
+            </NavigatableMenuItem>
+            {user && (
+              <NavigatableMenuItem
+                iconComponent={AssignmentIndOutlined}
+                route={buildUserProfileUrl(user.nameID)}
+                onClick={onClose}
               >
-                {header}
-              </PlatformNavigationUserMenuItem>
+                {t('pages.user-profile.title')}
+              </NavigatableMenuItem>
             )}
-          </PendingMembershipsUserMenuItem>
-          <Divider sx={{ width: '85%', marginX: 'auto' }} />
-          {isAdmin && (
-            <PlatformNavigationUserMenuItem iconComponent={SettingsIcon} route="/admin" onClick={onClose}>
-              {t('common.administration')}
-            </PlatformNavigationUserMenuItem>
-          )}
-          <LanguageSelect
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
-          >
-            {({ openSelect }) => (
-              <PlatformNavigationUserMenuItem
-                iconComponent={LanguageOutlined}
-                onClick={event => openSelect(event.currentTarget as HTMLElement)}
+            <PendingMembershipsUserMenuItem>
+              {({ header, openDialog }) => (
+                <NavigatableMenuItem
+                  iconComponent={HdrStrongOutlined}
+                  onClick={() => {
+                    openDialog();
+                    onClose?.();
+                  }}
+                >
+                  {header}
+                </NavigatableMenuItem>
+              )}
+            </PendingMembershipsUserMenuItem>
+            <Divider sx={{ width: '85%', marginX: 'auto' }} />
+            {children}
+            {children && <Divider sx={{ width: '85%', marginX: 'auto' }} />}
+            {isAdmin && (
+              <NavigatableMenuItem iconComponent={SettingsIcon} route="/admin" onClick={onClose}>
+                {t('common.administration')}
+              </NavigatableMenuItem>
+            )}
+            <LanguageSelect
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
+            >
+              {({ openSelect }) => (
+                <NavigatableMenuItem
+                  iconComponent={LanguageOutlined}
+                  onClick={event => openSelect(event.currentTarget as HTMLElement)}
+                >
+                  {t('buttons.changeLanguage')}
+                </NavigatableMenuItem>
+              )}
+            </LanguageSelect>
+            <NavigatableMenuItem
+              iconComponent={HelpOutlineIcon}
+              onClick={() => {
+                setIsHelpDialogOpen(true);
+                onClose?.();
+              }}
+            >
+              {t('buttons.getHelp')}
+            </NavigatableMenuItem>
+            {isAuthenticated ? (
+              <NavigatableMenuItem iconComponent={MeetingRoomOutlined} route={AUTH_LOGOUT_PATH} onClick={onClose}>
+                {t('buttons.sign-out')}
+              </NavigatableMenuItem>
+            ) : (
+              <NavigatableMenuItem
+                iconComponent={MeetingRoomOutlined}
+                route={buildLoginUrl(pathname)}
+                onClick={onClose}
               >
-                {t('buttons.changeLanguage')}
-              </PlatformNavigationUserMenuItem>
+                {t('topbar.sign-in')}
+              </NavigatableMenuItem>
             )}
-          </LanguageSelect>
-          <PlatformNavigationUserMenuItem
-            iconComponent={HelpOutlineIcon}
-            onClick={() => {
-              setIsHelpDialogOpen(true);
-              onClose?.();
-            }}
-          >
-            {t('buttons.getHelp')}
-          </PlatformNavigationUserMenuItem>
-          {isAuthenticated ? (
-            <PlatformNavigationUserMenuItem
-              iconComponent={MeetingRoomOutlined}
-              route={AUTH_LOGOUT_PATH}
-              onClick={onClose}
-            >
-              {t('buttons.sign-out')}
-            </PlatformNavigationUserMenuItem>
-          ) : (
-            <PlatformNavigationUserMenuItem
-              iconComponent={MeetingRoomOutlined}
-              route={buildLoginUrl(pathname)}
-              onClick={onClose}
-            >
-              {t('topbar.sign-in')}
-            </PlatformNavigationUserMenuItem>
-          )}
-        </MenuList>
-      </Paper>
-      <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
-    </>
-  );
-});
+          </MenuList>
+        </Wrapper>
+        <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
+      </>
+    );
+  }
+);
 
 export default PlatformNavigationUserMenu;

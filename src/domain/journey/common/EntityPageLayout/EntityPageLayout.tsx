@@ -1,6 +1,6 @@
 import React, { cloneElement, PropsWithChildren, useState } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { Theme, useMediaQuery } from '@mui/material';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
 import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
@@ -17,8 +17,7 @@ const EntityPageLayout = ({
   tabs: tabsElement,
   children,
 }: PropsWithChildren<EntityPageLayoutProps>) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
 
   const tabs = Tabs ? (

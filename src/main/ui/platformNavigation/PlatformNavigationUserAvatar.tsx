@@ -1,21 +1,26 @@
-import React, { Ref } from 'react';
+import React, { ReactElement, Ref } from 'react';
 import { useUserContext } from '../../../domain/community/user';
-import { Avatar, Box, CircularProgress, ClickAwayListener, Grow, useTheme } from '@mui/material';
+import { Avatar, CircularProgress, useTheme } from '@mui/material';
 import { Person } from '@mui/icons-material';
 import { gutters } from '../../../core/ui/grid/utils';
 import SwapColors from '../../../core/ui/palette/SwapColors';
-import ClickableTooltip from '../../../core/ui/tooltip/ClickableTooltip';
-import PlatformNavigationUserMenu from './PlatformNavigationUserMenu';
+import MenuTriggerButton from '../../../core/ui/tooltip/MenuTriggerButton';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 
-const PlatformNavigationUserAvatar = () => {
+interface PlatformNavigationUserAvatarProps {
+  children: ReactElement<{ onClose?: () => void }>;
+  drawer?: boolean;
+}
+
+const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUserAvatarProps) => {
   const { user, isAuthenticated, loadingMe } = useUserContext();
 
   const theme = useTheme();
 
   return (
-    <ClickableTooltip
+    <MenuTriggerButton
       keepMounted
+      drawer={drawer}
       placement="bottom-end"
       renderTrigger={({ ref, ...props }) => (
         <Avatar
@@ -34,21 +39,8 @@ const PlatformNavigationUserAvatar = () => {
       )}
       zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX}
     >
-      {({ onClose, onClickAway, TransitionProps }) => (
-        <Grow
-          {...TransitionProps}
-          style={{
-            transformOrigin: 'right top',
-          }}
-        >
-          <Box padding={gutters(0.5)} paddingRight={0}>
-            <ClickAwayListener onClickAway={onClickAway}>
-              <PlatformNavigationUserMenu onClose={onClose} />
-            </ClickAwayListener>
-          </Box>
-        </Grow>
-      )}
-    </ClickableTooltip>
+      {children}
+    </MenuTriggerButton>
   );
 };
 
