@@ -87,8 +87,8 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      loadingWhiteboardTemplateContent={false}
-      getWhiteboardTemplateWithContent={template => getPostTemplateContent(template)}
+      loadingTemplateContent={false}
+      getTemplateWithContent={template => getPostTemplateContent(template)}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
