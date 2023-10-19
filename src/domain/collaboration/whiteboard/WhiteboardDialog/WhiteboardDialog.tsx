@@ -208,7 +208,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       try {
         mergeWhiteboard(whiteboardApi, template.content);
       } catch (err) {
-        notify(t('whiteboard-templates.error-importing'), 'error');
+        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`));
       }
     }

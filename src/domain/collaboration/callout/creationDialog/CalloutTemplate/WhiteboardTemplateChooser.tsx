@@ -52,7 +52,7 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
         canEdit
         onChangeContent={handleChange}
         maxHeight={gutters(12)}
-        dialogProps={{ title: t('whiteboard-templates.edit-template-button') }}
+        dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editTemplateButton') }}
       />
     </>
   );

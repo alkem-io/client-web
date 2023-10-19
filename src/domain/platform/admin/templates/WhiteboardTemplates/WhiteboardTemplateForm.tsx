@@ -55,7 +55,7 @@ const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, load
           previewImagesName="previewImages"
           canEdit
           loading={loading}
-          dialogProps={{ title: t('whiteboard-templates.edit-dialog-title') }}
+          dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
         />
       </TemplateFormRows>
     </TemplateForm>

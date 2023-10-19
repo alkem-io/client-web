@@ -53,7 +53,7 @@ const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemp
         <FormikInputField name="type" title={t('post-edit.type.title')} />
         <FormikMarkdownField
           name="defaultDescription"
-          title={t('post-templates.default-description')}
+          title={t('templateLibrary.postTemplates.defaultDescription')}
           maxLength={MARKDOWN_TEXT_LENGTH}
         />
       </TemplateFormRows>

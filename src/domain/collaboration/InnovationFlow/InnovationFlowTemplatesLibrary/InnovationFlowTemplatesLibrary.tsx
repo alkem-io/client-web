@@ -97,7 +97,7 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
 
   return (
     <CollaborationTemplatesLibrary
-      dialogTitle={t('innovation-templates.template-library')}
+      dialogTitle={t('templateLibrary.innovationFlowTemplates.title')}
       onSelectTemplate={onSelectTemplate}
       templateCardComponent={InnovationFlowTemplateCard}
       templatePreviewComponent={InnovationFlowTemplatePreview}
@@ -112,10 +112,11 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
+      disableUsePlatformTemplates
       buttonProps={{
         variant: 'text',
         disabled,
-        children: t('innovation-templates.innovationFlowTemplateSelect.select'),
+        children: t('components.innovationFlowTemplateSelect.select'),
         startIcon: <Autorenew />,
       }}
     />

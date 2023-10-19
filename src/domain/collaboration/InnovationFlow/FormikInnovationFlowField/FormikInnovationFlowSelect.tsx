@@ -59,7 +59,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
         <Gutters>
           <BlockSectionTitle>{template.profile.displayName}</BlockSectionTitle>
           <Text>{template.profile.description}</Text>
-          <BlockSectionTitle>{t('innovation-templates.innovationFlowTemplateSelect.states')}</BlockSectionTitle>
+          <BlockSectionTitle>{t('components.innovationFlowTemplateSelect.states')}</BlockSectionTitle>
           <SafeInnovationFlowVisualizer definition={template.definition} />
           {helperText && <Caption color="error">{helperText}</Caption>}
         </Gutters>

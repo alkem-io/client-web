@@ -94,7 +94,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
 
   return (
     <CollaborationTemplatesLibrary
-      dialogTitle={t('whiteboard-templates.template-library')}
+      dialogTitle={t('templateLibrary.whiteboardTemplates.title')}
       onSelectTemplate={onSelectTemplate}
       templateCardComponent={WhiteboardTemplateCard}
       templatePreviewComponent={WhiteboardTemplatePreview}

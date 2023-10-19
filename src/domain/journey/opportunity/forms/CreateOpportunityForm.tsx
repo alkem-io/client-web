@@ -33,7 +33,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
   const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate(InnovationFlowType.Opportunity);
 
   const validationRequiredString = t('forms.validations.required');
-  const validationRequiredInnovationFlowString = t('innovation-templates.innovationFlowTemplateSelect.required');
+  const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
 
   const handleChanged = (value: FormValues) =>
     onChanged({

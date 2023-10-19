@@ -30,7 +30,7 @@ const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostT
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('innovation-templates.innovation-template') })}
+        {t('common.create-new-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
       </DialogHeader>
       <InnovationTemplateForm
         initialValues={values}

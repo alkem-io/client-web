@@ -40,6 +40,7 @@ export interface CollaborationTemplatesLibraryProps<
   fetchTemplatesFromPlatform?: () => void;
   templatesFromPlatform?: Template[];
   loadingTemplatesFromPlatform?: boolean;
+  disableUsePlatformTemplates?: boolean;
 
   buttonProps?: ButtonProps;
 }
@@ -63,6 +64,7 @@ const CollaborationTemplatesLibrary = <
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
+  disableUsePlatformTemplates = false,
   buttonProps = {},
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
   const { t } = useTranslation();
@@ -142,7 +144,7 @@ const CollaborationTemplatesLibrary = <
             <Gutters>
               {templatesFromSpace && (
                 <>
-                  <BlockTitle>{t('whiteboard-templates.space-templates')}</BlockTitle>
+                  <BlockTitle>{t('templateLibrary.spaceTemplates')}</BlockTitle>
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromSpace}
                     templateCardComponent={templateCardComponent}
@@ -160,11 +162,12 @@ const CollaborationTemplatesLibrary = <
                   gap={1}
                   sx={{ cursor: 'pointer' }}
                 >
-                  <ImageSearchIcon /> {t('whiteboard-templates.load-platform-templates')}
+                  <ImageSearchIcon /> {t('templateLibrary.loadPlatformTemplates')}
                 </Link>
               ) : (
                 <>
-                  <BlockTitle>{t('whiteboard-templates.platform-templates')}</BlockTitle>
+                  <BlockTitle>{t('templateLibrary.platformTemplates')}</BlockTitle>
+                  {disableUsePlatformTemplates && <Caption>{t('templateLibrary.platformUseDisabled')} </Caption>}
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromPlatform}
                     templateCardComponent={templateCardComponent}

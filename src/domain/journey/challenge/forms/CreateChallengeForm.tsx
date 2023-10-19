@@ -33,7 +33,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
   const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate(InnovationFlowType.Challenge);
 
   const validationRequiredString = t('forms.validations.required');
-  const validationRequiredInnovationFlowString = t('innovation-templates.innovationFlowTemplateSelect.required');
+  const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
 
   const handleChanged = (value: FormValues) =>
     onChanged({
