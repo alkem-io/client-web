@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useField } from 'formik';
-import { Box, TextFieldProps } from '@mui/material';
+import { Box, TextFieldProps, styled } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
@@ -13,6 +13,19 @@ import { useInnovationFlowTemplateDefinitionQuery } from '../../../../core/apoll
 import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
 import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import Gutters from '../../../../core/ui/grid/Gutters';
+
+const DiagramContainer = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+  },
+  [theme.breakpoints.up('md')]: {
+    width: '75%',
+  },
+  overflow: 'hidden',
+  '> svg': {
+    marginTop: '-10%',
+  },
+}));
 
 export type FormikInnovationFlowSelectProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
@@ -60,7 +73,9 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
           <BlockSectionTitle>{template.profile.displayName}</BlockSectionTitle>
           <Text>{template.profile.description}</Text>
           <BlockSectionTitle>{t('components.innovationFlowTemplateSelect.states')}</BlockSectionTitle>
-          <SafeInnovationFlowVisualizer definition={template.definition} />
+          <DiagramContainer>
+            <SafeInnovationFlowVisualizer definition={template.definition} />
+          </DiagramContainer>
           {helperText && <Caption color="error">{helperText}</Caption>}
         </Gutters>
       )}
