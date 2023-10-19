@@ -714,6 +714,9 @@
         "title": "Tags",
         "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Challenge Flow"
       }
     },
     "opportunity": {
@@ -751,6 +754,9 @@
         "title": "Tags",
         "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Opportunity Flow"
       }
     }
   },
@@ -782,6 +788,7 @@
     "edit-dialog-title": "Edit Whiteboard Template"
   },
   "innovation-templates": {
+    "template-library": "Template Library: Innovation Flows",
     "innovation-template": "Innovation Flow template",
     "definition": {
       "title": "Definition",
@@ -789,6 +796,11 @@
     },
     "type": {
       "title": "Type"
+    },
+    "innovationFlowTemplateSelect": {
+      "select": "Select different Flow",
+      "states": "States",
+      "required": "Please select an Innovation Flow"
     }
   },
   "components": {

@@ -1,9 +1,10 @@
-import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { InnovationFlowTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { TemplateCardInnovationPack, TemplateCardProviderProfile } from '../TemplateCard/Types';
+import { TemplateCardInnovationPack, TemplateCardProviderProfile } from '../../templates/TemplateCard/Types';
 
 export interface InnovationFlowTemplate extends TemplateBase {
   displayName: string;
+  type: string;
   definition: string | undefined;
   tags: string[] | undefined;
   provider: {
@@ -16,6 +17,9 @@ export interface InnovationFlowTemplate extends TemplateBase {
   };
 }
 
+// InnovationFlowTemplateTemplate includes the Definition
+export interface InnovationFlowTemplateWithDefinition extends InnovationFlowTemplate {}
+
 export const innovationFlowTemplateMapper = (
   template: InnovationFlowTemplateFragment,
   providerProfile?: TemplateCardProviderProfile,
@@ -23,6 +27,7 @@ export const innovationFlowTemplateMapper = (
 ): InnovationFlowTemplate => {
   return {
     id: template.id,
+    type: template.type,
     definition: template.definition,
     displayName: template.profile.displayName,
     description: template.profile.description,

@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogContent, Link } from '@mui/material';
-import { ComponentType, useEffect, useState } from 'react';
+import { Button, ButtonProps, Dialog, DialogContent, Link } from '@mui/material';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -40,6 +40,8 @@ export interface CollaborationTemplatesLibraryProps<
   fetchTemplatesFromPlatform?: () => void;
   templatesFromPlatform?: Template[];
   loadingTemplatesFromPlatform?: boolean;
+
+  buttonProps?: ButtonProps;
 }
 
 const CollaborationTemplatesLibrary = <
@@ -61,6 +63,7 @@ const CollaborationTemplatesLibrary = <
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
+  buttonProps = {},
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
   const { t } = useTranslation();
 
@@ -105,11 +108,13 @@ const CollaborationTemplatesLibrary = <
   const loading = loadingTemplatesFromSpace || loadingTemplatesFromPlatform || loadingWhiteboardTemplateContent;
   const loadingPreview = loadingWhiteboardTemplateContent;
 
+  if (!buttonProps.children) {
+    buttonProps.children = <>{t('buttons.find-template')}</>;
+  }
+
   return (
     <>
-      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)}>
-        {t('buttons.find-template')}
-      </Button>
+      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)} {...buttonProps} />
       <Dialog
         open={dialogOpen}
         onClose={handleClose}
