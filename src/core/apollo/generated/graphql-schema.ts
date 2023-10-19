@@ -3222,6 +3222,8 @@ export type Opportunity = {
   profile: Profile;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
+  /** The StorageAggregator in use by this Opportunity */
+  storageAggregator?: Maybe<StorageAggregator>;
 };
 
 export type OpportunityCreated = {

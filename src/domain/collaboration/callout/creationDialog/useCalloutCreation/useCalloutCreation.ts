@@ -32,6 +32,7 @@ export interface CalloutCreationType {
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
     whiteboardRt?: WhiteboardRtFieldSubmittedValues;
+    tags?: string[];
   };
   contributionDefaults?: {
     postDescription?: string;
