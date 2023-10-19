@@ -10,6 +10,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SpacePermissions {
+  canRead: boolean;
   viewerCanUpdate: boolean;
   canReadPosts: boolean;
   canReadChallenges: boolean;
@@ -42,6 +43,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   spaceNameId: '',
   communityId: '',
   permissions: {
+    canRead: false,
     viewerCanUpdate: false,
     canCreate: false,
     canCreateChallenges: false,
@@ -98,6 +100,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const permissions = useMemo<SpacePermissions>(() => {
     return {
+      canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canReadChallenges,
       canCreateChallenges,

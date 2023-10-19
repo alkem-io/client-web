@@ -10,7 +10,6 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import useSpaceDashboardNavigation from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -31,24 +30,20 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     throw new Error('Param :spaceNameId is missing');
   }
 
-  const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
-    spaceId: spaceNameId,
-  });
-
   const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId });
   const shareAboutUrl = buildAboutUrl({ spaceNameId });
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer>
-        {({ callouts, ...entities }, state) => (
+        {({ callouts, dashboardNavigation, ...entities }, state) => (
           <>
             <SpaceDashboardView
               vision={entities.space?.context?.vision}
               spaceNameId={entities.space?.nameID}
               displayName={entities.space?.profile.displayName}
               dashboardNavigation={dashboardNavigation}
-              dashboardNavigationLoading={dashboardNavigationLoading}
+              dashboardNavigationLoading={state.loading}
               spaceVisibility={entities.space?.visibility}
               loading={state.loading}
               communityId={entities.space?.community?.id}

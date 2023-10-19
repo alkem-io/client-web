@@ -12159,6 +12159,40 @@ export type CalloutFragment = {
     | undefined;
 };
 
+export type CollaborationAuthorizationQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  includeSpace?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+}>;
+
+export type CollaborationAuthorizationQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+  };
+};
+
 export type PostTemplateCardFragment = {
   __typename?: 'PostTemplate';
   id: string;
@@ -24528,6 +24562,7 @@ export type SpaceHostQuery = {
 
 export type SpacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  authorizedReadAccess?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpacePageQuery = {
