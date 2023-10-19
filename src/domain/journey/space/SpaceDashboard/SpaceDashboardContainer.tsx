@@ -18,15 +18,17 @@ import {
   Reference,
   SpacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
-import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
+import useSpaceDashboardNavigation, {
+  DashboardNavigationItem,
+} from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
+  dashboardNavigation: DashboardNavigationItem[] | undefined;
   isPrivate: boolean | undefined;
   permissions: {
     canEdit: boolean;
@@ -40,8 +42,6 @@ export interface SpaceContainerEntities {
   activities: ActivityLogResultType[] | undefined;
   fetchMoreActivities: (limit: number) => void;
   activityLoading: boolean;
-  postsCount: number | undefined;
-  whiteboardsCount: number | undefined;
   references: Reference[] | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
@@ -62,11 +62,11 @@ export interface SpacePageContainerProps
 const NO_PRIVILEGES = [];
 
 export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children }) => {
-  const { spaceId, spaceNameId, loading: loadingSpace, isPrivate, error } = useSpace();
+  const { spaceId, spaceNameId, loading: loadingSpace, permissions: spacePermissions, isPrivate, error } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
-    variables: { spaceId: spaceNameId },
+    variables: { spaceId: spaceNameId, authorizedReadAccess: spacePermissions.canRead },
     errorPolicy: 'all',
     skip: loadingSpace,
   });
@@ -111,8 +111,10 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
-  const postsCount = usePostsCount(_space?.space.metrics);
-  const whiteboardsCount = useWhiteboardsCount(_space?.space.metrics);
+  const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
+    spaceId: spaceNameId,
+    skip: !permissions.spaceReadAccess,
+  });
 
   const references = referencesData?.space?.profile.references;
 
@@ -148,12 +150,11 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
       {children(
         {
           space: _space?.space,
+          dashboardNavigation,
           isPrivate,
           permissions,
           isAuthenticated,
           isMember,
-          postsCount,
-          whiteboardsCount,
           references,
           activities,
           fetchMoreActivities,
@@ -165,7 +166,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
         },
         {
           error,
-          loading: loadingSpaceQuery || loadingSpace,
+          loading: loadingSpaceQuery || loadingSpace || dashboardNavigationLoading,
         },
         {}
       )}

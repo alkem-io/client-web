@@ -22,6 +22,7 @@ import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLocationValue';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -58,28 +59,16 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
-    displayName: callout.profile.displayName,
+    displayName: callout.framing.profile.displayName,
     type: callout.type,
-    description: callout.profile.description,
-    state: callout.state,
-    references: callout.profile.references,
-    profileId: callout.profile.id,
-    tags: callout.profile.tagset?.tags,
-    postTemplateData: {
-      profile: {
-        displayName: '',
-      },
-      defaultDescription: callout.postTemplate?.defaultDescription ?? '',
-      type: callout.postTemplate?.type ?? '',
-    },
-    whiteboardTemplateData: {
-      content: callout.whiteboardTemplate?.content ?? JSON.stringify(EmptyWhiteboard),
-      profile: {
-        displayName:
-          callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
-      },
-    },
-    displayLocation: getCalloutDisplayLocationValue(callout.profile.displayLocationTagset?.tags),
+    description: callout.framing.profile.description,
+    state: callout.contributionPolicy.state,
+    references: callout.framing.profile.references,
+    profileId: callout.framing.profile.id,
+    tags: callout.framing.profile.tagset?.tags,
+    postDescription: callout.contributionDefaults.postDescription ?? '',
+    whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+    displayLocation: getCalloutDisplayLocationValue(callout.framing.profile.displayLocationTagset?.tags),
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
@@ -101,17 +90,19 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         references: newCallout.references,
         tagsets: [
           {
-            id: callout.profile.tagset?.id,
-            name: 'default',
+            id: callout.framing.profile.tagset?.id,
+            name: DEFAULT_TAGSET,
             tags: newCallout.tags,
             allowedValues: [],
             type: TagsetType.Freeform,
           },
         ],
       },
+      contributionDefaults: {
+        postDescription: callout.type === CalloutType.PostCollection ? newCallout.postDescription : undefined,
+        whiteboardContent: callout.type === CalloutType.WhiteboardCollection ? newCallout.whiteboardContent : undefined,
+      },
       state: newCallout.state,
-      postTemplate: newCallout.postTemplateData,
-      whiteboardTemplate: newCallout.whiteboardTemplateData,
       displayLocation: newCallout.displayLocation,
     });
     setLoading(false);

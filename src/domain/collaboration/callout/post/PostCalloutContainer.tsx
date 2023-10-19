@@ -1,21 +1,25 @@
 import { useCalloutPosts } from './useCalloutPosts';
-import { ContributeTabPostFragment, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  ContributeTabPostFragment,
+  CreatePostInput,
+  TagsetType,
+} from '../../../../core/apollo/generated/graphql-schema';
 import {
   PostCardFragmentDoc,
   useCreatePostFromContributeTabMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { OnCreateInput } from './PostCallout';
 import { useInView } from 'react-intersection-observer';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { forwardRef, Ref } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
+import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface PostCalloutContainerProvided {
-  posts: ContributeTabPostFragment[] | undefined;
+  posts: ContributeTabPostFragment[];
   ref: Ref<Element>;
   loading: boolean;
   creatingPost: boolean;
-  onCreatePost: (post: OnCreateInput) => Promise<{ nameID: string } | undefined>;
+  onCreatePost: (post: CreatePostInput) => Promise<{ nameID: string } | undefined>;
 }
 
 interface PostCalloutContainerProps extends SimpleContainerProps<PostCalloutContainerProvided> {
@@ -40,7 +44,7 @@ const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ c
         return;
       }
 
-      const { createPostOnCallout } = data;
+      const { createContributionOnCallout } = data;
 
       const calloutRefId = cache.identify({
         __typename: 'Callout',
@@ -56,7 +60,7 @@ const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ c
         fields: {
           posts(existingPosts = []) {
             const newPostRef = cache.writeFragment({
-              data: createPostOnCallout,
+              data: createContributionOnCallout.post,
               fragment: PostCardFragmentDoc,
               fragmentName: 'PostCard',
             });
@@ -67,48 +71,52 @@ const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ c
     },
   });
 
-  const onCreatePost = async (post: OnCreateInput) => {
+  const onCreatePost = async (post: CreatePostInput) => {
     const { data } = await createPost({
       variables: {
         postData: {
           calloutID: calloutId,
-          profileData: {
-            displayName: post.profileData.displayName,
-            description: post.profileData.description,
+          post: {
+            profileData: {
+              displayName: post.profileData.displayName,
+              description: post.profileData.description,
+            },
+            tags: post.tags,
+            type: post.type,
+            visualUri: post.visualUri,
           },
-          tags: post.tags,
-          type: post.type,
-          visualUri: post.visualUri,
         },
       },
       optimisticResponse: {
-        createPostOnCallout: {
-          __typename: 'Post',
-          id: '',
-          nameID: '',
-          profile: {
+        createContributionOnCallout: {
+          __typename: 'CalloutContribution',
+          post: {
             id: '',
-            displayName: post.profileData.displayName,
-            description: post.profileData?.description,
-            visual: {
-              id: '-1',
-              name: '',
-              uri: post.visualUri ?? '',
+            nameID: '',
+            profile: {
+              id: '',
+              displayName: post.profileData.displayName,
+              description: post.profileData?.description,
+              visual: {
+                id: '-1',
+                name: '',
+                uri: post.visualUri ?? '',
+              },
+              tagset: {
+                id: '-1',
+                name: DEFAULT_TAGSET,
+                tags: [],
+                allowedValues: [],
+                type: TagsetType.Freeform,
+              },
             },
-            tagset: {
-              id: '-1',
-              name: 'default',
-              tags: [],
-              allowedValues: [],
-              type: TagsetType.Freeform,
-            },
+            type: post.type,
           },
-          type: post.type,
         },
       },
     });
 
-    const nameID = data?.createPostOnCallout.nameID;
+    const nameID = data?.createContributionOnCallout.post?.nameID;
 
     return nameID ? { nameID } : undefined;
   };

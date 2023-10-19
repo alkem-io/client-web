@@ -80,15 +80,21 @@ fragment PostSettings on Post {
 
 fragment PostSettingsCallout on Callout {
   id
+  nameID
   type
-  posts(IDs: [$postNameId]) {
-    ...PostSettings
-  }
-  postNames: posts {
+  contributions(filter: { postIDs: [$postNameId] }) {
     id
-    profile {
+    post {
+      ...PostSettings
+    }
+  }
+  postNames: contributions {
+    post {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 }

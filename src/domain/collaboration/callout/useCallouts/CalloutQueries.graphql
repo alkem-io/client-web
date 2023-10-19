@@ -50,31 +50,51 @@ fragment Callout on Callout {
   id
   nameID
   type
-  profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
+  framing {
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      references {
+        ...ReferenceDetails
+      }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
+      }
+      storageBucket {
+        id
+      }
     }
-    tagsets {
-      ...TagsetDetails
+    whiteboard {
+      ...WhiteboardDetails
     }
-    references {
-      ...ReferenceDetails
-    }
-    displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-      ...TagsetDetails
+    whiteboardRt {
+      ...WhiteboardRtDetails
     }
   }
-  state
+  contributionPolicy {
+    state
+  }
+  contributionDefaults {
+    id
+    postDescription
+    whiteboardContent
+  }
   sortOrder
   activity
-  whiteboards {
-    ...WhiteboardDetails
-  }
-  whiteboardRt {
-    ...WhiteboardRtDetails
+  contributions {
+    whiteboard {
+      ...WhiteboardDetails
+    }
+    link {
+      ...ReferenceDetails
+    }
   }
   comments {
     ...CommentsWithMessages
@@ -84,41 +104,37 @@ fragment Callout on Callout {
     myPrivileges
   }
   visibility
-  ...CalloutPostTemplate
-  ...CalloutWhiteboardTemplate
 }
 
-fragment CalloutPostTemplate on Callout {
-  postTemplate {
+query CollaborationAuthorization(
+  $spaceNameId: UUID_NAMEID!
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeNameId: UUID_NAMEID = "mockid"
+  $opportunityNameId: UUID_NAMEID = "mockid"
+) {
+  space(ID: $spaceNameId) {
     id
-    type
-    defaultDescription
-    profile {
-      tagset {
-        ...TagsetDetails
-      }
-      visual(type: CARD) {
+    ... on Space @include(if: $includeSpace) {
+      id
+      authorization {
         id
-        uri
+        myPrivileges
       }
     }
-  }
-}
-
-fragment CalloutWhiteboardTemplate on Callout {
-  whiteboardTemplate {
-    id
-    content
-    profile {
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      visual(type: CARD) {
+      authorization {
         id
-        uri
+        myPrivileges
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      authorization {
+        id
+        myPrivileges
       }
     }
   }

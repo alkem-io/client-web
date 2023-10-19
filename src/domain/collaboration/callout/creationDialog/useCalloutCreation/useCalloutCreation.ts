@@ -5,9 +5,11 @@ import {
   useCreateCalloutMutation,
   useSpaceCollaborationIdQuery,
   useOpportunityCollaborationIdQuery,
+  useCollaborationAuthorizationQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
+  AuthorizationPrivilege,
   CalloutDisplayLocation,
   CalloutState,
   CalloutType,
@@ -15,26 +17,31 @@ import {
   CreateCalloutMutation,
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 import { WhiteboardRtFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
+import { getJourneyTypeName } from '../../../../journey/JourneyTypeName';
 
 export interface CalloutCreationType {
-  profile: {
-    description: string;
-    displayName: string;
-    referencesData: Reference[];
-    tagsets?: CreateTagsetInput[];
+  framing: {
+    profile: {
+      description: string;
+      displayName: string;
+      referencesData: Reference[];
+      tagsets?: CreateTagsetInput[];
+    };
+    whiteboard?: WhiteboardFieldSubmittedValues;
+    whiteboardRt?: WhiteboardRtFieldSubmittedValues;
+    tags?: string[];
   };
-  tags?: string[];
+  contributionDefaults?: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
   type: CalloutType;
-  state: CalloutState;
-  postTemplate?: PostTemplateFormSubmittedValues;
-  whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValues;
-  whiteboardRt?: WhiteboardRtFieldSubmittedValues;
+  contributionPolicy: {
+    state: CalloutState;
+  };
   displayLocation?: CalloutDisplayLocation;
   visibility?: CalloutVisibility;
   sendNotification?: boolean;
@@ -51,27 +58,47 @@ export interface CalloutCreationUtils {
 }
 
 export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const urlParams = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = urlParams;
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
+  const journeyTypeName = getJourneyTypeName(urlParams);
+
+  const { data: authorizationData } = useCollaborationAuthorizationQuery({
+    variables: {
+      spaceNameId: spaceNameId!,
+      challengeNameId: challengeNameId,
+      opportunityNameId: opportunityNameId,
+      includeSpace: journeyTypeName === 'space',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
+    },
+    skip: !spaceNameId,
+  });
+  const authorization = (
+    authorizationData?.space.opportunity ??
+    authorizationData?.space.challenge ??
+    authorizationData?.space
+  )?.authorization;
+  const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
   const { data: spaceData } = useSpaceCollaborationIdQuery({
     variables: { spaceId: spaceNameId! },
-    skip: !spaceNameId || !!challengeNameId || !!opportunityNameId,
+    skip: !canReadCollaboration || !spaceNameId || !!challengeNameId || !!opportunityNameId,
   });
   const { data: challengeData } = useChallengeCollaborationIdQuery({
     variables: {
       spaceId: spaceNameId!,
       challengeId: challengeNameId!,
     },
-    skip: !spaceNameId || !challengeNameId || !!opportunityNameId,
+    skip: !canReadCollaboration || !spaceNameId || !challengeNameId || !!opportunityNameId,
   });
   const { data: opportunityData } = useOpportunityCollaborationIdQuery({
     variables: {
       spaceId: spaceNameId!,
       opportunityId: opportunityNameId!,
     },
-    skip: !spaceNameId || !opportunityNameId,
+    skip: !canReadCollaboration || !spaceNameId || !opportunityNameId,
   });
 
   const collaborationID: string | undefined = (

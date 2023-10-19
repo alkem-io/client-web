@@ -19,19 +19,9 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
-import {
-  getPostsFromPublishedCallouts,
-  getWhiteboardsFromPublishedCallouts,
-} from '../../../collaboration/callout/utils/getPublishedCallouts';
-import useCallouts, {
-  PostFragmentWithCallout,
-  UseCalloutsProvided,
-  WhiteboardFragmentWithCallout,
-} from '../../../collaboration/callout/useCallouts/useCallouts';
+import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
@@ -43,11 +33,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   spaceDisplayName: string;
   spaceVisibility: SpaceVisibility;
   challenge?: ChallengeProfileFragment;
-  posts: PostFragmentWithCallout[];
-  postsCount: number | undefined;
   references: Reference[] | undefined;
-  whiteboards: WhiteboardFragmentWithCallout[];
-  whiteboardsCount: number | undefined;
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -130,15 +116,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { metrics = [] } = _challenge?.space.challenge || {};
 
-  const posts = getPostsFromPublishedCallouts(_challenge?.space.challenge.collaboration?.callouts).slice(0, 2);
-  const postsCount = usePostsCount(_challenge?.space.challenge.metrics);
-
-  const whiteboards = getWhiteboardsFromPublishedCallouts(_challenge?.space.challenge.collaboration?.callouts).slice(
-    0,
-    2
-  );
-  const whiteboardsCount = useWhiteboardsCount(_challenge?.space.challenge.metrics);
-
   const membersCount = getMetricCount(metrics, MetricType.Member);
   const memberUsersCount = membersCount - (_challenge?.space.challenge.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(_challenge?.space.challenge.community, { memberUsersCount });
@@ -168,10 +145,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           spaceDisplayName: space.profile.displayName,
           spaceVisibility: space.visibility,
           challenge: _challenge?.space.challenge,
-          posts,
-          postsCount,
-          whiteboards,
-          whiteboardsCount,
           permissions,
           isAuthenticated,
           references,

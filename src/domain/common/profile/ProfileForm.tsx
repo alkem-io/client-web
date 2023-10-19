@@ -16,6 +16,7 @@ import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInpu
 import { SMALL_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../core/ui/typography';
 import Gutters from '../../../core/ui/grid/Gutters';
+import { DEFAULT_TAGSET } from '../tags/tagset.constants';
 
 export interface ProfileFormValues {
   name: string;
@@ -27,7 +28,7 @@ export interface ProfileFormValues {
 }
 
 interface ProfileFormProps {
-  profile?: Omit<Profile, 'storageBucket'>;
+  profile?: Omit<Profile, 'storageBucket' | 'url'>;
   journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
@@ -55,7 +56,7 @@ const ProfileForm: FC<ProfileFormProps> = ({
     return [
       {
         id: '',
-        name: 'default',
+        name: DEFAULT_TAGSET,
         tags: [],
         allowedValues: [],
         type: TagsetType.Freeform,

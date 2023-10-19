@@ -196,24 +196,25 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       calloutStorageConfigData?.space.collaboration
     )?.callouts ?? [];
 
-  const [post] =
+  const [contribution] =
     (
       postStorageConfigData?.space.opportunity?.collaboration ??
       postStorageConfigData?.space.challenge?.collaboration ??
       postStorageConfigData?.space.collaboration
-    )?.callouts?.[0]?.posts ?? [];
+    )?.callouts?.[0]?.contributions ?? [];
 
   const { profile } =
     journey ??
-    callout ??
-    post ??
+    callout?.framing ??
+    contribution?.post ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??
     innovationHubStorageConfigData?.platform.innovationHub ??
     {};
 
-  const storageConfig = profile?.storageBucket ?? platformStorageConfigData?.platform.storageBucket;
+  const storageConfig =
+    profile?.storageBucket ?? platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
 
   return useMemo(
     () => ({

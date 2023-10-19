@@ -2,8 +2,10 @@ query CalloutPosts($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
-      posts {
-        ...ContributeTabPost
+      contributions {
+        post {
+          ...ContributeTabPost
+        }
       }
     }
   }

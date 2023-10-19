@@ -98,7 +98,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       ...callout,
       draft,
       editable,
-      whiteboards: callout.whiteboards?.map(whiteboard => ({ ...whiteboard, calloutNameId: callout.nameID })),
       comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
     } as unknown as TypedCallout;
   }, [callout, locationState]);
@@ -123,7 +122,9 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     return renderPage();
   }
 
-  const calloutDisplayLocation = getCalloutDisplayLocationValue(typedCallout.profile.displayLocationTagset?.tags);
+  const calloutDisplayLocation = getCalloutDisplayLocationValue(
+    typedCallout.framing.profile.displayLocationTagset?.tags
+  );
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 

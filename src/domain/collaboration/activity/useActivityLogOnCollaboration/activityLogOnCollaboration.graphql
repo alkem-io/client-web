@@ -1,10 +1,7 @@
 query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types: [ActivityEventType!]) {
-  activityLogOnCollaboration(queryData: {
-    collaborationID: $collaborationID
-    limit: $limit
-    types: $types
-    includeChild: true
-  }) {
+  activityLogOnCollaboration(
+    queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
+  ) {
     id
     collaborationID
     createdDate
@@ -102,9 +99,11 @@ fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
     id
     nameID
     type
-    profile {
-      id
-      displayName
+    framing {
+      profile {
+        id
+        displayName
+      }
     }
   }
 }
@@ -113,9 +112,11 @@ fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
   callout {
     id
     nameID
-    profile {
-      id
-      displayName
+    framing {
+      profile {
+        id
+        displayName
+      }
     }
   }
   post {
@@ -134,9 +135,11 @@ fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
   callout {
     id
     nameID
-    profile {
-      id
-      displayName
+    framing {
+      profile {
+        id
+        displayName
+      }
     }
   }
   reference {
@@ -151,9 +154,11 @@ fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
   callout {
     id
     nameID
-    profile {
-      id
-      displayName
+    framing {
+      profile {
+        id
+        displayName
+      }
     }
   }
   post {
@@ -170,9 +175,11 @@ fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboar
   callout {
     id
     nameID
-    profile {
-      id
-      displayName
+    framing {
+      profile {
+        id
+        displayName
+      }
     }
   }
   whiteboard {
@@ -213,9 +220,11 @@ fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussio
   callout {
     id
     nameID
-    profile {
-      id
-      displayName
+    framing {
+      profile {
+        id
+        displayName
+      }
     }
   }
 }

@@ -15,21 +15,10 @@ import {
   OpportunityPageRelationsFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { replaceAll } from '../../../../core/utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../../../main/routing/urlBuilders';
-import { usePostsCount } from '../../../collaboration/post/utils/postsCount';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import { useWhiteboardsCount } from '../../../collaboration/whiteboard/utils/whiteboardsCount';
-import {
-  getPostsFromPublishedCallouts,
-  getWhiteboardsFromPublishedCallouts,
-} from '../../../collaboration/callout/utils/getPublishedCallouts';
-import useCallouts, {
-  PostFragmentWithCallout,
-  UseCalloutsProvided,
-  WhiteboardFragmentWithCallout,
-} from '../../../collaboration/callout/useCallouts/useCallouts';
+import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
@@ -64,15 +53,10 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   meme?: Reference;
   links: Reference[];
   availableActorGroupNames: string[];
-  existingPostNames: string[];
   relations: {
     incoming: OpportunityPageRelationsFragment[];
     outgoing: OpportunityPageRelationsFragment[];
   };
-  posts: PostFragmentWithCallout[];
-  postsCount: number | undefined;
-  whiteboards: WhiteboardFragmentWithCallout[];
-  whiteboardsCount: number | undefined;
   references: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
   fetchMoreActivities: (limit: number) => void;
@@ -158,9 +142,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { references } = profile ?? {};
-  const posts = getPostsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
-  const whiteboards = getWhiteboardsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
-  // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
   const meme = references?.find(x => x.name === 'meme') as Reference;
   const links = (references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1) ?? []) as Reference[];
@@ -170,13 +151,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
-  const existingPostNames = posts?.map(post => replaceAll('_', ' ', post.profile.displayName)) || [];
   // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
-
-  const postsCount = usePostsCount(metrics);
-
-  const whiteboardsCount = useWhiteboardsCount(metrics);
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
   const memberUsersCount = membersCount - (opportunity?.community?.memberOrganizations?.length ?? 0);
@@ -232,15 +208,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           showInterestModal,
           showActorGroupModal,
           availableActorGroupNames,
-          existingPostNames,
           relations: {
             incoming,
             outgoing,
           },
-          posts,
-          postsCount,
-          whiteboards,
-          whiteboardsCount,
           references,
           ...contributors,
           activities,

@@ -3,7 +3,7 @@ import { ApolloError } from '@apollo/client';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import { AlkemioGraphqlErrorCode } from '../../../main/constants';
 
-export const useErrorReporterLink = () => {
+export const useErrorHandlerLink = () => {
   const handleError = useApolloErrorHandler();
 
   return onError(({ graphQLErrors, networkError }) => {

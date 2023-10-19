@@ -17,7 +17,7 @@ import {
 import { Reference } from '../../../../common/profile/Profile';
 import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
-import { getCardCallout } from '../getPostCallout';
+import { compact } from 'lodash';
 
 type PostUpdateData = Pick<Post, 'id' | 'type'> & {
   displayName: Profile['displayName'];
@@ -27,6 +27,7 @@ type PostUpdateData = Pick<Post, 'id' | 'type'> & {
 };
 
 export interface PostSettingsContainerEntities {
+  contributionId?: string;
   post?: PostSettingsFragment;
   postsNames?: string[] | undefined;
   parentCallout: PostSettingsCalloutFragment | undefined;
@@ -100,11 +101,12 @@ const usePostSettings = ({
     challengeData?.space?.challenge?.collaboration?.callouts ??
     opportunityData?.space?.opportunity?.collaboration?.callouts;
 
-  // TODO fetch calloutID for the Post for building a reliable link between entities
-  const parentCallout = getCardCallout(collaborationCallouts, postNameId);
-  const parentCalloutPostNames = parentCallout?.postNames?.map(x => x.profile.displayName);
+  const parentCallout = collaborationCallouts?.find(c => c.nameID === calloutNameId);
+  const parentCalloutPostNames = compact(
+    parentCallout?.postNames?.map(contribution => contribution.post?.profile.displayName)
+  );
 
-  const post = parentCallout?.posts?.find(x => x.nameID === postNameId);
+  const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId);
   const loading = spaceLoading || challengeLoading || opportunityLoading;
   const error = spaceError ?? challengeError ?? opportunityError;
 
@@ -113,7 +115,7 @@ const usePostSettings = ({
   });
 
   const handleUpdate = async (newPost: PostUpdateData) => {
-    if (post) {
+    if (postContribution?.post) {
       await updatePost({
         variables: {
           input: {
@@ -129,7 +131,7 @@ const usePostSettings = ({
               })),
               tagsets: [
                 {
-                  ID: post.profile.tagset?.id ?? '',
+                  ID: postContribution.post.profile.tagset?.id ?? '',
                   tags: newPost.tags,
                 },
               ],
@@ -157,9 +159,9 @@ const usePostSettings = ({
 
   const handleAddReference = (push: PushFunc, referencesLength: number) => {
     setPush(push);
-    if (post) {
+    if (postContribution?.post) {
       addReference({
-        profileId: post.profile.id,
+        profileId: postContribution.post.profile.id,
         name: newReferenceName(referencesLength),
       });
     }
@@ -173,7 +175,8 @@ const usePostSettings = ({
   };
 
   return {
-    post,
+    contributionId: postContribution?.id,
+    post: postContribution?.post,
     postsNames: parentCalloutPostNames,
     parentCallout,
     loading,

@@ -3,12 +3,12 @@ import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildCalloutUrl } from '../../../../../main/routing/urlBuilders';
-import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
+import { ActivityCalloutValues } from '../../../types/ActivityCalloutValues';
 
 interface ActivityCalloutLinkCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
+  callout: ActivityCalloutValues;
   linkName: string;
   linkDescription: string;
 }
@@ -50,7 +50,7 @@ export const ActivityCalloutLinkCreatedView: FC<ActivityCalloutLinkCreatedViewPr
             journeyLocation,
             journeyDisplayName,
             values: {
-              calloutDisplayName: callout.profile.displayName,
+              calloutDisplayName: callout.framing.profile.displayName,
             },
           }}
           withLinkToParent={Boolean(journeyTypeName)}
