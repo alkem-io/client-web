@@ -20,6 +20,7 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     };
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
     whiteboardRt?: WhiteboardRtFieldSubmittedValuesWithPreviewImages;
+    tags?: string[];
   };
 }
 

@@ -300,6 +300,7 @@
     "welcome": "Bienvenue",
     "preview": "Prévisualiser",
     "help": "Aide",
+    "helpCenter": "Help Center",
     "loading": "Chargement ...",
     "innovation-flow": "Flux d'innovation",
     "innovation-flows": "Flux d'innovation",
@@ -824,7 +825,12 @@
       "defaultInvitationMessage": "Bonjour, je voudrais vous inviter à rejoindre {{space}}. Cliquez sur le lien ci-dessous pour voir ou accepter directement l'invitation.",
       "inviteExistingUserDialog": {
         "title": "Invitez d'autres utilisateurs d'Alkemio à rejoindre cet espace",
-        "subtitle": "Vous pouvez rechercher les utilisateurs d'Alkemio ci-dessous et joindre un message personnalisé."
+        "subtitle": "Vous pouvez rechercher les utilisateurs d'Alkemio ci-dessous et joindre un message personnalisé.",
+        "selector": {
+          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
+          "alreadyInvited": "This user is already invited",
+          "alreadyMember": "This user is already a member"
+        }
       },
       "inviteExternalUserDialog": {
         "title": "Envoyer une invitation par e-mail"
@@ -961,7 +967,6 @@
     "callout-creation": {
       "title": "Que voulez-vous demander à votre communauté?",
       "titleWithType": "Créer {{type}}",
-      "callout-type-label": "Type de Callout",
       "post-type-label": "Étiquette de publication",
       "custom-template": "Modèle personnalisé",
       "info-step": {
@@ -1086,12 +1091,19 @@
       "apply-not-signed": "Connectez-vous pour postuler",
       "apply-pending": "Demande en attente de validation",
       "join": "Joindre",
-      "acceptInvitation": "Accept Invitation",
+      "acceptInvitation": {
+        "full": "You are invited to become a member of this Space, please click here to accept",
+        "short": "Accept Invitation"
+      },
+      "joinParentFirst": {
+        "full": "To become a member of this Challenge, first become a member of the parent Space",
+        "short": "Please join parent Space first"
+      },
       "goToSpace": "Go to $t(common.space)",
       "goToChallenge": "Go to $t(common.challenge)",
       "parent-pending": "Demande de tutorat en cours",
       "applyTo": "Appliquer à",
-      "extendedMessage": "{{join}} notre communauté et commencez à faire des changements!",
+      "extendedMessage": "{{join}} our {{journey}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Pour rejoindre le hub <strong title='Challenge name'>'{{challengeName}}'</strong> vous devez d'abord rejoindre <strong title='Space name'>'{{spaceName}}'</strong> . Veuillez ajouter le défi que vous souhaitez rejoindre dans le formulaire de demande du hub."
@@ -1319,7 +1331,7 @@
       "initiate": "Lancer la discussion",
       "posted": "{{name}} sur {{- date}} - {{count}} commentaire",
       "posted_plural": "{{name}} sur {{- date}} - {{count}} commentaire",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }), $t(components.discussion.contributed, {\"count\": {{contributed}} }) & $t(common.opportunties)",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
       "comment": "{{count}} Commentaire",
       "comment_plural": "{{count}} Commentaire",
       "contributed": "{{count}} Personne a contribué",
@@ -2030,9 +2042,11 @@
       }
     },
     "four-ou-four": {
-      "message": "L'utilisateur que vous recherchez est introuvable.",
-      "buttons": {
-        "home": "Retourner sur la page d’accueil"
+      "title": "Something went wrong...",
+      "message": "Sorry, the page you are looking for either doesn't exist or has been moved, or you don't have the rights to access it. This may happen because you aren't a member of the community yet or are not signed in. Don't worry, our team is there to help!",
+      "links": {
+        "home": "",
+        "faq": "Have a look in our FAQ and documentation to find what you are looking for, or contact the team."
       }
     },
     "logout": {
@@ -2270,42 +2284,27 @@
       {
         "key": "transition-énergie",
         "name": "Transition énergétique",
-        "tags": [
-          "Transition énergétique",
-          "Énergie transitoire"
-        ]
+        "tags": ["Transition énergétique", "Énergie transitoire"]
       },
       {
         "key": "société inclusive",
         "name": "Société inclusive",
-        "tags": [
-          "Société inclusive",
-          "Samenleving inclusive"
-        ]
+        "tags": ["Société inclusive", "Samenleving inclusive"]
       },
       {
         "key": "services publics",
         "name": "Services publics",
-        "tags": [
-          "Services publics",
-          "Publieke Diensten"
-        ]
+        "tags": ["Services publics", "Publieke Diensten"]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": [
-          "Innovation",
-          "Innovations"
-        ]
+        "tags": ["Innovation", "Innovations"]
       },
       {
         "key": "digitalisation de la société",
         "name": "Digitalisation de la société",
-        "tags": [
-          "Digitalisation de la société",
-          "Numérisation"
-        ]
+        "tags": ["Digitalisation de la société", "Numérisation"]
       }
     ]
   },
