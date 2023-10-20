@@ -1,5 +1,5 @@
 import React, { forwardRef, PropsWithChildren, useMemo, useState } from 'react';
-import { Box, Divider, MenuList } from '@mui/material';
+import { Box, Divider, MenuList, Typography } from '@mui/material';
 import Avatar from '../../../core/ui/image/Avatar';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { gutters } from '../../../core/ui/grid/utils';
@@ -68,6 +68,17 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             </Gutters>
           )}
           <MenuList disablePadding sx={{ paddingY: 1 }}>
+            {!isAuthenticated && (
+              <NavigatableMenuItem
+                iconComponent={MeetingRoomOutlined}
+                route={buildLoginUrl(pathname)}
+                onClick={onClose}
+              >
+                <Typography variant="inherit" fontWeight="bold">
+                  {t('topbar.sign-in')}
+                </Typography>
+              </NavigatableMenuItem>
+            )}
             <NavigatableMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
               {t('pages.home.title')}
             </NavigatableMenuItem>
@@ -80,19 +91,21 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                 {t('pages.user-profile.title')}
               </NavigatableMenuItem>
             )}
-            <PendingMembershipsUserMenuItem>
-              {({ header, openDialog }) => (
-                <NavigatableMenuItem
-                  iconComponent={HdrStrongOutlined}
-                  onClick={() => {
-                    openDialog();
-                    onClose?.();
-                  }}
-                >
-                  {header}
-                </NavigatableMenuItem>
-              )}
-            </PendingMembershipsUserMenuItem>
+            {user && (
+              <PendingMembershipsUserMenuItem>
+                {({ header, openDialog }) => (
+                  <NavigatableMenuItem
+                    iconComponent={HdrStrongOutlined}
+                    onClick={() => {
+                      openDialog();
+                      onClose?.();
+                    }}
+                  >
+                    {header}
+                  </NavigatableMenuItem>
+                )}
+              </PendingMembershipsUserMenuItem>
+            )}
             <Divider sx={{ width: '85%', marginX: 'auto' }} />
             {children}
             {children && <Divider sx={{ width: '85%', marginX: 'auto' }} />}
@@ -130,17 +143,9 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             >
               {t('buttons.getHelp')}
             </NavigatableMenuItem>
-            {isAuthenticated ? (
+            {isAuthenticated && (
               <NavigatableMenuItem iconComponent={MeetingRoomOutlined} route={AUTH_LOGOUT_PATH} onClick={onClose}>
                 {t('buttons.sign-out')}
-              </NavigatableMenuItem>
-            ) : (
-              <NavigatableMenuItem
-                iconComponent={MeetingRoomOutlined}
-                route={buildLoginUrl(pathname)}
-                onClick={onClose}
-              >
-                {t('topbar.sign-in')}
               </NavigatableMenuItem>
             )}
           </MenuList>
