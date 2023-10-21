@@ -12,8 +12,10 @@ import { Box, ClickAwayListener, Theme, useMediaQuery } from '@mui/material';
 import { DoubleArrow } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { Expandable } from './Expandable';
+import { some } from 'lodash';
 
 interface BreadcrumbsProps<ItemProps extends Expandable> {
+  onExpand?: (isExpanded: boolean) => void;
   children: ReactElement<ItemProps> | (ReactElement<ItemProps> | ReactElement<ItemProps>[])[];
 }
 
@@ -36,7 +38,7 @@ const BreadcrumbsSeparator = () => {
 
 type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
 
-const Breadcrumbs = <ItemProps extends Expandable>({ children }: PropsWithChildren<BreadcrumbsProps<ItemProps>>) => {
+const Breadcrumbs = <ItemProps extends Expandable>({ onExpand, children }: PropsWithChildren<BreadcrumbsProps<ItemProps>>) => {
   const [expandedState, setExpandedState] = useState<JourneyBreadcrumbsExpandedState>({});
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -54,6 +56,10 @@ const Breadcrumbs = <ItemProps extends Expandable>({ children }: PropsWithChildr
     setExpandedState({});
     setIsExpanded(false);
   }, [isSmallScreen]);
+
+  useEffect(() => {
+    onExpand?.(isExpanded || some(expandedState));
+  }, [isExpanded, expandedState]);
 
   const childrenWithSeparator =
     firstChild &&

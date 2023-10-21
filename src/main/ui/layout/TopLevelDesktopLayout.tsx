@@ -1,11 +1,11 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
-import PlatformNavigationBar from '../platformNavigation/PlatformNavigationBar';
+import PlatformNavigationBar, { PlatformNavigationBarProps } from '../platformNavigation/PlatformNavigationBar';
 import Footer from '../platformFooter/PlatformFooter';
 import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../helpButton/PlatformHelpButton';
 
 interface TopLevelDesktopLayoutProps {
-  breadcrumbs?: ReactNode;
+  breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
   header?: ReactNode;
   floatingActions?: ReactNode; // Defaults to the HelpButton
 }

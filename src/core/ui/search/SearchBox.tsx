@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Box, ClickAwayListener, Collapse, Divider, InputBase, InputBaseProps, MenuItem, Select } from '@mui/material';
 import { ExpandMore, Search } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
@@ -14,6 +14,7 @@ interface SearchBoxProps<Option> {
   searchOptions?: SelectOption<Option>[];
   onSearch?: (searchOption: Option) => void;
   onChange?: InputBaseProps['onChange'];
+  onExpand?: (isExpanded: boolean) => void;
 }
 
 const SearchBox = <Option extends string | number>({
@@ -22,6 +23,7 @@ const SearchBox = <Option extends string | number>({
   defaultSearchOption,
   searchOptions,
   onChange,
+  onExpand,
 }: SearchBoxProps<Option>) => {
   const { t } = useTranslation();
   const [searchOption, setSearchOption] = useState(defaultSearchOption);
@@ -41,6 +43,10 @@ const SearchBox = <Option extends string | number>({
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
+
+  useLayoutEffect(() => {
+    onExpand?.(isExpanded);
+  }, [isExpanded]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 

@@ -18,7 +18,11 @@ const MINIMUM_TERM_LENGTH = 2;
 
 const getSearchTerms = (searchInput: string) => searchInput.trim();
 
-const PlatformSearch = () => {
+interface PlatformSearchProps {
+  onExpand?: (isExpanded: boolean) => void;
+}
+
+const PlatformSearch = ({ onExpand }: PlatformSearchProps) => {
   const { t } = useTranslation();
 
   const { spaceNameId, profile } = useSpace();
@@ -111,6 +115,7 @@ const PlatformSearch = () => {
       searchOptions={searchOptions}
       onChange={handleValueChange}
       onSearch={handleSearch}
+      onExpand={onExpand}
     />
   );
 };
