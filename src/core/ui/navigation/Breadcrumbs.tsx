@@ -38,7 +38,10 @@ const BreadcrumbsSeparator = () => {
 
 type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
 
-const Breadcrumbs = <ItemProps extends Expandable>({ onExpand, children }: PropsWithChildren<BreadcrumbsProps<ItemProps>>) => {
+const Breadcrumbs = <ItemProps extends Expandable>({
+  onExpand,
+  children,
+}: PropsWithChildren<BreadcrumbsProps<ItemProps>>) => {
   const [expandedState, setExpandedState] = useState<JourneyBreadcrumbsExpandedState>({});
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -105,6 +108,7 @@ const Breadcrumbs = <ItemProps extends Expandable>({ onExpand, children }: Props
         padding={gutters(0.5)}
         onMouseLeave={onLeave}
         onClick={handleClick}
+        sx={{ pointerEvents: 'auto' }}
       >
         {childrenWithSeparator}
       </Box>

@@ -1,5 +1,6 @@
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ComponentType, ReactElement, ReactNode } from 'react';
+import { PlatformNavigationBarProps } from '../../../../main/ui/platformNavigation/PlatformNavigationBar';
 
 export interface EntityTabsProps {
   currentTab: EntityPageSection;
@@ -9,7 +10,7 @@ export interface EntityTabsProps {
 
 export interface EntityPageLayoutProps {
   currentSection: EntityPageSection;
-  breadcrumbs?: ReactNode;
+  breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
   pageBannerComponent?: ComponentType;
   pageBanner?: ReactNode;
   tabsComponent?: ComponentType<EntityTabsProps>;

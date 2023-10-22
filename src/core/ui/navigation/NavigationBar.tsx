@@ -1,9 +1,8 @@
-import React, { PropsWithChildren, ReactNode, useLayoutEffect, useState } from 'react';
+import React, { PropsWithChildren, useLayoutEffect, useState } from 'react';
 import { AppBar, Box, Paper, Slide } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
-import FlexSpacer from '../utils/FlexSpacer';
 import hexToRGBA from '../../utils/hexToRGBA';
 import { useScrolledUp, useScrollTop } from '../scroll/utils';
 import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '../../../main/ui/platformNavigation/constants';
@@ -22,11 +21,8 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
         sx={{
           backgroundColor: theme => hexToRGBA(theme.palette.primary.main, transparent ? 0 : 0.25),
           backdropFilter: transparent ? 'none' : 'blur(8px)',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'start',
-          flexWrap: 'nowrap',
-          marginX: 'auto',
+          position: 'relative',
+          height: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS - 1),
           maxWidth: gutters(MAX_CONTENT_WIDTH_GUTTERS - 2),
         }}
       >
@@ -36,19 +32,15 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
   );
 };
 
-interface NavigationBarProps {
-  childrenLeft?: ReactNode;
-  childrenRight?: ReactNode;
-}
+export const NAVIGATION_CONTENT_HEIGHT_GUTTERS = 3;
+export const NAVIGATION_CONTAINER_HEIGHT_GUTTERS = NAVIGATION_CONTENT_HEIGHT_GUTTERS + 1;
 
-export const NAVIGATION_HEIGHT_GUTTERS = 4;
-
-const NavigationBar = ({ childrenLeft, childrenRight }: NavigationBarProps) => {
+const NavigationBar = ({ children }: PropsWithChildren<{}>) => {
   const scrollTop = useScrollTop();
 
   const hasScrolledUp = useScrolledUp();
 
-  const navigationHeight = GUTTER_PX * NAVIGATION_HEIGHT_GUTTERS;
+  const navigationHeight = GUTTER_PX * NAVIGATION_CONTAINER_HEIGHT_GUTTERS;
 
   const hasScrolledPast = scrollTop > navigationHeight;
 
@@ -86,7 +78,7 @@ const NavigationBar = ({ childrenLeft, childrenRight }: NavigationBarProps) => {
     }
   }, [hasScrolledUp]);
 
-  const hasSurface = isFixed && scrollTop > GUTTER_PX * (NAVIGATION_HEIGHT_GUTTERS - 2);
+  const hasSurface = isFixed && scrollTop > GUTTER_PX * (NAVIGATION_CONTAINER_HEIGHT_GUTTERS - 2);
 
   return (
     <Slide direction="down" in={!hasScrolledPast || hasSlidIn}>
@@ -99,11 +91,7 @@ const NavigationBar = ({ childrenLeft, childrenRight }: NavigationBarProps) => {
           justifyContent: 'center',
         }}
       >
-        <NavigationBarContent transparent={!hasSurface}>
-          {childrenLeft}
-          <FlexSpacer />
-          {childrenRight}
-        </NavigationBarContent>
+        <NavigationBarContent transparent={!hasSurface}>{children}</NavigationBarContent>
       </AppBar>
     </Slide>
   );

@@ -2,13 +2,13 @@ import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { forwardRef } from 'react';
 
-const NavigationItemContainer = forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
+const NavigationItemContainer = forwardRef<HTMLDivElement, BoxProps>(({ sx, ...props }, ref) => {
   return (
     <Box
       ref={ref}
       height={gutters(2)}
       borderRadius={theme => `${theme.shape.borderRadius}px`}
-      sx={{ backgroundColor: theme => theme.palette.background.paper }}
+      sx={{ ...sx, backgroundColor: theme => theme.palette.background.paper }}
       {...props}
     />
   );

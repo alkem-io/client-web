@@ -1,5 +1,15 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { Box, ClickAwayListener, Collapse, Divider, InputBase, InputBaseProps, MenuItem, Select } from '@mui/material';
+import {
+  Box,
+  BoxProps,
+  ClickAwayListener,
+  Collapse,
+  Divider,
+  InputBase,
+  InputBaseProps,
+  MenuItem,
+  Select,
+} from '@mui/material';
 import { ExpandMore, Search } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { BlockSectionTitle } from '../typography';
@@ -7,6 +17,7 @@ import { SelectOption } from '@mui/base/SelectUnstyled/useSelect.types';
 import NavigationItemContainer from '../navigation/NavigationItemContainer';
 import NavigationItemButton from '../navigation/NavigationItemButton';
 import { useTranslation } from 'react-i18next';
+import { useResizeDetector } from 'react-resize-detector';
 
 interface SearchBoxProps<Option> {
   searchTerms: string;
@@ -24,7 +35,9 @@ const SearchBox = <Option extends string | number>({
   searchOptions,
   onChange,
   onExpand,
-}: SearchBoxProps<Option>) => {
+  children,
+  ...props
+}: BoxProps & SearchBoxProps<Option>) => {
   const { t } = useTranslation();
   const [searchOption, setSearchOption] = useState(defaultSearchOption);
 
@@ -68,68 +81,80 @@ const SearchBox = <Option extends string | number>({
   const handleSelectOpen = () => {
     selectOpenStateRef.current = true;
   };
+
   const handleSelectClose = () => {
     selectOpenStateRef.current = false;
   };
 
+  const { ref, width } = useResizeDetector();
+
   return (
-    <ClickAwayListener onClickAway={handleClickAway}>
-      <NavigationItemContainer display="flex">
-        <Collapse in={isExpanded} orientation="horizontal" collapsedSize="1px" sx={{ marginRight: '-1px' }}>
-          <Box display="flex" alignItems="center">
-            {searchOptions && (
-              <>
-                <Select
-                  onOpen={handleSelectOpen}
-                  onClose={handleSelectClose}
-                  value={searchOption}
-                  onChange={event => setSearchOption(event.target.value as Option)}
-                  size="small"
-                  IconComponent={ExpandMore}
-                  sx={{
-                    height: gutters(2),
-                    '.MuiOutlinedInput-notchedOutline': { border: 'none' },
-                    '.MuiSelect-icon': { top: 0, fontSize: gutters(1) },
-                  }}
-                  renderValue={() => (
-                    <Box display="flex">
-                      <BlockSectionTitle>{t('components.search.searchIn')}</BlockSectionTitle>
-                      <BlockSectionTitle whiteSpace="pre"> </BlockSectionTitle>
-                      <BlockSectionTitle color="primary">
-                        {searchOptions?.find(({ value }) => value === searchOption)?.label}
-                      </BlockSectionTitle>
-                    </Box>
-                  )}
-                >
-                  {searchOptions?.map(({ value, label }) => (
-                    <MenuItem value={value}>
-                      <BlockSectionTitle textTransform="none">{label}</BlockSectionTitle>
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Divider orientation="vertical" sx={{ height: gutters(1) }} />
-              </>
-            )}
-            <InputBase
-              inputRef={inputRef}
-              value={searchTerms}
-              sx={{
-                '.MuiInputBase-input': theme => ({
-                  ...theme.typography.h4,
-                  padding: gutters(0.5),
-                  minWidth: gutters(11),
-                }),
-              }}
-              onChange={onChange}
-              onKeyUp={handleKeyUp}
-            />
-          </Box>
-        </Collapse>
-        <NavigationItemButton onClick={isExpanded ? handleClickSearch : handleExpand}>
-          <Search color="primary" />
-        </NavigationItemButton>
-      </NavigationItemContainer>
-    </ClickAwayListener>
+    <Box ref={ref} display="flex" justifyContent="end" {...props}>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <NavigationItemContainer display="flex" justifyContent="end" position="relative">
+          {children}
+          <Collapse in={isExpanded} orientation="horizontal" collapsedSize="1px" sx={{ marginRight: '-1px' }}>
+            <Box
+              flexGrow={1}
+              display="flex"
+              alignItems="center"
+              width={theme => `calc(${width}px - ${gutters(2)(theme)})`}
+            >
+              {searchOptions && (
+                <>
+                  <Select
+                    onOpen={handleSelectOpen}
+                    onClose={handleSelectClose}
+                    value={searchOption}
+                    onChange={event => setSearchOption(event.target.value as Option)}
+                    size="small"
+                    IconComponent={ExpandMore}
+                    sx={{
+                      height: gutters(2),
+                      '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+                      '.MuiSelect-icon': { top: 0, fontSize: gutters(1) },
+                    }}
+                    renderValue={() => (
+                      <Box display="flex">
+                        <BlockSectionTitle>{t('components.search.searchIn')}</BlockSectionTitle>
+                        <BlockSectionTitle whiteSpace="pre"> </BlockSectionTitle>
+                        <BlockSectionTitle color="primary">
+                          {searchOptions?.find(({ value }) => value === searchOption)?.label}
+                        </BlockSectionTitle>
+                      </Box>
+                    )}
+                  >
+                    {searchOptions?.map(({ value, label }) => (
+                      <MenuItem value={value}>
+                        <BlockSectionTitle textTransform="none">{label}</BlockSectionTitle>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <Divider orientation="vertical" sx={{ height: gutters(1) }} />
+                </>
+              )}
+              <InputBase
+                inputRef={inputRef}
+                value={searchTerms}
+                sx={{
+                  flexGrow: 1,
+                  '.MuiInputBase-input': theme => ({
+                    ...theme.typography.h4,
+                    padding: gutters(0.5),
+                  }),
+                }}
+                onChange={onChange}
+                onKeyUp={handleKeyUp}
+                fullWidth
+              />
+            </Box>
+          </Collapse>
+          <NavigationItemButton onClick={isExpanded ? handleClickSearch : handleExpand}>
+            <Search color="primary" />
+          </NavigationItemButton>
+        </NavigationItemContainer>
+      </ClickAwayListener>
+    </Box>
   );
 };
 

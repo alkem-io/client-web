@@ -10,7 +10,7 @@ import { DEFAULT_BANNER_URL } from '../../../../domain/shared/components/PageHea
 import GridProvider from '../../grid/GridProvider';
 import GridItem from '../../grid/GridItem';
 import { useColumns } from '../../grid/GridContext';
-import { NAVIGATION_HEIGHT_GUTTERS } from '../../navigation/NavigationBar';
+import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../navigation/NavigationBar';
 import PageBannerWatermark from '../../../../main/ui/platformNavigation/PageBannerWatermark';
 import Overlay from '../../utils/Overlay';
 
@@ -40,7 +40,7 @@ const CardContainer = ({ children }: CardContainerProps) => {
       marginX="auto"
       alignItems={cardStickSide === 'left' ? 'start' : 'stretch'}
       position="relative"
-      paddingTop={gutters(NAVIGATION_HEIGHT_GUTTERS)}
+      paddingTop={gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS)}
     >
       <GridItem columns={10}>{children}</GridItem>
       <PageBannerWatermark />

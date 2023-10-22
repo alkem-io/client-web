@@ -1,6 +1,6 @@
 import { SelectOption } from '@mui/base/SelectUnstyled/useSelect.types';
 import { useTranslation } from 'react-i18next';
-import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useSpace } from '../../../domain/journey/space/SpaceContext/useSpace';
 import SearchBox from '../../../core/ui/search/SearchBox';
 import { useNavigate } from 'react-router';
@@ -8,6 +8,7 @@ import { useMatch } from 'react-router-dom';
 import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../domain/platform/routes/constants';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import { buildSpaceUrl } from '../../routing/urlBuilders';
+import { gutters } from '../../../core/ui/grid/utils';
 
 enum SearchScope {
   Platform,
@@ -22,7 +23,7 @@ interface PlatformSearchProps {
   onExpand?: (isExpanded: boolean) => void;
 }
 
-const PlatformSearch = ({ onExpand }: PlatformSearchProps) => {
+const PlatformSearch = ({ onExpand, children }: PropsWithChildren<PlatformSearchProps>) => {
   const { t } = useTranslation();
 
   const { spaceNameId, profile } = useSpace();
@@ -116,7 +117,11 @@ const PlatformSearch = ({ onExpand }: PlatformSearchProps) => {
       onChange={handleValueChange}
       onSearch={handleSearch}
       onExpand={onExpand}
-    />
+      flexGrow={1}
+      maxWidth={gutters(28)}
+    >
+      {children}
+    </SearchBox>
   );
 };
 
