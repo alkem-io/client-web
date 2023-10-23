@@ -58,7 +58,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
         <Wrapper ref={ref}>
           {user && (
             <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
-              <Avatar size="lg" src={user.profile.visual?.uri} />
+              <Avatar size="lg" src={user.profile.avatar?.uri} />
               <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
               {role && (
                 <Caption color="neutralMedium.main" textTransform="uppercase">

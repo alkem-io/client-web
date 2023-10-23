@@ -25,7 +25,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
       renderTrigger={({ ref, ...props }) => (
         <Avatar
           ref={ref as Ref<HTMLDivElement>}
-          src={user?.user.profile.visual?.uri}
+          src={user?.user.profile.avatar?.uri}
           sx={{ cursor: 'pointer' }}
           {...props}
         >

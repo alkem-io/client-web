@@ -14,7 +14,7 @@ interface ContentProps {
   onClose?: () => void;
 }
 
-interface ClickableTooltipProps extends Omit<PopperProps, 'open' | 'children'> {
+interface MenuTriggerButtonProps extends Omit<PopperProps, 'open' | 'children'> {
   renderTrigger: ({ onClick }: TriggerProps) => ReactElement;
   children: ReactElement<ContentProps>;
   mouseLeaveDebounceWait?: number;
@@ -42,7 +42,7 @@ const MenuTriggerButton = ({
   sx,
   drawer = false,
   ...props
-}: ClickableTooltipProps) => {
+}: MenuTriggerButtonProps) => {
   const [openState, setOpenState] = useState<OpenState | null>(null);
 
   const handleClose = () => {
@@ -63,6 +63,10 @@ const MenuTriggerButton = ({
   };
 
   const handleTriggerMouseEnter: MouseEventHandler<HTMLElement> = event => {
+    if (drawer) {
+      return;
+    }
+
     handleMouseLeaveDebounced.cancel();
 
     setOpenState(prevState => {
@@ -79,7 +83,7 @@ const MenuTriggerButton = ({
 
   const handleMouseLeave: MouseEventHandler<HTMLElement> = () =>
     setOpenState(prevState => {
-      return prevState?.action === OpenTriggerAction.Click ? prevState : null;
+      return drawer || prevState?.action === OpenTriggerAction.Click ? prevState : null;
     });
 
   const handleMouseLeaveDebounced = useRef(debounce(handleMouseLeave, mouseLeaveDebounceWait)).current;

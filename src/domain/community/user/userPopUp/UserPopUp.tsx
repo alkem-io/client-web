@@ -128,7 +128,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
       <DialogTitle id="user-dialog-title" onClose={onHide}>
         <div className={styles.header}>
           <div className={styles.profile}>
-            <Avatar src={user?.profile.visual?.uri} size={'lg'} />
+            <Avatar src={user?.profile.avatar?.uri} size={'lg'} />
             <div className={styles.userName}>
               <WrapperTypography variant={'h3'}>{user?.profile.displayName}</WrapperTypography>
             </div>

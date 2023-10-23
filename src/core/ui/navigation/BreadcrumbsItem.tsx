@@ -57,7 +57,7 @@ const BreadcrumbsItem = ({
         {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}
       </Avatar>
       <Collapse in={expanded} orientation="horizontal">
-        <CardText paddingX={0.5} lineHeight={gutters(AVATAR_SIZE_GUTTERS)} color="primary" noWrap>
+        <CardText paddingX={0.5} lineHeight={gutters(AVATAR_SIZE_GUTTERS)} maxWidth="30vw" color="primary" noWrap>
           {children}
         </CardText>
       </Collapse>
