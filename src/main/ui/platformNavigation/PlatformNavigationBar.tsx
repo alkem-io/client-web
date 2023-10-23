@@ -1,9 +1,9 @@
-import NavigationBar from '../../../core/ui/navigation/NavigationBar';
+import NavigationBar, { NAVIGATION_CONTENT_HEIGHT_GUTTERS } from '../../../core/ui/navigation/NavigationBar';
 import PlatformNavigationUserAvatar from './PlatformNavigationUserAvatar';
 import PlatformSearch from '../platformSearch/PlatformSearch';
 import PlatformNavigationMenuButton from './PlatformNavigationMenuButton';
 import { Box, Fade, IconButton, Slide, Theme, useMediaQuery } from '@mui/material';
-import React, { cloneElement, ReactElement, Ref, useRef, useState } from 'react';
+import React, { cloneElement, ReactElement, Ref, useLayoutEffect, useRef, useState } from 'react';
 import PlatformNavigationUserMenu from './PlatformNavigationUserMenu';
 import UserMenuPlatformNavigationSegment from './platformNavigationMenu/UserMenuPlatformNavigationSegment';
 import { ArrowBackIosNew } from '@mui/icons-material';
@@ -11,6 +11,8 @@ import NavigationBarSideContent from '../../../core/ui/navigation/NavigationBarS
 import { gutters } from '../../../core/ui/grid/utils';
 import { Collapsible } from '../../../core/ui/navigation/Collapsible';
 import { UncontrolledExpandable } from '../../../core/ui/navigation/UncontrolledExpandable';
+import { useResizeDetector } from 'react-resize-detector';
+import { GUTTER_PX } from '../../../core/ui/grid/constants';
 
 export interface PlatformNavigationBarProps {
   breadcrumbs?: ReactElement<UncontrolledExpandable & { ref: Ref<Collapsible> }>;
@@ -57,8 +59,18 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
       buttonsContainerRef.current?.getBoundingClientRect() ?? DEFAULT_BOUNDING_CLIENT_RECT;
     const { right: contentRight } = backButtonRef.current?.getBoundingClientRect() ?? DEFAULT_BOUNDING_CLIENT_RECT;
 
-    setRightSideShift(containerRight - contentRight);
+    setRightSideShift(prevShift => prevShift || containerRight - contentRight);
   };
+
+  const { height: breadcrumbsHeight = 0, ref: breadcrumbsWrapperRef } = useResizeDetector();
+
+  const breadcrumbsVerticalShift =
+    breadcrumbsHeight > GUTTER_PX * 2 ? (NAVIGATION_CONTENT_HEIGHT_GUTTERS * GUTTER_PX - breadcrumbsHeight) / 2 : 0;
+
+  useLayoutEffect(() => {
+    breadcrumbsRef.current?.collapse();
+    searchBoxRef.current?.collapse();
+  }, [isMobile]);
 
   return (
     <NavigationBar>
@@ -75,7 +87,7 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
               `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
           }}
         >
-          <PlatformSearch ref={searchBoxRef} onExpand={handleExpandSearch}>
+          <PlatformSearch ref={searchBoxRef} onExpand={handleExpandSearch} compact={isMobile}>
             <Fade in={rightSideShift !== 0}>
               <IconButton
                 ref={backButtonRef}
@@ -102,10 +114,12 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
         ref={breadcrumbsContainerRef}
         sx={{
           pointerEvents: 'none',
+          transform: `translateY(${breadcrumbsVerticalShift}px)`,
+          transition: theme => `transform ${theme.transitions.duration.shortest}ms linear`,
         }}
       >
         <Slide in={!areBreadcrumbsHidden} container={breadcrumbsContainerRef.current} direction="right">
-          <Box display="flex">
+          <Box ref={breadcrumbsWrapperRef} display="flex">
             {breadcrumbs && cloneElement(breadcrumbs, { ref: breadcrumbsRef, onExpand: handleExpandBreadcrumbs })}
           </Box>
         </Slide>

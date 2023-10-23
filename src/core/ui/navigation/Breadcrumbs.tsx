@@ -77,7 +77,7 @@ const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>(
       );
 
     const onLeave = () => {
-      setExpandedState({});
+      setExpandedState(prevExpandedState => (some(prevExpandedState) ? {} : prevExpandedState));
     };
 
     const handleItemHover = (childKey: string | number) => {
