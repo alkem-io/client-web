@@ -23,13 +23,17 @@ export interface InnovationFlowTemplatesLibraryProps {
   disabled?: boolean;
 }
 
-const filterByType = (filter: InnovationFlowType | undefined) => (template: InnovationFlowTemplate) =>
-  !filter || template.type === filter;
+const filterByType = (filter: InnovationFlowType | undefined) =>
+  !filter ? () => true : (template: InnovationFlowTemplate) => template.type === filter;
 
 const filterByText = (filter: string[]) => (template: InnovationFlowTemplate) => {
+  if (filter.length === 0) {
+    return () => true;
+  }
+  const terms = filter.map(term => term.toLowerCase());
   const templateString =
     `${template.displayName} ${template.provider.displayName} ${template.innovationPack.displayName}`.toLowerCase();
-  return filter.length === 0 || filter.some(term => templateString.includes(term.toLowerCase()));
+  return terms.some(term => templateString.includes(term));
 };
 
 const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = ({

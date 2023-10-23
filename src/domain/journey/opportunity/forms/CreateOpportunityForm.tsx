@@ -49,7 +49,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     tagline: '',
     vision: '',
     tags: [],
-    innovationFlowTemplateID: defaultInnovationFlowTemplateId,
+    innovationFlowTemplateID: defaultInnovationFlowTemplateId ?? '',
   };
 
   const validationSchema = yup.object().shape({

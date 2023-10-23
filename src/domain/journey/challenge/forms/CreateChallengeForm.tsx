@@ -51,7 +51,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     background: '',
     vision: '',
     tags: [],
-    innovationFlowTemplateID: defaultInnovationFlowTemplateId,
+    innovationFlowTemplateID: defaultInnovationFlowTemplateId ?? '',
   };
 
   const validationSchema = yup.object().shape({

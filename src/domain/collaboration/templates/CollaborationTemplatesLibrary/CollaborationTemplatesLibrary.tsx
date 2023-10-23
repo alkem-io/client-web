@@ -74,8 +74,8 @@ const CollaborationTemplatesLibrary = <
   fetchSpaceTemplatesOnLoad,
   fetchTemplatesFromSpace,
   templatesFromSpace,
-  loadingTemplatesFromSpace,
-  loadingTemplateContent,
+  loadingTemplatesFromSpace = false,
+  loadingTemplateContent = false,
   getTemplateWithContent,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
@@ -94,7 +94,6 @@ const CollaborationTemplatesLibrary = <
   // Show gallery or show preview of this template:
   const [previewTemplate, setPreviewTemplate] = useState<TemplateWithValue>();
   const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
-  console.log({ templateUseDisabled });
 
   // Load Space Templates by default:
   useEffect(() => {
@@ -104,7 +103,6 @@ const CollaborationTemplatesLibrary = <
   }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
 
   const handlePreviewTemplate = async (template: Template, source: TemplateSource) => {
-    console.log({ disableUsePlatformTemplates, source, templateUseDisabled });
     setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
     setPreviewTemplate(await getTemplateWithContent?.(template));
   };
