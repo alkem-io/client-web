@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogContent, Link } from '@mui/material';
-import { ComponentType, useEffect, useState } from 'react';
+import { Box, Button, ButtonProps, Dialog, DialogContent, Link } from '@mui/material';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -9,9 +9,25 @@ import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogIcon from '../../../../core/ui/dialog/DialogIcon';
-import { ImageSearch as ImageSearchIcon } from '@mui/icons-material';
+import { ImageSearch as ImageSearchIcon, InfoOutlined } from '@mui/icons-material';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import { TemplateBase, TemplateBaseWithContent, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
+import { gutters } from '../../../../core/ui/grid/utils';
+
+enum TemplateSource {
+  Space,
+  Platform,
+}
+
+const DisabledTemplateInfo = () => {
+  const { t } = useTranslation();
+  return (
+    <Box display="flex" gap={gutters(0.5)}>
+      <InfoOutlined />
+      <Caption>{t('templateLibrary.disabledTemplateInfo')}</Caption>
+    </Box>
+  );
+};
 
 export interface CollaborationTemplatesLibraryProps<
   Template extends TemplateBase,
@@ -33,13 +49,16 @@ export interface CollaborationTemplatesLibraryProps<
   templatesFromSpace?: Template[];
   loadingTemplatesFromSpace?: boolean;
 
-  // Whiteboard template content
-  loadingWhiteboardTemplateContent?: boolean;
-  getWhiteboardTemplateWithContent?: (template: Template) => Promise<TemplateWithContent | undefined>;
+  // For big templates like Whiteboards and InnovationFlows that have their content separated
+  loadingTemplateContent?: boolean;
+  getTemplateWithContent?: (template: Template) => Promise<TemplateWithContent | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
   templatesFromPlatform?: Template[];
   loadingTemplatesFromPlatform?: boolean;
+  disableUsePlatformTemplates?: boolean;
+
+  buttonProps?: ButtonProps;
 }
 
 const CollaborationTemplatesLibrary = <
@@ -55,12 +74,14 @@ const CollaborationTemplatesLibrary = <
   fetchSpaceTemplatesOnLoad,
   fetchTemplatesFromSpace,
   templatesFromSpace,
-  loadingTemplatesFromSpace,
-  loadingWhiteboardTemplateContent,
-  getWhiteboardTemplateWithContent,
+  loadingTemplatesFromSpace = false,
+  loadingTemplateContent = false,
+  getTemplateWithContent,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
+  disableUsePlatformTemplates = false,
+  buttonProps = {},
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
   const { t } = useTranslation();
 
@@ -72,6 +93,7 @@ const CollaborationTemplatesLibrary = <
 
   // Show gallery or show preview of this template:
   const [previewTemplate, setPreviewTemplate] = useState<TemplateWithValue>();
+  const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
 
   // Load Space Templates by default:
   useEffect(() => {
@@ -80,8 +102,9 @@ const CollaborationTemplatesLibrary = <
     }
   }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
 
-  const handlePreviewWhiteboardTemplate = async (template: Template) => {
-    setPreviewTemplate(await getWhiteboardTemplateWithContent?.(template));
+  const handlePreviewTemplate = async (template: Template, source: TemplateSource) => {
+    setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
+    setPreviewTemplate(await getTemplateWithContent?.(template));
   };
 
   // Load Platform Templates if no spaceName is provided:
@@ -102,14 +125,16 @@ const CollaborationTemplatesLibrary = <
     }
   };
 
-  const loading = loadingTemplatesFromSpace || loadingTemplatesFromPlatform || loadingWhiteboardTemplateContent;
-  const loadingPreview = loadingWhiteboardTemplateContent;
+  const loading = loadingTemplatesFromSpace || loadingTemplatesFromPlatform || loadingTemplateContent;
+  const loadingPreview = loadingTemplateContent;
+
+  if (!buttonProps.children) {
+    buttonProps.children = <>{t('buttons.find-template')}</>;
+  }
 
   return (
     <>
-      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)}>
-        {t('buttons.find-template')}
-      </Button>
+      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)} {...buttonProps} />
       <Dialog
         open={dialogOpen}
         onClose={handleClose}
@@ -137,11 +162,11 @@ const CollaborationTemplatesLibrary = <
             <Gutters>
               {templatesFromSpace && (
                 <>
-                  <BlockTitle>{t('whiteboard-templates.space-templates')}</BlockTitle>
+                  <BlockTitle>{t('templateLibrary.spaceTemplates')}</BlockTitle>
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromSpace}
                     templateCardComponent={templateCardComponent}
-                    onPreviewTemplate={template => handlePreviewWhiteboardTemplate(template)}
+                    onPreviewTemplate={template => handlePreviewTemplate(template, TemplateSource.Space)}
                     loading={loadingTemplatesFromSpace}
                   />
                 </>
@@ -155,15 +180,16 @@ const CollaborationTemplatesLibrary = <
                   gap={1}
                   sx={{ cursor: 'pointer' }}
                 >
-                  <ImageSearchIcon /> {t('whiteboard-templates.load-platform-templates')}
+                  <ImageSearchIcon /> {t('templateLibrary.loadPlatformTemplates')}
                 </Link>
               ) : (
                 <>
-                  <BlockTitle>{t('whiteboard-templates.platform-templates')}</BlockTitle>
+                  <BlockTitle>{t('templateLibrary.platformTemplates')}</BlockTitle>
+                  {disableUsePlatformTemplates && <Caption>{t('templateLibrary.platformUseDisabled')} </Caption>}
                   <CollaborationTemplatesLibraryGallery
                     templates={templatesFromPlatform}
                     templateCardComponent={templateCardComponent}
-                    onPreviewTemplate={template => handlePreviewWhiteboardTemplate(template)}
+                    onPreviewTemplate={template => handlePreviewTemplate(template, TemplateSource.Platform)}
                     loading={loadingTemplatesFromPlatform}
                   />
                 </>
@@ -174,6 +200,7 @@ const CollaborationTemplatesLibrary = <
               template={previewTemplate}
               templateCardComponent={templateCardComponent}
               templatePreviewComponent={templatePreviewComponent}
+              templateInfo={templateUseDisabled ? <DisabledTemplateInfo /> : undefined}
               loading={loadingPreview}
               onClose={handleClosePreview}
               actions={
@@ -181,7 +208,7 @@ const CollaborationTemplatesLibrary = <
                   startIcon={<SystemUpdateAltIcon />}
                   variant="contained"
                   sx={{ marginLeft: theme => theme.spacing(1) }}
-                  disabled={loading}
+                  disabled={loading || templateUseDisabled}
                   onClick={handleSelectTemplate}
                 >
                   {t('buttons.use')}

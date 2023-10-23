@@ -77,7 +77,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
 
   return (
     <CollaborationTemplatesLibrary
-      dialogTitle={t('post-templates.template-library')}
+      dialogTitle={t('templateLibrary.postTemplates.title')}
       onSelectTemplate={onSelectTemplate}
       templateCardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
       templatePreviewComponent={PostTemplatePreview}
@@ -87,8 +87,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      loadingWhiteboardTemplateContent={false}
-      getWhiteboardTemplateWithContent={template => getPostTemplateContent(template)}
+      getTemplateWithContent={template => getPostTemplateContent(template)}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}

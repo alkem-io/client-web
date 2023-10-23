@@ -1,16 +1,16 @@
-import { TemplateCardBaseProps } from '../CollaborationTemplatesLibrary/TemplateBase';
-import { InnovationFlowTemplate } from './InnovationFlowTemplate';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardHeader from '../../../../core/ui/card/CardHeader';
-import { Skeleton } from '@mui/material';
-import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
-import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
-import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
-import { Caption } from '../../../../core/ui/typography';
 import React from 'react';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { Skeleton } from '@mui/material';
 import { SvgIconComponent } from '@mui/icons-material';
+import CardHeader from '../../../../core/ui/card/CardHeader';
+import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 import CardDetails from '../../../../core/ui/card/CardDetails';
+import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
+import ContributeCard from '../../../../core/ui/card/ContributeCard';
+import { Caption } from '../../../../core/ui/typography/components';
+import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
+import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowTemplate } from './InnovationFlowTemplate';
+import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 
 interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}

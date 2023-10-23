@@ -3,8 +3,8 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import PostTemplateCard, { PostTemplate } from '../../post/PostTemplateCard/PostTemplateCard';
 import { WhiteboardTemplate } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
 import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import { InnovationFlowTemplate } from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplate';
-import InnovationFlowTemplateCard from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import { InnovationFlowTemplate } from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplate';
+import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 
 export type LibraryTemplateCardProps = Identifiable &

@@ -39,7 +39,7 @@ const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
         <TagsComponent tags={tags || []} />
       </Box>
       <Box>
-        <TypographyTitle>{t('innovation-templates.type.title')}</TypographyTitle>
+        <TypographyTitle>{t('templateLibrary.innovationFlowTemplates.type')}</TypographyTitle>
         <Typography variant="h6" color="primary">
           {templateType}
         </Typography>
