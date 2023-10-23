@@ -1,5 +1,5 @@
 import React, { cloneElement, MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
-import { Box, ClickAwayListener, Drawer, Grow, Popper, PopperProps } from '@mui/material';
+import { Box, ClickAwayListener, Drawer, Grow, ModalProps, Popper, PopperProps } from '@mui/material';
 import { debounce } from 'lodash';
 import { gutters } from '../grid/utils';
 
@@ -14,7 +14,7 @@ interface ContentProps {
   onClose?: () => void;
 }
 
-interface MenuTriggerButtonProps extends Omit<PopperProps, 'open' | 'children'> {
+interface MenuTriggerButtonProps extends Omit<ModalProps, 'open' | 'children'>, Pick<PopperProps, 'placement'> {
   renderTrigger: ({ onClick }: TriggerProps) => ReactElement;
   children: ReactElement<ContentProps>;
   mouseLeaveDebounceWait?: number;
@@ -149,7 +149,7 @@ const MenuTriggerButton = ({
         </Popper>
       )}
       {drawer && (
-        <Drawer anchor="right" open={!!openState} onClose={handleClose}>
+        <Drawer anchor="right" open={!!openState} onClose={handleClose} {...props}>
           {cloneElement(children, { onClose: handleClose })}
         </Drawer>
       )}
