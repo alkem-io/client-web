@@ -1,7 +1,32 @@
 {
+  "chatbot": {
+    "title": "Alkemio Help",
+    "subtitle": "Ask your question to search through our documentation or browse it directly",
+    "infoDialog": {
+      "title": "Alkemio Help",
+      "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+    },
+    "references": [
+      {
+        "uri": "https://www.alkemio.org/help/getting-started/",
+        "title": "New user? Visit our Getting Started pages!"
+      },
+      {
+        "uri": "https://www.alkemio.org/help/",
+        "title": "Find your answers in the Help Center or FAQ"
+      },
+      {
+        "uri": "https://www.alkemio.org/support/",
+        "title": "Contact the Alkemio team"
+      }
+    ]
+  },
   "notifications": {
-    "release-updates": {
-      "text": "¡Nueva versión! <clickhere>Haz clic aquí</clickhere> para leer más acerca de los últimos cambios."
+    "releaseUpdates": {
+      "icon": "🎉",
+      "title": "We have exciting news, a new release full of interesting functionalities is out!",
+      "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! <b><clickhere>Click here</clickhere></b> to read all about the latest changes.",
+      "url": "https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20"
     }
   },
   "cookie": {
@@ -69,6 +94,7 @@
     "edit": "Editar",
     "see-more": "Ver más",
     "see-all": "Más {{subject}}",
+    "readMore": "Read more",
     "home": "Inicio",
     "take-me-home": "Llévame a inicio",
     "close": "Cerrar",
@@ -104,7 +130,6 @@
     "import": "Importar",
     "importing": "Importando...",
     "go-to-entity": "Ir a {{entity}}",
-    "read-more": "Leer más",
     "reply": "Responder",
     "select": "Seleccionar",
     "change-field": "Cambiar {{field}}",
@@ -114,7 +139,8 @@
     "moveDown": "Mover abajo",
     "moveToTop": "Mover al principio",
     "moveToBottom": "Mover al final",
-    "use": "Usar"
+    "use": "Usar",
+    "fullscreen": "Toggle full screen"
   },
   "tooltips": {
     "click-more-info": "Click para más información",
@@ -165,6 +191,7 @@
     "remove": "Eliminar",
     "callout": "Callout",
     "callouts": "Callouts",
+    "collaborationTools": "Collaboration Tools",
     "whiteboard": "Pizarra",
     "whiteboards": "Pizarras",
     "calendar": "Calendario",
@@ -231,6 +258,7 @@
     "field-required": "Este campo es obligatorio",
     "field-min-length": "Este campo debe tener un mínimo de {{min}} caracteres",
     "field-max-length": "Este campo debe tener un máximo de {{max}} caracteres",
+    "last-saved": "Last saved: {{datetime}}",
     "membership": "Membresía",
     "owner": "Propietario",
     "admin": "Administrador",
@@ -272,6 +300,7 @@
     "welcome": "Bienvenido",
     "preview": "Vista previa",
     "help": "Ayuda",
+    "helpCenter": "Help Center",
     "loading": "Cargando...",
     "innovation-flow": "Flujo de innovación",
     "innovation-flows": "Flujo de innovación",
@@ -281,6 +310,7 @@
     "innovationPack": "Paquete de innovación",
     "more": "Más",
     "url": "URL",
+    "sources": "Sources",
     "genders": {
       "notSpecified": "no especificado",
       "male": "hombre",
@@ -448,14 +478,17 @@
       "day": "{{count}} día",
       "day_plural": "{{count}} días",
       "month": "{{count}} mes",
-      "month_plural": "{{count}} meses"
+      "month_plural": "{{count}} meses",
+      "year": "{{count}} year",
+      "year_plural": "{{count}} years"
     }
   },
   "community": {
     "memberUsers": "Usuarios Miembros ({{count}})",
     "leading-organizations": "Organizaciones liderando",
     "memberOrganizations": "Member Organizations ({{count}})",
-    "pendingApplications": "Pending applications & invitations",
+    "pendingApplications": "Pending applications",
+    "pendingMemberships": "Pending applications & invitations",
     "leads": "Líderes",
     "members": "Miembros",
     "host": "Anfitrión",
@@ -517,13 +550,13 @@
     "memberSettings": {
       "title": "Member Settings",
       "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the Community. ",
-      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this Space and all of its content and contributors.",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this community and all of its content and contributors.",
       "maxLeadsWarning": "Note that there is a specific <b>maximum number of leads</b> for the communities. If the maximum number if reached, this option will be disabled for others.",
       "removeMember": {
         "sectionTitle": "Remove member",
-        "remove": "Click here to remove this user from this Space. Be careful, this action cannot be undone.",
+        "remove": "Click here to remove this user from this Community. Be careful, this action cannot be undone.",
         "dialogTitle": "Are you sure you want to remove this member?",
-        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Space and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
+        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
       }
     }
   },
@@ -558,14 +591,18 @@
       "clickToSee": "Click to see the full whiteboard"
     },
     "callout-groups": {
-      "HomeTop": "Dashboard Recommendations",
-      "HomeLeft": "Dashboard Left",
-      "HomeRight": "Dashboard Right",
-      "CommunityLeft": "Community Left",
-      "CommunityRight": "Community Right",
-      "ChallengesLeft": "Challenges Left",
-      "ChallengesRight": "Challenges Right",
-      "KnowledgeBase": "Knowledge Base"
+      "HOME_TOP": "Dashboard Recommendations",
+      "HOME_LEFT": "Dashboard Left",
+      "HOME_RIGHT": "Dashboard Right",
+      "CONTRIBUTE_LEFT": "Contribute Left",
+      "CONTRIBUTE_RIGHT": "Contribute Right",
+      "COMMUNITY_LEFT": "Community Left",
+      "COMMUNITY_RIGHT": "Community Right",
+      "CHALLENGES_LEFT": "Challenges Left",
+      "CHALLENGES_RIGHT": "Challenges Right",
+      "OPPORTUNITIES_LEFT": "Opportunities Left",
+      "OPPORTUNITIES_RIGHT": "Opportunities Right",
+      "KNOWLEDGE": "Knowledge Base"
     }
   },
   "journey-creation": {
@@ -574,7 +611,8 @@
   "messaging": {
     "message": "Mensaje",
     "message-optional": "Mensaje (Opcional)",
-    "successfully-sent": "Mensaje enviado correctamente"
+    "successfully-sent": "Mensaje enviado correctamente",
+    "messageDeleted": "This message has been deleted."
   },
   "send-message-dialog": {
     "direct-message-title": "Enviar un mensaje",
@@ -757,15 +795,29 @@
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
+    "journeyPageBannerCard": {
+      "parentJourney": "Part of:"
+    },
+    "journeyMetrics": {
+      "title": "{{journey}} statistics"
+    },
     "dashboardNavigation": {
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
     },
+    "dashboardRecentContributions": {
+      "title": "Contributions",
+      "modes": {
+        "recentActivity": "Most Recent",
+        "topCallouts": "Most Active"
+      }
+    },
     "innovationFlowStateSelector": {
       "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
     },
     "invitations": {
+      "inviteOthers": "Invite others",
       "inviteExistingUser": "Invitar a usuarios de Alkemio",
       "inviteExternalUser": "Enviar invitación por email",
       "inviteByURL": "Copiar URL mágica",
@@ -773,7 +825,12 @@
       "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
       "inviteExistingUserDialog": {
         "title": "Invite other Alkemio users to join this Space",
-        "subtitle": "You can search for Alkemio users below and attach a personalized message."
+        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
+        "selector": {
+          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
+          "alreadyInvited": "This user is already invited",
+          "alreadyMember": "This user is already a member"
+        }
       },
       "inviteExternalUserDialog": {
         "title": "Enviar una invitación por email"
@@ -836,7 +893,7 @@
       }
     },
     "top-callouts": {
-      "title": "Callouts destacados"
+      "title": "Top Activity"
     },
     "associated-organization": {
       "confirmation-dialog": {
@@ -868,12 +925,14 @@
         "callout-published": "{{time}} '<userlink>{{user}}</userlink>' ha publicado un nuevo $t(common.callout)",
         "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' creó un nuevo $t(common.challenge)",
         "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' comentó sobre '{{calloutDisplayName}}'",
-        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' se unió al {{communityType}} '{{journeyDisplayName}}'",
+        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' joined the {{communityType}} '{{journeyDisplayName}}'",
         "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' creó una nueva $t(common.opportunity)",
         "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un comentario en '{{postDisplayName}}'",
         "post-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un Post a '{{calloutDisplayName}}'",
+        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' added a Link to '{{calloutDisplayName}}'",
         "update-sent": "{{time}} '<userlink>{{user}}</userlink>' compartió una nueva actualización",
-        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un $t(common.whiteboard) a '{{calloutDisplayName}}'"
+        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' añadió un $t(common.whiteboard) a '{{calloutDisplayName}}'",
+        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' added a new calendar event '{{eventDisplayName}}'"
       },
       "parent-link": " en <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
       "activity-description": {
@@ -884,12 +943,16 @@
         "opportunity-created": "{{displayName}}",
         "post-comment-created": "{{comment}}",
         "post-created": "{{postDisplayName}} - {{postDescription}}",
+        "callout-link-created": "{{linkName}} - {{linkDescription}}",
         "update-sent": "actualizar",
-        "whiteboard-created": "{{displayName}}"
+        "whiteboard-created": "{{displayName}}",
+        "calendar-event-created": "{{eventDescription}}"
       }
     },
-    "lifecycle-visualizer": {
-      "error": "La definición no puede ser visualizada"
+    "lifecycle": {
+      "currentState": "Current State:",
+      "changeState": "Change State to:",
+      "error": "The definition was not able to be visualized"
     },
     "activity-tooltip": {
       "headline": "¡Alkemio esta creciendo! En total, la plataforma acoge ahora:"
@@ -904,7 +967,6 @@
     "callout-creation": {
       "title": "What do you want to ask your community?",
       "titleWithType": "Crear {{type}}",
-      "callout-type-label": "Tipo de Callout",
       "post-type-label": "Post label",
       "custom-template": "Custom Template",
       "info-step": {
@@ -939,7 +1001,7 @@
         "post-template-label": "Choose Post template"
       },
       "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, **who have their notifications for these actions turned on**, to receive a notification?",
         "checkbox-label": "Yes, notify the community."
       }
     },
@@ -953,7 +1015,8 @@
         "POST_COLLECTION": "Call for Posts",
         "WHITEBOARD_COLLECTION": "Call for Whiteboards",
         "LINK_COLLECTION": "Collection of Links",
-        "WHITEBOARD": "Whiteboard"
+        "WHITEBOARD": "Whiteboard",
+        "WHITEBOARD_RT": "Whiteboard RealTime"
       }
     },
     "post-creation": {
@@ -1028,17 +1091,26 @@
       "apply-not-signed": "Inicia sesión para unirte",
       "apply-pending": "Aplicación pendiente",
       "join": "Unirse",
-      "join-parent": "Unirse al contenedor",
+      "acceptInvitation": {
+        "full": "You are invited to become a member of this Space, please click here to accept",
+        "short": "Accept Invitation"
+      },
+      "joinParentFirst": {
+        "full": "To become a member of this Challenge, first become a member of the parent Space",
+        "short": "Please join parent Space first"
+      },
+      "goToSpace": "Go to $t(common.space)",
+      "goToChallenge": "Go to $t(common.challenge)",
       "parent-pending": "Solicitud al contenedor pendiente",
       "applyTo": "Apply to",
-      "extendedMessage": "{{join}} our Community and start making change!",
+      "extendedMessage": "{{join}} our {{journey}} and start making change!",
       "dialog-apply-parent": {
-        "title": "Want to join the parent Space?",
+        "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the challenge you want to join in the Spaces' application form."
       },
       "dialog-parent-app-pending": {
         "title": "Solicitud al contenedor pendiente",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "To join <strong title='Challenge name'>{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Unirse a la comunidad",
@@ -1046,8 +1118,8 @@
         "accept-terms": "Entiendo y acepto los términos y condiciones de los miembros de la comunidad"
       },
       "dialog-join-parent": {
-        "title": "Unirse a la comunidad contenedora",
-        "body": "Puedes unirte a esta comunidad sin necesidad de solicitar la afiliación, porque tienes las credenciales adecuadas. Pero primero tienes que unirte a la comunidad contenedora y aceptar los términos y condiciones, después podrás unirte a esta."
+        "title": "Join <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "You can join this community without applying for a membership, because you have the right credentials. But first you have to join <strong title='Parent community name'>{{parentCommunityName}}</strong> and accept the terms and conditions there, then you can join this one."
       }
     },
     "organization-verified": {
@@ -1069,7 +1141,7 @@
         "add-reference": "Agregar una referencia",
         "remove-reference": "Borrar la referencia"
       },
-      "url-helper-text": "Please make sure that this document complies with Alkemio’s content standards, <terms>click here</terms> for the terms and conditions."
+      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team. <terms>Click here</terms> for the terms and conditions."
     },
     "file-upload": {
       "file-size-error": "El tamaño del archivo excede el límite de {0} MB",
@@ -1080,7 +1152,10 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-space members to challenges"
+      "read-access": "Allow read access for non-space members to challenges",
+      "about": "About this Space",
+      "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
+      "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "nameSegment": {
       "name": "Nombre",
@@ -1094,9 +1169,6 @@
       "avatar": "Avatar",
       "banner": "Banner",
       "background": "Fondo"
-    },
-    "tagsSegment": {
-      "title": "Etiquetas"
     },
     "profileSegment": {
       "avatar": {
@@ -1259,7 +1331,7 @@
       "initiate": "Initiate Discussion",
       "posted": "{{name}} iniciado en {{- date}} - {{count}} comentario",
       "posted_plural": "{{name}} iniciado en {{- date}} - {{count}} comentarios",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
       "comment": "{{count}} Comentario",
       "comment_plural": "{{count}} Comentarios",
       "contributed": "{{count}} Persona que ha contribuido",
@@ -1410,7 +1482,11 @@
       }
     },
     "contribute": {
-      "initial-text": "Aquí puedes **relacionarte con tu comunidad**. Compartiendo ideas e informaciones. Creando impacto juntos",
+      "initial-text": "In the Knowledge Base you will find relevant documents, insights and other materials about the topic. The leads of the Space can provide the content, but also community members can contribute.",
+      "innovationFlow": {
+        "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
+        "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
+      },
       "no-posts": "No Posts found"
     },
     "innovationLibrary": {
@@ -1615,7 +1691,16 @@
         "saved": "Saved Successfully"
       },
       "spaces": {
-        "updateVisibility": "Update Visibility"
+        "updateVisibility": "Update Visibility",
+        "spaceSettings": "Space Settings"
+      },
+      "innovationHub": {
+        "spaceListFilter": {
+          "header": {
+            "title": "Current Selection",
+            "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
+          }
+        }
       }
     },
     "feedback": {
@@ -1629,23 +1714,23 @@
         }
       }
     },
-    "visual-edit": {
+    "visualEdit": {
       "avatar": {
         "title": "Avatar",
-        "description1": "Resolución: {{width}} ancho x {{height}} alto (en píxels)",
-        "description2": "??",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Journey card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "banner": {
         "title": "Page banner",
-        "description1": "Resolución: {{width}} ancho x {{height}} alto (en píxels)",
-        "description2": "Uso: Banner en el panel principal",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "banner-narrow": {
+      "cardBanner": {
         "title": "Card banner",
-        "description1": "Resolución: {{width}} ancho x {{height}} alto (en píxels)",
-        "description2": "Uso: Banner en las Tarjetas",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
       },
       "form": {
@@ -1810,7 +1895,6 @@
           "hostTooltip": "The host is the organization responsible for the creation of the Space.",
           "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
           "leadingOrganizations": "Leading Organizations",
-          "activity": "Space statistics",
           "community": "Community"
         },
         "challenges": {
@@ -1835,10 +1919,6 @@
       },
       "sections": {
         "dashboard": {
-          "statistics": {
-            "title": "Estadísticas del Desafío",
-            "help-text": "Estadísticas del Desafío"
-          },
           "projects": {
             "title": "Proyectos",
             "help-text": "Proyectos relacionados con este desafío"
@@ -1853,10 +1933,6 @@
       "title": "Oportunidad",
       "sections": {
         "dashboard": {
-          "statistics": {
-            "title": "Estadísticas de esta Oportunidad",
-            "help-text": "Estadísticas de esta Oportunidad"
-          },
           "projects": {
             "title": "Proyectos",
             "help-text": "Proyectos relacionados con esta Oportunidad"
@@ -1966,9 +2042,11 @@
       }
     },
     "four-ou-four": {
-      "message": "El recurso que estás buscando no ha sido encontrado.",
-      "buttons": {
-        "home": "Llévame a casa"
+      "title": "Something went wrong...",
+      "message": "Sorry, the page you are looking for either doesn't exist or has been moved, or you don't have the rights to access it. This may happen because you aren't a member of the community yet or are not signed in. Don't worry, our team is there to help!",
+      "links": {
+        "home": "",
+        "faq": "Have a look in our FAQ and documentation to find what you are looking for, or contact the team."
       }
     },
     "logout": {
@@ -2134,9 +2212,10 @@
       "generic": "Se ha producido un error",
       "generic-with-code": "Se ha producido un error con el código {{code}}",
       "ENTITY_NOT_FOUND": "Elemento no encontrado",
+      "COMMUNITY_MEMBERSHIP": "Community membership error: {{message}}",
       "FORMAT_NOT_SUPPORTED": "Formato no soportado",
-      "BAD_USER_INPUT": "Entrada de usuario incorrecta",
-      "NOT_SUPPORTED": "No soportado",
+      "BAD_USER_INPUT": "Bad user input: {{message}}",
+      "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}"
     }
   },

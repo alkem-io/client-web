@@ -825,7 +825,12 @@
       "defaultInvitationMessage": "Hallo, ik wil je graag uitnodigen voor {{space}}. Klik op de link hieronder om een kijkje te nemen of de uitnodiging direct te accepteren.",
       "inviteExistingUserDialog": {
         "title": "Nodig andere Alkemio gebruikers uit voor deze Space",
-        "subtitle": "Je kunt hieronder zoeken naar Alkemio gebruikers en een gepersonaliseerd bericht toevoegen."
+        "subtitle": "Je kunt hieronder zoeken naar Alkemio gebruikers en een gepersonaliseerd bericht toevoegen.",
+        "selector": {
+          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
+          "alreadyInvited": "This user is already invited",
+          "alreadyMember": "This user is already a member"
+        }
       },
       "inviteExternalUserDialog": {
         "title": "E-mailuitnodiging sturen"
@@ -2279,42 +2284,27 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": [
-          "Publieke Dienstverlening",
-          "Publieke Dienstverlening"
-        ]
+        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   },

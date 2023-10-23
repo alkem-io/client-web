@@ -2592,12 +2592,12 @@ export const SpacePageFragmentDoc = gql`
         myPrivileges
       }
     }
-    collaboration {
+    collaboration @include(if: $authorizedReadAccess) {
       id
       ...DashboardTopCallouts
       ...DashboardTimelineAuthorization
     }
-    community {
+    community @include(if: $authorizedReadAccess) {
       id
       myMembershipStatus
       ...EntityDashboardCommunity
@@ -6483,6 +6483,101 @@ export type CalloutsLazyQueryHookResult = ReturnType<typeof useCalloutsLazyQuery
 export type CalloutsQueryResult = Apollo.QueryResult<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>;
 export function refetchCalloutsQuery(variables: SchemaTypes.CalloutsQueryVariables) {
   return { query: CalloutsDocument, variables: variables };
+}
+
+export const CollaborationAuthorizationDocument = gql`
+  query CollaborationAuthorization(
+    $spaceNameId: UUID_NAMEID!
+    $includeSpace: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+  ) {
+    space(ID: $spaceNameId) {
+      id
+      ... on Space @include(if: $includeSpace) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCollaborationAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useCollaborationAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaborationAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaborationAuthorizationQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      includeSpace: // value for 'includeSpace'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *   },
+ * });
+ */
+export function useCollaborationAuthorizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >(CollaborationAuthorizationDocument, options);
+}
+
+export function useCollaborationAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >(CollaborationAuthorizationDocument, options);
+}
+
+export type CollaborationAuthorizationQueryHookResult = ReturnType<typeof useCollaborationAuthorizationQuery>;
+export type CollaborationAuthorizationLazyQueryHookResult = ReturnType<typeof useCollaborationAuthorizationLazyQuery>;
+export type CollaborationAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaborationAuthorizationQuery,
+  SchemaTypes.CollaborationAuthorizationQueryVariables
+>;
+export function refetchCollaborationAuthorizationQuery(
+  variables: SchemaTypes.CollaborationAuthorizationQueryVariables
+) {
+  return { query: CollaborationAuthorizationDocument, variables: variables };
 }
 
 export const SpacePostTemplatesLibraryDocument = gql`
@@ -18711,7 +18806,7 @@ export function refetchSpaceHostQuery(variables: SchemaTypes.SpaceHostQueryVaria
 }
 
 export const SpacePageDocument = gql`
-  query spacePage($spaceId: UUID_NAMEID!) {
+  query spacePage($spaceId: UUID_NAMEID!, $authorizedReadAccess: Boolean = false) {
     space(ID: $spaceId) {
       ...SpacePage
     }
@@ -18732,6 +18827,7 @@ export const SpacePageDocument = gql`
  * const { data, loading, error } = useSpacePageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      authorizedReadAccess: // value for 'authorizedReadAccess'
  *   },
  * });
  */
