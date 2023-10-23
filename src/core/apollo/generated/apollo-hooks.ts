@@ -2829,6 +2829,13 @@ export const AdminSpaceFragmentDoc = gql`
     }
   }
 `;
+export const StorageAggregatorParentFragmentDoc = gql`
+  fragment StorageAggregatorParent on StorageAggregatorParent {
+    id
+    displayName
+    url
+  }
+`;
 export const DocumentDataFragmentDoc = gql`
   fragment DocumentData on Document {
     id
@@ -2848,7 +2855,49 @@ export const DocumentDataFragmentDoc = gql`
       id
       myPrivileges
     }
+    url
   }
+`;
+export const StorageBucketParentFragmentDoc = gql`
+  fragment StorageBucketParent on StorageBucketParent {
+    id
+    type
+    displayName
+    url
+  }
+`;
+export const StorageBucketFragmentDoc = gql`
+  fragment StorageBucket on StorageBucket {
+    id
+    size
+    documents {
+      ...DocumentData
+    }
+    parentEntity {
+      ...StorageBucketParent
+    }
+  }
+  ${DocumentDataFragmentDoc}
+  ${StorageBucketParentFragmentDoc}
+`;
+export const StorageAggregatorFragmentDoc = gql`
+  fragment StorageAggregator on StorageAggregator {
+    id
+    parentEntity {
+      ...StorageAggregatorParent
+    }
+    storageAggregators {
+      id
+    }
+    storageBuckets {
+      ...StorageBucket
+    }
+    directStorageBucket {
+      ...StorageBucket
+    }
+  }
+  ${StorageAggregatorParentFragmentDoc}
+  ${StorageBucketFragmentDoc}
 `;
 export const StorageAgregatorFragmentDoc = gql`
   fragment StorageAgregator on StorageAggregator {
@@ -20145,6 +20194,137 @@ export type AdminSpacesListQueryResult = Apollo.QueryResult<
 >;
 export function refetchAdminSpacesListQuery(variables?: SchemaTypes.AdminSpacesListQueryVariables) {
   return { query: AdminSpacesListDocument, variables: variables };
+}
+
+export const SpaceStorageAdminPageDocument = gql`
+  query SpaceStorageAdminPage($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      storageAggregator {
+        ...StorageAggregator
+      }
+    }
+  }
+  ${StorageAggregatorFragmentDoc}
+`;
+
+/**
+ * __useSpaceStorageAdminPageQuery__
+ *
+ * To run a query within a React component, call `useSpaceStorageAdminPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceStorageAdminPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceStorageAdminPageQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useSpaceStorageAdminPageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceStorageAdminPageQuery,
+    SchemaTypes.SpaceStorageAdminPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceStorageAdminPageQuery, SchemaTypes.SpaceStorageAdminPageQueryVariables>(
+    SpaceStorageAdminPageDocument,
+    options
+  );
+}
+
+export function useSpaceStorageAdminPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceStorageAdminPageQuery,
+    SchemaTypes.SpaceStorageAdminPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceStorageAdminPageQuery, SchemaTypes.SpaceStorageAdminPageQueryVariables>(
+    SpaceStorageAdminPageDocument,
+    options
+  );
+}
+
+export type SpaceStorageAdminPageQueryHookResult = ReturnType<typeof useSpaceStorageAdminPageQuery>;
+export type SpaceStorageAdminPageLazyQueryHookResult = ReturnType<typeof useSpaceStorageAdminPageLazyQuery>;
+export type SpaceStorageAdminPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceStorageAdminPageQuery,
+  SchemaTypes.SpaceStorageAdminPageQueryVariables
+>;
+export function refetchSpaceStorageAdminPageQuery(variables: SchemaTypes.SpaceStorageAdminPageQueryVariables) {
+  return { query: SpaceStorageAdminPageDocument, variables: variables };
+}
+
+export const StorageAggregatorLookupDocument = gql`
+  query StorageAggregatorLookup($storageAggregatorId: UUID!) {
+    lookup {
+      storageAggregator(ID: $storageAggregatorId) {
+        ...StorageAggregator
+      }
+    }
+  }
+  ${StorageAggregatorFragmentDoc}
+`;
+
+/**
+ * __useStorageAggregatorLookupQuery__
+ *
+ * To run a query within a React component, call `useStorageAggregatorLookupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStorageAggregatorLookupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStorageAggregatorLookupQuery({
+ *   variables: {
+ *      storageAggregatorId: // value for 'storageAggregatorId'
+ *   },
+ * });
+ */
+export function useStorageAggregatorLookupQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.StorageAggregatorLookupQuery,
+    SchemaTypes.StorageAggregatorLookupQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.StorageAggregatorLookupQuery, SchemaTypes.StorageAggregatorLookupQueryVariables>(
+    StorageAggregatorLookupDocument,
+    options
+  );
+}
+
+export function useStorageAggregatorLookupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.StorageAggregatorLookupQuery,
+    SchemaTypes.StorageAggregatorLookupQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.StorageAggregatorLookupQuery,
+    SchemaTypes.StorageAggregatorLookupQueryVariables
+  >(StorageAggregatorLookupDocument, options);
+}
+
+export type StorageAggregatorLookupQueryHookResult = ReturnType<typeof useStorageAggregatorLookupQuery>;
+export type StorageAggregatorLookupLazyQueryHookResult = ReturnType<typeof useStorageAggregatorLookupLazyQuery>;
+export type StorageAggregatorLookupQueryResult = Apollo.QueryResult<
+  SchemaTypes.StorageAggregatorLookupQuery,
+  SchemaTypes.StorageAggregatorLookupQueryVariables
+>;
+export function refetchStorageAggregatorLookupQuery(variables: SchemaTypes.StorageAggregatorLookupQueryVariables) {
+  return { query: StorageAggregatorLookupDocument, variables: variables };
 }
 
 export const SpaceStorageAdminDocument = gql`

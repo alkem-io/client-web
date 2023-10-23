@@ -5,50 +5,38 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { ComponentType, FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../layout/EntitySettingsLayout/types';
-import SpaceSettingsLayout from '../SpaceSettingsLayout';
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  Link,
-  Skeleton,
-  SvgIconProps,
-  TextField,
-  Theme,
-  useMediaQuery,
-} from '@mui/material';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import PageContentBlock from '../../../../../../core/ui/content/PageContentBlock';
+import { SettingsSection } from '../../../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../layout/EntitySettingsLayout/types';
+import SpaceSettingsLayout from '../../SpaceSettingsLayout';
+import { Box, IconButton, Link, Skeleton, TextField, Theme, useMediaQuery } from '@mui/material';
+import { gutters } from '../../../../../../core/ui/grid/utils';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   useDeleteDocumentMutation,
-  useSpaceStorageAdminPageQuery,
   useSpaceStorageAdminQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, DocumentDataFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { formatFileSize } from '../../../../../core/utils/Storage';
-import RouterLink from '../../../../../core/ui/link/RouterLink';
+} from '../../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, DocumentDataFragment } from '../../../../../../core/apollo/generated/graphql-schema';
+import { formatFileSize } from '../../../../../../core/utils/Storage';
+import RouterLink from '../../../../../../core/ui/link/RouterLink';
 import {
   buildChallengeUrl,
   buildDocumentUrl,
   buildSpaceUrl,
   buildUserProfileUrl,
-} from '../../../../../main/routing/urlBuilders';
-import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+} from '../../../../../../main/routing/urlBuilders';
+import ConfirmationDialog from '../../../../../../core/ui/dialogs/ConfirmationDialog';
+import PageContentBlockHeader from '../../../../../../core/ui/content/PageContentBlockHeader';
 import { compact, sortBy } from 'lodash';
-import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
-import { formatDateTime } from '../../../../../core/utils/time/utils';
-import DataGridTable from '../../../../../core/ui/table/DataGridTable';
-import { useConfig } from '../../../config/useConfig';
-import useStorageAdminTree from './useStorageAdminTree';
+import journeyIcon from '../../../../../shared/components/JourneyIcon/JourneyIcon';
+import { formatDateTime } from '../../../../../../core/utils/time/utils';
+import DataGridTable from '../../../../../../core/ui/table/DataGridTable';
+import { useConfig } from '../../../../config/useConfig';
 
 interface SpaceStorageAdminPageProps extends SettingsPageProps {
-  spaceNameId: string | undefined;
+  spaceId: string | undefined;
 }
 
 interface DocumentDataFragmentWithLocation extends DocumentDataFragment {
@@ -67,19 +55,16 @@ const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
 const initialPagination = {
   pagination: {
     page: 0,
-    pageSize: 100,
+    pageSize: 5,
   },
 } as const;
 
-const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, routePrefix = '../' }) => {
+const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
+  const { platform } = useConfig();
+  const environmentDomain = platform?.domain ?? '';
+
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-
-  const { data } = useStorageAdminTree({ spaceNameId });
 
   const [filterString, setFilterString] = useState('');
   const [filterModel, setFilterModel] = useState<GridFilterModel>(EmptyFilter);
@@ -111,16 +96,57 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
     await deleteDocument({
       variables: { documentId: deletingDocument.id },
     });
-    await refetchSpaceStorage();
+    await refetchDocuments();
     setDeletingDocument(undefined);
   };
+
+  const {
+    data,
+    loading,
+    refetch: refetchDocuments,
+  } = useSpaceStorageAdminQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
+  });
+
+  const rows = useMemo(() => {
+    return sortBy(
+      [
+        ...compact(
+          data?.space.storageAggregator?.directStorageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
+            ...doc,
+            location: {
+              type: 'space',
+              displayName: data?.space.profile.displayName,
+              url: buildSpaceUrl(data?.space.nameID),
+            },
+          }))
+        ),
+        ...compact(
+          data?.space.challenges?.flatMap(challenge =>
+            challenge.storageAggregator?.directStorageBucket?.documents.map<DocumentDataFragmentWithLocation>(doc => ({
+              ...doc,
+              location: {
+                type: 'challenge',
+                displayName: challenge.profile.displayName,
+                url: buildChallengeUrl(data?.space.nameID, challenge.nameID),
+              },
+            }))
+          )
+        ),
+      ],
+      row => row.displayName
+    );
+  }, [data]);
 
   const columns: GridColDef[] = [
     {
       field: 'displayName',
       minWidth: 400,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.url} target="_blank">
+        <Link href={buildDocumentUrl(environmentDomain, row.id)} target="_blank">
           {row.displayName}
         </Link>
       ),

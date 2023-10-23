@@ -1,37 +1,61 @@
-query SpaceStorageAdmin($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpaceStorageAdminPage($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
-    nameID
     profile {
       id
       displayName
     }
     storageAggregator {
-      ...StorageAgregator
+      ...StorageAggregator
     }
-    challenges {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-      storageAggregator {
-        ...StorageAgregator
-      }
+  }
+}
+query StorageAggregatorLookup($storageAggregatorId: UUID!) {
+  lookup {
+    storageAggregator(ID: $storageAggregatorId) {
+      ...StorageAggregator
     }
   }
 }
 
-fragment StorageAgregator on StorageAggregator {
+fragment StorageAggregator on StorageAggregator {
   id
-  directStorageBucket {
-    id
-    size
-    documents {
-      ...DocumentData
-    }
+  parentEntity {
+    ...StorageAggregatorParent
   }
+  storageAggregators {
+    id
+  }
+  storageBuckets {
+    ...StorageBucket
+  }
+  directStorageBucket {
+    ...StorageBucket
+  }
+}
+
+fragment StorageBucket on StorageBucket {
+  id
+  size
+  documents {
+    ...DocumentData
+  }
+  parentEntity {
+    ...StorageBucketParent
+  }
+}
+
+fragment StorageBucketParent on StorageBucketParent {
+  id
+  type
+  displayName
+  url
+}
+
+fragment StorageAggregatorParent on StorageAggregatorParent {
+  id
+  displayName
+  url
 }
 
 fragment DocumentData on Document {
@@ -52,10 +76,5 @@ fragment DocumentData on Document {
     id
     myPrivileges
   }
-}
-
-mutation DeleteDocument($documentId: UUID!) {
-  deleteDocument(deleteData: { ID: $documentId }) {
-    id
-  }
+  url
 }

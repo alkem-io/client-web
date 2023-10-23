@@ -1,0 +1,41 @@
+query SpaceStorageAdmin($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+    storageAggregator {
+      ...StorageAgregator
+    }
+    challenges {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+      storageAggregator {
+        ...StorageAgregator
+      }
+    }
+  }
+}
+
+fragment StorageAgregator on StorageAggregator {
+  id
+  directStorageBucket {
+    id
+    size
+    documents {
+      ...DocumentData
+    }
+  }
+}
+
+mutation DeleteDocument($documentId: UUID!) {
+  deleteDocument(deleteData: { ID: $documentId }) {
+    id
+  }
+}
