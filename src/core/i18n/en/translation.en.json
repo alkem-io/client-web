@@ -796,7 +796,10 @@
   },
   "components": {
     "search": {
-      "searchIn": "Search In:",
+      "searchScope": {
+        "full": "Search In:",
+        "short": "in:"
+      },
       "scope": {
         "platform": "Entire platform",
         "space": "{{displayName}}"

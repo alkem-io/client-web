@@ -27,6 +27,7 @@ interface SearchBoxProps<Option> {
   onSearch?: (searchOption: Option) => void;
   onChange?: InputBaseProps['onChange'];
   onExpand?: (isExpanded: boolean) => void;
+  compact?: boolean;
 }
 
 const SearchBox = forwardRef<Collapsible, BoxProps & SearchBoxProps<string | number>>(
@@ -38,6 +39,7 @@ const SearchBox = forwardRef<Collapsible, BoxProps & SearchBoxProps<string | num
       searchOptions,
       onChange,
       onExpand,
+      compact = false,
       children,
       ...props
     }: BoxProps & SearchBoxProps<Option>,
@@ -131,9 +133,11 @@ const SearchBox = forwardRef<Collapsible, BoxProps & SearchBoxProps<string | num
                       }}
                       renderValue={() => (
                         <Box display="flex">
-                          <BlockSectionTitle>{t('components.search.searchIn')}</BlockSectionTitle>
+                          <BlockSectionTitle>
+                            {t(`components.search.searchScope.${compact ? 'short' : 'full'}` as const)}
+                          </BlockSectionTitle>
                           <BlockSectionTitle whiteSpace="pre"> </BlockSectionTitle>
-                          <BlockSectionTitle color="primary">
+                          <BlockSectionTitle color="primary" maxWidth="22vw" noWrap>
                             {searchOptions?.find(({ value }) => value === searchOption)?.label}
                           </BlockSectionTitle>
                         </Box>

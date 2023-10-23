@@ -21,10 +21,12 @@ const MINIMUM_TERM_LENGTH = 2;
 
 const getSearchTerms = (searchInput: string) => searchInput.trim();
 
-interface PlatformSearchProps extends UncontrolledExpandable {}
+interface PlatformSearchProps extends UncontrolledExpandable {
+  compact?: boolean;
+}
 
 const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchProps>>(
-  ({ onExpand, children }, ref) => {
+  ({ onExpand, compact, children }, ref) => {
     const { t } = useTranslation();
 
     const { spaceNameId, profile } = useSpace();
@@ -121,6 +123,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
         onExpand={onExpand}
         flexGrow={1}
         maxWidth={gutters(28)}
+        compact={compact}
       >
         {children}
       </SearchBox>
