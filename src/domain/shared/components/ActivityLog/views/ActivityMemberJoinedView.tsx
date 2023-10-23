@@ -12,7 +12,6 @@ interface ActivityMemberJoinedViewProps extends ActivityViewProps {
 }
 
 export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
-  author,
   loading,
   createdDate,
   journeyTypeName,
@@ -34,13 +33,13 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
 
   return (
     <ActivityBaseView
-      author={author}
+      author={member} // Important to show the user that joined, not the person that triggered it
       loading={loading}
       title={
         <ActivityDescriptionByType
           activityType="member-joined"
           {...{
-            author,
+            author: member, // Important to show the user that joined, not the person that triggered it
             createdDate,
             journeyTypeName,
             journeyLocation,
