@@ -5,7 +5,7 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { ComponentType, FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
@@ -13,73 +13,89 @@ import { SettingsPageProps } from '../../layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from '../SpaceSettingsLayout';
 import {
   Box,
+  BoxProps,
   CircularProgress,
   IconButton,
   Link,
+  LinkProps,
   Skeleton,
-  SvgIconProps,
   TextField,
   Theme,
   useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import {
-  useDeleteDocumentMutation,
-  useSpaceStorageAdminPageQuery,
-  useSpaceStorageAdminQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useDeleteDocumentMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, DocumentDataFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { formatFileSize } from '../../../../../core/utils/Storage';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
-import {
-  buildChallengeUrl,
-  buildDocumentUrl,
-  buildSpaceUrl,
-  buildUserProfileUrl,
-} from '../../../../../main/routing/urlBuilders';
+import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import { compact, sortBy } from 'lodash';
-import journeyIcon from '../../../../shared/components/JourneyIcon/JourneyIcon';
+import { times } from 'lodash';
 import { formatDateTime } from '../../../../../core/utils/time/utils';
 import DataGridTable from '../../../../../core/ui/table/DataGridTable';
-import { useConfig } from '../../../config/useConfig';
-import useStorageAdminTree from './useStorageAdminTree';
+import useStorageAdminTree, { StorageAdminGridRow } from './useStorageAdminTree';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 interface SpaceStorageAdminPageProps extends SettingsPageProps {
-  spaceNameId: string | undefined;
+  spaceNameId: string;
 }
 
-interface DocumentDataFragmentWithLocation extends DocumentDataFragment {
-  location: {
-    type: 'space' | 'challenge';
-    displayName: string;
-    url: string;
-  };
-}
-
-type RenderParams = GridRenderCellParams<string, DocumentDataFragmentWithLocation>;
-type GetterParams = GridValueGetterParams<string, DocumentDataFragmentWithLocation>;
+type RenderParams = GridRenderCellParams<string, StorageAdminGridRow>;
+type GetterParams = GridValueGetterParams<string, StorageAdminGridRow>;
 
 const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
 
+const PAGE_SIZE = 100;
 const initialPagination = {
   pagination: {
     page: 0,
-    pageSize: 100,
+    pageSize: PAGE_SIZE,
   },
 } as const;
+
+const IconWrapper = (props: BoxProps) => <Box {...props} sx={{ width: gutters(1), marginX: gutters(0.5) }} />;
+
+const ExpandButton = ({ row, onClick }: { row: RenderParams['row']; onClick: LinkProps['onClick'] }) => {
+  const theme = useTheme();
+  return (
+    <>
+      {row.loading ? (
+        <IconWrapper>
+          <CircularProgress size={gutters(1)(theme)} />
+        </IconWrapper>
+      ) : row.expandable ? (
+        <IconWrapper>
+          <Link onClick={onClick} sx={{ cursor: 'pointer' }}>
+            {row.open ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+          </Link>
+        </IconWrapper>
+      ) : (
+        // Leave the space:
+        <IconWrapper />
+      )}
+    </>
+  );
+};
+const FileTypeIcon = ({ row }: { row: RenderParams['row'] }) =>
+  row.iconComponent ? <IconWrapper component={row.iconComponent} /> : <IconWrapper />;
+
+const TitleIndent = ({ row }: { row: RenderParams['row'] }) => (
+  <>
+    {times(row.nestLevel, () => (
+      <IconWrapper />
+    ))}
+  </>
+);
 
 const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, routePrefix = '../' }) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-
-  const { data } = useStorageAdminTree({ spaceNameId });
+  const { data, openBranch, closeBranch, loading, reload } = useStorageAdminTree({ spaceNameId });
 
   const [filterString, setFilterString] = useState('');
   const [filterModel, setFilterModel] = useState<GridFilterModel>(EmptyFilter);
@@ -111,7 +127,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
     await deleteDocument({
       variables: { documentId: deletingDocument.id },
     });
-    await refetchSpaceStorage();
+    await reload();
     setDeletingDocument(undefined);
   };
 
@@ -120,15 +136,15 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
       field: 'displayName',
       minWidth: 400,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.url} target="_blank">
-          {row.displayName}
-        </Link>
+        <>
+          <TitleIndent row={row} />
+          <ExpandButton row={row} onClick={() => (row.open ? closeBranch(row.id) : openBranch(row.id))} />
+          <FileTypeIcon row={row} />
+          <Link href={row.url} target="_blank">
+            {row.type} {row.displayName}
+          </Link>
+        </>
       ),
-    },
-    {
-      field: 'mimeType',
-      headerName: t('pages.admin.generic.sections.storage.grid.mimeType'),
-      width: 120,
     },
     {
       field: 'size',
@@ -137,36 +153,21 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
       width: 120,
     },
     {
-      field: 'createdBy',
+      field: 'uplodadedBy',
       headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
       minWidth: 150,
       renderCell: ({ row }: RenderParams) =>
-        row.createdBy ? (
-          <RouterLink to={buildUserProfileUrl(row.createdBy.nameID)}>{row.createdBy.profile.displayName}</RouterLink>
+        row.uplodadedBy ? (
+          <RouterLink to={buildUserProfileUrl(row.uplodadedBy.nameId)}>{row.uplodadedBy.displayName}</RouterLink>
         ) : undefined,
-      valueGetter: ({ row }: GetterParams) => row.createdBy?.profile.displayName,
+      valueGetter: ({ row }: GetterParams) => row.uplodadedBy?.displayName,
     },
     {
       field: 'uploadedDate',
       headerName: t('pages.admin.generic.sections.storage.grid.uploadedAt'),
       type: 'date',
       minWidth: 200,
-      renderCell: ({ row }: RenderParams) => formatDateTime(row.uploadedDate),
-    },
-    {
-      field: 'location',
-      headerName: t('common.location'),
-      minWidth: 250,
-      renderCell: ({ row }: RenderParams) => {
-        const JourneyIcon = journeyIcon[row.location.type];
-        return (
-          <RouterLink to={row.location.url}>
-            <JourneyIcon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />
-            {row.location.displayName}
-          </RouterLink>
-        );
-      },
-      valueGetter: ({ row }: GetterParams) => row.location.displayName,
+      renderCell: ({ row }: RenderParams) => (row.uploadedAt ? formatDateTime(row.uploadedAt) : undefined),
     },
   ];
 
@@ -185,18 +186,18 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
           />
         </Box>
 
-        <Box height={gutters(20)}>
+        <Box>
           {loading ? (
             <Skeleton />
           ) : (
             <DataGridTable
-              rows={rows}
+              rows={data}
               columns={columns}
               actions={[
                 {
                   name: 'view',
                   render: ({ row }) => (
-                    <IconButton component={Link} href={buildDocumentUrl(environmentDomain, row.id)} target="_blank">
+                    <IconButton component={Link} href={(row as RenderParams['row']).url} target="_blank">
                       <VisibilityOutlinedIcon color="primary" />
                     </IconButton>
                   ),
@@ -211,7 +212,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
               filterModel={filterModel}
               onFilterModelChange={setFilterModel}
               initialState={initialPagination}
-              pageSize={5}
+              pageSize={PAGE_SIZE}
               onDelete={file => setDeletingDocument(file)}
               canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete)}
               disableDelete={() => true}

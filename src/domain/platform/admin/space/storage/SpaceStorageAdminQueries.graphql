@@ -24,13 +24,20 @@ fragment StorageAggregator on StorageAggregator {
     ...StorageAggregatorParent
   }
   storageAggregators {
-    id
+    ...LoadableStorageAggregator
   }
   storageBuckets {
     ...StorageBucket
   }
   directStorageBucket {
     ...StorageBucket
+  }
+}
+
+fragment LoadableStorageAggregator on StorageAggregator {
+  id
+  parentEntity {
+    ...StorageAggregatorParent
   }
 }
 
@@ -77,4 +84,10 @@ fragment DocumentData on Document {
     myPrivileges
   }
   url
+}
+
+mutation DeleteDocument($documentId: UUID!) {
+  deleteDocument(deleteData: { ID: $documentId }) {
+    id
+  }
 }

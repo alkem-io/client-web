@@ -2836,6 +2836,15 @@ export const StorageAggregatorParentFragmentDoc = gql`
     url
   }
 `;
+export const LoadableStorageAggregatorFragmentDoc = gql`
+  fragment LoadableStorageAggregator on StorageAggregator {
+    id
+    parentEntity {
+      ...StorageAggregatorParent
+    }
+  }
+  ${StorageAggregatorParentFragmentDoc}
+`;
 export const DocumentDataFragmentDoc = gql`
   fragment DocumentData on Document {
     id
@@ -2887,7 +2896,7 @@ export const StorageAggregatorFragmentDoc = gql`
       ...StorageAggregatorParent
     }
     storageAggregators {
-      id
+      ...LoadableStorageAggregator
     }
     storageBuckets {
       ...StorageBucket
@@ -2897,20 +2906,8 @@ export const StorageAggregatorFragmentDoc = gql`
     }
   }
   ${StorageAggregatorParentFragmentDoc}
+  ${LoadableStorageAggregatorFragmentDoc}
   ${StorageBucketFragmentDoc}
-`;
-export const StorageAgregatorFragmentDoc = gql`
-  fragment StorageAgregator on StorageAggregator {
-    id
-    directStorageBucket {
-      id
-      size
-      documents {
-        ...DocumentData
-      }
-    }
-  }
-  ${DocumentDataFragmentDoc}
 `;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
@@ -20325,83 +20322,6 @@ export type StorageAggregatorLookupQueryResult = Apollo.QueryResult<
 >;
 export function refetchStorageAggregatorLookupQuery(variables: SchemaTypes.StorageAggregatorLookupQueryVariables) {
   return { query: StorageAggregatorLookupDocument, variables: variables };
-}
-
-export const SpaceStorageAdminDocument = gql`
-  query SpaceStorageAdmin($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-      storageAggregator {
-        ...StorageAgregator
-      }
-      challenges {
-        id
-        nameID
-        profile {
-          id
-          displayName
-        }
-        storageAggregator {
-          ...StorageAgregator
-        }
-      }
-    }
-  }
-  ${StorageAgregatorFragmentDoc}
-`;
-
-/**
- * __useSpaceStorageAdminQuery__
- *
- * To run a query within a React component, call `useSpaceStorageAdminQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceStorageAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceStorageAdminQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceStorageAdminQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceStorageAdminQuery, SchemaTypes.SpaceStorageAdminQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceStorageAdminQuery, SchemaTypes.SpaceStorageAdminQueryVariables>(
-    SpaceStorageAdminDocument,
-    options
-  );
-}
-
-export function useSpaceStorageAdminLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceStorageAdminQuery,
-    SchemaTypes.SpaceStorageAdminQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceStorageAdminQuery, SchemaTypes.SpaceStorageAdminQueryVariables>(
-    SpaceStorageAdminDocument,
-    options
-  );
-}
-
-export type SpaceStorageAdminQueryHookResult = ReturnType<typeof useSpaceStorageAdminQuery>;
-export type SpaceStorageAdminLazyQueryHookResult = ReturnType<typeof useSpaceStorageAdminLazyQuery>;
-export type SpaceStorageAdminQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceStorageAdminQuery,
-  SchemaTypes.SpaceStorageAdminQueryVariables
->;
-export function refetchSpaceStorageAdminQuery(variables: SchemaTypes.SpaceStorageAdminQueryVariables) {
-  return { query: SpaceStorageAdminDocument, variables: variables };
 }
 
 export const DeleteDocumentDocument = gql`
