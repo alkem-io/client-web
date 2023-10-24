@@ -7,12 +7,13 @@ import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLay
 import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
 import { gutters } from '../../../../core/ui/grid/utils';
+import PageBannerWatermark from '../../../../main/ui/platformNavigation/PageBannerWatermark';
 
 const EntityPageLayout = ({
   currentSection,
   breadcrumbs,
   pageBannerComponent: PageBanner,
-  pageBanner,
+  pageBanner: pageBannerElement,
   tabsComponent: Tabs,
   tabs: tabsElement,
   children,
@@ -27,6 +28,14 @@ const EntityPageLayout = ({
     cloneElement(tabsElement, { currentTab: currentSection, mobile: isMobile, onMenuOpen: setTabsMenuOpen })
   );
 
+  const pageBannerWatermark = isMobile ? null : <PageBannerWatermark />;
+
+  const pageBanner = PageBanner ? (
+    <PageBanner watermark={pageBannerWatermark} />
+  ) : (
+    pageBannerElement && cloneElement(pageBannerElement, { watermark: pageBannerWatermark })
+  );
+
   return (
     <NotFoundErrorBoundary
       errorComponent={
@@ -37,7 +46,7 @@ const EntityPageLayout = ({
     >
       <TopLevelDesktopLayout
         breadcrumbs={breadcrumbs}
-        header={PageBanner ? <PageBanner /> : pageBanner}
+        header={PageBanner ? <PageBanner watermark={pageBannerWatermark} /> : pageBanner}
         floatingActions={
           <FloatingActionButtons
             {...(isMobile ? { bottom: gutters(5) } : {})}
@@ -45,6 +54,7 @@ const EntityPageLayout = ({
             floatingActions={<PlatformHelpButton />}
           />
         }
+        addWatermark={isMobile}
       >
         {!isMobile && tabs}
         {children}

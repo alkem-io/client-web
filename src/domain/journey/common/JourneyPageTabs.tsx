@@ -31,6 +31,7 @@ import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../../shared/utils/getEntityColor';
 import { EntityTabsProps } from './EntityPageLayout';
+import { gutters } from '../../../core/ui/grid/utils';
 
 interface TabDefinition {
   label: ReactNode;
@@ -123,7 +124,7 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
   if (mobile) {
     return (
       <>
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3} square>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }} elevation={3} square>
           <BottomNavigation
             showLabels
             value={currentTab}

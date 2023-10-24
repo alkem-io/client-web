@@ -6,15 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { ComponentType, ReactElement, ReactNode, useState } from 'react';
 import { Visual } from '../../../../domain/common/visual/Visual';
 import { Box, Skeleton } from '@mui/material';
-import { DEFAULT_BANNER_URL } from '../../../../domain/shared/components/PageHeader/JourneyPageBanner';
+import { DEFAULT_BANNER_URL } from '../../../../domain/journey/space/layout/SpacePageBanner';
 import GridProvider from '../../grid/GridProvider';
 import GridItem from '../../grid/GridItem';
 import { useColumns } from '../../grid/GridContext';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../navigation/NavigationBar';
-import PageBannerWatermark from '../../../../main/ui/platformNavigation/PageBannerWatermark';
 import Overlay from '../../utils/Overlay';
+import { BasePageBannerProps } from '../../../../domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
 
-export interface PageBannerProps {
+export interface PageBannerProps extends BasePageBannerProps {
   banner: Visual | undefined;
   ribbon?: ReactNode;
   fade?: boolean;
@@ -26,9 +26,10 @@ interface CardRendererProps<CardProps extends { maxWidth?: number | string }> {
 
 interface CardContainerProps {
   children: (props: GridItemStyle) => ReactElement;
+  watermark?: ReactNode;
 }
 
-const CardContainer = ({ children }: CardContainerProps) => {
+const CardContainer = ({ watermark, children }: CardContainerProps) => {
   const columns = useColumns();
 
   const cardStickSide = columns > 8 ? 'left' : undefined;
@@ -43,7 +44,7 @@ const CardContainer = ({ children }: CardContainerProps) => {
       paddingTop={gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS)}
     >
       <GridItem columns={10}>{children}</GridItem>
-      <PageBannerWatermark />
+      {watermark}
     </Gutters>
   );
 };
@@ -53,6 +54,7 @@ const PageBanner = <CardProps extends { maxWidth?: number | string }>({
   ribbon,
   fade,
   cardComponent: Card,
+  watermark,
   ...cardProps
 }: PageBannerProps & CardRendererProps<CardProps> & CardProps) => {
   const { t } = useTranslation();
@@ -97,7 +99,7 @@ const PageBanner = <CardProps extends { maxWidth?: number | string }>({
             }}
           />
         )}
-        <CardContainer>
+        <CardContainer watermark={watermark}>
           {({ width }) => <Card maxWidth={width} {...(cardProps as unknown as CardProps)} />}
         </CardContainer>
       </Box>

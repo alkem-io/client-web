@@ -12,6 +12,7 @@ const PageBannerWatermark = () => {
         borderTopLeftRadius: theme => `${theme.shape.borderRadius}px`,
         backgroundColor: theme => alpha(theme.palette.background.paper, 0.7),
         backdropFilter: 'blur(10px)',
+        paddingY: 0.5,
       }}
     >
       <PoweredBy />

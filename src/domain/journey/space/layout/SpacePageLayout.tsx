@@ -1,5 +1,4 @@
 import { EntityPageLayout } from '../../common/EntityPageLayout';
-import SpacePageBanner from './SpacePageBanner';
 import SpaceTabs from './SpaceTabs';
 import React, { PropsWithChildren } from 'react';
 import SearchDialog from '../../../platform/search/SearchDialog';
@@ -9,6 +8,10 @@ import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorized
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import SpacePageBanner from './SpacePageBanner';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -22,13 +25,30 @@ const SpacePageLayout = ({
   currentSection,
   children,
 }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const { spaceNameId } = useSpace();
+  const { spaceNameId, spaceId, profile, loading } = useSpace();
+
+  const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
+
+  const ribbon = useInnovationHubJourneyBannerRibbon({
+    spaceId,
+    journeyTypeName: 'space',
+  });
 
   return (
     <EntityPageLayout
       currentSection={currentSection}
       breadcrumbs={<JourneyBreadcrumbs />}
-      pageBannerComponent={SpacePageBanner}
+      pageBanner={
+        <SpacePageBanner
+          title={profile.displayName}
+          tagline={profile?.tagline}
+          loading={loading}
+          bannerUrl={visual?.uri}
+          bannerAltText={visual?.alternativeText}
+          ribbon={ribbon}
+          journeyTypeName="space"
+        />
+      }
       tabsComponent={SpaceTabs}
     >
       {children}

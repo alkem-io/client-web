@@ -8,11 +8,15 @@ export interface EntityTabsProps {
   onMenuOpen?: (open: boolean) => void;
 }
 
+export interface BasePageBannerProps {
+  watermark?: ReactNode;
+}
+
 export interface EntityPageLayoutProps {
   currentSection: EntityPageSection;
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
-  pageBannerComponent?: ComponentType;
-  pageBanner?: ReactNode;
+  pageBannerComponent?: ComponentType<BasePageBannerProps>;
+  pageBanner?: ReactElement<BasePageBannerProps>;
   tabsComponent?: ComponentType<EntityTabsProps>;
   tabs?: ReactElement<Partial<EntityTabsProps>>;
 }
