@@ -16,7 +16,7 @@ import React, { ComponentType, ElementType, useMemo, useRef, useState } from 're
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { buildUserProfileUrl } from '../../routing/urlBuilders';
-import Avatar from '../../../core/ui/image/Avatar';
+import AlkemioAvatar from '../../../core/ui/image/AlkemioAvatar';
 import UserSegmentAvatar from '../../../domain/community/user/userSegmentAvatar/UserSegmentAvatar';
 import { UserMetadata } from '../../../domain/community/user/hooks/useUserMetadataWrapper';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
@@ -98,7 +98,7 @@ const UserSegment = <El extends ElementType>({
         <PopoverRoot>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
             <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
-              <Avatar size={'lg'} src={user.profile.avatar?.uri} />
+              <AlkemioAvatar size={'lg'} src={user.profile.avatar?.uri} />
               <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
               {role && (
                 <Caption color="neutralMedium.main" paddingBottom={gutters(0.5)}>

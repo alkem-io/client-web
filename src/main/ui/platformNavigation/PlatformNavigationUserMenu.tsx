@@ -1,6 +1,6 @@
 import React, { forwardRef, PropsWithChildren, useMemo, useState } from 'react';
 import { Box, Divider, MenuList, Typography } from '@mui/material';
-import Avatar from '../../../core/ui/image/Avatar';
+import AlkemioAvatar from '../../../core/ui/image/AlkemioAvatar';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { gutters } from '../../../core/ui/grid/utils';
 import { buildLoginUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
@@ -58,7 +58,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
         <Wrapper ref={ref}>
           {user && (
             <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
-              <Avatar size="lg" src={user.profile.avatar?.uri} />
+              <AlkemioAvatar size="lg" src={user.profile.avatar?.uri} />
               <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
               {role && (
                 <Caption color="neutralMedium.main" textTransform="uppercase">

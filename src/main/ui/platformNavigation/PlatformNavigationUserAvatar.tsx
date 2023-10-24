@@ -26,16 +26,23 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
       drawer={drawer}
       placement="bottom-end"
       renderTrigger={({ ref, ...props }) => (
-        <Paper ref={ref as Ref<HTMLDivElement>} sx={{ cursor: 'pointer' }} elevation={elevation}>
-          <Avatar ref={ref as Ref<HTMLDivElement>} src={user?.user.profile.avatar?.uri} variant="square" {...props}>
+        <SwapColors>
+          <Paper
+            ref={ref as Ref<HTMLDivElement>}
+            component={Avatar}
+            elevation={elevation}
+            src={user?.user.profile.avatar?.uri}
+            sx={{ cursor: 'pointer' }}
+            {...props}
+          >
             {loadingMe && (
               <SwapColors>
                 <CircularProgress size={gutters()(theme)} color="primary" />
               </SwapColors>
             )}
-            {!loadingMe && !isAuthenticated && <Person />}
-          </Avatar>
-        </Paper>
+            {!loadingMe && !isAuthenticated && <Person color="primary" />}
+          </Paper>
+        </SwapColors>
       )}
       zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX}
     >
