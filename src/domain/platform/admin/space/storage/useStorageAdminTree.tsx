@@ -29,8 +29,8 @@ export interface StorageAdminTreeItem {
   uploadedAt?: Date;
   url: string | undefined;
   // UI:
-  expandable: boolean;
-  open: boolean;
+  collapsible: boolean;
+  collapsed: boolean;
   loaded: boolean;
   loading?: boolean;
 }
@@ -64,9 +64,9 @@ const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem =>
       }
     : undefined,
   uploadedAt: document.uploadedDate,
-  expandable: false,
+  collapsible: false,
   url: document.url,
-  open: false,
+  collapsed: false,
   loaded: true,
 });
 
@@ -82,8 +82,8 @@ const newStorageBucketRow = (
       iconComponent: profileIcon(storageBucket.parentEntity.type),
       url: storageBucket.parentEntity.url,
       size: storageBucket.size,
-      expandable: storageBucket.documents.length > 0,
-      open: false,
+      collapsible: storageBucket.documents.length > 0,
+      collapsed: true,
       loaded: true,
       childItems: storageBucket.documents.map(document => newDocumentRow(document)),
     };
@@ -95,8 +95,8 @@ const newStorageBucketRow = (
       iconComponent: HistoryIcon,
       url: undefined,
       size: storageBucket.size,
-      expandable: storageBucket.documents.length > 0,
-      open: false,
+      collapsible: storageBucket.documents.length > 0,
+      collapsed: true,
       loaded: true,
       childItems: storageBucket.documents.map(document => newDocumentRow(document)),
     };
@@ -111,8 +111,8 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
       iconComponent: profileIcon(ProfileType.Challenge),
       url: storageAggregator.parentEntity.url,
       size: 0,
-      expandable: true,
-      open: false,
+      collapsible: true,
+      collapsed: true,
       loaded: false,
       childItems: [],
     };
@@ -124,8 +124,8 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
       iconComponent: profileIcon(ProfileType.Challenge),
       url: undefined,
       size: 0,
-      expandable: true,
-      open: false,
+      collapsible: true,
+      collapsed: true,
       loaded: false,
       childItems: [],
     };
@@ -147,10 +147,37 @@ const findBranch = (rows: StorageAdminTreeItem[], id: string): StorageAdminTreeI
   return undefined;
 };
 
+// Turn the tree into a grid just flattening the open branches
+const tree2Grid = (treeData: TreeData): StorageAdminGridRow[] => {
+  const result: StorageAdminGridRow[] = [];
+
+  // Recursive function to go deep in the tree, adding rows to result
+  const addRows = (rows: StorageAdminTreeItem[], nestLevel: number) => {
+    rows.forEach(row => {
+      const { childItems, ...gridRow } = row;
+      result.push({ ...gridRow, nestLevel: nestLevel + 1 });
+      if (!gridRow.collapsed && childItems) {
+        addRows(childItems, nestLevel + 1);
+      }
+    });
+  };
+
+  treeData.root.forEach(row => {
+    const { childItems, ...gridRow } = row;
+    result.push({ ...gridRow, nestLevel: 0 });
+    if (!gridRow.collapsed && childItems) {
+      addRows(childItems, 0);
+    }
+  });
+
+  return result;
+};
+
 const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided => {
   const { t } = useTranslation();
   const [treeData, setTreeData] = useState<TreeData>({ root: [] });
 
+  // Load data from the queries:
   const [loadSpace, { loading: loadingSpace, refetch }] = useSpaceStorageAdminPageLazyQuery();
   const [loadStorage] = useStorageAggregatorLookupLazyQuery();
 
@@ -183,13 +210,13 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
     );
   };
 
+  // Initial load:
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await loadSpace({ variables: { spaceNameId: spaceNameId } });
       const storageAggregator = data?.space.storageAggregator;
       if (!storageAggregator) {
-        console.error('Cannot find storageAggregator');
-        return;
+        throw new Error('Cannot find storageAggregator');
       }
 
       setTreeData(treeData =>
@@ -202,6 +229,7 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
     fetchData();
   }, []);
 
+  // Just a helper to set row loading state
   const setBranchLoading = async (storageAggregatorId: string, loading: boolean) => {
     setTreeData(treeData =>
       produce(treeData, next => {
@@ -214,7 +242,9 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
     );
   };
 
+  // Load a laizy-loadable branch
   const loadBranch = (storageAggregatorId: string) => {
+    // TODO: Maybe a better way than setTimeout?
     setTimeout(async () => {
       setBranchLoading(storageAggregatorId, true);
 
@@ -222,16 +252,16 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
       const { data } = await loadStorage({ variables: { storageAggregatorId }, errorPolicy: 'ignore' });
       const storageAggregator = data?.lookup.storageAggregator;
       if (!storageAggregator) {
-        console.error('Cannot load storageAggregator', storageAggregatorId);
         setBranchLoading(storageAggregatorId, false);
-        return;
+        throw new Error(`Cannot load storageAggregator ${storageAggregatorId}`);
       }
       setTreeData(treeData =>
         produce(treeData, next => {
+          // Put the children inside the branch
           const branch = findBranch(next.root, storageAggregatorId);
           if (branch) {
             branch.type = 'SAGG';
-            branch.open = true;
+            branch.collapsed = false;
             branch.loading = false;
             branch.loaded = true;
             branch.childItems = branch.childItems ?? [];
@@ -243,16 +273,18 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
     }, 100);
   };
 
+  // User clicks to Collapse or unCollapse branches:
   const openBranch = async (storageAggregatorId: string) => {
     setTreeData(treeData =>
       produce(treeData, next => {
         const branch = findBranch(next.root, storageAggregatorId);
-        if (branch && branch.expandable) {
-          if (branch.open) {
+        if (branch && branch.collapsible) {
+          if (!branch.collapsed) {
             return next;
           } else if (branch.loaded) {
-            branch.open = true;
+            branch.collapsed = false;
           } else {
+            // If the branch is not yet loaded, query it
             loadBranch(storageAggregatorId);
           }
         }
@@ -265,11 +297,11 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
     setTreeData(treeData =>
       produce(treeData, next => {
         const branch = findBranch(next.root, storageAggregatorId);
-        if (branch && branch.expandable) {
-          if (!branch.open) {
+        if (branch && branch.collapsible) {
+          if (!branch.collapsed) {
             return next;
           } else {
-            branch.open = false;
+            branch.collapsed = false;
           }
         }
         return next;
@@ -277,33 +309,8 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
     );
   };
 
-  // Flat the tree to convert it into a grid
-  const result = useMemo(() => {
-    const result: StorageAdminGridRow[] = [];
-
-    const addChildren = (rows: StorageAdminTreeItem[], nestLevel: number) => {
-      rows.forEach(row => {
-        const { childItems, ...gridRow } = row;
-        result.push({ ...gridRow, nestLevel: nestLevel + 1 });
-        if (gridRow.open && childItems) {
-          addChildren(childItems, nestLevel + 1);
-        }
-      });
-    };
-
-    treeData.root.forEach(row => {
-      const { childItems, ...gridRow } = row;
-      result.push({ ...gridRow, nestLevel: 0 });
-      if (gridRow.open && childItems) {
-        addChildren(childItems, 0);
-      }
-    });
-
-    return result;
-  }, [treeData]);
-
   return {
-    data: result,
+    data: useMemo(() => tree2Grid(treeData), [treeData]),
     loading: loadingSpace,
     openBranch,
     closeBranch,

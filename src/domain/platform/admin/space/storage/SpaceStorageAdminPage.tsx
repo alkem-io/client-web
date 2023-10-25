@@ -1,29 +1,11 @@
-import {
-  GridColDef,
-  GridFilterModel,
-  GridLinkOperator,
-  GridRenderCellParams,
-  GridValueGetterParams,
-} from '@mui/x-data-grid';
-import { FC, useState } from 'react';
+import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from '../SpaceSettingsLayout';
-import {
-  Box,
-  BoxProps,
-  CircularProgress,
-  IconButton,
-  Link,
-  LinkProps,
-  Skeleton,
-  TextField,
-  Theme,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, BoxProps, CircularProgress, IconButton, Link, LinkProps, Skeleton, useTheme } from '@mui/material';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { useDeleteDocumentMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, DocumentDataFragment } from '../../../../../core/apollo/generated/graphql-schema';
@@ -48,8 +30,6 @@ interface SpaceStorageAdminPageProps extends SettingsPageProps {
 type RenderParams = GridRenderCellParams<string, StorageAdminGridRow>;
 type GetterParams = GridValueGetterParams<string, StorageAdminGridRow>;
 
-const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
-
 const PAGE_SIZE = 100;
 const initialPagination = {
   pagination: {
@@ -68,10 +48,10 @@ const ExpandButton = ({ row, onClick }: { row: RenderParams['row']; onClick: Lin
         <IconWrapper>
           <CircularProgress size={gutters(1)(theme)} />
         </IconWrapper>
-      ) : row.expandable ? (
+      ) : row.collapsible ? (
         <IconWrapper>
           <Link onClick={onClick} sx={{ cursor: 'pointer' }}>
-            {row.open ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+            {row.collapsed ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
           </Link>
         </IconWrapper>
       ) : (
@@ -94,30 +74,10 @@ const TitleIndent = ({ row }: { row: RenderParams['row'] }) => (
 
 const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
-  const { data, openBranch, closeBranch, loading, reload } = useStorageAdminTree({ spaceNameId });
-
-  const [filterString, setFilterString] = useState('');
-  const [filterModel, setFilterModel] = useState<GridFilterModel>(EmptyFilter);
-  const handleTopFilterChange = (terms: string) => {
-    setFilterString(terms);
-    if (terms) {
-      setFilterModel({
-        items: [
-          {
-            id: 1,
-            columnField: 'displayName',
-            operatorValue: 'contains',
-            value: terms,
-          },
-        ],
-        linkOperator: GridLinkOperator.And,
-      });
-    } else {
-      setFilterModel(EmptyFilter);
-    }
-  };
+  const { data, openBranch, closeBranch, loading, reload } = useStorageAdminTree({
+    spaceNameId,
+  });
 
   const [deletingDocument, setDeletingDocument] = useState<Pick<DocumentDataFragment, 'id' | 'displayName'>>();
   const [deleteDocument, { loading: isDeleting }] = useDeleteDocumentMutation();
@@ -132,61 +92,72 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
     setDeletingDocument(undefined);
   };
 
-  const columns: GridColDef[] = [
-    {
-      field: 'displayName',
-      minWidth: 400,
-      renderCell: ({ row }: RenderParams) => (
-        <>
-          <TitleIndent row={row} />
-          <ExpandButton row={row} onClick={() => (row.open ? closeBranch(row.id) : openBranch(row.id))} />
-          <FileTypeIcon row={row} />
-          <Link href={row.url} target="_blank">
-            <Caption sx={{ display: 'inline', color: 'red' }}>{row.type}</Caption> {row.displayName}
-          </Link>
-        </>
-      ),
-    },
-    {
-      field: 'size',
-      headerName: t('pages.admin.generic.sections.storage.grid.size'),
-      type: 'number',
-      width: 120,
-    },
-    {
-      field: 'uplodadedBy',
-      headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
-      minWidth: 150,
-      renderCell: ({ row }: RenderParams) =>
-        row.uplodadedBy ? (
-          <RouterLink to={buildUserProfileUrl(row.uplodadedBy.nameId)}>{row.uplodadedBy.displayName}</RouterLink>
-        ) : undefined,
-      valueGetter: ({ row }: GetterParams) => row.uplodadedBy?.displayName,
-    },
-    {
-      field: 'uploadedDate',
-      headerName: t('pages.admin.generic.sections.storage.grid.uploadedAt'),
-      type: 'date',
-      minWidth: 200,
-      renderCell: ({ row }: RenderParams) => (row.uploadedAt ? formatDateTime(row.uploadedAt) : undefined),
-    },
-  ];
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: 'displayName',
+        minWidth: 400,
+        renderCell: ({ row }: RenderParams) => (
+          <>
+            <TitleIndent row={row} />
+            <ExpandButton row={row} onClick={() => (row.collapsed ? closeBranch(row.id) : openBranch(row.id))} />
+            <FileTypeIcon row={row} />
+            <Link href={row.url} target="_blank">
+              <Caption sx={{ display: 'inline', color: 'red' }}>{row.type}</Caption> {row.displayName}
+            </Link>
+          </>
+        ),
+        sortable: false,
+        filterable: false,
+      },
+      {
+        field: 'size',
+        headerName: t('pages.admin.generic.sections.storage.grid.size'),
+        type: 'number',
+        width: 120,
+        sortable: false,
+        filterable: false,
+      },
+      {
+        field: 'uplodadedBy',
+        headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
+        minWidth: 150,
+        renderCell: ({ row }: RenderParams) =>
+          row.uplodadedBy ? (
+            <RouterLink to={buildUserProfileUrl(row.uplodadedBy.nameId)}>{row.uplodadedBy.displayName}</RouterLink>
+          ) : undefined,
+        valueGetter: ({ row }: GetterParams) => row.uplodadedBy?.displayName,
+        sortable: false,
+        filterable: false,
+      },
+      {
+        field: 'uploadedDate',
+        headerName: t('pages.admin.generic.sections.storage.grid.uploadedAt'),
+        type: 'date',
+        minWidth: 200,
+        renderCell: ({ row }: RenderParams) => (row.uploadedAt ? formatDateTime(row.uploadedAt) : undefined),
+        sortable: false,
+        filterable: false,
+      },
+    ],
+    []
+  );
 
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Storage} tabRoutePrefix={routePrefix}>
       <PageContentBlock>
         <PageContentBlockHeader title={t('pages.admin.generic.sections.storage.title')} />
-        <Box width={isMobile ? '100%' : '50%'}>
+        {/*<Box width={isMobile ? '100%' : '50%'}>
           <TextField
             value={filterString}
-            onChange={event => handleTopFilterChange(event.target.value)}
+            onChange={event => setFilterString(event.target.value)}
             label={t('common.search')}
             placeholder={t('common.search')}
             size="small"
             fullWidth
           />
         </Box>
-
+        */}
         <Box>
           {loading ? (
             <Skeleton />
@@ -210,8 +181,6 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
               flex={{
                 displayName: 1,
               }}
-              filterModel={filterModel}
-              onFilterModelChange={setFilterModel}
               initialState={initialPagination}
               pageSize={PAGE_SIZE}
               onDelete={file => setDeletingDocument(file)}

@@ -136,7 +136,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
           }
         : {
             profileData: {
-              displayName: t('components.callout-creation.whiteboard.title'),
+              displayName: t('common.whiteboard'),
             },
             content: JSON.stringify(EmptyWhiteboard),
             previewImages: undefined,

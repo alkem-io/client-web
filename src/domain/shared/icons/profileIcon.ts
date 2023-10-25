@@ -5,29 +5,28 @@ import { CalendarIcon } from '../../timeline/calendar/icons/CalendarIcon';
 import { ChallengeIcon } from '../../journey/challenge/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../journey/opportunity/icon/OpportunityIcon';
 import { InnovationFlowIcon } from '../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import {
-  FileOpenOutlined,
+  Campaign,
   ChatBubbleOutline,
+  CorporateFareOutlined,
   HubOutlined,
   InventoryOutlined,
-  CorporateFareOutlined,
-  PersonOutline,
   PeopleAltOutlined,
+  PersonOutline,
   SvgIconComponent,
-  LibraryBooks,
 } from '@mui/icons-material';
-import { PostIcon } from '../../collaboration/post/icon/PostIcon';
-import { WhiteboardIcon } from '../../collaboration/whiteboard/icon/WhiteboardIcon';
-import OtherHousesOutlinedIcon from '@mui/icons-material/OtherHousesOutlined';
+import calloutIcons from '../../collaboration/callout/utils/calloutIcons';
+import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
 
 export const profileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
   switch (profileType) {
     case ProfileType.CalendarEvent:
       return CalendarIcon;
     case ProfileType.CalloutFraming:
-      return ChallengeIcon;
+      return CalloutIcon;
     case ProfileType.CalloutTemplate:
-      return FileOpenOutlined;
+      return Campaign;
     case ProfileType.Challenge:
       return ChallengeIcon;
     case ProfileType.Discussion:
@@ -45,20 +44,20 @@ export const profileIcon = (profileType: ProfileType): ComponentType<SvgIconProp
     case ProfileType.Organization:
       return CorporateFareOutlined;
     case ProfileType.Post:
-      return PostIcon;
+      return calloutIcons.POST;
     case ProfileType.PostTemplate:
-      return LibraryBooks;
+      return calloutIcons.POST_COLLECTION;
     case ProfileType.Space:
-      return OtherHousesOutlinedIcon;
+      return SpaceIcon;
     case ProfileType.User:
       return PersonOutline;
     case ProfileType.UserGroup:
       return PeopleAltOutlined;
     case ProfileType.Whiteboard:
-      return WhiteboardIcon;
+      return calloutIcons.WHITEBOARD;
     case ProfileType.WhiteboardRt:
-      return WhiteboardIcon;
+      return calloutIcons.WHITEBOARD_RT;
     case ProfileType.WhiteboardTemplate:
-      return WhiteboardIcon;
+      return calloutIcons.WHITEBOARD_COLLECTION;
   }
 };
