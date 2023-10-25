@@ -14,10 +14,11 @@ import {
   PersonOutline,
   PeopleAltOutlined,
   SvgIconComponent,
+  LibraryBooks,
 } from '@mui/icons-material';
 import { PostIcon } from '../../collaboration/post/icon/PostIcon';
-import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
 import { WhiteboardIcon } from '../../collaboration/whiteboard/icon/WhiteboardIcon';
+import OtherHousesOutlinedIcon from '@mui/icons-material/OtherHousesOutlined';
 
 export const profileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
   switch (profileType) {
@@ -46,9 +47,9 @@ export const profileIcon = (profileType: ProfileType): ComponentType<SvgIconProp
     case ProfileType.Post:
       return PostIcon;
     case ProfileType.PostTemplate:
-      return PostIcon;
+      return LibraryBooks;
     case ProfileType.Space:
-      return SpaceIcon;
+      return OtherHousesOutlinedIcon;
     case ProfileType.User:
       return PersonOutline;
     case ProfileType.UserGroup:

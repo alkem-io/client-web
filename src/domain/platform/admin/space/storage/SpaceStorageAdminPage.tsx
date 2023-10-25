@@ -39,6 +39,7 @@ import useStorageAdminTree, { StorageAdminGridRow } from './useStorageAdminTree'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Caption } from '../../../../../core/ui/typography';
 
 interface SpaceStorageAdminPageProps extends SettingsPageProps {
   spaceNameId: string;
@@ -141,7 +142,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, ro
           <ExpandButton row={row} onClick={() => (row.open ? closeBranch(row.id) : openBranch(row.id))} />
           <FileTypeIcon row={row} />
           <Link href={row.url} target="_blank">
-            {row.type} {row.displayName}
+            <Caption sx={{ display: 'inline', color: 'red' }}>{row.type}</Caption> {row.displayName}
           </Link>
         </>
       ),
