@@ -5,6 +5,7 @@ import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons
 import PlatformHelpButton from '../helpButton/PlatformHelpButton';
 import PoweredBy from '../poweredBy/PoweredBy';
 import { Box, Paper } from '@mui/material';
+import SearchDialog from '../../search/SearchDialog';
 
 interface TopLevelDesktopLayoutProps {
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
@@ -13,7 +14,7 @@ interface TopLevelDesktopLayoutProps {
   addWatermark?: boolean;
 }
 
-const TopLevelDesktopLayout = ({
+const TopLevelLayout = ({
   breadcrumbs,
   header,
   floatingActions,
@@ -32,8 +33,9 @@ const TopLevelDesktopLayout = ({
           <PoweredBy compact />
         </Box>
       )}
+      <SearchDialog />
     </>
   );
 };
 
-export default TopLevelDesktopLayout;
+export default TopLevelLayout;

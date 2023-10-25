@@ -3,7 +3,7 @@ import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 import { Theme, useMediaQuery } from '@mui/material';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -39,12 +39,12 @@ const EntityPageLayout = ({
   return (
     <NotFoundErrorBoundary
       errorComponent={
-        <TopLevelDesktopLayout>
+        <TopLevelLayout>
           <Error404 />
-        </TopLevelDesktopLayout>
+        </TopLevelLayout>
       }
     >
-      <TopLevelDesktopLayout
+      <TopLevelLayout
         breadcrumbs={breadcrumbs}
         header={PageBanner ? <PageBanner watermark={pageBannerWatermark} /> : pageBanner}
         floatingActions={
@@ -59,7 +59,7 @@ const EntityPageLayout = ({
         {!isMobile && tabs}
         {children}
         {isMobile && tabs}
-      </TopLevelDesktopLayout>
+      </TopLevelLayout>
     </NotFoundErrorBoundary>
   );
 };

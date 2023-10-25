@@ -5,7 +5,7 @@ import { EntityPageLayoutHolder } from '../../../../journey/common/EntityPageLay
 import { useOrganization } from '../hooks/useOrganization';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OrganizationPage from '../pages/OrganizationPage';
-import TopLevelDesktopLayout from '../../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
 
 const OrganizationRoute: FC = () => {
   const { organization, loading } = useOrganization();
@@ -14,9 +14,9 @@ const OrganizationRoute: FC = () => {
 
   if (!organization && !loading) {
     return (
-      <TopLevelDesktopLayout>
+      <TopLevelLayout>
         <Error404 />
-      </TopLevelDesktopLayout>
+      </TopLevelLayout>
     );
   }
 

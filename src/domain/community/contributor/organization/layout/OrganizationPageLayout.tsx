@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '../../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined } from '@mui/icons-material';
 import { buildOrganizationUrl } from '../../../../../main/routing/urlBuilders';
-import TopLevelDesktopLayout from '../../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
 import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 
 interface OrganizationPageLayoutProps {}
@@ -12,7 +12,7 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
   return (
     <OrganizationPageContainer>
       {({ organization, permissions, handleSendMessage }, { loading }) => (
-        <TopLevelDesktopLayout
+        <TopLevelLayout
           breadcrumbs={
             <TopLevelPageBreadcrumbs
               loading={loading}

@@ -17,7 +17,6 @@ import { privateGraphQLEndpoint, publicGraphQLEndpoint } from './main/constants/
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
-import { SearchContextProvider } from './domain/platform/search/SearchContext';
 import ChatWidget from './main/guidance/chatWidget/ChatWidget';
 import { ApmProvider, ApmUserSetter } from './core/analytics/apm/context';
 import { UserGeoProvider } from './core/analytics/geo';
@@ -85,9 +84,7 @@ const Root: FC = () => (
                               <UserProvider>
                                 <ApmUserSetter />
                                 <ScrollToTop />
-                                <SearchContextProvider>
-                                  <TopLevelRoutes />
-                                </SearchContextProvider>
+                                <TopLevelRoutes />
                                 <ChatWidget />
                               </UserProvider>
                             </NavigationProvider>

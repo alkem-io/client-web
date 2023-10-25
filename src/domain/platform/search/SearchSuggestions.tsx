@@ -12,6 +12,7 @@ interface SearchSuggestionsProps<Option extends string> {
   onSelect: (option: Option) => void;
 }
 
+// TODO remove
 const SearchSuggestions = <Option extends string>({ value, options, onSelect }: SearchSuggestionsProps<Option>) => {
   const { t } = useTranslation();
 

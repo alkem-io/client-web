@@ -4,7 +4,7 @@ import UserProfilePage from '../userProfilePage/UserProfilePage';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import UserSettingsRoute from './UserSettingsRoute';
 import { EntityPageLayoutHolder } from '../../../journey/common/EntityPageLayout';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 
 export const UserRoute: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -19,9 +19,9 @@ export const UserRoute: FC = () => {
       <Route
         path="*"
         element={
-          <TopLevelDesktopLayout>
+          <TopLevelLayout>
             <Error404 />
-          </TopLevelDesktopLayout>
+          </TopLevelLayout>
         }
       />
     </Routes>

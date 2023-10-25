@@ -2,28 +2,36 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useSearchQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useSearchQuery, useSearchScopeDetailsSpaceQuery } from '../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
   SearchResult,
-  SearchResultPostFragment,
   SearchResultChallengeFragment,
-  SearchResultSpaceFragment,
   SearchResultOpportunityFragment,
   SearchResultOrganizationFragment,
+  SearchResultPostFragment,
+  SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
-} from '../../../core/apollo/generated/graphql-schema';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import { useUserContext } from '../../community/user';
-import { SEARCH_TERMS_PARAM } from '../routes/constants';
-import { contributionFilterConfig, contributorFilterConfig, FilterConfig, FilterDefinition } from './Filter';
-import MultipleSelect from '../../../core/ui/search/MultipleSelect';
-import SearchResultSection from './SearchResultSection';
-import { useQueryParams } from '../../../core/routing/useQueryParams';
-import GridItem from '../../../core/ui/grid/GridItem';
-import SearchSuggestions from './SearchSuggestions';
-import { buildLoginUrl } from '../../../main/routing/urlBuilders';
+} from '../../core/apollo/generated/graphql-schema';
+import PageContentColumn from '../../core/ui/content/PageContentColumn';
+import { useUserContext } from '../../domain/community/user';
+import {
+  contributionFilterConfig,
+  contributorFilterConfig,
+  FilterConfig,
+  FilterDefinition,
+} from '../../domain/platform/search/Filter';
+import MultipleSelect from '../../core/ui/search/MultipleSelect';
+import SearchResultSection from '../../domain/platform/search/SearchResultSection';
+import { useQueryParams } from '../../core/routing/useQueryParams';
+import { buildLoginUrl } from '../routing/urlBuilders';
+import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
+import PageContentBlockSeamless from '../../core/ui/content/PageContentBlockSeamless';
+import SearchResultsScope from '../../core/ui/search/SearchResultsScope';
+import SearchResultsScopeCard from '../../core/ui/search/SearchResultsScopeCard';
+import { ReactComponent as AlkemioLogo } from '../ui/logo/logoSmall.svg';
+import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -42,20 +50,23 @@ export type SearchResultMetaType = SearchResultT<
 
 interface SearchViewProps {
   searchRoute: string;
-  spaceId?: string;
   journeyFilterConfig: FilterConfig;
   journeyFilterTitle: ReactNode;
 }
 
-const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spaceId }: SearchViewProps) => {
+const Logo = () => <AlkemioLogo />;
+
+const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: SearchViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
 
   const queryParams = useQueryParams();
 
+  const spaceNameId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
+
   const termsFromUrl = useMemo(() => {
-    const terms = queryParams.getAll('terms'); // TODO escape if needed
+    const terms = queryParams.getAll(SEARCH_TERMS_URL_PARAM); // TODO escape if needed
     if (terms.length > MAX_TERMS_SEARCH) {
       // All terms above 4th are joined into a single 5th term
       // That is mainly coming from UX issues when having more than 5 tags in the Search input
@@ -84,10 +95,17 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spac
   }, [termsFromUrl.length]);
 
   const handleTermsChange = (newValue: string[]) => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(queryParams);
+    params.delete(SEARCH_TERMS_URL_PARAM);
     for (const term of newValue) {
-      params.append(SEARCH_TERMS_PARAM, term);
+      params.append(SEARCH_TERMS_URL_PARAM, term);
     }
+    navigate(`${searchRoute}?${params}`);
+  };
+
+  const handleSearchInPlatform = () => {
+    const params = new URLSearchParams(queryParams);
+    params.delete(SEARCH_SPACE_URL_PARAM);
     navigate(`${searchRoute}?${params}`);
   };
 
@@ -102,7 +120,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spac
         terms: termsFromUrl,
         tagsetNames,
         typesFilter: filters,
-        searchInSpaceFilter: spaceId,
+        searchInSpaceFilter: spaceNameId,
       },
     },
     fetchPolicy: 'no-cache',
@@ -131,20 +149,38 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, spac
     [results]
   );
 
-  const suggestions = t('pages.search.suggestions-array', { returnObjects: true });
-
-  const handleSelectSuggestion = (suggestion: string) => handleTermsChange([...searchTerms, suggestion]);
+  const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
+    variables: {
+      spaceNameId: spaceNameId!,
+    },
+    skip: !spaceNameId,
+  });
 
   return (
     <>
-      <GridItem columns={6}>
-        <Box marginX="auto">
-          <MultipleSelect onChange={handleTermsChange} value={searchTerms} minLength={2} autoFocus>
-            <SearchSuggestions value={searchTerms} options={suggestions} onSelect={handleSelectSuggestion} />
-          </MultipleSelect>
-        </Box>
-      </GridItem>
       <PageContentColumn columns={12}>
+        <PageContentBlockSeamless disablePadding>
+          <MultipleSelect size="small" onChange={handleTermsChange} value={searchTerms} minLength={2} autoFocus />
+        </PageContentBlockSeamless>
+        {spaceNameId && (
+          <SearchResultsScope
+            currentScope={
+              <SearchResultsScopeCard
+                avatar={spaceDetails?.space.profile.avatar}
+                iconComponent={SpaceIcon}
+                loading={loading}
+                onDelete={handleSearchInPlatform}
+              >
+                {spaceDetails?.space.profile.displayName}
+              </SearchResultsScopeCard>
+            }
+            alternativeScope={
+              <SearchResultsScopeCard iconComponent={Logo} onClick={handleSearchInPlatform}>
+                {t('components.searchScope.platform')}
+              </SearchResultsScopeCard>
+            }
+          />
+        )}
         {!isAuthenticated && (
           <Box display="flex" justifyContent="center" paddingBottom={2}>
             <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>

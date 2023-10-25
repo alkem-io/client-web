@@ -14,7 +14,7 @@ import {
   SearchResultChallengeFragment,
   SpaceVisibility,
 } from '../../../core/apollo/generated/graphql-schema';
-import { SearchResultT } from '../../../domain/platform/search/SearchView';
+import { SearchResultT } from '../../search/SearchView';
 import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
 
 export type SimpleChallenge = {

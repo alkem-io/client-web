@@ -5,7 +5,7 @@ import UserPageBanner from './UserPageBanner';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 
 interface UserPageLayoutProps {}
 
@@ -19,7 +19,7 @@ const UserPageLayout = (props: PropsWithChildren<UserPageLayoutProps>) => {
   const { user, loading } = useUserMetadata(userNameId);
 
   return (
-    <TopLevelDesktopLayout
+    <TopLevelLayout
       breadcrumbs={
         <TopLevelPageBreadcrumbs
           loading={loading}

@@ -1,0 +1,13 @@
+query SearchScopeDetailsSpace($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}

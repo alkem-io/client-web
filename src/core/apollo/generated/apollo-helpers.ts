@@ -357,6 +357,17 @@ export type ActorGroupFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminWhiteboardFilesResultKeySpecifier = (
+  | 'errors'
+  | 'results'
+  | 'warns'
+  | AdminWhiteboardFilesResultKeySpecifier
+)[];
+export type AdminWhiteboardFilesResultFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  results?: FieldPolicy<any> | FieldReadFunction<any>;
+  warns?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AgentKeySpecifier = (
   | 'authorization'
   | 'credentials'
@@ -1341,6 +1352,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'adminInnovationFlowSynchronizeStates'
+  | 'adminUploadFilesFromContentToStorageBucket'
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
@@ -1494,6 +1506,7 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminInnovationFlowSynchronizeStates?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUploadFilesFromContentToStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1961,6 +1974,8 @@ export type QueryKeySpecifier = (
   | 'space'
   | 'spaces'
   | 'spacesPaginated'
+  | 'task'
+  | 'tasks'
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
@@ -1986,6 +2001,8 @@ export type QueryFieldPolicy = {
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spacesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
+  task?: FieldPolicy<any> | FieldReadFunction<any>;
+  tasks?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2569,6 +2586,33 @@ export type TagsetTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type TaskKeySpecifier = (
+  | 'created'
+  | 'end'
+  | 'errors'
+  | 'id'
+  | 'itemsCount'
+  | 'itemsDone'
+  | 'progress'
+  | 'results'
+  | 'start'
+  | 'status'
+  | 'type'
+  | TaskKeySpecifier
+)[];
+export type TaskFieldPolicy = {
+  created?: FieldPolicy<any> | FieldReadFunction<any>;
+  end?: FieldPolicy<any> | FieldReadFunction<any>;
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  itemsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  itemsDone?: FieldPolicy<any> | FieldReadFunction<any>;
+  progress?: FieldPolicy<any> | FieldReadFunction<any>;
+  results?: FieldPolicy<any> | FieldReadFunction<any>;
+  start?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type TemplateKeySpecifier = ('challenges' | 'description' | 'name' | TemplateKeySpecifier)[];
 export type TemplateFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2894,6 +2938,13 @@ export type StrictTypedTypePolicies = {
   ActorGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorGroupKeySpecifier | (() => undefined | ActorGroupKeySpecifier);
     fields?: ActorGroupFieldPolicy;
+  };
+  AdminWhiteboardFilesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminWhiteboardFilesResultKeySpecifier
+      | (() => undefined | AdminWhiteboardFilesResultKeySpecifier);
+    fields?: AdminWhiteboardFilesResultFieldPolicy;
   };
   Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
@@ -3452,6 +3503,10 @@ export type StrictTypedTypePolicies = {
   TagsetTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TagsetTemplateKeySpecifier | (() => undefined | TagsetTemplateKeySpecifier);
     fields?: TagsetTemplateFieldPolicy;
+  };
+  Task?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TaskKeySpecifier | (() => undefined | TaskKeySpecifier);
+    fields?: TaskFieldPolicy;
   };
   Template?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplateKeySpecifier | (() => undefined | TemplateKeySpecifier);
