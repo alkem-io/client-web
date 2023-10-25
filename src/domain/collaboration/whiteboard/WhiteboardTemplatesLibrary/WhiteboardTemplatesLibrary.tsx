@@ -94,7 +94,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
 
   return (
     <CollaborationTemplatesLibrary
-      dialogTitle={t('whiteboard-templates.template-library')}
+      dialogTitle={t('templateLibrary.whiteboardTemplates.title')}
       onSelectTemplate={onSelectTemplate}
       templateCardComponent={WhiteboardTemplateCard}
       templatePreviewComponent={WhiteboardTemplatePreview}
@@ -104,8 +104,8 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      loadingWhiteboardTemplateContent={loadingWhiteboardTemplateContent}
-      getWhiteboardTemplateWithContent={getWhiteboardTemplateWithContent}
+      loadingTemplateContent={loadingWhiteboardTemplateContent}
+      getTemplateWithContent={getWhiteboardTemplateWithContent}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}

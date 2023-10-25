@@ -4,7 +4,6 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
 import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
 import PostTemplatePreview from '../../post/PostTemplatesLibrary/PostTemplatePreview';
@@ -15,11 +14,12 @@ import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
 } from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
 import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { InnovationFlowTemplate } from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplate';
-import InnovationFlowTemplateCard from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import { InnovationFlowTemplate } from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplate';
+import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import { Box, Button, Tooltip } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import InnovationFlowTemplatePreview from '../../InnovationFlow/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
 
 export type TemplatePreview =
   | {
@@ -36,13 +36,6 @@ export type TemplatePreview =
     };
 
 const Noop = () => null;
-
-const InnovationFlowPreview = ({ template }: { template?: InnovationFlowTemplate }) => {
-  if (!template) {
-    return null;
-  }
-  return <>{template.definition ? <SafeInnovationFlowVisualizer definition={template.definition} /> : undefined}</>;
-};
 
 interface TemplatePreviewComponentProps
   extends Omit<
@@ -108,7 +101,7 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
           {...{
             template: template.template,
             templateCardComponent: InnovationFlowTemplateCard,
-            templatePreviewComponent: InnovationFlowPreview,
+            templatePreviewComponent: InnovationFlowTemplatePreview,
           }}
           {...props}
         />

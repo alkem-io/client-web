@@ -54,7 +54,7 @@ const EditInnovationTemplateDialog = ({
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.edit-entity', { entity: t('innovation-templates.innovation-template') })}
+        {t('common.edit-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
       </DialogHeader>
       <InnovationTemplateForm
         initialValues={values}

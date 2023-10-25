@@ -65,7 +65,7 @@ const EditWhiteboardTemplateDialog = ({
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.edit-entity', { entity: t('whiteboard-templates.whiteboard-template') })}
+        {t('common.edit-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
       </DialogHeader>
       <WhiteboardTemplateForm
         initialValues={initialValues}
