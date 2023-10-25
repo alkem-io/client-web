@@ -82,6 +82,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     }[];
     draft: boolean;
     editable?: boolean;
+    movable?: boolean;
     authorization?: Authorization;
     authorName?: string;
     authorAvatarUri?: string;
@@ -268,42 +269,43 @@ const CalloutLayout = ({
         >
           {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
         </MenuItemWithIcon>
-        {!expanded && [
-          /* Put MenuItems into an array to avoid a weird warning from MUI
+        {!expanded &&
+          callout.movable && [
+            /* Put MenuItems into an array to avoid a weird warning from MUI
           https://stackoverflow.com/questions/75083605/mui-the-menu-component-doesnt-accept-a-fragment-as-a-child-consider-providing */
-          <MenuItemWithIcon
-            key="moveUp"
-            iconComponent={ArrowUpwardOutlined}
-            onClick={handleMove(onMoveUp)}
-            disabled={topCallout}
-          >
-            {t('buttons.moveUp')}
-          </MenuItemWithIcon>,
-          <MenuItemWithIcon
-            key="moveDown"
-            iconComponent={ArrowDownwardOutlined}
-            onClick={handleMove(onMoveDown)}
-            disabled={bottomCallout}
-          >
-            {t('buttons.moveDown')}
-          </MenuItemWithIcon>,
-          <MenuItemWithIcon
-            key="moveToTop"
-            iconComponent={VerticalAlignTopOutlined}
-            onClick={handleMove(onMoveToTop)}
-            disabled={topCallout}
-          >
-            {t('buttons.moveToTop')}
-          </MenuItemWithIcon>,
-          <MenuItemWithIcon
-            key="moveToBottom"
-            iconComponent={VerticalAlignBottomOutlined}
-            onClick={handleMove(onMoveToBottom)}
-            disabled={bottomCallout}
-          >
-            {t('buttons.moveToBottom')}
-          </MenuItemWithIcon>,
-        ]}
+            <MenuItemWithIcon
+              key="moveUp"
+              iconComponent={ArrowUpwardOutlined}
+              onClick={handleMove(onMoveUp)}
+              disabled={topCallout}
+            >
+              {t('buttons.moveUp')}
+            </MenuItemWithIcon>,
+            <MenuItemWithIcon
+              key="moveDown"
+              iconComponent={ArrowDownwardOutlined}
+              onClick={handleMove(onMoveDown)}
+              disabled={bottomCallout}
+            >
+              {t('buttons.moveDown')}
+            </MenuItemWithIcon>,
+            <MenuItemWithIcon
+              key="moveToTop"
+              iconComponent={VerticalAlignTopOutlined}
+              onClick={handleMove(onMoveToTop)}
+              disabled={topCallout}
+            >
+              {t('buttons.moveToTop')}
+            </MenuItemWithIcon>,
+            <MenuItemWithIcon
+              key="moveToBottom"
+              iconComponent={VerticalAlignBottomOutlined}
+              onClick={handleMove(onMoveToBottom)}
+              disabled={bottomCallout}
+            >
+              {t('buttons.moveToBottom')}
+            </MenuItemWithIcon>,
+          ]}
       </Menu>
       <CalloutVisibilityChangeDialog
         open={visibilityDialogOpen}

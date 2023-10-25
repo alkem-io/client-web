@@ -6,7 +6,7 @@ import { compact, sortBy } from 'lodash';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import { postTemplateMapper } from '../../post/PostTemplateCard/PostTemplate';
 import { whiteboardTemplateMapper } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
-import { innovationFlowTemplateMapper } from '../../templates/InnovationFlowTemplateCard/InnovationFlowTemplate';
+import { innovationFlowTemplateMapper } from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplate';
 
 const useLibraryTemplateCardProps = (
   innovationPacks: InnovationPackCardFragment[] | undefined

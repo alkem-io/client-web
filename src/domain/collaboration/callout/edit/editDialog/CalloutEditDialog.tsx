@@ -99,8 +99,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         ],
       },
       contributionDefaults: {
-        postDescription: newCallout.postDescription,
-        whiteboardContent: newCallout.whiteboardContent,
+        postDescription: callout.type === CalloutType.PostCollection ? newCallout.postDescription : undefined,
+        whiteboardContent: callout.type === CalloutType.WhiteboardCollection ? newCallout.whiteboardContent : undefined,
       },
       state: newCallout.state,
       displayLocation: newCallout.displayLocation,

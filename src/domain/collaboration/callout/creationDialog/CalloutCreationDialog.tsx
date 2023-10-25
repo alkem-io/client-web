@@ -8,7 +8,6 @@ import {
   WhiteboardTemplateCardFragment,
   CalloutVisibility,
   CalloutDisplayLocation,
-  CreateTagsetInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -29,7 +28,6 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -66,19 +64,6 @@ export interface TemplateProfile {
   visual?: {
     uri: string;
   };
-}
-
-export interface CalloutPostTemplate {
-  defaultDescription: string;
-  type: string;
-  profile: TemplateProfile;
-  tags?: string[];
-}
-
-export interface CalloutWhiteboardTemplate {
-  id?: string;
-  content: string;
-  profile: TemplateProfile;
 }
 
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
@@ -130,28 +115,23 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     async (visibility: CalloutVisibility, sendNotification: boolean) => {
       let result: Identifiable | undefined;
       try {
-        const tagsets: CreateTagsetInput[] = [{ name: DEFAULT_TAGSET, tags: callout.tags }];
-        if (flowState) {
-          tagsets.push({
-            name: INNOVATION_FLOW_STATES_TAGSET_NAME,
-            tags: [flowState],
-          });
-        }
         const newCallout: CalloutCreationTypeWithPreviewImages = {
           framing: {
             profile: {
               displayName: callout.displayName!,
               description: callout.description!,
               referencesData: callout.references!,
-              tagsets,
+              tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
             },
             whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
             whiteboardRt:
               callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
+            tags: callout.tags ?? [],
           },
           contributionDefaults: {
-            postDescription: callout.postDescription,
-            whiteboardContent: callout.whiteboardContent,
+            postDescription: callout.type === CalloutType.PostCollection ? callout.postDescription : undefined,
+            whiteboardContent:
+              callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardContent : undefined,
           },
           type: callout.type!,
           contributionPolicy: {

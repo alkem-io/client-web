@@ -1,0 +1,57 @@
+query SpaceInnovationFlowTemplatesLibrary($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      innovationFlowTemplates {
+        ...InnovationFlowTemplateCard
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query PlatformInnovationFlowTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        provider {
+          id
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          innovationFlowTemplates {
+            ...InnovationFlowTemplateCard
+          }
+        }
+      }
+    }
+  }
+}
+
+query InnovationFlowTemplateDefinition($innovationFlowTemplateID: UUID!) {
+  lookup {
+    innovationFlowTemplate(ID: $innovationFlowTemplateID) {
+      id
+      ...InnovationFlowTemplateCard
+      definition
+    }
+  }
+}

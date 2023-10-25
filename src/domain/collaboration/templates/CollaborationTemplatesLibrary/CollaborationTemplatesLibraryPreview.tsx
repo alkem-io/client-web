@@ -16,6 +16,7 @@ export interface CollaborationTemplatesLibraryPreviewProps<
   template?: TemplateValue;
   templateCardComponent: ComponentType<TemplateCardBaseProps<Template>>;
   templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateValue>>;
+  templateInfo?: ReactNode;
   loading?: boolean;
   actions?: ReactNode;
 }
@@ -27,6 +28,7 @@ const CollaborationTemplatesLibraryPreview = <
   template,
   templateCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
+  templateInfo,
   loading,
   actions,
   onClose,
@@ -39,6 +41,7 @@ const CollaborationTemplatesLibraryPreview = <
       <Grid item xs={12} sm={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <GridProvider columns={3}>
           <TemplateCard template={template as Template | undefined} loading={loading} />
+          {templateInfo}
         </GridProvider>
         <Box sx={{ display: 'flex', marginY: theme.spacing(2), justifyContent: 'end' }}>
           <Button startIcon={<ArrowBackIcon />} variant="text" onClick={() => onClose()}>

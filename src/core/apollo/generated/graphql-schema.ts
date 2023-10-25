@@ -3222,6 +3222,8 @@ export type Opportunity = {
   profile: Profile;
   /** The set of projects within the context of this Opportunity */
   projects?: Maybe<Array<Project>>;
+  /** The StorageAggregator in use by this Opportunity */
+  storageAggregator?: Maybe<StorageAggregator>;
 };
 
 export type OpportunityCreated = {
@@ -6962,6 +6964,30 @@ export type InnovationFlowBlockQuery = {
   };
 };
 
+export type DefaultInnovationFlowTemplateQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type DefaultInnovationFlowTemplateQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
+            id: string;
+            type: InnovationFlowType;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type ChallengeInnovationFlowEventMutationVariables = Exact<{
   eventName: Scalars['String'];
   innovationFlowID: Scalars['UUID'];
@@ -7404,6 +7430,178 @@ export type JourneyInnovationFlowStatesAllowedValuesFragment = {
   };
 };
 
+export type InnovationFlowTemplateCardFragment = {
+  __typename?: 'InnovationFlowTemplate';
+  id: string;
+  type: InnovationFlowType;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
+export type SpaceInnovationFlowTemplatesLibraryQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceInnovationFlowTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
+            id: string;
+            type: InnovationFlowType;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type PlatformInnovationFlowTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformInnovationFlowTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              innovationFlowTemplates: Array<{
+                __typename?: 'InnovationFlowTemplate';
+                id: string;
+                type: InnovationFlowType;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }>;
+            }
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type InnovationFlowTemplateDefinitionQueryVariables = Exact<{
+  innovationFlowTemplateID: Scalars['UUID'];
+}>;
+
+export type InnovationFlowTemplateDefinitionQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    innovationFlowTemplate?:
+      | {
+          __typename?: 'InnovationFlowTemplate';
+          id: string;
+          definition: string;
+          type: InnovationFlowType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type InnovationPackProfilePageQueryVariables = Exact<{
   innovationPackId: Scalars['UUID_NAMEID'];
 }>;
@@ -7514,7 +7712,6 @@ export type InnovationPackProfilePageQuery = {
                   innovationFlowTemplates: Array<{
                     __typename?: 'InnovationFlowTemplate';
                     id: string;
-                    definition: string;
                     type: InnovationFlowType;
                     profile: {
                       __typename?: 'Profile';
@@ -12157,6 +12354,40 @@ export type CalloutFragment = {
     | undefined;
 };
 
+export type CollaborationAuthorizationQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  includeSpace?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+}>;
+
+export type CollaborationAuthorizationQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+  };
+};
+
 export type PostTemplateCardFragment = {
   __typename?: 'PostTemplate';
   id: string;
@@ -13786,30 +14017,6 @@ export type TemplateProviderProfileFragment = {
   id: string;
   displayName: string;
   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-};
-
-export type InnovationFlowTemplateCardFragment = {
-  __typename?: 'InnovationFlowTemplate';
-  id: string;
-  definition: string;
-  type: InnovationFlowType;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
 };
 
 export type TemplateCardProfileInfoFragment = {
@@ -24580,6 +24787,7 @@ export type SpaceHostQuery = {
 
 export type SpacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  authorizedReadAccess?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpacePageQuery = {
@@ -25291,7 +25499,6 @@ export type InnovationFlowTemplatesFromSpaceQuery = {
           innovationFlowTemplates: Array<{
             __typename?: 'InnovationFlowTemplate';
             id: string;
-            definition: string;
             type: InnovationFlowType;
             profile: {
               __typename?: 'Profile';
@@ -25369,7 +25576,6 @@ export type SpaceTemplatesFragment = {
         innovationFlowTemplates: Array<{
           __typename?: 'InnovationFlowTemplate';
           id: string;
-          definition: string;
           type: InnovationFlowType;
           profile: {
             __typename?: 'Profile';
@@ -25391,30 +25597,6 @@ export type SpaceTemplatesFragment = {
         }>;
       }
     | undefined;
-};
-
-export type InnovationFlowTemplateFragment = {
-  __typename?: 'InnovationFlowTemplate';
-  id: string;
-  definition: string;
-  type: InnovationFlowType;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
 };
 
 export type SpaceChallengeCardsQueryVariables = Exact<{

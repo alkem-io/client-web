@@ -24,7 +24,7 @@ const CreatePostTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplat
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('post-templates.post-template') })}
+        {t('common.create-new-entity', { entity: t('templateLibrary.postTemplates.name') })}
       </DialogHeader>
       <PostTemplateForm
         initialValues={values}
