@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { AdminSection, adminTabs } from './constants';
 import { useTranslation } from 'react-i18next';
-import JourneyPageBanner from '../../../../shared/components/PageHeader/JourneyPageBanner';
+import SpacePageBanner from '../../../../journey/space/layout/SpacePageBanner';
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
 import TopLevelDesktopLayout from '../../../../../main/ui/layout/TopLevelDesktopLayout';
@@ -21,7 +21,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
     <TopLevelDesktopLayout
       header={
         <>
-          <JourneyPageBanner title={t('common.administration')} journeyTypeName="admin" />
+          <SpacePageBanner title={t('common.administration')} journeyTypeName="admin" />
           <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Space}>
             {adminTabs.map(tab => {
               return (

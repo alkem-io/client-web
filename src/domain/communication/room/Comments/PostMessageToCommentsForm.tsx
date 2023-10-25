@@ -36,7 +36,8 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
   const { t } = useTranslation();
 
   const { user } = useUserContext();
-  const userAvatarUri = user?.user?.profile.visual?.uri;
+
+  const userAvatarUri = user?.user?.profile.avatar?.uri;
 
   const initialValues: formValues = {
     post: '',

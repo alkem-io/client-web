@@ -1,23 +1,21 @@
-import React, { ComponentType, FC, useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 import { SettingsSection } from './constants';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { EntityTabsProps } from '../../../../journey/common/EntityPageLayout';
+import { EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
 import SettingsPageContent from './SettingsPageContent';
 import EntityPageLayout from '../../../../journey/common/EntityPageLayout/EntityPageLayout';
 import PageContent from '../../../../../core/ui/content/PageContent';
 
 type EntityTypeName = 'space' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
-type EntitySettingsLayoutProps = {
-  pageBannerComponent: ComponentType;
-  tabsComponent: ComponentType<EntityTabsProps>;
+interface EntitySettingsLayoutProps extends Omit<EntityPageLayoutProps, 'tabs' | 'currentSection'> {
   entityTypeName: EntityTypeName;
   tabs: TabDefinition<SettingsSection>[];
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
-};
+}
 
 // TODO Put LayoutHolder into Admin routes, making EntitySettingsLayout able to render EntityPageLayout.
 const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({

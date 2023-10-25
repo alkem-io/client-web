@@ -81,8 +81,11 @@ export interface AvatarProps {
   renderPopup?: (props: AvatarPopupProps) => ReactNode;
 }
 
-// TODO figure out if this custom component can be replaced with MUI Avatar
-const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
+/**
+ * @deprecated
+ * TODO Replace with MUI Avatar
+ */
+const AlkemioAvatar = forwardRef<HTMLDivElement, AvatarProps>(
   ({ size = 'md', classes = {}, className, src, theme = 'dark', name, renderPopup }, ref) => {
     const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);
 
@@ -135,4 +138,4 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   }
 );
 
-export default Avatar;
+export default AlkemioAvatar;

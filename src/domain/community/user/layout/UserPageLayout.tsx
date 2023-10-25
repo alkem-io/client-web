@@ -23,7 +23,7 @@ const UserPageLayout = (props: PropsWithChildren<UserPageLayoutProps>) => {
       breadcrumbs={
         <TopLevelPageBreadcrumbs
           loading={loading}
-          avatar={user?.user.profile.visual}
+          avatar={user?.user.profile.avatar}
           iconComponent={AssignmentIndOutlined}
           uri={buildUserProfileUrl(userNameId)}
         >

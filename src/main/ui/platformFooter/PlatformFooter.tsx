@@ -7,10 +7,10 @@ import FooterLink from '../../../core/ui/layout/pageFooter/FooterLink';
 import PageFooter from '../../../core/ui/layout/pageFooter/PageFooter';
 import FooterLogo from './FooterLogo';
 import { Caption } from '../../../core/ui/typography';
-import { Button } from '@mui/material';
+import { BoxProps, Button } from '@mui/material';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
 
-const PlatformFooter = () => {
+const PlatformFooter = (props: BoxProps) => {
   const { t } = useTranslation();
   const { platform } = useConfig();
 
@@ -22,7 +22,7 @@ const PlatformFooter = () => {
 
   return (
     <>
-      <PageFooter logo={<FooterLogo />} copyright={t('footer.copyright')}>
+      <PageFooter logo={<FooterLogo />} copyright={t('footer.copyright')} {...props}>
         <FooterLink href={platform?.terms}>{t('footer.terms')}</FooterLink>
         <FooterLink href={platform?.privacy}>{t('footer.privacy')}</FooterLink>
         <FooterLink href={platform?.security}>{t('footer.security')}</FooterLink>

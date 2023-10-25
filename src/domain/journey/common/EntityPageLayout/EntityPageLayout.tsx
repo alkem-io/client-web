@@ -1,24 +1,24 @@
 import React, { cloneElement, PropsWithChildren, useState } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { Theme, useMediaQuery } from '@mui/material';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
 import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
 import { gutters } from '../../../../core/ui/grid/utils';
+import PageBannerWatermark from '../../../../main/ui/platformNavigation/PageBannerWatermark';
 
 const EntityPageLayout = ({
   currentSection,
   breadcrumbs,
   pageBannerComponent: PageBanner,
-  pageBanner,
+  pageBanner: pageBannerElement,
   tabsComponent: Tabs,
   tabs: tabsElement,
   children,
 }: PropsWithChildren<EntityPageLayoutProps>) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
 
   const tabs = Tabs ? (
@@ -26,6 +26,14 @@ const EntityPageLayout = ({
   ) : (
     tabsElement &&
     cloneElement(tabsElement, { currentTab: currentSection, mobile: isMobile, onMenuOpen: setTabsMenuOpen })
+  );
+
+  const pageBannerWatermark = isMobile ? null : <PageBannerWatermark />;
+
+  const pageBanner = PageBanner ? (
+    <PageBanner watermark={pageBannerWatermark} />
+  ) : (
+    pageBannerElement && cloneElement(pageBannerElement, { watermark: pageBannerWatermark })
   );
 
   return (
@@ -38,7 +46,7 @@ const EntityPageLayout = ({
     >
       <TopLevelDesktopLayout
         breadcrumbs={breadcrumbs}
-        header={PageBanner ? <PageBanner /> : pageBanner}
+        header={PageBanner ? <PageBanner watermark={pageBannerWatermark} /> : pageBanner}
         floatingActions={
           <FloatingActionButtons
             {...(isMobile ? { bottom: gutters(5) } : {})}
@@ -46,6 +54,7 @@ const EntityPageLayout = ({
             floatingActions={<PlatformHelpButton />}
           />
         }
+        addWatermark={isMobile}
       >
         {!isMobile && tabs}
         {children}

@@ -5,13 +5,14 @@ import SizeableAvatar from '../../../core/ui/avatar/SizeableAvatar';
 import { PageTitle } from '../../../core/ui/typography';
 import LocationCaption from '../../../core/ui/location/LocationCaption';
 import { Actions } from '../../../core/ui/actions/Actions';
-import { IconButton } from '@mui/material';
+import { IconButton, Theme, useMediaQuery } from '@mui/material';
 import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import { DirectMessageDialog } from '../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import { Visual } from '../visual/Visual';
 import { Location } from '../../../core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
+import PageBannerWatermark from '../../../main/ui/platformNavigation/PageBannerWatermark';
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',
@@ -45,6 +46,8 @@ const ProfilePageBanner = ({
   onSendMessage,
   loading = false,
 }: ProfilePageBannerProps) => {
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+
   const { t } = useTranslation();
 
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
@@ -72,6 +75,8 @@ const ProfilePageBanner = ({
       },
     ];
   }, [entityId, profile]);
+
+  const pageBannerWatermark = isMobile ? null : <PageBannerWatermark />;
 
   return (
     <>
@@ -102,6 +107,7 @@ const ProfilePageBanner = ({
         subtitle={profile?.tagline}
         tags={tags}
         loading={loading}
+        watermark={pageBannerWatermark}
       />
       {onSendMessage && (
         <DirectMessageDialog

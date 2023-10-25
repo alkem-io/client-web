@@ -1,10 +1,11 @@
-import { Avatar, Box, CircularProgress, Collapse, SvgIconProps, useTheme } from '@mui/material';
+import { Avatar, CircularProgress, Collapse, Paper, SvgIconProps, useTheme } from '@mui/material';
 import RouterLink from '../link/RouterLink';
 import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import { CardText } from '../typography';
 import { Expandable } from './Expandable';
 import { ComponentType, PropsWithChildren } from 'react';
+import { useElevationContext } from '../utils/ElevationContext';
 
 interface BreadcrumbsItemProps extends Expandable {
   avatar?: {
@@ -31,16 +32,18 @@ const BreadcrumbsItem = ({
   const theme = useTheme();
 
   return (
-    <Box
+    <Paper
       component={RouterLink}
       to={uri}
-      display="flex"
-      flexDirection="row"
-      height={gutters()}
-      paddingX={gutters((1 - AVATAR_SIZE_GUTTERS) / 2)}
-      paddingY={gutters((1 - AVATAR_SIZE_GUTTERS) / 2)}
-      borderRadius={0.5}
-      sx={{ backgroundColor: theme => theme.palette.background.paper }}
+      elevation={useElevationContext()}
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        height: gutters(),
+        paddingX: gutters((1 - AVATAR_SIZE_GUTTERS) / 2),
+        paddingY: gutters((1 - AVATAR_SIZE_GUTTERS) / 2),
+        borderRadius: 0.5,
+      }}
       onMouseEnter={() => onExpand?.()}
     >
       <Avatar
@@ -49,7 +52,7 @@ const BreadcrumbsItem = ({
           width: gutters(AVATAR_SIZE_GUTTERS),
           height: gutters(AVATAR_SIZE_GUTTERS),
           fontSize: gutters(0.6),
-          borderRadius: 0.5,
+          borderRadius: 0.4,
           backgroundColor: accent ? 'primary.main' : 'transparent',
         }}
       >
@@ -57,11 +60,11 @@ const BreadcrumbsItem = ({
         {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}
       </Avatar>
       <Collapse in={expanded} orientation="horizontal">
-        <CardText paddingX={0.5} lineHeight={gutters(AVATAR_SIZE_GUTTERS)} color="primary" noWrap>
+        <CardText paddingX={0.5} lineHeight={gutters(AVATAR_SIZE_GUTTERS)} maxWidth="30vw" color="primary" noWrap>
           {children}
         </CardText>
       </Collapse>
-    </Box>
+    </Paper>
   );
 };
 

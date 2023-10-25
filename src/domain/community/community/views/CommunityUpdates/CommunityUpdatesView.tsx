@@ -30,7 +30,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import Avatar from '../../../../../core/ui/image/Avatar';
+import AlkemioAvatar from '../../../../../core/ui/image/AlkemioAvatar';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
@@ -224,7 +224,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 <CardHeader
                   avatar={
                     member && (
-                      <Avatar
+                      <AlkemioAvatar
                         key={member.id}
                         src={member.avatarUrl}
                         name={member.displayName}

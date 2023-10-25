@@ -11,7 +11,7 @@ import SearchBar from '../../../main/ui/layout/topBar/SearchBar';
 import PageContent from '../../ui/content/PageContent';
 import PageContentColumn from '../../ui/content/PageContentColumn';
 import { gutters } from '../../ui/grid/utils';
-import { NAVIGATION_HEIGHT_GUTTERS } from '../../ui/navigation/NavigationBar';
+import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../ui/navigation/NavigationBar';
 
 const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
@@ -86,7 +86,7 @@ export const Error404: FC = () => {
   const { platform } = useConfig();
 
   return (
-    <PageContent gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_HEIGHT_GUTTERS) } }}>
+    <PageContent gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS) } }}>
       <PageContentColumn columns={12}>
         <PageContentBlock>
           <Container>
