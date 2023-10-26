@@ -1577,6 +1577,7 @@
             "title": "Documents",
             "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
             "grid": {
+              "displayName": "Title",
               "mimeType": "Type",
               "size": "Size",
               "uploadedBy": "Uploaded by",

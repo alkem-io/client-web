@@ -96,6 +96,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
     () => [
       {
         field: 'displayName',
+        headerName: t('pages.admin.generic.sections.storage.grid.displayName'),
         minWidth: 400,
         renderCell: ({ row }: RenderParams) => (
           <>
