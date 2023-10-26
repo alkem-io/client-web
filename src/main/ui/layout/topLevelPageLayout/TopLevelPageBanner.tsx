@@ -3,10 +3,9 @@ import PageBanner from '../../../../core/ui/layout/pageBanner/PageBanner';
 import PageBannerCard, { PageBannerCardProps } from '../../../topLevelPages/pageBannerCard/PageBannerCard';
 import { ThemeProvider } from '@mui/material';
 import providePrimaryColor from '../../../../core/ui/themes/utils/providePrimaryColor';
-import { COLOR_HUB } from '../../../../core/ui/palette/palette';
 import { Visual } from '../../../../domain/common/visual/Visual';
 
-const provideHubColor = providePrimaryColor(COLOR_HUB);
+const provideHubColor = providePrimaryColor(theme => theme.palette.space.main);
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',

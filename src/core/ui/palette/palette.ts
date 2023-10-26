@@ -3,8 +3,6 @@ import { grey } from '@mui/material/colors';
 
 const COLOR_POSITIVE_CONTAINER = '#CDE7ED';
 
-export const COLOR_HUB = '#1D384A';
-
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#065F6B' },
   secondary: { main: '#00a88f' },
