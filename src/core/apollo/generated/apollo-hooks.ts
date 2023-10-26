@@ -20499,8 +20499,8 @@ export function refetchAdminSpacesListQuery(variables?: SchemaTypes.AdminSpacesL
 }
 
 export const SpaceStorageAdminPageDocument = gql`
-  query SpaceStorageAdminPage($spaceNameId: UUID_NAMEID!) {
-    space(ID: $spaceNameId) {
+  query SpaceStorageAdminPage($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
       id
       profile {
         id
@@ -20526,7 +20526,7 @@ export const SpaceStorageAdminPageDocument = gql`
  * @example
  * const { data, loading, error } = useSpaceStorageAdminPageQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */

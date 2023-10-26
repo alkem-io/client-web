@@ -2414,8 +2414,9 @@ export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SourceKeySpecifier = ('uri' | SourceKeySpecifier)[];
+export type SourceKeySpecifier = ('title' | 'uri' | SourceKeySpecifier)[];
 export type SourceFieldPolicy = {
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceKeySpecifier = (

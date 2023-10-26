@@ -1,5 +1,5 @@
-query SpaceStorageAdminPage($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
+query SpaceStorageAdminPage($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     profile {
       id

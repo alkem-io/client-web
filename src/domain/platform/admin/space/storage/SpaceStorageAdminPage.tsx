@@ -24,7 +24,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Caption } from '../../../../../core/ui/typography';
 
 interface SpaceStorageAdminPageProps extends SettingsPageProps {
-  spaceNameId: string;
+  spaceId: string;
 }
 
 type RenderParams = GridRenderCellParams<string, StorageAdminGridRow>;
@@ -72,11 +72,11 @@ const TitleIndent = ({ row }: { row: RenderParams['row'] }) => (
   </>
 );
 
-const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceNameId, routePrefix = '../' }) => {
+const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
 
   const { data, openBranch, closeBranch, loading, reload } = useStorageAdminTree({
-    spaceNameId,
+    spaceId,
   });
 
   const [deletingDocument, setDeletingDocument] = useState<Pick<DocumentDataFragment, 'id' | 'displayName'>>();

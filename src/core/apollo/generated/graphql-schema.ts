@@ -1265,7 +1265,7 @@ export type ContributorRoles = {
   invitations: Array<InvitationForRoleResult>;
   /** Details of the roles the contributor has in Organizations */
   organizations: Array<RolesResultOrganization>;
-  /** Details of Spaces the User or Organization is a member of, with child memberships */
+  /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
   spaces: Array<RolesResultSpace>;
 };
 
@@ -4371,6 +4371,8 @@ export type ServiceMetadata = {
 
 export type Source = {
   __typename?: 'Source';
+  /** The title of the source */
+  title: Scalars['String'];
   /** The URI of the source */
   uri: Scalars['String'];
 };
@@ -26305,7 +26307,7 @@ export type AdminSpaceFragment = {
 };
 
 export type SpaceStorageAdminPageQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceId: Scalars['UUID_NAMEID'];
 }>;
 
 export type SpaceStorageAdminPageQuery = {

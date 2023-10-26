@@ -173,7 +173,7 @@ const tree2Grid = (treeData: TreeData): StorageAdminGridRow[] => {
   return result;
 };
 
-const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided => {
+const useStorageAdminTree = ({ spaceId }: { spaceId: string }): Provided => {
   const { t } = useTranslation();
   const [treeData, setTreeData] = useState<TreeData>({ root: [] });
 
@@ -213,7 +213,7 @@ const useStorageAdminTree = ({ spaceNameId }: { spaceNameId: string }): Provided
   // Initial load:
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await loadSpace({ variables: { spaceNameId: spaceNameId } });
+      const { data } = await loadSpace({ variables: { spaceId: spaceId } });
       const storageAggregator = data?.space.storageAggregator;
       if (!storageAggregator) {
         throw new Error('Cannot find storageAggregator');

@@ -17,7 +17,7 @@ import AdminSpaceCommunityPage from '../../../../journey/space/pages/AdminSpaceC
 
 export const SpaceRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const { spaceNameId, spaceId, communityId } = useSpace();
+  const { spaceId, communityId } = useSpace();
 
   return (
     <StorageConfigContextProvider locationType="journey" journeyTypeName="space" spaceNameId={spaceId}>
@@ -29,7 +29,7 @@ export const SpaceRoute: FC = () => {
         <Route path="community" element={<AdminSpaceCommunityPage />} />
         <Route path="communications" element={<SpaceCommunicationsPage communityId={communityId} />} />
         <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
-        <Route path="storage" element={<SpaceStorageAdminPage spaceNameId={spaceNameId} />} />
+        <Route path="storage" element={<SpaceStorageAdminPage spaceId={spaceId} />} />
         <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />
         <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
         <Route path="challenges/*" element={<ChallengesRoute />} />
