@@ -1,6 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { addResponseMessage, Widget } from 'react-chat-widget';
-import { useAskChatGuidanceQuestionQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { Icon, IconButton, Box } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import { addResponseMessage, renderCustomComponent, Widget } from 'react-chat-widget';
+import {
+  useAskChatGuidanceQuestionQuery,
+  useUpdateAnswerRelevanceMutation,
+} from '../../../core/apollo/generated/apollo-hooks';
 import logoSrc from '../../../domain/platform/Logo/Logo-Small.svg';
 import { useTranslation } from 'react-i18next';
 import { FEATURE_GUIDANCE_ENGINE } from '../../../domain/platform/config/features.constants';
@@ -17,6 +24,37 @@ import { createPortal } from 'react-dom';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import { useMediaQuery } from '@mui/material';
 import { useFullscreen } from '../../../core/ui/fullscreen/useFullscreen';
+
+type Props = { answerId: string };
+
+const Feedback = ({ answerId }: Props) => {
+  const [voted, setVoted] = useState(false);
+  const [update] = useUpdateAnswerRelevanceMutation();
+  const updateHandler = async (answerId: string, relevant: boolean) => {
+    await update({
+      variables: {
+        input: {
+          id: answerId,
+          relevant,
+        }
+      }
+    });
+    setVoted(true);
+  };
+
+  return (
+    <Box display='flex' justifyContent='right' flexGrow='1'>
+      <div>Is the answer relevant?</div>
+      <Icon component={InfoIcon} />
+      <IconButton color='success' disabled={voted} onClick={() => updateHandler(answerId, true)}>
+        <ThumbUpOffAltIcon/>
+      </IconButton>
+      <IconButton color='error' disabled={voted} onClick={() => updateHandler(answerId, false)}>
+        <ThumbDownOffAltIcon/>
+      </IconButton>
+    </Box>
+  );
+};
 
 const ChatWidget = () => {
   const [newMessage, setNewMessage] = useState(null);
@@ -39,6 +77,7 @@ const ChatWidget = () => {
     if (data && !loading) {
       const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
       addResponseMessage(responseMessageMarkdown);
+      renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
     }
   }, [data, loading]);
 
@@ -82,6 +121,7 @@ const ChatWidget = () => {
           subtitle={<ChatWidgetSubtitle />}
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => setChatToggleTime(Date.now())}
+
         />
       </ChatWidgetStyles>
       <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />

@@ -396,6 +396,16 @@ export type AdminInnovationFlowSynchronizeStatesInput = {
   innovationFlowID: Scalars['UUID'];
 };
 
+export type AdminWhiteboardFilesResult = {
+  __typename?: 'AdminWhiteboardFilesResult';
+  /** Errors */
+  errors: Array<Scalars['String']>;
+  /** Successes */
+  results: Array<Scalars['String']>;
+  /** Warnings */
+  warns: Array<Scalars['String']>;
+};
+
 export type Agent = {
   __typename?: 'Agent';
   /** The authorization rules for the entity */
@@ -927,6 +937,13 @@ export type ChallengeTemplate = {
   name: Scalars['String'];
 };
 
+export type ChatGuidanceAnswerRelevanceInput = {
+  /** The answer id. */
+  id: Scalars['UUID'];
+  /** Is the answer relevant or not. */
+  relevant: Scalars['Boolean'];
+};
+
 export type ChatGuidanceInput = {
   /** The language of the answer. */
   language?: InputMaybe<Scalars['String']>;
@@ -938,10 +955,12 @@ export type ChatGuidanceResult = {
   __typename?: 'ChatGuidanceResult';
   /** The answer to the question */
   answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
   /** The original question */
   question: Scalars['String'];
   /** The sources used to answer the question */
-  sources: Array<Source>;
+  sources?: Maybe<Array<Source>>;
 };
 
 export type Collaboration = {
@@ -2142,6 +2161,8 @@ export type LookupQueryResults = {
   profile?: Maybe<Profile>;
   /** Lookup the specified Room */
   room?: Maybe<Room>;
+  /** Lookup the specified StorageAggregator */
+  storageAggregator?: Maybe<StorageAggregator>;
   /** Lookup the specified Whiteboard */
   whiteboard?: Maybe<Whiteboard>;
   /** Lookup the specified WhiteboardRt */
@@ -2215,6 +2236,10 @@ export type LookupQueryResultsProfileArgs = {
 };
 
 export type LookupQueryResultsRoomArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsStorageAggregatorArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -2313,6 +2338,8 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Updates the States tagset to be synchronized with the Lifecycle states. */
   adminInnovationFlowSynchronizeStates: Tagset;
+  /** Uploads the files from the Whiteboard content into the StorageBucket of that Whiteboard. */
+  adminUploadFilesFromContentToStorageBucket: AdminWhiteboardFilesResult;
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -2334,7 +2361,7 @@ export type Mutation = {
   /** Assigns a User as an associate of the specified Organization. */
   assignUserToOrganization: Organization;
   /** Reset the Authorization Policy on all entities */
-  authorizationPolicyResetAll: Scalars['Boolean'];
+  authorizationPolicyResetAll: Scalars['String'];
   /** Reset the Authorization Policy on the specified Organization. */
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization Policy on the specified Platform. */
@@ -2525,6 +2552,8 @@ export type Mutation = {
   sendMessageToUser: Scalars['Boolean'];
   /** Updates the specified Actor. */
   updateActor: Actor;
+  /** User vote if a specific answer is relevant. */
+  updateAnswerRelevance: Scalars['Boolean'];
   /** Updates the specified CalendarEvent. */
   updateCalendarEvent: CalendarEvent;
   /** Update a Callout. */
@@ -3023,6 +3052,10 @@ export type MutationSendMessageToUserArgs = {
 
 export type MutationUpdateActorArgs = {
   actorData: UpdateActorInput;
+};
+
+export type MutationUpdateAnswerRelevanceArgs = {
+  input: ChatGuidanceAnswerRelevanceInput;
 };
 
 export type MutationUpdateCalendarEventArgs = {
@@ -3672,6 +3705,10 @@ export type Query = {
   spaces: Array<Space>;
   /** The Spaces on this platform */
   spacesPaginated: PaginatedSpaces;
+  /** Information about a specific task */
+  task: Task;
+  /** All tasks with filtering applied */
+  tasks: Array<Task>;
   /** A particular user, identified by the ID or by email */
   user: User;
   /** Privileges assigned to a User (based on held credentials) given an Authorization defnition. */
@@ -3741,6 +3778,14 @@ export type QuerySpacesPaginatedArgs = {
   filter?: InputMaybe<SpaceFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryTaskArgs = {
+  id: Scalars['UUID'];
+};
+
+export type QueryTasksArgs = {
+  status?: InputMaybe<TaskStatus>;
 };
 
 export type QueryUserArgs = {
@@ -4341,8 +4386,10 @@ export type ServiceMetadata = {
 
 export type Source = {
   __typename?: 'Source';
+  /** The title of the source */
+  title?: Maybe<Scalars['String']>;
   /** The URI of the source */
-  uri: Scalars['String'];
+  uri?: Maybe<Scalars['String']>;
 };
 
 export type Space = {
@@ -4622,6 +4669,39 @@ export enum TagsetType {
   Freeform = 'FREEFORM',
   SelectMany = 'SELECT_MANY',
   SelectOne = 'SELECT_ONE',
+}
+
+export type Task = {
+  __typename?: 'Task';
+  /** The timestamp when the task was created */
+  created: Scalars['Float'];
+  /** the timestamp when the task was completed */
+  end?: Maybe<Scalars['Float']>;
+  /** info about the errors of the task */
+  errors?: Maybe<Array<Scalars['String']>>;
+  /** The UUID of the task */
+  id: Scalars['UUID'];
+  /** Amount of items that need to be processed */
+  itemsCount?: Maybe<Scalars['Float']>;
+  /** Amount of items that are already processed */
+  itemsDone?: Maybe<Scalars['Float']>;
+  /** The progress  of the task if the total item count is defined */
+  progress?: Maybe<Scalars['Float']>;
+  /** info about the completed part of the task */
+  results?: Maybe<Array<Scalars['String']>>;
+  /** The timestamp when the task was started */
+  start: Scalars['Float'];
+  /** The current status of the task */
+  status: TaskStatus;
+  /** TBD */
+  type?: Maybe<Scalars['String']>;
+};
+
+/** The current status of the task */
+export enum TaskStatus {
+  Completed = 'COMPLETED',
+  Errored = 'ERRORED',
+  InProgress = 'IN_PROGRESS',
 }
 
 export type Template = {
@@ -29760,6 +29840,12 @@ export type DeleteCalendarEventMutation = {
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
 };
 
+export type UpdateAnswerRelevanceMutationVariables = Exact<{
+  input: ChatGuidanceAnswerRelevanceInput;
+}>;
+
+export type UpdateAnswerRelevanceMutation = { __typename?: 'Mutation'; updateAnswerRelevance: boolean };
+
 export type AskChatGuidanceQuestionQueryVariables = Exact<{
   chatData: ChatGuidanceInput;
 }>;
@@ -29768,9 +29854,10 @@ export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
   askChatGuidanceQuestion: {
     __typename?: 'ChatGuidanceResult';
+    id?: string | undefined;
     answer: string;
     question: string;
-    sources: Array<{ __typename?: 'Source'; uri: string }>;
+    sources?: Array<{ __typename?: 'Source'; uri?: string | undefined; title?: string | undefined }> | undefined;
   };
 };
 
