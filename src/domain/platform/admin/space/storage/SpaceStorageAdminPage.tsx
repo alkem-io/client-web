@@ -20,8 +20,8 @@ import DataGridTable from '../../../../../core/ui/table/DataGridTable';
 import useStorageAdminTree, { StorageAdminGridRow } from './useStorageAdminTree';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Caption } from '../../../../../core/ui/typography';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 interface SpaceStorageAdminPageProps extends SettingsPageProps {
   spaceId: string;
@@ -51,7 +51,7 @@ const ExpandButton = ({ row, onClick }: { row: RenderParams['row']; onClick: Lin
       ) : row.collapsible ? (
         <IconWrapper>
           <Link onClick={onClick} sx={{ cursor: 'pointer' }}>
-            {row.collapsed ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+            {row.collapsed ? <ArrowRightIcon /> : <ArrowDropDownIcon />}
           </Link>
         </IconWrapper>
       ) : (
@@ -100,10 +100,10 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
         renderCell: ({ row }: RenderParams) => (
           <>
             <TitleIndent row={row} />
-            <ExpandButton row={row} onClick={() => (row.collapsed ? closeBranch(row.id) : openBranch(row.id))} />
+            <ExpandButton row={row} onClick={() => (row.collapsed ? openBranch(row.id) : closeBranch(row.id))} />
             <FileTypeIcon row={row} />
             <Link href={row.url} target="_blank">
-              <Caption sx={{ display: 'inline', color: 'red' }}>{row.type}</Caption> {row.displayName}
+              {row.displayName}
             </Link>
           </>
         ),
@@ -147,7 +147,9 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
     <SpaceSettingsLayout currentTab={SettingsSection.Storage} tabRoutePrefix={routePrefix}>
       <PageContentBlock>
         <PageContentBlockHeader title={t('pages.admin.generic.sections.storage.title')} />
-        {/*<Box width={isMobile ? '100%' : '50%'}>
+        {/*
+        Search box removed temporarily
+        <Box width={isMobile ? '100%' : '50%'}>
           <TextField
             value={filterString}
             onChange={event => setFilterString(event.target.value)}
@@ -168,11 +170,18 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
               actions={[
                 {
                   name: 'view',
-                  render: ({ row }) => (
-                    <IconButton component={Link} href={(row as RenderParams['row']).url} target="_blank">
-                      <VisibilityOutlinedIcon color="primary" />
-                    </IconButton>
-                  ),
+                  render: ({ row }) => {
+                    const data = row as RenderParams['row'];
+                    return (
+                      <IconButton component={Link} href={data.url} target="_blank">
+                        {data.collapsible ? (
+                          <ArrowForwardIcon fontSize="small" color="primary" />
+                        ) : (
+                          <OpenInNewIcon fontSize="small" color="primary" />
+                        )}
+                      </IconButton>
+                    );
+                  },
                 },
               ]}
               format={{

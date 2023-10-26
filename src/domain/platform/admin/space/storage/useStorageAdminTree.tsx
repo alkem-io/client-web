@@ -20,7 +20,6 @@ import { profileIcon } from '../../../../shared/icons/profileIcon';
 export interface StorageAdminTreeItem {
   id: string;
   displayName: string;
-  type: string; // TODO: not needed
   iconComponent?: ComponentType<SvgIconProps>;
   childItems?: StorageAdminTreeItem[];
   // Documents only
@@ -54,7 +53,6 @@ interface Provided {
 const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem => ({
   id: document.id,
   displayName: document.displayName,
-  type: 'doc',
   iconComponent: ImageIcon,
   size: document.size,
   uplodadedBy: document.createdBy
@@ -78,7 +76,6 @@ const newStorageBucketRow = (
     return {
       id: storageBucket.id,
       displayName: storageBucket.parentEntity.displayName,
-      type: storageBucket.parentEntity.type,
       iconComponent: profileIcon(storageBucket.parentEntity.type),
       url: storageBucket.parentEntity.url,
       size: storageBucket.size,
@@ -91,7 +88,6 @@ const newStorageBucketRow = (
     return {
       id: storageBucket.id,
       displayName: t('pages.admin.generic.sections.storage.directlyStored'),
-      type: 'direct',
       iconComponent: HistoryIcon,
       url: undefined,
       size: storageBucket.size,
@@ -107,7 +103,6 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
     return {
       id: storageAggregator.id,
       displayName: storageAggregator.parentEntity.displayName,
-      type: 'LSAGG',
       iconComponent: profileIcon(ProfileType.Challenge),
       url: storageAggregator.parentEntity.url,
       size: 0,
@@ -120,7 +115,6 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
     return {
       id: storageAggregator.id,
       displayName: `No parent ${storageAggregator.id}`,
-      type: 'LSAGG',
       iconComponent: profileIcon(ProfileType.Challenge),
       url: undefined,
       size: 0,
@@ -173,7 +167,7 @@ const tree2Grid = (treeData: TreeData): StorageAdminGridRow[] => {
   return result;
 };
 
-const useStorageAdminTree = ({ spaceId }: { spaceId: string }): Provided => {
+const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Provided => {
   const { t } = useTranslation();
   const [treeData, setTreeData] = useState<TreeData>({ root: [] });
 
@@ -213,7 +207,10 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string }): Provided => {
   // Initial load:
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await loadSpace({ variables: { spaceId: spaceId } });
+      if (!spaceId) {
+        return;
+      }
+      const { data } = await loadSpace({ variables: { spaceId } });
       const storageAggregator = data?.space.storageAggregator;
       if (!storageAggregator) {
         throw new Error('Cannot find storageAggregator');
@@ -227,7 +224,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string }): Provided => {
       );
     };
     fetchData();
-  }, []);
+  }, [spaceId]);
 
   // Just a helper to set row loading state
   const setBranchLoading = async (storageAggregatorId: string, loading: boolean) => {
@@ -260,7 +257,6 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string }): Provided => {
           // Put the children inside the branch
           const branch = findBranch(next.root, storageAggregatorId);
           if (branch) {
-            branch.type = 'SAGG';
             branch.collapsed = false;
             branch.loading = false;
             branch.loaded = true;
@@ -298,10 +294,10 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string }): Provided => {
       produce(treeData, next => {
         const branch = findBranch(next.root, storageAggregatorId);
         if (branch && branch.collapsible) {
-          if (!branch.collapsed) {
+          if (branch.collapsed) {
             return next;
           } else {
-            branch.collapsed = false;
+            branch.collapsed = true;
           }
         }
         return next;
