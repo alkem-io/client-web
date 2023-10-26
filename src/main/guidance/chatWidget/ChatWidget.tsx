@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Icon, IconButton, Box } from '@mui/material';
+import { IconButton, Box, Paper } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
@@ -24,6 +24,9 @@ import { createPortal } from 'react-dom';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import { useMediaQuery } from '@mui/material';
 import { useFullscreen } from '../../../core/ui/fullscreen/useFullscreen';
+import Gutters from '../../../core/ui/grid/Gutters';
+import { gutters } from '../../../core/ui/grid/utils';
+import { Caption } from '../../../core/ui/typography';
 
 type Props = { answerId: string };
 
@@ -36,23 +39,40 @@ const Feedback = ({ answerId }: Props) => {
         input: {
           id: answerId,
           relevant,
-        }
-      }
+        },
+      },
     });
     setVoted(true);
   };
 
   return (
-    <Box display='flex' justifyContent='right' flexGrow='1'>
-      <div>Is the answer relevant?</div>
-      <Icon component={InfoIcon} />
-      <IconButton color='success' disabled={voted} onClick={() => updateHandler(answerId, true)}>
-        <ThumbUpOffAltIcon/>
+    <Gutters
+      row
+      gap={gutters(0.5)}
+      disablePadding
+      marginTop={gutters(-1)}
+      justifyContent="right"
+      flexGrow="1"
+      alignItems="center"
+    >
+      <Box
+        component={Paper}
+        sx={{ backgroundColor: theme => theme.palette.muted.main }}
+        display="flex"
+        gap={gutters(0.5)}
+        paddingX={gutters(0.5)}
+        paddingY={gutters(0.25)}
+      >
+        <Caption>Is the answer relevant?</Caption>
+        <InfoIcon fontSize="small" />
+      </Box>
+      <IconButton color="success" disabled={voted} onClick={() => updateHandler(answerId, true)}>
+        <ThumbUpOffAltIcon />
       </IconButton>
-      <IconButton color='error' disabled={voted} onClick={() => updateHandler(answerId, false)}>
-        <ThumbDownOffAltIcon/>
+      <IconButton color="error" disabled={voted} onClick={() => updateHandler(answerId, false)}>
+        <ThumbDownOffAltIcon />
       </IconButton>
-    </Box>
+    </Gutters>
   );
 };
 
@@ -121,7 +141,6 @@ const ChatWidget = () => {
           subtitle={<ChatWidgetSubtitle />}
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => setChatToggleTime(Date.now())}
-
         />
       </ChatWidgetStyles>
       <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
