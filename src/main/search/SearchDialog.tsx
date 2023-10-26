@@ -8,10 +8,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DialogHeader from '../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import { useLayoutEffect, useState } from 'react';
-// import { useTransactionScope } from '../../core/analytics/useSentry';
-
-// TODO useTransactionScope({ type: 'connect(search)' });
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { setTransactionScope } from '../../core/logging/sentry/scope';
 
 const SearchDialog = () => {
   const { pathname } = useLocation();
@@ -22,6 +20,14 @@ const SearchDialog = () => {
 
   // State is duplicated because we don't want to close the dialog when search terms are cleared
   const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(hasSearchParam);
+
+  useEffect(() => {
+    if (isSearchDialogOpen) {
+      setTransactionScope({
+        type: 'connect(search)',
+      });
+    }
+  }, [isSearchDialogOpen]);
 
   useLayoutEffect(() => {
     if (hasSearchParam) {

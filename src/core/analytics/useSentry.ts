@@ -11,8 +11,8 @@ export const useUserScope = (metadata: UserMetadata | undefined) => {
   }, [metadata, sentry?.submitPII]);
 };
 
-export const useTransactionScope = (name: TransactionScope) => {
+export const useTransactionScope = (scope: TransactionScope) => {
   useEffect(() => {
-    setTransactionScope(name);
-  }, [name]);
+    setTransactionScope(scope);
+  }, [scope]);
 };
