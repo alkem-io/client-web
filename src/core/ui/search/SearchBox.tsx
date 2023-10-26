@@ -168,8 +168,8 @@ const SearchBox = forwardRef<Collapsible, BoxProps & SearchBoxProps<string | num
                 />
               </Box>
             </Collapse>
-            <NavigationItemButton onClick={isExpanded ? handleClickSearch : handleExpand}>
-              <Search color="primary" />
+            <NavigationItemButton color="primary" onClick={isExpanded ? handleClickSearch : handleExpand}>
+              <Search />
             </NavigationItemButton>
           </NavigationItemContainer>
         </ClickAwayListener>
