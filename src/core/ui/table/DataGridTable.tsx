@@ -92,9 +92,9 @@ const DataGridTable = <Item extends Identifiable>({
 
         return {
           headerName: t(`fields.${definition.field}` as TranslationKey) as string,
-          renderHeader: ({ field }) => (
+          renderHeader: ({ colDef }) => (
             <SwapColors>
-              <CardText fontWeight="bold">{field}</CardText>
+              <CardText fontWeight="bold">{colDef.headerName}</CardText>
             </SwapColors>
           ),
           renderCell: ({ row }) => <CardText>{formatter(row)}</CardText>,
