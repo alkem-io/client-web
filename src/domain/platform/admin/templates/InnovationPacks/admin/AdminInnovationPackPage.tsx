@@ -15,9 +15,7 @@ import AdminPostTemplatesSection from '../../PostTemplates/AdminPostTemplatesSec
 import AdminWhiteboardTemplatesSection from '../../WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 import { StorageConfigContextProvider } from '../../../../../storage/StorageBucket/StorageConfigContext';
-import { EntityPageSection } from '../../../../../shared/layout/EntityPageSection';
 import InnovationPackProfileLayout from '../../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfileLayout';
-import { buildOrganizationUrl } from '../../../../../../main/routing/urlBuilders';
 import { buildInnovationPackUrl } from '../../../../../collaboration/InnovationPack/urlBuilders';
 import PageContentColumn from '../../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../../core/ui/content/PageContent';
@@ -103,15 +101,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
   const isLoading = loading || loadingOrganizations || updating;
 
   return (
-    <InnovationPackProfileLayout
-      displayName={innovationPack?.profile.displayName}
-      tagline={innovationPack?.profile.tagline}
-      providerDisplayName={innovationPack?.provider?.profile.displayName ?? ''}
-      providerUri={buildOrganizationUrl(innovationPack?.provider?.nameID ?? '')}
-      providerVisualUri={innovationPack?.provider?.profile.avatar?.uri ?? ''}
-      currentSection={EntityPageSection.Settings}
-      showSettings
-    >
+    <InnovationPackProfileLayout innovationPack={innovationPack} loading={loading} showSettings>
       <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackNameId}>
         <PageContent>
           <PageContentColumn columns={12}>

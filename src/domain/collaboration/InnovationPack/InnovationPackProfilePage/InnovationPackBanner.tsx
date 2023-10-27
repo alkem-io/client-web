@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
-import { DEFAULT_BANNER_URL } from '../../../shared/components/PageHeader/JourneyPageBanner';
+import { DEFAULT_BANNER_URL } from '../../../journey/space/layout/SpacePageBanner';
 import hexToRGBA from '../../../../core/utils/hexToRGBA';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';

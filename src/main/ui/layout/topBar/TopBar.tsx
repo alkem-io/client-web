@@ -33,6 +33,10 @@ const SearchBarGroup = styled(Box)(({ theme }) => ({
   },
 }));
 
+/**
+ * @deprecated
+ * @constructor
+ */
 const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
   const {
     ui: { loginNavigationService },
@@ -65,6 +69,10 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
   );
 });
 
+/**
+ * @deprecated
+ * @constructor
+ */
 export const TopBarSpacer = () => {
   const theme = useTheme();
 

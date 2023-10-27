@@ -1504,7 +1504,7 @@ export const OrganizationInfoFragmentDoc = gql`
       displayName
       description
       tagline
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualUri
         alternativeText
       }
@@ -1739,7 +1739,7 @@ export const UserDetailsFragmentDoc = gql`
         city
       }
       description
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualFull
       }
       references {
@@ -2285,6 +2285,17 @@ export const JourneyCommunityFragmentDoc = gql`
   ${DashboardLeadUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
 `;
+export const JourneyBreadcrumbsProfileFragmentDoc = gql`
+  fragment JourneyBreadcrumbsProfile on Profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      id
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const OpportunityPageFragmentDoc = gql`
   fragment OpportunityPage on Opportunity {
     id
@@ -2784,16 +2795,6 @@ export const SpaceDetailsProviderFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${ContextDetailsProviderFragmentDoc}
-`;
-export const SpaceNameFragmentDoc = gql`
-  fragment SpaceName on Space {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-  }
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -17095,70 +17096,6 @@ export function refetchChallengeInnovationFlowQuery(variables: SchemaTypes.Chall
   return { query: ChallengeInnovationFlowDocument, variables: variables };
 }
 
-export const ChallengeNameDocument = gql`
-  query challengeName($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
-      challenge(ID: $challengeId) {
-        id
-        nameID
-        profile {
-          id
-          displayName
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeNameQuery__
- *
- * To run a query within a React component, call `useChallengeNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeNameQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeNameQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>(
-    ChallengeNameDocument,
-    options
-  );
-}
-
-export function useChallengeNameLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeNameQuery, SchemaTypes.ChallengeNameQueryVariables>(
-    ChallengeNameDocument,
-    options
-  );
-}
-
-export type ChallengeNameQueryHookResult = ReturnType<typeof useChallengeNameQuery>;
-export type ChallengeNameLazyQueryHookResult = ReturnType<typeof useChallengeNameLazyQuery>;
-export type ChallengeNameQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeNameQuery,
-  SchemaTypes.ChallengeNameQueryVariables
->;
-export function refetchChallengeNameQuery(variables: SchemaTypes.ChallengeNameQueryVariables) {
-  return { query: ChallengeNameDocument, variables: variables };
-}
-
 export const ChallengeProfileInfoDocument = gql`
   query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -18155,6 +18092,291 @@ export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPriv
   return { query: JourneyPrivilegesDocument, variables: variables };
 }
 
+export const JourneyBreadcrumbsInnovationHubDocument = gql`
+  query JourneyBreadcrumbsInnovationHub {
+    platform {
+      innovationHub {
+        id
+        profile {
+          id
+          displayName
+          avatar: visual(type: BANNER_WIDE) {
+            id
+            ...VisualUri
+          }
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useJourneyBreadcrumbsInnovationHubQuery__
+ *
+ * To run a query within a React component, call `useJourneyBreadcrumbsInnovationHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyBreadcrumbsInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyBreadcrumbsInnovationHubQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJourneyBreadcrumbsInnovationHubQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+  >(JourneyBreadcrumbsInnovationHubDocument, options);
+}
+
+export function useJourneyBreadcrumbsInnovationHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
+    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+  >(JourneyBreadcrumbsInnovationHubDocument, options);
+}
+
+export type JourneyBreadcrumbsInnovationHubQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsInnovationHubQuery>;
+export type JourneyBreadcrumbsInnovationHubLazyQueryHookResult = ReturnType<
+  typeof useJourneyBreadcrumbsInnovationHubLazyQuery
+>;
+export type JourneyBreadcrumbsInnovationHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
+  SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+>;
+export function refetchJourneyBreadcrumbsInnovationHubQuery(
+  variables?: SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+) {
+  return { query: JourneyBreadcrumbsInnovationHubDocument, variables: variables };
+}
+
+export const JourneyBreadcrumbsSpaceDocument = gql`
+  query JourneyBreadcrumbsSpace($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: BANNER) {
+          id
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useJourneyBreadcrumbsSpaceQuery__
+ *
+ * To run a query within a React component, call `useJourneyBreadcrumbsSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyBreadcrumbsSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyBreadcrumbsSpaceQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useJourneyBreadcrumbsSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
+    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.JourneyBreadcrumbsSpaceQuery, SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables>(
+    JourneyBreadcrumbsSpaceDocument,
+    options
+  );
+}
+
+export function useJourneyBreadcrumbsSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
+    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
+    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+  >(JourneyBreadcrumbsSpaceDocument, options);
+}
+
+export type JourneyBreadcrumbsSpaceQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsSpaceQuery>;
+export type JourneyBreadcrumbsSpaceLazyQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsSpaceLazyQuery>;
+export type JourneyBreadcrumbsSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyBreadcrumbsSpaceQuery,
+  SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+>;
+export function refetchJourneyBreadcrumbsSpaceQuery(variables: SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables) {
+  return { query: JourneyBreadcrumbsSpaceDocument, variables: variables };
+}
+
+export const JourneyBreadcrumbsChallengeDocument = gql`
+  query JourneyBreadcrumbsChallenge($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      challenge(ID: $challengeNameId) {
+        id
+        profile {
+          ...JourneyBreadcrumbsProfile
+        }
+      }
+    }
+  }
+  ${JourneyBreadcrumbsProfileFragmentDoc}
+`;
+
+/**
+ * __useJourneyBreadcrumbsChallengeQuery__
+ *
+ * To run a query within a React component, call `useJourneyBreadcrumbsChallengeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyBreadcrumbsChallengeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyBreadcrumbsChallengeQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *   },
+ * });
+ */
+export function useJourneyBreadcrumbsChallengeQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsChallengeQuery,
+    SchemaTypes.JourneyBreadcrumbsChallengeQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.JourneyBreadcrumbsChallengeQuery,
+    SchemaTypes.JourneyBreadcrumbsChallengeQueryVariables
+  >(JourneyBreadcrumbsChallengeDocument, options);
+}
+
+export function useJourneyBreadcrumbsChallengeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsChallengeQuery,
+    SchemaTypes.JourneyBreadcrumbsChallengeQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.JourneyBreadcrumbsChallengeQuery,
+    SchemaTypes.JourneyBreadcrumbsChallengeQueryVariables
+  >(JourneyBreadcrumbsChallengeDocument, options);
+}
+
+export type JourneyBreadcrumbsChallengeQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsChallengeQuery>;
+export type JourneyBreadcrumbsChallengeLazyQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsChallengeLazyQuery>;
+export type JourneyBreadcrumbsChallengeQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyBreadcrumbsChallengeQuery,
+  SchemaTypes.JourneyBreadcrumbsChallengeQueryVariables
+>;
+export function refetchJourneyBreadcrumbsChallengeQuery(
+  variables: SchemaTypes.JourneyBreadcrumbsChallengeQueryVariables
+) {
+  return { query: JourneyBreadcrumbsChallengeDocument, variables: variables };
+}
+
+export const JourneyBreadcrumbsOpportunityDocument = gql`
+  query JourneyBreadcrumbsOpportunity($spaceNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      opportunity(ID: $opportunityNameId) {
+        id
+        profile {
+          ...JourneyBreadcrumbsProfile
+        }
+      }
+    }
+  }
+  ${JourneyBreadcrumbsProfileFragmentDoc}
+`;
+
+/**
+ * __useJourneyBreadcrumbsOpportunityQuery__
+ *
+ * To run a query within a React component, call `useJourneyBreadcrumbsOpportunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyBreadcrumbsOpportunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyBreadcrumbsOpportunityQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *   },
+ * });
+ */
+export function useJourneyBreadcrumbsOpportunityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsOpportunityQuery,
+    SchemaTypes.JourneyBreadcrumbsOpportunityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.JourneyBreadcrumbsOpportunityQuery,
+    SchemaTypes.JourneyBreadcrumbsOpportunityQueryVariables
+  >(JourneyBreadcrumbsOpportunityDocument, options);
+}
+
+export function useJourneyBreadcrumbsOpportunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyBreadcrumbsOpportunityQuery,
+    SchemaTypes.JourneyBreadcrumbsOpportunityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.JourneyBreadcrumbsOpportunityQuery,
+    SchemaTypes.JourneyBreadcrumbsOpportunityQueryVariables
+  >(JourneyBreadcrumbsOpportunityDocument, options);
+}
+
+export type JourneyBreadcrumbsOpportunityQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsOpportunityQuery>;
+export type JourneyBreadcrumbsOpportunityLazyQueryHookResult = ReturnType<
+  typeof useJourneyBreadcrumbsOpportunityLazyQuery
+>;
+export type JourneyBreadcrumbsOpportunityQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyBreadcrumbsOpportunityQuery,
+  SchemaTypes.JourneyBreadcrumbsOpportunityQueryVariables
+>;
+export function refetchJourneyBreadcrumbsOpportunityQuery(
+  variables: SchemaTypes.JourneyBreadcrumbsOpportunityQueryVariables
+) {
+  return { query: JourneyBreadcrumbsOpportunityDocument, variables: variables };
+}
+
 export const OpportunityPageDocument = gql`
   query opportunityPage($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -18678,68 +18900,6 @@ export type OpportunityInnovationFlowQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityInnovationFlowQuery(variables: SchemaTypes.OpportunityInnovationFlowQueryVariables) {
   return { query: OpportunityInnovationFlowDocument, variables: variables };
-}
-
-export const OpportunityNameDocument = gql`
-  query opportunityName($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      opportunity(ID: $opportunityId) {
-        id
-        profile {
-          id
-          displayName
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOpportunityNameQuery__
- *
- * To run a query within a React component, call `useOpportunityNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityNameQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityNameQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>(
-    OpportunityNameDocument,
-    options
-  );
-}
-
-export function useOpportunityNameLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityNameQuery, SchemaTypes.OpportunityNameQueryVariables>(
-    OpportunityNameDocument,
-    options
-  );
-}
-
-export type OpportunityNameQueryHookResult = ReturnType<typeof useOpportunityNameQuery>;
-export type OpportunityNameLazyQueryHookResult = ReturnType<typeof useOpportunityNameLazyQuery>;
-export type OpportunityNameQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityNameQuery,
-  SchemaTypes.OpportunityNameQueryVariables
->;
-export function refetchOpportunityNameQuery(variables: SchemaTypes.OpportunityNameQueryVariables) {
-  return { query: OpportunityNameDocument, variables: variables };
 }
 
 export const OpportunityProfileInfoDocument = gql`
@@ -20140,55 +20300,6 @@ export function refetchSpaceInnovationFlowTemplatesQuery(
   variables: SchemaTypes.SpaceInnovationFlowTemplatesQueryVariables
 ) {
   return { query: SpaceInnovationFlowTemplatesDocument, variables: variables };
-}
-
-export const SpaceNameDocument = gql`
-  query spaceName($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      ...SpaceName
-    }
-  }
-  ${SpaceNameFragmentDoc}
-`;
-
-/**
- * __useSpaceNameQuery__
- *
- * To run a query within a React component, call `useSpaceNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceNameQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceNameQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceNameQuery, SchemaTypes.SpaceNameQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceNameQuery, SchemaTypes.SpaceNameQueryVariables>(SpaceNameDocument, options);
-}
-
-export function useSpaceNameLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceNameQuery, SchemaTypes.SpaceNameQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceNameQuery, SchemaTypes.SpaceNameQueryVariables>(
-    SpaceNameDocument,
-    options
-  );
-}
-
-export type SpaceNameQueryHookResult = ReturnType<typeof useSpaceNameQuery>;
-export type SpaceNameLazyQueryHookResult = ReturnType<typeof useSpaceNameLazyQuery>;
-export type SpaceNameQueryResult = Apollo.QueryResult<SchemaTypes.SpaceNameQuery, SchemaTypes.SpaceNameQueryVariables>;
-export function refetchSpaceNameQuery(variables: SchemaTypes.SpaceNameQueryVariables) {
-  return { query: SpaceNameDocument, variables: variables };
 }
 
 export const ChallengeCreatedDocument = gql`

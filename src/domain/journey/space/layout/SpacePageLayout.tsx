@@ -1,5 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
-import SpacePageBanner from './SpacePageBanner';
+import { EntityPageLayout } from '../../common/EntityPageLayout';
 import SpaceTabs from './SpaceTabs';
 import React, { PropsWithChildren } from 'react';
 import SearchDialog from '../../../platform/search/SearchDialog';
@@ -7,9 +6,15 @@ import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { useSpace } from '../SpaceContext/useSpace';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import SpacePageBanner from './SpacePageBanner';
 
-export interface SpacePageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
+export interface SpacePageLayoutProps {
+  currentSection: EntityPageSection;
   searchDisabled?: boolean;
   unauthorizedDialogDisabled?: boolean;
 }
@@ -17,13 +22,35 @@ export interface SpacePageLayoutProps
 const SpacePageLayout = ({
   searchDisabled = false,
   unauthorizedDialogDisabled = false,
+  currentSection,
   children,
-  ...props
 }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const { spaceNameId } = useSpace();
+  const { spaceNameId, spaceId, profile, loading } = useSpace();
+
+  const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
+
+  const ribbon = useInnovationHubJourneyBannerRibbon({
+    spaceId,
+    journeyTypeName: 'space',
+  });
 
   return (
-    <EntityPageLayout {...props} pageBannerComponent={SpacePageBanner} tabsComponent={SpaceTabs} entityTypeName="space">
+    <EntityPageLayout
+      currentSection={currentSection}
+      breadcrumbs={<JourneyBreadcrumbs />}
+      pageBanner={
+        <SpacePageBanner
+          title={profile.displayName}
+          tagline={profile?.tagline}
+          loading={loading}
+          bannerUrl={visual?.uri}
+          bannerAltText={visual?.alternativeText}
+          ribbon={ribbon}
+          journeyTypeName="space"
+        />
+      }
+      tabsComponent={SpaceTabs}
+    >
       {children}
       {!searchDisabled && <SearchDialog searchRoute={`${buildSpaceUrl(spaceNameId)}/search`} />}
       <JourneyUnauthorizedDialogContainer journeyTypeName="space">

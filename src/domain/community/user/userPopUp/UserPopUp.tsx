@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
 import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import Loading from '../../../../core/ui/loading/Loading';
-import Avatar from '../../../../core/ui/image/Avatar';
+import AlkemioAvatar from '../../../../core/ui/image/AlkemioAvatar';
 import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
 import UserPopUpDelimiter from './UserPopUpDelimiter';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
@@ -128,7 +128,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
       <DialogTitle id="user-dialog-title" onClose={onHide}>
         <div className={styles.header}>
           <div className={styles.profile}>
-            <Avatar src={user?.profile.visual?.uri} size={'lg'} />
+            <AlkemioAvatar src={user?.profile.avatar?.uri} size={'lg'} />
             <div className={styles.userName}>
               <WrapperTypography variant={'h3'}>{user?.profile.displayName}</WrapperTypography>
             </div>

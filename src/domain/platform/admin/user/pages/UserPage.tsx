@@ -157,7 +157,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
         onSave={handleSave}
         title={title}
         user={user}
-        avatar={data?.user?.profile.visual}
+        avatar={data?.user?.profile.avatar}
         onDelete={() => setModalOpened(true)}
       />
       <UserRemoveModal

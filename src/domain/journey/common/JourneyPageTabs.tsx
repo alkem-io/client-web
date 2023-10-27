@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import HeaderNavigationTabs from '../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
@@ -30,8 +30,8 @@ import {
 import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../../shared/utils/getEntityColor';
-import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
-import PlatformHelpButton from '../../../main/ui/helpButton/PlatformHelpButton';
+import { EntityTabsProps } from './EntityPageLayout';
+import { gutters } from '../../../core/ui/grid/utils';
 
 interface TabDefinition {
   label: ReactNode;
@@ -48,8 +48,7 @@ export interface SubEntityTabDefinition extends TabDefinition {
   disabled?: boolean;
 }
 
-export interface EntityPageTabsProps {
-  currentTab: EntityPageSection;
+export interface EntityPageTabsProps extends EntityTabsProps {
   showSettings: boolean;
   settingsUrl: string;
   entityTypeName: EntityTypeName;
@@ -57,7 +56,6 @@ export interface EntityPageTabsProps {
   // TODO remove rootUrl after refactoring EntitySettingsLayout
   rootUrl: string;
   shareUrl: string;
-  mobile?: boolean;
   actions?: ActionDefinition[];
   hideAbout?: boolean;
 }
@@ -84,6 +82,7 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
   shareUrl,
   mobile,
   actions,
+  onMenuOpen,
   hideAbout = false,
 }) => {
   const { t } = useTranslation();
@@ -118,10 +117,14 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  useLayoutEffect(() => {
+    onMenuOpen?.(isDrawerOpen);
+  }, [isDrawerOpen]);
+
   if (mobile) {
     return (
       <>
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3} square>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }} elevation={3} square>
           <BottomNavigation
             showLabels
             value={currentTab}
@@ -240,11 +243,6 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
             </List>
           </Drawer>
         )}
-        <FloatingActionButtons
-          bottom={theme => theme.spacing(10)}
-          visible={!isDrawerOpen}
-          floatingActions={<PlatformHelpButton />}
-        />
       </>
     );
   }

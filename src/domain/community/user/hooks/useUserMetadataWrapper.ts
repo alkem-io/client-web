@@ -5,7 +5,7 @@ import {
   AuthorizationPrivilege,
   InvitationForRoleResult,
   MyPrivilegesFragment,
-  User,
+  UserDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { InvitationItem } from '../providers/UserProvider/InvitationItem';
 import { Stateful } from '../../../shared/types/Stateful';
@@ -13,7 +13,7 @@ import { Stateful } from '../../../shared/types/Stateful';
 export interface PendingApplication extends ContributionItem, Stateful {}
 
 export interface UserMetadata {
-  user: User;
+  user: UserDetailsFragment;
   hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;
   keywords: string[];
   skills: string[];
@@ -48,7 +48,7 @@ const getPendingInvitations = (invitationsData: InvitationForRoleResult[]) => {
 };
 
 export const toUserMetadata = (
-  user: Omit<User, 'agent'> | undefined,
+  user: UserDetailsFragment | undefined,
   applications: ApplicationForRoleResult[],
   invitations: InvitationForRoleResult[],
   platformLevelAuthorization: MyPrivilegesFragment | undefined

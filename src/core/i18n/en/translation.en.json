@@ -140,7 +140,9 @@
     "moveToTop": "Move to top",
     "moveToBottom": "Move to bottom",
     "use": "Use",
-    "fullscreen": "Toggle full screen"
+    "fullscreen": "Toggle full screen",
+    "changeLanguage": "Change language",
+    "getHelp": "Get help"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -264,6 +266,7 @@
     "admin": "Admin",
     "member": "Member",
     "members": "Members",
+    "administration": "Administration",
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
@@ -275,7 +278,7 @@
     "people": "People",
     "settings": "Settings",
     "space-settings": "$t(common.settings)",
-    "search": "Search...",
+    "search": "Search",
     "storage": "Storage",
     "reference": "Reference",
     "references": "References",
@@ -801,6 +804,19 @@
     }
   },
   "components": {
+    "search": {
+      "searchScope": {
+        "full": "Search In:",
+        "short": "in:"
+      },
+      "scope": {
+        "platform": "Entire platform",
+        "space": "{{displayName}}"
+      }
+    },
+    "poweredBy": {
+      "label": "Powered by"
+    },
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
@@ -1505,6 +1521,7 @@
     },
     "innovationLibrary": {
       "shortName": "Library",
+      "fullName": "Best practices",
       "title": "Innovation Library on Alkemio is here to guide your way to impact",
       "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
@@ -1758,10 +1775,11 @@
       }
     },
     "contributors": {
+      "fullName": "Find contributors",
       "search": {
         "title": "Find talent and expertise!",
         "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
-        "placeholder": "Search..."
+        "placeholder": "Search…"
       },
       "organizations": {
         "title": "Organizations"
@@ -1771,7 +1789,9 @@
       }
     },
     "search": {
-      "placeholder": "Search...",
+      "title": "Search",
+      "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
+      "placeholder": "Search…",
       "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "search-suggestions": "Search suggestions:",
@@ -1808,6 +1828,7 @@
       "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
+      "fullName": "Explore challenges",
       "search": {
         "title": "Explore Public Challenges",
         "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge Spaces. Here you can find all challenges from the public Spaces. Challenges from private Spaces are visible when you are signed in and a member of that particular Space.",
@@ -1845,6 +1866,8 @@
       "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
+      "title": "My Dashboard",
+      "subtitle": "Ready to make some impact?",
       "sections": {
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",
@@ -2108,6 +2131,7 @@
       "header": "User Settings"
     },
     "user-profile": {
+      "title": "My profile",
       "tooltips": {
         "settings": "User profile settings"
       },
@@ -2182,7 +2206,9 @@
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     },
     "forum": {
-      "title": "Questions, suggestions, or feedback? Get in touch with the Alkemio team or other users of the platform!",
+      "title": "Questions, suggestions, or feedback?",
+      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
+      "fullName": "Community help",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
     }

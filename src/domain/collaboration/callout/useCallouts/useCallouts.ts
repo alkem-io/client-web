@@ -8,15 +8,15 @@ import {
 import {
   AuthorizationPrivilege,
   Callout,
+  CalloutDisplayLocation,
+  CalloutsQueryVariables,
   CalloutType,
   CalloutVisibility,
   WhiteboardDetailsFragment,
   WhiteboardRtDetailsFragment,
   CommentsWithMessagesFragment,
   ContributeTabPostFragment,
-  CalloutsQueryVariables,
   ReferenceDetailsFragment,
-  CalloutDisplayLocation,
   CalloutContributionPolicy,
   CalloutContribution,
 } from '../../../../core/apollo/generated/graphql-schema';

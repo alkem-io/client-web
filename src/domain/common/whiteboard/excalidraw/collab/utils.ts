@@ -42,12 +42,6 @@ export const arrayToMapWithIndex = <T extends { id: string }>(elements: readonly
     return acc;
   }, new Map<string, [element: T, index: number]>());
 
-export const preventUnload = (event: BeforeUnloadEvent) => {
-  event.preventDefault();
-  // NOTE: modern browsers no longer allow showing a custom message here
-  event.returnValue = '';
-};
-
 export const bytesToHexString = (bytes: Uint8Array) => {
   return Array.from(bytes)
     .map(byte => `0${byte.toString(16)}`.slice(-2))

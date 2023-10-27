@@ -1,12 +1,11 @@
-import { createContext, PropsWithChildren, useEffect, useState, useMemo, useContext } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { ApmBase } from '@elastic/apm-rum';
 import { useApmInit } from '../useApmInit';
-import { useUserContext } from '../../../../domain/community/user';
-import { User } from '../../../apollo/generated/graphql-schema';
+import { UserMetadata, useUserContext } from '../../../../domain/community/user';
 
 export interface ApmContextProps {
   apm?: ApmBase;
-  setUser: (user: User & { isAuthenticated: boolean }) => void;
+  setUser: (user: UserMetadata['user'] & { isAuthenticated: boolean }) => void;
 }
 
 export const ApmContext = createContext<ApmContextProps>({
@@ -18,7 +17,7 @@ interface Props extends PropsWithChildren<{}> {}
 
 export const ApmProvider = ({ children }: Props) => {
   const [apm, setApm] = useState<ApmBase | undefined>();
-  const [user, setUser] = useState<(User & { isAuthenticated: boolean }) | undefined>();
+  const [user, setUser] = useState<(UserMetadata['user'] & { isAuthenticated: boolean }) | undefined>();
 
   const initFn = useApmInit(user);
 
