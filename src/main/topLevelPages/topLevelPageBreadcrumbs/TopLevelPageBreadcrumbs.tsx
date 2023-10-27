@@ -8,7 +8,7 @@ const TopLevelPageBreadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expanda
   <ItemProps extends Expandable>({ children, ...props }: BreadcrumbsProps<ItemProps>, ref) => {
     return (
       <Breadcrumbs ref={ref} {...props}>
-        <BreadcrumbsRootItem key="_root" />
+        <BreadcrumbsRootItem />
         {children}
       </Breadcrumbs>
     );
