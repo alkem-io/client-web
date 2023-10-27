@@ -14,12 +14,14 @@ export const gutters =
   (theme: Theme) =>
     theme.spacing(GUTTER_MUI * num);
 
-export interface UseGridItemProvided {
-  (columns?: number): {
-    width: string;
-    flexGrow: 0;
-    flexShrink: 0;
-  };
+export interface GridItemStyle {
+  width: string;
+  flexGrow: 0;
+  flexShrink: 0;
+}
+
+interface UseGridItemProvided {
+  (columns?: number): GridItemStyle;
 }
 
 export const useGridItem = (): UseGridItemProvided => {

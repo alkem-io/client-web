@@ -1,4 +1,4 @@
-import Avatar from '../../../../core/ui/image/Avatar';
+import AlkemioAvatar from '../../../../core/ui/image/AlkemioAvatar';
 import { Box } from '@mui/material';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import { styled } from '@mui/styles';
@@ -49,7 +49,7 @@ const LeadOrganizationCard: FC<LeadOrganizationCardProps> = props => {
         <LeadOrganizationCardContainer>
           <LinkNoUnderline to={organizationUrl}>
             <Box display="flex" gap={2}>
-              <Avatar src={avatarSrc} name={displayName} size="md2" />
+              <AlkemioAvatar src={avatarSrc} name={displayName} size="md2" />
               <Box>
                 <Text>{displayName}</Text>
                 <LocationCaption city={city} country={country} />

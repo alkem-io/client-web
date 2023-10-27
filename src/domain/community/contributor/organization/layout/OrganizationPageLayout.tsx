@@ -1,19 +1,40 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
-import OrganizationPageBanner from './OrganizationPageBanner';
-import { PropsWithChildren } from 'react';
-import OrganizationTabs from './OrganizationTabs';
+import OrganizationPageBanner from '../../../organization/layout/OrganizationPageBanner';
+import React, { PropsWithChildren } from 'react';
+import TopLevelPageBreadcrumbs from '../../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { Diversity3Outlined } from '@mui/icons-material';
+import { buildOrganizationUrl } from '../../../../../main/routing/urlBuilders';
+import TopLevelDesktopLayout from '../../../../../main/ui/layout/TopLevelDesktopLayout';
+import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 
-interface OrganizationPageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
+interface OrganizationPageLayoutProps {}
 
 const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutProps>) => {
   return (
-    <EntityPageLayout
-      {...props}
-      pageBannerComponent={OrganizationPageBanner}
-      tabsComponent={OrganizationTabs}
-      entityTypeName="organization"
-    />
+    <OrganizationPageContainer>
+      {({ organization, permissions, handleSendMessage }, { loading }) => (
+        <TopLevelDesktopLayout
+          breadcrumbs={
+            <TopLevelPageBreadcrumbs
+              loading={loading}
+              avatar={organization?.profile.avatar}
+              iconComponent={Diversity3Outlined}
+              uri={organization?.nameID ? buildOrganizationUrl(organization?.nameID) : ''}
+            >
+              {organization?.profile.displayName}
+            </TopLevelPageBreadcrumbs>
+          }
+          header={
+            <OrganizationPageBanner
+              organization={organization}
+              canEdit={permissions.canEdit}
+              onSendMessage={handleSendMessage}
+              loading={loading}
+            />
+          }
+          {...props}
+        />
+      )}
+    </OrganizationPageContainer>
   );
 };
 

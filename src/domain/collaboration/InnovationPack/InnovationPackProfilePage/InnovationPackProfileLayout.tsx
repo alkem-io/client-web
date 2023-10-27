@@ -1,39 +1,65 @@
-import React, { ComponentType, PropsWithChildren } from 'react';
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../journey/common/EntityPageLayout';
-import InnovationPageTabs, { InnovationPageTabsProps } from './InnovationPageTabs';
-import InnovationPackBanner, { InnovationPackBannerProps } from './InnovationPackBanner';
+import React, { PropsWithChildren, useMemo } from 'react';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { AssignmentIndOutlined } from '@mui/icons-material';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import ProfilePageBanner, { ProfilePageBannerProps } from '../../../common/profile/ProfilePageBanner';
+import { buildInnovationPackSettingsUrl, buildInnovationPackUrl } from '../urlBuilders';
+import { Visual } from '../../../common/visual/Visual';
 
-interface InnovationPackProfileLayoutProps
-  extends InnovationPackBannerProps,
-    Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
+interface InnovationPackProfileLayoutProps {
+  innovationPack:
+    | (Identifiable & {
+        nameID: string;
+        profile: ProfilePageBannerProps['profile'];
+        provider?: {
+          profile: {
+            displayName: string;
+            avatar?: Visual;
+          };
+        };
+      })
+    | undefined;
   showSettings: boolean;
+  loading?: boolean;
 }
 
 const InnovationPackProfileLayout = ({
-  displayName,
-  tagline,
-  providerDisplayName,
-  providerUri,
-  providerVisualUri,
+  innovationPack,
   showSettings,
+  loading,
   ...props
 }: PropsWithChildren<InnovationPackProfileLayoutProps>) => {
-  const Tabs = InnovationPageTabs as ComponentType<Partial<InnovationPageTabsProps>>;
+  const profile = useMemo(() => {
+    return {
+      ...innovationPack?.profile,
+      tagline: innovationPack?.provider?.profile.displayName,
+      avatar: innovationPack?.provider?.profile.avatar,
+    } as ProfilePageBannerProps['profile'];
+  }, [innovationPack]);
 
   return (
-    <EntityPageLayout
-      {...props}
-      pageBanner={
-        <InnovationPackBanner
-          displayName={displayName}
-          tagline={tagline}
-          providerDisplayName={providerDisplayName}
-          providerUri={providerUri}
-          providerVisualUri={providerVisualUri}
+    <TopLevelDesktopLayout
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs
+          loading={loading}
+          iconComponent={AssignmentIndOutlined}
+          uri={innovationPack?.nameID ? buildInnovationPackUrl(innovationPack?.nameID) : ''}
+        >
+          {innovationPack?.profile?.displayName}
+        </TopLevelPageBreadcrumbs>
+      }
+      header={
+        <ProfilePageBanner
+          entityId={innovationPack?.id}
+          profile={profile}
+          loading={loading}
+          settingsUri={
+            showSettings && innovationPack?.nameID ? buildInnovationPackSettingsUrl(innovationPack?.nameID) : undefined
+          }
         />
       }
-      tabs={<Tabs showSettings={showSettings} />}
-      entityTypeName="innovationPack"
+      {...props}
     />
   );
 };

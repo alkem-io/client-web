@@ -5,12 +5,12 @@ import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { JourneyTypeName, getJourneyTypeName } from '../../journey/JourneyTypeName';
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { useUserContext } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { ContributionItem } from '../user/contribution';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import { buildJourneyUrl } from '../../../main/routing/urlBuilders';
+import { buildJourneyUrl, JourneyLocation } from '../../../main/routing/urlBuilders';
 
 interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
@@ -55,6 +55,18 @@ interface InvitationHydratorProps {
   withJourneyDetails?: boolean;
   children: (provided: InvitationHydratorProvided) => ReactNode;
 }
+
+type ChildJourneyLocation = Pick<JourneyLocation, 'challengeNameId' | 'opportunityNameId'>;
+
+const getChildJourneyTypeName = (journeyLocation: ChildJourneyLocation): JourneyTypeName => {
+  if (journeyLocation.opportunityNameId) {
+    return 'opportunity';
+  }
+  if (journeyLocation.challengeNameId) {
+    return 'challenge';
+  }
+  return 'space';
+};
 
 export const InvitationHydrator = ({ invitation, withJourneyDetails = false, children }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
@@ -103,7 +115,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       createdDate: invitation.createdDate,
       userDisplayName: createdBy.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getJourneyTypeName({
+      journeyTypeName: getChildJourneyTypeName({
         challengeNameId: invitation.challengeId,
         opportunityNameId: invitation.opportunityId,
       }),
@@ -166,7 +178,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
     return {
       id: application.id,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getJourneyTypeName({
+      journeyTypeName: getChildJourneyTypeName({
         challengeNameId: application.challengeId,
         opportunityNameId: application.opportunityId,
       }),

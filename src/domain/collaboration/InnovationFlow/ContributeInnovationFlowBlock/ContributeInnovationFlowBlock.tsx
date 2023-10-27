@@ -19,17 +19,22 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
   const { t } = useTranslation();
 
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-  const journeyTypeName = getJourneyTypeName({ challengeNameId, opportunityNameId });
+
+  if (!spaceNameId) {
+    throw new Error('Must be under a Space.');
+  }
+
+  const journeyTypeName = getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId })!;
 
   const { data, loading } = useInnovationFlowBlockQuery({
     variables: {
-      spaceNameId: spaceNameId!,
+      spaceNameId,
       challengeNameId,
       opportunityNameId,
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: !spaceNameId || (!challengeNameId && !opportunityNameId),
+    skip: !challengeNameId && !opportunityNameId,
   });
 
   const innovationFlow = data?.space.challenge?.innovationFlow ?? data?.space.opportunity?.innovationFlow;

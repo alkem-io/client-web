@@ -1,0 +1,50 @@
+query JourneyBreadcrumbsSpace($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    #nameID
+    profile {
+      id
+      displayName
+      avatar: visual(type: BANNER) {
+        id
+        ...VisualUri
+      }
+    }
+  }
+}
+
+query JourneyBreadcrumbsChallenge($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    #nameID
+    challenge(ID: $challengeNameId) {
+      id
+      #nameID
+      profile {
+        ...JourneyBreadcrumbsProfile
+      }
+    }
+  }
+}
+
+query JourneyBreadcrumbsOpportunity($spaceNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      profile {
+        ...JourneyBreadcrumbsProfile
+      }
+    }
+  }
+}
+
+
+fragment JourneyBreadcrumbsProfile on Profile {
+  id
+  displayName
+  avatar: visual(type: AVATAR) {
+    id
+    ...VisualUri
+  }
+}

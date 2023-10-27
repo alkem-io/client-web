@@ -1,17 +1,16 @@
 import React from 'react';
-import { Box, Link } from '@mui/material';
-import { PageTitle, Text } from '../../../core/ui/typography';
-import TopLevelDesktopLayout from '../../ui/layout/TopLevelDesktopLayout';
+import { Link } from '@mui/material';
+import TopLevelPageLayout from '../../ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { useInnovationLibraryQuery } from '../../../core/apollo/generated/apollo-hooks';
 import DashboardInnovationPacks from '../../../domain/collaboration/InnovationPack/DashboardInnovationPacks/DashboardInnovationPacks';
 import DashboardLibraryTemplates from '../../../domain/collaboration/InnovationPack/DashboardLibraryTemplates/DashboardLibraryTemplates';
 import useInnovationPackCardProps from '../../../domain/collaboration/InnovationPack/DashboardInnovationPacks/useInnovationPackCardProps';
 import useLibraryTemplateCardProps from '../../../domain/collaboration/InnovationPack/DashboardLibraryTemplates/useLibraryTemplateCardProps';
-import { gutters } from '../../../core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import { TranslateWithElements } from '../../../domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '../../../domain/platform/config/useConfig';
+import InnovationLibraryIcon from './InnovationLibraryIcon';
 
 const InnovationLibraryPage = () => {
   const { data: innovationLibraryData } = useInnovationLibraryQuery();
@@ -27,11 +26,11 @@ const InnovationLibraryPage = () => {
   });
 
   return (
-    <TopLevelDesktopLayout>
-      <Box flexGrow={1}>
-        <PageTitle lineHeight={gutters(2)}>{t('pages.innovationLibrary.title')}</PageTitle>
-        <Text>{subtitleText}</Text>
-      </Box>
+    <TopLevelPageLayout
+      title={t('pages.innovationLibrary.title')}
+      subtitle={subtitleText}
+      iconComponent={InnovationLibraryIcon}
+    >
       <PageContentColumn columns={12}>
         <DashboardInnovationPacks
           headerTitle={t('pages.innovationLibrary.innovationPacks.headerTitle')}
@@ -44,7 +43,7 @@ const InnovationLibraryPage = () => {
           templates={templates}
         />
       </PageContentColumn>
-    </TopLevelDesktopLayout>
+    </TopLevelPageLayout>
   );
 };
 

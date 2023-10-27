@@ -3,10 +3,11 @@ import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import OrganizationPageBanner from '../../../community/contributor/organization/layout/OrganizationPageBanner';
+import OrganizationPageBanner from '../../../community/organization/layout/OrganizationPageBanner';
 import OrganizationTabs from '../../../community/contributor/organization/layout/OrganizationTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import OrganizationPageContainer from '../../../community/contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
 
 const tabs: TabDefinition<SettingsSection>[] = [
   {
@@ -31,6 +32,21 @@ interface OrganizationAdminLayoutProps {
   tabRoutePrefix?: string;
 }
 
+const AutonomousBanner = () => {
+  return (
+    <OrganizationPageContainer>
+      {({ organization, permissions, handleSendMessage }, { loading }) => (
+        <OrganizationPageBanner
+          organization={organization}
+          canEdit={permissions.canEdit}
+          onSendMessage={handleSendMessage}
+          loading={loading}
+        />
+      )}
+    </OrganizationPageContainer>
+  );
+};
+
 const OrganizationAdminLayout: FC<OrganizationAdminLayoutProps> = props => {
   const entityAttrs = useOrganization();
 
@@ -38,7 +54,7 @@ const OrganizationAdminLayout: FC<OrganizationAdminLayoutProps> = props => {
     <EntitySettingsLayout
       entityTypeName="organization"
       tabs={tabs}
-      pageBannerComponent={OrganizationPageBanner}
+      pageBannerComponent={AutonomousBanner}
       tabsComponent={OrganizationTabs}
       {...entityAttrs}
       {...props}

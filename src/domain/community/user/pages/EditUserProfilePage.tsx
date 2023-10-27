@@ -1,11 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { useResolvedPath } from 'react-router-dom';
 import { UserForm } from '../userForm/UserForm';
 import Loading from '../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import {
   useCreateTagsetOnProfileMutation,
@@ -19,20 +17,19 @@ import { logger } from '../../../../core/logging/winston/logger';
 import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { PageProps } from '../../../shared/types/PageProps';
 import { getUpdateUserInput } from '../utils/getUpdateUserInput';
-import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import UserPageLayout from '../layout/UserPageLayout';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 interface EditUserProfilePageProps extends PageProps {}
 
-export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => {
+export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
   const navigate = useNavigate();
   const { userNameId = '' } = useUrlParams();
-  const { pathname: url } = useResolvedPath('.');
 
   const { user: currentUser } = useUserContext();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);
-  useUpdateNavigation({ currentPaths });
 
   const { data, loading } = useUserQuery({
     variables: {
@@ -93,15 +90,21 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
 
   return (
     <StorageConfigContextProvider locationType="user" userId={user.nameID}>
-      <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
-        <UserForm
-          title={'Profile'}
-          user={{ ...user } as UserModel}
-          avatar={user?.profile.visual}
-          editMode={editMode}
-          onSave={handleSave}
-        />
-      </UserSettingsLayout>
+      <UserPageLayout>
+        <PageContent>
+          <PageContentColumn columns={12}>
+            <PageContentBlock>
+              <UserForm
+                title={'Profile'}
+                user={{ ...user } as UserModel}
+                avatar={user?.profile.visual}
+                editMode={editMode}
+                onSave={handleSave}
+              />
+            </PageContentBlock>
+          </PageContentColumn>
+        </PageContent>
+      </UserPageLayout>
     </StorageConfigContextProvider>
   );
 };

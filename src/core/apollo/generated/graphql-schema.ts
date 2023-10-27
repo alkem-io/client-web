@@ -18761,7 +18761,7 @@ export type OrganizationInfoFragment = {
     displayName: string;
     description?: string | undefined;
     tagline: string;
-    visual?:
+    avatar?:
       | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
       | undefined;
     tagsets?:
@@ -18844,7 +18844,7 @@ export type OrganizationInfoQuery = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
-      visual?:
+      avatar?:
         | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
         | undefined;
       tagsets?:
@@ -19762,7 +19762,7 @@ export type UserDetailsFragment = {
     tagline: string;
     description?: string | undefined;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-    visual?:
+    avatar?:
       | {
           __typename?: 'Visual';
           id: string;
@@ -19888,7 +19888,7 @@ export type CreateUserMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -19949,7 +19949,7 @@ export type CreateUserNewRegistrationMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20084,7 +20084,7 @@ export type UpdateUserMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20158,7 +20158,7 @@ export type UserQuery = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20250,7 +20250,7 @@ export type UserProfileQuery = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20396,7 +20396,7 @@ export type UserProviderQuery = {
             tagline: string;
             description?: string | undefined;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-            visual?:
+            avatar?:
               | {
                   __typename?: 'Visual';
                   id: string;
@@ -21942,26 +21942,6 @@ export type ChallengeInnovationFlowQuery = {
   };
 };
 
-export type ChallengeNameQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeNameQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    };
-  };
-};
-
 export type ChallengeProfileInfoQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -23236,6 +23216,98 @@ export type JourneyPrivilegesQuery = {
   };
 };
 
+export type JourneyBreadcrumbsInnovationHubQueryVariables = Exact<{ [key: string]: never }>;
+
+export type JourneyBreadcrumbsInnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyBreadcrumbsSpaceQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  };
+};
+
+export type JourneyBreadcrumbsChallengeQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyBreadcrumbsChallengeQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    };
+  };
+};
+
+export type JourneyBreadcrumbsOpportunityQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyBreadcrumbsOpportunityQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    };
+  };
+};
+
+export type JourneyBreadcrumbsProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type OpportunityPageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
@@ -24090,24 +24162,6 @@ export type OpportunityInnovationFlowQuery = {
               | undefined;
           }
         | undefined;
-    };
-  };
-};
-
-export type OpportunityNameQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityNameQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
     };
   };
 };
@@ -25746,13 +25800,6 @@ export type SpaceDetailsProviderFragment = {
     | undefined;
 };
 
-export type SpaceNameFragment = {
-  __typename?: 'Space';
-  id: string;
-  nameID: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
 export type CreateSpaceMutationVariables = Exact<{
   input: CreateSpaceInput;
 }>;
@@ -26077,20 +26124,6 @@ export type SpaceInnovationFlowTemplatesQuery = {
           }>;
         }
       | undefined;
-  };
-};
-
-export type SpaceNameQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-}>;
-
-export type SpaceNameQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 

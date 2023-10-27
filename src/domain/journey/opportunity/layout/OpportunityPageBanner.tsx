@@ -1,16 +1,15 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
-import ChildJourneyPageBanner from '../../common/ChildJourneyPageBanner/ChildJourneyPageBanner';
+import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import { useChallenge } from '../../challenge/hooks/useChallenge';
+import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
 
-const OpportunityPageBanner: FC = () => {
+const OpportunityPageBanner = (props: BasePageBannerProps) => {
   const { profile: spaceProfile } = useSpace();
-  const { profile: challengeProfile } = useChallenge();
-  const { opportunity, spaceId, spaceNameId, challengeNameId } = useOpportunity();
+  const { opportunity, spaceId } = useOpportunity();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, opportunity?.profile?.visuals);
   const cardImage = getVisualByType(VisualName.CARD, opportunity?.profile?.visuals);
@@ -25,22 +24,11 @@ const OpportunityPageBanner: FC = () => {
       banner={banner}
       ribbon={ribbon}
       journeyTypeName="opportunity"
-      journeyAvatar={avatar ?? cardImage}
-      journeyTags={opportunity?.profile.tagset?.tags}
-      journeyDisplayName={opportunity?.profile.displayName ?? ''}
-      journeyTagline={opportunity?.profile.tagline ?? ''}
-      parentJourneys={[
-        {
-          displayName: spaceProfile.displayName,
-          journeyLocation: { spaceNameId },
-          journeyTypeName: 'space',
-        },
-        {
-          displayName: challengeProfile.displayName,
-          journeyLocation: { spaceNameId, challengeNameId },
-          journeyTypeName: 'challenge',
-        },
-      ]}
+      avatar={avatar ?? cardImage}
+      tags={opportunity?.profile.tagset?.tags}
+      displayName={opportunity?.profile.displayName ?? ''}
+      tagline={opportunity?.profile.tagline ?? ''}
+      {...props}
     />
   );
 };
