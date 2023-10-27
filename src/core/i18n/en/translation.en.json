@@ -124,7 +124,6 @@
     "change-template": "Change template",
     "find-template": "Find template",
     "change": "Change",
-    "library": "Library",
     "share": "Share",
     "preview": "Preview",
     "import": "Import",
@@ -275,6 +274,7 @@
     "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
+    "library": "Library",
     "people": "People",
     "settings": "Settings",
     "space-settings": "$t(common.settings)",
@@ -1528,7 +1528,7 @@
       "no-posts": "No Posts found"
     },
     "innovationLibrary": {
-      "shortName": "Library",
+      "shortName": "$t(common.library)",
       "fullName": "Best practices",
       "title": "Innovation Library on Alkemio is here to guide your way to impact",
       "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
@@ -1784,6 +1784,7 @@
     },
     "contributors": {
       "fullName": "Find contributors",
+      "shortName": "$t(common.contributors)",
       "search": {
         "title": "Find talent and expertise!",
         "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
@@ -1837,6 +1838,7 @@
     },
     "challenge-explorer": {
       "fullName": "Explore challenges",
+      "shortName": "$t(common.challenges)",
       "search": {
         "title": "Explore Public Challenges",
         "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge Spaces. Here you can find all challenges from the public Spaces. Challenges from private Spaces are visible when you are signed in and a member of that particular Space.",
@@ -2217,6 +2219,7 @@
       "title": "Questions, suggestions, or feedback?",
       "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
       "fullName": "Community help",
+      "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
     }

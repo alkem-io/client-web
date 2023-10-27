@@ -1,11 +1,13 @@
 import React, { PropsWithChildren, useMemo } from 'react';
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { AssignmentIndOutlined } from '@mui/icons-material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import ProfilePageBanner, { ProfilePageBannerProps } from '../../../common/profile/ProfilePageBanner';
 import { buildInnovationPackSettingsUrl, buildInnovationPackUrl } from '../urlBuilders';
 import { Visual } from '../../../common/visual/Visual';
+import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import { useTranslation } from 'react-i18next';
+import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 
 interface InnovationPackProfileLayoutProps {
   innovationPack:
@@ -38,15 +40,22 @@ const InnovationPackProfileLayout = ({
     } as ProfilePageBannerProps['profile'];
   }, [innovationPack]);
 
+  const { t } = useTranslation();
+
   return (
     <TopLevelLayout
       breadcrumbs={
-        <TopLevelPageBreadcrumbs
-          loading={loading}
-          iconComponent={AssignmentIndOutlined}
-          uri={innovationPack?.nameID ? buildInnovationPackUrl(innovationPack?.nameID) : ''}
-        >
-          {innovationPack?.profile?.displayName}
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem uri="/innovation-library" iconComponent={InnovationLibraryIcon}>
+            {t('pages.innovationLibrary.shortName')}
+          </BreadcrumbsItem>
+          <BreadcrumbsItem
+            uri={innovationPack?.nameID && buildInnovationPackUrl(innovationPack?.nameID)}
+            iconComponent={InnovationLibraryIcon}
+            loading={loading}
+          >
+            {innovationPack?.profile?.displayName}
+          </BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }
       header={

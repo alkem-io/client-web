@@ -11,6 +11,9 @@ import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
 import useInnovationHubOutsideRibbon from '../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { GroupOutlined } from '@mui/icons-material';
+import TopLevelPageBreadcrumbs from '../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
 
 export interface ContributorsPageProps {}
 
@@ -37,6 +40,13 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
       subtitle={t('pages.contributors.search.subtitle')}
       iconComponent={GroupOutlined}
       ribbon={ribbon}
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem uri="/contributors" iconComponent={GroupOutlinedIcon}>
+            {t('pages.contributors.shortName')}
+          </BreadcrumbsItem>
+        </TopLevelPageBreadcrumbs>
+      }
     >
       <PageContentColumn columns={12}>
         <PageContentBlockSeamless disablePadding>
