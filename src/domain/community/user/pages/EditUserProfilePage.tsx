@@ -90,7 +90,7 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
 
   return (
     <StorageConfigContextProvider locationType="user" userId={user.nameID}>
-      <UserPageLayout>
+      <UserPageLayout settings>
         <PageContent>
           <PageContentColumn columns={12}>
             <PageContentBlock>

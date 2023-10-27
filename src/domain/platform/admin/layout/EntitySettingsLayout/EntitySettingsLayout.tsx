@@ -7,6 +7,7 @@ import { EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayo
 import SettingsPageContent from './SettingsPageContent';
 import EntityPageLayout from '../../../../journey/common/EntityPageLayout/EntityPageLayout';
 import PageContent from '../../../../../core/ui/content/PageContent';
+import { PlatformNavigationBarProps } from '../../../../../main/ui/platformNavigation/PlatformNavigationBar';
 
 type EntityTypeName = 'space' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
@@ -15,6 +16,7 @@ interface EntitySettingsLayoutProps extends Omit<EntityPageLayoutProps, 'tabs' |
   tabs: TabDefinition<SettingsSection>[];
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
+  breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
 }
 
 // TODO Put LayoutHolder into Admin routes, making EntitySettingsLayout able to render EntityPageLayout.

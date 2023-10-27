@@ -21,7 +21,7 @@ import flattenChildren from '../utils/flattenChildren';
 export type OneOrMany<Item> = Item | Item[];
 
 export interface BreadcrumbsProps<ItemProps extends Expandable> extends UncontrolledExpandable {
-  children?: OneOrMany<ReactElement<ItemProps>>;
+  children?: OneOrMany<ReactElement<ItemProps> | false | null | undefined>;
 }
 
 interface BreadcrumbsInternalProps<ItemProps extends Expandable> extends UncontrolledExpandable {

@@ -6,10 +6,18 @@ import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import { Expandable } from '../../../../core/ui/navigation/Expandable';
 import { forwardRef, ReactElement, Ref } from 'react';
 import { Collapsible } from '../../../../core/ui/navigation/Collapsible';
+import { Settings } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
-const JourneyBreadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>(
-  <ItemProps extends Expandable>(props: BreadcrumbsProps<ItemProps>, ref) => {
+interface JourneyBreadcrumbsProps<ItemProps extends Expandable> extends BreadcrumbsProps<ItemProps> {
+  settings?: boolean;
+}
+
+const JourneyBreadcrumbs = forwardRef<Collapsible, JourneyBreadcrumbsProps<Expandable>>(
+  <ItemProps extends Expandable>({ settings, ...props }: JourneyBreadcrumbsProps<ItemProps>, ref) => {
     const { breadcrumbs } = useJourneyBreadcrumbs();
+
+    const { t } = useTranslation();
 
     return (
       <Breadcrumbs ref={ref} {...props}>
@@ -19,9 +27,12 @@ const JourneyBreadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>
             {displayName}
           </BreadcrumbsItem>
         ))}
+        {settings && <BreadcrumbsItem iconComponent={Settings}>{t('common.settings')}</BreadcrumbsItem>}
       </Breadcrumbs>
     );
   }
-) as <ItemProps extends Expandable>(props: BreadcrumbsProps<ItemProps> & { ref?: Ref<Collapsible> }) => ReactElement;
+) as <ItemProps extends Expandable>(
+  props: JourneyBreadcrumbsProps<ItemProps> & { ref?: Ref<Collapsible> }
+) => ReactElement;
 
 export default JourneyBreadcrumbs;

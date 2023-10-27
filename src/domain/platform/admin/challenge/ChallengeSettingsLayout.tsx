@@ -11,6 +11,7 @@ import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsL
 import ChallengePageBanner from '../../../journey/challenge/layout/ChallengePageBanner';
 import ChallengeTabs from '../../../journey/challenge/layout/ChallengeTabs';
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
+import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 
 interface ChallengeSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -64,6 +65,7 @@ const ChallengeSettingsLayout: FC<ChallengeSettingsLayoutProps> = props => {
       tabs={tabs}
       pageBannerComponent={ChallengePageBanner}
       tabsComponent={ChallengeTabs}
+      breadcrumbs={<JourneyBreadcrumbs settings />}
       {...entityAttrs}
       {...props}
     />
