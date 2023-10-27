@@ -2820,6 +2820,7 @@ export const AdminSpaceFragmentDoc = gql`
 export const StorageAggregatorParentFragmentDoc = gql`
   fragment StorageAggregatorParent on StorageAggregatorParent {
     id
+    type
     displayName
     url
   }

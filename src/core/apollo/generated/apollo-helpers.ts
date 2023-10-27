@@ -1423,6 +1423,7 @@ export type MutationKeySpecifier = (
   | 'deleteReference'
   | 'deleteRelation'
   | 'deleteSpace'
+  | 'deleteStorageBucket'
   | 'deleteUser'
   | 'deleteUserApplication'
   | 'deleteUserGroup'
@@ -1577,6 +1578,7 @@ export type MutationFieldPolicy = {
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteRelation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2490,12 +2492,14 @@ export type StorageAggregatorFieldPolicy = {
 export type StorageAggregatorParentKeySpecifier = (
   | 'displayName'
   | 'id'
+  | 'type'
   | 'url'
   | StorageAggregatorParentKeySpecifier
 )[];
 export type StorageAggregatorParentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageBucketKeySpecifier = (

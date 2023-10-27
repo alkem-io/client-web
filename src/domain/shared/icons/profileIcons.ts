@@ -19,7 +19,7 @@ import {
 import calloutIcons from '../../collaboration/callout/utils/calloutIcons';
 import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
 
-export const profileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
+export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
   switch (profileType) {
     case ProfileType.CalendarEvent:
       return CalendarIcon;

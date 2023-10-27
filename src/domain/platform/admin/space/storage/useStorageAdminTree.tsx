@@ -10,12 +10,16 @@ import HistoryIcon from '@mui/icons-material/History';
 import {
   DocumentDataFragment,
   LoadableStorageAggregatorFragment,
-  ProfileType,
   StorageAggregatorFragment,
+  StorageAggregatorParentType,
   StorageBucketFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import ImageIcon from '@mui/icons-material/Image';
-import { profileIcon } from '../../../../shared/icons/profileIcon';
+import { getProfileIcon } from '../../../../shared/icons/profileIcons';
+import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';
+import { ChallengeIcon } from '../../../../journey/challenge/icon/ChallengeIcon';
+import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
+import { FolderCopyOutlined } from '@mui/icons-material';
 
 export interface StorageAdminTreeItem {
   id: string;
@@ -50,6 +54,17 @@ interface Provided {
   reload: () => void;
 }
 
+export const getStorageAggregatorParentIcon = (type: StorageAggregatorParentType) => {
+  switch (type) {
+    case StorageAggregatorParentType.Space:
+      return SpaceIcon;
+    case StorageAggregatorParentType.Challenge:
+      return ChallengeIcon;
+    case StorageAggregatorParentType.Opportunity:
+      return OpportunityIcon;
+  }
+};
+
 const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem => ({
   id: document.id,
   displayName: document.displayName,
@@ -76,7 +91,7 @@ const newStorageBucketRow = (
     return {
       id: storageBucket.id,
       displayName: storageBucket.parentEntity.displayName,
-      iconComponent: profileIcon(storageBucket.parentEntity.type),
+      iconComponent: getProfileIcon(storageBucket.parentEntity.type),
       url: storageBucket.parentEntity.url,
       size: storageBucket.size,
       collapsible: storageBucket.documents.length > 0,
@@ -103,7 +118,7 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
     return {
       id: storageAggregator.id,
       displayName: storageAggregator.parentEntity.displayName,
-      iconComponent: profileIcon(ProfileType.Challenge),
+      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.type),
       url: storageAggregator.parentEntity.url,
       size: 0,
       collapsible: true,
@@ -114,8 +129,8 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
   } else {
     return {
       id: storageAggregator.id,
-      displayName: `No parent ${storageAggregator.id}`,
-      iconComponent: profileIcon(ProfileType.Challenge),
+      displayName: `(Storage aggregator without parent entity): ${storageAggregator.id}`,
+      iconComponent: FolderCopyOutlined,
       url: undefined,
       size: 0,
       collapsible: true,
@@ -142,8 +157,20 @@ const findBranch = (rows: StorageAdminTreeItem[], id: string): StorageAdminTreeI
 };
 
 // Turn the tree into a grid just flattening the open branches
-const tree2Grid = (treeData: TreeData): StorageAdminGridRow[] => {
+const tree2Grid = (treeData: TreeData, t: TFunction<'translation', undefined>): StorageAdminGridRow[] => {
   const result: StorageAdminGridRow[] = [];
+
+  let emptyRowsCount = 0;
+  const newEmptyRow = (nestLevel: number): StorageAdminGridRow => ({
+    id: `emptyRow_${emptyRowsCount++}`,
+    collapsed: false,
+    collapsible: false,
+    displayName: t('pages.admin.generic.sections.storage.emptyStorage'),
+    loaded: true,
+    size: 0,
+    nestLevel,
+    url: undefined,
+  });
 
   // Recursive function to go deep in the tree, adding rows to result
   const addRows = (rows: StorageAdminTreeItem[], nestLevel: number) => {
@@ -154,6 +181,9 @@ const tree2Grid = (treeData: TreeData): StorageAdminGridRow[] => {
         addRows(childItems, nestLevel + 1);
       }
     });
+    if (rows.length === 0) {
+      result.push(newEmptyRow(nestLevel + 1));
+    }
   };
 
   treeData.root.forEach(row => {
@@ -210,7 +240,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
       if (!spaceId) {
         return;
       }
-      const { data } = await loadSpace({ variables: { spaceId } });
+      const { data } = await loadSpace({ variables: { spaceId }, errorPolicy: 'ignore' });
       const storageAggregator = data?.space.storageAggregator;
       if (!storageAggregator) {
         throw new Error('Cannot find storageAggregator');
@@ -219,7 +249,6 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
       setTreeData(treeData =>
         produce(treeData, next => {
           addStorageAggregator(storageAggregator, next.root);
-          return next;
         })
       );
     };
@@ -234,14 +263,12 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
         if (branch) {
           branch.loading = loading;
         }
-        return next;
       })
     );
   };
 
-  // Load a laizy-loadable branch
+  // Load a lazy-loadable branch
   const loadBranch = (storageAggregatorId: string) => {
-    // TODO: Maybe a better way than setTimeout?
     setTimeout(async () => {
       setBranchLoading(storageAggregatorId, true);
 
@@ -263,7 +290,6 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
             branch.childItems = branch.childItems ?? [];
             addStorageAggregator(storageAggregator, branch.childItems);
           }
-          return next;
         })
       );
     }, 100);
@@ -275,16 +301,13 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
       produce(treeData, next => {
         const branch = findBranch(next.root, storageAggregatorId);
         if (branch && branch.collapsible) {
-          if (!branch.collapsed) {
-            return next;
-          } else if (branch.loaded) {
+          if (branch.loaded) {
             branch.collapsed = false;
           } else {
             // If the branch is not yet loaded, query it
             loadBranch(storageAggregatorId);
           }
         }
-        return next;
       })
     );
   };
@@ -294,19 +317,14 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
       produce(treeData, next => {
         const branch = findBranch(next.root, storageAggregatorId);
         if (branch && branch.collapsible) {
-          if (branch.collapsed) {
-            return next;
-          } else {
-            branch.collapsed = true;
-          }
+          branch.collapsed = true;
         }
-        return next;
       })
     );
   };
 
   return {
-    data: useMemo(() => tree2Grid(treeData), [treeData]),
+    data: useMemo(() => tree2Grid(treeData, t), [treeData]),
     loading: loadingSpace,
     openBranch,
     closeBranch,

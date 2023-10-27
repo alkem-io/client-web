@@ -38,7 +38,7 @@ const initialPagination = {
   },
 } as const;
 
-const IconWrapper = (props: BoxProps) => <Box {...props} sx={{ width: gutters(1), marginX: gutters(0.5) }} />;
+const IconWrapper = (props: BoxProps) => <Box {...props} width={gutters(1)} marginX={gutters(0.5)} />;
 
 const ExpandButton = ({ row, onClick }: { row: RenderParams['row']; onClick: LinkProps['onClick'] }) => {
   const theme = useTheme();
@@ -54,10 +54,7 @@ const ExpandButton = ({ row, onClick }: { row: RenderParams['row']; onClick: Lin
             {row.collapsed ? <ArrowRightIcon /> : <ArrowDropDownIcon />}
           </Link>
         </IconWrapper>
-      ) : (
-        // Leave the space:
-        <IconWrapper />
-      )}
+      ) : null}
     </>
   );
 };
@@ -66,8 +63,8 @@ const FileTypeIcon = ({ row }: { row: RenderParams['row'] }) =>
 
 const TitleIndent = ({ row }: { row: RenderParams['row'] }) => (
   <>
-    {times(row.nestLevel, () => (
-      <IconWrapper />
+    {times(row.nestLevel, index => (
+      <IconWrapper key={`indent_${index}`} />
     ))}
   </>
 );
@@ -173,7 +170,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
                   name: 'view',
                   render: ({ row }) => {
                     const data = row as RenderParams['row'];
-                    return (
+                    return data.url ? (
                       <IconButton component={Link} href={data.url} target="_blank">
                         {data.collapsible ? (
                           <ArrowForwardIcon fontSize="small" color="primary" />
@@ -181,7 +178,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
                           <OpenInNewIcon fontSize="small" color="primary" />
                         )}
                       </IconButton>
-                    );
+                    ) : undefined;
                   },
                 },
               ]}

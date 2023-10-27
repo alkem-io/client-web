@@ -61,6 +61,7 @@ fragment StorageBucketParent on StorageBucketParent {
 
 fragment StorageAggregatorParent on StorageAggregatorParent {
   id
+  type
   displayName
   url
 }

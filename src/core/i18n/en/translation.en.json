@@ -1576,6 +1576,7 @@
             "description": "Here you can see the document storage for this {{entity}}.",
             "title": "Documents",
             "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
+            "emptyStorage": "(Empty)",
             "grid": {
               "displayName": "Title",
               "mimeType": "Type",
