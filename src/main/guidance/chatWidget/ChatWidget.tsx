@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { IconButton, Box, Paper } from '@mui/material';
-import InfoIcon from '@mui/icons-material/Info';
+import { Box, ButtonProps, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { addResponseMessage, renderCustomComponent, Widget } from 'react-chat-widget';
@@ -22,17 +21,39 @@ import ChatWidgetSubtitle from './ChatWidgetSubtitle';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import { createPortal } from 'react-dom';
 import ChatWidgetFooter from './ChatWidgetFooter';
-import { useMediaQuery } from '@mui/material';
 import { useFullscreen } from '../../../core/ui/fullscreen/useFullscreen';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
 import { Caption } from '../../../core/ui/typography';
+import { InfoOutlined } from '@mui/icons-material';
 
-type Props = { answerId: string };
+interface FeedbackButtonProps {
+  color: string | number | ((theme: Theme) => string | number);
+}
 
-const Feedback = ({ answerId }: Props) => {
-  const [voted, setVoted] = useState(false);
-  const [update] = useUpdateAnswerRelevanceMutation();
+const FeedbackButton = ({ color, ...props }: Omit<ButtonProps, 'color'> & FeedbackButtonProps) => {
+  return (
+    <IconButton
+      color="primary"
+      size="small"
+      sx={{
+        color: theme => theme.palette.background.paper,
+        '&, &:hover': {
+          backgroundColor: color,
+        },
+      }}
+      {...props}
+    />
+  );
+};
+
+interface FeedbackProps {
+  answerId: string;
+}
+
+const Feedback = ({ answerId }: FeedbackProps) => {
+  const [update, { data }] = useUpdateAnswerRelevanceMutation();
+
   const updateHandler = async (answerId: string, relevant: boolean) => {
     await update({
       variables: {
@@ -42,8 +63,9 @@ const Feedback = ({ answerId }: Props) => {
         },
       },
     });
-    setVoted(true);
   };
+
+  const hasVoted = !!data;
 
   return (
     <Gutters
@@ -52,26 +74,35 @@ const Feedback = ({ answerId }: Props) => {
       disablePadding
       marginTop={gutters(-1)}
       justifyContent="right"
-      flexGrow="1"
       alignItems="center"
+      flexGrow={1}
     >
       <Box
         component={Paper}
-        sx={{ backgroundColor: theme => theme.palette.muted.main }}
+        elevation={0}
+        sx={{ backgroundColor: theme => theme.palette.divider }}
         display="flex"
         gap={gutters(0.5)}
         paddingX={gutters(0.5)}
         paddingY={gutters(0.25)}
       >
         <Caption>Is the answer relevant?</Caption>
-        <InfoIcon fontSize="small" />
+        <InfoOutlined fontSize="small" />
       </Box>
-      <IconButton color="success" disabled={voted} onClick={() => updateHandler(answerId, true)}>
-        <ThumbUpOffAltIcon />
-      </IconButton>
-      <IconButton color="error" disabled={voted} onClick={() => updateHandler(answerId, false)}>
-        <ThumbDownOffAltIcon />
-      </IconButton>
+      <FeedbackButton
+        color={theme => theme.palette.primary.main}
+        disabled={hasVoted}
+        onClick={() => updateHandler(answerId, true)}
+      >
+        <ThumbUpOffAltIcon fontSize="small" />
+      </FeedbackButton>
+      <FeedbackButton
+        color={theme => theme.palette.negative.main}
+        disabled={hasVoted}
+        onClick={() => updateHandler(answerId, false)}
+      >
+        <ThumbDownOffAltIcon fontSize="small" />
+      </FeedbackButton>
     </Gutters>
   );
 };
