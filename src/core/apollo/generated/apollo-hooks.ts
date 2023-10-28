@@ -1824,7 +1824,10 @@ export const InnovationHubProfileFragmentDoc = gql`
 export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
     id
-    visibility
+    license {
+      id
+      visibility
+    }
     profile {
       id
       displayName
@@ -2514,7 +2517,10 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
   ${SpaceDetailsFragmentDoc}
 `;
@@ -2537,7 +2543,10 @@ export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
     nameID
-    visibility
+    license {
+      id
+      visibility
+    }
     metrics {
       id
       name
@@ -2790,7 +2799,10 @@ export const SpaceDetailsProviderFragmentDoc = gql`
     context {
       ...ContextDetailsProvider
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
@@ -2800,7 +2812,14 @@ export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
     id
     nameID
-    visibility
+    license {
+      id
+      visibility
+      featureFlags {
+        name
+        enabled
+      }
+    }
     profile {
       id
       displayName
@@ -3200,7 +3219,10 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         myMembershipStatus
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -3248,7 +3270,9 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         anonymousReadAccess
       }
-      visibility
+      license {
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -3302,7 +3326,9 @@ export const SearchResultOpportunityFragmentDoc = gql`
         id
         displayName
       }
-      visibility
+      license {
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -14351,7 +14377,10 @@ export const SpaceContributionDetailsDocument = gql`
     space(ID: $spaceId) {
       id
       nameID
-      visibility
+      license {
+        id
+        visibility
+      }
       profile {
         id
         displayName
@@ -14453,7 +14482,9 @@ export const ChallengeContributionDetailsDocument = gql`
           id
         }
       }
-      visibility
+      license {
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -14544,7 +14575,9 @@ export const OpportunityContributionDetailsDocument = gql`
           id
         }
       }
-      visibility
+      license {
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -19463,7 +19496,10 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
           ...SpaceDashboardNavigationCommunity
         }
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
@@ -20496,13 +20532,19 @@ export const UpdateSpacePlatformSettingsDocument = gql`
     $spaceID: String!
     $hostID: UUID_NAMEID
     $nameID: NameID
-    $visibility: SpaceVisibility
+    $license: UpdateLicenseInput
   ) {
     updateSpacePlatformSettings(
-      updateData: { spaceID: $spaceID, hostID: $hostID, nameID: $nameID, visibility: $visibility }
+      updateData: { spaceID: $spaceID, hostID: $hostID, nameID: $nameID, license: $license }
     ) {
       id
-      visibility
+      license {
+        visibility
+        featureFlags {
+          name
+          enabled
+        }
+      }
       nameID
       host {
         id
@@ -20531,7 +20573,7 @@ export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
  *      spaceID: // value for 'spaceID'
  *      hostID: // value for 'hostID'
  *      nameID: // value for 'nameID'
- *      visibility: // value for 'visibility'
+ *      license: // value for 'license'
  *   },
  * });
  */
@@ -20559,7 +20601,6 @@ export const AdminSpacesListDocument = gql`
   query adminSpacesList {
     spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
       ...AdminSpace
-      visibility
     }
   }
   ${AdminSpaceFragmentDoc}
@@ -23748,7 +23789,9 @@ export const ChallengeExplorerDataDocument = gql`
         tagline
         displayName
       }
-      visibility
+      license {
+        visibility
+      }
       challenges {
         id
         nameID

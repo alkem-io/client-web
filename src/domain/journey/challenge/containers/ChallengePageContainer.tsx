@@ -31,7 +31,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   spaceId: string;
   spaceNameId: string;
   spaceDisplayName: string;
-  spaceVisibility: SpaceVisibility;
+  spaceLicense: SpaceVisibility;
   challenge?: ChallengeProfileFragment;
   references: Reference[] | undefined;
   permissions: {
@@ -143,7 +143,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           spaceId,
           spaceNameId,
           spaceDisplayName: space.profile.displayName,
-          spaceVisibility: space.visibility,
+          spaceLicense: spacevisibility,
           challenge: _challenge?.space.challenge,
           permissions,
           isAuthenticated,

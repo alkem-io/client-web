@@ -24,7 +24,7 @@ export type SimpleChallenge = {
   spaceNameId: string;
   spaceDisplayName: string;
   spaceTagline: string;
-  spaceVisibility: SpaceVisibility;
+  spaceLicense: SpaceVisibility;
   displayName: string;
   tagline: string;
   banner?: {
@@ -107,7 +107,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         spaceId: space.id,
         spaceNameId: space.nameID,
         spaceDisplayName: space.profile.displayName,
-        spaceVisibility: space.visibility,
+        spaceLicense: space.visibility,
         spaceTagline: space.profile.tagline || '',
         displayName: ch.profile.displayName,
         banner: ch.profile.cardBanner,
@@ -146,7 +146,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         spaceNameId: space.nameID,
         spaceDisplayName: space.profile.displayName,
         spaceTagline: space.profile.tagline || '',
-        spaceVisibility: space.visibility,
+        spaceLicense: space.visibility,
         displayName: ch.profile.displayName,
         banner: getVisualByType(VisualName.CARD, ch.profile.visuals),
         tagline: ch.profile.tagline || '',

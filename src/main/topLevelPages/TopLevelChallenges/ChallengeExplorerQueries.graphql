@@ -28,7 +28,9 @@ query ChallengeExplorerData($spaceIDs: [UUID!]) {
       tagline
       displayName
     }
-    visibility
+    license {
+      visibility
+    }
     challenges {
       id
       nameID

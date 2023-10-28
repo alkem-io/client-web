@@ -76,7 +76,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 tags={opportunity.profile.tagset?.tags!}
                 banner={opportunity.profile.cardBanner}
                 journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}
-                spaceVisibility={visibility}
+                spaceLicense={visibility}
                 member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}

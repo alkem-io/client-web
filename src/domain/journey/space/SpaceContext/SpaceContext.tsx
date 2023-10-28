@@ -5,6 +5,7 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { useSpaceProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
+  License,
   SpaceInfoFragment,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -33,7 +34,7 @@ interface SpaceContextProps {
   // TODO This Context should provide as little data as possible or just be removed.
   context?: SpaceInfoFragment['context'];
   profile: SpaceInfoFragment['profile'];
-  visibility: SpaceVisibility;
+  license: License;
 }
 
 const SpaceContext = React.createContext<SpaceContextProps>({
@@ -58,7 +59,11 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     visuals: [],
     tagline: '',
   },
-  visibility: SpaceVisibility.Active,
+  license: {
+    id: '',
+    visibility: SpaceVisibility.Active,
+    featureFlags: [],
+  },
   refetchSpace: () => {},
 });
 
@@ -84,7 +89,11 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const space = data?.space;
   const spaceId = space?.id || '';
-  const visibility = space?.visibility || SpaceVisibility.Active;
+  const license = {
+    id: space?.license.id || '',
+    visibility: space?.license?.visibility || SpaceVisibility.Active,
+    featureFlags: [],
+  };
   const communityId = space?.community?.id ?? '';
   const isPrivate = space && !space.authorization?.anonymousReadAccess;
   const error = configError || spaceError;
@@ -121,6 +130,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       tagline: space?.profile.tagline || '',
       references: space?.profile.references ?? [],
       location: space?.profile.location,
+      license,
     };
   }, [space?.profile]);
 
@@ -137,7 +147,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         refetchSpace,
         profile,
         context: space?.context,
-        visibility,
+        license,
       }}
     >
       {children}

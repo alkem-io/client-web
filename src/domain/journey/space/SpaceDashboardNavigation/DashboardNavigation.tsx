@@ -17,7 +17,7 @@ import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 
 interface DashboardNavigationProps {
   spaceNameId: string | undefined;
-  spaceVisibility?: SpaceVisibility;
+  spaceLicense?: SpaceVisibility;
   displayName: ReactNode;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   loading: boolean;
@@ -28,7 +28,7 @@ const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
 const DashboardNavigation = ({
   spaceNameId,
   displayName,
-  spaceVisibility,
+  spaceLicense,
   dashboardNavigation,
   loading,
 }: DashboardNavigationProps) => {
@@ -97,7 +97,7 @@ const DashboardNavigation = ({
                     journeyUri={challengeUrl}
                     spaceDisplayName={displayName ?? ''}
                     spaceUri={spaceUrl}
-                    spaceVisibility={spaceVisibility}
+                    spaceLicense={spaceLicense}
                     sx={{ width: gutters(15) }}
                     member={member}
                   />
@@ -123,7 +123,7 @@ const DashboardNavigation = ({
                           journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
                           challengeDisplayName={challenge.displayName}
                           challengeUri={challengeUrl}
-                          spaceVisibility={spaceVisibility}
+                          spaceLicense={spaceLicense}
                           sx={{ width: gutters(15) }}
                           member={member}
                         />

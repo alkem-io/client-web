@@ -193,7 +193,10 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       myMembershipStatus
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
 }
 
@@ -239,7 +242,9 @@ fragment SearchResultChallenge on SearchResultChallenge {
       id
       anonymousReadAccess
     }
-    visibility
+    license {
+      visibility
+    }
   }
 }
 
@@ -290,7 +295,9 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       id
       displayName
     }
-    visibility
+    license {
+      visibility
+    }
   }
 }
 

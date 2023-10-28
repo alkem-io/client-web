@@ -24,7 +24,10 @@ fragment SpaceInfo on Space {
       myPrivileges
     }
   }
-  visibility
+  license {
+    id
+    visibility
+  }
 }
 
 query spaceHost($spaceId: UUID_NAMEID!) {

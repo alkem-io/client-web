@@ -1228,6 +1228,13 @@ export type LibraryFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LicenseKeySpecifier = ('authorization' | 'featureFlags' | 'id' | 'visibility' | LicenseKeySpecifier)[];
+export type LicenseFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LifecycleKeySpecifier = (
   | 'id'
   | 'machineDef'
@@ -2071,6 +2078,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'groups'
   | 'host'
   | 'id'
+  | 'license'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
@@ -2081,7 +2089,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'projects'
   | 'storageAggregator'
   | 'templates'
-  | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
@@ -2096,6 +2103,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2106,7 +2114,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
-  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
 export type RelayPaginatedSpaceEdgeFieldPolicy = {
@@ -2433,6 +2440,7 @@ export type SpaceKeySpecifier = (
   | 'groups'
   | 'host'
   | 'id'
+  | 'license'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
@@ -2443,7 +2451,6 @@ export type SpaceKeySpecifier = (
   | 'projects'
   | 'storageAggregator'
   | 'templates'
-  | 'visibility'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
@@ -2458,6 +2465,7 @@ export type SpaceFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2468,7 +2476,6 @@ export type SpaceFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
-  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorKeySpecifier = (
   | 'authorization'
@@ -2814,6 +2821,7 @@ export type WhiteboardContentUpdatedFieldPolicy = {
 export type WhiteboardRtKeySpecifier = (
   | 'authorization'
   | 'content'
+  | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
   | 'id'
@@ -2825,6 +2833,7 @@ export type WhiteboardRtKeySpecifier = (
 export type WhiteboardRtFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   content?: FieldPolicy<any> | FieldReadFunction<any>;
+  contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3228,6 +3237,10 @@ export type StrictTypedTypePolicies = {
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);
     fields?: LibraryFieldPolicy;
+  };
+  License?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicenseKeySpecifier | (() => undefined | LicenseKeySpecifier);
+    fields?: LicenseFieldPolicy;
   };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);

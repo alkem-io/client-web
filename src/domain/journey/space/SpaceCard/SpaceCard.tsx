@@ -18,24 +18,16 @@ export interface SpaceCardProps
   displayName: string;
   vision: string;
   membersCount: number;
-  spaceVisibility?: SpaceVisibility;
+  spaceLicense?: SpaceVisibility;
   journeyUri: string;
 }
 
-const SpaceCard = ({
-  spaceId,
-  displayName,
-  vision,
-  membersCount,
-  tagline,
-  spaceVisibility,
-  ...props
-}: SpaceCardProps) => {
+const SpaceCard = ({ spaceId, displayName, vision, membersCount, tagline, spaceLicense, ...props }: SpaceCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
-    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
-      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
+    spaceLicense && spaceLicense !== SpaceVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceLicense}` as const)} />
     ) : undefined;
 
   return (

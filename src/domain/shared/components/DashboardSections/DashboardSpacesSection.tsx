@@ -64,7 +64,7 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
             membersCount={getMetricCount(space.metrics, MetricType.Member)}
             tagline={space.profile.tagline!}
             tags={space.profile.tagset?.tags!}
-            spaceVisibility={space.visibility}
+            spaceLicense={space.visibility}
             {...getSpaceCardProps?.(space)}
           />
         ))}

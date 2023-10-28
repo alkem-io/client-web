@@ -117,7 +117,7 @@ const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
       matchedTerms
       vision={vision}
       locked={!space.authorization?.anonymousReadAccess}
-      spaceVisibility={space.visibility}
+      spaceLicense={space.visibility}
     />
   );
 };
@@ -161,7 +161,7 @@ const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragme
           {spaceDisplayName}
         </CardParentJourneySegment>
       }
-      spaceVisibility={containingSpace.visibility}
+      spaceLicense={containingSpace.visibility}
     />
   );
 };
@@ -206,7 +206,7 @@ const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFr
           {challengeDisplayName}
         </CardParentJourneySegment>
       }
-      spaceVisibility={containingSpace.visibility}
+      spaceLicense={containingSpace.visibility}
     />
   );
 };

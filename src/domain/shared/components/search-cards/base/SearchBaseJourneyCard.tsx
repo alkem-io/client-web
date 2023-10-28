@@ -21,7 +21,7 @@ export interface SearchBaseJourneyCardProps
   displayName: string;
   vision: string;
   parentSegment?: ReactNode;
-  spaceVisibility?: SpaceVisibility;
+  spaceLicense?: SpaceVisibility;
   journeyUri: string;
 }
 
@@ -31,13 +31,13 @@ const SearchBaseJourneyCard = ({
   displayName,
   vision,
   parentSegment,
-  spaceVisibility,
+  spaceLicense,
   ...props
 }: SearchBaseJourneyCardProps) => {
   const { t } = useTranslation();
   const ribbon =
-    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
-      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
+    spaceLicense && spaceLicense !== SpaceVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceLicense}` as const)} />
     ) : undefined;
 
   return (

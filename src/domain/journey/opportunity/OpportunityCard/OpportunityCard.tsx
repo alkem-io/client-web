@@ -17,7 +17,7 @@ interface OpportunityCardProps
   opportunityId?: string;
   challengeUri?: string;
   challengeDisplayName?: string;
-  spaceVisibility?: SpaceVisibility;
+  spaceLicense?: SpaceVisibility;
   innovationFlowState?: string;
   journeyUri: string;
 }
@@ -26,14 +26,14 @@ const OpportunityCard = ({
   opportunityId,
   challengeDisplayName,
   challengeUri,
-  spaceVisibility,
+  spaceLicense,
   ...props
 }: OpportunityCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
-    spaceVisibility === SpaceVisibility.Archived ? (
-      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
+    spaceLicense === SpaceVisibility.Archived ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceLicense}` as const)} />
     ) : undefined;
 
   return (
