@@ -52,7 +52,7 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect,
           const requiredPermissions = availableCalloutTypes[calloutType];
           if (
             requiredPermissions.length === 0 || // No permissions required, calloutType is just Available
-            requiredPermissions.every(permission => user.hasPlatformPrivilege(permission))
+            requiredPermissions.every(permission => user.hasPlatformPrivilege(permission)) // TODO - to pick up privilege on Collaboration entity, not global
           ) {
             return (
               <RadioButton key={calloutType} value={calloutType} iconComponent={calloutIcons[calloutType]}>

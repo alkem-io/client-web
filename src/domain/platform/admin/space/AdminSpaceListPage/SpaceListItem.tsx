@@ -63,7 +63,7 @@ const SpaceListItem = ({
   const handleSubmit = async ({ visibility, nameID, hostID, whiteboardRtEnabled }: Partial<SpacePlatformSettings>) => {
     // Todo: this must be possible to have cleaner...
     let whiteboardRtEnabledResult = false;
-    if (whiteboardRtEnabled && whiteboardRtEnabled === true) whiteboardRtEnabledResult = true;
+    if (whiteboardRtEnabled !== undefined && whiteboardRtEnabled) whiteboardRtEnabledResult = true;
     await updatePlatformSettings({
       variables: {
         spaceID: spaceId,
