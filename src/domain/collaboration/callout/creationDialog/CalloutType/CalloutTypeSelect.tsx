@@ -21,7 +21,7 @@ interface CalloutTypeSelectProps {
 const availableCalloutTypes: Record<CalloutType, AuthorizationPrivilege[]> = {
   [CalloutType.Post]: [],
   [CalloutType.Whiteboard]: [],
-  [CalloutType.WhiteboardRt]: [AuthorizationPrivilege.AccessWhiteboardRt],
+  [CalloutType.WhiteboardRt]: [AuthorizationPrivilege.CreateWhiteboardRt],
   [CalloutType.LinkCollection]: [],
   [CalloutType.PostCollection]: [],
   [CalloutType.WhiteboardCollection]: [],
