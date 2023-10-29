@@ -86,7 +86,7 @@ export const SpaceProfile: FC = () => {
         context={space.context}
         profile={space.profile}
         organizations={organizationsSorted}
-        visibility={space.visibility}
+        visibility={space.license.visibility}
         host={host}
         onSubmit={onSubmit}
         loading={loading}

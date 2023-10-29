@@ -59,21 +59,21 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
     <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
   );
   const { platform } = useConfig();
-  const { visibility: spaceLicense } = useSpace();
+  const { visibility: spaceVisibility } = useSpace();
 
-  if (spaceLicense === SpaceVisibility.Active) return null;
+  if (spaceVisibility === SpaceVisibility.Active) return null;
   if (journeyTypeName === 'admin') return null;
 
   let message: ReactNode = undefined;
 
   switch (journeyTypeName) {
     case 'space': {
-      if (spaceLicense === SpaceVisibility.Archived) {
+      if (spaceVisibility === SpaceVisibility.Archived) {
         message = tLinks('pages.generic.archived-notice.archived-space', {
           contact: { href: platform?.feedback, target: '_blank' },
         });
       }
-      if (spaceLicense === SpaceVisibility.Demo) {
+      if (spaceVisibility === SpaceVisibility.Demo) {
         message = tLinks('pages.generic.demo-notice.demo-space', {
           alkemio: { href: ALKEMIO_DOMAIN, target: '_blank' },
         });
@@ -81,7 +81,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
       break;
     }
     default: {
-      if (spaceLicense === SpaceVisibility.Archived) {
+      if (spaceVisibility === SpaceVisibility.Archived) {
         message = tLinks(
           'pages.generic.archived-notice.archived-journey',
           {
@@ -90,7 +90,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
           { journey: t(`common.${journeyTypeName}` as const) }
         );
       }
-      if (spaceLicense === SpaceVisibility.Demo) {
+      if (spaceVisibility === SpaceVisibility.Demo) {
         message = tLinks(
           'pages.generic.demo-notice.demo-journey',
           {

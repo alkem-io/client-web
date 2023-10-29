@@ -23,6 +23,7 @@ export interface SpacePlatformSettings {
   nameID: string;
   hostID: string | undefined;
   visibility: SpaceVisibility;
+  whiteboardRtEnabled: boolean;
   organizations: {
     id: string;
     name: string;
@@ -33,7 +34,15 @@ interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
 }
 
-const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...props }: SpaceListItemProps) => {
+const SpaceListItem = ({
+  spaceId,
+  visibility,
+  nameID,
+  hostID,
+  organizations,
+  whiteboardRtEnabled,
+  ...props
+}: SpaceListItemProps) => {
   const [isPlatformSettingsModalOpen, setIsPlatformSettingsModalOpen] = useState(false);
 
   const handlePlatformSettingsClick: MouseEventHandler = event => {
@@ -46,17 +55,29 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
     visibility,
     nameID,
     hostID,
+    whiteboardRtEnabled,
   };
 
   const [updatePlatformSettings, { loading }] = useUpdateSpacePlatformSettingsMutation();
 
-  const handleSubmit = async ({ visibility, nameID, hostID }: Partial<SpacePlatformSettings>) => {
+  const handleSubmit = async ({ visibility, nameID, hostID, whiteboardRtEnabled }: Partial<SpacePlatformSettings>) => {
+    // Todo: this must be possible to have cleaner...
+    let whiteboardRtEnabledResult = false;
+    if (whiteboardRtEnabled && whiteboardRtEnabled === true) whiteboardRtEnabledResult = true;
     await updatePlatformSettings({
       variables: {
         spaceID: spaceId,
         hostID,
         nameID,
-        visibility,
+        license: {
+          visibility,
+          featureFlags: [
+            {
+              name: 'whiteboard-rt',
+              enabled: whiteboardRtEnabledResult,
+            },
+          ],
+        },
       },
     });
     setIsPlatformSettingsModalOpen(false);
@@ -64,7 +85,7 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
 
   const { t } = useTranslation();
 
-  const selectOptions = useMemo<readonly FormikSelectValue[]>(
+  const visiblitySelectOptions = useMemo<readonly FormikSelectValue[]>(
     () =>
       [
         {
@@ -83,10 +104,26 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
     [t]
   );
 
+  const flagSelectOptions = useMemo<readonly FormikSelectValue[]>(
+    () =>
+      [
+        {
+          id: 'true',
+          name: 'true' as string,
+        },
+        {
+          id: 'false',
+          name: 'false' as string,
+        },
+      ] as const,
+    [t]
+  );
+
   const validationSchema = yup.object().shape({
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     hostID: yup.string().required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
+    whiteboardRtEnabled: yup.string().required(t('forms.validations.required')),
   });
 
   return (
@@ -122,7 +159,18 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
                   disabled={loading}
                   placeholder={t('components.editSpaceForm.host.title')}
                 />
-                <FormikAutocomplete name="visibility" values={selectOptions} disablePortal={false} disabled={loading} />
+                <FormikAutocomplete
+                  name="visibility"
+                  values={visiblitySelectOptions}
+                  disablePortal={false}
+                  disabled={loading}
+                />
+                <FormikAutocomplete
+                  name="whiteboardRtEnabled"
+                  values={flagSelectOptions}
+                  disablePortal={false}
+                  disabled={loading}
+                />
               </PageContentBlockSeamless>
               <Actions padding={gutters()} justifyContent="end">
                 <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>

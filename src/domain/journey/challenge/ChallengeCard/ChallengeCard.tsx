@@ -19,7 +19,7 @@ interface ChallengeCardProps
   challengeNameId?: string;
   spaceUri?: string;
   spaceDisplayName?: ReactNode;
-  spaceLicense?: SpaceVisibility;
+  spaceVisibility?: SpaceVisibility;
   innovationFlowState?: string;
   private?: boolean;
   privateParent?: boolean;
@@ -32,15 +32,15 @@ const ChallengeCard = ({
   challengeNameId,
   spaceDisplayName,
   spaceUri,
-  spaceLicense,
+  spaceVisibility,
   hideJoin = false,
   ...props
 }: ChallengeCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
-    spaceLicense === SpaceVisibility.Archived ? (
-      <CardRibbon text={t(`common.enums.space-visibility.${spaceLicense}` as const)} />
+    spaceVisibility === SpaceVisibility.Archived ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 
   return (

@@ -195,7 +195,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                           sx={{ display: snapshot.isDragging ? 'table' : undefined }}
                         >
                           <TableCell>{space.profile.displayName}</TableCell>
-                          <TableCell>{space.visibility}</TableCell>
+                          <TableCell>{space.license.visibility}</TableCell>
                           <TableCell>{space.host?.profile.displayName}</TableCell>
                           <TableCell>
                             <IconButton color="warning" onClick={() => handleRemove(space.id)}>

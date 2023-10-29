@@ -66,7 +66,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
                 tags={space.profile?.tagset?.tags ?? []}
                 journeyUri={buildSpaceUrl(space.nameID)}
                 member={isMember(space)}
-                spaceLicense={space.license.visibility}
+                spaceVisibility={space.license.visibility}
               />
             ))}
           </ScrollableCardsLayoutContainer>

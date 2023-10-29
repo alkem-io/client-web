@@ -43,7 +43,7 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
   displayName: ReactNode;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
-  spaceLicense?: SpaceVisibility;
+  spaceVisibility?: SpaceVisibility;
   vision?: string;
   communityId?: string;
   organization?: unknown;
@@ -78,7 +78,7 @@ const SpaceDashboardView = ({
   displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
-  spaceLicense,
+  spaceVisibility,
   spaceNameId,
   challengeNameId,
   opportunityNameId,
@@ -160,7 +160,7 @@ const SpaceDashboardView = ({
           </FullWidthButton>
           <DashboardNavigation
             spaceNameId={spaceNameId}
-            spaceLicense={spaceLicense}
+            spaceVisibility={spaceVisibility}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}

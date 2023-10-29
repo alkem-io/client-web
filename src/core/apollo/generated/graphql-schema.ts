@@ -4932,6 +4932,13 @@ export type UpdateEcosystemModelInput = {
   description?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateFeatureFlagInput = {
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: Scalars['String'];
+};
+
 export type UpdateFormInput = {
   description: Scalars['Markdown'];
   questions: Array<UpdateFormQuestionInput>;
@@ -4999,7 +5006,7 @@ export type UpdateInnovationPackInput = {
 
 export type UpdateLicenseInput = {
   /** Update the feature flags for the License. */
-  featureFlags?: InputMaybe<UpdateContextInput>;
+  featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
   /** Visibility of the Space. */
   visibility?: InputMaybe<SpaceVisibility>;
 };
@@ -20660,6 +20667,7 @@ export type UserSpacesQuery = {
       };
       context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      license: { __typename?: 'License'; visibility: SpaceVisibility };
     }>;
   };
 };

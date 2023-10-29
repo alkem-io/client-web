@@ -74,7 +74,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 innovationFlowState={challenge.innovationFlow?.lifecycle?.state}
                 journeyUri={buildChallengeUrl(spaceNameId, challenge.nameID)}
                 locked={!challenge.authorization?.anonymousReadAccess}
-                spaceLicense={visibility}
+                spaceVisibility={visibility}
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}

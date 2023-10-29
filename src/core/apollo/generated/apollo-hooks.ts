@@ -16053,6 +16053,9 @@ export const UserSpacesDocument = gql`
           name
           value
         }
+        license {
+          visibility
+        }
       }
     }
   }

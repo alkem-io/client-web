@@ -67,7 +67,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                         journeyUri={buildChallengeUrl(challenge.spaceNameId, challenge.nameID)}
                         spaceDisplayName={challenge.spaceDisplayName}
                         spaceUri={buildSpaceUrl(challenge.spaceNameId)}
-                        spaceLicense={challenge.spaceLicense}
+                        spaceVisibility={challenge.spaceVisibility}
                         member={challenge.member}
                         hideJoin
                       />

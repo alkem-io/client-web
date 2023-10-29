@@ -25,7 +25,9 @@ export interface SpaceAttrs extends Identifiable {
     cardBanner?: Visual;
   };
   // TODO inline types derived from generated GraphQL definitions
-  visibility?: SpaceVisibility;
+  license: {
+    visibility?: SpaceVisibility;
+  };
   metrics?: Pick<Nvp, 'name' | 'value'>[];
 }
 
@@ -64,7 +66,7 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
             membersCount={getMetricCount(space.metrics, MetricType.Member)}
             tagline={space.profile.tagline!}
             tags={space.profile.tagset?.tags!}
-            spaceLicense={space.visibility}
+            spaceVisibility={space.license.visibility}
             {...getSpaceCardProps?.(space)}
           />
         ))}

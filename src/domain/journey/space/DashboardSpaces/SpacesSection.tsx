@@ -55,10 +55,9 @@ const SpacesSection = () => {
 
   const { metrics, loading: isLoadingActivities } = useServerMetadata();
 
-  const [spaceCount, challengeCount, opportunityCount] = [
+  const [spaceCount, challengeCount] = [
     getMetricCount(metrics, MetricType.Space),
     getMetricCount(metrics, MetricType.Challenge),
-    getMetricCount(metrics, MetricType.Opportunity),
   ];
 
   const spacesLoader = useLazyLoading(Box, {
@@ -96,14 +95,8 @@ const SpacesSection = () => {
         count: challengeCount,
         color: 'primary',
       },
-      {
-        name: tLineBreaks('common.opportunities'),
-        isLoading: isLoadingActivities,
-        count: opportunityCount,
-        color: 'primary',
-      },
     ],
-    [challengeCount, spaceCount, isLoadingActivities, opportunityCount, tLineBreaks]
+    [challengeCount, spaceCount, isLoadingActivities, tLineBreaks]
   );
 
   const spaceItems = useMemo(

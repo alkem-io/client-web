@@ -43,8 +43,8 @@ const ContributionDetailsCard = ({
   const { t } = useTranslation();
 
   const ribbon =
-    spaceLicense && license.visibility !== SpaceVisibility.Active ? (
-      <CardRibbon text={t(`common.enums.space-visibility.${spaceLicense}` as const)} />
+    spaceVisibility && license.visibility !== SpaceVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 
   return (
