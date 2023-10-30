@@ -5,21 +5,18 @@ import { InputAdornment, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
 import { useUserContext } from './index';
-import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
-import TopLevelDesktopLayout from '../../../main/ui/layout/TopLevelDesktopLayout';
-import { PageTitle, Text } from '../../../core/ui/typography';
+import TopLevelPageLayout from '../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
 import useInnovationHubOutsideRibbon from '../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import { GroupOutlined } from '@mui/icons-material';
 
 export interface ContributorsPageProps {}
 
-const currentPaths = [];
 const ContributorsPage: FC<ContributorsPageProps> = () => {
   const { t } = useTranslation();
 
-  useUpdateNavigation({ currentPaths });
   const [searchTerms, setSearchTerms] = useState<string>('');
   const [searchTermsDebounced, setSearchTermsDebounced] = useState<string>('');
 
@@ -35,11 +32,14 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.contributors' });
 
   return (
-    <TopLevelDesktopLayout heading={ribbon}>
+    <TopLevelPageLayout
+      title={t('pages.contributors.search.title')}
+      subtitle={t('pages.contributors.search.subtitle')}
+      iconComponent={GroupOutlined}
+      ribbon={ribbon}
+    >
       <PageContentColumn columns={12}>
         <PageContentBlockSeamless disablePadding>
-          <PageTitle>{t('pages.contributors.search.title')}</PageTitle>
-          <Text>{t('pages.contributors.search.subtitle')}</Text>
           <OutlinedInput
             value={searchTerms}
             sx={{ width: '100%' }}
@@ -64,7 +64,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
           }}
         </ContributorsSearchContainer>
       </PageContentColumn>
-    </TopLevelDesktopLayout>
+    </TopLevelPageLayout>
   );
 };
 

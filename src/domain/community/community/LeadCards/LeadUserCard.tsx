@@ -1,4 +1,4 @@
-import Avatar from '../../../../core/ui/image/Avatar';
+import AlkemioAvatar from '../../../../core/ui/image/AlkemioAvatar';
 import { Box } from '@mui/material';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
@@ -28,7 +28,7 @@ const LeadUserCard = ({ userUrl, fullName, city, country, avatarUrl, tags }: Lea
     <LeadUserCardContainer>
       <LinkNoUnderline to={userUrl}>
         <Box display="flex" gap={2}>
-          <Avatar src={avatarUrl} name={fullName} size="md2" />
+          <AlkemioAvatar src={avatarUrl} name={fullName} size="md2" />
           <Box>
             <Text>{fullName}</Text>
             <LocationCaption city={city} country={country} />

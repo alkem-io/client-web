@@ -1,7 +1,14 @@
 import * as Sentry from '@sentry/react';
-import { User } from '../../apollo/generated/graphql-schema';
 
-export const setUserScope = (user: User | undefined, piiEnabled?: boolean) => {
+interface UserScopeUser {
+  id: string;
+  email: string;
+  profile: {
+    displayName: string;
+  };
+}
+
+export const setUserScope = (user: UserScopeUser | undefined, piiEnabled?: boolean) => {
   if (user && piiEnabled) {
     Sentry.setUser({ id: user.id, username: user.profile.displayName, email: user.email });
   } else {

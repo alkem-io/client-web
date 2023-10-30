@@ -1,38 +1,28 @@
-import { Avatar, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
 import React from 'react';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import { JourneyTypeName } from '../../JourneyTypeName';
+import SizeableAvatar, { SizeableAvatarProps } from '../../../../core/ui/avatar/SizeableAvatar';
 
-type Size = 'large';
-
-interface JourneyAvatarProps {
+interface JourneyAvatarProps extends SizeableAvatarProps {
   journeyTypeName: JourneyTypeName;
   visualUri: string | undefined;
   hideJourneyIcon?: boolean;
-  size?: Size;
 }
-
-const AvatarSize: Record<Size, number> = {
-  large: 8,
-};
 
 const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false, size }: JourneyAvatarProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
-  const avatarSize = size && AvatarSize[size];
-
   return (
     <Box position="relative">
-      <Avatar
+      <SizeableAvatar
+        size={size}
         src={visualUri}
         sx={{
           '.MuiAvatar-img': hideJourneyIcon ? undefined : { filter: 'blur(1.5px)', opacity: '50%' },
           '.MuiAvatar-fallback': { display: 'none' },
-          borderRadius: 0.5,
           backgroundColor: theme => theme.palette.challenge.main,
-          width: avatarSize && (theme => theme.spacing(avatarSize)),
-          height: avatarSize && (theme => theme.spacing(avatarSize)),
         }}
       />
       {!hideJourneyIcon && (

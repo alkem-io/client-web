@@ -1274,7 +1274,7 @@ export type ContributorRoles = {
   invitations: Array<InvitationForRoleResult>;
   /** Details of the roles the contributor has in Organizations */
   organizations: Array<RolesResultOrganization>;
-  /** Details of Spaces the User or Organization is a member of, with child memberships */
+  /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
   spaces: Array<RolesResultSpace>;
 };
 
@@ -1755,6 +1755,10 @@ export type DeleteRelationInput = {
 
 export type DeleteSpaceInput = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeleteStorageBuckeetInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteUserGroupInput = {
@@ -2476,6 +2480,8 @@ export type Mutation = {
   deleteRelation: Relation;
   /** Deletes the specified Space. */
   deleteSpace: Space;
+  /** Deletes a Storage Bucket */
+  deleteStorageBucket: StorageBucket;
   /** Deletes the specified User. */
   deleteUser: User;
   /** Removes the specified User Application. */
@@ -2908,6 +2914,10 @@ export type MutationDeleteRelationArgs = {
 
 export type MutationDeleteSpaceArgs = {
   deleteData: DeleteSpaceInput;
+};
+
+export type MutationDeleteStorageBucketArgs = {
+  deleteData: DeleteStorageBuckeetInput;
 };
 
 export type MutationDeleteUserArgs = {
@@ -4519,9 +4529,17 @@ export type StorageAggregatorParent = {
   displayName: Scalars['String'];
   /** The UUID of the parent entity. */
   id: Scalars['UUID'];
+  /** The Type of the parent Entity, space/challenge/opportunity. */
+  type: StorageAggregatorParentType;
   /** The URL that can be used to access the parent entity. */
   url: Scalars['String'];
 };
+
+export enum StorageAggregatorParentType {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+  Space = 'SPACE',
+}
 
 export type StorageBucket = {
   __typename?: 'StorageBucket';
@@ -18841,7 +18859,7 @@ export type OrganizationInfoFragment = {
     displayName: string;
     description?: string | undefined;
     tagline: string;
-    visual?:
+    avatar?:
       | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
       | undefined;
     tagsets?:
@@ -18924,7 +18942,7 @@ export type OrganizationInfoQuery = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
-      visual?:
+      avatar?:
         | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
         | undefined;
       tagsets?:
@@ -19842,7 +19860,7 @@ export type UserDetailsFragment = {
     tagline: string;
     description?: string | undefined;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-    visual?:
+    avatar?:
       | {
           __typename?: 'Visual';
           id: string;
@@ -19968,7 +19986,7 @@ export type CreateUserMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20029,7 +20047,7 @@ export type CreateUserNewRegistrationMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20164,7 +20182,7 @@ export type UpdateUserMutation = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20238,7 +20256,7 @@ export type UserQuery = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20330,7 +20348,7 @@ export type UserProfileQuery = {
       tagline: string;
       description?: string | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-      visual?:
+      avatar?:
         | {
             __typename?: 'Visual';
             id: string;
@@ -20476,7 +20494,7 @@ export type UserProviderQuery = {
             tagline: string;
             description?: string | undefined;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-            visual?:
+            avatar?:
               | {
                   __typename?: 'Visual';
                   id: string;
@@ -22022,26 +22040,6 @@ export type ChallengeInnovationFlowQuery = {
   };
 };
 
-export type ChallengeNameQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeNameQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    };
-  };
-};
-
 export type ChallengeProfileInfoQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -23316,6 +23314,98 @@ export type JourneyPrivilegesQuery = {
   };
 };
 
+export type JourneyBreadcrumbsInnovationHubQueryVariables = Exact<{ [key: string]: never }>;
+
+export type JourneyBreadcrumbsInnovationHubQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyBreadcrumbsSpaceQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  };
+};
+
+export type JourneyBreadcrumbsChallengeQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyBreadcrumbsChallengeQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    };
+  };
+};
+
+export type JourneyBreadcrumbsOpportunityQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyBreadcrumbsOpportunityQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    };
+  };
+};
+
+export type JourneyBreadcrumbsProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type OpportunityPageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
@@ -24170,24 +24260,6 @@ export type OpportunityInnovationFlowQuery = {
               | undefined;
           }
         | undefined;
-    };
-  };
-};
-
-export type OpportunityNameQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityNameQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
     };
   };
 };
@@ -25826,13 +25898,6 @@ export type SpaceDetailsProviderFragment = {
     | undefined;
 };
 
-export type SpaceNameFragment = {
-  __typename?: 'Space';
-  id: string;
-  nameID: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
 export type CreateSpaceMutationVariables = Exact<{
   input: CreateSpaceInput;
 }>;
@@ -26160,20 +26225,6 @@ export type SpaceInnovationFlowTemplatesQuery = {
   };
 };
 
-export type SpaceNameQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-}>;
-
-export type SpaceNameQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
 export type ChallengeCreatedSubscriptionVariables = Exact<{
   spaceID: Scalars['UUID_NAMEID'];
 }>;
@@ -26321,22 +26372,43 @@ export type AdminSpaceFragment = {
     | undefined;
 };
 
-export type SpaceStorageAdminQueryVariables = Exact<{
+export type SpaceStorageAdminPageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
 
-export type SpaceStorageAdminQuery = {
+export type SpaceStorageAdminPageQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
     id: string;
-    nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     storageAggregator?:
       | {
           __typename?: 'StorageAggregator';
           id: string;
-          directStorageBucket: {
+          parentEntity?:
+            | {
+                __typename?: 'StorageAggregatorParent';
+                id: string;
+                type: StorageAggregatorParentType;
+                displayName: string;
+                url: string;
+              }
+            | undefined;
+          storageAggregators: Array<{
+            __typename?: 'StorageAggregator';
+            id: string;
+            parentEntity?:
+              | {
+                  __typename?: 'StorageAggregatorParent';
+                  id: string;
+                  type: StorageAggregatorParentType;
+                  displayName: string;
+                  url: string;
+                }
+              | undefined;
+          }>;
+          storageBuckets: Array<{
             __typename?: 'StorageBucket';
             id: string;
             size: number;
@@ -26347,6 +26419,7 @@ export type SpaceStorageAdminQuery = {
               size: number;
               mimeType: MimeType;
               uploadedDate: Date;
+              url: string;
               createdBy?:
                 | {
                     __typename?: 'User';
@@ -26359,58 +26432,164 @@ export type SpaceStorageAdminQuery = {
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
             }>;
+            parentEntity?:
+              | { __typename?: 'StorageBucketParent'; id: string; type: ProfileType; displayName: string; url: string }
+              | undefined;
+          }>;
+          directStorageBucket: {
+            __typename?: 'StorageBucket';
+            id: string;
+            size: number;
+            documents: Array<{
+              __typename?: 'Document';
+              id: string;
+              displayName: string;
+              size: number;
+              mimeType: MimeType;
+              uploadedDate: Date;
+              url: string;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    nameID: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }>;
+            parentEntity?:
+              | { __typename?: 'StorageBucketParent'; id: string; type: ProfileType; displayName: string; url: string }
+              | undefined;
           };
         }
-      | undefined;
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-          storageAggregator?:
-            | {
-                __typename?: 'StorageAggregator';
-                id: string;
-                directStorageBucket: {
-                  __typename?: 'StorageBucket';
-                  id: string;
-                  size: number;
-                  documents: Array<{
-                    __typename?: 'Document';
-                    id: string;
-                    displayName: string;
-                    size: number;
-                    mimeType: MimeType;
-                    uploadedDate: Date;
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          nameID: string;
-                          profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        }
-                      | undefined;
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                  }>;
-                };
-              }
-            | undefined;
-        }>
       | undefined;
   };
 };
 
-export type StorageAgregatorFragment = {
+export type StorageAggregatorLookupQueryVariables = Exact<{
+  storageAggregatorId: Scalars['UUID'];
+}>;
+
+export type StorageAggregatorLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    storageAggregator?:
+      | {
+          __typename?: 'StorageAggregator';
+          id: string;
+          parentEntity?:
+            | {
+                __typename?: 'StorageAggregatorParent';
+                id: string;
+                type: StorageAggregatorParentType;
+                displayName: string;
+                url: string;
+              }
+            | undefined;
+          storageAggregators: Array<{
+            __typename?: 'StorageAggregator';
+            id: string;
+            parentEntity?:
+              | {
+                  __typename?: 'StorageAggregatorParent';
+                  id: string;
+                  type: StorageAggregatorParentType;
+                  displayName: string;
+                  url: string;
+                }
+              | undefined;
+          }>;
+          storageBuckets: Array<{
+            __typename?: 'StorageBucket';
+            id: string;
+            size: number;
+            documents: Array<{
+              __typename?: 'Document';
+              id: string;
+              displayName: string;
+              size: number;
+              mimeType: MimeType;
+              uploadedDate: Date;
+              url: string;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    nameID: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }>;
+            parentEntity?:
+              | { __typename?: 'StorageBucketParent'; id: string; type: ProfileType; displayName: string; url: string }
+              | undefined;
+          }>;
+          directStorageBucket: {
+            __typename?: 'StorageBucket';
+            id: string;
+            size: number;
+            documents: Array<{
+              __typename?: 'Document';
+              id: string;
+              displayName: string;
+              size: number;
+              mimeType: MimeType;
+              uploadedDate: Date;
+              url: string;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    nameID: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }>;
+            parentEntity?:
+              | { __typename?: 'StorageBucketParent'; id: string; type: ProfileType; displayName: string; url: string }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type StorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
-  directStorageBucket: {
+  parentEntity?:
+    | {
+        __typename?: 'StorageAggregatorParent';
+        id: string;
+        type: StorageAggregatorParentType;
+        displayName: string;
+        url: string;
+      }
+    | undefined;
+  storageAggregators: Array<{
+    __typename?: 'StorageAggregator';
+    id: string;
+    parentEntity?:
+      | {
+          __typename?: 'StorageAggregatorParent';
+          id: string;
+          type: StorageAggregatorParentType;
+          displayName: string;
+          url: string;
+        }
+      | undefined;
+  }>;
+  storageBuckets: Array<{
     __typename?: 'StorageBucket';
     id: string;
     size: number;
@@ -26421,6 +26600,7 @@ export type StorageAgregatorFragment = {
       size: number;
       mimeType: MimeType;
       uploadedDate: Date;
+      url: string;
       createdBy?:
         | {
             __typename?: 'User';
@@ -26433,7 +26613,97 @@ export type StorageAgregatorFragment = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     }>;
+    parentEntity?:
+      | { __typename?: 'StorageBucketParent'; id: string; type: ProfileType; displayName: string; url: string }
+      | undefined;
+  }>;
+  directStorageBucket: {
+    __typename?: 'StorageBucket';
+    id: string;
+    size: number;
+    documents: Array<{
+      __typename?: 'Document';
+      id: string;
+      displayName: string;
+      size: number;
+      mimeType: MimeType;
+      uploadedDate: Date;
+      url: string;
+      createdBy?:
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    }>;
+    parentEntity?:
+      | { __typename?: 'StorageBucketParent'; id: string; type: ProfileType; displayName: string; url: string }
+      | undefined;
   };
+};
+
+export type LoadableStorageAggregatorFragment = {
+  __typename?: 'StorageAggregator';
+  id: string;
+  parentEntity?:
+    | {
+        __typename?: 'StorageAggregatorParent';
+        id: string;
+        type: StorageAggregatorParentType;
+        displayName: string;
+        url: string;
+      }
+    | undefined;
+};
+
+export type StorageBucketFragment = {
+  __typename?: 'StorageBucket';
+  id: string;
+  size: number;
+  documents: Array<{
+    __typename?: 'Document';
+    id: string;
+    displayName: string;
+    size: number;
+    mimeType: MimeType;
+    uploadedDate: Date;
+    url: string;
+    createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  }>;
+  parentEntity?:
+    | { __typename?: 'StorageBucketParent'; id: string; type: ProfileType; displayName: string; url: string }
+    | undefined;
+};
+
+export type StorageBucketParentFragment = {
+  __typename?: 'StorageBucketParent';
+  id: string;
+  type: ProfileType;
+  displayName: string;
+  url: string;
+};
+
+export type StorageAggregatorParentFragment = {
+  __typename?: 'StorageAggregatorParent';
+  id: string;
+  type: StorageAggregatorParentType;
+  displayName: string;
+  url: string;
 };
 
 export type DocumentDataFragment = {
@@ -26443,6 +26713,7 @@ export type DocumentDataFragment = {
   size: number;
   mimeType: MimeType;
   uploadedDate: Date;
+  url: string;
   createdBy?:
     | {
         __typename?: 'User';

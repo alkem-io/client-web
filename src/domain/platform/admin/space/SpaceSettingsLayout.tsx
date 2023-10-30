@@ -10,10 +10,13 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
 import SpaceTabs from '../../../journey/space/layout/SpaceTabs';
 import SearchDialog from '../../search/SearchDialog';
 import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
 
 interface SpaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -66,14 +69,31 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
   const entityAttrs = useSpace();
 
-  const { spaceNameId } = useSpace();
+  const { spaceNameId, spaceId, profile, loading } = useSpace();
+
+  const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
+
+  const ribbon = useInnovationHubJourneyBannerRibbon({
+    spaceId,
+    journeyTypeName: 'space',
+  });
 
   return (
     <>
       <EntitySettingsLayout
         entityTypeName="space"
         tabs={tabs}
-        pageBannerComponent={SpacePageBanner}
+        pageBanner={
+          <SpacePageBanner
+            title={profile.displayName}
+            tagline={profile?.tagline}
+            loading={loading}
+            bannerUrl={visual?.uri}
+            bannerAltText={visual?.alternativeText}
+            ribbon={ribbon}
+            journeyTypeName="space"
+          />
+        }
         tabsComponent={SpaceTabs}
         {...entityAttrs}
         {...props}

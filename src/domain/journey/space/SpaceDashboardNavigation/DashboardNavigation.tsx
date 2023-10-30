@@ -1,9 +1,9 @@
-import { HelpOutlineOutlined, HubOutlined, KeyboardArrowDownOutlined } from '@mui/icons-material';
+import { ExpandMore, HelpOutlineOutlined, HubOutlined } from '@mui/icons-material';
 import { ButtonBase, Collapse, Skeleton, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildChallengeUrl, buildSpaceUrl, buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
+import { buildChallengeUrl, buildOpportunityUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -139,7 +139,7 @@ const DashboardNavigation = ({
       {!showAll && (
         <ButtonBase onClick={() => setIsExpanded(true)}>
           <Caption display="flex" alignItems="center">
-            <KeyboardArrowDownOutlined fontSize="small" />
+            <ExpandMore fontSize="small" />
             {t('components.dashboardNavigation.showAll')}
           </Caption>
         </ButtonBase>

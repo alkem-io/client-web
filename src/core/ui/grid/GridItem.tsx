@@ -1,13 +1,13 @@
 import { cloneElement, ReactElement } from 'react';
 import { SxProps } from '@mui/material';
-import { useGridItem, UseGridItemProvided } from './utils';
+import { GridItemStyle, useGridItem } from './utils';
 
 export interface GridItemProps {
   columns?: number;
 }
 
 interface GridItemPropsWithChildElement<ChildProps extends { sx?: SxProps }> extends GridItemProps {
-  children?: ReactElement<ChildProps> | ((props: ReturnType<UseGridItemProvided>) => ReactElement);
+  children?: ReactElement<ChildProps> | ((props: GridItemStyle) => ReactElement);
 }
 
 /**

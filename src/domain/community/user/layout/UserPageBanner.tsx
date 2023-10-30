@@ -1,17 +1,28 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import ProfileBanner from '../../../shared/components/PageHeader/ProfileBanner';
-import { toSocialNetworkEnum } from '../../../shared/components/SocialLinks/models/SocialNetworks';
-import { isSocialLink } from '../../../shared/components/SocialLinks/SocialLinks';
+import { useUserContext } from '../hooks/useUserContext';
+import { buildUserProfileSettingsUrl } from '../../../../main/routing/urlBuilders';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import { useTranslation } from 'react-i18next';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import ProfilePageBanner from '../../../common/profile/ProfilePageBanner';
 
-const UserPageBanner: FC = () => {
-  const { userNameId = '' } = useUrlParams();
-  const { t } = useTranslation();
-  const { user: userMetadata, loading } = useUserMetadata(userNameId);
-  const userId = userMetadata?.user.id;
+const UserPageBanner = () => {
+  const { userNameId } = useUrlParams();
+
+  if (!userNameId) {
+    throw new Error('User nameID not present');
+  }
+
+  const { user: currentUser } = useUserContext();
+
+  const { user, loading } = useUserMetadata(userNameId);
+
+  const isCurrentUser = useMemo(() => user?.user.id === currentUser?.user.id, [user, currentUser]);
+
+  const profile = user?.user.profile;
+
+  const userId = user?.user.id;
+
   const [sendMessageToUser] = useSendMessageToUserMutation();
 
   const handleSendMessage = useCallback(
@@ -32,39 +43,15 @@ const UserPageBanner: FC = () => {
     [sendMessageToUser, userId]
   );
 
-  const references = userMetadata?.user?.profile.references;
-  const socialLinks = useMemo(() => {
-    return references
-      ?.map(s => ({
-        type: toSocialNetworkEnum(s.name),
-        url: s.uri,
-      }))
-      .filter(isSocialLink);
-  }, [references]);
-
-  if (!loading && userMetadata) {
-    const { profile, phone, isContactable } = userMetadata.user;
-
-    return (
-      <ProfileBanner
-        title={profile.displayName}
-        tagline={profile.tagline}
-        location={profile.location}
-        phone={phone}
-        socialLinks={socialLinks}
-        avatarUrl={profile.visual?.uri}
-        avatarAltText={t('visuals-alt-text.avatar.contributor.text', {
-          displayName: profile.displayName,
-          altText: profile.visual?.alternativeText,
-        })}
-        loading={loading}
-        onSendMessage={handleSendMessage}
-        isContactable={isContactable}
-      />
-    );
-  } else {
-    return <ProfileBanner title={undefined} loading onSendMessage={handleSendMessage} />;
-  }
+  return (
+    <ProfilePageBanner
+      entityId={userId}
+      profile={profile}
+      onSendMessage={handleSendMessage}
+      settingsUri={isCurrentUser ? buildUserProfileSettingsUrl(user!.user.nameID) : undefined}
+      loading={loading}
+    />
+  );
 };
 
 export default UserPageBanner;

@@ -1,16 +1,38 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../journey/common/EntityPageLayout';
+import React, { PropsWithChildren } from 'react';
+import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { AssignmentIndOutlined } from '@mui/icons-material';
 import UserPageBanner from './UserPageBanner';
-import { PropsWithChildren } from 'react';
-import UserTabs from './UserTabs';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUserMetadata } from '../hooks/useUserMetadata';
+import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
 
-interface UserPageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
+interface UserPageLayoutProps {}
 
 const UserPageLayout = (props: PropsWithChildren<UserPageLayoutProps>) => {
+  const { userNameId } = useUrlParams();
+
+  if (!userNameId) {
+    throw new Error('User nameID not present');
+  }
+
+  const { user, loading } = useUserMetadata(userNameId);
+
   return (
-    <EntityPageLayout {...props} pageBannerComponent={UserPageBanner} tabsComponent={UserTabs} entityTypeName="user">
-      {props.children}
-    </EntityPageLayout>
+    <TopLevelDesktopLayout
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs
+          loading={loading}
+          avatar={user?.user.profile.avatar}
+          iconComponent={AssignmentIndOutlined}
+          uri={buildUserProfileUrl(userNameId)}
+        >
+          {user?.user.profile.displayName}
+        </TopLevelPageBreadcrumbs>
+      }
+      header={<UserPageBanner />}
+      {...props}
+    />
   );
 };
 

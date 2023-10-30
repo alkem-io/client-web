@@ -1,4 +1,4 @@
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { Box, BoxProps, useMediaQuery, useTheme } from '@mui/material';
 import React, { Children, PropsWithChildren, ReactNode } from 'react';
 import { Caption } from '../../typography';
 import { gutters } from '../../grid/utils';
@@ -10,7 +10,7 @@ interface PageFooterProps {
 
 const wrapChild = (child: ReactNode, index: number) => <Box key={`_footer_item_${index}`}>{child}</Box>;
 
-const PageFooter = ({ logo, copyright, children }: PropsWithChildren<PageFooterProps>) => {
+const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWithChildren<PageFooterProps>) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -31,6 +31,7 @@ const PageFooter = ({ logo, copyright, children }: PropsWithChildren<PageFooterP
       justifyContent="center"
       paddingY={gutters(0.5)}
       paddingX={gutters()}
+      {...props}
     >
       {!isMobile && (
         <Box display="flex" flexGrow={1} flexShrink={1}>

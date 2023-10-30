@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { UserAvatarsProvider } from '../../../../community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
 import { User } from '../../../../../core/apollo/generated/graphql-schema';
-import Avatar from '../../../../../core/ui/image/Avatar';
+import AlkemioAvatar from '../../../../../core/ui/image/AlkemioAvatar';
 import GroupMembersDetailsAvatarContainer from './GroupMembersDetailsAvatarContainer';
 import WrapperButton from '../../../../../core/ui/button/deprecated/WrapperButton';
 import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
@@ -26,7 +26,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
             <>
               <GroupMembersDetailsAvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar
+                  <AlkemioAvatar
                     key={i}
                     src={u.profile.visual?.uri}
                     name={u.profile.displayName}

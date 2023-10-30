@@ -68,9 +68,10 @@ interface useCommunityAdminParams {
 
 const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }: useCommunityAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
+    spaceNameId: spaceId,
     challengeNameId: challengeId,
     opportunityNameId: opportunityId,
-  });
+  })!;
 
   const {
     data,

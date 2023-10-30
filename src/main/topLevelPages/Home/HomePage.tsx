@@ -1,6 +1,5 @@
 import { Box, Grow } from '@mui/material';
 import React from 'react';
-import { useUserContext } from '../../../domain/community/user';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
 import HomePageFooter from './HomePageFooter';
@@ -19,8 +18,6 @@ import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/use
 
 export const HomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
-
-  const user = useUserContext();
 
   const params = useQueryParams();
   const isFromLanding = params.get('from') === 'landing';
@@ -47,11 +44,7 @@ export const HomePage = () => {
           {!isFromLanding && (
             <Grow in={!isLoadingAuthentication} appear>
               <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">
-                {isAuthenticated ? (
-                  <AuthenticatedUserHome userName={user.user?.user.firstName} />
-                ) : (
-                  <AnonymousUserHome />
-                )}
+                {isAuthenticated ? <AuthenticatedUserHome /> : <AnonymousUserHome />}
               </Box>
             </Grow>
           )}
