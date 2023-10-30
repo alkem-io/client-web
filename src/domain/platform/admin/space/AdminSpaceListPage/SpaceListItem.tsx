@@ -2,7 +2,7 @@ import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/S
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import { CircularProgress, ListItemIcon } from '@mui/material';
+import { CircularProgress, FormControlLabel, FormGroup, FormLabel, ListItemIcon } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
@@ -18,6 +18,8 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxField';
+import { SpaceFeature } from '../../../../journey/space/license/SpaceLicenseFeatureFlags';
 
 export interface SpacePlatformSettings {
   nameID: string;
@@ -104,26 +106,21 @@ const SpaceListItem = ({
     [t]
   );
 
-  const flagSelectOptions = useMemo<readonly FormikSelectValue[]>(
-    () =>
-      [
-        {
-          id: 'true',
-          name: 'true' as string,
-        },
-        {
-          id: 'false',
-          name: 'false' as string,
-        },
-      ] as const,
-    [t]
+  const spaceFeatures = useMemo(
+    () => ({
+      [SpaceFeature.FEATURE_WHITEBOARDRT]: {
+        title: t('pages.admin.space.settings.features.whiteboard-rt'),
+        name: 'whiteboardRtEnabled',
+      },
+    }),
+    []
   );
 
   const validationSchema = yup.object().shape({
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     hostID: yup.string().required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
-    whiteboardRtEnabled: yup.string().required(t('forms.validations.required')),
+    whiteboardRtEnabled: yup.boolean().required(t('forms.validations.required')),
   });
 
   return (
@@ -165,12 +162,25 @@ const SpaceListItem = ({
                   disablePortal={false}
                   disabled={loading}
                 />
-                <FormikAutocomplete
-                  name="whiteboardRtEnabled"
-                  values={flagSelectOptions}
-                  disablePortal={false}
-                  disabled={loading}
-                />
+                <FormLabel component="legend">Space Features</FormLabel>
+                <FormGroup>
+                  {Object.keys(spaceFeatures).map(key => (
+                    <FormControlLabel
+                      key={`feature-checkbox-${key}`}
+                      labelPlacement="start"
+                      disabled={loading}
+                      sx={{ justifyContent: 'space-between' }}
+                      control={
+                        <FormikCheckboxField
+                          title={spaceFeatures[key].title}
+                          name={spaceFeatures[key].name}
+                          disabled={loading}
+                        />
+                      }
+                      label={spaceFeatures[key].title}
+                    />
+                  ))}
+                </FormGroup>
               </PageContentBlockSeamless>
               <Actions padding={gutters()} justifyContent="end">
                 <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>

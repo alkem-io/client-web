@@ -60,7 +60,8 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
     <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
   );
   const { platform } = useConfig();
-  const { visibility: spaceVisibility } = useSpace();
+  const { license } = useSpace();
+  const spaceVisibility = license.visibility;
 
   if (spaceVisibility === SpaceVisibility.Active) return null;
   if (journeyTypeName === 'admin') return null;

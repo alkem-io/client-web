@@ -14,9 +14,8 @@ import { Location } from '../../../core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '../../../main/ui/platformNavigation/PageBannerWatermark';
 import providePrimaryColor from '../../../core/ui/themes/utils/providePrimaryColor';
-import { COLOR_HUB } from '../../../core/ui/palette/palette';
 
-const provideHubColor = providePrimaryColor(COLOR_HUB);
+const provideHubColor = providePrimaryColor(theme => theme.palette.space.main);
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',
