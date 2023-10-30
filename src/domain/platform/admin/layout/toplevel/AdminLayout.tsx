@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import SpacePageBanner from '../../../../journey/space/layout/SpacePageBanner';
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
-import TopLevelDesktopLayout from '../../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
@@ -18,7 +18,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
   const getTabLabel = useCallback((section: AdminSection) => t(`common.${section}` as const), [t]);
 
   return (
-    <TopLevelDesktopLayout
+    <TopLevelLayout
       header={
         <>
           <SpacePageBanner title={t('common.administration')} journeyTypeName="admin" />
@@ -42,7 +42,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
           <PageContentBlockSeamless>{children}</PageContentBlockSeamless>
         </PageContentColumn>
       </PageContent>
-    </TopLevelDesktopLayout>
+    </TopLevelLayout>
   );
 };
 

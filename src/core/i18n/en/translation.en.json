@@ -814,6 +814,14 @@
         "space": "{{displayName}}"
       }
     },
+    "searchDialog": {
+      "headerTitle": "Search results"
+    },
+    "searchScope": {
+      "currentScope": "Search results for:",
+      "alternativeScope": "Didn’t find what you were looking for? Try searching in:",
+      "platform": "Everywhere on Alkemio"
+    },
     "poweredBy": {
       "label": "Powered by"
     },
