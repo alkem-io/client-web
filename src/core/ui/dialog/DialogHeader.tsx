@@ -20,16 +20,18 @@ const DialogHeader = ({
   titleContainerProps,
   children,
 }: PropsWithChildren<DialogHeaderProps>) => {
-  const getTitleContainerProps = () => {
-    return {
-      alignItems: icon ? 'center' : 'start',
-      ...titleContainerProps,
-    };
-  };
-
   return (
     <Box display="flex" alignItems="start" padding={1}>
-      <Box flexGrow={1} flexShrink={1} minWidth={0} display="flex" gap={1} padding={1} {...getTitleContainerProps()}>
+      <Box
+        flexGrow={1}
+        flexShrink={1}
+        minWidth={0}
+        display="flex"
+        gap={1}
+        padding={1}
+        alignItems={icon ? 'center' : 'start'}
+        {...titleContainerProps}
+      >
         {icon && cloneElement(icon, {})}
         {title && <BlockTitle>{title}</BlockTitle>}
         {children}

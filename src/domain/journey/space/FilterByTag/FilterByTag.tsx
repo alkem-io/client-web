@@ -2,11 +2,10 @@ import React, { ReactNode, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import filterFn, { ValueType } from '../../../../core/utils/filtering/filterFn';
-// import { FILTER_PARAM_NAME } from '../../../platform/routes/constants';
+import { FILTER_PARAM_NAME } from '../../../../main/search/constants';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
 import { without } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { FILTER_PARAM_NAME } from '../../../../main/search/constants';
 
 const otherKey = 'other';
 
