@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, Navigate, useResolvedPath } from 'react-router-dom';
-import { useTransactionScope } from '../../../../core/analytics/useSentry';
+import { useTransactionScope } from '../../../../core/analytics/SentryTransactionScopeContext';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import NonAdminRedirect from '../../../../core/routing/NonAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';

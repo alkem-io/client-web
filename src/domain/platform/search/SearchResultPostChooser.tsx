@@ -1,7 +1,7 @@
 import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import { useHydrateCard } from './hooks/useHydratedCard';
-import { SearchResultMetaType } from './SearchView';
+import { SearchResultMetaType } from '../../../main/search/SearchView';
 import { SearchResultType } from '../../../core/apollo/generated/graphql-schema';
 
 const SearchResultPostChooser = ({

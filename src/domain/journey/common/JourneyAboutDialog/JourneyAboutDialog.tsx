@@ -1,5 +1,5 @@
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { TopBarHeightGutters } from '../../../../main/ui/layout/topBar/TopBar';
+import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../../../core/ui/navigation/NavigationBar';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Box, BoxProps, Link, Tooltip } from '@mui/material';
 import React, { ReactNode, useMemo, useState } from 'react';
@@ -75,7 +75,7 @@ const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
 };
 
 const gradient = (theme: Theme) =>
-  `linear-gradient(180deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) ${gutters(TopBarHeightGutters + 1)(
+  `linear-gradient(180deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) ${gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS + 1)(
     theme
   )}, rgba(0,0,0,.5) 100%);`;
 
@@ -148,7 +148,7 @@ const JourneyAboutDialog = ({
       open={open}
       columns={12}
       fullHeight
-      sx={{ marginTop: gutters(TopBarHeightGutters), alignItems: 'stretch', pointerEvents: 'auto' }}
+      sx={{ marginTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS), alignItems: 'stretch', pointerEvents: 'auto' }}
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
     >
       <Box padding={gutters()}>
