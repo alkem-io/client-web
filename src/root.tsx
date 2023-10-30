@@ -20,6 +20,7 @@ import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypo
 import ChatWidget from './main/guidance/chatWidget/ChatWidget';
 import { ApmProvider, ApmUserSetter } from './core/analytics/apm/context';
 import { UserGeoProvider } from './core/analytics/geo';
+import { SentryTransactionScopeContextProvider } from './core/analytics/SentryTransactionScopeContext';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -73,28 +74,30 @@ const Root: FC = () => (
         <CookiesProvider>
           <ConfigProvider url={publicGraphQLEndpoint}>
             <ServerMetadataProvider url={publicGraphQLEndpoint}>
-              <SentryErrorBoundaryProvider>
-                <GlobalStateProvider>
-                  <BrowserRouter>
-                    <AuthenticationProvider>
-                      <UserGeoProvider>
-                        <ApmProvider>
-                          <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                            <NavigationProvider>
-                              <UserProvider>
-                                <ApmUserSetter />
-                                <ScrollToTop />
-                                <TopLevelRoutes />
-                                <ChatWidget />
-                              </UserProvider>
-                            </NavigationProvider>
-                          </AlkemioApolloProvider>
-                        </ApmProvider>
-                      </UserGeoProvider>
-                    </AuthenticationProvider>
-                  </BrowserRouter>
-                </GlobalStateProvider>
-              </SentryErrorBoundaryProvider>
+              <SentryTransactionScopeContextProvider>
+                <SentryErrorBoundaryProvider>
+                  <GlobalStateProvider>
+                    <BrowserRouter>
+                      <AuthenticationProvider>
+                        <UserGeoProvider>
+                          <ApmProvider>
+                            <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                              <NavigationProvider>
+                                <UserProvider>
+                                  <ApmUserSetter />
+                                  <ScrollToTop />
+                                  <TopLevelRoutes />
+                                  <ChatWidget />
+                                </UserProvider>
+                              </NavigationProvider>
+                            </AlkemioApolloProvider>
+                          </ApmProvider>
+                        </UserGeoProvider>
+                      </AuthenticationProvider>
+                    </BrowserRouter>
+                  </GlobalStateProvider>
+                </SentryErrorBoundaryProvider>
+              </SentryTransactionScopeContextProvider>
             </ServerMetadataProvider>
           </ConfigProvider>
         </CookiesProvider>

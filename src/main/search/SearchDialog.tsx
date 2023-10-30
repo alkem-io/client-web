@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import DialogWithGrid from '../../core/ui/dialog/DialogWithGrid';
 import { useQueryParams } from '../../core/routing/useQueryParams';
 import { SEARCH_TERMS_URL_PARAM } from './constants';
@@ -9,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DialogHeader from '../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import { setTransactionScope } from '../../core/logging/sentry/scope';
+import { useTransactionScope } from '../../core/analytics/SentryTransactionScopeContext';
 
 const SearchDialog = () => {
   const { pathname } = useLocation();
@@ -18,13 +17,7 @@ const SearchDialog = () => {
 
   const isSearchDialogOpen = queryParams.has(SEARCH_TERMS_URL_PARAM);
 
-  useEffect(() => {
-    if (isSearchDialogOpen) {
-      setTransactionScope({
-        type: 'connect(search)',
-      });
-    }
-  }, [isSearchDialogOpen]);
+  useTransactionScope({ type: 'connect(search)' }, { skip: !isSearchDialogOpen });
 
   const navigate = useNavigate();
 
