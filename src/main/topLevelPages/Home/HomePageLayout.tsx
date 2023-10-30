@@ -8,6 +8,7 @@ import BreadcrumbsRootItem from '../../ui/breadcrumbs/BreadcrumbsRootItem';
 import { useTranslation } from 'react-i18next';
 import TopLevelPageBanner from '../../ui/layout/topLevelPageLayout/TopLevelPageBanner';
 import { useUserContext } from '../../../domain/community/user';
+import SearchDialog from '../../search/SearchDialog';
 
 const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
       {children}
       <Footer />
       <FloatingActionButtons floatingActions={<PlatformHelpButton />} />
+      <SearchDialog />
     </>
   );
 };

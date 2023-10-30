@@ -19,7 +19,7 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../platform/routes/constants';
 import { useConfig } from '../../platform/config/useConfig';
-import TopLevelDesktopLayout from '../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../main/ui/layout/TopLevelLayout';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
@@ -40,7 +40,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
   const mainHomeUrl = `//${platform?.domain}${ROUTE_HOME}`;
 
   return (
-    <TopLevelDesktopLayout
+    <TopLevelLayout
       header={
         <InnovationHubBanner
           banner={innovationHub.banner}
@@ -88,7 +88,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           </Gutters>
         </PageContentBlock>
       </PageContent>
-    </TopLevelDesktopLayout>
+    </TopLevelLayout>
   );
 };
 

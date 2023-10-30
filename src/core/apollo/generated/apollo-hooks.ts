@@ -23594,6 +23594,74 @@ export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskCh
   return { query: AskChatGuidanceQuestionDocument, variables: variables };
 }
 
+export const SearchScopeDetailsSpaceDocument = gql`
+  query SearchScopeDetailsSpace($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSearchScopeDetailsSpaceQuery__
+ *
+ * To run a query within a React component, call `useSearchScopeDetailsSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchScopeDetailsSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchScopeDetailsSpaceQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useSearchScopeDetailsSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SearchScopeDetailsSpaceQuery,
+    SchemaTypes.SearchScopeDetailsSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SearchScopeDetailsSpaceQuery, SchemaTypes.SearchScopeDetailsSpaceQueryVariables>(
+    SearchScopeDetailsSpaceDocument,
+    options
+  );
+}
+
+export function useSearchScopeDetailsSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SearchScopeDetailsSpaceQuery,
+    SchemaTypes.SearchScopeDetailsSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SearchScopeDetailsSpaceQuery,
+    SchemaTypes.SearchScopeDetailsSpaceQueryVariables
+  >(SearchScopeDetailsSpaceDocument, options);
+}
+
+export type SearchScopeDetailsSpaceQueryHookResult = ReturnType<typeof useSearchScopeDetailsSpaceQuery>;
+export type SearchScopeDetailsSpaceLazyQueryHookResult = ReturnType<typeof useSearchScopeDetailsSpaceLazyQuery>;
+export type SearchScopeDetailsSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.SearchScopeDetailsSpaceQuery,
+  SchemaTypes.SearchScopeDetailsSpaceQueryVariables
+>;
+export function refetchSearchScopeDetailsSpaceQuery(variables: SchemaTypes.SearchScopeDetailsSpaceQueryVariables) {
+  return { query: SearchScopeDetailsSpaceDocument, variables: variables };
+}
+
 export const InnovationLibraryDocument = gql`
   query InnovationLibrary {
     platform {

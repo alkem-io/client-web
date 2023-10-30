@@ -98,7 +98,10 @@ const SearchBox = forwardRef<Collapsible, BoxProps & SearchBoxProps<string | num
     useImperativeHandle(
       forwardedRef,
       () => {
-        const collapse = () => setIsExpanded(false);
+        const collapse = () => {
+          inputRef.current?.blur();
+          setIsExpanded(false);
+        };
 
         return { collapse };
       },
@@ -168,8 +171,8 @@ const SearchBox = forwardRef<Collapsible, BoxProps & SearchBoxProps<string | num
                 />
               </Box>
             </Collapse>
-            <NavigationItemButton onClick={isExpanded ? handleClickSearch : handleExpand}>
-              <Search color="primary" />
+            <NavigationItemButton color="primary" onClick={isExpanded ? handleClickSearch : handleExpand}>
+              <Search />
             </NavigationItemButton>
           </NavigationItemContainer>
         </ClickAwayListener>

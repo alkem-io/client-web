@@ -1,8 +1,6 @@
 import { EntityPageLayout } from '../../common/EntityPageLayout';
 import SpaceTabs from './SpaceTabs';
 import React, { PropsWithChildren } from 'react';
-import SearchDialog from '../../../platform/search/SearchDialog';
-import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { useSpace } from '../SpaceContext/useSpace';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
@@ -15,17 +13,15 @@ import SpacePageBanner from './SpacePageBanner';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
-  searchDisabled?: boolean;
   unauthorizedDialogDisabled?: boolean;
 }
 
 const SpacePageLayout = ({
-  searchDisabled = false,
   unauthorizedDialogDisabled = false,
   currentSection,
   children,
 }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const { spaceNameId, spaceId, profile, loading } = useSpace();
+  const { spaceId, profile, loading } = useSpace();
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
 
@@ -52,7 +48,6 @@ const SpacePageLayout = ({
       tabsComponent={SpaceTabs}
     >
       {children}
-      {!searchDisabled && <SearchDialog searchRoute={`${buildSpaceUrl(spaceNameId)}/search`} />}
       <JourneyUnauthorizedDialogContainer journeyTypeName="space">
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog

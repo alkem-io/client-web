@@ -1,10 +1,10 @@
 import { createTheme, Theme } from '@mui/material';
 import produce from 'immer';
 
-const providePrimaryColor = (color: string) => (theme: Theme) =>
+const providePrimaryColor = (color: string | ((theme: Theme) => string)) => (theme: Theme) =>
   createTheme(
-    produce(theme, theme => {
-      theme.palette.primary.main = color;
+    produce(theme, nextTheme => {
+      nextTheme.palette.primary.main = typeof color === 'function' ? color(theme) : color;
     })
   );
 
