@@ -1839,7 +1839,7 @@
       "fullName": "Explore challenges",
       "search": {
         "title": "Explore Public Challenges",
-        "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge Spaces. Here you can find all challenges from the public Spaces. Challenges from private Spaces are visible when you are signed in and a member of that particular Space.",
+        "subtitle": "Below you'll find all Challenges that you are member of. Curious to explore more? Scroll down and search for the topics that interest you!",
         "placeholder": "Search...",
         "default-search-term": "Innovation",
         "no-results": "No results matched your search terms."
