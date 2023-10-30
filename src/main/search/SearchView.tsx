@@ -32,6 +32,7 @@ import SearchResultsScope from '../../core/ui/search/SearchResultsScope';
 import SearchResultsScopeCard from '../../core/ui/search/SearchResultsScopeCard';
 import { ReactComponent as AlkemioLogo } from '../ui/logo/logoSmall.svg';
 import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
+import { identity } from 'lodash';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -66,7 +67,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
   const spaceNameId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
 
   const termsFromUrl = useMemo(() => {
-    const terms = queryParams.getAll(SEARCH_TERMS_URL_PARAM); // TODO escape if needed
+    const terms = queryParams.getAll(SEARCH_TERMS_URL_PARAM).filter(identity);
     if (terms.length > MAX_TERMS_SEARCH) {
       // All terms above 4th are joined into a single 5th term
       // That is mainly coming from UX issues when having more than 5 tags in the Search input
@@ -99,6 +100,10 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     params.delete(SEARCH_TERMS_URL_PARAM);
     for (const term of newValue) {
       params.append(SEARCH_TERMS_URL_PARAM, term);
+    }
+    if (newValue.length === 0) {
+      // Keeping the dialog open when there are no search terms
+      params.append(SEARCH_TERMS_URL_PARAM, '');
     }
     navigate(`${searchRoute}?${params}`);
   };
