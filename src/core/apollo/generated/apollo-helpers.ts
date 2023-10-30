@@ -1282,6 +1282,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'post'
   | 'profile'
   | 'room'
+  | 'storageAggregator'
   | 'whiteboard'
   | 'whiteboardRt'
   | 'whiteboardTemplate'
@@ -1305,6 +1306,7 @@ export type LookupQueryResultsFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1421,6 +1423,7 @@ export type MutationKeySpecifier = (
   | 'deleteReference'
   | 'deleteRelation'
   | 'deleteSpace'
+  | 'deleteStorageBucket'
   | 'deleteUser'
   | 'deleteUserApplication'
   | 'deleteUserGroup'
@@ -1575,6 +1578,7 @@ export type MutationFieldPolicy = {
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteRelation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2412,8 +2416,9 @@ export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SourceKeySpecifier = ('uri' | SourceKeySpecifier)[];
+export type SourceKeySpecifier = ('title' | 'uri' | SourceKeySpecifier)[];
 export type SourceFieldPolicy = {
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceKeySpecifier = (
@@ -2487,12 +2492,14 @@ export type StorageAggregatorFieldPolicy = {
 export type StorageAggregatorParentKeySpecifier = (
   | 'displayName'
   | 'id'
+  | 'type'
   | 'url'
   | StorageAggregatorParentKeySpecifier
 )[];
 export type StorageAggregatorParentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageBucketKeySpecifier = (

@@ -25,7 +25,7 @@
     "releaseUpdates": {
       "icon": "🎉",
       "title": "We have exciting news, a new release full of interesting functionalities is out!",
-      "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! <b><clickhere>Click here</clickhere></b> to read all about the latest changes.",
+      "content": "As a user, I want to primarily focus on the work in my Space or Challenge, with the option to use other platform functionalities. Currently the platform navigation confuses users and utilizes a significant amount of the webpage's real estate. The new structure is therefore as follows:<ul><li><b>Menu:</b> besides your personal profile and settings, you will now find a menu that includes all the jobs you can do on the platform outside of your Space.</li><li><b>Navigation:</b> in the top left, you will find the icons of the home page, Space, or Challenge to navigate back.</li><li><b>Search:</b> as users were often confused by the two search options (in the Space or the entire platform), we have combined them into one search function with the option to filter.</li></ul>Hopefully this release will bring you one step closer to efficient collaboration!<br/><br/><b><clickhere>Click here</clickhere></b> to read all about the latest changes.",
       "url": "https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20"
     }
   },
@@ -1600,7 +1600,10 @@
           "storage": {
             "description": "Here you can see the document storage for this {{entity}}.",
             "title": "Documents",
+            "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
+            "emptyStorage": "(Empty)",
             "grid": {
+              "displayName": "Title",
               "mimeType": "Type",
               "size": "Size",
               "uploadedBy": "Uploaded by",
