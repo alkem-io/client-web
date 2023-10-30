@@ -11,8 +11,6 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '../../../journey/space/layout/SpaceTabs';
-import SearchDialog from '../../search/SearchDialog';
-import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
@@ -69,7 +67,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
   const entityAttrs = useSpace();
 
-  const { spaceNameId, spaceId, profile, loading } = useSpace();
+  const { spaceId, profile, loading } = useSpace();
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
 
@@ -79,27 +77,24 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
   });
 
   return (
-    <>
-      <EntitySettingsLayout
-        entityTypeName="space"
-        tabs={tabs}
-        pageBanner={
-          <SpacePageBanner
-            title={profile.displayName}
-            tagline={profile?.tagline}
-            loading={loading}
-            bannerUrl={visual?.uri}
-            bannerAltText={visual?.alternativeText}
-            ribbon={ribbon}
-            journeyTypeName="space"
-          />
-        }
-        tabsComponent={SpaceTabs}
-        {...entityAttrs}
-        {...props}
-      />
-      <SearchDialog searchRoute={`${buildSpaceUrl(spaceNameId)}/search`} />
-    </>
+    <EntitySettingsLayout
+      entityTypeName="space"
+      tabs={tabs}
+      pageBanner={
+        <SpacePageBanner
+          title={profile.displayName}
+          tagline={profile?.tagline}
+          loading={loading}
+          bannerUrl={visual?.uri}
+          bannerAltText={visual?.alternativeText}
+          ribbon={ribbon}
+          journeyTypeName="space"
+        />
+      }
+      tabsComponent={SpaceTabs}
+      {...entityAttrs}
+      {...props}
+    />
   );
 };
 

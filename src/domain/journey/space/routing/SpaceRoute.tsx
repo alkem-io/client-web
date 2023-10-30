@@ -16,7 +16,6 @@ import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
-import SpaceSearchPage from '../pages/SpaceSearchPage';
 import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
@@ -55,7 +54,6 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
           <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
           <Route path={routes.Challenges} element={<SpaceChallengesPage />} />
           <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
-          <Route path={routes.Search} element={<SpaceSearchPage />} />
           <Route
             path="*"
             element={

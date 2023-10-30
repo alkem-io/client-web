@@ -1,16 +1,16 @@
 import { SelectOption } from '@mui/base/SelectUnstyled/useSelect.types';
 import { useTranslation } from 'react-i18next';
-import React, { forwardRef, PropsWithChildren, useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { forwardRef, PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useSpace } from '../../../domain/journey/space/SpaceContext/useSpace';
 import SearchBox from '../../../core/ui/search/SearchBox';
 import { useNavigate } from 'react-router';
-import { useMatch } from 'react-router-dom';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../domain/platform/routes/constants';
+import { useLocation } from 'react-router-dom';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
-import { buildSpaceUrl } from '../../routing/urlBuilders';
 import { gutters } from '../../../core/ui/grid/utils';
 import { Collapsible } from '../../../core/ui/navigation/Collapsible';
 import { UncontrolledExpandable } from '../../../core/ui/navigation/UncontrolledExpandable';
+import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from '../../search/constants';
+import { useCombinedRefs } from '../../../domain/shared/utils/useCombinedRefs';
 
 enum SearchScope {
   Platform,
@@ -26,7 +26,7 @@ interface PlatformSearchProps extends UncontrolledExpandable {
 }
 
 const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchProps>>(
-  ({ onExpand, compact, children }, ref) => {
+  ({ onExpand, compact, children }, forwardedRef) => {
     const { t } = useTranslation();
 
     const { spaceNameId, profile } = useSpace();
@@ -50,25 +50,15 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
 
     const defaultSearchOption = spaceNameId ? SearchScope.Space : SearchScope.Platform;
 
-    // The code below is taken from the old SearchBar
-    // TODO refactor when there are no bigger priorities
-
     const navigate = useNavigate();
-    const match = useMatch(SEARCH_ROUTE);
     const query = useQueryParams();
     const getInitialValue = () => {
-      const terms = match ? query.get(SEARCH_TERMS_PARAM) : null;
+      const terms = query.get(SEARCH_TERMS_URL_PARAM);
       return terms ? terms.split(',').join(', ') : '';
     };
     const [value, setValue] = useState(getInitialValue);
 
-    useLayoutEffect(() => {
-      if (!match) {
-        setValue('');
-      }
-    }, [match]);
-
-    const isTermValid = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
+    const isTermValid = value.length >= MINIMUM_TERM_LENGTH;
 
     const handleValueChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,44 +67,28 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
       [setValue]
     );
 
-    const handlePlatformSearch = useCallback(() => {
-      if (match && isTermValid) {
-        return;
-      }
+    const searchBoxRef = useCombinedRefs(null, forwardedRef);
 
-      if (isTermValid) {
-        return navigate(SEARCH_ROUTE);
-      }
-
-      const terms = getSearchTerms(value);
-      const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
-      navigate(`${SEARCH_ROUTE}?${params}`);
-    }, [match, isTermValid, value, navigate]);
-
-    const spaceSearchRoute = `${buildSpaceUrl(spaceNameId)}/search`;
-
-    const handleSpaceSearch = (terms: string[]) => {
-      const params = new URLSearchParams();
-      for (const term of terms) {
-        params.append(SEARCH_TERMS_PARAM, term);
-      }
-      navigate(`${spaceSearchRoute}?${params}`);
-    };
+    const { pathname } = useLocation();
 
     const handleSearch = (scope: SearchScope) => {
-      switch (scope) {
-        case SearchScope.Platform: {
-          return handlePlatformSearch();
-        }
-        case SearchScope.Space: {
-          return handleSpaceSearch([getSearchTerms(value)]);
-        }
+      if (!isTermValid) {
+        return;
       }
+      const terms = getSearchTerms(value);
+      const params = new URLSearchParams();
+      params.append(SEARCH_TERMS_URL_PARAM, terms);
+      if (scope === SearchScope.Space) {
+        params.set(SEARCH_SPACE_URL_PARAM, spaceNameId);
+      }
+      setValue('');
+      navigate(`${pathname}?${params}`);
+      searchBoxRef?.current?.collapse();
     };
 
     return (
       <SearchBox
-        ref={ref}
+        ref={searchBoxRef}
         searchTerms={value}
         defaultSearchOption={defaultSearchOption}
         searchOptions={searchOptions}

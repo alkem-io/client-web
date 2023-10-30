@@ -42,8 +42,9 @@ const ContributionDetailsCard = ({
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
 
+  const spaceVisibility = license?.visibility;
   const ribbon =
-    spaceVisibility && license.visibility !== SpaceVisibility.Active ? (
+    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
       <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 

@@ -16,7 +16,6 @@ import { WhiteboardRtProvider } from '../../whiteboard/containers/WhiteboardRtPr
 import WhiteboardsRtManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsRtManagementViewWrapper';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
-import { useUserContext } from '../../../community/user';
 import { Box } from '@mui/material';
 
 interface SingleWhiteboardRtCalloutProps extends BaseCalloutViewProps {
@@ -60,7 +59,6 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
     ref
   ) => {
     const { t } = useTranslation();
-    const { user } = useUserContext();
 
     const [isWhiteboardDialogOpen, setIsWhiteboardDialogOpen] = useState(false);
     const handleCloseWhiteboardDialog = () => {
@@ -74,7 +72,9 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
 
     return (
       <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
-        <DisabledOverlay disabled={!user?.hasPlatformPrivilege(AuthorizationPrivilege.AccessWhiteboardRt)}>
+        <DisabledOverlay
+          disabled={!callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateWhiteboardRt)}
+        >
           <CalloutLayout
             callout={callout}
             contributionsCount={contributionsCount}

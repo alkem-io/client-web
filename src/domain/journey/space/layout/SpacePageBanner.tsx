@@ -14,7 +14,6 @@ import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '../../../../main/env';
 import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
-import { COLOR_HUB } from '../../../../core/ui/palette/palette';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
@@ -25,9 +24,11 @@ const Root = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.neutralLight.main,
 }));
 
+const TITLE_BACKGROUND_COLOR = '#043B43';
+
 const Title = styled(Box)(({ theme }) => ({
   color: theme.palette.common.white,
-  backgroundColor: COLOR_HUB,
+  backgroundColor: TITLE_BACKGROUND_COLOR,
   position: 'relative',
   width: '100%',
   textAlign: 'center',
@@ -59,7 +60,8 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
     <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
   );
   const { platform } = useConfig();
-  const { visibility: spaceVisibility } = useSpace();
+  const { license } = useSpace();
+  const spaceVisibility = license.visibility;
 
   if (spaceVisibility === SpaceVisibility.Active) return null;
   if (journeyTypeName === 'admin') return null;

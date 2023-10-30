@@ -16,12 +16,15 @@ import { useTranslation } from 'react-i18next';
 import { buildAdminSpaceUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
+import useSpaceFeatures from '../../../../journey/space/license/useSpaceFeatures';
+import { SpaceFeature } from '../../../../journey/space/license/SpaceLicenseFeatureFlags';
 
 export const SpaceList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
   const notify = useNotification();
   const { t } = useTranslation();
 
+  const { spaceHasFeature } = useSpaceFeatures();
   const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
   const { data: organizationData } = useOrganizationsListQuery();
   const organizations = useMemo(() => {
@@ -59,6 +62,7 @@ export const SpaceList: FC = () => {
           visibility: space.license.visibility,
           hostID: space.host?.id,
           nameID: space.nameID,
+          whiteboardRtEnabled: spaceHasFeature(SpaceFeature.FEATURE_WHITEBOARDRT, space.license.featureFlags),
           organizations,
         })) ?? []
     );

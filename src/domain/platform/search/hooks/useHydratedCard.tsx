@@ -23,7 +23,7 @@ import { RoleType } from '../../../community/user/constants/RoleType';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/user/hooks/useUserContext';
-import { SearchResultMetaType, SearchResultT } from '../SearchView';
+import { SearchResultMetaType, SearchResultT } from '../../../../main/search/SearchView';
 import { SearchContributionCardCard } from '../../../shared/components/search-cards/SearchContributionPostCard';
 import { OpportunityIcon } from '../../../journey/opportunity/icon/OpportunityIcon';
 import { ChallengeIcon } from '../../../journey/challenge/icon/ChallengeIcon';

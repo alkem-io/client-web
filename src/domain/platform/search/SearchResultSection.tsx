@@ -3,7 +3,7 @@ import React, { FC, ReactNode, useMemo } from 'react';
 import { EntityFilter } from './EntityFilter';
 import CardsLayout from '../../../core/ui/card/cardsLayout/CardsLayout';
 import SearchResultPostChooser from './SearchResultPostChooser';
-import { SearchResultMetaType } from './SearchView';
+import { SearchResultMetaType } from '../../../main/search/SearchView';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';

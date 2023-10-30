@@ -30162,6 +30162,24 @@ export type AskChatGuidanceQuestionQuery = {
   };
 };
 
+export type SearchScopeDetailsSpaceQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SearchScopeDetailsSpaceQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    };
+  };
+};
+
 export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationLibraryQuery = {

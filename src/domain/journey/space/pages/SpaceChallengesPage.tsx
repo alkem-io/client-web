@@ -22,7 +22,8 @@ export interface SpaceChallengesPageProps {}
 const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceNameId, permissions, visibility } = useSpace();
+  const { spaceNameId, permissions, license } = useSpace();
+  const spaceVisibility = license.visibility;
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -74,7 +75,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 innovationFlowState={challenge.innovationFlow?.lifecycle?.state}
                 journeyUri={buildChallengeUrl(spaceNameId, challenge.nameID)}
                 locked={!challenge.authorization?.anonymousReadAccess}
-                spaceVisibility={visibility}
+                spaceVisibility={spaceVisibility}
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}

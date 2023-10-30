@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { PageBannerCardProps } from '../../../topLevelPages/pageBannerCard/PageBannerCard';
-import TopLevelDesktopLayout from '../TopLevelDesktopLayout';
+import TopLevelLayout from '../TopLevelLayout';
 import PageContent from '../../../../core/ui/content/PageContent';
 import TopLevelPageBreadcrumbs from '../../../topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import TopLevelPageBanner from './TopLevelPageBanner';
@@ -27,7 +27,7 @@ const TopLevelPageLayout = ({
   );
 
   return (
-    <TopLevelDesktopLayout
+    <TopLevelLayout
       header={header}
       breadcrumbs={
         <TopLevelPageBreadcrumbs iconComponent={iconComponent} uri={pathname}>
@@ -36,7 +36,7 @@ const TopLevelPageLayout = ({
       }
     >
       <PageContent>{children}</PageContent>
-    </TopLevelDesktopLayout>
+    </TopLevelLayout>
   );
 };
 

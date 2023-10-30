@@ -50,7 +50,7 @@ const DialogContainer = ({
   );
 };
 
-interface DialogWithGridProps extends MuiDialogProps {
+export interface DialogWithGridProps extends MuiDialogProps {
   columns?: GridItemProps['columns'];
   fullHeight?: boolean;
   centeredVertically?: boolean;

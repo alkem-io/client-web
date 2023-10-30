@@ -24,7 +24,8 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { spaceNameId, visibility } = useSpace();
+  const { spaceNameId, license } = useSpace();
+  const spaceVisibility = license.visibility;
   const { challengeId, challengeNameId, permissions } = useChallenge();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -76,7 +77,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 tags={opportunity.profile.tagset?.tags!}
                 banner={opportunity.profile.cardBanner}
                 journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}
-                spaceVisibility={visibility}
+                spaceVisibility={spaceVisibility}
                 member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
