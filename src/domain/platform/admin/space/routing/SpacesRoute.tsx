@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { useTransactionScope } from '../../../../../core/analytics/useSentry';
+import { useTransactionScope } from '../../../../../core/analytics/SentryTransactionScopeContext';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../../main/routing/urlParams';

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useTransactionScope } from '../../../../../core/analytics/useSentry';
+import { useTransactionScope } from '../../../../../core/analytics/SentryTransactionScopeContext';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '../../../../journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';

@@ -14,7 +14,6 @@ import OrganizationRoute from '../../domain/community/contributor/organization/r
 import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
 import { Restricted } from '../../core/routing/Restricted';
 import NoIdentityRedirect from '../../core/routing/NoIdentityRedirect';
-import { SearchRoute } from '../search/searchRoute';
 import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/user/routing/UserRoute';
 import { SpaceRoute } from '../../domain/journey/space/routing/SpaceRoute';
@@ -80,16 +79,6 @@ export const TopLevelRoutes: FC = () => {
             <NonIdentity>
               <WithApmTransaction path="/admin/*">
                 <AdminRoute />
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path="/search"
-          element={
-            <NonIdentity>
-              <WithApmTransaction path="/search">
-                <SearchRoute />
               </WithApmTransaction>
             </NonIdentity>
           }

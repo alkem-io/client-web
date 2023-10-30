@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useMemo } from 'react';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -39,7 +39,7 @@ const InnovationPackProfileLayout = ({
   }, [innovationPack]);
 
   return (
-    <TopLevelDesktopLayout
+    <TopLevelLayout
       breadcrumbs={
         <TopLevelPageBreadcrumbs
           loading={loading}
