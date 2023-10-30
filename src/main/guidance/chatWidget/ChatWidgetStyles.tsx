@@ -19,8 +19,20 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
       return {
         '.rcw-widget-container': {
           maxWidth: gutters(19),
+          '&:not(:has(.active))': {
+            position: 'static',
+            margin: 0,
+          },
         },
-        '.rcw-launcher': background,
+        '.rcw-launcher': {
+          ...background,
+          position: 'static',
+          margin: 0,
+        },
+        '.rcw-conversation-container': {
+          marginBottom: gutters(),
+          overflow: 'hidden',
+        },
         '.rcw-conversation-container .rcw-header': {
           ...background,
           padding: theme.spacing(1),
@@ -91,9 +103,6 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
         },
         '.rcw-timestamp': {
           display: 'none',
-        },
-        '.rcw-conversation-container': {
-          overflow: 'hidden',
         },
       };
     }}

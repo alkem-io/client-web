@@ -17,7 +17,6 @@ import { privateGraphQLEndpoint, publicGraphQLEndpoint } from './main/constants/
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
-import ChatWidget from './main/guidance/chatWidget/ChatWidget';
 import { ApmProvider, ApmUserSetter } from './core/analytics/apm/context';
 import { UserGeoProvider } from './core/analytics/geo';
 import { SentryTransactionScopeContextProvider } from './core/analytics/SentryTransactionScopeContext';
@@ -87,7 +86,6 @@ const Root: FC = () => (
                                   <ApmUserSetter />
                                   <ScrollToTop />
                                   <TopLevelRoutes />
-                                  <ChatWidget />
                                 </UserProvider>
                               </NavigationProvider>
                             </AlkemioApolloProvider>

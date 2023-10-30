@@ -2,9 +2,14 @@
   "chatbot": {
     "title": "Alkemio Help",
     "subtitle": "Ask your question to search through our documentation or browse it directly",
+    "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
       "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+    },
+    "feedback": {
+      "message": "Is the answer relevant?",
+      "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "references": [
       {
@@ -183,6 +188,7 @@
     "activity": "Activity",
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
+    "beta": "Beta",
     "inspiration": "Inspiration",
     "name": "Name",
     "username": "Username",
