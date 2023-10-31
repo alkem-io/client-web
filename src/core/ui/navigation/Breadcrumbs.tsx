@@ -1,5 +1,4 @@
 import React, {
-  Children,
   cloneElement,
   forwardRef,
   MouseEventHandler,
@@ -17,9 +16,16 @@ import { Expandable } from './Expandable';
 import { some } from 'lodash';
 import { Collapsible } from './Collapsible';
 import { UncontrolledExpandable } from './UncontrolledExpandable';
+import flattenChildren from '../utils/flattenChildren';
+
+export type OneOrMany<Item> = Item | Item[];
 
 export interface BreadcrumbsProps<ItemProps extends Expandable> extends UncontrolledExpandable {
-  children?: ReactElement<ItemProps> | (ReactElement<ItemProps> | ReactElement<ItemProps>[])[];
+  children?: OneOrMany<ReactElement<ItemProps> | false | null | undefined>;
+}
+
+interface BreadcrumbsInternalProps<ItemProps extends Expandable> extends UncontrolledExpandable {
+  children?: OneOrMany<BreadcrumbsProps<ItemProps>['children']>;
 }
 
 const BreadcrumbsSeparator = () => {
@@ -41,12 +47,12 @@ const BreadcrumbsSeparator = () => {
 
 type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
 
-const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>(
-  <ItemProps extends Expandable>({ onExpand, children }: BreadcrumbsProps<ItemProps>, ref) => {
+const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>>(
+  <ItemProps extends Expandable>({ onExpand, children }: BreadcrumbsInternalProps<ItemProps>, ref) => {
     const [expandedState, setExpandedState] = useState<JourneyBreadcrumbsExpandedState>({});
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const [firstChild, ...restChildren] = (Children.toArray(children) as ReactElement<ItemProps>[]).map(child => {
+    const [firstChild, ...restChildren] = (flattenChildren(children) as ReactElement<ItemProps>[]).map(child => {
       const expanded = isExpanded || (child.key && expandedState[child.key]) || false;
 
       const onExpand = child.key ? () => handleItemHover(child.key!) : undefined;
@@ -126,13 +132,15 @@ const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>(
           marginRight={gutters(2)}
           onMouseLeave={onLeave}
           onClick={handleClick}
-          sx={{ pointerEvents: 'auto' }}
+          sx={{ pointerEvents: 'auto', userSelect: 'none' }}
         >
           {childrenWithSeparator}
         </Box>
       </ClickAwayListener>
     );
   }
-) as <ItemProps extends Expandable>(props: BreadcrumbsProps<ItemProps> & { ref?: Ref<Collapsible> }) => ReactElement;
+) as <ItemProps extends Expandable>(
+  props: BreadcrumbsInternalProps<ItemProps> & { ref?: Ref<Collapsible> }
+) => ReactElement;
 
 export default Breadcrumbs;

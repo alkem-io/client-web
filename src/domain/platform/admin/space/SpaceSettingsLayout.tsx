@@ -15,6 +15,7 @@ import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
+import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 
 interface SpaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -79,7 +80,7 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
   return (
     <EntitySettingsLayout
       entityTypeName="space"
-      tabs={tabs}
+      subheaderTabs={tabs}
       pageBanner={
         <SpacePageBanner
           title={profile.displayName}
@@ -92,6 +93,7 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
         />
       }
       tabsComponent={SpaceTabs}
+      breadcrumbs={<JourneyBreadcrumbs settings />}
       {...entityAttrs}
       {...props}
     />
