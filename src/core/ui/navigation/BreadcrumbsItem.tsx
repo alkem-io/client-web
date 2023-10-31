@@ -7,12 +7,12 @@ import { Expandable } from './Expandable';
 import { ComponentType, PropsWithChildren } from 'react';
 import { useElevationContext } from '../utils/ElevationContext';
 
-interface BreadcrumbsItemProps extends Expandable {
+export interface BreadcrumbsItemProps extends Expandable {
   avatar?: {
     uri?: string;
   };
   iconComponent?: ComponentType<SvgIconProps>;
-  uri: string;
+  uri?: string;
   accent?: boolean;
   loading?: boolean;
 }
@@ -33,7 +33,7 @@ const BreadcrumbsItem = ({
 
   return (
     <Paper
-      component={RouterLink}
+      component={uri ? RouterLink : Paper}
       to={uri}
       elevation={useElevationContext()}
       sx={{

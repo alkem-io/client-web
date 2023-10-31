@@ -18,10 +18,10 @@ import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { PageProps } from '../../../shared/types/PageProps';
 import { getUpdateUserInput } from '../utils/getUpdateUserInput';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import UserPageLayout from '../layout/UserPageLayout';
-import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 
 interface EditUserProfilePageProps extends PageProps {}
 
@@ -90,21 +90,19 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
 
   return (
     <StorageConfigContextProvider locationType="user" userId={user.nameID}>
-      <UserPageLayout>
-        <PageContent>
-          <PageContentColumn columns={12}>
-            <PageContentBlock>
-              <UserForm
-                title={'Profile'}
-                user={{ ...user } as UserModel}
-                avatar={user?.profile.visual}
-                editMode={editMode}
-                onSave={handleSave}
-              />
-            </PageContentBlock>
-          </PageContentColumn>
-        </PageContent>
-      </UserPageLayout>
+      <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
+        <PageContentColumn columns={12}>
+          <PageContentBlock>
+            <UserForm
+              title={'Profile'}
+              user={{ ...user } as UserModel}
+              avatar={user?.profile.visual}
+              editMode={editMode}
+              onSave={handleSave}
+            />
+          </PageContentBlock>
+        </PageContentColumn>
+      </UserSettingsLayout>
     </StorageConfigContextProvider>
   );
 };
