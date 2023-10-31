@@ -2,12 +2,12 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 import { PageBannerCardProps } from '../../../topLevelPages/pageBannerCard/PageBannerCard';
 import TopLevelLayout from '../TopLevelLayout';
 import PageContent from '../../../../core/ui/content/PageContent';
-import TopLevelPageBreadcrumbs from '../../../topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import TopLevelPageBanner from './TopLevelPageBanner';
-import { useLocation } from 'react-router-dom';
+import { PlatformNavigationBarProps } from '../../platformNavigation/PlatformNavigationBar';
 
 interface TopLevelPageLayoutProps extends PageBannerCardProps {
   ribbon?: ReactNode;
+  breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
 }
 
 const TopLevelPageLayout = ({
@@ -15,10 +15,9 @@ const TopLevelPageLayout = ({
   children,
   iconComponent,
   title,
+  breadcrumbs,
   ...props
 }: PropsWithChildren<TopLevelPageLayoutProps>) => {
-  const { pathname } = useLocation();
-
   const header = (
     <>
       <TopLevelPageBanner title={title} iconComponent={iconComponent} {...props} />
@@ -27,14 +26,7 @@ const TopLevelPageLayout = ({
   );
 
   return (
-    <TopLevelLayout
-      header={header}
-      breadcrumbs={
-        <TopLevelPageBreadcrumbs iconComponent={iconComponent} uri={pathname}>
-          {title}
-        </TopLevelPageBreadcrumbs>
-      }
-    >
+    <TopLevelLayout header={header} breadcrumbs={breadcrumbs}>
       <PageContent>{children}</PageContent>
     </TopLevelLayout>
   );

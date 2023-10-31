@@ -8,6 +8,7 @@ import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
+import AdminBreadcrumbs from '../../../../../main/admin/AdminBreadcrumbs';
 
 interface AdminLayoutProps {
   currentTab: AdminSection;
@@ -36,6 +37,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
           </HeaderNavigationTabs>
         </>
       }
+      breadcrumbs={<AdminBreadcrumbs />}
     >
       <PageContent gridContainerProps={{ padding: 0 }}>
         <PageContentColumn columns={12}>

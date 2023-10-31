@@ -9,6 +9,7 @@ import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 
 interface OpportunitySettingsLayoutProps {
   currentTab: SettingsSection;
@@ -49,9 +50,10 @@ const OpportunitySettingsLayout: FC<OpportunitySettingsLayoutProps> = props => {
   return (
     <EntitySettingsLayout
       entityTypeName="opportunity"
-      tabs={tabs}
+      subheaderTabs={tabs}
       pageBannerComponent={OpportunityPageBanner}
       tabsComponent={OpportunityTabs}
+      breadcrumbs={<JourneyBreadcrumbs settings />}
       {...entityAttrs}
       {...props}
     />

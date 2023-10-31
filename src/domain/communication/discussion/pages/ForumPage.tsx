@@ -28,6 +28,8 @@ import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/us
 import useInnovationHubOutsideRibbon from '../../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { ForumOutlined } from '@mui/icons-material';
+import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -125,6 +127,13 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
         subtitle={t('pages.forum.subtitle')}
         iconComponent={ForumOutlined}
         ribbon={ribbon}
+        breadcrumbs={
+          <TopLevelPageBreadcrumbs>
+            <BreadcrumbsItem iconComponent={ForumOutlined} uri="/forum">
+              {t('pages.forum.shortName')}
+            </BreadcrumbsItem>
+          </TopLevelPageBreadcrumbs>
+        }
       >
         {!loading && !isAuthenticated ? (
           <ImageBackdrop

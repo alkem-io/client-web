@@ -20,10 +20,12 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import usePostMessageMutations from '../../room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
 import { ForumOutlined } from '@mui/icons-material';
+import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 interface DiscussionPageProps {}
 
@@ -134,11 +136,23 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     setDeleteDiscussionId(undefined);
   };
 
+  const { pathname } = useLocation();
+
   return (
     <TopLevelPageLayout
       title={t('pages.forum.title')}
       subtitle={t('pages.forum.subtitle')}
       iconComponent={ForumOutlined}
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem uri="/forum" iconComponent={ForumOutlined}>
+            {t('pages.forum.shortName')}
+          </BreadcrumbsItem>
+          <BreadcrumbsItem uri={pathname} iconComponent={ForumOutlined}>
+            {discussion?.title}
+          </BreadcrumbsItem>
+        </TopLevelPageBreadcrumbs>
+      }
     >
       <DiscussionsLayout
         backButton={
