@@ -937,6 +937,13 @@ export type ChallengeTemplate = {
   name: Scalars['String'];
 };
 
+export type ChatGuidanceAnswerRelevanceInput = {
+  /** The answer id. */
+  id: Scalars['UUID'];
+  /** Is the answer relevant or not. */
+  relevant: Scalars['Boolean'];
+};
+
 export type ChatGuidanceInput = {
   /** The language of the answer. */
   language?: InputMaybe<Scalars['String']>;
@@ -948,10 +955,12 @@ export type ChatGuidanceResult = {
   __typename?: 'ChatGuidanceResult';
   /** The answer to the question */
   answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
   /** The original question */
   question: Scalars['String'];
   /** The sources used to answer the question */
-  sources: Array<Source>;
+  sources?: Maybe<Array<Source>>;
 };
 
 export type Collaboration = {
@@ -2549,6 +2558,8 @@ export type Mutation = {
   sendMessageToUser: Scalars['Boolean'];
   /** Updates the specified Actor. */
   updateActor: Actor;
+  /** User vote if a specific answer is relevant. */
+  updateAnswerRelevance: Scalars['Boolean'];
   /** Updates the specified CalendarEvent. */
   updateCalendarEvent: CalendarEvent;
   /** Update a Callout. */
@@ -3051,6 +3062,10 @@ export type MutationSendMessageToUserArgs = {
 
 export type MutationUpdateActorArgs = {
   actorData: UpdateActorInput;
+};
+
+export type MutationUpdateAnswerRelevanceArgs = {
+  input: ChatGuidanceAnswerRelevanceInput;
 };
 
 export type MutationUpdateCalendarEventArgs = {
@@ -4382,9 +4397,9 @@ export type ServiceMetadata = {
 export type Source = {
   __typename?: 'Source';
   /** The title of the source */
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
   /** The URI of the source */
-  uri: Scalars['String'];
+  uri?: Maybe<Scalars['String']>;
 };
 
 export type Space = {
@@ -30096,6 +30111,12 @@ export type DeleteCalendarEventMutation = {
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
 };
 
+export type UpdateAnswerRelevanceMutationVariables = Exact<{
+  input: ChatGuidanceAnswerRelevanceInput;
+}>;
+
+export type UpdateAnswerRelevanceMutation = { __typename?: 'Mutation'; updateAnswerRelevance: boolean };
+
 export type AskChatGuidanceQuestionQueryVariables = Exact<{
   chatData: ChatGuidanceInput;
 }>;
@@ -30104,9 +30125,10 @@ export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
   askChatGuidanceQuestion: {
     __typename?: 'ChatGuidanceResult';
+    id?: string | undefined;
     answer: string;
     question: string;
-    sources: Array<{ __typename?: 'Source'; uri: string }>;
+    sources?: Array<{ __typename?: 'Source'; uri?: string | undefined; title?: string | undefined }> | undefined;
   };
 };
 

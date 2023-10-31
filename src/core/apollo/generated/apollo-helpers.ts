@@ -710,9 +710,16 @@ export type ChallengeTemplateFieldPolicy = {
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ChatGuidanceResultKeySpecifier = ('answer' | 'question' | 'sources' | ChatGuidanceResultKeySpecifier)[];
+export type ChatGuidanceResultKeySpecifier = (
+  | 'answer'
+  | 'id'
+  | 'question'
+  | 'sources'
+  | ChatGuidanceResultKeySpecifier
+)[];
 export type ChatGuidanceResultFieldPolicy = {
   answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   sources?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1462,6 +1469,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToRoom'
   | 'sendMessageToUser'
   | 'updateActor'
+  | 'updateAnswerRelevance'
   | 'updateCalendarEvent'
   | 'updateCallout'
   | 'updateCalloutPublishInfo'
@@ -1617,6 +1625,7 @@ export type MutationFieldPolicy = {
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;

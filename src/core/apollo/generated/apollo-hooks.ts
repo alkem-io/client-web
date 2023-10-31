@@ -23482,13 +23482,61 @@ export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
   SchemaTypes.DeleteCalendarEventMutationVariables
 >;
+export const UpdateAnswerRelevanceDocument = gql`
+  mutation updateAnswerRelevance($input: ChatGuidanceAnswerRelevanceInput!) {
+    updateAnswerRelevance(input: $input)
+  }
+`;
+export type UpdateAnswerRelevanceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAnswerRelevanceMutation,
+  SchemaTypes.UpdateAnswerRelevanceMutationVariables
+>;
+
+/**
+ * __useUpdateAnswerRelevanceMutation__
+ *
+ * To run a mutation, you first call `useUpdateAnswerRelevanceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAnswerRelevanceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAnswerRelevanceMutation, { data, loading, error }] = useUpdateAnswerRelevanceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAnswerRelevanceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateAnswerRelevanceMutation,
+    SchemaTypes.UpdateAnswerRelevanceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateAnswerRelevanceMutation,
+    SchemaTypes.UpdateAnswerRelevanceMutationVariables
+  >(UpdateAnswerRelevanceDocument, options);
+}
+
+export type UpdateAnswerRelevanceMutationHookResult = ReturnType<typeof useUpdateAnswerRelevanceMutation>;
+export type UpdateAnswerRelevanceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAnswerRelevanceMutation>;
+export type UpdateAnswerRelevanceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAnswerRelevanceMutation,
+  SchemaTypes.UpdateAnswerRelevanceMutationVariables
+>;
 export const AskChatGuidanceQuestionDocument = gql`
   query askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
     askChatGuidanceQuestion(chatData: $chatData) {
+      id
       answer
       question
       sources {
         uri
+        title
       }
     }
   }

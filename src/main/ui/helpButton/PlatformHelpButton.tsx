@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import HelpIcon from '@mui/icons-material/Help';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
 import { IconButton } from '@mui/material';
+import { useConfig } from '../../../domain/platform/config/useConfig';
+import { FEATURE_GUIDANCE_ENGINE } from '../../../domain/platform/config/features.constants';
+import { useUserContext } from '../../../domain/community/user';
+import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
+import { useFullscreen } from '../../../core/ui/fullscreen/useFullscreen';
+import ChatWidget from '../../guidance/chatWidget/ChatWidget';
 
 const PlatformHelpButton = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -10,11 +16,24 @@ const PlatformHelpButton = () => {
     setDialogOpen(true);
   };
 
+  const { fullscreen } = useFullscreen();
+  const { isFeatureEnabled } = useConfig();
+  const isGuidanceEnabled = isFeatureEnabled(FEATURE_GUIDANCE_ENGINE);
+  const { user: currentUser } = useUserContext();
+  const shouldDisplayChatWidget =
+    !fullscreen && // Never show the widget when there's something in fullscreen
+    currentUser?.hasPlatformPrivilege(AuthorizationPrivilege.AccessInteractiveGuidance) &&
+    isGuidanceEnabled;
+
   return (
     <>
-      <IconButton onClick={openHelpDialog}>
-        <HelpIcon color="primary" fontSize="large" sx={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));' }} />
-      </IconButton>
+      {shouldDisplayChatWidget ? (
+        <ChatWidget />
+      ) : (
+        <IconButton onClick={openHelpDialog}>
+          <HelpIcon color="primary" fontSize="large" sx={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));' }} />
+        </IconButton>
+      )}
       <HelpDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </>
   );

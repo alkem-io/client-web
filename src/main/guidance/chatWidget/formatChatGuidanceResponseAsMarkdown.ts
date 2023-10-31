@@ -4,24 +4,30 @@ export const SOURCES_HEADING_TAG_HTML = 'h5';
 const SOURCES_HEADING_TAG_MARKDOWN = '#####';
 
 interface Source {
-  uri: string;
+  uri?: string;
+  title?: string;
 }
 
 interface ChatGuidanceQuestionResponse {
   answer: string;
-  sources: Source[];
+  sources?: Source[];
 }
 
-const formatChatGuidanceResponseAsMarkdown = (question: ChatGuidanceQuestionResponse, t: TFunction) => {
-  const { answer, sources } = question;
+const formatChatGuidanceResponseAsMarkdown = (response: ChatGuidanceQuestionResponse, t: TFunction) => {
+  const { answer, sources } = response;
   const sourcesMarkdown =
-    sources.length === 0
+    !sources || sources.length === 0
       ? ''
       : `
 
 ${SOURCES_HEADING_TAG_MARKDOWN} ${t('common.sources')}:
 
-${sources.map(source => `- [${source.uri}](${source.uri})`).join('\n')}
+${sources.map(source => {
+  const title = source.title ?? source.uri;
+  const uri = source.uri ?? '';
+
+  return `- [${title}](${uri})`;  
+}).join('\n')}
   `;
 
   return `${answer}${sourcesMarkdown}`;
