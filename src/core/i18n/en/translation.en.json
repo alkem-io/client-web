@@ -1683,8 +1683,12 @@
             "public": "<b>Public:</b> this space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
             "private": "<b>Private:</b> this space is visible for everyone on the platform, but the content is only visible for members."
           },
-          "features": {
-            "whiteboard-rt": "RealTime Whiteboards"
+          "license-features": {
+            "title": "Space Features",
+            "features": {
+              "whiteboard-rt": "RealTime Whiteboards",
+              "callout-to-callout-template": "Create template from callout"
+            }
           },
           "membership": {
             "title": "Membership",
