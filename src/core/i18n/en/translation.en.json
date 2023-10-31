@@ -2,9 +2,14 @@
   "chatbot": {
     "title": "Alkemio Help",
     "subtitle": "Ask your question to search through our documentation or browse it directly",
+    "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
       "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+    },
+    "feedback": {
+      "message": "Is the answer relevant?",
+      "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "references": [
       {
@@ -25,7 +30,7 @@
     "releaseUpdates": {
       "icon": "🎉",
       "title": "We have exciting news, a new release full of interesting functionalities is out!",
-      "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! <b><clickhere>Click here</clickhere></b> to read all about the latest changes.",
+      "content": "As a user, I want to primarily focus on the work in my Space or Challenge, with the option to use other platform functionalities. Currently the platform navigation confuses users and utilizes a significant amount of the webpage's real estate. The new structure is therefore as follows:<ul><li><b>Menu:</b> besides your personal profile and settings, you will now find a menu that includes all the jobs you can do on the platform outside of your Space.</li><li><b>Navigation:</b> in the top left, you will find the icons of the home page, Space, or Challenge to navigate back.</li><li><b>Search:</b> as users were often confused by the two search options (in the Space or the entire platform), we have combined them into one search function with the option to filter.</li></ul>Hopefully this release will bring you one step closer to efficient collaboration!<br/><br/><b><clickhere>Click here</clickhere></b> to read all about the latest changes.",
       "url": "https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20"
     }
   },
@@ -124,7 +129,6 @@
     "change-template": "Change template",
     "find-template": "Find template",
     "change": "Change",
-    "library": "Library",
     "share": "Share",
     "preview": "Preview",
     "import": "Import",
@@ -140,7 +144,9 @@
     "moveToTop": "Move to top",
     "moveToBottom": "Move to bottom",
     "use": "Use",
-    "fullscreen": "Toggle full screen"
+    "fullscreen": "Toggle full screen",
+    "changeLanguage": "Change language",
+    "getHelp": "Get help"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -181,6 +187,7 @@
     "activity": "Activity",
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
+    "beta": "Beta",
     "inspiration": "Inspiration",
     "name": "Name",
     "username": "Username",
@@ -272,10 +279,11 @@
     "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
+    "library": "Library",
     "people": "People",
     "settings": "Settings",
     "space-settings": "$t(common.settings)",
-    "search": "Search...",
+    "search": "Search",
     "storage": "Storage",
     "reference": "Reference",
     "references": "References",
@@ -714,6 +722,9 @@
         "title": "Tags",
         "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Challenge Flow"
       }
     },
     "opportunity": {
@@ -751,6 +762,9 @@
         "title": "Tags",
         "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Opportunity Flow"
       }
     }
   },
@@ -764,34 +778,58 @@
       "atLeastOne": "At least one {{item}} must be selected."
     }
   },
-  "post-templates": {
-    "template-library": "Template Library: Posts",
-    "post-template": "Post template",
-    "default-description": "Default Post content",
-    "banner-narrow": "Banner narrow"
-  },
-  "whiteboard-templates": {
-    "template-library": "Template Library: Whiteboards",
-    "filter-placeholder": "Search Templates...",
-    "whiteboard-template": "Whiteboard template",
-    "space-templates": "Templates selected by the host of this community",
-    "load-platform-templates": "Or click here to browse through all platform templates",
-    "platform-templates": "Platform Templates",
-    "error-importing": "Error importing Whiteboard Template",
-    "edit-template-button": "Edit Template",
-    "edit-dialog-title": "Edit Whiteboard Template"
+  "templateLibrary": {
+    "postTemplates": {
+      "name": "Post template",
+      "title": "Template Library: Posts",
+      "defaultDescription": "Default Post content"
+    },
+    "whiteboardTemplates": {
+      "name": "Whiteboard template",
+      "title": "Template Library: Whiteboards",
+      "editTemplateButton": "Edit Template",
+      "editDialogTitle": "Edit Whiteboard Template",
+      "errorImporting": "Error importing Whiteboard Template"
+    },
+    "innovationFlowTemplates": {
+      "name": "Innovation Flow template",
+      "title": "Template Library: Innovation Flows",
+      "type": "Type"
+    },
+    "spaceTemplates": "Templates selected by the host of this community",
+    "platformTemplates": "Platform Templates",
+    "loadPlatformTemplates": "Or click here to browse through all platform templates",
+    "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
   },
   "innovation-templates": {
-    "innovation-template": "Innovation Flow template",
     "definition": {
       "title": "Definition",
       "placeholder": "Here you can paste the description from Xstate Visualizer with the various lifecycle states"
-    },
-    "type": {
-      "title": "Type"
     }
   },
   "components": {
+    "search": {
+      "searchScope": {
+        "full": "Search In:",
+        "short": "in:"
+      },
+      "scope": {
+        "platform": "Entire platform",
+        "space": "{{displayName}}"
+      }
+    },
+    "searchDialog": {
+      "headerTitle": "Search results"
+    },
+    "searchScope": {
+      "currentScope": "Search results for:",
+      "alternativeScope": "Didn’t find what you were looking for? Try searching in:",
+      "platform": "Everywhere on Alkemio"
+    },
+    "poweredBy": {
+      "label": "Powered by"
+    },
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
     },
@@ -1401,6 +1439,11 @@
       "description": {
         "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
       }
+    },
+    "innovationFlowTemplateSelect": {
+      "select": "Select different Flow",
+      "states": "States",
+      "required": "Please select an Innovation Flow"
     }
   },
   "navigation": {
@@ -1490,7 +1533,8 @@
       "no-posts": "No Posts found"
     },
     "innovationLibrary": {
-      "shortName": "Library",
+      "shortName": "$t(common.library)",
+      "fullName": "Best practices",
       "title": "Innovation Library on Alkemio is here to guide your way to impact",
       "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
@@ -1561,7 +1605,10 @@
           "storage": {
             "description": "Here you can see the document storage for this {{entity}}.",
             "title": "Documents",
+            "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
+            "emptyStorage": "(Empty)",
             "grid": {
+              "displayName": "Title",
               "mimeType": "Type",
               "size": "Size",
               "uploadedBy": "Uploaded by",
@@ -1741,10 +1788,12 @@
       }
     },
     "contributors": {
+      "fullName": "Find contributors",
+      "shortName": "$t(common.contributors)",
       "search": {
         "title": "Find talent and expertise!",
         "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
-        "placeholder": "Search..."
+        "placeholder": "Search…"
       },
       "organizations": {
         "title": "Organizations"
@@ -1754,7 +1803,9 @@
       }
     },
     "search": {
-      "placeholder": "Search...",
+      "title": "Search",
+      "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
+      "placeholder": "Search…",
       "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "search-suggestions": "Search suggestions:",
@@ -1791,9 +1842,11 @@
       "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
+      "fullName": "Explore challenges",
+      "shortName": "$t(common.challenges)",
       "search": {
         "title": "Explore Public Challenges",
-        "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge Spaces. Here you can find all challenges from the public Spaces. Challenges from private Spaces are visible when you are signed in and a member of that particular Space.",
+        "subtitle": "Below you'll find all Challenges that you are member of. Curious to explore more? Scroll down and search for the topics that interest you!",
         "placeholder": "Search...",
         "default-search-term": "Innovation",
         "no-results": "No results matched your search terms."
@@ -1828,6 +1881,8 @@
       "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
+      "title": "My Dashboard",
+      "subtitle": "Ready to make some impact?",
       "sections": {
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",
@@ -2091,6 +2146,7 @@
       "header": "User Settings"
     },
     "user-profile": {
+      "title": "My profile",
       "tooltips": {
         "settings": "User profile settings"
       },
@@ -2165,7 +2221,10 @@
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     },
     "forum": {
-      "title": "Questions, suggestions, or feedback? Get in touch with the Alkemio team or other users of the platform!",
+      "title": "Questions, suggestions, or feedback?",
+      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
+      "fullName": "Community help",
+      "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
     }

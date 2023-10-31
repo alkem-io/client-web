@@ -9,7 +9,7 @@ export interface JourneyIdentity {
 }
 
 const useJourneyIdentity = (journeyLocation: JourneyLocation): JourneyIdentity => {
-  const journeyTypeName = getJourneyTypeName(journeyLocation);
+  const journeyTypeName = getJourneyTypeName(journeyLocation)!;
 
   const { data: journeyIdentityData } = useJourneyIdentityQuery({
     variables: {

@@ -72,6 +72,10 @@ type MenuItem = {
   hidden?: boolean;
 };
 
+/**
+ * @deprecated as part of the old App bar
+ * @constructor
+ */
 const TopNavIcons = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();

@@ -5,12 +5,15 @@ import { Form, Formik } from 'formik';
 import { MessageWithPayload } from '../../../shared/i18n/ValidationMessageTranslation';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import Gutters from '../../../../core/ui/grid/Gutters';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
+import FormikInnovationFlowSelect from '../../../collaboration/InnovationFlow/FormikInnovationFlowField/FormikInnovationFlowSelect';
+import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -19,6 +22,7 @@ interface FormValues {
   tagline: string;
   vision: string;
   tags: string[];
+  innovationFlowTemplateID: string;
 }
 
 interface CreateOpportunityFormProps extends JourneyCreationForm {}
@@ -26,7 +30,10 @@ interface CreateOpportunityFormProps extends JourneyCreationForm {}
 export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
 
+  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate(InnovationFlowType.Opportunity);
+
   const validationRequiredString = t('forms.validations.required');
+  const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
 
   const handleChanged = (value: FormValues) =>
     onChanged({
@@ -34,6 +41,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       tagline: value.tagline,
       vision: value.vision,
       tags: value.tags,
+      innovationFlowTemplateID: value.innovationFlowTemplateID,
     });
 
   const initialValues: FormValues = {
@@ -41,6 +49,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     tagline: '',
     vision: '',
     tags: [],
+    innovationFlowTemplateID: defaultInnovationFlowTemplateId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -58,6 +67,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       .required(validationRequiredString),
     vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
+    innovationFlowTemplateID: yup.string().required(validationRequiredInnovationFlowString),
   });
 
   return (
@@ -70,38 +80,43 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     >
       {() => (
         <Form noValidate>
-          <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
-          <FormikInputField
-            name="displayName"
-            title={t('context.opportunity.displayName.title')}
-            helperText={t('context.opportunity.displayName.description')}
-            disabled={isSubmitting}
-            maxLength={SMALL_TEXT_LENGTH}
-          />
-          <SectionSpacer />
-          <FormikInputField
-            name="tagline"
-            title={t('context.opportunity.tagline.title')}
-            helperText={t('context.opportunity.tagline.description')}
-            disabled={isSubmitting}
-            maxLength={SMALL_TEXT_LENGTH}
-          />
-          <SectionSpacer />
-          <MarkdownInput
-            name="vision"
-            label={t('context.opportunity.vision.title')}
-            rows={5}
-            helperText={t('context.opportunity.vision.description')}
-            disabled={isSubmitting}
-            maxLength={MARKDOWN_TEXT_LENGTH}
-          />
-          <SectionSpacer double />
-          <TagsetField
-            name="tags"
-            disabled={isSubmitting}
-            title={t('context.opportunity.tags.title')}
-            helperText={t('context.opportunity.tags.description')}
-          />
+          <Gutters disablePadding>
+            <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+            <FormikInputField
+              name="displayName"
+              title={t('context.opportunity.displayName.title')}
+              helperText={t('context.opportunity.displayName.description')}
+              disabled={isSubmitting}
+              maxLength={SMALL_TEXT_LENGTH}
+            />
+            <FormikInputField
+              name="tagline"
+              title={t('context.opportunity.tagline.title')}
+              helperText={t('context.opportunity.tagline.description')}
+              disabled={isSubmitting}
+              maxLength={SMALL_TEXT_LENGTH}
+            />
+            <FormikMarkdownField
+              name="vision"
+              title={t('context.opportunity.vision.title')}
+              rows={5}
+              helperText={t('context.opportunity.vision.description')}
+              disabled={isSubmitting}
+              maxLength={MARKDOWN_TEXT_LENGTH}
+            />
+            <TagsetField
+              name="tags"
+              disabled={isSubmitting}
+              title={t('context.opportunity.tags.title')}
+              helperText={t('context.opportunity.tags.description')}
+            />
+            <FormikInnovationFlowSelect
+              name="innovationFlowTemplateID"
+              title={t('context.opportunity.innovationFlow.title')}
+              type={InnovationFlowType.Opportunity}
+              disabled={isSubmitting}
+            />
+          </Gutters>
         </Form>
       )}
     </Formik>

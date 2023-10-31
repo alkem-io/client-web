@@ -43,7 +43,7 @@ const PostTemplateView = ({ template }: PostTemplateViewProps) => {
         </Typography>
       </Box>
       <Box>
-        <TypographyTitle>{t('post-templates.default-description')}</TypographyTitle>
+        <TypographyTitle>{t('templateLibrary.postTemplates.defaultDescription')}</TypographyTitle>
         <Typography variant="body2" component="div">
           <WrapperMarkdown>{defaultDescription}</WrapperMarkdown>
         </Typography>

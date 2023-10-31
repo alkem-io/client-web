@@ -1,3 +1,6 @@
+/**
+ * @deprecated - use import { alpha } from MUI
+ */
 export default function hexToRGBA(inputHex: string, opacity: number) {
   let hex = inputHex.replace('#', '');
   if (inputHex.indexOf('#') > -1 && (hex.length === 3 || hex.length === 6)) {

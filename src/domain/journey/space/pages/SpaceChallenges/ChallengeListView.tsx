@@ -83,6 +83,7 @@ export const ChallengeListView: FC = () => {
               vision: value.vision,
             },
             tags: value.tags,
+            innovationFlowTemplateID: value.innovationFlowTemplateID,
           },
         },
       });

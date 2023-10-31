@@ -17,12 +17,15 @@ import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { Message } from '../../room/models/Message';
 import { Skeleton } from '@mui/material';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import TopLevelDesktopLayout from '../../../../main/ui/layout/TopLevelDesktopLayout';
+import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import usePostMessageMutations from '../../room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
+import { ForumOutlined } from '@mui/icons-material';
+import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 interface DiscussionPageProps {}
 
@@ -133,8 +136,24 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     setDeleteDiscussionId(undefined);
   };
 
+  const { pathname } = useLocation();
+
   return (
-    <TopLevelDesktopLayout>
+    <TopLevelPageLayout
+      title={t('pages.forum.title')}
+      subtitle={t('pages.forum.subtitle')}
+      iconComponent={ForumOutlined}
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem uri="/forum" iconComponent={ForumOutlined}>
+            {t('pages.forum.shortName')}
+          </BreadcrumbsItem>
+          <BreadcrumbsItem uri={pathname} iconComponent={ForumOutlined}>
+            {discussion?.title}
+          </BreadcrumbsItem>
+        </TopLevelPageBreadcrumbs>
+      }
+    >
       <DiscussionsLayout
         backButton={
           <BackButton component={RouterLink} to="/forum">
@@ -167,7 +186,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         onConfirm={handleDeleteComment}
         text={t('components.discussion.delete-comment')}
       />
-    </TopLevelDesktopLayout>
+    </TopLevelPageLayout>
   );
 };
 

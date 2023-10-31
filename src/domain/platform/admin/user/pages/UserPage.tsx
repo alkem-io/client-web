@@ -99,7 +99,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
         profileData: {
           description: profile.description,
           displayName: profile.displayName,
-          referencesData: [...profile.references],
+          referencesData: profile.references,
         },
       };
 
@@ -110,7 +110,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
       });
     } else if (isEditMode && editedUser.id) {
       const profileId = editedUser.profile.id;
-      const tagsetsToAdd = editedUser.profile.tagsets.filter(x => !x.id);
+      const tagsetsToAdd = editedUser.profile.tagsets?.filter(x => !x.id) ?? [];
 
       for (const tagset of tagsetsToAdd) {
         await createTagset({
@@ -157,7 +157,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
         onSave={handleSave}
         title={title}
         user={user}
-        avatar={data?.user?.profile.visual}
+        avatar={data?.user?.profile.avatar}
         onDelete={() => setModalOpened(true)}
       />
       <UserRemoveModal

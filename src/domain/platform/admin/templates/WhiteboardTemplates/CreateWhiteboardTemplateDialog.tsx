@@ -33,7 +33,7 @@ const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhite
       maxWidth={false}
     >
       <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('whiteboard-templates.whiteboard-template') })}
+        {t('common.create-new-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
       </DialogHeader>
 
       <WhiteboardTemplateForm

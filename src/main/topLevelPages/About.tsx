@@ -6,7 +6,7 @@ import { makeStyles } from '@mui/styles';
 import WrapperTypography from '../../core/ui/typography/deprecated/WrapperTypography';
 import useVersionControl from '../../domain/platform/metadata/useVersionControl';
 import useServerMetadata from '../../domain/platform/metadata/useServerMetadata';
-import TopLevelDesktopLayout from '../ui/layout/TopLevelDesktopLayout';
+import TopLevelLayout from '../ui/layout/TopLevelLayout';
 import HelpDialog from '../../core/help/dialog/HelpDialog';
 
 const useAboutStyles = makeStyles(theme => ({
@@ -62,7 +62,7 @@ export const AboutPage = () => {
   };
 
   return (
-    <TopLevelDesktopLayout>
+    <TopLevelLayout>
       <Grid container spacing={2}>
         <Grid item lg={3} className={styles.mdHidden} />
         <Grid item xs={12} lg={6}>
@@ -98,7 +98,7 @@ export const AboutPage = () => {
         <Grid item lg={3} className={styles.mdHidden} />
       </Grid>
       <HelpDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
-    </TopLevelDesktopLayout>
+    </TopLevelLayout>
   );
 };
 

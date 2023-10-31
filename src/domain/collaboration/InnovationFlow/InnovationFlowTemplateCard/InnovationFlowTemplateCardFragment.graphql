@@ -1,0 +1,7 @@
+fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
+  id
+  type
+  profile {
+    ...TemplateCardProfileInfo
+  }
+}

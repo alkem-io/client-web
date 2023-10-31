@@ -1,0 +1,3 @@
+mutation updateAnswerRelevance($input: ChatGuidanceAnswerRelevanceInput!) {
+  updateAnswerRelevance(input: $input)
+}

@@ -1,5 +1,4 @@
-import React, { forwardRef, useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { useMatch } from 'react-router-dom';
+import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
@@ -7,7 +6,8 @@ import { Box, BoxProps, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../domain/platform/routes/constants';
+import { SEARCH_TERMS_URL_PARAM } from '../../../search/constants';
+import { useLocation } from 'react-router-dom';
 
 const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.trim();
@@ -15,19 +15,12 @@ const getSearchTerms = (searchInput: string) => searchInput.trim();
 const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const match = useMatch(SEARCH_ROUTE);
   const query = useQueryParams();
   const getInitialValue = () => {
-    const terms = match ? query.get(SEARCH_TERMS_PARAM) : null;
+    const terms = query.get(SEARCH_TERMS_URL_PARAM);
     return terms ? terms.split(',').join(', ') : '';
   };
   const [value, setValue] = useState(getInitialValue);
-
-  useLayoutEffect(() => {
-    if (!match) {
-      setValue('');
-    }
-  }, [match]);
 
   const isTermValid = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
 
@@ -48,19 +41,13 @@ const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
     [setValue]
   );
 
+  const { pathname } = useLocation();
+
   const handleNavigateToSearchPage = useCallback(() => {
-    if (match && isTermValid) {
-      return;
-    }
-
-    if (isTermValid) {
-      return navigate(SEARCH_ROUTE);
-    }
-
     const terms = getSearchTerms(value);
-    const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
-    navigate(`${SEARCH_ROUTE}?${params}`);
-  }, [match, isTermValid, value, navigate]);
+    const params = new URLSearchParams({ [SEARCH_TERMS_URL_PARAM]: terms });
+    navigate(`${pathname}?${params}`);
+  }, [isTermValid, value, navigate]);
 
   return (
     <Box ref={ref} flexGrow={1} justifyContent="center" {...props}>
