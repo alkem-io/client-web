@@ -30180,6 +30180,12 @@ export type DeleteCalendarEventMutation = {
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
 };
 
+export type UpdateAnswerRelevanceMutationVariables = Exact<{
+  input: ChatGuidanceAnswerRelevanceInput;
+}>;
+
+export type UpdateAnswerRelevanceMutation = { __typename?: 'Mutation'; updateAnswerRelevance: boolean };
+
 export type AskChatGuidanceQuestionQueryVariables = Exact<{
   chatData: ChatGuidanceInput;
 }>;
@@ -30188,9 +30194,10 @@ export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
   askChatGuidanceQuestion: {
     __typename?: 'ChatGuidanceResult';
+    id?: string | undefined;
     answer: string;
     question: string;
-    sources?: Array<{ __typename?: 'Source'; uri?: string | undefined }> | undefined;
+    sources?: Array<{ __typename?: 'Source'; uri?: string | undefined; title?: string | undefined }> | undefined;
   };
 };
 

@@ -5,6 +5,7 @@ const SOURCES_HEADING_TAG_MARKDOWN = '#####';
 
 interface Source {
   uri?: string;
+  title?: string;
 }
 
 interface ChatGuidanceQuestionResponse {
@@ -12,8 +13,8 @@ interface ChatGuidanceQuestionResponse {
   sources?: Source[];
 }
 
-const formatChatGuidanceResponseAsMarkdown = (question: ChatGuidanceQuestionResponse, t: TFunction) => {
-  const { answer, sources } = question;
+const formatChatGuidanceResponseAsMarkdown = (response: ChatGuidanceQuestionResponse, t: TFunction) => {
+  const { answer, sources } = response;
   const sourcesMarkdown =
     !sources || sources.length === 0
       ? ''
@@ -22,8 +23,12 @@ const formatChatGuidanceResponseAsMarkdown = (question: ChatGuidanceQuestionResp
 ${SOURCES_HEADING_TAG_MARKDOWN} ${t('common.sources')}:
 
 ${sources
-  .filter(source => source.uri)
-  .map(source => `- [${source.uri}](${source.uri})`)
+  .map(source => {
+    const title = source.title ?? source.uri;
+    const uri = source.uri ?? '';
+
+    return `- [${title}](${uri})`;
+  })
   .join('\n')}
   `;
 

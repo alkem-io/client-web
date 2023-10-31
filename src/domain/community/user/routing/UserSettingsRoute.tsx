@@ -22,7 +22,7 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
     <Routes>
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
         <Route index element={<Navigate to={'profile'} />} />
-        <Route path={'profile'} element={<EditUserProfilePage paths={currentPaths} />} />
+        <Route path={'profile'} element={<EditUserProfilePage />} />
         <Route path={'membership'} element={<UserMembershipPage />} />
         <Route path={'organizations'} element={<UserOrganizationsPage paths={currentPaths} />} />
         <Route path={'notifications'} element={<UserNotificationsPage paths={currentPaths} />} />
