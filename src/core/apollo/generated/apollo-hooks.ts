@@ -21941,11 +21941,6 @@ export const ServerMetadataDocument = gql`
   query serverMetadata {
     platform {
       metadata {
-        metrics {
-          id
-          name
-          value
-        }
         services {
           name
           version
