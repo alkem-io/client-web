@@ -1193,7 +1193,6 @@
       "read-access": "Allow read access for non-space members to challenges",
       "about": "About this Space",
       "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
-      "whiteboardRtEnabled": "RT Whiteboards enabled: <strong>{{whiteboardRtEnabled}}</strong>",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "nameSegment": {
