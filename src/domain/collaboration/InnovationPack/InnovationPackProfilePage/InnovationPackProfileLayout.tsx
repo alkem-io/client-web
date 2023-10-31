@@ -8,6 +8,7 @@ import { Visual } from '../../../common/visual/Visual';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import { Settings } from '@mui/icons-material';
 
 interface InnovationPackProfileLayoutProps {
   innovationPack:
@@ -23,11 +24,13 @@ interface InnovationPackProfileLayoutProps {
       })
     | undefined;
   showSettings: boolean;
+  settings?: boolean;
   loading?: boolean;
 }
 
 const InnovationPackProfileLayout = ({
   innovationPack,
+  settings = false,
   showSettings,
   loading,
   ...props
@@ -56,6 +59,7 @@ const InnovationPackProfileLayout = ({
           >
             {innovationPack?.profile?.displayName}
           </BreadcrumbsItem>
+          {settings && <BreadcrumbsItem iconComponent={Settings}>{t('common.settings')}</BreadcrumbsItem>}
         </TopLevelPageBreadcrumbs>
       }
       header={

@@ -8,21 +8,21 @@ import SettingsPageContent from './SettingsPageContent';
 import EntityPageLayout from '../../../../journey/common/EntityPageLayout/EntityPageLayout';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import { PlatformNavigationBarProps } from '../../../../../main/ui/platformNavigation/PlatformNavigationBar';
+import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 
-type EntityTypeName = 'space' | 'challenge' | 'opportunity' | 'organization' | 'user';
+type EntityTypeName = JourneyTypeName | 'organization' | 'user';
 
 interface EntitySettingsLayoutProps extends Omit<EntityPageLayoutProps, 'tabs' | 'currentSection'> {
   entityTypeName: EntityTypeName;
-  tabs: TabDefinition<SettingsSection>[];
+  subheaderTabs: TabDefinition<SettingsSection>[];
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
 }
 
-// TODO Put LayoutHolder into Admin routes, making EntitySettingsLayout able to render EntityPageLayout.
 const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   entityTypeName,
-  tabs,
+  subheaderTabs,
   currentTab,
   tabRoutePrefix = '../',
   children,
@@ -36,7 +36,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
     <EntityPageLayout currentSection={EntityPageSection.Settings} {...props}>
       <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>
         <EntitySettingsTabs
-          tabs={tabs}
+          tabs={subheaderTabs}
           currentTab={currentTab}
           aria-label={`${entityTypeName} Settings tabs`}
           routePrefix={tabRoutePrefix}

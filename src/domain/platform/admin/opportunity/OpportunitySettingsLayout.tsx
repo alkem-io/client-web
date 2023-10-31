@@ -50,7 +50,7 @@ const OpportunitySettingsLayout: FC<OpportunitySettingsLayoutProps> = props => {
   return (
     <EntitySettingsLayout
       entityTypeName="opportunity"
-      tabs={tabs}
+      subheaderTabs={tabs}
       pageBannerComponent={OpportunityPageBanner}
       tabsComponent={OpportunityTabs}
       breadcrumbs={<JourneyBreadcrumbs settings />}

@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
+import { AssignmentIndOutlined } from '@mui/icons-material';
 import UserPageBanner from './UserPageBanner';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserMetadata } from '../hooks/useUserMetadata';
@@ -10,11 +10,9 @@ import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
 
-interface UserPageLayoutProps {
-  settings?: boolean;
-}
+interface UserPageLayoutProps {}
 
-const UserPageLayout = ({ settings, ...props }: PropsWithChildren<UserPageLayoutProps>) => {
+const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) => {
   const { userNameId } = useUrlParams();
 
   if (!userNameId) {
@@ -40,7 +38,6 @@ const UserPageLayout = ({ settings, ...props }: PropsWithChildren<UserPageLayout
           >
             {user?.user.profile.displayName}
           </BreadcrumbsItem>
-          {settings && <BreadcrumbsItem iconComponent={Settings}>{t('common.settings')}</BreadcrumbsItem>}
         </TopLevelPageBreadcrumbs>
       }
       header={<UserPageBanner />}

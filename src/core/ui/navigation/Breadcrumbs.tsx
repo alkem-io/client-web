@@ -132,7 +132,7 @@ const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>
           marginRight={gutters(2)}
           onMouseLeave={onLeave}
           onClick={handleClick}
-          sx={{ pointerEvents: 'auto' }}
+          sx={{ pointerEvents: 'auto', userSelect: 'none' }}
         >
           {childrenWithSeparator}
         </Box>

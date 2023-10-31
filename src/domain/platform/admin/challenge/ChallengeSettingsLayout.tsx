@@ -62,7 +62,7 @@ const ChallengeSettingsLayout: FC<ChallengeSettingsLayoutProps> = props => {
   return (
     <EntitySettingsLayout
       entityTypeName="challenge"
-      tabs={tabs}
+      subheaderTabs={tabs}
       pageBannerComponent={ChallengePageBanner}
       tabsComponent={ChallengeTabs}
       breadcrumbs={<JourneyBreadcrumbs settings />}

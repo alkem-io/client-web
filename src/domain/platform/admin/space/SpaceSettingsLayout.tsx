@@ -80,7 +80,7 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
   return (
     <EntitySettingsLayout
       entityTypeName="space"
-      tabs={tabs}
+      subheaderTabs={tabs}
       pageBanner={
         <SpacePageBanner
           title={profile.displayName}

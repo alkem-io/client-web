@@ -20,6 +20,7 @@ import { buildInnovationPackUrl } from '../../../../../collaboration/InnovationP
 import PageContentColumn from '../../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../../core/ui/content/PageContent';
 import PageContentBlockSeamless from '../../../../../../core/ui/content/PageContentBlockSeamless';
+import PageContentBlock from '../../../../../../core/ui/content/PageContentBlock';
 
 export enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',
@@ -101,18 +102,20 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
   const isLoading = loading || loadingOrganizations || updating;
 
   return (
-    <InnovationPackProfileLayout innovationPack={innovationPack} loading={loading} showSettings>
+    <InnovationPackProfileLayout innovationPack={innovationPack} loading={loading} showSettings settings>
       <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackNameId}>
         <PageContent>
           <PageContentColumn columns={12}>
-            <InnovationPackForm
-              nameID={innovationPack?.nameID}
-              profile={innovationPack?.profile}
-              providerId={innovationPack?.provider?.id}
-              organizations={organizations}
-              onSubmit={handleSubmit}
-              loading={isLoading}
-            />
+            <PageContentBlock>
+              <InnovationPackForm
+                nameID={innovationPack?.nameID}
+                profile={innovationPack?.profile}
+                providerId={innovationPack?.provider?.id}
+                organizations={organizations}
+                onSubmit={handleSubmit}
+                loading={isLoading}
+              />
+            </PageContentBlock>
             <PageContentBlockSeamless disablePadding>
               <AdminPostTemplatesSection
                 templateId={postNameId}

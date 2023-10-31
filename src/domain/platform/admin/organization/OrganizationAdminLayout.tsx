@@ -4,7 +4,6 @@ import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs
 import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import OrganizationPageBanner from '../../../community/organization/layout/OrganizationPageBanner';
-import OrganizationTabs from '../../../community/contributor/organization/layout/OrganizationTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import OrganizationPageContainer from '../../../community/contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
@@ -47,7 +46,7 @@ const OrganizationAdminLayout: FC<OrganizationAdminLayoutProps> = props => {
       {({ organization, permissions, handleSendMessage }, { loading }) => (
         <EntitySettingsLayout
           entityTypeName="organization"
-          tabs={tabs}
+          subheaderTabs={tabs}
           pageBanner={
             <OrganizationPageBanner
               organization={organization}
@@ -56,7 +55,6 @@ const OrganizationAdminLayout: FC<OrganizationAdminLayoutProps> = props => {
               loading={loading}
             />
           }
-          tabsComponent={OrganizationTabs}
           breadcrumbs={
             <TopLevelPageBreadcrumbs>
               <BreadcrumbsItem iconComponent={Diversity3Outlined}>{t('common.organizations')}</BreadcrumbsItem>
