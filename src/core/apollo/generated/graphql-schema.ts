@@ -24731,6 +24731,15 @@ export type SpaceProviderQuery = {
           anonymousReadAccess: boolean;
         }
       | undefined;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
     community?:
       | {
           __typename?: 'Community';
@@ -24817,6 +24826,15 @@ export type SpaceInfoFragment = {
         id: string;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         anonymousReadAccess: boolean;
+      }
+    | undefined;
+  collaboration?:
+    | {
+        __typename?: 'Collaboration';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
       }
     | undefined;
   community?:

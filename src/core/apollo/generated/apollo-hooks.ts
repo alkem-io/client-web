@@ -2503,6 +2503,13 @@ export const SpaceInfoFragmentDoc = gql`
       id
       myPrivileges
     }
+    collaboration {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
     community {
       id
       authorization {

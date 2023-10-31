@@ -19,11 +19,13 @@ export interface SpacePermissions {
   canCreate: boolean;
   communityReadAccess: boolean;
   contextPrivileges: AuthorizationPrivilege[];
+  collaborationPrivileges: AuthorizationPrivilege[];
 }
 
 interface SpaceContextProps {
   spaceId: string;
   spaceNameId: string;
+  collaborationId: string;
   communityId: string;
   isPrivate?: boolean;
   loading: boolean;
@@ -42,6 +44,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   isPrivate: undefined,
   spaceId: '',
   spaceNameId: '',
+  collaborationId: '',
   communityId: '',
   permissions: {
     canRead: false,
@@ -52,6 +55,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canReadChallenges: false,
     communityReadAccess: false,
     contextPrivileges: [],
+    collaborationPrivileges: [],
   },
   profile: {
     id: '',
@@ -94,6 +98,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     visibility: space?.license?.visibility || SpaceVisibility.Active,
     featureFlags: [],
   };
+  const collaborationId = space?.collaboration?.id ?? '';
   const communityId = space?.community?.id ?? '';
   const isPrivate = space && !space.authorization?.anonymousReadAccess;
   const error = configError || spaceError;
@@ -105,6 +110,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const canCreateChallenges = spacePrivileges.includes(AuthorizationPrivilege.CreateChallenge);
   const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
 
+  const collaborationPrivileges = space?.collaboration?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = useMemo<SpacePermissions>(() => {
@@ -117,8 +123,17 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
+      collaborationPrivileges,
     };
-  }, [spacePrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateChallenges]);
+  }, [
+    spacePrivileges,
+    contextPrivileges,
+    canReadChallenges,
+    communityPrivileges,
+    collaborationPrivileges,
+    canCreate,
+    canCreateChallenges,
+  ]);
 
   const profile = useMemo(() => {
     return {
@@ -139,6 +154,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       value={{
         spaceId,
         spaceNameId,
+        collaborationId,
         communityId,
         permissions,
         isPrivate,

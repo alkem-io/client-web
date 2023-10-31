@@ -156,7 +156,7 @@ const SpaceListItem = ({
                     .map(key => (
                       <FormikCheckboxField
                         key={`feature-checkbox-${key}`}
-                        title={t(`pages.admin.space.settings.license-features.features.${key}`)}
+                        title={t(`pages.admin.space.settings.license-features.features.${key}` as const)}
                         name={`features.${key}`}
                         disabled={loading}
                       />
