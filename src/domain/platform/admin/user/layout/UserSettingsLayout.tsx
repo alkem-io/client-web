@@ -3,9 +3,14 @@ import { useConfig } from '../../../config/useConfig';
 import { FEATURE_SSI } from '../../../config/features.constants';
 import { useUserContext } from '../../../../community/user';
 import UserPageBanner from '../../../../community/user/layout/UserPageBanner';
-import UserTabs from '../../../../community/user/layout/UserTabs';
 import { UserProfileTabs, SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import EntitySettingsLayout from '../../layout/EntitySettingsLayout/EntitySettingsLayout';
+import BreadcrumbsItem from '../../../../../core/ui/navigation/BreadcrumbsItem';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
+import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
+import TopLevelPageBreadcrumbs from '../../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { useTranslation } from 'react-i18next';
 
 const tabs = [
   SettingsSection.MyProfile,
@@ -22,7 +27,7 @@ interface UserSettingsLayoutProps {
 }
 
 const UserSettingsLayout: FC<UserSettingsLayoutProps> = props => {
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
 
   // Add credentials tab is SSI is enabled:
   const { isFeatureEnabled } = useConfig();
@@ -35,12 +40,29 @@ const UserSettingsLayout: FC<UserSettingsLayoutProps> = props => {
     userNameId: user?.user.nameID || '',
   };
 
+  const { t } = useTranslation();
+
   return (
     <EntitySettingsLayout
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem uri="/contributors" iconComponent={GroupOutlinedIcon}>
+            {t('pages.contributors.shortName')}
+          </BreadcrumbsItem>
+          <BreadcrumbsItem
+            loading={loading}
+            avatar={user?.user.profile.avatar}
+            iconComponent={AssignmentIndOutlined}
+            uri={user && buildUserProfileUrl(user.user.nameID)}
+          >
+            {user?.user.profile.displayName}
+          </BreadcrumbsItem>
+          <BreadcrumbsItem iconComponent={Settings}>{t('common.settings')}</BreadcrumbsItem>
+        </TopLevelPageBreadcrumbs>
+      }
       entityTypeName="user"
-      tabs={tabs}
+      subheaderTabs={tabs}
       pageBannerComponent={UserPageBanner}
-      tabsComponent={UserTabs}
       {...entityAttrs}
       {...props}
     />

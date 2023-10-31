@@ -297,7 +297,7 @@ const AdminTemplatesSection = <
                 sx={{ marginRight: theme => theme.spacing(1) }}
                 startIcon={<LibraryIcon />}
               >
-                {t('buttons.library')}
+                {t('common.library')}
               </Button>
             )}
             &nbsp;

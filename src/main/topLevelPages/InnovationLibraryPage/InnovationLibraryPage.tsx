@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import { TranslateWithElements } from '../../../domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '../../../domain/platform/config/useConfig';
 import InnovationLibraryIcon from './InnovationLibraryIcon';
+import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 const InnovationLibraryPage = () => {
   const { data: innovationLibraryData } = useInnovationLibraryQuery();
@@ -30,6 +32,13 @@ const InnovationLibraryPage = () => {
       title={t('pages.innovationLibrary.title')}
       subtitle={subtitleText}
       iconComponent={InnovationLibraryIcon}
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem uri="/innovation-library" iconComponent={InnovationLibraryIcon}>
+            {t('pages.innovationLibrary.shortName')}
+          </BreadcrumbsItem>
+        </TopLevelPageBreadcrumbs>
+      }
     >
       <PageContentColumn columns={12}>
         <DashboardInnovationPacks
