@@ -20,6 +20,7 @@ import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypo
 import { ApmProvider, ApmUserSetter } from './core/analytics/apm/context';
 import { UserGeoProvider } from './core/analytics/geo';
 import { SentryTransactionScopeContextProvider } from './core/analytics/SentryTransactionScopeContext';
+import { useInitialChatWidgetMessage } from './main/guidance/chatWidget/ChatWidget';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -66,42 +67,46 @@ const GlobalStyles: FC = ({ children }) => {
   return <>{children}</>;
 };
 
-const Root: FC = () => (
-  <StyledEngineProvider injectFirst>
-    <RootThemeProvider>
-      <GlobalStyles>
-        <CookiesProvider>
-          <ConfigProvider url={publicGraphQLEndpoint}>
-            <ServerMetadataProvider url={publicGraphQLEndpoint}>
-              <SentryTransactionScopeContextProvider>
-                <SentryErrorBoundaryProvider>
-                  <GlobalStateProvider>
-                    <BrowserRouter>
-                      <AuthenticationProvider>
-                        <UserGeoProvider>
-                          <ApmProvider>
-                            <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                              <NavigationProvider>
-                                <UserProvider>
-                                  <ApmUserSetter />
-                                  <ScrollToTop />
-                                  <TopLevelRoutes />
-                                </UserProvider>
-                              </NavigationProvider>
-                            </AlkemioApolloProvider>
-                          </ApmProvider>
-                        </UserGeoProvider>
-                      </AuthenticationProvider>
-                    </BrowserRouter>
-                  </GlobalStateProvider>
-                </SentryErrorBoundaryProvider>
-              </SentryTransactionScopeContextProvider>
-            </ServerMetadataProvider>
-          </ConfigProvider>
-        </CookiesProvider>
-      </GlobalStyles>
-    </RootThemeProvider>
-  </StyledEngineProvider>
-);
+const Root: FC = () => {
+  useInitialChatWidgetMessage();
+
+  return (
+    <StyledEngineProvider injectFirst>
+      <RootThemeProvider>
+        <GlobalStyles>
+          <CookiesProvider>
+            <ConfigProvider url={publicGraphQLEndpoint}>
+              <ServerMetadataProvider url={publicGraphQLEndpoint}>
+                <SentryTransactionScopeContextProvider>
+                  <SentryErrorBoundaryProvider>
+                    <GlobalStateProvider>
+                      <BrowserRouter>
+                        <AuthenticationProvider>
+                          <UserGeoProvider>
+                            <ApmProvider>
+                              <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                                <NavigationProvider>
+                                  <UserProvider>
+                                    <ApmUserSetter />
+                                    <ScrollToTop />
+                                    <TopLevelRoutes />
+                                  </UserProvider>
+                                </NavigationProvider>
+                              </AlkemioApolloProvider>
+                            </ApmProvider>
+                          </UserGeoProvider>
+                        </AuthenticationProvider>
+                      </BrowserRouter>
+                    </GlobalStateProvider>
+                  </SentryErrorBoundaryProvider>
+                </SentryTransactionScopeContextProvider>
+              </ServerMetadataProvider>
+            </ConfigProvider>
+          </CookiesProvider>
+        </GlobalStyles>
+      </RootThemeProvider>
+    </StyledEngineProvider>
+  );
+};
 
 export default Root;

@@ -1,4 +1,4 @@
-import { lighten, Typography } from '@mui/material';
+import { lighten, Typography, TypographyProps } from '@mui/material';
 import provideStaticProps from '../../utils/provideStaticProps';
 
 /**
@@ -12,7 +12,10 @@ export const BlockTitle = provideStaticProps(Typography, { variant: 'h3' }) as t
 
 export const BlockSectionTitle = provideStaticProps(Typography, { variant: 'h4' }) as typeof Typography;
 
-export const Tagline = provideStaticProps(Typography, { variant: 'subtitle1' }) as typeof Typography;
+export const Tagline = provideStaticProps(Typography, {
+  variant: 'subtitle1',
+  component: 'h3',
+} as TypographyProps) as typeof Typography;
 
 export const Text = provideStaticProps(Typography, { variant: 'body1' }) as typeof Typography;
 
