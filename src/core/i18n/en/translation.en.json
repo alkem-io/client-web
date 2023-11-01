@@ -1039,7 +1039,7 @@
         "post-template-label": "Choose Post template"
       },
       "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, **who have their notifications for these actions turned on**, to receive a notification?",
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, <b>who have their notifications for these actions turned on</b>, to receive a notification?",
         "checkbox-label": "Yes, notify the community."
       }
     },
@@ -2261,6 +2261,8 @@
     "fields": {
       "ID": "ID",
       "Password": "Password",
+      "ShowPassword": "Show Password",
+      "HidePassword": "Hide Password",
       "E-Mail": "E-Mail",
       "Email": "$t(kratos.fields.E-Mail)",
       "First Name": "First Name",
