@@ -109,7 +109,6 @@
     "rehype-sanitize": "^5.0.1",
     "rehype-stringify": "^9.0.3",
     "relay-compiler": "^13.1.1",
-    "remark-emoji": "^3.0.2",
     "remark-gfm": "^3.0.1",
     "remark-stringify": "^10.0.2",
     "replace-special-characters": "^1.2.5",

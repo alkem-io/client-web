@@ -16,7 +16,7 @@ const NavigatableMenuItem = ({
   onClick,
   children,
 }: PropsWithChildren<NavigatableMenuItemProps>) => {
-  const menuItemProps = route ? { component: RouterLink, to: route } : {};
+  const menuItemProps = route ? { component: RouterLink, to: route, blank: false } : {};
 
   return (
     <MenuItem {...menuItemProps} onClick={onClick} sx={{ paddingX: gutters() }}>
