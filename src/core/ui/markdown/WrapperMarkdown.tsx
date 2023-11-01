@@ -2,7 +2,6 @@ import React from 'react';
 import ReactMarkdown, { Options as ReactMarkdownOptions } from 'react-markdown';
 import gfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import emoji from 'remark-emoji';
 import components from './components';
 import PlainText from './PlainText';
 import { MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
@@ -27,7 +26,7 @@ export const WrapperMarkdown = ({
     >
       <ReactMarkdown
         components={components}
-        remarkPlugins={[gfm, [emoji, { padSpaceAfter: false, emoticon: true }], [PlainText, { enabled: flat }]]}
+        remarkPlugins={[gfm, [PlainText, { enabled: flat }]]}
         rehypePlugins={
           flat ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
         }
