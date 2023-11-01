@@ -49,7 +49,7 @@ const EntityPageLayout = ({
         header={PageBanner ? <PageBanner watermark={pageBannerWatermark} /> : pageBanner}
         floatingActions={
           <FloatingActionButtons
-            {...(isMobile ? { bottom: gutters(5) } : {})}
+            {...(isMobile ? { bottom: gutters(3) } : {})}
             visible={!isTabsMenuOpen}
             floatingActions={<PlatformHelpButton />}
           />
