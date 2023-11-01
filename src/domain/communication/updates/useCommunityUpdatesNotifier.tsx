@@ -3,9 +3,8 @@ import { useUserContext } from '../../community/user';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
 import { usePlatformUpdatesRoomQuery, useRoomEventsSubscription } from '../../../core/apollo/generated/apollo-hooks';
-import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { logger } from '../../../core/logging/winston/logger';
-import { MutationType } from '../../../core/apollo/generated/graphql-schema';
+import { MutationType, PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
 
 const useCommunityUpdatesNotifier = () => {
   const { isFeatureEnabled } = useConfig();
@@ -15,8 +14,8 @@ const useCommunityUpdatesNotifier = () => {
   const roomID = data?.platform?.communication?.updates?.id;
 
   const shouldSkip =
-    !isFeatureEnabled(FEATURE_COMMUNICATIONS) ||
-    !isFeatureEnabled(FEATURE_SUBSCRIPTIONS) ||
+    !isFeatureEnabled(PlatformFeatureFlagName.Communications) ||
+    !isFeatureEnabled(PlatformFeatureFlagName.Subscriptions) ||
     !isAuthenticated ||
     !roomID;
 

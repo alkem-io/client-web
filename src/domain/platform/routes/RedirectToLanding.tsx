@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { ROUTE_HOME } from './constants';
 import { useConfig } from '../config/useConfig';
-import { FEATURE_LANDING_PAGE } from '../config/features.constants';
 import useInnovationHub from '../../innovationHub/useInnovationHub/useInnovationHub';
+import { PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
 
 const RedirectToLanding = () => {
   const { isFeatureEnabled } = useConfig();
@@ -18,7 +18,7 @@ const RedirectToLanding = () => {
   useLayoutEffect(() => {
     const homeRoute = `${ROUTE_HOME}${location.search}`;
 
-    if (!isFeatureEnabled(FEATURE_LANDING_PAGE)) {
+    if (!isFeatureEnabled(PlatformFeatureFlagName.LandingPage)) {
       navigate(homeRoute);
       return;
     }

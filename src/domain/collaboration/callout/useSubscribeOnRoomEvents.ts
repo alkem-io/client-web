@@ -6,14 +6,13 @@ import {
   ReactionDetailsFragmentDoc,
   useRoomEventsSubscription,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
-import { MutationType } from '../../../core/apollo/generated/graphql-schema';
+import { MutationType, PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../core/apollo/utils/removeFromCache';
 
 const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
-  const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
+  const areSubscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const { isAuthenticated } = useUserContext();
 
   const enabled = !!roomID && areSubscriptionsEnabled && isAuthenticated && !skip;

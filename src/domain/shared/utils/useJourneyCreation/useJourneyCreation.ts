@@ -8,9 +8,8 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
-import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
-import { TagsetType } from '../../../../core/apollo/generated/graphql-schema';
+import { PlatformFeatureFlagName, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface ChallengeCreationInput {
@@ -37,7 +36,7 @@ export const useJourneyCreation = () => {
   const { challengeId } = useChallenge();
   const { isFeatureEnabled } = useConfig();
 
-  const subscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
+  const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
 
   const [createChallengeLazy] = useCreateChallengeMutation({
     update: (cache, { data }) => {

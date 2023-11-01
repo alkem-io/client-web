@@ -3462,8 +3462,19 @@ export type PlatformFeatureFlag = {
   /** Is this feature flag enabled? */
   enabled: Scalars['Boolean'];
   /** The name of the feature flag */
-  name: Scalars['String'];
+  name: PlatformFeatureFlagName;
 };
+
+export enum PlatformFeatureFlagName {
+  Communications = 'COMMUNICATIONS',
+  CommunicationsDiscussions = 'COMMUNICATIONS_DISCUSSIONS',
+  GuidenceEngine = 'GUIDENCE_ENGINE',
+  LandingPage = 'LANDING_PAGE',
+  Notifications = 'NOTIFICATIONS',
+  Ssi = 'SSI',
+  Subscriptions = 'SUBSCRIPTIONS',
+  Whiteboards = 'WHITEBOARDS',
+}
 
 export type PlatformLocations = {
   __typename?: 'PlatformLocations';
@@ -27786,7 +27797,7 @@ export type ConfigurationQuery = {
         tips: string;
         aup: string;
       };
-      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: string }>;
+      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
       geo: { __typename?: 'Geo'; endpoint: string };
@@ -27829,7 +27840,7 @@ export type ConfigurationFragment = {
     tips: string;
     aup: string;
   };
-  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: string }>;
+  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   geo: { __typename?: 'Geo'; endpoint: string };
