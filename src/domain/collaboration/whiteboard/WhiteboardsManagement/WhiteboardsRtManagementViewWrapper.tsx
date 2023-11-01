@@ -3,7 +3,6 @@ import WhiteboardRtActionsContainer from '../containers/WhiteboardRtActionsConta
 import {
   AuthorizationPrivilege,
   WhiteboardRtDetailsFragment,
-  CollaborationWithWhiteboardDetailsFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import WhiteboardRtManagementView, {
@@ -17,7 +16,7 @@ export interface WhiteboardsRtManagementViewWrapperProps extends ActiveWhiteboar
   whiteboard: WhiteboardRtDetailsFragment | undefined;
   templates: CreateWhiteboardWhiteboardTemplateFragment[];
   calloutId: string | undefined;
-  authorization: NonNullable<CollaborationWithWhiteboardDetailsFragment['callouts']>[0]['authorization'];
+  authorization: WhiteboardRtDetailsFragment['authorization'];
   whiteboardShareUrl: string;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
