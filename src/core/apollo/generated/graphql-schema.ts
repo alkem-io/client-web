@@ -1233,10 +1233,12 @@ export type Config = {
   apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** The feature flags for the platform */
+  featureFlags: Array<PlatformFeatureFlag>;
   /** Integration with a 3rd party Geo information service */
   geo: Geo;
-  /** Platform related resources. */
-  platform: PlatformLocations;
+  /** Platform related locations. */
+  locations: PlatformLocations;
   /** Sentry (client monitoring) related configuration. */
   sentry: Sentry;
   /** Configuration for storage providers, e.g. file */
@@ -1862,14 +1864,6 @@ export type EcosystemModel = {
   id: Scalars['UUID'];
 };
 
-export type FeatureFlag = {
-  __typename?: 'FeatureFlag';
-  /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: Scalars['String'];
-};
-
 export type FeedbackTemplate = {
   __typename?: 'FeedbackTemplate';
   /** Feedback template name. */
@@ -2113,12 +2107,25 @@ export type License = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The FeatureFlags for the license */
-  featureFlags: Array<FeatureFlag>;
+  featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
+
+export type LicenseFeatureFlag = {
+  __typename?: 'LicenseFeatureFlag';
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: LicenseFeatureFlagName;
+};
+
+export enum LicenseFeatureFlagName {
+  CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
+  WhiteboartRt = 'WHITEBOART_RT',
+}
 
 export type Lifecycle = {
   __typename?: 'Lifecycle';
@@ -3450,6 +3457,14 @@ export type PlatformInnovationHubArgs = {
   subdomain?: InputMaybe<Scalars['String']>;
 };
 
+export type PlatformFeatureFlag = {
+  __typename?: 'PlatformFeatureFlag';
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: Scalars['String'];
+};
+
 export type PlatformLocations = {
   __typename?: 'PlatformLocations';
   /** URL to a page about the platform */
@@ -3462,8 +3477,6 @@ export type PlatformLocations = {
   domain: Scalars['String'];
   /** Name of the environment */
   environment: Scalars['String'];
-  /** The feature flags for the platform */
-  featureFlags: Array<FeatureFlag>;
   /** URL to a form for providing feedback */
   feedback: Scalars['String'];
   /** URL for the link Foundation in the HomePage of the application */
@@ -26389,7 +26402,7 @@ export type UpdateSpacePlatformSettingsMutation = {
     license: {
       __typename?: 'License';
       visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'FeatureFlag'; name: string; enabled: boolean }>;
+      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
     };
     host?: { __typename?: 'Organization'; id: string } | undefined;
   };
@@ -26407,7 +26420,7 @@ export type AdminSpacesListQuery = {
       __typename?: 'License';
       id: string;
       visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'FeatureFlag'; name: string; enabled: boolean }>;
+      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
     };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     authorization?:
@@ -26431,7 +26444,7 @@ export type AdminSpaceFragment = {
     __typename?: 'License';
     id: string;
     visibility: SpaceVisibility;
-    featureFlags: Array<{ __typename?: 'FeatureFlag'; name: string; enabled: boolean }>;
+    featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
   };
   profile: { __typename?: 'Profile'; id: string; displayName: string };
   authorization?:
@@ -27751,7 +27764,7 @@ export type ConfigurationQuery = {
           config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
         }>;
       };
-      platform: {
+      locations: {
         __typename?: 'PlatformLocations';
         environment: string;
         domain: string;
@@ -27772,8 +27785,8 @@ export type ConfigurationQuery = {
         newuser: string;
         tips: string;
         aup: string;
-        featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
       };
+      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: string }>;
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
       geo: { __typename?: 'Geo'; endpoint: string };
@@ -27794,7 +27807,7 @@ export type ConfigurationFragment = {
       config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
     }>;
   };
-  platform: {
+  locations: {
     __typename?: 'PlatformLocations';
     environment: string;
     domain: string;
@@ -27815,8 +27828,8 @@ export type ConfigurationFragment = {
     newuser: string;
     tips: string;
     aup: string;
-    featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
+  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: string }>;
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   geo: { __typename?: 'Geo'; endpoint: string };

@@ -15,15 +15,14 @@ export const useConfig = () => {
   return useMemo<ConfigReturnType>(
     () => ({
       authentication: context.config?.authentication,
-      platform: context.config?.platform,
-      features: context.config?.platform.featureFlags,
+      locations: context.config?.locations,
+      features: context.config?.featureFlags,
       sentry: context.config?.sentry,
       apm: context.config?.apm,
       geo: context.config?.geo,
       loading: context.loading,
       error: context.error,
-      isFeatureEnabled: (name: string) =>
-        context.config?.platform.featureFlags.find(x => x.name === name)?.enabled || false,
+      isFeatureEnabled: (name: string) => context.config?.featureFlags.find(x => x.name === name)?.enabled || false,
     }),
     [context]
   );

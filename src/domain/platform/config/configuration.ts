@@ -2,7 +2,7 @@ export interface Configuration {
   authentication: {
     providers: AuthenticationProvider[];
   };
-  platform: {
+  locations: {
     environment: string;
     domain: string;
     about: string;
@@ -22,8 +22,8 @@ export interface Configuration {
     newuser: string;
     tips: string;
     aup: string;
-    featureFlags: FeatureFlag[];
   };
+  featureFlags: FeatureFlag[];
   sentry: {
     enabled: boolean;
     endpoint: string;

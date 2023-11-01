@@ -3023,7 +3023,7 @@ export const ConfigurationFragmentDoc = gql`
         }
       }
     }
-    platform {
+    locations {
       environment
       domain
       about
@@ -3043,10 +3043,10 @@ export const ConfigurationFragmentDoc = gql`
       newuser
       tips
       aup
-      featureFlags {
-        enabled
-        name
-      }
+    }
+    featureFlags {
+      enabled
+      name
     }
     sentry {
       enabled

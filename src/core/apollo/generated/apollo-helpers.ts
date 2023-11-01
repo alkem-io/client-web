@@ -878,8 +878,9 @@ export type CommunityRolePolicyFieldPolicy = {
 export type ConfigKeySpecifier = (
   | 'apm'
   | 'authentication'
+  | 'featureFlags'
   | 'geo'
-  | 'platform'
+  | 'locations'
   | 'sentry'
   | 'storage'
   | 'template'
@@ -888,8 +889,9 @@ export type ConfigKeySpecifier = (
 export type ConfigFieldPolicy = {
   apm?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
+  featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   geo?: FieldPolicy<any> | FieldReadFunction<any>;
-  platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  locations?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1017,11 +1019,6 @@ export type EcosystemModelFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type FeatureFlagKeySpecifier = ('enabled' | 'name' | FeatureFlagKeySpecifier)[];
-export type FeatureFlagFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type FeedbackTemplateKeySpecifier = ('name' | 'questions' | FeedbackTemplateKeySpecifier)[];
 export type FeedbackTemplateFieldPolicy = {
@@ -1241,6 +1238,11 @@ export type LicenseFieldPolicy = {
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicenseFeatureFlagKeySpecifier = ('enabled' | 'name' | LicenseFeatureFlagKeySpecifier)[];
+export type LicenseFeatureFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
   | 'id'
@@ -1825,13 +1827,17 @@ export type PlatformFieldPolicy = {
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeatureFlagKeySpecifier)[];
+export type PlatformFeatureFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformLocationsKeySpecifier = (
   | 'about'
   | 'aup'
   | 'community'
   | 'domain'
   | 'environment'
-  | 'featureFlags'
   | 'feedback'
   | 'foundation'
   | 'help'
@@ -1854,7 +1860,6 @@ export type PlatformLocationsFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
-  featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   foundation?: FieldPolicy<any> | FieldReadFunction<any>;
   help?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3183,10 +3188,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | EcosystemModelKeySpecifier | (() => undefined | EcosystemModelKeySpecifier);
     fields?: EcosystemModelFieldPolicy;
   };
-  FeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | FeatureFlagKeySpecifier | (() => undefined | FeatureFlagKeySpecifier);
-    fields?: FeatureFlagFieldPolicy;
-  };
   FeedbackTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FeedbackTemplateKeySpecifier | (() => undefined | FeedbackTemplateKeySpecifier);
     fields?: FeedbackTemplateFieldPolicy;
@@ -3250,6 +3251,10 @@ export type StrictTypedTypePolicies = {
   License?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicenseKeySpecifier | (() => undefined | LicenseKeySpecifier);
     fields?: LicenseFieldPolicy;
+  };
+  LicenseFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicenseFeatureFlagKeySpecifier | (() => undefined | LicenseFeatureFlagKeySpecifier);
+    fields?: LicenseFeatureFlagFieldPolicy;
   };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
@@ -3322,6 +3327,10 @@ export type StrictTypedTypePolicies = {
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
+  };
+  PlatformFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlatformFeatureFlagKeySpecifier | (() => undefined | PlatformFeatureFlagKeySpecifier);
+    fields?: PlatformFeatureFlagFieldPolicy;
   };
   PlatformLocations?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformLocationsKeySpecifier | (() => undefined | PlatformLocationsKeySpecifier);
