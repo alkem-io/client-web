@@ -20,7 +20,14 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
         '.rcw-widget-container': {
           maxWidth: gutters(19),
           maxHeight: '-webkit-fill-available',
-          '&:not(:has(.active))': {
+        },
+        '.rcw-conversation-container': {
+          marginBottom: gutters(0.5),
+          overflow: 'hidden',
+          minWidth: 0,
+        },
+        '@media screen and (orientation: landscape)': {
+          '.rcw-widget-container': {
             position: 'static',
             margin: 0,
           },
@@ -28,6 +35,10 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
         '@media screen and (orientation: portrait)': {
           '.rcw-widget-container': {
             maxWidth: 'none',
+            '&:not(:has(.active))': {
+              position: 'static',
+              margin: 0,
+            },
           },
           '.rcw-conversation-container': {
             margin: gutters(),
@@ -38,10 +49,6 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
           ...background,
           position: 'static',
           margin: 0,
-        },
-        '.rcw-conversation-container': {
-          overflow: 'hidden',
-          minWidth: 0,
         },
         '.rcw-conversation-container .rcw-header': {
           ...background,
