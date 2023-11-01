@@ -17,6 +17,11 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
       };
 
       return {
+        '@media screen and (max-width: 800px)': {
+          '.rcw-widget-container': {
+            height: '-webkit-fill-available',
+          },
+        },
         '.rcw-widget-container': {
           maxWidth: gutters(19),
           '&:not(:has(.active))': {
