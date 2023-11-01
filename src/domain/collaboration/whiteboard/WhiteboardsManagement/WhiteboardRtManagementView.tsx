@@ -89,6 +89,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
                 onUpdate: actions.onUpdate,
               }}
               options={{
+                canEdit: options.canUpdate,
                 show: Boolean(whiteboardNameId),
                 fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
                   <BlockTitle display="flex" alignItems="center">
