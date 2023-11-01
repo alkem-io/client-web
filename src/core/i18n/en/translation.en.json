@@ -2254,6 +2254,8 @@
     "fields": {
       "ID": "ID",
       "Password": "Password",
+      "ShowPassword": "Show Password",
+      "HidePassword": "Hide Password",
       "E-Mail": "E-Mail",
       "Email": "$t(kratos.fields.E-Mail)",
       "First Name": "First Name",
