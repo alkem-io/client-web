@@ -1251,9 +1251,9 @@ export type Config = {
 };
 
 export enum ContentUpdatePolicy {
+  Admins = 'ADMINS',
+  Contributors = 'CONTRIBUTORS',
   Owner = 'OWNER',
-  OwnerAdmins = 'OWNER_ADMINS',
-  OwnerContributors = 'OWNER_CONTRIBUTORS',
 }
 
 export type Context = {
@@ -28165,6 +28165,7 @@ export type SearchQuery = {
             __typename?: 'Space';
             id: string;
             nameID: string;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
             profile: { __typename?: 'Profile'; id: string; displayName: string };
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
@@ -28242,6 +28243,7 @@ export type SearchResultPostFragment = {
     __typename?: 'Space';
     id: string;
     nameID: string;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
@@ -28277,6 +28279,7 @@ export type PostParentFragment = {
     __typename?: 'Space';
     id: string;
     nameID: string;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };

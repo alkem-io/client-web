@@ -3077,6 +3077,10 @@ export const PostParentFragmentDoc = gql`
     space {
       id
       nameID
+      license {
+        id
+        visibility
+      }
       profile {
         id
         displayName

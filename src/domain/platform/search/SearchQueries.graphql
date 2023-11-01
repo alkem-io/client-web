@@ -73,6 +73,10 @@ fragment PostParent on SearchResultPost {
   space {
     id
     nameID
+    license {
+      id
+      visibility
+    }
     profile {
       id
       displayName
