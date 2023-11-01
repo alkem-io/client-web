@@ -39,6 +39,13 @@ const JourneyUnauthorizedDialog = ({
 
   const applicationButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
 
+  // applicationButtonRef.current.disabled needs to be defined and false
+  // or just an anchor
+  const showRibbon = () =>
+    applicationButtonRef.current != null &&
+    (applicationButtonRef.current instanceof HTMLAnchorElement ||
+      (applicationButtonRef.current instanceof HTMLButtonElement && !applicationButtonRef.current.disabled));
+
   return (
     <JourneyAboutDialog
       open={!disabled && !privilegesLoading && !authorized}
@@ -56,12 +63,14 @@ const JourneyUnauthorizedDialog = ({
         </ApplicationButtonContainer>
       }
       ribbon={
-        <PageContentRibbon onClick={() => applicationButtonRef.current?.click()} sx={{ cursor: 'pointer' }}>
-          <Box display="flex" gap={gutters(0.5)} alignItems="center" justifyContent="center">
-            <LockOutlined fontSize="small" />
-            {t('components.journeyUnauthorizedDialog.message')}
-          </Box>
-        </PageContentRibbon>
+        showRibbon() && (
+          <PageContentRibbon onClick={() => applicationButtonRef.current?.click()} sx={{ cursor: 'pointer' }}>
+            <Box display="flex" gap={gutters(0.5)} alignItems="center" justifyContent="center">
+              <LockOutlined fontSize="small" />
+              {t('components.journeyUnauthorizedDialog.message')}
+            </Box>
+          </PageContentRibbon>
+        )
       }
       journeyTypeName={journeyTypeName}
       {...aboutDialogProps}
