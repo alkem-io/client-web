@@ -142,6 +142,14 @@ const Feedback = ({ answerId }: FeedbackProps) => {
   );
 };
 
+export const useInitialChatWidgetMessage = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    addResponseMessage(t('chatbot.intro'));
+  }, []);
+};
+
 const ChatWidget = () => {
   const [newMessage, setNewMessage] = useState(null);
   const { t, i18n } = useTranslation();
@@ -150,10 +158,6 @@ const ChatWidget = () => {
     skip: !newMessage,
     fetchPolicy: 'network-only',
   });
-
-  useEffect(() => {
-    addResponseMessage(t('chatbot.intro'));
-  }, []);
 
   useEffect(() => {
     if (data && !loading) {
