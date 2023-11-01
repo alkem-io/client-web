@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import {
   PostTemplateCardFragment,
@@ -215,7 +215,17 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             </DialogHeader>
             <DialogContent>
               <Gutters>
-                {t('components.callout-creation.publish-dialog.text', { calloutDisplayName: callout.displayName })}
+                <Box>
+                  <Trans
+                    i18nKey="components.callout-creation.publish-dialog.text"
+                    values={{
+                      calloutDisplayName: callout.displayName,
+                    }}
+                    components={{
+                      b: <strong />,
+                    }}
+                  />
+                </Box>
                 <FormControlLabel
                   control={
                     <Checkbox checked={sendNotification} onChange={() => setSendNotification(!sendNotification)} />
