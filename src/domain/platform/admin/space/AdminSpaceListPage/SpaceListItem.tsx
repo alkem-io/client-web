@@ -7,7 +7,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { Formik } from 'formik';
-import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { LicenseFeatureFlagName, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import { useUpdateSpacePlatformSettingsMutation } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -19,13 +19,12 @@ import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxField';
-import { LicenseFeature } from '../../../../journey/space/license/LicenseFeature';
 
 export interface SpacePlatformSettings {
   nameID: string;
   hostID: string | undefined;
   visibility: SpaceVisibility;
-  features: Record<LicenseFeature, boolean>;
+  features: Record<LicenseFeatureFlagName, boolean>;
   organizations: {
     id: string;
     name: string;
@@ -152,7 +151,7 @@ const SpaceListItem = ({
                 <RadioGroup>
                   <FormLabel component="legend">{t('pages.admin.space.settings.license-features.title')}</FormLabel>
                   {Object.keys(features)
-                    .map(key => key as LicenseFeature)
+                    .map(key => key as LicenseFeatureFlagName)
                     .map(key => (
                       <FormikCheckboxField
                         key={`feature-checkbox-${key}`}

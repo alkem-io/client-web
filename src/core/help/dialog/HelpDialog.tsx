@@ -53,11 +53,11 @@ const CustomNewIcon = styled(FiberNewTwoToneIcon)(() => ({
 
 const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   const handleClose = () => (onClose ? onClose() : undefined);
-  const faq = `${platform?.help}`;
-  const contactUs = `${platform?.support}`;
-  const gettingStarted = `${platform?.help}/getting-started`;
+  const faq = `${locations?.help}`;
+  const contactUs = `${locations?.support}`;
+  const gettingStarted = `${locations?.help}/getting-started`;
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={'xl'}>
@@ -86,7 +86,7 @@ const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
             </IconWrapper>
           </Grid>
         </Grid>
-        <FooterLink href={platform?.tips} target="_blank">
+        <FooterLink href={locations?.tips} target="_blank">
           <ArrowForwardIcon />
           {t('pages.help-dialog.tips-and-tricks')}
         </FooterLink>

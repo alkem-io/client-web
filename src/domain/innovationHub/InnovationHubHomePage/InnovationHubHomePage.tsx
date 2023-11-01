@@ -35,9 +35,9 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
 
   const allSpaces = spacesData?.spaces;
 
-  const { platform } = useConfig();
+  const { locations } = useConfig();
 
-  const mainHomeUrl = `//${platform?.domain}${ROUTE_HOME}`;
+  const mainHomeUrl = `//${locations?.domain}${ROUTE_HOME}`;
 
   return (
     <TopLevelLayout

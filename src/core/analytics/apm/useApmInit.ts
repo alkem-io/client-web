@@ -40,11 +40,11 @@ export interface ApmCustomContext {
 export const useApmInit = (user: (UserMetadata['user'] & { isAuthenticated: boolean }) | undefined) => {
   const userObject = useUserObject(user);
   const customContext = useCustomContext(user);
-  const { apm: apmConfig, platform: platformConfig } = useConfig();
+  const { apm: apmConfig, locations } = useConfig();
 
   const rumEnabled = apmConfig?.rumEnabled ?? false;
   const endpoint = apmConfig?.endpoint;
-  const environment = platformConfig?.environment;
+  const environment = locations?.environment;
 
   return useCallback(() => {
     if (!endpoint || !environment) {

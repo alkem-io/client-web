@@ -1691,8 +1691,8 @@
           "license-features": {
             "title": "Space Features",
             "features": {
-              "whiteboard-rt": "RealTime Whiteboards",
-              "callout-to-callout-template": "Create template from callout"
+              "WHITEBOART_RT": "RealTime Whiteboards",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
             }
           },
           "membership": {

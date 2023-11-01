@@ -13,7 +13,7 @@ const Link = (props: BoxProps<'a'>) => {
 };
 
 const PlatformIntroduction = ({ label }: PlatformIntroductionProps) => {
-  const { platform } = useConfig();
+  const { locations } = useConfig();
 
   return (
     <Box>
@@ -22,8 +22,8 @@ const PlatformIntroduction = ({ label }: PlatformIntroductionProps) => {
         i18nKey={label as any /* Trans doesn't recognize its own TranslationKey as a valid type */}
         components={{
           p: <Paragraph textAlign="center" />,
-          terms: <Link href={platform?.terms} />,
-          privacy: <Link href={platform?.privacy} />,
+          terms: <Link href={locations?.terms} />,
+          privacy: <Link href={locations?.privacy} />,
         }}
       />
     </Box>

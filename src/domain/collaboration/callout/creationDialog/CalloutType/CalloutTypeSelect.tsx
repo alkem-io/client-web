@@ -29,7 +29,7 @@ const availableCalloutTypes: Record<CalloutType, AuthorizationPrivilege[]> = {
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
   const { t } = useTranslation();
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   const { permissions } = useSpace();
 
   const handleChange = (value: CalloutType | undefined) => {
@@ -61,8 +61,8 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect,
           }
         })}
       </RadioButtonGroup>
-      {platform?.inspiration && (
-        <RouterLink to={platform.inspiration}>
+      {locations?.inspiration && (
+        <RouterLink to={locations.inspiration}>
           <Caption color="primary" textAlign="center">
             <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: 1 }} />
             {t('callout.alkemio-link')}

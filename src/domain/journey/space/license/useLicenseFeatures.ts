@@ -1,12 +1,11 @@
-import { License } from '../../../../core/apollo/generated/graphql-schema';
-import { LicenseFeature } from './LicenseFeature';
+import { License, LicenseFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 
-export const licenseHasFeature = (feature: LicenseFeature, license: License) =>
+export const licenseHasFeature = (feature: LicenseFeatureFlagName, license: License) =>
   license.featureFlags.find(featureFlag => featureFlag.name === feature)?.enabled ?? false;
 
 const useLicenseFeatures = (license: License) => {
   return {
-    licenseHasFeature: (feature: LicenseFeature) => licenseHasFeature(feature, license),
+    licenseHasFeature: (feature: LicenseFeatureFlagName) => licenseHasFeature(feature, license),
   };
 };
 
