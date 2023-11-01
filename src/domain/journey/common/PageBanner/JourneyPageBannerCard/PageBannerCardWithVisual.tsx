@@ -48,7 +48,7 @@ const PageBannerCardWithVisual = ({
               </PageTitle>
             )}
           </RowContainer>
-          <Caption color="primary" fontStyle="italic" noWrap>
+          <Caption component="h3" color="primary" fontStyle="italic" noWrap>
             {subtitle}
           </Caption>
           <RowContainer>
