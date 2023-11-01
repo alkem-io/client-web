@@ -3278,6 +3278,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         anonymousReadAccess
       }
       license {
+        id
         visibility
       }
     }
@@ -3334,6 +3335,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
         displayName
       }
       license {
+        id
         visibility
       }
     }
@@ -23651,6 +23653,10 @@ export const SearchScopeDetailsSpaceDocument = gql`
           id
           uri
         }
+      }
+      license {
+        id
+        visibility
       }
     }
   }

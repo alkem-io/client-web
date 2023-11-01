@@ -642,6 +642,7 @@ export enum AuthorizationPrivilege {
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
   ReadUsers = 'READ_USERS',
+  ReadUserPii = 'READ_USER_PII',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateContent = 'UPDATE_CONTENT',
@@ -856,6 +857,8 @@ export type CalloutTemplate = {
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
+  /** The Callout type, e.g. Post, Whiteboard, Discussion */
+  type: CalloutType;
 };
 
 export enum CalloutType {
@@ -3335,7 +3338,7 @@ export type Organization = Groupable & {
   owners?: Maybe<Array<User>>;
   /** The preferences for this Organization */
   preferences: Array<Preference>;
-  /** The profile for this organization. */
+  /** The profile for this Organization. */
   profile: Profile;
   /** The StorageAggregator for managing storage buckets in use by this Organization */
   storageAggregator?: Maybe<StorageAggregator>;
@@ -27911,7 +27914,7 @@ export type SearchQuery = {
             nameID: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-            license: { __typename?: 'License'; visibility: SpaceVisibility };
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           };
         }
       | {
@@ -27959,7 +27962,7 @@ export type SearchQuery = {
             id: string;
             nameID: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
-            license: { __typename?: 'License'; visibility: SpaceVisibility };
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           };
         }
       | {
@@ -28459,7 +28462,7 @@ export type SearchResultChallengeFragment = {
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    license: { __typename?: 'License'; visibility: SpaceVisibility };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -28504,7 +28507,7 @@ export type SearchResultOpportunityFragment = {
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
-    license: { __typename?: 'License'; visibility: SpaceVisibility };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -30240,6 +30243,7 @@ export type SearchScopeDetailsSpaceQuery = {
       displayName: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -30599,7 +30603,7 @@ export type ChallengeExplorerSearchQuery = {
             nameID: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-            license: { __typename?: 'License'; visibility: SpaceVisibility };
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           };
         }
       | { __typename?: 'SearchResultOpportunity'; id: string; type: SearchResultType; terms: Array<string> }

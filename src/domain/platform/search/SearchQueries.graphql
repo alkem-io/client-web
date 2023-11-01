@@ -237,12 +237,12 @@ fragment SearchResultChallenge on SearchResultChallenge {
       displayName
       tagline
     }
-
     authorization {
       id
       anonymousReadAccess
     }
     license {
+      id
       visibility
     }
   }
@@ -296,6 +296,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       displayName
     }
     license {
+      id
       visibility
     }
   }

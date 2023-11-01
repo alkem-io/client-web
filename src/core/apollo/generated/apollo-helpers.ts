@@ -655,6 +655,7 @@ export type CalloutTemplateKeySpecifier = (
   | 'framing'
   | 'id'
   | 'profile'
+  | 'type'
   | CalloutTemplateKeySpecifier
 )[];
 export type CalloutTemplateFieldPolicy = {
@@ -664,6 +665,7 @@ export type CalloutTemplateFieldPolicy = {
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
   | 'agent'
