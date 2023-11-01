@@ -1,24 +1,18 @@
-import Breadcrumbs from '../../../core/ui/navigation/Breadcrumbs';
+import Breadcrumbs, { BreadcrumbsProps } from '../../../core/ui/navigation/Breadcrumbs';
 import BreadcrumbsRootItem from '../../ui/breadcrumbs/BreadcrumbsRootItem';
-import { ComponentType, PropsWithChildren } from 'react';
-import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
-import { SvgIconProps } from '@mui/material';
-import { Visual } from '../../../domain/common/visual/Visual';
+import { forwardRef } from 'react';
+import { Collapsible } from '../../../core/ui/navigation/Collapsible';
+import { Expandable } from '../../../core/ui/navigation/Expandable';
 
-interface TopLevelPageBreadcrumbsProps {
-  avatar?: Visual;
-  loading?: boolean;
-  iconComponent?: ComponentType<SvgIconProps>;
-  uri: string;
-}
-
-const TopLevelPageBreadcrumbs = (props: PropsWithChildren<TopLevelPageBreadcrumbsProps>) => {
-  return (
-    <Breadcrumbs>
-      <BreadcrumbsRootItem />
-      <BreadcrumbsItem {...props} />
-    </Breadcrumbs>
-  );
-};
+const TopLevelPageBreadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>(
+  <ItemProps extends Expandable>({ children, ...props }: BreadcrumbsProps<ItemProps>, ref) => {
+    return (
+      <Breadcrumbs ref={ref} {...props}>
+        <BreadcrumbsRootItem />
+        {children}
+      </Breadcrumbs>
+    );
+  }
+);
 
 export default TopLevelPageBreadcrumbs;

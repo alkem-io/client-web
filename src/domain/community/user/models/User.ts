@@ -13,14 +13,14 @@ export interface UserModel {
   profile: {
     id?: string;
     displayName: string;
-    description: string;
+    description?: string;
     tagline: string;
-    location: {
+    location?: {
       city: string;
       country: string;
     };
-    tagsets: Tagset[];
-    references: Reference[];
+    tagsets?: Tagset[];
+    references?: Reference[];
   };
   memberof?: {
     communities: Community[];

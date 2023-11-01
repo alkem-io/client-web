@@ -11,19 +11,17 @@ import {
   useUserQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { EditMode } from '../../../../core/ui/forms/editMode';
-import { User } from '../../../../core/apollo/generated/graphql-schema';
 import { UserModel } from '../models/User';
 import { logger } from '../../../../core/logging/winston/logger';
 import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import { PageProps } from '../../../shared/types/PageProps';
 import { getUpdateUserInput } from '../utils/getUpdateUserInput';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import UserPageLayout from '../layout/UserPageLayout';
-import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 
-interface EditUserProfilePageProps extends PageProps {}
+interface EditUserProfilePageProps {}
 
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
   const navigate = useNavigate();
@@ -59,11 +57,11 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
-  const user = data?.user as User;
+  const user = data?.user;
 
   const handleSave = async (userToUpdate: UserModel) => {
     const profileId = userToUpdate.profile.id;
-    const tagsetsToAdd = userToUpdate.profile.tagsets.filter(x => !x.id);
+    const tagsetsToAdd = userToUpdate.profile.tagsets?.filter(x => !x.id) ?? [];
 
     for (const tagset of tagsetsToAdd) {
       await createTagset({
@@ -89,22 +87,20 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
   };
 
   return (
-    <StorageConfigContextProvider locationType="user" userId={user.nameID}>
-      <UserPageLayout>
-        <PageContent>
-          <PageContentColumn columns={12}>
-            <PageContentBlock>
-              <UserForm
-                title={'Profile'}
-                user={{ ...user } as UserModel}
-                avatar={user?.profile.visual}
-                editMode={editMode}
-                onSave={handleSave}
-              />
-            </PageContentBlock>
-          </PageContentColumn>
-        </PageContent>
-      </UserPageLayout>
+    <StorageConfigContextProvider locationType="user" userId={user?.nameID!}>
+      <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
+        <PageContentColumn columns={12}>
+          <PageContentBlock>
+            <UserForm
+              title="Profile"
+              user={user}
+              avatar={user?.profile.avatar}
+              editMode={editMode}
+              onSave={handleSave}
+            />
+          </PageContentBlock>
+        </PageContentColumn>
+      </UserSettingsLayout>
     </StorageConfigContextProvider>
   );
 };

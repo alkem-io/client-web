@@ -76,21 +76,21 @@ export const UserForm: FC<UserProps> = ({
       description: bio,
       tagline,
       references,
-      location: { city, country },
+      location: { city, country } = {},
       tagsets,
     },
   } = currentUser;
 
   const twitterRef = useMemo(
-    () => references.find(x => x.name.toLowerCase() === SocialNetworkEnum.twitter),
+    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.twitter),
     [references]
   );
   const githubRef = useMemo(
-    () => references.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
     [references]
   );
   const linkedinRef = useMemo(
-    () => references.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
     [references]
   );
 
@@ -107,8 +107,8 @@ export const UserForm: FC<UserProps> = ({
     city: city || '',
     country: COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',
-    tagsets: tagsets,
-    references: references.filter(x => !socialNames.includes(x.name.toLowerCase())) || [],
+    tagsets: tagsets ?? [],
+    references: references?.filter(x => !socialNames.includes(x.name.toLowerCase())) ?? [],
     bio: bio || '',
     profileId: profileId || '',
   };

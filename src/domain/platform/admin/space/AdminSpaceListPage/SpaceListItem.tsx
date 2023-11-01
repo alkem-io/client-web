@@ -2,7 +2,7 @@ import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/S
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import { CircularProgress, FormControlLabel, FormGroup, FormLabel, ListItemIcon } from '@mui/material';
+import { CircularProgress, FormLabel, ListItemIcon, RadioGroup } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
@@ -19,13 +19,13 @@ import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxField';
-import { SpaceFeature } from '../../../../journey/space/license/SpaceLicenseFeatureFlags';
+import { LicenseFeature } from '../../../../journey/space/license/LicenseFeature';
 
 export interface SpacePlatformSettings {
   nameID: string;
   hostID: string | undefined;
   visibility: SpaceVisibility;
-  whiteboardRtEnabled: boolean;
+  features: Record<LicenseFeature, boolean>;
   organizations: {
     id: string;
     name: string;
@@ -42,7 +42,7 @@ const SpaceListItem = ({
   nameID,
   hostID,
   organizations,
-  whiteboardRtEnabled,
+  features,
   ...props
 }: SpaceListItemProps) => {
   const [isPlatformSettingsModalOpen, setIsPlatformSettingsModalOpen] = useState(false);
@@ -57,15 +57,12 @@ const SpaceListItem = ({
     visibility,
     nameID,
     hostID,
-    whiteboardRtEnabled,
+    features,
   };
 
   const [updatePlatformSettings, { loading }] = useUpdateSpacePlatformSettingsMutation();
 
-  const handleSubmit = async ({ visibility, nameID, hostID, whiteboardRtEnabled }: Partial<SpacePlatformSettings>) => {
-    // Todo: this must be possible to have cleaner...
-    let whiteboardRtEnabledResult = false;
-    if (whiteboardRtEnabled !== undefined && whiteboardRtEnabled) whiteboardRtEnabledResult = true;
+  const handleSubmit = async ({ visibility, nameID, hostID, features }: Partial<SpacePlatformSettings>) => {
     await updatePlatformSettings({
       variables: {
         spaceID: spaceId,
@@ -73,12 +70,7 @@ const SpaceListItem = ({
         nameID,
         license: {
           visibility,
-          featureFlags: [
-            {
-              name: 'whiteboard-rt',
-              enabled: whiteboardRtEnabledResult,
-            },
-          ],
+          featureFlags: Object.keys(features ?? {}).map(feature => ({ name: feature, enabled: features![feature] })),
         },
       },
     });
@@ -106,21 +98,16 @@ const SpaceListItem = ({
     [t]
   );
 
-  const spaceFeatures = useMemo(
-    () => ({
-      [SpaceFeature.FEATURE_WHITEBOARDRT]: {
-        title: t('pages.admin.space.settings.features.whiteboard-rt'),
-        name: 'whiteboardRtEnabled',
-      },
-    }),
-    []
-  );
-
   const validationSchema = yup.object().shape({
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     hostID: yup.string().required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
-    whiteboardRtEnabled: yup.boolean().required(t('forms.validations.required')),
+    features: yup.object().shape(
+      Object.keys(features).reduce((acc, cur) => {
+        acc[cur] = yup.boolean().required(t('forms.validations.required'));
+        return acc;
+      }, {})
+    ),
   });
 
   return (
@@ -162,25 +149,19 @@ const SpaceListItem = ({
                   disablePortal={false}
                   disabled={loading}
                 />
-                <FormLabel component="legend">Space Features</FormLabel>
-                <FormGroup>
-                  {Object.keys(spaceFeatures).map(key => (
-                    <FormControlLabel
-                      key={`feature-checkbox-${key}`}
-                      labelPlacement="start"
-                      disabled={loading}
-                      sx={{ justifyContent: 'space-between' }}
-                      control={
-                        <FormikCheckboxField
-                          title={spaceFeatures[key].title}
-                          name={spaceFeatures[key].name}
-                          disabled={loading}
-                        />
-                      }
-                      label={spaceFeatures[key].title}
-                    />
-                  ))}
-                </FormGroup>
+                <RadioGroup>
+                  <FormLabel component="legend">{t('pages.admin.space.settings.license-features.title')}</FormLabel>
+                  {Object.keys(features)
+                    .map(key => key as LicenseFeature)
+                    .map(key => (
+                      <FormikCheckboxField
+                        key={`feature-checkbox-${key}`}
+                        title={t(`pages.admin.space.settings.license-features.features.${key}` as const)}
+                        name={`features.${key}`}
+                        disabled={loading}
+                      />
+                    ))}
+                </RadioGroup>
               </PageContentBlockSeamless>
               <Actions padding={gutters()} justifyContent="end">
                 <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>

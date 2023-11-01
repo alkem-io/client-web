@@ -5,6 +5,8 @@ import { ChallengeExplorerView } from './ChallengeExplorerView';
 import TopLevelPageLayout from '../../ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import useInnovationHubOutsideRibbon from '../../../domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { ChallengeIcon } from '../../../domain/journey/challenge/icon/ChallengeIcon';
+import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 export interface ChallengeExplorerPageProps {}
 
@@ -17,9 +19,16 @@ export const ChallengeExplorerPage: FC<ChallengeExplorerPageProps> = () => {
   return (
     <TopLevelPageLayout
       iconComponent={ChallengeIcon}
-      title={t('pages.challenge-explorer.search.title')}
+      title={t('pages.challenge-explorer.fullName')}
       subtitle={t('pages.challenge-explorer.search.subtitle')}
       ribbon={ribbon}
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem iconComponent={ChallengeIcon} uri="/contributors">
+            {t('pages.challenge-explorer.shortName')}
+          </BreadcrumbsItem>
+        </TopLevelPageBreadcrumbs>
+      }
     >
       <ChallengeExplorerContainer searchTerms={searchTerms}>
         {(entities, state) => {
