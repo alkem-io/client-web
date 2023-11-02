@@ -30,6 +30,9 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
           '.rcw-widget-container': {
             position: 'static',
             margin: 0,
+            '&:has(.active)': {
+              maxHeight: `calc(100vh - ${gutters(2)(theme)})`,
+            },
           },
         },
         '@media screen and (orientation: portrait)': {
