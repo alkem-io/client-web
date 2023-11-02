@@ -609,7 +609,6 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 
 export enum AuthorizationPrivilege {
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
-  AccessWhiteboardRt = 'ACCESS_WHITEBOARD_RT',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
@@ -632,6 +631,7 @@ export enum AuthorizationPrivilege {
   CreateRelation = 'CREATE_RELATION',
   CreateSpace = 'CREATE_SPACE',
   CreateWhiteboard = 'CREATE_WHITEBOARD',
+  CreateWhiteboardRt = 'CREATE_WHITEBOARD_RT',
   Delete = 'DELETE',
   FileDelete = 'FILE_DELETE',
   FileUpload = 'FILE_UPLOAD',
@@ -642,8 +642,10 @@ export enum AuthorizationPrivilege {
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
   ReadUsers = 'READ_USERS',
+  ReadUserPii = 'READ_USER_PII',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
+  UpdateContent = 'UPDATE_CONTENT',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
   UpdateWhiteboard = 'UPDATE_WHITEBOARD',
 }
@@ -855,6 +857,8 @@ export type CalloutTemplate = {
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
+  /** The Callout type, e.g. Post, Whiteboard, Discussion */
+  type: CalloutType;
 };
 
 export enum CalloutType {
@@ -1232,10 +1236,12 @@ export type Config = {
   apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** The feature flags for the platform */
+  featureFlags: Array<PlatformFeatureFlag>;
   /** Integration with a 3rd party Geo information service */
   geo: Geo;
-  /** Platform related resources. */
-  platform: PlatformLocations;
+  /** Platform related locations. */
+  locations: PlatformLocations;
   /** Sentry (client monitoring) related configuration. */
   sentry: Sentry;
   /** Configuration for storage providers, e.g. file */
@@ -1243,6 +1249,12 @@ export type Config = {
   /** Alkemio template configuration. */
   template: Template;
 };
+
+export enum ContentUpdatePolicy {
+  Admins = 'ADMINS',
+  Contributors = 'CONTRIBUTORS',
+  Owner = 'OWNER',
+}
 
 export type Context = {
   __typename?: 'Context';
@@ -1855,14 +1867,6 @@ export type EcosystemModel = {
   id: Scalars['UUID'];
 };
 
-export type FeatureFlag = {
-  __typename?: 'FeatureFlag';
-  /** Whether the feature flag is enabled / disabled. */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: Scalars['String'];
-};
-
 export type FeedbackTemplate = {
   __typename?: 'FeedbackTemplate';
   /** Feedback template name. */
@@ -2100,6 +2104,31 @@ export type Library = {
 export type LibraryInnovationPackArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
+
+export type License = {
+  __typename?: 'License';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The FeatureFlags for the license */
+  featureFlags: Array<LicenseFeatureFlag>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Visibility of the Space. */
+  visibility: SpaceVisibility;
+};
+
+export type LicenseFeatureFlag = {
+  __typename?: 'LicenseFeatureFlag';
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: LicenseFeatureFlagName;
+};
+
+export enum LicenseFeatureFlagName {
+  CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
+  WhiteboartRt = 'WHITEBOART_RT',
+}
 
 export type Lifecycle = {
   __typename?: 'Lifecycle';
@@ -2616,7 +2645,7 @@ export type Mutation = {
   updateReference: Reference;
   /** Updates the Space. */
   updateSpace: Space;
-  /** Update the platform settings, such as visibility, of the specified Space. */
+  /** Update the platform settings, such as license, of the specified Space. */
   updateSpacePlatformSettings: Space;
   /** Updates the specified Tagset. */
   updateTagset: Tagset;
@@ -3309,7 +3338,7 @@ export type Organization = Groupable & {
   owners?: Maybe<Array<User>>;
   /** The preferences for this Organization */
   preferences: Array<Preference>;
-  /** The profile for this organization. */
+  /** The profile for this Organization. */
   profile: Profile;
   /** The StorageAggregator for managing storage buckets in use by this Organization */
   storageAggregator?: Maybe<StorageAggregator>;
@@ -3431,6 +3460,25 @@ export type PlatformInnovationHubArgs = {
   subdomain?: InputMaybe<Scalars['String']>;
 };
 
+export type PlatformFeatureFlag = {
+  __typename?: 'PlatformFeatureFlag';
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: PlatformFeatureFlagName;
+};
+
+export enum PlatformFeatureFlagName {
+  Communications = 'COMMUNICATIONS',
+  CommunicationsDiscussions = 'COMMUNICATIONS_DISCUSSIONS',
+  GuidenceEngine = 'GUIDENCE_ENGINE',
+  LandingPage = 'LANDING_PAGE',
+  Notifications = 'NOTIFICATIONS',
+  Ssi = 'SSI',
+  Subscriptions = 'SUBSCRIPTIONS',
+  Whiteboards = 'WHITEBOARDS',
+}
+
 export type PlatformLocations = {
   __typename?: 'PlatformLocations';
   /** URL to a page about the platform */
@@ -3443,8 +3491,6 @@ export type PlatformLocations = {
   domain: Scalars['String'];
   /** Name of the environment */
   environment: Scalars['String'];
-  /** The feature flags for the platform */
-  featureFlags: Array<FeatureFlag>;
   /** URL to a form for providing feedback */
   feedback: Scalars['String'];
   /** URL for the link Foundation in the HomePage of the application */
@@ -3907,6 +3953,8 @@ export type RelayPaginatedSpace = {
   host?: Maybe<Organization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The License governing platform functionality in use by this Space */
+  license: License;
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
@@ -3927,8 +3975,6 @@ export type RelayPaginatedSpace = {
   storageAggregator?: Maybe<StorageAggregator>;
   /** The templates in use by this Space */
   templates?: Maybe<TemplatesSet>;
-  /** Visibility of the Space. */
-  visibility: SpaceVisibility;
 };
 
 export type RelayPaginatedSpaceChallengeArgs = {
@@ -4426,6 +4472,8 @@ export type Space = {
   host?: Maybe<Organization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The License governing platform functionality in use by this Space */
+  license: License;
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
@@ -4446,8 +4494,6 @@ export type Space = {
   storageAggregator?: Maybe<StorageAggregator>;
   /** The templates in use by this Space */
   templates?: Maybe<TemplatesSet>;
-  /** Visibility of the Space. */
-  visibility: SpaceVisibility;
 };
 
 export type SpaceChallengeArgs = {
@@ -4928,6 +4974,13 @@ export type UpdateEcosystemModelInput = {
   description?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateFeatureFlagInput = {
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: Scalars['String'];
+};
+
 export type UpdateFormInput = {
   description: Scalars['Markdown'];
   questions: Array<UpdateFormQuestionInput>;
@@ -4991,6 +5044,13 @@ export type UpdateInnovationPackInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Update the provider Organization for the InnovationPack. */
   providerOrgID?: InputMaybe<Scalars['UUID_NAMEID']>;
+};
+
+export type UpdateLicenseInput = {
+  /** Update the feature flags for the License. */
+  featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
+  /** Visibility of the Space. */
+  visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateLocationInput = {
@@ -5102,12 +5162,12 @@ export type UpdateSpaceInput = {
 export type UpdateSpacePlatformSettingsInput = {
   /** Update the host Organization for the Space. */
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
+  /** Update the license settings for the Space. */
+  license?: InputMaybe<UpdateLicenseInput>;
   /** Upate the URL path for the Space. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** The identifier for the Space whose visibility is to be updated. */
+  /** The identifier for the Space whose license etc is to be updated. */
   spaceID: Scalars['String'];
-  /** Visibility of the Space. */
-  visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateSpacePreferenceInput = {
@@ -5180,6 +5240,7 @@ export type UpdateWhiteboardInput = {
 export type UpdateWhiteboardRtDirectInput = {
   ID: Scalars['UUID'];
   content?: InputMaybe<Scalars['WhiteboardContent']>;
+  contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -5189,6 +5250,7 @@ export type UpdateWhiteboardRtDirectInput = {
 export type UpdateWhiteboardRtInput = {
   ID: Scalars['UUID'];
   content?: InputMaybe<Scalars['WhiteboardContent']>;
+  contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -5432,6 +5494,8 @@ export type WhiteboardRt = {
   authorization?: Maybe<Authorization>;
   /** The JSON representation of the WhiteboardRt. */
   content: Scalars['WhiteboardContent'];
+  /** The policy governing who can update the Whiteboard contet. */
+  contentUpdatePolicy: ContentUpdatePolicy;
   /** The user that created this WhiteboardRt */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
@@ -19541,7 +19605,7 @@ export type SpaceContributionDetailsQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -19575,7 +19639,6 @@ export type ChallengeContributionDetailsQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     challenge: {
       __typename?: 'Challenge';
       id: string;
@@ -19600,6 +19663,7 @@ export type ChallengeContributionDetailsQuery = {
       context?: { __typename?: 'Context'; id: string } | undefined;
       community?: { __typename?: 'Community'; id: string } | undefined;
     };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -19614,7 +19678,6 @@ export type OpportunityContributionDetailsQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
@@ -19640,6 +19703,7 @@ export type OpportunityContributionDetailsQuery = {
       context?: { __typename?: 'Context'; id: string } | undefined;
       community?: { __typename?: 'Community'; id: string } | undefined;
     };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -20645,6 +20709,7 @@ export type UserSpacesQuery = {
       };
       context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     }>;
   };
 };
@@ -20691,7 +20756,7 @@ export type InnovationHubAvailableSpacesQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
-    visibility: SpaceVisibility;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     host?:
       | {
@@ -20706,7 +20771,7 @@ export type InnovationHubAvailableSpacesQuery = {
 export type InnovationHubSpaceFragment = {
   __typename?: 'Space';
   id: string;
-  visibility: SpaceVisibility;
+  license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   profile: { __typename?: 'Profile'; id: string; displayName: string };
   host?:
     | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
@@ -20824,7 +20889,7 @@ export type AdminInnovationHubQuery = {
             | Array<{
                 __typename?: 'Space';
                 id: string;
-                visibility: SpaceVisibility;
+                license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
                 host?:
                   | {
@@ -20882,7 +20947,7 @@ export type AdminInnovationHubFragment = {
     | Array<{
         __typename?: 'Space';
         id: string;
-        visibility: SpaceVisibility;
+        license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
         profile: { __typename?: 'Profile'; id: string; displayName: string };
         host?:
           | {
@@ -20943,7 +21008,7 @@ export type CreateInnovationHubMutation = {
       | Array<{
           __typename?: 'Space';
           id: string;
-          visibility: SpaceVisibility;
+          license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           profile: { __typename?: 'Profile'; id: string; displayName: string };
           host?:
             | {
@@ -21005,7 +21070,7 @@ export type UpdateInnovationHubMutation = {
       | Array<{
           __typename?: 'Space';
           id: string;
-          visibility: SpaceVisibility;
+          license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           profile: { __typename?: 'Profile'; id: string; displayName: string };
           host?:
             | {
@@ -24355,7 +24420,6 @@ export type DashboardSpacesQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -24387,6 +24451,7 @@ export type DashboardSpacesQuery = {
           who?: string | undefined;
         }
       | undefined;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   }>;
 };
 
@@ -24404,7 +24469,6 @@ export type DashboardSpacesPaginatedQuery = {
       __typename?: 'Space';
       id: string;
       nameID: string;
-      visibility: SpaceVisibility;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -24436,6 +24500,7 @@ export type DashboardSpacesPaginatedQuery = {
             who?: string | undefined;
           }
         | undefined;
+      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     }>;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -24683,7 +24748,6 @@ export type SpaceProviderQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
-    visibility: SpaceVisibility;
     id: string;
     nameID: string;
     authorization?:
@@ -24692,6 +24756,15 @@ export type SpaceProviderQuery = {
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           anonymousReadAccess: boolean;
+        }
+      | undefined;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
     community?:
@@ -24720,6 +24793,7 @@ export type SpaceProviderQuery = {
             | undefined;
         }
       | undefined;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -24771,7 +24845,6 @@ export type SpaceProviderQuery = {
 
 export type SpaceInfoFragment = {
   __typename?: 'Space';
-  visibility: SpaceVisibility;
   id: string;
   nameID: string;
   authorization?:
@@ -24780,6 +24853,15 @@ export type SpaceInfoFragment = {
         id: string;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         anonymousReadAccess: boolean;
+      }
+    | undefined;
+  collaboration?:
+    | {
+        __typename?: 'Collaboration';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
       }
     | undefined;
   community?:
@@ -24808,6 +24890,7 @@ export type SpaceInfoFragment = {
           | undefined;
       }
     | undefined;
+  license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -24894,7 +24977,7 @@ export type SpacePageQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     authorization?:
       | {
@@ -25127,7 +25210,7 @@ export type SpacePageFragment = {
   __typename?: 'Space';
   id: string;
   nameID: string;
-  visibility: SpaceVisibility;
+  license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   authorization?:
     | {
@@ -25344,7 +25427,6 @@ export type SpaceDashboardNavigationChallengesQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    visibility: SpaceVisibility;
     challenges?:
       | Array<{
           __typename?: 'Challenge';
@@ -25385,6 +25467,7 @@ export type SpaceDashboardNavigationChallengesQuery = {
             | undefined;
         }>
       | undefined;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -25864,7 +25947,6 @@ export type SpaceDetailsProviderFragment = {
   __typename?: 'Space';
   id: string;
   nameID: string;
-  visibility: SpaceVisibility;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -25896,6 +25978,7 @@ export type SpaceDetailsProviderFragment = {
         who?: string | undefined;
       }
     | undefined;
+  license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
 };
 
 export type CreateSpaceMutationVariables = Exact<{
@@ -26104,7 +26187,6 @@ export type SpaceCardQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -26136,6 +26218,7 @@ export type SpaceCardQuery = {
           who?: string | undefined;
         }
       | undefined;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -26321,7 +26404,7 @@ export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
   spaceID: Scalars['String'];
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   nameID?: InputMaybe<Scalars['NameID']>;
-  visibility?: InputMaybe<SpaceVisibility>;
+  license?: InputMaybe<UpdateLicenseInput>;
 }>;
 
 export type UpdateSpacePlatformSettingsMutation = {
@@ -26329,8 +26412,13 @@ export type UpdateSpacePlatformSettingsMutation = {
   updateSpacePlatformSettings: {
     __typename?: 'Space';
     id: string;
-    visibility: SpaceVisibility;
     nameID: string;
+    license: {
+      __typename?: 'License';
+      id: string;
+      visibility: SpaceVisibility;
+      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
+    };
     host?: { __typename?: 'Organization'; id: string } | undefined;
   };
 };
@@ -26341,9 +26429,14 @@ export type AdminSpacesListQuery = {
   __typename?: 'Query';
   spaces: Array<{
     __typename?: 'Space';
-    visibility: SpaceVisibility;
     id: string;
     nameID: string;
+    license: {
+      __typename?: 'License';
+      id: string;
+      visibility: SpaceVisibility;
+      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
+    };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -26362,7 +26455,12 @@ export type AdminSpaceFragment = {
   __typename?: 'Space';
   id: string;
   nameID: string;
-  visibility: SpaceVisibility;
+  license: {
+    __typename?: 'License';
+    id: string;
+    visibility: SpaceVisibility;
+    featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
+  };
   profile: { __typename?: 'Profile'; id: string; displayName: string };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -27681,7 +27779,7 @@ export type ConfigurationQuery = {
           config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
         }>;
       };
-      platform: {
+      locations: {
         __typename?: 'PlatformLocations';
         environment: string;
         domain: string;
@@ -27702,8 +27800,8 @@ export type ConfigurationQuery = {
         newuser: string;
         tips: string;
         aup: string;
-        featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
       };
+      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
       geo: { __typename?: 'Geo'; endpoint: string };
@@ -27724,7 +27822,7 @@ export type ConfigurationFragment = {
       config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
     }>;
   };
-  platform: {
+  locations: {
     __typename?: 'PlatformLocations';
     environment: string;
     domain: string;
@@ -27745,8 +27843,8 @@ export type ConfigurationFragment = {
     newuser: string;
     tips: string;
     aup: string;
-    featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
+  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   geo: { __typename?: 'Geo'; endpoint: string };
@@ -27760,7 +27858,6 @@ export type ServerMetadataQuery = {
     __typename?: 'Platform';
     metadata: {
       __typename?: 'Metadata';
-      metrics: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>;
       services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
     };
   };
@@ -27816,9 +27913,9 @@ export type SearchQuery = {
             __typename?: 'Space';
             id: string;
             nameID: string;
-            visibility: SpaceVisibility;
             profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           };
         }
       | {
@@ -27865,8 +27962,8 @@ export type SearchQuery = {
             __typename?: 'Space';
             id: string;
             nameID: string;
-            visibility: SpaceVisibility;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           };
         }
       | {
@@ -27887,7 +27984,6 @@ export type SearchQuery = {
             __typename?: 'Space';
             id: string;
             nameID: string;
-            visibility: SpaceVisibility;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -27910,6 +28006,7 @@ export type SearchQuery = {
             community?:
               | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
               | undefined;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           };
         }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
@@ -28069,6 +28166,7 @@ export type SearchQuery = {
             __typename?: 'Space';
             id: string;
             nameID: string;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
             profile: { __typename?: 'Profile'; id: string; displayName: string };
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
@@ -28146,6 +28244,7 @@ export type SearchResultPostFragment = {
     __typename?: 'Space';
     id: string;
     nameID: string;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
@@ -28181,6 +28280,7 @@ export type PostParentFragment = {
     __typename?: 'Space';
     id: string;
     nameID: string;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
@@ -28304,7 +28404,6 @@ export type SearchResultSpaceFragment = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -28327,6 +28426,7 @@ export type SearchResultSpaceFragment = {
     community?:
       | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
       | undefined;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -28364,9 +28464,9 @@ export type SearchResultChallengeFragment = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -28410,8 +28510,8 @@ export type SearchResultOpportunityFragment = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -30147,6 +30247,7 @@ export type SearchScopeDetailsSpaceQuery = {
       displayName: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -30504,9 +30605,9 @@ export type ChallengeExplorerSearchQuery = {
             __typename?: 'Space';
             id: string;
             nameID: string;
-            visibility: SpaceVisibility;
             profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           };
         }
       | { __typename?: 'SearchResultOpportunity'; id: string; type: SearchResultType; terms: Array<string> }
@@ -30529,8 +30630,8 @@ export type ChallengeExplorerDataQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
-    visibility: SpaceVisibility;
     profile: { __typename?: 'Profile'; id: string; tagline: string; displayName: string };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     challenges?:
       | Array<{
           __typename?: 'Challenge';

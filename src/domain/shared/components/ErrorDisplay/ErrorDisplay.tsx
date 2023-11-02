@@ -27,8 +27,8 @@ interface ErrorDisplayProps {}
 
 export const ErrorDisplay: FC<ErrorDisplayProps> = () => {
   const { t } = useTranslation();
-  const { platform } = useConfig();
-  const supportLink = platform?.support;
+  const { locations } = useConfig();
+  const supportLink = locations?.support;
   const handleReload = useCallback(() => window.location.reload(), []);
 
   return (

@@ -10,6 +10,13 @@ fragment SpaceInfo on Space {
     id
     myPrivileges
   }
+  collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
   community {
     id
     authorization {
@@ -24,7 +31,10 @@ fragment SpaceInfo on Space {
       myPrivileges
     }
   }
-  visibility
+  license {
+    id
+    visibility
+  }
 }
 
 query spaceHost($spaceId: UUID_NAMEID!) {

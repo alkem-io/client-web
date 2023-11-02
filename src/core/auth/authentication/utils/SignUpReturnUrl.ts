@@ -20,7 +20,7 @@ export const useReturnUrl = () => {
 type UseSignUpReturnUrlProvided = [returnUrl: string, cleanUp: () => void];
 
 export const useSignUpReturnUrl = (): UseSignUpReturnUrlProvided => {
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   const sessionReturnUrl = useRef(sessionStorage.getItem(STORAGE_KEY_RETURN_URL)).current;
 
   const signUpReturnUrl = useRef(localStorage.getItem(STORAGE_KEY_SIGN_UP_RETURN_URL)).current;
@@ -31,7 +31,7 @@ export const useSignUpReturnUrl = (): UseSignUpReturnUrlProvided => {
     }
   }, [sessionReturnUrl]);
 
-  const returnUrl = sessionReturnUrl ?? signUpReturnUrl ?? `https://${platform?.domain}${ROUTE_HOME}`;
+  const returnUrl = sessionReturnUrl ?? signUpReturnUrl ?? `https://${locations?.domain}${ROUTE_HOME}`;
 
   const cleanUp = () => localStorage.removeItem(STORAGE_KEY_SIGN_UP_RETURN_URL);
 

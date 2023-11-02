@@ -12,7 +12,7 @@ import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
 
 const PlatformFooter = (props: BoxProps) => {
   const { t } = useTranslation();
-  const { platform } = useConfig();
+  const { locations } = useConfig();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -23,13 +23,13 @@ const PlatformFooter = (props: BoxProps) => {
   return (
     <>
       <PageFooter logo={<FooterLogo />} copyright={t('footer.copyright')} {...props}>
-        <FooterLink href={platform?.terms}>{t('footer.terms')}</FooterLink>
-        <FooterLink href={platform?.privacy}>{t('footer.privacy')}</FooterLink>
-        <FooterLink href={platform?.security}>{t('footer.security')}</FooterLink>
+        <FooterLink href={locations?.terms}>{t('footer.terms')}</FooterLink>
+        <FooterLink href={locations?.privacy}>{t('footer.privacy')}</FooterLink>
+        <FooterLink href={locations?.security}>{t('footer.security')}</FooterLink>
         <FooterLink onClick={openHelpDialog} sx={{ cursor: 'pointer' }}>
           {t('footer.support')}
         </FooterLink>
-        <FooterLink href={platform?.about}>{t('footer.about')}</FooterLink>
+        <FooterLink href={locations?.about}>{t('footer.about')}</FooterLink>
         <LanguageSelect
           anchorOrigin={{
             vertical: 'top',

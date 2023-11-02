@@ -22,12 +22,14 @@ const formatChatGuidanceResponseAsMarkdown = (response: ChatGuidanceQuestionResp
 
 ${SOURCES_HEADING_TAG_MARKDOWN} ${t('common.sources')}:
 
-${sources.map(source => {
-  const title = source.title ?? source.uri;
-  const uri = source.uri ?? '';
+${sources
+  .map(source => {
+    const title = source.title ?? source.uri;
+    const uri = source.uri ?? '';
 
-  return `- [${title}](${uri})`;  
-}).join('\n')}
+    return `- [${title}](${uri})`;
+  })
+  .join('\n')}
   `;
 
   return `${answer}${sourcesMarkdown}`;

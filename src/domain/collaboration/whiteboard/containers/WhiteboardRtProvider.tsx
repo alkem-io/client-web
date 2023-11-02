@@ -5,7 +5,6 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   WhiteboardRtDetailsFragment,
-  CollaborationWithWhiteboardDetailsFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -23,7 +22,7 @@ export interface IProvidedEntities {
   whiteboard: WhiteboardRtDetailsFragment | undefined;
   templates: CreateWhiteboardWhiteboardTemplateFragment[];
   calloutId: string | undefined;
-  authorization: NonNullable<CollaborationWithWhiteboardDetailsFragment['callouts']>[0]['authorization'];
+  authorization: WhiteboardRtDetailsFragment['authorization'];
 }
 
 export interface IProvidedEntitiesState {
@@ -51,7 +50,7 @@ const WhiteboardRtProvider: FC<WhiteboardRtProviderProps> = ({
   const callout = data?.lookup.callout;
 
   const templates = whiteboardTemplates?.space.templates?.whiteboardTemplates ?? [];
-  const authorization = callout?.authorization;
+  const authorization = callout?.framing.whiteboardRt?.authorization;
 
   return (
     <>

@@ -83,7 +83,7 @@ export const Error404: FC = () => {
   useEffect(() => log404NotFound());
 
   const { t } = useTranslation();
-  const { platform } = useConfig();
+  const { locations } = useConfig();
 
   return (
     <PageContent gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS) } }}>
@@ -108,7 +108,7 @@ export const Error404: FC = () => {
                 <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>
                   {t('common.home')}
                 </StyledLink>
-                <StyledLink href={platform?.help} subtitle={t('pages.four-ou-four.links.faq')}>
+                <StyledLink href={locations?.help} subtitle={t('pages.four-ou-four.links.faq')}>
                   {t('common.helpCenter')}
                 </StyledLink>
               </UsefulLinks>

@@ -13,6 +13,7 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import React, { useState } from 'react';
 import { useInnovationHubAvailableSpacesQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { Identifiable } from '../../../core/utils/Identifiable';
@@ -24,7 +25,9 @@ import Gutters from '../../../core/ui/grid/Gutters';
 
 export interface Space extends Identifiable {
   id: string;
-  visibility: string;
+  license: {
+    visibility: SpaceVisibility;
+  };
   profile: {
     displayName: string;
   };
@@ -79,8 +82,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'visibility',
       headerName: t('pages.admin.space.settings.visibility.title'),
       renderHeader: () => <>{t('pages.admin.space.settings.visibility.title')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.visibility}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.visibility,
+      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.license.visibility}</>,
+      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.license.visibility,
       filterable: false,
       resizable: true,
     },
@@ -195,7 +198,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                           sx={{ display: snapshot.isDragging ? 'table' : undefined }}
                         >
                           <TableCell>{space.profile.displayName}</TableCell>
-                          <TableCell>{space.visibility}</TableCell>
+                          <TableCell>{space.license.visibility}</TableCell>
                           <TableCell>{space.host?.profile.displayName}</TableCell>
                           <TableCell>
                             <IconButton color="warning" onClick={() => handleRemove(space.id)}>

@@ -21,10 +21,10 @@ const InnovationLibraryPage = () => {
   const templates = useLibraryTemplateCardProps(innovationLibraryData?.platform.library.innovationPacks);
 
   const { t } = useTranslation();
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   const tLinks = TranslateWithElements(<Link underline="always" target="_blank" rel="noopener noreferrer" />);
   const subtitleText = tLinks('pages.innovationLibrary.subtitle', {
-    click: { href: platform?.innovationLibrary, target: '_blank' },
+    click: { href: locations?.innovationLibrary, target: '_blank' },
   });
 
   return (

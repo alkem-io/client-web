@@ -34,6 +34,7 @@ import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 
 const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
   const { t } = useTranslation();
@@ -282,51 +283,74 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                   maxWidth={gutters(30)}
                 />
               )}
-              <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />
+              {options.canEdit && <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />}
               <span>
                 RT<sup title=":)">beta</sup>
               </span>
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
-              {!state?.loadingWhiteboardValue && whiteboard && (
-                <CollaborativeExcalidrawWrapper
-                  entities={{ whiteboard, filesManager }}
-                  ref={excalidrawApiRef}
-                  collabApiRef={collabApiRef}
-                  options={{
-                    UIOptions: {
-                      canvasActions: {
-                        export: {
-                          saveFileToDisk: true,
+              {!state?.loadingWhiteboardValue &&
+                whiteboard &&
+                (options.canEdit ? (
+                  <CollaborativeExcalidrawWrapper
+                    entities={{ whiteboard, filesManager }}
+                    ref={excalidrawApiRef}
+                    collabApiRef={collabApiRef}
+                    options={{
+                      UIOptions: {
+                        canvasActions: {
+                          export: {
+                            saveFileToDisk: true,
+                          },
                         },
                       },
-                    },
-                  }}
-                  actions={{
-                    onUpdate: state => {
-                      handleUpdate(whiteboard, state);
-                    },
-                    onSavedToDatabase: () => {
-                      refetchLastSaved({
-                        whiteboardId: whiteboard.id,
-                      });
-                    },
-                  }}
-                />
-              )}
+                    }}
+                    actions={{
+                      onUpdate: state => {
+                        handleUpdate(whiteboard, state);
+                      },
+                      onSavedToDatabase: () => {
+                        refetchLastSaved({
+                          whiteboardId: whiteboard.id,
+                        });
+                      },
+                    }}
+                  />
+                ) : (
+                  <ExcalidrawWrapper
+                    ref={excalidrawApiRef}
+                    entities={{
+                      whiteboard,
+                      filesManager,
+                    }}
+                    actions={{}}
+                    options={{
+                      viewModeEnabled: true,
+                      UIOptions: {
+                        canvasActions: {
+                          export: false,
+                        },
+                      },
+                    }}
+                  />
+                ))}
               {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
               <LastSavedCaption date={lastSavedDate} />
-              <LoadingButton
-                startIcon={<Save />}
-                onClick={() => saveWhiteboard(whiteboard!)}
-                loadingPosition="start"
-                variant="contained"
-                loading={state?.updatingWhiteboard}
-              >
-                {t('buttons.save')}
-              </LoadingButton>
+              {options.canEdit ? (
+                <LoadingButton
+                  startIcon={<Save />}
+                  onClick={() => saveWhiteboard(whiteboard!)}
+                  loadingPosition="start"
+                  variant="contained"
+                  loading={state?.updatingWhiteboard}
+                >
+                  {t('buttons.save')}
+                </LoadingButton>
+              ) : (
+                <Caption>You can't edit this whiteboard</Caption>
+              )}
             </Actions>
           </>
         )}
