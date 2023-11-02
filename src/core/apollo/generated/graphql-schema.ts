@@ -19663,7 +19663,7 @@ export type ChallengeContributionDetailsQuery = {
       context?: { __typename?: 'Context'; id: string } | undefined;
       community?: { __typename?: 'Community'; id: string } | undefined;
     };
-    license: { __typename?: 'License'; visibility: SpaceVisibility };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -19703,7 +19703,7 @@ export type OpportunityContributionDetailsQuery = {
       context?: { __typename?: 'Context'; id: string } | undefined;
       community?: { __typename?: 'Community'; id: string } | undefined;
     };
-    license: { __typename?: 'License'; visibility: SpaceVisibility };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
 };
 
@@ -20709,7 +20709,7 @@ export type UserSpacesQuery = {
       };
       context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      license: { __typename?: 'License'; visibility: SpaceVisibility };
+      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     }>;
   };
 };
@@ -26415,6 +26415,7 @@ export type UpdateSpacePlatformSettingsMutation = {
     nameID: string;
     license: {
       __typename?: 'License';
+      id: string;
       visibility: SpaceVisibility;
       featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
     };
@@ -30630,7 +30631,7 @@ export type ChallengeExplorerDataQuery = {
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; tagline: string; displayName: string };
-    license: { __typename?: 'License'; visibility: SpaceVisibility };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     challenges?:
       | Array<{
           __typename?: 'Challenge';

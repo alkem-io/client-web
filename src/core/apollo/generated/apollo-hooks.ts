@@ -14496,6 +14496,7 @@ export const ChallengeContributionDetailsDocument = gql`
         }
       }
       license {
+        id
         visibility
       }
     }
@@ -14589,6 +14590,7 @@ export const OpportunityContributionDetailsDocument = gql`
         }
       }
       license {
+        id
         visibility
       }
     }
@@ -16067,6 +16069,7 @@ export const UserSpacesDocument = gql`
           value
         }
         license {
+          id
           visibility
         }
       }
@@ -20555,6 +20558,7 @@ export const UpdateSpacePlatformSettingsDocument = gql`
     ) {
       id
       license {
+        id
         visibility
         featureFlags {
           name
@@ -23921,6 +23925,7 @@ export const ChallengeExplorerDataDocument = gql`
         displayName
       }
       license {
+        id
         visibility
       }
       challenges {

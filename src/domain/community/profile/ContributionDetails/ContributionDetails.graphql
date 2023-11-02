@@ -53,6 +53,7 @@ query challengeContributionDetails($spaceId: UUID_NAMEID!, $challengeId: UUID_NA
       }
     }
     license {
+      id
       visibility
     }
   }
@@ -85,6 +86,7 @@ query opportunityContributionDetails($spaceId: UUID_NAMEID!, $opportunityId: UUI
       }
     }
     license {
+      id
       visibility
     }
   }

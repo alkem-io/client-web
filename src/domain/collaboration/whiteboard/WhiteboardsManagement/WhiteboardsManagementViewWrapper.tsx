@@ -44,7 +44,6 @@ const WhiteboardsManagementViewWrapper: FC<WhiteboardsManagementViewWrapperProps
   const hasCreatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateWhiteboardRt);
   const hasDeletePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
 
-  // Todo: use read privilege vs update content privilege to see if whiteboard is displayed read only or in RT mode
   // Todo: need to decide who can edit what whiteboards, for now tie to CreateWhiteboard. May need to extend the information on a Whiteboard
   // to include who created it etc.
   // Also to have in mind: In SingleWhiteboard Callout whiteboards, users don't have CreateWhiteboard privilege to add another whiteboard but may have privilege

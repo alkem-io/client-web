@@ -26,6 +26,7 @@ query UserSpaces {
         value
       }
       license {
+        id
         visibility
       }
     }

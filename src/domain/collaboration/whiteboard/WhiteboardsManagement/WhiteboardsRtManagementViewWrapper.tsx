@@ -40,12 +40,10 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
     return null;
   }
 
-  // Todo: need to make a difference between seeing a whiteboard contents read only + being able to update it.
-
-  // Todo: need to decide who can edit what whiteboards, for now tie to CreateWhiteboard. May need to extend the information on a Whiteboard
+  // Todo: need to decide who can edit what whiteboards, for now tie to UpdateContent. May need to extend the information on a Whiteboard
   // to include who created it etc.
-  // Also to have in mind: In SingleWhiteboard Callout whiteboards, users don't have CreateWhiteboard privilege to add another whiteboard but may have privilege
-  // to update the whiteboard itself
+  // Also to have in mind: In SingleWhiteboard Callout whiteboards, users may not have CreateWhiteboard privilege to add another whiteboard but may have privilege
+  // to update an existing whiteboard
   const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
 
   return (
