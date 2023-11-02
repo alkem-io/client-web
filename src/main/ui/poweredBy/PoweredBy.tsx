@@ -5,10 +5,10 @@ import { ReactComponent as LogoImage } from '../logo/logo.svg';
 import { gutters } from '../../../core/ui/grid/utils';
 import { Box, BoxProps } from '@mui/material';
 import { useConfig } from '../../../domain/platform/config/useConfig';
-import { FEATURE_LANDING_PAGE } from '../../../domain/platform/config/features.constants';
 import { ROUTE_HOME } from '../../../domain/platform/routes/constants';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import { rem } from '../../../core/ui/typography/utils';
+import { PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
 
 interface PoweredByProps {
   preview?: boolean;
@@ -20,7 +20,7 @@ const PoweredBy = ({ compact = false, preview = false, sx, ...props }: PoweredBy
 
   const { isFeatureEnabled } = useConfig();
 
-  const hasLandingPage = isFeatureEnabled(FEATURE_LANDING_PAGE);
+  const hasLandingPage = isFeatureEnabled(PlatformFeatureFlagName.LandingPage);
 
   const getLogoHeightGutters = () => {
     if (preview) {

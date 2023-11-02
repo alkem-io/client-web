@@ -4,12 +4,7 @@ import DashboardSpacesSection, {
   DashboardSpaceSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardSpacesSection';
 import { useDashboardSpacesPaginatedQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import MetricTooltip from '../../../platform/metrics/MetricTooltip';
-import useServerMetadata from '../../../platform/metadata/useServerMetadata';
-import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { MetricItem } from '../../../platform/metrics/views/Metrics';
 import Loading from '../../../../core/ui/loading/Loading';
-import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 import {
@@ -53,14 +48,6 @@ const SpacesSection = () => {
     fetchMore: spacesQueryResult.fetchMore,
   };
 
-  const { metrics, loading: isLoadingActivities } = useServerMetadata();
-
-  const [spaceCount, challengeCount, opportunityCount] = [
-    getMetricCount(metrics, MetricType.Space),
-    getMetricCount(metrics, MetricType.Challenge),
-    getMetricCount(metrics, MetricType.Opportunity),
-  ];
-
   const spacesLoader = useLazyLoading(Box, {
     hasMore: spaces.hasMore || false,
     loading: spaces.loading || false,
@@ -77,34 +64,10 @@ const SpacesSection = () => {
   }>['getSpaceCardProps'] = space => {
     return {
       locked: !space.authorization?.anonymousReadAccess,
-      isDemoSpace: space.visibility === SpaceVisibility.Demo,
+      isDemoSpace: space.license.visibility === SpaceVisibility.Demo,
       member: space.community?.myMembershipStatus === CommunityMembershipStatus.Member,
     };
   };
-
-  const metricItems: MetricItem[] = useMemo(
-    () => [
-      {
-        name: tLineBreaks('pages.activity.spaces'),
-        isLoading: isLoadingActivities,
-        count: spaceCount,
-        color: 'primary',
-      },
-      {
-        name: tLineBreaks('common.challenges'),
-        isLoading: isLoadingActivities,
-        count: challengeCount,
-        color: 'primary',
-      },
-      {
-        name: tLineBreaks('common.opportunities'),
-        isLoading: isLoadingActivities,
-        count: opportunityCount,
-        color: 'primary',
-      },
-    ],
-    [challengeCount, spaceCount, isLoadingActivities, opportunityCount, tLineBreaks]
-  );
 
   const spaceItems = useMemo(
     () =>
@@ -121,7 +84,6 @@ const SpacesSection = () => {
       {({ items: filteredSpaces, value, handleChange }) => (
         <DashboardSpacesSection
           headerText={tLineBreaks('pages.home.sections.space.header')}
-          primaryAction={<MetricTooltip metricsItems={metricItems} />}
           spaces={filteredSpaces}
           getSpaceCardProps={getSpaceCardProps}
           loader={spacesLoader}

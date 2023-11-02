@@ -8,7 +8,7 @@ import RouterLink from '../../../../../core/ui/link/RouterLink';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Caption } from '../../../../../core/ui/typography';
 import { useConfig } from '../../../../platform/config/useConfig';
-import { useUserContext } from '../../../../community/user/hooks/useUserContext';
+import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 
 interface CalloutTypeSelectProps {
   onSelect: (value: CalloutType | undefined) => void;
@@ -21,7 +21,7 @@ interface CalloutTypeSelectProps {
 const availableCalloutTypes: Record<CalloutType, AuthorizationPrivilege[]> = {
   [CalloutType.Post]: [],
   [CalloutType.Whiteboard]: [],
-  [CalloutType.WhiteboardRt]: [AuthorizationPrivilege.AccessWhiteboardRt],
+  [CalloutType.WhiteboardRt]: [AuthorizationPrivilege.CreateWhiteboardRt],
   [CalloutType.LinkCollection]: [],
   [CalloutType.PostCollection]: [],
   [CalloutType.WhiteboardCollection]: [],
@@ -29,11 +29,8 @@ const availableCalloutTypes: Record<CalloutType, AuthorizationPrivilege[]> = {
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
   const { t } = useTranslation();
-  const { platform } = useConfig();
-  const { user } = useUserContext();
-  if (!user) {
-    return null;
-  }
+  const { locations } = useConfig();
+  const { permissions } = useSpace();
 
   const handleChange = (value: CalloutType | undefined) => {
     onSelect(value);
@@ -52,7 +49,7 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect,
           const requiredPermissions = availableCalloutTypes[calloutType];
           if (
             requiredPermissions.length === 0 || // No permissions required, calloutType is just Available
-            requiredPermissions.every(permission => user.hasPlatformPrivilege(permission))
+            requiredPermissions.every(permission => permissions.collaborationPrivileges.includes(permission))
           ) {
             return (
               <RadioButton key={calloutType} value={calloutType} iconComponent={calloutIcons[calloutType]}>
@@ -64,8 +61,8 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect,
           }
         })}
       </RadioButtonGroup>
-      {platform?.inspiration && (
-        <RouterLink to={platform.inspiration}>
+      {locations?.inspiration && (
+        <RouterLink to={locations.inspiration}>
           <Caption color="primary" textAlign="center">
             <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: 1 }} />
             {t('callout.alkemio-link')}

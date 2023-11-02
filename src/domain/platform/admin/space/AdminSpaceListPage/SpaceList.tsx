@@ -10,12 +10,17 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import Loading from '../../../../../core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
-import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  LicenseFeatureFlagName,
+  SpaceVisibility,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { buildAdminSpaceUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
+import { licenseHasFeature } from '../../../../journey/space/license/useLicenseFeatures';
 
 export const SpaceList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -37,12 +42,12 @@ export const SpaceList: FC = () => {
           (space.authorization?.myPrivileges ?? []).find(privilege => privilege === AuthorizationPrivilege.Update)
         )
         .map(space => {
-          if (space.visibility !== SpaceVisibility.Active) {
+          if (space.license.visibility !== SpaceVisibility.Active) {
             return {
               ...space,
               profile: {
                 ...space.profile,
-                displayName: `${space.profile.displayName} [${space.visibility.toUpperCase()}]`,
+                displayName: `${space.profile.displayName} [${space.license.visibility.toUpperCase()}]`,
               },
             };
           }
@@ -56,9 +61,13 @@ export const SpaceList: FC = () => {
         .map(space => ({
           ...searchableListItemMapper()(space),
           spaceId: space.id,
-          visibility: space.visibility,
+          visibility: space.license.visibility,
           hostID: space.host?.id,
           nameID: space.nameID,
+          features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
+            acc[licenseFeature] = licenseHasFeature(licenseFeature, space.license);
+            return acc;
+          }, {} as Record<LicenseFeatureFlagName, boolean>),
           organizations,
         })) ?? []
     );

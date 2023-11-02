@@ -2,12 +2,12 @@ import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/S
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import { CircularProgress, ListItemIcon } from '@mui/material';
+import { CircularProgress, FormLabel, ListItemIcon, RadioGroup } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { Formik } from 'formik';
-import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { LicenseFeatureFlagName, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import { useUpdateSpacePlatformSettingsMutation } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -18,11 +18,13 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxField';
 
 export interface SpacePlatformSettings {
   nameID: string;
   hostID: string | undefined;
   visibility: SpaceVisibility;
+  features: Record<LicenseFeatureFlagName, boolean>;
   organizations: {
     id: string;
     name: string;
@@ -33,7 +35,15 @@ interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
 }
 
-const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...props }: SpaceListItemProps) => {
+const SpaceListItem = ({
+  spaceId,
+  visibility,
+  nameID,
+  hostID,
+  organizations,
+  features,
+  ...props
+}: SpaceListItemProps) => {
   const [isPlatformSettingsModalOpen, setIsPlatformSettingsModalOpen] = useState(false);
 
   const handlePlatformSettingsClick: MouseEventHandler = event => {
@@ -46,17 +56,21 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
     visibility,
     nameID,
     hostID,
+    features,
   };
 
   const [updatePlatformSettings, { loading }] = useUpdateSpacePlatformSettingsMutation();
 
-  const handleSubmit = async ({ visibility, nameID, hostID }: Partial<SpacePlatformSettings>) => {
+  const handleSubmit = async ({ visibility, nameID, hostID, features }: Partial<SpacePlatformSettings>) => {
     await updatePlatformSettings({
       variables: {
         spaceID: spaceId,
         hostID,
         nameID,
-        visibility,
+        license: {
+          visibility,
+          featureFlags: Object.keys(features ?? {}).map(feature => ({ name: feature, enabled: features![feature] })),
+        },
       },
     });
     setIsPlatformSettingsModalOpen(false);
@@ -64,7 +78,7 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
 
   const { t } = useTranslation();
 
-  const selectOptions = useMemo<readonly FormikSelectValue[]>(
+  const visiblitySelectOptions = useMemo<readonly FormikSelectValue[]>(
     () =>
       [
         {
@@ -87,6 +101,12 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     hostID: yup.string().required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
+    features: yup.object().shape(
+      Object.keys(features).reduce((acc, cur) => {
+        acc[cur] = yup.boolean().required(t('forms.validations.required'));
+        return acc;
+      }, {})
+    ),
   });
 
   return (
@@ -122,7 +142,25 @@ const SpaceListItem = ({ spaceId, visibility, nameID, hostID, organizations, ...
                   disabled={loading}
                   placeholder={t('components.editSpaceForm.host.title')}
                 />
-                <FormikAutocomplete name="visibility" values={selectOptions} disablePortal={false} disabled={loading} />
+                <FormikAutocomplete
+                  name="visibility"
+                  values={visiblitySelectOptions}
+                  disablePortal={false}
+                  disabled={loading}
+                />
+                <RadioGroup>
+                  <FormLabel component="legend">{t('pages.admin.space.settings.license-features.title')}</FormLabel>
+                  {Object.keys(features)
+                    .map(key => key as LicenseFeatureFlagName)
+                    .map(key => (
+                      <FormikCheckboxField
+                        key={`feature-checkbox-${key}`}
+                        title={t(`pages.admin.space.settings.license-features.features.${key}` as const)}
+                        name={`features.${key}`}
+                        disabled={loading}
+                      />
+                    ))}
+                </RadioGroup>
               </PageContentBlockSeamless>
               <Actions padding={gutters()} justifyContent="end">
                 <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>

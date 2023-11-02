@@ -6,7 +6,7 @@ import queryRequest from '../../../core/http/queryRequest';
 import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
 
 interface ServerMetadataContextProps {
-  metadata?: Metadata;
+  metadata?: Partial<Metadata>;
   loading: boolean;
   error?: Error;
 }
@@ -22,7 +22,7 @@ export interface ServerMetadataProviderProps {
 }
 
 const ServerMetadataProvider: FC<ServerMetadataProviderProps> = ({ url, children }) => {
-  const [metadata, setMetadata] = useState<Metadata | undefined>();
+  const [metadata, setMetadata] = useState<Partial<Metadata> | undefined>();
 
   const [requestMetadata, loading, error] = useLoadingStateWithHandlers(
     async (url: string) => {

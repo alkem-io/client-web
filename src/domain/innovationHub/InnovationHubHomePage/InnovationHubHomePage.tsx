@@ -35,9 +35,9 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
 
   const allSpaces = spacesData?.spaces;
 
-  const { platform } = useConfig();
+  const { locations } = useConfig();
 
-  const mainHomeUrl = `//${platform?.domain}${ROUTE_HOME}`;
+  const mainHomeUrl = `//${locations?.domain}${ROUTE_HOME}`;
 
   return (
     <TopLevelLayout
@@ -66,7 +66,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
                 tags={space.profile?.tagset?.tags ?? []}
                 journeyUri={buildSpaceUrl(space.nameID)}
                 member={isMember(space)}
-                spaceVisibility={space.visibility}
+                spaceVisibility={space.license.visibility}
               />
             ))}
           </ScrollableCardsLayoutContainer>

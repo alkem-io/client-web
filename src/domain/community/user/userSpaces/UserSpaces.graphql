@@ -25,6 +25,10 @@ query UserSpaces {
         name
         value
       }
+      license {
+        id
+        visibility
+      }
     }
   }
 }

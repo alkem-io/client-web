@@ -27,5 +27,8 @@ fragment SpaceDetailsProvider on Space {
   context {
     ...ContextDetailsProvider
   }
-  visibility
+  license {
+    id
+    visibility
+  }
 }

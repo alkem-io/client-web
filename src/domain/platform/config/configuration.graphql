@@ -22,7 +22,7 @@ fragment Configuration on Config {
       }
     }
   }
-  platform {
+  locations {
     environment
     domain
     about
@@ -42,10 +42,10 @@ fragment Configuration on Config {
     newuser
     tips
     aup
-    featureFlags {
-      enabled
-      name
-    }
+  }
+  featureFlags {
+    enabled
+    name
   }
   sentry {
     enabled

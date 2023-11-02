@@ -1688,6 +1688,13 @@
             "public": "<b>Public:</b> this space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
             "private": "<b>Private:</b> this space is visible for everyone on the platform, but the content is only visible for members."
           },
+          "license-features": {
+            "title": "Space Features",
+            "features": {
+              "WHITEBOART_RT": "RealTime Whiteboards",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+            }
+          },
           "membership": {
             "title": "Membership",
             "noApplicationRequired": "<b>No Application required:</b> all Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",

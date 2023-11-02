@@ -41,7 +41,7 @@ const MIN_HEIGHT = 200;
 export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...rest }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   const imgRef = useRef<HTMLImageElement>();
 
   const {
@@ -204,7 +204,7 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
               </Box>
               <FormHelperText>
                 {tLinks('components.referenceSegment.url-helper-text', {
-                  terms: { href: platform?.terms },
+                  terms: { href: locations?.terms },
                 })}
               </FormHelperText>
               <Box>

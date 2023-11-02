@@ -3,9 +3,8 @@ import HelpIcon from '@mui/icons-material/Help';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
 import { IconButton } from '@mui/material';
 import { useConfig } from '../../../domain/platform/config/useConfig';
-import { FEATURE_GUIDANCE_ENGINE } from '../../../domain/platform/config/features.constants';
 import { useUserContext } from '../../../domain/community/user';
-import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
 import { useFullscreen } from '../../../core/ui/fullscreen/useFullscreen';
 import ChatWidget from '../../guidance/chatWidget/ChatWidget';
 
@@ -18,7 +17,7 @@ const PlatformHelpButton = () => {
 
   const { fullscreen } = useFullscreen();
   const { isFeatureEnabled } = useConfig();
-  const isGuidanceEnabled = isFeatureEnabled(FEATURE_GUIDANCE_ENGINE);
+  const isGuidanceEnabled = isFeatureEnabled(PlatformFeatureFlagName.GuidenceEngine);
   const { user: currentUser } = useUserContext();
   const shouldDisplayChatWidget =
     !fullscreen && // Never show the widget when there's something in fullscreen

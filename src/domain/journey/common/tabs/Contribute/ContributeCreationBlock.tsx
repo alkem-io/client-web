@@ -15,20 +15,20 @@ interface ContributeCreationBlockProps {
 
 export const ContributeCreationBlock: FC<ContributeCreationBlockProps> = ({ canCreate, handleCreate }) => {
   const { t } = useTranslation();
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   return (
     <PageContentBlock accent>
       <WrapperMarkdown>{t('pages.contribute.initial-text')}</WrapperMarkdown>
       {canCreate && (
         <Actions justifyContent="end">
-          {platform?.inspiration && (
+          {locations?.inspiration && (
             <Button
               variant="text"
               startIcon={<TipsAndUpdatesOutlinedIcon />}
               target="_blank"
               rel="noopener noreferrer"
               component={Link}
-              href={platform.inspiration}
+              href={locations.inspiration}
             >
               {t('common.inspiration')}
             </Button>
