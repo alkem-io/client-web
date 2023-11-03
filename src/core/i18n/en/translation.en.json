@@ -146,7 +146,8 @@
     "use": "Use",
     "fullscreen": "Toggle full screen",
     "changeLanguage": "Change language",
-    "getHelp": "Get help"
+    "getHelp": "Get help",
+    "save-as-template": "Save as template"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -779,6 +780,11 @@
     }
   },
   "templateLibrary": {
+    "calloutTemplates": {
+      "name": "Callout template",
+      "title": "Template Library: Callouts",
+      "defaultDescription": ""
+    },
     "postTemplates": {
       "name": "Post template",
       "title": "Template Library: Posts",
