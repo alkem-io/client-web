@@ -294,9 +294,9 @@ class Collab extends PureComponent<Props, CollabState> {
           const payload = decryptedData.payload as SocketUpdateDataSource['FILE_UPLOAD']['payload'];
           const currentFiles = this.excalidrawAPI.getFiles();
           if (!currentFiles[payload.file.id]) {
+            this.alreadySharedFiles.push(payload.file.id);
             this.excalidrawAPI.addFiles([payload.file]);
             this.filesManager.loadFiles({ files: { [payload.file.id]: payload.file } });
-            this.alreadySharedFiles.push(payload.file.id);
           }
           break;
         }
