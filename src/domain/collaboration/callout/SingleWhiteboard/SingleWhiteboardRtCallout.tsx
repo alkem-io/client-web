@@ -78,7 +78,7 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
             >
               {(entities, state) => (
                 <WhiteboardsRtManagementViewWrapper
-                  whiteboardNameId={callout.framing.whiteboardRt.id}
+                  whiteboardNameId={callout.framing.whiteboardRt?.id}
                   backToWhiteboards={handleCloseWhiteboardDialog}
                   journeyTypeName={journeyTypeName}
                   whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
