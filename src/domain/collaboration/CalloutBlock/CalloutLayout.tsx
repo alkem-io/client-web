@@ -87,7 +87,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     draft: boolean;
     editable?: boolean;
     movable?: boolean;
-    canSaveAsTemlate?: boolean;
+    canSaveAsTemplate?: boolean;
     authorization?: Authorization;
     authorName?: string;
     authorAvatarUri?: string;
@@ -286,7 +286,7 @@ const CalloutLayout = ({
         >
           {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
         </MenuItemWithIcon>
-        {callout.canSaveAsTemlate && (
+        {callout.canSaveAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
             iconComponent={DownloadForOfflineOutlinedIcon}

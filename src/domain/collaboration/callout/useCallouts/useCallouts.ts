@@ -60,7 +60,7 @@ export type TypedCallout = Pick<
   draft: boolean;
   editable: boolean;
   movable: boolean;
-  canSaveAsTemlate: boolean;
+  canSaveAsTemplate: boolean;
   flowStates: string[] | undefined;
   displayLocation: string;
   comments: CommentsWithMessagesFragmentWithCallout;
@@ -153,7 +153,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const movable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const canSaveAsTemlate = collaboration?.authorization?.myPrivileges?.includes(
+        const canSaveAsTemplate = collaboration?.authorization?.myPrivileges?.includes(
           AuthorizationPrivilege.SaveAsTemplate
         );
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
@@ -180,7 +180,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           draft,
           editable,
           movable,
-          canSaveAsTemlate,
+          canSaveAsTemplate,
           flowStates,
           displayLocation: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
         } as TypedCallout;
