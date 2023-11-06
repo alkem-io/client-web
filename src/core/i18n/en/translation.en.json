@@ -1179,7 +1179,7 @@
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"
       },
-      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team. <terms>Click here</terms> for the terms and conditions."
+      "url-helper-text": "<terms>Click here</terms> for the terms and conditions."
     },
     "file-upload": {
       "file-size-error": "File size exceeds the {{limit}}MB limit",
@@ -1687,6 +1687,13 @@
             "title": "Visibility",
             "public": "<b>Public:</b> this space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
             "private": "<b>Private:</b> this space is visible for everyone on the platform, but the content is only visible for members."
+          },
+          "license-features": {
+            "title": "Space Features",
+            "features": {
+              "WHITEBOART_RT": "RealTime Whiteboards",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+            }
           },
           "membership": {
             "title": "Membership",

@@ -73,6 +73,10 @@ fragment PostParent on SearchResultPost {
   space {
     id
     nameID
+    license {
+      id
+      visibility
+    }
     profile {
       id
       displayName
@@ -193,7 +197,10 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       myMembershipStatus
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
 }
 
@@ -234,12 +241,14 @@ fragment SearchResultChallenge on SearchResultChallenge {
       displayName
       tagline
     }
-
     authorization {
       id
       anonymousReadAccess
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
 }
 
@@ -290,7 +299,10 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       id
       displayName
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
 }
 

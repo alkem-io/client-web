@@ -98,11 +98,11 @@ const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
     return null;
   }
   const space = data.space;
-  const tagline = space.profile?.tagline || '';
+  const tagline = space.profile?.tagline ?? '';
   const name = space.profile.displayName;
   const url = buildSpaceUrl(space.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
-  const vision = space.context?.vision || '';
+  const vision = space.context?.vision ?? '';
 
   const isMember = space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -117,7 +117,7 @@ const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
       matchedTerms
       vision={vision}
       locked={!space.authorization?.anonymousReadAccess}
-      spaceVisibility={space.visibility}
+      spaceVisibility={space.license.visibility}
     />
   );
 };
@@ -161,7 +161,7 @@ const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragme
           {spaceDisplayName}
         </CardParentJourneySegment>
       }
-      spaceVisibility={containingSpace.visibility}
+      spaceVisibility={containingSpace.license.visibility}
     />
   );
 };
@@ -206,7 +206,7 @@ const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFr
           {challengeDisplayName}
         </CardParentJourneySegment>
       }
-      spaceVisibility={containingSpace.visibility}
+      spaceVisibility={containingSpace.license.visibility}
     />
   );
 };

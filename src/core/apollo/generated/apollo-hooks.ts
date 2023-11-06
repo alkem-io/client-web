@@ -1824,7 +1824,10 @@ export const InnovationHubProfileFragmentDoc = gql`
 export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
     id
-    visibility
+    license {
+      id
+      visibility
+    }
     profile {
       id
       displayName
@@ -2500,6 +2503,13 @@ export const SpaceInfoFragmentDoc = gql`
       id
       myPrivileges
     }
+    collaboration {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
     community {
       id
       authorization {
@@ -2514,7 +2524,10 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
   ${SpaceDetailsFragmentDoc}
 `;
@@ -2537,7 +2550,10 @@ export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
     nameID
-    visibility
+    license {
+      id
+      visibility
+    }
     metrics {
       id
       name
@@ -2790,7 +2806,10 @@ export const SpaceDetailsProviderFragmentDoc = gql`
     context {
       ...ContextDetailsProvider
     }
-    visibility
+    license {
+      id
+      visibility
+    }
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
@@ -2800,7 +2819,14 @@ export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
     id
     nameID
-    visibility
+    license {
+      id
+      visibility
+      featureFlags {
+        name
+        enabled
+      }
+    }
     profile {
       id
       displayName
@@ -2997,7 +3023,7 @@ export const ConfigurationFragmentDoc = gql`
         }
       }
     }
-    platform {
+    locations {
       environment
       domain
       about
@@ -3017,10 +3043,10 @@ export const ConfigurationFragmentDoc = gql`
       newuser
       tips
       aup
-      featureFlags {
-        enabled
-        name
-      }
+    }
+    featureFlags {
+      enabled
+      name
     }
     sentry {
       enabled
@@ -3051,6 +3077,10 @@ export const PostParentFragmentDoc = gql`
     space {
       id
       nameID
+      license {
+        id
+        visibility
+      }
       profile {
         id
         displayName
@@ -3200,7 +3230,10 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         myMembershipStatus
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -3248,7 +3281,10 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         anonymousReadAccess
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -3302,7 +3338,10 @@ export const SearchResultOpportunityFragmentDoc = gql`
         id
         displayName
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -8743,10 +8782,9 @@ export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutationVariables
 >;
 export const UpdateWhiteboardRtDocument = gql`
-  mutation updateWhiteboardRt($input: UpdateWhiteboardRtDirectInput!) {
+  mutation updateWhiteboardRt($input: UpdateWhiteboardRtInput!) {
     updateWhiteboardRt(whiteboardData: $input) {
       id
-      content
       profile {
         id
         displayName
@@ -8794,6 +8832,56 @@ export type UpdateWhiteboardRtMutationResult = Apollo.MutationResult<SchemaTypes
 export type UpdateWhiteboardRtMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardRtMutation,
   SchemaTypes.UpdateWhiteboardRtMutationVariables
+>;
+export const UpdateWhiteboardContentRtDocument = gql`
+  mutation updateWhiteboardContentRt($input: UpdateWhiteboardContentRtInput!) {
+    updateWhiteboardContentRt(whiteboardData: $input) {
+      id
+      content
+    }
+  }
+`;
+export type UpdateWhiteboardContentRtMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardContentRtMutation,
+  SchemaTypes.UpdateWhiteboardContentRtMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardContentRtMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardContentRtMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardContentRtMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardContentRtMutation, { data, loading, error }] = useUpdateWhiteboardContentRtMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardContentRtMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardContentRtMutation,
+    SchemaTypes.UpdateWhiteboardContentRtMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateWhiteboardContentRtMutation,
+    SchemaTypes.UpdateWhiteboardContentRtMutationVariables
+  >(UpdateWhiteboardContentRtDocument, options);
+}
+
+export type UpdateWhiteboardContentRtMutationHookResult = ReturnType<typeof useUpdateWhiteboardContentRtMutation>;
+export type UpdateWhiteboardContentRtMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardContentRtMutation>;
+export type UpdateWhiteboardContentRtMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardContentRtMutation,
+  SchemaTypes.UpdateWhiteboardContentRtMutationVariables
 >;
 export const CheckoutWhiteboardDocument = gql`
   mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
@@ -14351,7 +14439,10 @@ export const SpaceContributionDetailsDocument = gql`
     space(ID: $spaceId) {
       id
       nameID
-      visibility
+      license {
+        id
+        visibility
+      }
       profile {
         id
         displayName
@@ -14453,7 +14544,10 @@ export const ChallengeContributionDetailsDocument = gql`
           id
         }
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -14544,7 +14638,10 @@ export const OpportunityContributionDetailsDocument = gql`
           id
         }
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -16019,6 +16116,10 @@ export const UserSpacesDocument = gql`
           id
           name
           value
+        }
+        license {
+          id
+          visibility
         }
       }
     }
@@ -19463,7 +19564,10 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
           ...SpaceDashboardNavigationCommunity
         }
       }
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
@@ -20496,13 +20600,20 @@ export const UpdateSpacePlatformSettingsDocument = gql`
     $spaceID: String!
     $hostID: UUID_NAMEID
     $nameID: NameID
-    $visibility: SpaceVisibility
+    $license: UpdateLicenseInput
   ) {
     updateSpacePlatformSettings(
-      updateData: { spaceID: $spaceID, hostID: $hostID, nameID: $nameID, visibility: $visibility }
+      updateData: { spaceID: $spaceID, hostID: $hostID, nameID: $nameID, license: $license }
     ) {
       id
-      visibility
+      license {
+        id
+        visibility
+        featureFlags {
+          name
+          enabled
+        }
+      }
       nameID
       host {
         id
@@ -20531,7 +20642,7 @@ export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
  *      spaceID: // value for 'spaceID'
  *      hostID: // value for 'hostID'
  *      nameID: // value for 'nameID'
- *      visibility: // value for 'visibility'
+ *      license: // value for 'license'
  *   },
  * });
  */
@@ -20559,7 +20670,6 @@ export const AdminSpacesListDocument = gql`
   query adminSpacesList {
     spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
       ...AdminSpace
-      visibility
     }
   }
   ${AdminSpaceFragmentDoc}
@@ -21897,11 +22007,6 @@ export const ServerMetadataDocument = gql`
   query serverMetadata {
     platform {
       metadata {
-        metrics {
-          id
-          name
-          value
-        }
         services {
           name
           version
@@ -23606,6 +23711,10 @@ export const SearchScopeDetailsSpaceDocument = gql`
           uri
         }
       }
+      license {
+        id
+        visibility
+      }
     }
   }
 `;
@@ -23864,7 +23973,10 @@ export const ChallengeExplorerDataDocument = gql`
         tagline
         displayName
       }
-      visibility
+      license {
+        id
+        visibility
+      }
       challenges {
         id
         nameID

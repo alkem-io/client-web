@@ -59,8 +59,9 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
   const tLinks = TranslateWithElements(
     <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
   );
-  const { platform } = useConfig();
-  const { visibility: spaceVisibility } = useSpace();
+  const { locations } = useConfig();
+  const { license } = useSpace();
+  const spaceVisibility = license.visibility;
 
   if (spaceVisibility === SpaceVisibility.Active) return null;
   if (journeyTypeName === 'admin') return null;
@@ -71,7 +72,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
     case 'space': {
       if (spaceVisibility === SpaceVisibility.Archived) {
         message = tLinks('pages.generic.archived-notice.archived-space', {
-          contact: { href: platform?.feedback, target: '_blank' },
+          contact: { href: locations?.feedback, target: '_blank' },
         });
       }
       if (spaceVisibility === SpaceVisibility.Demo) {
@@ -86,7 +87,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
         message = tLinks(
           'pages.generic.archived-notice.archived-journey',
           {
-            contact: { href: platform?.feedback, target: '_blank' },
+            contact: { href: locations?.feedback, target: '_blank' },
           },
           { journey: t(`common.${journeyTypeName}` as const) }
         );

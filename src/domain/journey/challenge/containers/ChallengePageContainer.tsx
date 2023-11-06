@@ -143,7 +143,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           spaceId,
           spaceNameId,
           spaceDisplayName: space.profile.displayName,
-          spaceVisibility: space.visibility,
+          spaceVisibility: space.license.visibility,
           challenge: _challenge?.space.challenge,
           permissions,
           isAuthenticated,

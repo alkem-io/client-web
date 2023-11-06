@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { BinaryFileData, DataURL, ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
@@ -82,14 +82,14 @@ const useWhiteboardFilesManager = ({
    * - Files that come from loadFiles, downloaded when the wb json is loaded into excalidraw and the files are requested from their Urls
    * - Files that are added by the user to the wb when editing and are uploaded
    */
-  const fileStore = useRef<Record<string, BinaryFileDataWithUrl>>({});
+  const [fileStore, setFileStore] = useState<Record<string, BinaryFileDataWithUrl>>({});
   const fileStoreAddFile = (fileId: string, file: BinaryFileDataWithUrl) => {
     log('changing fileStore version from', fileStore, ' to ', {
       ...fileStore,
       [fileId]: file,
     });
 
-    fileStore.current = { ...fileStore.current, [fileId]: file };
+    setFileStore({ ...fileStore, [fileId]: file });
   };
 
   const [downloadingFiles, setDownloadingFiles] = useState(false);
@@ -103,15 +103,19 @@ const useWhiteboardFilesManager = ({
    * @returns FileId
    */
   const addNewFile = async (file: File): Promise<string> => {
+    return (await uploadFileToStorage(file)).id;
+  };
+
+  const uploadFileToStorage = async (file: File): Promise<{ id: string; url: string }> => {
     const fileId = await generateIdFromFile(file);
-    if (fileStore.current[fileId]) {
-      log('file was already in our store', fileId, fileStore.current[fileId]);
-      return fileId;
+    if (fileStore[fileId]) {
+      log('file was already in our store', fileId, fileStore[fileId]);
+      return { id: fileId, url: fileStore[fileId].url };
     }
 
     if (!storageBucketId) {
       if (allowFallbackToAttached) {
-        return fileId;
+        return { id: fileId, url: '' };
       } else {
         throw new Error('Missing StorageBucket: Uploading images to this whiteboard is not supported');
       }
@@ -133,22 +137,23 @@ const useWhiteboardFilesManager = ({
     log('newFile uploaded', fileId, data.uploadFileOnStorageBucket);
     const excalidraw = await excalidrawApi?.readyPromise;
     const fileFromExcalidraw = excalidraw?.getFiles()?.[fileId];
+    const url = data.uploadFileOnStorageBucket;
     if (fileFromExcalidraw) {
       fileStoreAddFile(fileId, {
         ...fileFromExcalidraw,
-        url: data.uploadFileOnStorageBucket,
+        url,
       });
     } else {
       fileStoreAddFile(fileId, {
         id: fileId,
         mimeType: excalidrawFileMimeType(file.type),
         created: Date.now(),
-        url: data.uploadFileOnStorageBucket,
+        url,
         dataURL: (await blobToDataURL(file)) as DataURL,
       });
     }
 
-    return fileId;
+    return { id: fileId, url };
   };
 
   /**
@@ -191,11 +196,12 @@ const useWhiteboardFilesManager = ({
   const pushFilesToExcalidraw = async () => {
     const excalidraw = await excalidrawApi?.readyPromise;
     if (!excalidraw) {
-      log('excalidrawApi not ready yet or no files', excalidraw, fileStore.current);
+      log('excalidrawApi not ready yet or no files', excalidraw, fileStore);
       return;
     }
 
-    const filesAsArray = Object.keys(fileStore.current).map(fileId => fileStore.current[fileId]);
+    const filesAsArray = Object.keys(fileStore).map(fileId => fileStore[fileId]);
+    log('adding files from FilesManager', fileStore, filesAsArray);
     excalidraw.addFiles(filesAsArray);
   };
 
@@ -237,16 +243,16 @@ const useWhiteboardFilesManager = ({
     if (file.url) {
       // The url was already set, just copy it and remove dataURL to the output:
       return { ...file, dataURL: '' } as BinaryFileDataWithUrl;
-    } else if (fileStore.current[file.id]) {
+    } else if (fileStore[file.id]) {
       // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
-      return { ...file, dataURL: '', url: fileStore.current[file.id].url } as BinaryFileDataWithUrl;
+      return { ...file, dataURL: '', url: fileStore[file.id].url } as BinaryFileDataWithUrl;
     } else if (file.dataURL && storageBucketId) {
       log('NEED TO UPLOAD ', file.id, file);
       const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
       // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
-      const id = await addNewFile(fileObject);
-      log('Uploaded ', file.id, file, id);
-      return { ...file, url: fileStore.current[id].url, dataURL: '' } as BinaryFileDataWithUrl;
+      const { id, url } = await uploadFileToStorage(fileObject);
+      log('Uploaded ', file.id, file, fileObject, id, url);
+      return { ...file, url, dataURL: '' } as BinaryFileDataWithUrl;
     } else if (file.dataURL && !storageBucketId && allowFallbackToAttached) {
       // no storageBucket was supplied, but allowFallbackToAttached was true, so we'll allow this file to be attached in the json for now
       return { ...file } as BinaryFileDataWithUrl;
@@ -267,7 +273,7 @@ const useWhiteboardFilesManager = ({
         downloadingFiles,
       },
     }),
-    [storageBucketId, excalidrawApi, fileStore.current]
+    [storageBucketId, excalidrawApi, fileStore]
   );
 };
 

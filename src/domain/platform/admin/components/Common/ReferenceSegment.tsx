@@ -46,7 +46,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
 }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   const breakpoint = useCurrentBreakpoint();
   const isMobile = ['xs', 'sm'].includes(breakpoint);
   const [removingItems, setRemovingItems] = useState<Partial<Record<number, boolean>>>({});
@@ -110,7 +110,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       disabled={disabled || isRemoving(index)}
                       referenceID={attachment.id}
                       helperText={tLinks('components.referenceSegment.url-helper-text', {
-                        terms: { href: platform?.terms },
+                        terms: { href: locations?.terms },
                       })}
                     />
                     <Box>

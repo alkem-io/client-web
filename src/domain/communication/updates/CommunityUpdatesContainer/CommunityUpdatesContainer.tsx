@@ -6,8 +6,7 @@ import {
   useRemoveMessageOnRoomMutation,
   useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Community, Space, Message } from '../../../../core/apollo/generated/graphql-schema';
-import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
+import { Community, Space, Message, PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
@@ -58,7 +57,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendMessageToRoomMutation({
     refetchQueries:
-      isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !spaceId || !communityId
+      isFeatureEnabled(PlatformFeatureFlagName.Subscriptions) || !spaceId || !communityId
         ? []
         : [refetchCommunityUpdatesQuery({ communityId })],
   });

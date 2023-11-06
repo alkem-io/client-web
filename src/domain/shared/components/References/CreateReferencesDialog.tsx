@@ -47,7 +47,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
-  const { platform } = useConfig();
+  const { locations } = useConfig();
   const breakpoint = useCurrentBreakpoint();
   const isMobile = ['xs', 'sm'].includes(breakpoint);
 
@@ -149,7 +149,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                               fullWidth
                               referenceID={reference.id}
                               helperText={tLinks('components.referenceSegment.url-helper-text', {
-                                terms: { href: platform?.terms },
+                                terms: { href: locations?.terms },
                               })}
                             />
                             <Box>

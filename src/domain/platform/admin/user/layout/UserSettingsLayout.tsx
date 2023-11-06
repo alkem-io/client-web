@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useConfig } from '../../../config/useConfig';
-import { FEATURE_SSI } from '../../../config/features.constants';
 import { useUserContext } from '../../../../community/user';
 import UserPageBanner from '../../../../community/user/layout/UserPageBanner';
 import { UserProfileTabs, SettingsSection } from '../../layout/EntitySettingsLayout/constants';
@@ -11,6 +10,7 @@ import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
 import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import TopLevelPageBreadcrumbs from '../../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { useTranslation } from 'react-i18next';
+import { PlatformFeatureFlagName } from '../../../../../core/apollo/generated/graphql-schema';
 
 const tabs = [
   SettingsSection.MyProfile,
@@ -31,7 +31,7 @@ const UserSettingsLayout: FC<UserSettingsLayoutProps> = props => {
 
   // Add credentials tab is SSI is enabled:
   const { isFeatureEnabled } = useConfig();
-  if (isFeatureEnabled(FEATURE_SSI)) {
+  if (isFeatureEnabled(PlatformFeatureFlagName.Ssi)) {
     tabs.push(UserProfileTabs.find(tab => tab.section === SettingsSection.Credentials)!);
   }
 
