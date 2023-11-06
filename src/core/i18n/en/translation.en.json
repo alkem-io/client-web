@@ -199,6 +199,7 @@
     "callout": "Callout",
     "callouts": "Callouts",
     "collaborationTools": "Collaboration Tools",
+    "createdBy": "Created by",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Calendar",
@@ -285,6 +286,7 @@
     "space-settings": "$t(common.settings)",
     "search": "Search",
     "storage": "Storage",
+    "type": "Type",
     "reference": "Reference",
     "references": "References",
     "notifications": "Notifications",
@@ -466,9 +468,14 @@
         "OTHER": "Other"
       },
       "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard Templates",
-        "PostTemplate": "Post Templates",
-        "InnovationFlowTemplate": "Innovation Flows"
+        "WhiteboardTemplate": "Whiteboard Template",
+        "WhiteboardTemplate_plural": "Whiteboard Templates",
+        "PostTemplate": "Post Template",
+        "PostTemplate_plural": "Post Templates",
+        "InnovationFlowTemplate": "Innovation Flow",
+        "InnovationFlowTemplate_plural": "Innovation Flows",
+        "CalloutTemplate": "Callout Template",
+        "CalloutTemplate_plural": "Callout Templates"
       }
     },
     "blocks": {

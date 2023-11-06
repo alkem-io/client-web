@@ -1,29 +1,11 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import PostTemplateCard from '../../../../collaboration/post/PostTemplateCard/PostTemplateCard';
 
-interface PostImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
+interface PostImportTemplateCardProps extends TemplateImportCardComponentProps {}
 
-const PostImportTemplateCard = ({ template, onClick }: PostImportTemplateCardProps) => {
-  return (
-    <PostTemplateCard
-      template={{
-        displayName: template.profile.displayName,
-        description: template.profile.description,
-        tags: template.profile.tagset?.tags,
-        provider: {
-          displayName: template.provider?.profile.displayName,
-          avatarUri: template.provider?.profile.avatar?.uri,
-        },
-        innovationPack: {
-          id: template.innovationPackId,
-          displayName: template.innovationPackProfile.displayName,
-        },
-      }}
-      onClick={onClick}
-    />
-  );
+const PostImportTemplateCard = ({ template, ...props }: PostImportTemplateCardProps) => {
+  return <PostTemplateCard template={template} innovationPack={template.innovationPack} {...props} />;
 };
 
 export default PostImportTemplateCard;

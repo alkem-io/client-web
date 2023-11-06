@@ -5340,6 +5340,7 @@ export const PlatformInnovationFlowTemplatesLibraryDocument = gql`
           }
           provider {
             id
+            nameID
             profile {
               ...TemplateProviderProfile
             }
@@ -7062,6 +7063,7 @@ export const PlatformPostTemplatesLibraryDocument = gql`
           }
           provider {
             id
+            nameID
             profile {
               ...TemplateProviderProfile
             }
@@ -8020,6 +8022,7 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
           }
           provider {
             id
+            nameID
             profile {
               ...TemplateProviderProfile
             }

@@ -3,48 +3,33 @@ import React, { FC } from 'react';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
-import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
+import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
-import { PostIcon } from '../icon/PostIcon';
 import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
+import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 
-export interface PostTemplate {
-  displayName: string;
-  description: string | undefined;
-  // visualUri: string | undefined;
-  tags: string[] | undefined;
-  provider: {
-    displayName: string | undefined;
-    avatarUri: string | undefined;
-  };
-  innovationPack: {
-    id: string | undefined;
-    displayName: string | undefined;
-  };
-}
+interface PostTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
-interface PostTemplateCardProps extends ContributeCardProps {
-  template: PostTemplate | undefined;
-  loading?: boolean;
-}
-
-const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClick }) => {
+const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template?.displayName} iconComponent={PostIcon}>
+      <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption noWrap logoUrl={template?.provider?.avatarUri}>
-          {template?.provider?.displayName}
+        <CardHeaderCaption noWrap logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+          {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescriptionWithTags tags={template?.tags}>{template?.description}</CardDescriptionWithTags>
+        <CardDescriptionWithTags tags={template?.profile.tagset?.tags}>
+          {template?.profile.description}
+        </CardDescriptionWithTags>
       </CardDetails>
-      {template?.innovationPack.displayName && (
+      {innovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{template?.innovationPack.displayName}</Caption>
+          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

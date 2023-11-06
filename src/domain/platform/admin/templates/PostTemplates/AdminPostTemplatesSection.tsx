@@ -7,15 +7,11 @@ import {
   useDeletePostTemplateMutation,
   useUpdatePostTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { PostTemplateFormSubmittedValues } from './PostTemplateForm';
-import {
-  AdminPostTemplateFragment,
-  UpdatePostTemplateMutation,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import PostTemplateView from './PostTemplateView';
-import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
+import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import PostImportTemplateCard from './PostImportTemplateCard';
@@ -52,12 +48,8 @@ const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
       // TODO: Remove these
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useCreateTemplateMutation={useCreatePostTemplateMutation as any}
-      useUpdateTemplateMutation={
-        useUpdatePostTemplateMutation as MutationHook<
-          Partial<PostTemplateFormSubmittedValues> & { templateId: string },
-          UpdatePostTemplateMutation
-        >
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      useUpdateTemplateMutation={useUpdatePostTemplateMutation as any}
       useDeleteTemplateMutation={useDeletePostTemplateMutation}
     />
   );

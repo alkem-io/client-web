@@ -7,22 +7,27 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { PostTemplate, postTemplateMapper, PostTemplateWithValue } from '../PostTemplateCard/PostTemplate';
+import { PostTemplate, PostTemplateWithValue } from '../PostTemplateCard/PostTemplate';
 import PostTemplateCard from '../PostTemplateCard/PostTemplateCard';
 import PostTemplatePreview from './PostTemplatePreview';
 import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface PostTemplatesLibraryProps {
   onSelectTemplate: (template: PostTemplateWithValue) => void;
 }
 
-const applyFilter = (filter: string[], templates: PostTemplate[] | undefined) => {
+const applyFilter = <T extends TemplateWithInnovationPack<PostTemplate>>(
+  filter: string[],
+  templates: T[] | undefined
+) => {
   if (filter.length === 0) {
     return templates;
   }
   return templates?.filter(post => {
     const postString =
-      `${post.displayName} ${post.provider.displayName} ${post.innovationPack.displayName}`.toLowerCase();
+      `${post.profile.displayName} ${post.innovationPack?.provider?.profile.displayName} ${post.innovationPack?.profile.displayName}`.toLowerCase();
     return filter.some(term => postString.includes(term.toLowerCase()));
   });
 };
@@ -44,9 +49,13 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
     () =>
       applyFilter(
         filter,
-        spaceData?.space.templates?.postTemplates.map<PostTemplate>(template =>
-          postTemplateMapper(template, spaceData?.space.host?.profile)
-        )
+        spaceData?.space.templates?.postTemplates.map(template => ({
+          ...template,
+          innovationPack: {
+            profile: { displayName: '' },
+            provider: spaceData?.space.host,
+          },
+        }))
       ),
     [spaceData, filter]
   );
@@ -61,9 +70,10 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
         filter,
         platformData?.platform.library.innovationPacks.flatMap(ip =>
           compact(
-            ip.templates?.postTemplates.map<PostTemplate>(template =>
-              postTemplateMapper(template, ip.provider?.profile, ip)
-            )
+            ip.templates?.postTemplates.map(template => ({
+              ...template,
+              innovationPack: ip,
+            }))
           )
         )
       ),
@@ -71,7 +81,9 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
   );
 
   // Post templates include the value (defaultDescription and type), so no need to go to the server and fetch like with Whiteboards
-  const getPostTemplateContent = (template: PostTemplate): Promise<PostTemplateWithValue> => {
+  const getPostTemplateContent = (
+    template: PostTemplate & Identifiable
+  ): Promise<PostTemplateWithValue & Identifiable> => {
     return Promise.resolve(template);
   };
 
@@ -87,7 +99,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      getTemplateWithContent={template => getPostTemplateContent(template)}
+      getTemplateWithContent={getPostTemplateContent}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}

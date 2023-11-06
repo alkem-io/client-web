@@ -10,20 +10,28 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
-import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPacks/InnovationPack';
+import { InnovationPack } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../collaboration/templates/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
-import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
+import {
+  TemplateImportCardComponentProps,
+  TemplateWithInnovationPack,
+} from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { TemplateBase } from '../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
 
-export interface Template extends Identifiable {
-  profile: ProfileInfoWithVisualFragment;
-}
+/**
+ * @deprecated TODO remove
+ */
+export interface Template extends TemplateBase {}
 
+/**
+ * @deprecated TODO remove
+ */
 export interface TemplateValue {}
 
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
@@ -32,7 +40,7 @@ interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   onSubmit: (values: SubmittedValues) => void;
 }
 
-interface EditTemplateDialogProps<T extends Template, V extends TemplateValue, SubmittedValues extends {}> {
+interface EditTemplateDialogProps<T extends Template, V extends T, SubmittedValues extends {}> {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: SubmittedValues) => void;
@@ -42,7 +50,7 @@ interface EditTemplateDialogProps<T extends Template, V extends TemplateValue, S
   templateValue: V | undefined;
 }
 
-export interface TemplatePreviewProps<T extends Template, V extends TemplateValue> {
+export interface TemplatePreviewProps<T extends Template, V extends T> {
   template: T;
   getTemplateContent: (template: T) => void;
   templateContent: V | undefined;
@@ -58,12 +66,11 @@ export interface ProfileUpdate {
 
 type AdminTemplatesSectionProps<
   T extends Template,
-  Q extends T & TemplateInnovationPackMetaInfo,
-  V extends TemplateValue,
+  V extends T,
   // TODO There must be either introduced a minimal common subtype between the received and submitted values,
   // so that that one in not constructed from the other by removing fields, OR
   // the received and the submitted values may be two independent types.
-  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
+  SubmittedValues extends Omit<T, 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -76,7 +83,7 @@ type AdminTemplatesSectionProps<
   importDialogHeaderText: string;
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: T[] | undefined;
+  templates: (T & Identifiable)[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
   buildTemplateLink: (post: T) => LinkWithState;
@@ -86,10 +93,10 @@ type AdminTemplatesSectionProps<
   canImportTemplates: boolean;
   innovationPacks: InnovationPack<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
-  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getWhiteboardTemplateContent?: (template: T) => void;
-  getImportedWhiteboardTemplateContent?: (template: Q) => void;
+  getImportedWhiteboardTemplateContent?: (template: TemplateWithInnovationPack<T>) => void;
   whiteboardTemplateContent?: V | undefined;
   importedTemplateContent?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
@@ -106,9 +113,9 @@ type AdminTemplatesSectionProps<
 
 const AdminTemplatesSection = <
   T extends Template,
-  Q extends T & TemplateInnovationPackMetaInfo,
-  V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
+  // Q extends T & TemplateInnovationPackMetaInfo,
+  V extends T,
+  SubmittedValues extends Omit<T, 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -141,7 +148,7 @@ const AdminTemplatesSection = <
   getWhiteboardTemplateContent = () => {},
   getImportedWhiteboardTemplateContent = () => {},
   ...dialogProps
-}: AdminTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
+}: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
@@ -225,22 +232,22 @@ const AdminTemplatesSection = <
     closeCreateTemplateDialog();
   };
 
-  const handleImportTemplate = async (template: T, value: V | undefined) => {
+  const handleImportTemplate = async (template: T & Identifiable, value: V | undefined) => {
     if (!templatesSetId) {
       throw new TypeError('TemplatesSet ID not loaded.');
     }
 
     // Deconstruct and rebuild template information from the InnovationPack template downloaded:
     const { id, profile, ...templateData } = template;
-    const { id: infoId, ...infoData } = profile;
+
     const values: SubmittedValues = {
-      ...(templateData as SubmittedValues),
+      ...(templateData as unknown as SubmittedValues), // TODO check type overlap
       ...value,
       profile: {
-        displayName: infoData.displayName,
-        description: infoData.description,
+        displayName: profile.displayName,
+        description: profile.description,
       },
-      tags: infoData.tagset?.tags,
+      tags: profile.tagset?.tags,
     };
 
     const result = await createTemplate({
@@ -331,7 +338,6 @@ const AdminTemplatesSection = <
         templateImportCardComponent={TemplateImportCard}
         templatePreviewComponent={TemplatePreview}
         getImportedTemplateContent={getImportedWhiteboardTemplateContent}
-        importedTemplateContent={dialogProps.importedTemplateContent}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
         onImportTemplate={handleImportTemplate}

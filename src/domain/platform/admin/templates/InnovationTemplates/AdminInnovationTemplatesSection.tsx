@@ -7,15 +7,11 @@ import {
   useDeleteInnovationFlowTemplateMutation,
   useUpdateInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { InnovationTemplateFormSubmittedValues } from './InnovationTemplateForm';
-import {
-  AdminInnovationFlowTemplateFragment,
-  UpdateInnovationFlowTemplateMutation,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import InnovationTemplateView from './InnovationTemplateView';
-import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
+import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import InnovationImportTemplateCard from './InnovationImportTemplateCard';
@@ -49,13 +45,10 @@ const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionP
       templatePreviewComponent={InnovationTemplateView}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}
-      useCreateTemplateMutation={useCreateInnovationFlowTemplateMutation}
-      useUpdateTemplateMutation={
-        useUpdateInnovationFlowTemplateMutation as MutationHook<
-          Partial<InnovationTemplateFormSubmittedValues> & { templateId: string },
-          UpdateInnovationFlowTemplateMutation
-        >
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      useCreateTemplateMutation={useCreateInnovationFlowTemplateMutation as any}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      useUpdateTemplateMutation={useUpdateInnovationFlowTemplateMutation as any}
       useDeleteTemplateMutation={useDeleteInnovationFlowTemplateMutation}
     />
   );
