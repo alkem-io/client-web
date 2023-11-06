@@ -44,7 +44,8 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
   // to include who created it etc.
   // Also to have in mind: In SingleWhiteboard Callout whiteboards, users may not have CreateWhiteboard privilege to add another whiteboard but may have privilege
   // to update an existing whiteboard
-  const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
+  const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+  const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
 
   return (
     <WhiteboardRtActionsContainer>
@@ -64,6 +65,7 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
           }}
           options={{
             canUpdate: hasUpdatePrivileges,
+            canUpdateContent: hasUpdateContentPrivileges,
             canUpdateDisplayName: hasUpdatePrivileges && !readOnlyDisplayName,
             shareUrl: whiteboardShareUrl,
           }}

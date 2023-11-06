@@ -41,7 +41,7 @@ const WhiteboardsManagementViewWrapper: FC<WhiteboardsManagementViewWrapperProps
   if (!calloutId) {
     return null;
   }
-  const hasCreatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateWhiteboardRt);
+  const hasCreatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateWhiteboard);
   const hasDeletePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
 
   // Todo: need to decide who can edit what whiteboards, for now tie to CreateWhiteboard. May need to extend the information on a Whiteboard
