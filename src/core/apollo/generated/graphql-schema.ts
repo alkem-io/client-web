@@ -15871,7 +15871,7 @@ export type UpdateWhiteboardContentRtMutationVariables = Exact<{
 
 export type UpdateWhiteboardContentRtMutation = {
   __typename?: 'Mutation';
-  updateWhiteboardContentRt: { __typename?: 'WhiteboardRt'; id: string };
+  updateWhiteboardContentRt: { __typename?: 'WhiteboardRt'; id: string; content: string };
 };
 
 export type CheckoutWhiteboardMutationVariables = Exact<{

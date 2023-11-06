@@ -8837,6 +8837,7 @@ export const UpdateWhiteboardContentRtDocument = gql`
   mutation updateWhiteboardContentRt($input: UpdateWhiteboardContentRtInput!) {
     updateWhiteboardContentRt(whiteboardData: $input) {
       id
+      content
     }
   }
 `;

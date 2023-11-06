@@ -6,7 +6,6 @@ import {
   WhiteboardRtContentFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 
 export interface IWhiteboardRtActions {
   onUpdate: (
@@ -38,8 +37,6 @@ const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ c
             content: whiteboard.content,
           },
         },
-        update: (cache, { data }) =>
-          data?.updateWhiteboardContentRt && evictFromCache(cache, data.updateWhiteboardContentRt.id, 'WhiteboardRt'),
       });
     },
     [updateWhiteboardContent, uploadVisuals]
