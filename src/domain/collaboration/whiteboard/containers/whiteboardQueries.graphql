@@ -274,14 +274,19 @@ mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
   }
 }
 
-mutation updateWhiteboardRt($input: UpdateWhiteboardRtDirectInput!) {
+mutation updateWhiteboardRt($input: UpdateWhiteboardRtInput!) {
   updateWhiteboardRt(whiteboardData: $input) {
     id
-    content
     profile {
       id
       displayName
     }
+  }
+}
+
+mutation updateWhiteboardContentRt($input: UpdateWhiteboardContentRtInput!) {
+  updateWhiteboardContentRt(whiteboardData: $input) {
+    id
   }
 }
 

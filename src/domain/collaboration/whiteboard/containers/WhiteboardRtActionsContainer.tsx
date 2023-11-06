@@ -1,11 +1,12 @@
 import { FC, useCallback, useMemo } from 'react';
-import { useUpdateWhiteboardRtMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUpdateWhiteboardContentRtMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   WhiteboardRtDetailsFragment,
   WhiteboardRtContentFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 
 export interface IWhiteboardRtActions {
   onUpdate: (
@@ -25,42 +26,30 @@ export interface WhiteboardRtActionsContainerProps
   extends ContainerChildProps<{}, IWhiteboardRtActions, WhiteboardRtActionsContainerState> {}
 
 const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ children }) => {
-  const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardRtMutation({});
+  const [updateWhiteboardContent, { loading: updatingWhiteboard }] = useUpdateWhiteboardContentRtMutation({});
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
-  const handleUpdateWhiteboard = useCallback(
-    async (
-      whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
-      previewImages?: WhiteboardPreviewImage[]
-    ) => {
-      if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
-        uploadVisuals(
-          previewImages,
-          { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
-          whiteboard.nameID
-        );
-      }
-
-      await updateWhiteboard({
+  const handleUpdateWhiteboardContent = useCallback(
+    async (whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment) => {
+      await updateWhiteboardContent({
         variables: {
           input: {
             ID: whiteboard.id,
             content: whiteboard.content,
-            profileData: {
-              displayName: whiteboard.profile.displayName,
-            },
           },
         },
+        update: (cache, { data }) =>
+          data?.updateWhiteboardContentRt && evictFromCache(cache, data.updateWhiteboardContentRt.id, 'WhiteboardRt'),
       });
     },
-    [updateWhiteboard, uploadVisuals]
+    [updateWhiteboardContent, uploadVisuals]
   );
 
   const actions = useMemo<IWhiteboardRtActions>(
     () => ({
-      onUpdate: handleUpdateWhiteboard,
+      onUpdate: handleUpdateWhiteboardContent,
     }),
-    [handleUpdateWhiteboard]
+    [handleUpdateWhiteboardContent]
   );
 
   return (
