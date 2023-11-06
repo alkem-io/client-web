@@ -18,13 +18,17 @@ interface CalloutTypeSelectProps {
 /**
  * List of callout types and an array of the permissions required to create them
  */
-const availableCalloutTypes: Record<CalloutType, AuthorizationPrivilege[]> = {
-  [CalloutType.Post]: [],
-  [CalloutType.Whiteboard]: [],
-  [CalloutType.WhiteboardRt]: [AuthorizationPrivilege.CreateWhiteboardRt],
-  [CalloutType.LinkCollection]: [],
-  [CalloutType.PostCollection]: [],
-  [CalloutType.WhiteboardCollection]: [],
+type CalloutTypeEnabledFunction = (privileges: AuthorizationPrivilege[]) => boolean;
+
+const availableCalloutTypes: Record<CalloutType, CalloutTypeEnabledFunction> = {
+  [CalloutType.Post]: () => true, // Always visible
+  // Show normal Whiteboards if RT whiteboards are disabled, otherwise show only RT whiteboards
+  [CalloutType.Whiteboard]: privileges => !privileges.includes(AuthorizationPrivilege.CreateWhiteboardRt),
+  [CalloutType.WhiteboardRt]: privileges => privileges.includes(AuthorizationPrivilege.CreateWhiteboardRt),
+  // Always visible
+  [CalloutType.LinkCollection]: () => true,
+  [CalloutType.PostCollection]: () => true,
+  [CalloutType.WhiteboardCollection]: () => true,
 };
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
@@ -46,11 +50,8 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect,
         justifyContent="center"
       >
         {(Object.keys(availableCalloutTypes) as CalloutType[]).map(calloutType => {
-          const requiredPermissions = availableCalloutTypes[calloutType];
-          if (
-            requiredPermissions.length === 0 || // No permissions required, calloutType is just Available
-            requiredPermissions.every(permission => permissions.collaborationPrivileges.includes(permission))
-          ) {
+          const calloutTypeEnabled = availableCalloutTypes[calloutType];
+          if (calloutTypeEnabled(permissions.collaborationPrivileges)) {
             return (
               <RadioButton key={calloutType} value={calloutType} iconComponent={calloutIcons[calloutType]}>
                 {t(`components.calloutTypeSelect.label.${calloutType}` as const)}
