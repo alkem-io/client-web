@@ -40,6 +40,7 @@ export interface ContextViewState {
 
 export interface WhiteboardManagementViewOptions {
   canUpdate?: boolean;
+  canUpdateContent?: boolean;
   canUpdateDisplayName?: boolean;
   canCreate?: boolean;
   shareUrl?: string;
@@ -89,7 +90,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
                 onUpdate: actions.onUpdate,
               }}
               options={{
-                canEdit: options.canUpdate,
+                canEdit: options.canUpdateContent,
                 show: Boolean(whiteboardNameId),
                 fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
                   <BlockTitle display="flex" alignItems="center">

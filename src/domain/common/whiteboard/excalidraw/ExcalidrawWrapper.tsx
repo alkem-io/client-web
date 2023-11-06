@@ -106,17 +106,6 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
       return refreshOnDataChange.cancel;
     }, [refreshOnDataChange, data]);
 
-    const scrollToContent = async () => {
-      const excalidraw = await combinedRef.current?.readyPromise;
-      excalidraw?.scrollToContent();
-    };
-
-    useEffect(() => {
-      if (whiteboard?.id) {
-        scrollToContent();
-      }
-    }, [whiteboard?.id, scrollToContent]);
-
     const handleScroll = useRef(
       debounce(async () => {
         const excalidraw = await combinedRef.current?.readyPromise;
