@@ -40,7 +40,7 @@ interface AdminWhiteboardTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminWhiteboardTemplatesSection = (props: AdminWhiteboardTemplatesSectionProps) => {
+const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
 
@@ -79,6 +79,11 @@ const AdminWhiteboardTemplatesSection = (props: AdminWhiteboardTemplatesSectionP
     }
   };
 
+  // TODO updatequeries
+  const [createWhiteboardTemplate] = useCreateWhiteboardTemplateMutation();
+  const [updateWhiteboardTemplate] = useUpdateWhiteboardTemplateMutation();
+  const [deleteWhiteboardTemplate] = useDeleteWhiteboardTemplateMutation();
+
   return (
     <AdminTemplatesSection
       {...props}
@@ -95,12 +100,11 @@ const AdminWhiteboardTemplatesSection = (props: AdminWhiteboardTemplatesSectionP
       importedTemplateContent={importedWhiteboardContent?.lookup.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
-      // TODO:
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useUpdateTemplateMutation={useUpdateWhiteboardTemplateMutation as any}
-      useDeleteTemplateMutation={useDeleteWhiteboardTemplateMutation}
+      onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => updateWhiteboardTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={async variables => {
+        await deleteWhiteboardTemplate({ variables, refetchQueries });
+      }}
       onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
         onMutationCalled(mutationResult?.createWhiteboardTemplate, previewImages)
       }

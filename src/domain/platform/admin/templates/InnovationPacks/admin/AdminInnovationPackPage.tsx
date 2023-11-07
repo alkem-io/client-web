@@ -135,7 +135,6 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding>
               <AdminWhiteboardTemplatesSection
-                whiteboardTemplatesLocation="platform"
                 templateId={whiteboardNameId}
                 templatesSetId={templatesSetID}
                 templates={whiteboardTemplates}
