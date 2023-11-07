@@ -147,7 +147,7 @@
     "fullscreen": "Toggle full screen",
     "changeLanguage": "Change language",
     "getHelp": "Get help",
-    "save-as-template": "Save as template"
+    "saveAsTemplate": "Save as template"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

@@ -33,9 +33,7 @@ const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: Callo
       onSubmit={onSubmit}
       actions={actions}
       validator={validator}
-    >
-      {/*  */}
-    </TemplateForm>
+    />
   );
 };
 

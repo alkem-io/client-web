@@ -292,7 +292,7 @@ const CalloutLayout = ({
             iconComponent={DownloadForOfflineOutlinedIcon}
             onClick={handleSaveAsTemplateDialogOpen}
           >
-            {t('buttons.save-as-template')}
+            {t('buttons.saveAsTemplate')}
           </MenuItemWithIcon>
         )}
         {!expanded &&
