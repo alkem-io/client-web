@@ -79,7 +79,6 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
     }
   };
 
-  // TODO updatequeries
   const [createWhiteboardTemplate] = useCreateWhiteboardTemplateMutation();
   const [updateWhiteboardTemplate] = useUpdateWhiteboardTemplateMutation();
   const [deleteWhiteboardTemplate] = useDeleteWhiteboardTemplateMutation();
