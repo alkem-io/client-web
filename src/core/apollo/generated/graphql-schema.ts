@@ -643,6 +643,7 @@ export enum AuthorizationPrivilege {
   Read = 'READ',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
+  SaveAsTemplate = 'SAVE_AS_TEMPLATE',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateContent = 'UPDATE_CONTENT',
@@ -1379,10 +1380,10 @@ export type CreateCalloutOnCollaborationInput = {
 };
 
 export type CreateCalloutTemplateOnTemplatesSetInput = {
+  contributionDefaults: CreateCalloutContributionDefaultsInput;
+  contributionPolicy: CreateCalloutContributionPolicyInput;
   framing: CreateCalloutFramingInput;
   profile: CreateProfileInput;
-  responseDefaults: CreateCalloutContributionDefaultsInput;
-  responsePolicy: CreateCalloutContributionPolicyInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
   /** Callout type. */
@@ -4905,11 +4906,11 @@ export type UpdateCalloutPublishInfoInput = {
 
 export type UpdateCalloutTemplateInput = {
   ID: Scalars['UUID'];
+  contributionDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
+  contributionPolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
   framing?: InputMaybe<UpdateCalloutFramingInput>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
-  responseDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
-  responsePolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -27121,6 +27122,30 @@ export type ProfileInfoWithVisualFragment = {
         alternativeText?: string | undefined;
       }
     | undefined;
+};
+
+export type CreateCalloutTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  framing: CreateCalloutFramingInput;
+  contributionDefaults: CreateCalloutContributionDefaultsInput;
+  contributionPolicy: CreateCalloutContributionPolicyInput;
+  profile: CreateProfileInput;
+  type: CalloutType;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+export type CreateCalloutTemplateMutation = {
+  __typename?: 'Mutation';
+  createCalloutTemplate: { __typename?: 'CalloutTemplate'; id: string };
+};
+
+export type SpaceTemplateSetIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceTemplateSetIdQuery = {
+  __typename?: 'Query';
+  space: { __typename?: 'Space'; id: string; templates?: { __typename?: 'TemplatesSet'; id: string } | undefined };
 };
 
 export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
