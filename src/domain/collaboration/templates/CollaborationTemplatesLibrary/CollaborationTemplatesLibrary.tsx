@@ -11,8 +11,9 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogIcon from '../../../../core/ui/dialog/DialogIcon';
 import { ImageSearch as ImageSearchIcon, InfoOutlined } from '@mui/icons-material';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import { TemplateBase, TemplateBaseWithContent, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
+import { TemplateBase, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable';
 
 enum TemplateSource {
   Space,
@@ -31,7 +32,7 @@ const DisabledTemplateInfo = () => {
 
 export interface CollaborationTemplatesLibraryProps<
   Template extends TemplateBase,
-  TemplateWithContent extends TemplateBaseWithContent
+  TemplateWithContent extends Template
 > {
   dialogTitle: string;
   onSelectTemplate: (template: TemplateWithContent) => void;
@@ -46,25 +47,24 @@ export interface CollaborationTemplatesLibraryProps<
   // Data
   fetchSpaceTemplatesOnLoad?: boolean;
   fetchTemplatesFromSpace?: () => void;
-  templatesFromSpace?: Template[];
+  templatesFromSpace?: Identifiables<Template>;
   loadingTemplatesFromSpace?: boolean;
 
   // For big templates like Whiteboards and InnovationFlows that have their content separated
   loadingTemplateContent?: boolean;
-  getTemplateWithContent?: (template: Template) => Promise<TemplateWithContent | undefined>;
+  getTemplateWithContent?: (
+    template: Template & Identifiable
+  ) => Promise<(TemplateWithContent & Identifiable) | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
-  templatesFromPlatform?: Template[];
+  templatesFromPlatform?: Identifiables<Template>;
   loadingTemplatesFromPlatform?: boolean;
   disableUsePlatformTemplates?: boolean;
 
   buttonProps?: ButtonProps;
 }
 
-const CollaborationTemplatesLibrary = <
-  Template extends TemplateBase,
-  TemplateWithValue extends TemplateBaseWithContent
->({
+const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWithContent extends Template>({
   dialogTitle,
   onSelectTemplate,
   templateCardComponent,
@@ -82,7 +82,7 @@ const CollaborationTemplatesLibrary = <
   loadingTemplatesFromPlatform = false,
   disableUsePlatformTemplates = false,
   buttonProps = {},
-}: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
+}: CollaborationTemplatesLibraryProps<Template, TemplateWithContent>) => {
   const { t } = useTranslation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -92,7 +92,7 @@ const CollaborationTemplatesLibrary = <
   };
 
   // Show gallery or show preview of this template:
-  const [previewTemplate, setPreviewTemplate] = useState<TemplateWithValue>();
+  const [previewTemplate, setPreviewTemplate] = useState<TemplateWithContent & Identifiable>();
   const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
 
   // Load Space Templates by default:
@@ -102,7 +102,7 @@ const CollaborationTemplatesLibrary = <
     }
   }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
 
-  const handlePreviewTemplate = async (template: Template, source: TemplateSource) => {
+  const handlePreviewTemplate = async (template: Template & Identifiable, source: TemplateSource) => {
     setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
     setPreviewTemplate(await getTemplateWithContent?.(template));
   };

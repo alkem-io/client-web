@@ -7691,6 +7691,7 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
           | {
               __typename?: 'Organization';
               id: string;
+              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -12651,6 +12652,7 @@ export type PlatformPostTemplatesLibraryQuery = {
           | {
               __typename?: 'Organization';
               id: string;
+              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14296,6 +14298,7 @@ export type PlatformWhiteboardTemplatesLibraryQuery = {
           | {
               __typename?: 'Organization';
               id: string;
+              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;

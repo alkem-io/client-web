@@ -8,24 +8,27 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
-import { WhiteboardTemplate } from './WhiteboardTemplate';
-import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
-interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<WhiteboardTemplate> {}
+interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
-const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, loading, onClick }) => {
+const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template?.displayName} iconComponent={WhiteboardIcon}>
+      <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption noWrap logoUrl={template?.provider?.avatarUri}>
-          {template?.provider?.displayName}
+        <CardHeaderCaption noWrap logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+          {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
-      <CardImage src={template?.visualUri} alt={template?.displayName} defaultImage={<WhiteboardIcon />} />
-      {template?.innovationPack.displayName && (
+      <CardImage
+        src={template?.profile.visual?.uri}
+        alt={template?.profile.displayName}
+        defaultImage={<WhiteboardIcon />}
+      />
+      {innovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{template?.innovationPack.displayName}</Caption>
+          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

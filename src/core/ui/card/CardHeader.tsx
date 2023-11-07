@@ -13,6 +13,7 @@ interface CardTitleSectionProps {
 const CardHeader = ({ iconComponent, title = '', children }: PropsWithChildren<CardTitleSectionProps>) => {
   return (
     <BadgeCardView
+      flexShrink={0}
       visual={iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} />}
       height={gutters(3)}
       paddingX={1}

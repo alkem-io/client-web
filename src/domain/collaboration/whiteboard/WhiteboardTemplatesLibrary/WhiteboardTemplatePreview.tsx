@@ -14,6 +14,7 @@ const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ templat
   if (!template?.content) {
     return null;
   }
+
   return (
     <ExcalidrawWrapper
       ref={excalidrawApiRef}

@@ -18,12 +18,13 @@ import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 import { useTranslation } from 'react-i18next';
-import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
+import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import WhiteboardImportTemplateCard from './WhitebaordImportTemplateCard';
 import {
   useUploadWhiteboardVisuals,
   WhiteboardPreviewImage,
 } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { Identifiable } from '../../../../../core/utils/Identifiable';
 
 interface AdminWhiteboardTemplatesSectionProps {
   whiteboardTemplatesLocation: 'space' | 'platform';
@@ -65,7 +66,7 @@ const AdminWhiteboardTemplatesSection = ({
     useWhiteboardTemplateContentLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
   const getImportedWhiteboardTemplateContent = useCallback(
-    (whiteboardTemplate: AdminWhiteboardTemplateFragment & TemplateInnovationPackMetaInfo) => {
+    (whiteboardTemplate: Identifiable) => {
       fetchImportedWhiteboardTemplateContent({
         variables: { whiteboardTemplateId: whiteboardTemplate.id },
       });
