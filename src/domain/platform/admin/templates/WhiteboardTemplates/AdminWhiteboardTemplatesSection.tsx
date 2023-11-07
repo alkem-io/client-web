@@ -27,7 +27,6 @@ import {
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 
 interface AdminWhiteboardTemplatesSectionProps {
-  whiteboardTemplatesLocation: 'space' | 'platform';
   templateId: string | undefined;
   templatesSetId: string | undefined;
   templates: AdminWhiteboardTemplateFragment[] | undefined;
@@ -41,10 +40,7 @@ interface AdminWhiteboardTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminWhiteboardTemplatesSection = ({
-  whiteboardTemplatesLocation,
-  ...props
-}: AdminWhiteboardTemplatesSectionProps) => {
+const AdminWhiteboardTemplatesSection = (props: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
 
