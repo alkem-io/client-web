@@ -33,7 +33,6 @@ export interface Template extends TemplateBase {}
 /**
  * @deprecated TODO remove
  */
-export interface TemplateValue {}
 
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   open: boolean;

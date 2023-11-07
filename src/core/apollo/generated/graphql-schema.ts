@@ -2657,7 +2657,9 @@ export type Mutation = {
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
-  /** Updates the specified WhiteboardRt. Will be removed in the next iteration; manual save will not be allowed */
+  /** Updates the specified WhiteboardRt content. */
+  updateWhiteboardContentRt: WhiteboardRt;
+  /** Updates the specified WhiteboardRt. */
   updateWhiteboardRt: WhiteboardRt;
   /** Updates the specified WhiteboardTemplate. */
   updateWhiteboardTemplate: WhiteboardTemplate;
@@ -3233,8 +3235,12 @@ export type MutationUpdateWhiteboardArgs = {
   whiteboardData: UpdateWhiteboardDirectInput;
 };
 
+export type MutationUpdateWhiteboardContentRtArgs = {
+  whiteboardData: UpdateWhiteboardContentRtInput;
+};
+
 export type MutationUpdateWhiteboardRtArgs = {
-  whiteboardData: UpdateWhiteboardRtDirectInput;
+  whiteboardData: UpdateWhiteboardRtInput;
 };
 
 export type MutationUpdateWhiteboardTemplateArgs = {
@@ -5219,6 +5225,15 @@ export type UpdateVisualInput = {
   visualID: Scalars['String'];
 };
 
+export type UpdateWhiteboardContentRtInput = {
+  ID: Scalars['UUID'];
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateWhiteboardDirectInput = {
   ID: Scalars['UUID'];
   content?: InputMaybe<Scalars['WhiteboardContent']>;
@@ -5237,19 +5252,8 @@ export type UpdateWhiteboardInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
-export type UpdateWhiteboardRtDirectInput = {
-  ID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The Profile of this entity. */
-  profileData?: InputMaybe<UpdateProfileInput>;
-};
-
 export type UpdateWhiteboardRtInput = {
   ID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -15852,7 +15856,7 @@ export type UpdateWhiteboardMutation = {
 };
 
 export type UpdateWhiteboardRtMutationVariables = Exact<{
-  input: UpdateWhiteboardRtDirectInput;
+  input: UpdateWhiteboardRtInput;
 }>;
 
 export type UpdateWhiteboardRtMutation = {
@@ -15860,9 +15864,17 @@ export type UpdateWhiteboardRtMutation = {
   updateWhiteboardRt: {
     __typename?: 'WhiteboardRt';
     id: string;
-    content: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
+};
+
+export type UpdateWhiteboardContentRtMutationVariables = Exact<{
+  input: UpdateWhiteboardContentRtInput;
+}>;
+
+export type UpdateWhiteboardContentRtMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardContentRt: { __typename?: 'WhiteboardRt'; id: string; content: string };
 };
 
 export type CheckoutWhiteboardMutationVariables = Exact<{
