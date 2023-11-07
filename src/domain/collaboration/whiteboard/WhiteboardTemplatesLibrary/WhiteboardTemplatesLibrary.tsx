@@ -16,7 +16,7 @@ import { TemplateWithInnovationPack } from '../../../platform/admin/templates/In
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface WhiteboardTemplatesLibraryProps {
-  onSelectTemplate: (template: WhiteboardTemplateWithContent) => void;
+  onImportTemplate: (template: WhiteboardTemplateWithContent) => void;
 }
 
 const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
@@ -33,7 +33,7 @@ const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
   });
 };
 
-const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSelectTemplate }) => {
+const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onImportTemplate }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
@@ -103,9 +103,9 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
   }, []);
 
   return (
-    <CollaborationTemplatesLibrary
+    <CollaborationTemplatesLibrary<TemplateBase, WhiteboardTemplateWithContent, { content?: string }>
       dialogTitle={t('templateLibrary.whiteboardTemplates.title')}
-      onSelectTemplate={onSelectTemplate}
+      onImportTemplate={onImportTemplate}
       templateCardComponent={WhiteboardTemplateCard}
       templatePreviewComponent={WhiteboardTemplatePreview}
       filter={filter}

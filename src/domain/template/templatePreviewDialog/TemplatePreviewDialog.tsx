@@ -24,7 +24,7 @@ import { Identifiable } from '../../../core/utils/Identifiable';
 
 export type TemplatePreview =
   | {
-      template: TemplateBase;
+      template: TemplateBase & { content?: string };
       templateType: TemplateType.WhiteboardTemplate;
     }
   | {
@@ -42,20 +42,16 @@ export type TemplatePreview =
 
 const Noop = () => null;
 
-interface TemplatePreviewComponentProps
+interface TemplatePreviewChooserProps
   extends Omit<
-    CollaborationTemplatesLibraryPreviewProps<
-      TemplatePreview['template'],
-      TemplatePreview['template'] & { content: string }
-    >,
+    CollaborationTemplatesLibraryPreviewProps<TemplatePreview['template'], TemplatePreview['template']>,
     'template' | 'templateType' | 'templateCardComponent' | 'templatePreviewComponent'
   > {
-  template: TemplatePreview | undefined;
-  templateWithContent?: { content: string };
+  templatePreview: TemplatePreview | undefined;
 }
 
-const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: TemplatePreviewComponentProps) => {
-  if (!template) {
+const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewChooserProps) => {
+  if (!templatePreview) {
     return (
       <CollaborationTemplatesLibraryPreview
         {...{
@@ -67,21 +63,12 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
       />
     );
   }
-  switch (template.templateType) {
+  switch (templatePreview.templateType) {
     case TemplateType.WhiteboardTemplate: {
-      if (!templateWithContent) {
-        return null;
-      }
-      const whiteboardTemplate = {
-        ...templateWithContent,
-        ...template.template,
-      };
-
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
-            template: whiteboardTemplate,
-            templateType: template.templateType,
+            ...templatePreview,
             templateCardComponent: WhiteboardTemplateCard,
             templatePreviewComponent: WhiteboardTemplatePreview,
           }}
@@ -93,8 +80,7 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
-            template: template.template,
-            templateType: template.templateType,
+            ...templatePreview,
             templateCardComponent: PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>,
             templatePreviewComponent: PostTemplatePreview,
           }}
@@ -106,8 +92,7 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
-            template: template.template,
-            templateType: template.templateType,
+            ...templatePreview,
             templateCardComponent: InnovationFlowTemplateCard,
             templatePreviewComponent: InnovationFlowTemplatePreview,
           }}
@@ -119,8 +104,7 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
-            template: template.template,
-            templateType: template.templateType,
+            ...templatePreview,
             templateCardComponent: InnovationFlowTemplateCard,
             templatePreviewComponent: InnovationFlowTemplatePreview,
           }}
@@ -134,35 +118,38 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
 export interface TemplatePreviewDialogProps {
   open?: boolean;
   onClose: () => void;
-  template: TemplatePreviewComponentProps['template'];
-  innovationPack?: TemplatePreviewComponentProps['innovationPack'];
-  templateWithContent: TemplatePreviewComponentProps['templateWithContent'];
+  templatePreview: TemplatePreviewChooserProps['templatePreview'];
+  innovationPack?: TemplatePreviewChooserProps['innovationPack'];
   loadingTemplateContent?: boolean;
 }
 
 const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
   open = false,
   onClose,
-  template,
-  templateWithContent,
   innovationPack,
   loadingTemplateContent,
+  templatePreview,
+  ...props
 }) => {
   const { t } = useTranslation();
+
+  console.log('TemplatePreviewDialog');
 
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader onClose={onClose}>
-        <BlockTitle>{t('common.preview')}</BlockTitle>
+        <BlockTitle>
+          {t('common.preview')} — {templatePreview?.template.profile.displayName}
+        </BlockTitle>
       </DialogHeader>
       <DialogContent>
-        <TemplatePreviewComponent
-          template={template}
-          templateWithContent={templateWithContent}
+        <TemplatePreviewChooser
+          templatePreview={templatePreview}
           innovationPack={innovationPack}
           loading={loadingTemplateContent}
           onClose={onClose}
           actions={<DisabledUseButton />}
+          {...props}
         />
       </DialogContent>
     </DialogWithGrid>

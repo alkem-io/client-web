@@ -11,23 +11,21 @@ export interface TemplateBase {
   };
 }
 
-export interface TemplateCardBaseProps<Template extends TemplateBase = TemplateBase> {
-  template?: Template;
-  innovationPack?: {
+interface TemplateInnovationPack {
+  profile: {
+    displayName: string;
+  };
+  provider?: {
     profile: {
       displayName: string;
-    };
-    provider?: {
-      profile: {
-        displayName: string;
-        avatar?: Visual;
-      };
+      avatar?: Visual;
     };
   };
-  loading?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export interface TemplatePreviewBaseProps<TemplateWithContent extends TemplateBase> {
-  template?: TemplateWithContent;
+export interface TemplateCardBaseProps<Template extends TemplateBase = TemplateBase> {
+  template?: Template;
+  innovationPack?: TemplateInnovationPack;
+  loading?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }

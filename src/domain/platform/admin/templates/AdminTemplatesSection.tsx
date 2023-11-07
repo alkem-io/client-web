@@ -30,10 +30,6 @@ import { GraphQLError } from 'graphql';
  */
 export interface Template extends TemplateBase {}
 
-/**
- * @deprecated TODO remove
- */
-
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   open: boolean;
   onClose: DialogProps['onClose'];

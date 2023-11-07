@@ -44,7 +44,7 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
           <Button onClick={handleResetWhiteboardTemplate} startIcon={<RestartAltIcon />}>
             {t('components.callout-creation.template-step.whiteboard-reset-template')}
           </Button>
-          <WhiteboardTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
+          <WhiteboardTemplatesLibrary onImportTemplate={handleSelectTemplate} />
         </Box>
       </Box>
       <FormikWhiteboardPreview
