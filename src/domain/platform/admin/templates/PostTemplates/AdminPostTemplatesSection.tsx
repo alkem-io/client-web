@@ -30,8 +30,12 @@ interface AdminPostTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
+const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTemplatesSectionProps) => {
   const { t } = useTranslation();
+
+  const [createPostTemplate] = useCreatePostTemplateMutation();
+  const [updatePostTemplate] = useUpdatePostTemplateMutation();
+  const [deletePostTemplate] = useDeletePostTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -45,12 +49,11 @@ const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
       templatePreviewComponent={PostTemplateView}
       createTemplateDialogComponent={CreatePostTemplateDialog}
       editTemplateDialogComponent={EditPostTemplateDialog}
-      // TODO: Remove these
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useCreateTemplateMutation={useCreatePostTemplateMutation as any}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useUpdateTemplateMutation={useUpdatePostTemplateMutation as any}
-      useDeleteTemplateMutation={useDeletePostTemplateMutation}
+      onCreateTemplate={variables => createPostTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => updatePostTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={async variables => {
+        await deletePostTemplate({ variables, refetchQueries });
+      }}
     />
   );
 };

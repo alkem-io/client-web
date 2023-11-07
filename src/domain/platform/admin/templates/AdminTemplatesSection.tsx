@@ -5,7 +5,6 @@ import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
-import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -19,10 +18,12 @@ import {
 } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { TemplateBase } from '../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
+import useLoadingState from '../../../shared/utils/useLoadingState';
+import { GraphQLError } from 'graphql';
 
 /**
  * @deprecated TODO remove
@@ -32,7 +33,6 @@ export interface Template extends TemplateBase {}
 /**
  * @deprecated TODO remove
  */
-export interface TemplateValue {}
 
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   open: boolean;
@@ -61,8 +61,13 @@ export interface MutationHook<Variables, MutationResult> {
 }
 
 export interface ProfileUpdate {
-  profile?: { tagsets?: Partial<Tagset>[] };
+  profile: UpdateProfileInput;
 }
+
+type MutationResult<Data> = Promise<{
+  data?: Data | null;
+  errors?: readonly GraphQLError[];
+}>;
 
 type AdminTemplatesSectionProps<
   T extends Template,
@@ -71,9 +76,8 @@ type AdminTemplatesSectionProps<
   // so that that one in not constructed from the other by removing fields, OR
   // the received and the submitted values may be two independent types.
   SubmittedValues extends Omit<T, 'profile'> & Omit<V, 'id'>,
-  CreateM,
-  UpdateM,
-  DeleteM,
+  TemplateCreationResult,
+  TemplateUpdateResult,
   DialogProps extends {}
 > = Omit<
   DialogProps,
@@ -85,7 +89,6 @@ type AdminTemplatesSectionProps<
   templatesSetId: string | undefined;
   templates: (T & Identifiable)[] | undefined;
   onCloseTemplateDialog: () => void;
-  refetchQueries: InternalRefetchQueriesInclude;
   buildTemplateLink: (post: T) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
@@ -103,12 +106,19 @@ type AdminTemplatesSectionProps<
   editTemplateDialogComponent: ComponentType<
     DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
   >;
-  // TODO instead of mutations let's just pass callbacks - mutations have options which make the type too complicated for using in generics.
-  useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
-  useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues & ProfileUpdate> & { templateId: string }, UpdateM>;
-  useDeleteTemplateMutation: MutationHook<{ templateId: string; templatesSetId?: string }, DeleteM>;
-  onTemplateCreated?: (mutationResult: CreateM | null | undefined, previewImages?: WhiteboardPreviewImage[]) => void;
-  onTemplateUpdated?: (mutationResult: UpdateM | null | undefined, previewImages?: WhiteboardPreviewImage[]) => void;
+  onCreateTemplate: (template: SubmittedValues & { templatesSetId: string }) => MutationResult<TemplateCreationResult>;
+  onUpdateTemplate: (
+    template: Partial<SubmittedValues> & ProfileUpdate & { templateId: string }
+  ) => MutationResult<TemplateUpdateResult>;
+  onDeleteTemplate: (template: { templateId: string; templatesSetId?: string }) => Promise<void>;
+  onTemplateCreated?: (
+    mutationResult: TemplateCreationResult | null | undefined,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => void;
+  onTemplateUpdated?: (
+    mutationResult: TemplateUpdateResult | null | undefined,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => void;
 };
 
 const AdminTemplatesSection = <
@@ -118,7 +128,6 @@ const AdminTemplatesSection = <
   SubmittedValues extends Omit<T, 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
-  DeleteM,
   DialogProps extends {}
 >({
   headerText,
@@ -128,14 +137,13 @@ const AdminTemplatesSection = <
   templatesSetId,
   buildTemplateLink,
   onCloseTemplateDialog,
-  refetchQueries,
   edit = false,
   loadInnovationPacks,
   loadingInnovationPacks,
   innovationPacks,
-  useCreateTemplateMutation,
-  useUpdateTemplateMutation,
-  useDeleteTemplateMutation,
+  onCreateTemplate,
+  onUpdateTemplate,
+  onDeleteTemplate,
   onTemplateCreated,
   onTemplateUpdated,
   templateCardComponent: TemplateCard,
@@ -148,7 +156,7 @@ const AdminTemplatesSection = <
   getWhiteboardTemplateContent = () => {},
   getImportedWhiteboardTemplateContent = () => {},
   ...dialogProps
-}: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
+}: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
@@ -172,10 +180,6 @@ const AdminTemplatesSection = <
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
-  const [updateTemplate] = useUpdateTemplateMutation();
-  const [createTemplate] = useCreateTemplateMutation();
-  const [deleteTemplate, { loading: isDeletingTemplate }] = useDeleteTemplateMutation();
-
   const handleTemplateUpdate = async ({
     tagsetId,
     tags,
@@ -189,21 +193,18 @@ const AdminTemplatesSection = <
 
     const { previewImages, ...valuesWithoutPreview } = values;
 
-    const result = await updateTemplate({
-      variables: {
-        templateId,
-        ...(valuesWithoutPreview as unknown as SubmittedValues),
-        profile: {
-          tagsets: [
-            {
-              ID: tagsetId,
-              tags,
-            },
-          ],
-          ...valuesWithoutPreview['profile'],
-        },
+    const result = await onUpdateTemplate({
+      templateId,
+      ...(valuesWithoutPreview as unknown as SubmittedValues),
+      profile: {
+        tagsets: [
+          {
+            ID: tagsetId,
+            tags,
+          },
+        ],
+        ...valuesWithoutPreview['profile'],
       },
-      refetchQueries,
     });
 
     onTemplateUpdated?.(result.data, previewImages);
@@ -220,12 +221,10 @@ const AdminTemplatesSection = <
     }
 
     const { previewImages, ...valuesWithoutPreview } = values;
-    const result = await createTemplate({
-      variables: {
-        templatesSetId,
-        ...(valuesWithoutPreview as unknown as SubmittedValues),
-      },
-      refetchQueries,
+
+    const result = await onCreateTemplate({
+      templatesSetId,
+      ...(valuesWithoutPreview as unknown as SubmittedValues),
     });
 
     onTemplateCreated?.(result.data, previewImages);
@@ -250,12 +249,9 @@ const AdminTemplatesSection = <
       tags: profile.tagset?.tags,
     };
 
-    const result = await createTemplate({
-      variables: {
-        templatesSetId,
-        ...values,
-      },
-      refetchQueries,
+    const result = await onCreateTemplate({
+      templatesSetId,
+      ...values,
     });
 
     if (!result.errors) {
@@ -276,21 +272,22 @@ const AdminTemplatesSection = <
     };
   };
 
-  const handleTemplateDeletion = async () => {
+  const [handleTemplateDeletion, isDeletingTemplate] = useLoadingState(async () => {
     if (!deletingTemplateId) {
       throw new TypeError('Missing Template ID.');
     }
 
-    await deleteTemplate({
-      variables: {
-        templateId: deletingTemplateId,
-        templatesSetId: templatesSetId!,
-      },
-      refetchQueries,
+    if (!templatesSetId) {
+      throw new TypeError('No TemplateSet ID provided');
+    }
+
+    await onDeleteTemplate({
+      templateId: deletingTemplateId,
+      templatesSetId: templatesSetId,
     });
 
     setDeletingTemplateId(undefined);
-  };
+  });
 
   return (
     <>

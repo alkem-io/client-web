@@ -27,7 +27,6 @@ import {
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 
 interface AdminWhiteboardTemplatesSectionProps {
-  whiteboardTemplatesLocation: 'space' | 'platform';
   templateId: string | undefined;
   templatesSetId: string | undefined;
   templates: AdminWhiteboardTemplateFragment[] | undefined;
@@ -41,10 +40,7 @@ interface AdminWhiteboardTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminWhiteboardTemplatesSection = ({
-  whiteboardTemplatesLocation,
-  ...props
-}: AdminWhiteboardTemplatesSectionProps) => {
+const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
 
@@ -83,6 +79,10 @@ const AdminWhiteboardTemplatesSection = ({
     }
   };
 
+  const [createWhiteboardTemplate] = useCreateWhiteboardTemplateMutation();
+  const [updateWhiteboardTemplate] = useUpdateWhiteboardTemplateMutation();
+  const [deleteWhiteboardTemplate] = useDeleteWhiteboardTemplateMutation();
+
   return (
     <AdminTemplatesSection
       {...props}
@@ -99,12 +99,11 @@ const AdminWhiteboardTemplatesSection = ({
       importedTemplateContent={importedWhiteboardContent?.lookup.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
-      // TODO:
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useUpdateTemplateMutation={useUpdateWhiteboardTemplateMutation as any}
-      useDeleteTemplateMutation={useDeleteWhiteboardTemplateMutation}
+      onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => updateWhiteboardTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={async variables => {
+        await deleteWhiteboardTemplate({ variables, refetchQueries });
+      }}
       onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
         onMutationCalled(mutationResult?.createWhiteboardTemplate, previewImages)
       }

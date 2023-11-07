@@ -30,8 +30,12 @@ interface AdminInnovationTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionProps) => {
+const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInnovationTemplatesSectionProps) => {
   const { t } = useTranslation();
+
+  const [createInnovationFlowTemplate] = useCreateInnovationFlowTemplateMutation();
+  const [updateInnovationFlowTemplate] = useUpdateInnovationFlowTemplateMutation();
+  const [deleteInnovationFlowTemplate] = useDeleteInnovationFlowTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -45,11 +49,19 @@ const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionP
       templatePreviewComponent={InnovationTemplateView}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useCreateTemplateMutation={useCreateInnovationFlowTemplateMutation as any}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useUpdateTemplateMutation={useUpdateInnovationFlowTemplateMutation as any}
-      useDeleteTemplateMutation={useDeleteInnovationFlowTemplateMutation}
+      onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => {
+        return updateInnovationFlowTemplate({
+          variables: {
+            ...variables,
+            definition: variables.definition!,
+          },
+          refetchQueries,
+        });
+      }}
+      onDeleteTemplate={async variables => {
+        await deleteInnovationFlowTemplate({ variables, refetchQueries });
+      }}
     />
   );
 };
