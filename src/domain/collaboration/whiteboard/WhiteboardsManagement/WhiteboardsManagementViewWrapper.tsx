@@ -48,7 +48,7 @@ const WhiteboardsManagementViewWrapper: FC<WhiteboardsManagementViewWrapperProps
   // to include who created it etc.
   // Also to have in mind: In SingleWhiteboard Callout whiteboards, users don't have CreateWhiteboard privilege to add another whiteboard but may have privilege
   // to update the whiteboard itself
-  const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
+  const hasUpdatePrivileges = whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Contribute);
 
   return (
     <WhiteboardActionsContainer>
