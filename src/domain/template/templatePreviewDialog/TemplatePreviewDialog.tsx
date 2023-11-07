@@ -133,8 +133,6 @@ const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  console.log('TemplatePreviewDialog');
-
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader onClose={onClose}>
