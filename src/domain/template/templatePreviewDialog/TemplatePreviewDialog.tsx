@@ -1,4 +1,4 @@
-import { ComponentType, FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
@@ -11,16 +11,15 @@ import WhiteboardTemplatePreview from '../../collaboration/whiteboard/Whiteboard
 import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
 } from '../../collaboration/templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
-import {
-  TemplateBase,
-  TemplateCardBaseProps,
-} from '../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateBase } from '../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
 import InnovationFlowTemplateCard from '../../collaboration/InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import { TemplateType } from '../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import InnovationFlowTemplatePreview from '../../collaboration/InnovationFlow/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
 import DisabledUseButton from './DisabledUseButton';
 import DialogContent from '../../../core/ui/dialog/DialogContent';
 import { Identifiable } from '../../../core/utils/Identifiable';
+import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
+import CalloutTemplateCard from '../calloutTemplate/CalloutTemplateCard';
 
 export type TemplatePreview =
   | {
@@ -81,7 +80,7 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         <CollaborationTemplatesLibraryPreview
           {...{
             ...templatePreview,
-            templateCardComponent: PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>,
+            templateCardComponent: PostTemplateCard,
             templatePreviewComponent: PostTemplatePreview,
           }}
           {...props}
@@ -105,8 +104,8 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         <CollaborationTemplatesLibraryPreview
           {...{
             ...templatePreview,
-            templateCardComponent: InnovationFlowTemplateCard,
-            templatePreviewComponent: InnovationFlowTemplatePreview,
+            templateCardComponent: CalloutTemplateCard,
+            templatePreviewComponent: CalloutTemplatePreview,
           }}
           {...props}
         />

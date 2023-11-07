@@ -52,6 +52,7 @@ export interface CollaborationTemplatesLibraryProps<
   loadingTemplatesFromSpace?: boolean;
 
   // For big templates like Whiteboards and InnovationFlows that have their content separated
+  // TODO decide whether content should be loaded by Preview components (already the case for some Template types)
   loadingTemplateContent?: boolean;
   getTemplateWithContent?: (template: Template & Identifiable) => Promise<(Template & TemplateWithContent) | undefined>;
 

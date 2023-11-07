@@ -42,8 +42,8 @@ interface EditTemplateDialogProps<T extends Template, V extends T, SubmittedValu
   onSubmit: (values: SubmittedValues) => void;
   onDelete: () => void;
   template: T | undefined;
-  getTemplateValue: (template: T) => void;
-  templateValue: V | undefined;
+  getTemplateContent: (template: T) => void;
+  templateContent: V | undefined;
 }
 
 export interface TemplatePreviewProps<T extends Template, V extends T> {
@@ -354,8 +354,8 @@ const AdminTemplatesSection = <
           template={selectedTemplate}
           onSubmit={handleTemplateUpdate}
           onDelete={() => setDeletingTemplateId(selectedTemplate.id)}
-          getTemplateValue={getWhiteboardTemplateContent}
-          templateValue={dialogProps.whiteboardTemplateContent}
+          getTemplateContent={getWhiteboardTemplateContent}
+          templateContent={dialogProps.whiteboardTemplateContent}
         />
       )}
       {selectedTemplate && (

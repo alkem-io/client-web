@@ -17,13 +17,13 @@ export interface CalloutSortProps {
 }
 
 export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
-  onVisibilityChange: (
+  onVisibilityChange?: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
     sendNotification: boolean
   ) => Promise<void>;
-  onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
-  onCalloutDelete: (callout: CalloutDeleteType) => Promise<void>;
+  onCalloutEdit?: (callout: CalloutEditType) => Promise<void>;
+  onCalloutDelete?: (callout: CalloutDeleteType) => Promise<void>;
 }
 
 export interface BaseCalloutViewProps extends CoreEntityIdTypes, CalloutLayoutEvents, Partial<CalloutSortProps> {
