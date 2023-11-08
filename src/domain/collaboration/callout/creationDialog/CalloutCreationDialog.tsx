@@ -28,7 +28,6 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import CalloutTemplatesLibrary, { CalloutTemplateWithValues } from '../CalloutTemplatesLibrary/CalloutTemplatesLibrary';
 
 export type CalloutCreationDialogFields = {
@@ -162,7 +161,15 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   }, [onClose]);
 
   const handleSelectTemplate = (template: CalloutTemplateWithValues) => {
-    console.log('select template');
+    setCallout({
+      description: template.framing.profile.description,
+      tags: template.framing.profile.tagset?.tags,
+      references: template.framing.profile.references,
+      type: template.type,
+      postDescription: template.contributionDefaults?.postDescription,
+      whiteboardContent: template.contributionDefaults?.whiteboardContent,
+    });
+    setSelectedCalloutType(template.type);
   };
 
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
@@ -178,18 +185,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Gutters>
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
-                extraButtons={
-                  <CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />
-                  // <Button
-                  //   size="large"
-                  //   startIcon={<TipsAndUpdatesOutlinedIcon />}
-                  //   // onClick={handleClick(calloutType)}
-                  //   variant="outlined"
-                  //   sx={{ textTransform: 'none', justifyContent: 'start' }}
-                  // >
-                  //   {t('components.calloutTypeSelect.callout-templates-library' as const)}
-                  // </Button>
-                }
+                extraButtons={<CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />}
               />
             </Gutters>
           </DialogContent>

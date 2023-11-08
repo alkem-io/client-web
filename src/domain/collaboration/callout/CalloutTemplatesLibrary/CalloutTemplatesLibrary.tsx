@@ -14,8 +14,26 @@ import {
   useSpaceCalloutTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import { Reference, Tagset } from '../../../common/profile/Profile';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 
-export interface CalloutTemplateWithValues extends TemplateBase {}
+export interface CalloutTemplateWithValues extends TemplateBase {
+  type: CalloutType;
+  framing: {
+    profile: {
+      displayName: string;
+      description?: string;
+      tagset?: Tagset;
+      references?: Reference[];
+    };
+    whiteboard?: {};
+    whiteboardRt?: {};
+  };
+  contributionDefaults?: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
+}
 
 export interface CalloutTemplatesLibraryProps {
   onImportTemplate: (template: CalloutTemplateWithValues) => void;
@@ -98,7 +116,7 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
   }, []);
 
   return (
-    <CollaborationTemplatesLibrary
+    <CollaborationTemplatesLibrary<TemplateBase, CalloutTemplateWithValues, Identifiable>
       dialogTitle={t('templateLibrary.calloutTemplates.title')}
       onImportTemplate={onImportTemplate}
       templateCardComponent={CalloutTemplateCard as ComponentType<TemplateCardBaseProps<TemplateBase>>}
