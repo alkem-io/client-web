@@ -16,6 +16,8 @@ import {
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { WhiteboardWithContent } from '../../whiteboard/containers/WhiteboardContentContainer';
+import { WhiteboardRtWithContent } from '../../whiteboard/containers/WhiteboardRtContentContainer';
 
 export interface CalloutTemplateWithValues extends TemplateBase {
   type: CalloutType;
@@ -26,8 +28,8 @@ export interface CalloutTemplateWithValues extends TemplateBase {
       tagset?: Tagset;
       references?: Reference[];
     };
-    whiteboard?: {};
-    whiteboardRt?: {};
+    whiteboard?: WhiteboardWithContent;
+    whiteboardRt?: WhiteboardRtWithContent;
   };
   contributionDefaults?: {
     postDescription?: string;

@@ -6012,6 +6012,7 @@ export const CalloutTemplateContentDocument = gql`
           }
           whiteboardRt {
             ...WhiteboardRtDetails
+            ...WhiteboardRtContent
           }
         }
         contributionPolicy {
@@ -6030,6 +6031,7 @@ export const CalloutTemplateContentDocument = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardContentFragmentDoc}
   ${WhiteboardRtDetailsFragmentDoc}
+  ${WhiteboardRtContentFragmentDoc}
 `;
 
 /**

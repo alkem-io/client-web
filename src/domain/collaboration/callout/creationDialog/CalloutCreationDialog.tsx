@@ -161,6 +161,13 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   }, [onClose]);
 
   const handleSelectTemplate = (template: CalloutTemplateWithValues) => {
+    const whiteboard =
+      template.type === CalloutType.Whiteboard
+        ? template.framing.whiteboard
+        : template.type === CalloutType.WhiteboardRt
+        ? template.framing.whiteboardRt
+        : undefined;
+
     setCallout({
       description: template.framing.profile.description,
       tags: template.framing.profile.tagset?.tags,
@@ -168,6 +175,13 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       type: template.type,
       postDescription: template.contributionDefaults?.postDescription,
       whiteboardContent: template.contributionDefaults?.whiteboardContent,
+      whiteboard: whiteboard && {
+        content: whiteboard.content,
+        profileData: {
+          displayName: 'Whiteboard',
+        },
+        previewImages: [],
+      },
     });
     setSelectedCalloutType(template.type);
   };

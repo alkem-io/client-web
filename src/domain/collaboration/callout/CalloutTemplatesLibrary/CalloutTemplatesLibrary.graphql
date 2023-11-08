@@ -76,6 +76,7 @@ query CalloutTemplateContent($calloutTemplateId: UUID!) {
         }
         whiteboardRt {
           ...WhiteboardRtDetails
+          ...WhiteboardRtContent
         }
       }
       contributionPolicy {

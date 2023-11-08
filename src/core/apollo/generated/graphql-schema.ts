@@ -9947,6 +9947,7 @@ export type CalloutTemplateContentQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  content: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
