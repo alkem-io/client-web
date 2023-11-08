@@ -156,7 +156,7 @@ const CalloutLayout = ({
     [callout.draft, t]
   );
   const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
-    await onVisibilityChange(callout.id, visibility, sendNotification);
+    await onVisibilityChange?.(callout.id, visibility, sendNotification);
     setVisibilityDialogOpen(false);
   };
 
@@ -180,7 +180,7 @@ const CalloutLayout = ({
   const handleEditDialogClosed = () => setEditDialogOpened(false);
   const handleCalloutEdit = useCallback(
     async (newCallout: CalloutEditType) => {
-      await onCalloutEdit(newCallout);
+      await onCalloutEdit?.(newCallout);
       setEditDialogOpened(false);
     },
     [onCalloutEdit, setEditDialogOpened]
@@ -347,18 +347,20 @@ const CalloutLayout = ({
         onClose={() => setSaveAsTemplateDialogOpen(false)}
         onSubmit={handleSaveAsTemplate}
       />
-      <CalloutEditDialog
-        open={editDialogOpened}
-        onClose={handleEditDialogClosed}
-        calloutType={callout.type}
-        callout={callout}
-        onCalloutEdit={handleCalloutEdit}
-        onDelete={onCalloutDelete}
-        canChangeCalloutLocation
-        calloutNames={calloutNames}
-        templates={templates}
-        journeyTypeName={journeyTypeName}
-      />
+      {onCalloutDelete && (
+        <CalloutEditDialog
+          open={editDialogOpened}
+          onClose={handleEditDialogClosed}
+          calloutType={callout.type}
+          callout={callout}
+          onCalloutEdit={handleCalloutEdit}
+          onDelete={onCalloutDelete}
+          canChangeCalloutLocation
+          calloutNames={calloutNames}
+          templates={templates}
+          journeyTypeName={journeyTypeName}
+        />
+      )}
     </>
   );
 };

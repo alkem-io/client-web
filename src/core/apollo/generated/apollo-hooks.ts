@@ -3402,6 +3402,52 @@ export const PostInCalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
   }
   ${ProfileStorageConfigFragmentDoc}
 `;
+export const CalloutTemplatePreviewFragmentDoc = gql`
+  fragment CalloutTemplatePreview on CalloutTemplate {
+    id
+    type
+    framing {
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        tagsets {
+          ...TagsetDetails
+        }
+        references {
+          ...ReferenceDetails
+        }
+        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          ...TagsetDetails
+        }
+        storageBucket {
+          id
+        }
+      }
+      whiteboard {
+        ...WhiteboardDetails
+      }
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
+    }
+    contributionPolicy {
+      state
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
+  ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardRtDetailsFragmentDoc}
+`;
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
     id
@@ -23086,6 +23132,69 @@ export type PlatformStorageConfigQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.PlatformStorageConfigQueryVariables) {
   return { query: PlatformStorageConfigDocument, variables: variables };
+}
+
+export const CalloutTemplatePreviewDocument = gql`
+  query CalloutTemplatePreview($calloutTemplateId: UUID!) {
+    lookup {
+      calloutTemplate(ID: $calloutTemplateId) {
+        ...CalloutTemplatePreview
+      }
+    }
+  }
+  ${CalloutTemplatePreviewFragmentDoc}
+`;
+
+/**
+ * __useCalloutTemplatePreviewQuery__
+ *
+ * To run a query within a React component, call `useCalloutTemplatePreviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutTemplatePreviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutTemplatePreviewQuery({
+ *   variables: {
+ *      calloutTemplateId: // value for 'calloutTemplateId'
+ *   },
+ * });
+ */
+export function useCalloutTemplatePreviewQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutTemplatePreviewQuery,
+    SchemaTypes.CalloutTemplatePreviewQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutTemplatePreviewQuery, SchemaTypes.CalloutTemplatePreviewQueryVariables>(
+    CalloutTemplatePreviewDocument,
+    options
+  );
+}
+
+export function useCalloutTemplatePreviewLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutTemplatePreviewQuery,
+    SchemaTypes.CalloutTemplatePreviewQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutTemplatePreviewQuery, SchemaTypes.CalloutTemplatePreviewQueryVariables>(
+    CalloutTemplatePreviewDocument,
+    options
+  );
+}
+
+export type CalloutTemplatePreviewQueryHookResult = ReturnType<typeof useCalloutTemplatePreviewQuery>;
+export type CalloutTemplatePreviewLazyQueryHookResult = ReturnType<typeof useCalloutTemplatePreviewLazyQuery>;
+export type CalloutTemplatePreviewQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutTemplatePreviewQuery,
+  SchemaTypes.CalloutTemplatePreviewQueryVariables
+>;
+export function refetchCalloutTemplatePreviewQuery(variables: SchemaTypes.CalloutTemplatePreviewQueryVariables) {
+  return { query: CalloutTemplatePreviewDocument, variables: variables };
 }
 
 export const WhiteboardTemplateContentDocument = gql`

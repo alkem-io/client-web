@@ -56,6 +56,23 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
     );
   }, [templates, filter]);
 
+  const templatePreview = useMemo(() => {
+    if (!selectedTemplate) {
+      return undefined;
+    }
+    const template =
+      selectedTemplate.templateType !== TemplateType.WhiteboardTemplate
+        ? selectedTemplate
+        : {
+            ...selectedTemplate,
+            ...whiteboardTemplateContentData?.lookup?.whiteboardTemplate,
+          };
+    return {
+      template,
+      templateType: selectedTemplate?.templateType,
+    } as TemplatePreview;
+  }, []);
+
   return (
     <>
       <LibraryTemplatesView
@@ -85,12 +102,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
       <TemplatePreviewDialog
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
-        template={
-          selectedTemplate
-            ? ({ template: selectedTemplate, templateType: selectedTemplate?.templateType } as TemplatePreview)
-            : undefined
-        }
-        templateWithContent={whiteboardTemplateContentData?.lookup?.whiteboardTemplate}
+        templatePreview={templatePreview}
         innovationPack={selectedTemplate?.innovationPack}
         loadingTemplateContent={loadingWhiteboardTemplateContent}
       />

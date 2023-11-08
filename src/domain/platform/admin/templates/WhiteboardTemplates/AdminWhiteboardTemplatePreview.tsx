@@ -18,7 +18,7 @@ interface WhiteboardTemplateViewProps {
   templateContent?: { content: string | undefined } | undefined;
 }
 
-const WhiteboardTemplatePreview = ({
+const AdminWhiteboardTemplatePreview = ({
   template,
   getTemplateContent = () => {},
   templateContent,
@@ -78,4 +78,4 @@ const WhiteboardTemplatePreview = ({
   );
 };
 
-export default WhiteboardTemplatePreview;
+export default AdminWhiteboardTemplatePreview;
