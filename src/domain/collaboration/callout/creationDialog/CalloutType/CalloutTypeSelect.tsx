@@ -7,7 +7,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Caption } from '../../../../../core/ui/typography';
 import { useConfig } from '../../../../platform/config/useConfig';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { Button, Icon } from '@mui/material';
+import { Button } from '@mui/material';
 
 interface CalloutTypeSelectProps {
   onOpenCalloutTemplatesLibrary?: () => void;
@@ -46,12 +46,16 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ onSelect, disabl
         {(Object.keys(availableCalloutTypes) as CalloutType[]).map(calloutType => {
           const calloutTypeEnabled = availableCalloutTypes[calloutType];
           if (calloutTypeEnabled(permissions.collaborationPrivileges)) {
+            const Icon = calloutIcons[calloutType];
             return (
               <Button
-                startIcon={<Icon component={calloutIcons[calloutType]} />}
+                size="large"
+                startIcon={<Icon />}
+                // startIcon={<Icon fontSize="large" component={calloutIcons[calloutType]} />}
                 onClick={handleClick(calloutType)}
                 variant="outlined"
                 disabled={disabled}
+                sx={{ textTransform: 'none', justifyContent: 'start' }}
               >
                 {t(`components.calloutTypeSelect.label.${calloutType}` as const)}
               </Button>

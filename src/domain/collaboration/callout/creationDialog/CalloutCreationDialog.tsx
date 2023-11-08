@@ -175,9 +175,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
                 onSelect={handleSelectCalloutType}
                 extraButtons={
                   <Button
+                    size="large"
                     startIcon={<TipsAndUpdatesOutlinedIcon />}
                     // onClick={handleClick(calloutType)}
                     variant="outlined"
+                    sx={{ textTransform: 'none', justifyContent: 'start' }}
                   >
                     {t('components.calloutTypeSelect.callout-templates-library' as const)}
                   </Button>
