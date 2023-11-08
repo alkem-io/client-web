@@ -29,6 +29,7 @@ import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteb
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import CalloutTemplatesLibrary, { CalloutTemplateWithValues } from '../CalloutTemplatesLibrary/CalloutTemplatesLibrary';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -160,6 +161,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
   }, [onClose]);
 
+  const handleSelectTemplate = (template: CalloutTemplateWithValues) => {
+    console.log('select template');
+  };
+
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
 
   return (
@@ -174,15 +179,16 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
                 extraButtons={
-                  <Button
-                    size="large"
-                    startIcon={<TipsAndUpdatesOutlinedIcon />}
-                    // onClick={handleClick(calloutType)}
-                    variant="outlined"
-                    sx={{ textTransform: 'none', justifyContent: 'start' }}
-                  >
-                    {t('components.calloutTypeSelect.callout-templates-library' as const)}
-                  </Button>
+                  <CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />
+                  // <Button
+                  //   size="large"
+                  //   startIcon={<TipsAndUpdatesOutlinedIcon />}
+                  //   // onClick={handleClick(calloutType)}
+                  //   variant="outlined"
+                  //   sx={{ textTransform: 'none', justifyContent: 'start' }}
+                  // >
+                  //   {t('components.calloutTypeSelect.callout-templates-library' as const)}
+                  // </Button>
                 }
               />
             </Gutters>

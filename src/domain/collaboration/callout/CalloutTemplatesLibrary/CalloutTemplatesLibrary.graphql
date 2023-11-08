@@ -1,0 +1,99 @@
+query SpaceCalloutTemplatesLibrary($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+      calloutTemplates {
+        ...CalloutTemplateCard
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query PlatformCalloutTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        provider {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          calloutTemplates {
+            ...CalloutTemplateCard
+          }
+        }
+      }
+    }
+  }
+}
+
+query CalloutTemplateContent($calloutTemplateId: UUID!) {
+  lookup {
+    calloutTemplate(ID: $calloutTemplateId) {
+      id
+      type
+      profile {
+        ...TemplateCardProfileInfo
+      }
+      framing {
+        profile {
+          id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          storageBucket {
+            id
+          }
+        }
+        whiteboard {
+          ...WhiteboardDetails
+          ...WhiteboardContent
+        }
+        whiteboardRt {
+          ...WhiteboardRtDetails
+        }
+      }
+      contributionPolicy {
+        state
+      }
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
+    }
+  }
+}
+
+fragment CalloutTemplateCard on CalloutTemplate {
+  id
+  type
+  profile {
+    ...TemplateCardProfileInfo
+  }
+}
