@@ -2,41 +2,39 @@ import { InnovationPackCardFragment } from '../../../../core/apollo/generated/gr
 import { useMemo } from 'react';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
-import { compact, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
+import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
-import { postTemplateMapper } from '../../post/PostTemplateCard/PostTemplate';
-import { whiteboardTemplateMapper } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
-import { innovationFlowTemplateMapper } from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplate';
+
+const templateInnovationPackHydrator =
+  (innovationPack: TemplateWithInnovationPack<TemplateBase>['innovationPack'], templateType: TemplateType) =>
+  <T extends TemplateBase>(template: T): TemplateWithInnovationPack<T> & { templateType: TemplateType } => ({
+    ...template,
+    innovationPack,
+    templateType,
+  });
 
 const useLibraryTemplateCardProps = (
   innovationPacks: InnovationPackCardFragment[] | undefined
 ): (Identifiable & LibraryTemplateCardProps)[] | undefined => {
-  return useMemo<(Identifiable & LibraryTemplateCardProps)[] | undefined>(
+  return useMemo<LibraryTemplateCardProps[] | undefined>(
     () =>
       sortBy(
         innovationPacks?.flatMap(innovationPack => {
-          return compact([
-            ...(innovationPack.templates?.postTemplates ?? []).map<Identifiable & LibraryTemplateCardProps>(
-              template => ({
-                templateType: TemplateType.PostTemplate,
-                ...postTemplateMapper(template, innovationPack.provider?.profile, innovationPack),
-              })
+          return [
+            ...(innovationPack.templates?.postTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.PostTemplate)
             ),
-            ...(innovationPack.templates?.whiteboardTemplates ?? []).map<Identifiable & LibraryTemplateCardProps>(
-              template => ({
-                templateType: TemplateType.WhiteboardTemplate,
-                ...whiteboardTemplateMapper(template, innovationPack.provider?.profile, innovationPack),
-              })
+            ...(innovationPack.templates?.whiteboardTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.WhiteboardTemplate)
             ),
-            ...(innovationPack.templates?.innovationFlowTemplates ?? []).map<Identifiable & LibraryTemplateCardProps>(
-              template => ({
-                templateType: TemplateType.InnovationFlowTemplate,
-                ...innovationFlowTemplateMapper(template, innovationPack.provider?.profile, innovationPack),
-              })
+            ...(innovationPack.templates?.innovationFlowTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.InnovationFlowTemplate)
             ),
-          ]);
+          ] as LibraryTemplateCardProps[];
         }),
-        template => template.displayName?.toLowerCase()
+        template => template.profile.displayName?.toLowerCase()
       ),
     [innovationPacks]
   );

@@ -107,7 +107,6 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
           buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
           edit={edit}
-          whiteboardTemplatesLocation="space"
           loadInnovationPacks={loadInnovationPacks}
           loadingInnovationPacks={loadingInnovationPacks}
           innovationPacks={whiteboardInnovationPacks}

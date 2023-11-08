@@ -31,6 +31,7 @@ query PlatformPostTemplatesLibrary {
         }
         provider {
           id
+          nameID
           profile {
             ...TemplateProviderProfile
           }

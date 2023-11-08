@@ -1,29 +1,30 @@
-import { ComponentType, FC, useState } from 'react';
+import { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { BlockTitle } from '../../../../core/ui/typography';
-import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
-import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
-import PostTemplatePreview from '../../post/PostTemplatesLibrary/PostTemplatePreview';
-import { WhiteboardTemplate } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
-import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import WhiteboardTemplatePreview from '../../whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
+import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
+import { BlockTitle } from '../../../core/ui/typography';
+import { PostTemplate } from '../../collaboration/post/PostTemplateCard/PostTemplate';
+import PostTemplateCard from '../../collaboration/post/PostTemplateCard/PostTemplateCard';
+import PostTemplatePreview from '../../collaboration/post/PostTemplatesLibrary/PostTemplatePreview';
+import WhiteboardTemplateCard from '../../collaboration/whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import WhiteboardTemplatePreview from '../../collaboration/whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
 import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
-} from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
-import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { InnovationFlowTemplate } from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplate';
-import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
-import { Box, Button, Tooltip } from '@mui/material';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import InnovationFlowTemplatePreview from '../../InnovationFlow/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
+} from '../../collaboration/templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
+import {
+  TemplateBase,
+  TemplateCardBaseProps,
+} from '../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
+import InnovationFlowTemplateCard from '../../collaboration/InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import { TemplateType } from '../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import InnovationFlowTemplatePreview from '../../collaboration/InnovationFlow/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
+import DisabledUseButton from './DisabledUseButton';
+import DialogContent from '../../../core/ui/dialog/DialogContent';
+import { Identifiable } from '../../../core/utils/Identifiable';
 
 export type TemplatePreview =
   | {
-      template: WhiteboardTemplate;
+      template: TemplateBase;
       templateType: TemplateType.WhiteboardTemplate;
     }
   | {
@@ -31,8 +32,12 @@ export type TemplatePreview =
       templateType: TemplateType.PostTemplate;
     }
   | {
-      template: InnovationFlowTemplate;
+      template: TemplateBase & Identifiable;
       templateType: TemplateType.InnovationFlowTemplate;
+    }
+  | {
+      template: TemplateBase & Identifiable;
+      templateType: TemplateType.CalloutTemplate;
     };
 
 const Noop = () => null;
@@ -43,7 +48,7 @@ interface TemplatePreviewComponentProps
       TemplatePreview['template'],
       TemplatePreview['template'] & { content: string }
     >,
-    'template' | 'templateCardComponent' | 'templatePreviewComponent'
+    'template' | 'templateType' | 'templateCardComponent' | 'templatePreviewComponent'
   > {
   template: TemplatePreview | undefined;
   templateWithContent?: { content: string };
@@ -76,6 +81,7 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
         <CollaborationTemplatesLibraryPreview
           {...{
             template: whiteboardTemplate,
+            templateType: template.templateType,
             templateCardComponent: WhiteboardTemplateCard,
             templatePreviewComponent: WhiteboardTemplatePreview,
           }}
@@ -88,6 +94,7 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
         <CollaborationTemplatesLibraryPreview
           {...{
             template: template.template,
+            templateType: template.templateType,
             templateCardComponent: PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>,
             templatePreviewComponent: PostTemplatePreview,
           }}
@@ -100,6 +107,20 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
         <CollaborationTemplatesLibraryPreview
           {...{
             template: template.template,
+            templateType: template.templateType,
+            templateCardComponent: InnovationFlowTemplateCard,
+            templatePreviewComponent: InnovationFlowTemplatePreview,
+          }}
+          {...props}
+        />
+      );
+    }
+    case TemplateType.CalloutTemplate: {
+      return (
+        <CollaborationTemplatesLibraryPreview
+          {...{
+            template: template.template,
+            templateType: template.templateType,
             templateCardComponent: InnovationFlowTemplateCard,
             templatePreviewComponent: InnovationFlowTemplatePreview,
           }}
@@ -110,35 +131,11 @@ const TemplatePreviewComponent = ({ template, templateWithContent, ...props }: T
   }
 };
 
-const DisabledUseButton: FC<{}> = () => {
-  const { t } = useTranslation();
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-  return (
-    <Tooltip
-      title={t('pages.innovationLibrary.useTemplateButton')}
-      open={tooltipOpen}
-      onOpen={() => setTooltipOpen(true)}
-      onClose={() => setTooltipOpen(false)}
-      arrow
-    >
-      <Box onClick={() => setTooltipOpen(true)}>
-        <Button
-          startIcon={<SystemUpdateAltIcon />}
-          disabled
-          variant="contained"
-          sx={{ marginLeft: theme => theme.spacing(1) }}
-        >
-          {t('buttons.use')}
-        </Button>
-      </Box>
-    </Tooltip>
-  );
-};
-
-interface TemplatePreviewDialogProps {
+export interface TemplatePreviewDialogProps {
   open?: boolean;
   onClose: () => void;
   template: TemplatePreviewComponentProps['template'];
+  innovationPack?: TemplatePreviewComponentProps['innovationPack'];
   templateWithContent: TemplatePreviewComponentProps['templateWithContent'];
   loadingTemplateContent?: boolean;
 }
@@ -148,6 +145,7 @@ const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
   onClose,
   template,
   templateWithContent,
+  innovationPack,
   loadingTemplateContent,
 }) => {
   const { t } = useTranslation();
@@ -157,15 +155,16 @@ const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('common.preview')}</BlockTitle>
       </DialogHeader>
-      <Gutters>
+      <DialogContent>
         <TemplatePreviewComponent
           template={template}
           templateWithContent={templateWithContent}
+          innovationPack={innovationPack}
           loading={loadingTemplateContent}
           onClose={onClose}
           actions={<DisabledUseButton />}
         />
-      </Gutters>
+      </DialogContent>
     </DialogWithGrid>
   );
 };

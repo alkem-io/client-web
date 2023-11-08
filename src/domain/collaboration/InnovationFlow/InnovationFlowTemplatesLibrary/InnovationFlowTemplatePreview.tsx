@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { TemplatePreviewBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { InnovationFlowTemplate } from '../InnovationFlowTemplateCard/InnovationFlowTemplate';
+import { TemplateBase, TemplatePreviewBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import { useInnovationFlowTemplateDefinitionQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Box, CircularProgress } from '@mui/material';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface InnovationFlowTemplatePreviewProps extends TemplatePreviewBaseProps<InnovationFlowTemplate> {}
+interface InnovationFlowTemplatePreviewProps extends TemplatePreviewBaseProps<TemplateBase & Identifiable> {}
 
 const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({ template }) => {
   const { data, loading } = useInnovationFlowTemplateDefinitionQuery({

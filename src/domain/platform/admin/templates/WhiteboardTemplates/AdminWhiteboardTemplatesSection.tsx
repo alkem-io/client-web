@@ -18,15 +18,15 @@ import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 import { useTranslation } from 'react-i18next';
-import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
+import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import WhiteboardImportTemplateCard from './WhitebaordImportTemplateCard';
 import {
   useUploadWhiteboardVisuals,
   WhiteboardPreviewImage,
 } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { Identifiable } from '../../../../../core/utils/Identifiable';
 
 interface AdminWhiteboardTemplatesSectionProps {
-  whiteboardTemplatesLocation: 'space' | 'platform';
   templateId: string | undefined;
   templatesSetId: string | undefined;
   templates: AdminWhiteboardTemplateFragment[] | undefined;
@@ -40,10 +40,7 @@ interface AdminWhiteboardTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminWhiteboardTemplatesSection = ({
-  whiteboardTemplatesLocation,
-  ...props
-}: AdminWhiteboardTemplatesSectionProps) => {
+const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
 
@@ -65,7 +62,7 @@ const AdminWhiteboardTemplatesSection = ({
     useWhiteboardTemplateContentLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
   const getImportedWhiteboardTemplateContent = useCallback(
-    (whiteboardTemplate: AdminWhiteboardTemplateFragment & TemplateInnovationPackMetaInfo) => {
+    (whiteboardTemplate: Identifiable) => {
       fetchImportedWhiteboardTemplateContent({
         variables: { whiteboardTemplateId: whiteboardTemplate.id },
       });
@@ -81,6 +78,10 @@ const AdminWhiteboardTemplatesSection = ({
       uploadVisuals(previewImages, { cardVisualId: mutationResult.profile.visual.id });
     }
   };
+
+  const [createWhiteboardTemplate] = useCreateWhiteboardTemplateMutation();
+  const [updateWhiteboardTemplate] = useUpdateWhiteboardTemplateMutation();
+  const [deleteWhiteboardTemplate] = useDeleteWhiteboardTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -98,12 +99,11 @@ const AdminWhiteboardTemplatesSection = ({
       importedTemplateContent={importedWhiteboardContent?.lookup.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
-      // TODO:
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useUpdateTemplateMutation={useUpdateWhiteboardTemplateMutation as any}
-      useDeleteTemplateMutation={useDeleteWhiteboardTemplateMutation}
+      onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => updateWhiteboardTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={async variables => {
+        await deleteWhiteboardTemplate({ variables, refetchQueries });
+      }}
       onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
         onMutationCalled(mutationResult?.createWhiteboardTemplate, previewImages)
       }

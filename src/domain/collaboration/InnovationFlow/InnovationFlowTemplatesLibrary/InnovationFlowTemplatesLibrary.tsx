@@ -2,38 +2,43 @@ import { compact } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useSpaceInnovationFlowTemplatesLibraryLazyQuery,
-  usePlatformInnovationFlowTemplatesLibraryLazyQuery,
   useInnovationFlowTemplateDefinitionLazyQuery,
+  usePlatformInnovationFlowTemplatesLibraryLazyQuery,
+  useSpaceInnovationFlowTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import {
-  InnovationFlowTemplate,
-  innovationFlowTemplateMapper,
-} from '../InnovationFlowTemplateCard/InnovationFlowTemplate';
 import InnovationFlowTemplateCard from '../InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import InnovationFlowTemplatePreview from './InnovationFlowTemplatePreview';
 import { Autorenew } from '@mui/icons-material';
 import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+
+interface InnovationFlowTemplate extends TemplateBase {
+  type: InnovationFlowType;
+}
 
 export interface InnovationFlowTemplatesLibraryProps {
-  onSelectTemplate: (template: InnovationFlowTemplate) => void;
+  onSelectTemplate: (template: InnovationFlowTemplate & Identifiable) => void;
   filterType?: InnovationFlowType;
   disabled?: boolean;
 }
 
 const filterByType = (filter: InnovationFlowType | undefined) =>
-  !filter ? () => true : (template: InnovationFlowTemplate) => template.type === filter;
+  !filter ? () => true : <T extends InnovationFlowTemplate>(template: T) => template.type === filter;
 
-const filterByText = (filter: string[]) => (template: InnovationFlowTemplate) => {
+const filterByText = (filter: string[]) => {
   if (filter.length === 0) {
     return () => true;
   }
-  const terms = filter.map(term => term.toLowerCase());
-  const templateString =
-    `${template.displayName} ${template.provider.displayName} ${template.innovationPack.displayName}`.toLowerCase();
-  return terms.some(term => templateString.includes(term));
+  return (template: TemplateWithInnovationPack<TemplateBase>) => {
+    const terms = filter.map(term => term.toLowerCase());
+    const templateString =
+      `${template.profile.displayName} ${template.innovationPack?.provider?.profile.displayName} ${template.innovationPack?.profile.displayName}`.toLowerCase();
+    return terms.some(term => templateString.includes(term));
+  };
 };
 
 const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = ({
@@ -56,7 +61,16 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
   const templatesFromSpace = useMemo(
     () =>
       spaceData?.space.templates?.innovationFlowTemplates
-        .map<InnovationFlowTemplate>(template => innovationFlowTemplateMapper(template, spaceData?.space.host?.profile))
+        .map(template => ({
+          ...template,
+          innovationPack: {
+            // TODO Introduce subtype with optional profile
+            profile: {
+              displayName: '',
+            },
+            provider: spaceData?.space.host,
+          },
+        }))
         .filter(filterByType(filterType))
         .filter(filterByText(filter)),
     [spaceData, filterType, filter]
@@ -71,9 +85,10 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
       platformData?.platform.library.innovationPacks
         .flatMap(ip =>
           compact(
-            ip.templates?.innovationFlowTemplates.map<InnovationFlowTemplate>(template =>
-              innovationFlowTemplateMapper(template, ip.provider?.profile, ip)
-            )
+            ip.templates?.innovationFlowTemplates.map(template => ({
+              ...template,
+              innovationPack: ip,
+            }))
           )
         )
         .filter(filterByType(filterType))
@@ -84,7 +99,7 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
     useInnovationFlowTemplateDefinitionLazyQuery();
 
   // InnovationFlow templates include the definition and type, so no need to go to the server and fetch like with Whiteboards
-  const getInnovationFlowTemplateDefinition = async (template: InnovationFlowTemplate) => {
+  const getInnovationFlowTemplateDefinition = async (template: InnovationFlowTemplate & Identifiable) => {
     const { data } = await fetchInnovationFlowTemplateDefinition({
       variables: {
         innovationFlowTemplateID: template.id,
@@ -104,6 +119,8 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
       dialogTitle={t('templateLibrary.innovationFlowTemplates.title')}
       onSelectTemplate={onSelectTemplate}
       templateCardComponent={InnovationFlowTemplateCard}
+      // TODO figure out why it's failing, InnovationFlowTemplatePreview requires an Identifiable
+      // @ts-ignore
       templatePreviewComponent={InnovationFlowTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}

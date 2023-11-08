@@ -5,26 +5,34 @@ import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
-import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
-import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPacks/InnovationPack';
+import { InnovationPack } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../collaboration/templates/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
-import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
+import {
+  TemplateImportCardComponentProps,
+  TemplateWithInnovationPack,
+} from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { TemplateBase } from '../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
+import useLoadingState from '../../../shared/utils/useLoadingState';
+import { GraphQLError } from 'graphql';
 
-export interface Template extends Identifiable {
-  profile: ProfileInfoWithVisualFragment;
-}
+/**
+ * @deprecated TODO remove
+ */
+export interface Template extends TemplateBase {}
 
-export interface TemplateValue {}
+/**
+ * @deprecated TODO remove
+ */
 
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   open: boolean;
@@ -32,7 +40,7 @@ interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   onSubmit: (values: SubmittedValues) => void;
 }
 
-interface EditTemplateDialogProps<T extends Template, V extends TemplateValue, SubmittedValues extends {}> {
+interface EditTemplateDialogProps<T extends Template, V extends T, SubmittedValues extends {}> {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: SubmittedValues) => void;
@@ -42,7 +50,7 @@ interface EditTemplateDialogProps<T extends Template, V extends TemplateValue, S
   templateValue: V | undefined;
 }
 
-export interface TemplatePreviewProps<T extends Template, V extends TemplateValue> {
+export interface TemplatePreviewProps<T extends Template, V extends T> {
   template: T;
   getTemplateContent: (template: T) => void;
   templateContent: V | undefined;
@@ -53,20 +61,23 @@ export interface MutationHook<Variables, MutationResult> {
 }
 
 export interface ProfileUpdate {
-  profile?: { tagsets?: Partial<Tagset>[] };
+  profile: UpdateProfileInput;
 }
+
+type MutationResult<Data> = Promise<{
+  data?: Data | null;
+  errors?: readonly GraphQLError[];
+}>;
 
 type AdminTemplatesSectionProps<
   T extends Template,
-  Q extends T & TemplateInnovationPackMetaInfo,
-  V extends TemplateValue,
+  V extends T,
   // TODO There must be either introduced a minimal common subtype between the received and submitted values,
   // so that that one in not constructed from the other by removing fields, OR
   // the received and the submitted values may be two independent types.
-  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
-  CreateM,
-  UpdateM,
-  DeleteM,
+  SubmittedValues extends Omit<T, 'profile'> & Omit<V, 'id'>,
+  TemplateCreationResult,
+  TemplateUpdateResult,
   DialogProps extends {}
 > = Omit<
   DialogProps,
@@ -76,9 +87,8 @@ type AdminTemplatesSectionProps<
   importDialogHeaderText: string;
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: T[] | undefined;
+  templates: (T & Identifiable)[] | undefined;
   onCloseTemplateDialog: () => void;
-  refetchQueries: InternalRefetchQueriesInclude;
   buildTemplateLink: (post: T) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
@@ -86,32 +96,38 @@ type AdminTemplatesSectionProps<
   canImportTemplates: boolean;
   innovationPacks: InnovationPack<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
-  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getWhiteboardTemplateContent?: (template: T) => void;
-  getImportedWhiteboardTemplateContent?: (template: Q) => void;
+  getImportedWhiteboardTemplateContent?: (template: TemplateWithInnovationPack<T>) => void;
   whiteboardTemplateContent?: V | undefined;
   importedTemplateContent?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
   editTemplateDialogComponent: ComponentType<
     DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
   >;
-  // TODO instead of mutations let's just pass callbacks - mutations have options which make the type too complicated for using in generics.
-  useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
-  useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues & ProfileUpdate> & { templateId: string }, UpdateM>;
-  useDeleteTemplateMutation: MutationHook<{ templateId: string; templatesSetId?: string }, DeleteM>;
-  onTemplateCreated?: (mutationResult: CreateM | null | undefined, previewImages?: WhiteboardPreviewImage[]) => void;
-  onTemplateUpdated?: (mutationResult: UpdateM | null | undefined, previewImages?: WhiteboardPreviewImage[]) => void;
+  onCreateTemplate: (template: SubmittedValues & { templatesSetId: string }) => MutationResult<TemplateCreationResult>;
+  onUpdateTemplate: (
+    template: Partial<SubmittedValues> & ProfileUpdate & { templateId: string }
+  ) => MutationResult<TemplateUpdateResult>;
+  onDeleteTemplate: (template: { templateId: string; templatesSetId?: string }) => Promise<void>;
+  onTemplateCreated?: (
+    mutationResult: TemplateCreationResult | null | undefined,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => void;
+  onTemplateUpdated?: (
+    mutationResult: TemplateUpdateResult | null | undefined,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => void;
 };
 
 const AdminTemplatesSection = <
   T extends Template,
-  Q extends T & TemplateInnovationPackMetaInfo,
-  V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
+  // Q extends T & TemplateInnovationPackMetaInfo,
+  V extends T,
+  SubmittedValues extends Omit<T, 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
-  DeleteM,
   DialogProps extends {}
 >({
   headerText,
@@ -121,14 +137,13 @@ const AdminTemplatesSection = <
   templatesSetId,
   buildTemplateLink,
   onCloseTemplateDialog,
-  refetchQueries,
   edit = false,
   loadInnovationPacks,
   loadingInnovationPacks,
   innovationPacks,
-  useCreateTemplateMutation,
-  useUpdateTemplateMutation,
-  useDeleteTemplateMutation,
+  onCreateTemplate,
+  onUpdateTemplate,
+  onDeleteTemplate,
   onTemplateCreated,
   onTemplateUpdated,
   templateCardComponent: TemplateCard,
@@ -141,7 +156,7 @@ const AdminTemplatesSection = <
   getWhiteboardTemplateContent = () => {},
   getImportedWhiteboardTemplateContent = () => {},
   ...dialogProps
-}: AdminTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
+}: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
@@ -165,10 +180,6 @@ const AdminTemplatesSection = <
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
-  const [updateTemplate] = useUpdateTemplateMutation();
-  const [createTemplate] = useCreateTemplateMutation();
-  const [deleteTemplate, { loading: isDeletingTemplate }] = useDeleteTemplateMutation();
-
   const handleTemplateUpdate = async ({
     tagsetId,
     tags,
@@ -182,21 +193,18 @@ const AdminTemplatesSection = <
 
     const { previewImages, ...valuesWithoutPreview } = values;
 
-    const result = await updateTemplate({
-      variables: {
-        templateId,
-        ...(valuesWithoutPreview as unknown as SubmittedValues),
-        profile: {
-          tagsets: [
-            {
-              ID: tagsetId,
-              tags,
-            },
-          ],
-          ...valuesWithoutPreview['profile'],
-        },
+    const result = await onUpdateTemplate({
+      templateId,
+      ...(valuesWithoutPreview as unknown as SubmittedValues),
+      profile: {
+        tagsets: [
+          {
+            ID: tagsetId,
+            tags,
+          },
+        ],
+        ...valuesWithoutPreview['profile'],
       },
-      refetchQueries,
     });
 
     onTemplateUpdated?.(result.data, previewImages);
@@ -213,42 +221,37 @@ const AdminTemplatesSection = <
     }
 
     const { previewImages, ...valuesWithoutPreview } = values;
-    const result = await createTemplate({
-      variables: {
-        templatesSetId,
-        ...(valuesWithoutPreview as unknown as SubmittedValues),
-      },
-      refetchQueries,
+
+    const result = await onCreateTemplate({
+      templatesSetId,
+      ...(valuesWithoutPreview as unknown as SubmittedValues),
     });
 
     onTemplateCreated?.(result.data, previewImages);
     closeCreateTemplateDialog();
   };
 
-  const handleImportTemplate = async (template: T, value: V | undefined) => {
+  const handleImportTemplate = async (template: T & Identifiable, value: V | undefined) => {
     if (!templatesSetId) {
       throw new TypeError('TemplatesSet ID not loaded.');
     }
 
     // Deconstruct and rebuild template information from the InnovationPack template downloaded:
     const { id, profile, ...templateData } = template;
-    const { id: infoId, ...infoData } = profile;
+
     const values: SubmittedValues = {
-      ...(templateData as SubmittedValues),
+      ...(templateData as unknown as SubmittedValues), // TODO check type overlap
       ...value,
       profile: {
-        displayName: infoData.displayName,
-        description: infoData.description,
+        displayName: profile.displayName,
+        description: profile.description,
       },
-      tags: infoData.tagset?.tags,
+      tags: profile.tagset?.tags,
     };
 
-    const result = await createTemplate({
-      variables: {
-        templatesSetId,
-        ...values,
-      },
-      refetchQueries,
+    const result = await onCreateTemplate({
+      templatesSetId,
+      ...values,
     });
 
     if (!result.errors) {
@@ -269,21 +272,22 @@ const AdminTemplatesSection = <
     };
   };
 
-  const handleTemplateDeletion = async () => {
+  const [handleTemplateDeletion, isDeletingTemplate] = useLoadingState(async () => {
     if (!deletingTemplateId) {
       throw new TypeError('Missing Template ID.');
     }
 
-    await deleteTemplate({
-      variables: {
-        templateId: deletingTemplateId,
-        templatesSetId: templatesSetId!,
-      },
-      refetchQueries,
+    if (!templatesSetId) {
+      throw new TypeError('No TemplateSet ID provided');
+    }
+
+    await onDeleteTemplate({
+      templateId: deletingTemplateId,
+      templatesSetId: templatesSetId,
     });
 
     setDeletingTemplateId(undefined);
-  };
+  });
 
   return (
     <>
@@ -331,7 +335,6 @@ const AdminTemplatesSection = <
         templateImportCardComponent={TemplateImportCard}
         templatePreviewComponent={TemplatePreview}
         getImportedTemplateContent={getImportedWhiteboardTemplateContent}
-        importedTemplateContent={dialogProps.importedTemplateContent}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
         onImportTemplate={handleImportTemplate}
