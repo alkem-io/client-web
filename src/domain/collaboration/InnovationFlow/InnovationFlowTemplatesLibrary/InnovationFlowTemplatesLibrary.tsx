@@ -2,7 +2,6 @@ import { compact } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useInnovationFlowTemplateDefinitionLazyQuery,
   usePlatformInnovationFlowTemplatesLibraryLazyQuery,
   useSpaceInnovationFlowTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -95,29 +94,16 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
         .filter(filterByText(filter)),
     [platformData, filterType, filter]
   );
-  const [fetchInnovationFlowTemplateDefinition, { loading: loadingInnovationFlowTemplateDefinition }] =
-    useInnovationFlowTemplateDefinitionLazyQuery();
 
-  // TODO controversial comment
-  // Preview fetches by itself, seems to need just the ID
-  // InnovationFlow templates include the definition and type, so no need to go to the server and fetch like with Whiteboards
-  const getInnovationFlowTemplateDefinition = async (template: TemplateBase & Identifiable) => {
-    const { data } = await fetchInnovationFlowTemplateDefinition({
-      variables: {
-        innovationFlowTemplateID: template.id,
-      },
-    });
-    if (!data?.lookup.innovationFlowTemplate) {
-      throw new Error(`Innovation Flow template id:'${template.id}' not found`);
-    }
-    return {
-      ...template,
-      definition: data.lookup.innovationFlowTemplate.definition,
-    };
+  // InnovationFlow templates include the value (definition), so no need to go to the server and fetch like we do with Whiteboards
+  const getInnovationFlowTemplateDefinition = (
+    template: InnovationFlowTemplate & Identifiable
+  ): Promise<InnovationFlowTemplate & Identifiable> => {
+    return Promise.resolve(template);
   };
 
   return (
-    <CollaborationTemplatesLibrary<TemplateBase, Identifiable, Identifiable>
+    <CollaborationTemplatesLibrary<InnovationFlowTemplate, Identifiable, Identifiable>
       dialogTitle={t('templateLibrary.innovationFlowTemplates.title')}
       onImportTemplate={onImportTemplate}
       templateCardComponent={InnovationFlowTemplateCard}
@@ -126,7 +112,6 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
       onFilterChange={setFilter}
       fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
-      loadingTemplateContent={loadingInnovationFlowTemplateDefinition}
       getTemplateWithContent={getInnovationFlowTemplateDefinition}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
