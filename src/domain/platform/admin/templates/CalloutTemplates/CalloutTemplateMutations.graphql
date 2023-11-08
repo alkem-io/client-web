@@ -30,3 +30,9 @@ query SpaceTemplateSetId($spaceId: UUID_NAMEID!) {
     }
   }
 }
+
+mutation deleteCalloutTemplate($templateId: UUID!) {
+  deleteCalloutTemplate(deleteData: { ID: $templateId }) {
+    id
+  }
+}
