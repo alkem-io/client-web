@@ -16,7 +16,7 @@ import AdminTemplatesSection from '../AdminTemplatesSection';
 import EditWhiteboardTemplateDialog from './EditWhiteboardTemplateDialog';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
-import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
+import AdminWhiteboardTemplatePreview from './AdminWhiteboardTemplatePreview';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import WhiteboardImportTemplateCard from './WhitebaordImportTemplateCard';
@@ -92,7 +92,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
       })}
       templateCardComponent={WhiteboardTemplateCard}
       templateImportCardComponent={WhiteboardImportTemplateCard}
-      templatePreviewComponent={WhiteboardTemplatePreview}
+      templatePreviewComponent={AdminWhiteboardTemplatePreview}
       getWhiteboardTemplateContent={getWhiteboardTemplateContent}
       getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}
       whiteboardTemplateContent={whiteboardContent?.lookup.whiteboardTemplate}

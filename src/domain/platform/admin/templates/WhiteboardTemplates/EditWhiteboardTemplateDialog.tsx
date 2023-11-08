@@ -18,8 +18,8 @@ export interface EditWhiteboardTemplateDialogProps {
   ) => void;
   onDelete: () => void;
   template: AdminWhiteboardTemplateFragment | undefined;
-  getTemplateValue: (template: AdminWhiteboardTemplateFragment) => void;
-  templateValue: { content: string | undefined } | undefined;
+  getTemplateContent: (template: AdminWhiteboardTemplateFragment) => void;
+  templateContent: { content: string | undefined } | undefined;
 }
 
 const EditWhiteboardTemplateDialog = ({
@@ -28,23 +28,23 @@ const EditWhiteboardTemplateDialog = ({
   onClose,
   onSubmit,
   onDelete,
-  getTemplateValue,
-  templateValue,
+  getTemplateContent,
+  templateContent,
 }: EditWhiteboardTemplateDialogProps) => {
   const { t } = useTranslation();
 
   useEffect(() => {
     if (!template) return;
 
-    getTemplateValue(template);
-  }, [getTemplateValue, template]);
+    getTemplateContent(template);
+  }, [getTemplateContent, template]);
 
   if (!template) {
     return null;
   }
 
   const initialValues: Partial<WhiteboardTemplateFormValues> = {
-    content: templateValue?.content,
+    content: templateContent?.content,
     displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,

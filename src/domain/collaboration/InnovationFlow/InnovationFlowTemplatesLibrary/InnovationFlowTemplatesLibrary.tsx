@@ -21,7 +21,7 @@ interface InnovationFlowTemplate extends TemplateBase {
 }
 
 export interface InnovationFlowTemplatesLibraryProps {
-  onSelectTemplate: (template: InnovationFlowTemplate & Identifiable) => void;
+  onImportTemplate: (template: Identifiable) => void;
   filterType?: InnovationFlowType;
   disabled?: boolean;
 }
@@ -42,7 +42,7 @@ const filterByText = (filter: string[]) => {
 };
 
 const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = ({
-  onSelectTemplate,
+  onImportTemplate,
   filterType,
   disabled,
 }) => {
@@ -98,8 +98,10 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
   const [fetchInnovationFlowTemplateDefinition, { loading: loadingInnovationFlowTemplateDefinition }] =
     useInnovationFlowTemplateDefinitionLazyQuery();
 
+  // TODO controversial comment
+  // Preview fetches by itself, seems to need just the ID
   // InnovationFlow templates include the definition and type, so no need to go to the server and fetch like with Whiteboards
-  const getInnovationFlowTemplateDefinition = async (template: InnovationFlowTemplate & Identifiable) => {
+  const getInnovationFlowTemplateDefinition = async (template: TemplateBase & Identifiable) => {
     const { data } = await fetchInnovationFlowTemplateDefinition({
       variables: {
         innovationFlowTemplateID: template.id,
@@ -115,12 +117,10 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
   };
 
   return (
-    <CollaborationTemplatesLibrary
+    <CollaborationTemplatesLibrary<TemplateBase, Identifiable, Identifiable>
       dialogTitle={t('templateLibrary.innovationFlowTemplates.title')}
-      onSelectTemplate={onSelectTemplate}
+      onImportTemplate={onImportTemplate}
       templateCardComponent={InnovationFlowTemplateCard}
-      // TODO figure out why it's failing, InnovationFlowTemplatePreview requires an Identifiable
-      // @ts-ignore
       templatePreviewComponent={InnovationFlowTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}

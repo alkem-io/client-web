@@ -90,7 +90,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
   return (
     <CollaborationTemplatesLibrary
       dialogTitle={t('templateLibrary.postTemplates.title')}
-      onSelectTemplate={onSelectTemplate}
+      onImportTemplate={onSelectTemplate}
       templateCardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
       templatePreviewComponent={PostTemplatePreview}
       filter={filter}

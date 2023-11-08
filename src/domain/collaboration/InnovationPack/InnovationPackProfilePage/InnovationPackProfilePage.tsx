@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useInnovationPackProfilePageQuery,
@@ -63,6 +63,19 @@ const InnovationPackProfilePage = () => {
       },
       skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
     });
+
+  const previewedTemplate = useMemo<TemplatePreview | undefined>(() => {
+    if (!selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate) {
+      return selectedTemplate;
+    }
+    return {
+      ...selectedTemplate,
+      template: {
+        ...selectedTemplate.template,
+        ...whiteboardTemplateContentData?.lookup.whiteboardTemplate,
+      },
+    };
+  }, [selectedTemplate, whiteboardTemplateContentData]);
 
   const canUpdate = innovationPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
@@ -135,9 +148,8 @@ const InnovationPackProfilePage = () => {
       <TemplatePreviewDialog
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
-        template={selectedTemplate}
+        templatePreview={previewedTemplate}
         innovationPack={innovationPack}
-        templateWithContent={whiteboardTemplateContentData?.lookup.whiteboardTemplate}
         loadingTemplateContent={loadingWhiteboardTemplateContent}
       />
     </>

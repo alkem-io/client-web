@@ -5,7 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography/components';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import { TemplateBase, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
+import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
@@ -17,14 +17,11 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { Visual } from '../../../common/visual/Visual';
 import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 
-export interface CollaborationTemplatesLibraryPreviewProps<
-  Template extends TemplateBase,
-  TemplateValue extends Template
-> {
+export interface CollaborationTemplatesLibraryPreviewProps<Template extends TemplateBase, TemplateValue extends {}> {
   onClose: () => void;
-  template?: TemplateValue;
+  template?: Template & TemplateValue;
   templateCardComponent: ComponentType<TemplateCardBaseProps<Template>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateValue>>;
+  templatePreviewComponent: ComponentType<{ template?: TemplateValue }>;
   templateInfo?: ReactNode;
   loading?: boolean;
   actions?: ReactNode;
@@ -40,7 +37,7 @@ export interface CollaborationTemplatesLibraryPreviewProps<
   };
 }
 
-const CollaborationTemplatesLibraryPreview = <Template extends TemplateBase, TemplateValue extends Template>({
+const CollaborationTemplatesLibraryPreview = <Template extends TemplateBase, TemplateValue extends {}>({
   template,
   templateCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
@@ -102,10 +99,9 @@ const CollaborationTemplatesLibraryPreview = <Template extends TemplateBase, Tem
           </BadgeCardView>
         </PageContentBlockSeamless>
       </PageContentColumn>
-      <PageContentColumn columns={9}>
-        <PageContentBlockSeamless>
-          {!loading ? <TemplatePreview template={template} /> : <Skeleton height={theme.spacing(40)} />}
-        </PageContentBlockSeamless>
+      <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">
+        <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>
+        {!loading ? <TemplatePreview template={template} /> : <Skeleton height={theme.spacing(40)} />}
       </PageContentColumn>
     </GridContainer>
   );

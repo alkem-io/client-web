@@ -1,0 +1,49 @@
+query CalloutTemplatePreview($calloutTemplateId: UUID!) {
+  lookup {
+    calloutTemplate(ID: $calloutTemplateId) {
+      ...CalloutTemplatePreview
+    }
+  }
+}
+
+fragment CalloutTemplatePreview on CalloutTemplate {
+  id
+  #nameID
+  type
+  framing {
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      references {
+        ...ReferenceDetails
+      }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
+      }
+      storageBucket {
+        id
+      }
+    }
+    whiteboard {
+      ...WhiteboardDetails
+    }
+    whiteboardRt {
+      ...WhiteboardRtDetails
+    }
+  }
+  contributionPolicy {
+    state
+  }
+  contributionDefaults {
+    id
+    postDescription
+    whiteboardContent
+  }
+}

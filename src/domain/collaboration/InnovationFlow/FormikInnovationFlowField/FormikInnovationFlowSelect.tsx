@@ -66,7 +66,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
     <Box>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <BlockTitle>{title}</BlockTitle>
-        <InnovationFlowTemplatesLibrary onSelectTemplate={handleSelectTemplate} filterType={type} disabled={disabled} />
+        <InnovationFlowTemplatesLibrary onImportTemplate={handleSelectTemplate} filterType={type} disabled={disabled} />
       </Box>
       {(loadingInnovationFlow || loading) && <CircularProgress size={20} />}
       {template && (

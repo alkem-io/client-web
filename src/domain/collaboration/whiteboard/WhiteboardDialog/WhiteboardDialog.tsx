@@ -281,7 +281,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                       maxWidth={gutters(30)}
                     />
                   )}
-                  <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />
+                  <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
                 </>
               ) : (
                 <>
