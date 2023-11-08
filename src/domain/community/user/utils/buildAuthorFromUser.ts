@@ -8,6 +8,9 @@ interface AuthorData extends Pick<User, 'id' | 'nameID' | 'firstName' | 'lastNam
     avatar?: {
       uri: string;
     };
+    visual?: {
+      uri: string;
+    };
     tagsets?: { tags: string[] }[];
     location?: {
       city?: string;
@@ -17,7 +20,7 @@ interface AuthorData extends Pick<User, 'id' | 'nameID' | 'firstName' | 'lastNam
 }
 
 export const buildAuthorFromUser = (user: AuthorData): Author => {
-  const avatarURL = user.profile.avatar?.uri;
+  const avatarURL = user.profile.avatar ? user.profile.avatar?.uri : user.profile.visual?.uri;
   const url = buildUserProfileUrl(user.nameID);
   const tags = user?.profile?.tagsets?.flatMap(tagset => tagset.tags);
   const result: Author = {
