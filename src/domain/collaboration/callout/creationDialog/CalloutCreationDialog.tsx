@@ -28,6 +28,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -170,7 +171,18 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           </DialogHeader>
           <DialogContent>
             <Gutters>
-              <CalloutTypeSelect value={selectedCalloutType} onSelect={handleSelectCalloutType} />
+              <CalloutTypeSelect
+                onSelect={handleSelectCalloutType}
+                extraButtons={
+                  <Button
+                    startIcon={<TipsAndUpdatesOutlinedIcon />}
+                    // onClick={handleClick(calloutType)}
+                    variant="outlined"
+                  >
+                    {t('components.calloutTypeSelect.callout-templates-library' as const)}
+                  </Button>
+                }
+              />
             </Gutters>
           </DialogContent>
         </>
