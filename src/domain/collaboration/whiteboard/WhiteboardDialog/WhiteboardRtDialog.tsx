@@ -284,7 +284,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                   maxWidth={gutters(30)}
                 />
               )}
-              {options.canEdit && <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />}
+              {options.canEdit && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
               <span>
                 RT<sup title=":)">beta</sup>
               </span>

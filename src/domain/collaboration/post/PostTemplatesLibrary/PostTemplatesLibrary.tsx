@@ -80,7 +80,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
     [platformData]
   );
 
-  // Post templates include the value (defaultDescription and type), so no need to go to the server and fetch like with Whiteboards
+  // Post templates include the value (defaultDescription and type), so no need to go to the server and fetch like we do with Whiteboards
   const getPostTemplateContent = (
     template: PostTemplate & Identifiable
   ): Promise<PostTemplateWithValue & Identifiable> => {
@@ -90,7 +90,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
   return (
     <CollaborationTemplatesLibrary
       dialogTitle={t('templateLibrary.postTemplates.title')}
-      onSelectTemplate={onSelectTemplate}
+      onImportTemplate={onSelectTemplate}
       templateCardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
       templatePreviewComponent={PostTemplatePreview}
       filter={filter}

@@ -2,7 +2,6 @@ import { compact } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useInnovationFlowTemplateDefinitionLazyQuery,
   usePlatformInnovationFlowTemplatesLibraryLazyQuery,
   useSpaceInnovationFlowTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -21,7 +20,7 @@ interface InnovationFlowTemplate extends TemplateBase {
 }
 
 export interface InnovationFlowTemplatesLibraryProps {
-  onSelectTemplate: (template: InnovationFlowTemplate & Identifiable) => void;
+  onImportTemplate: (template: Identifiable) => void;
   filterType?: InnovationFlowType;
   disabled?: boolean;
 }
@@ -42,7 +41,7 @@ const filterByText = (filter: string[]) => {
 };
 
 const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = ({
-  onSelectTemplate,
+  onImportTemplate,
   filterType,
   disabled,
 }) => {
@@ -95,38 +94,24 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
         .filter(filterByText(filter)),
     [platformData, filterType, filter]
   );
-  const [fetchInnovationFlowTemplateDefinition, { loading: loadingInnovationFlowTemplateDefinition }] =
-    useInnovationFlowTemplateDefinitionLazyQuery();
 
-  // InnovationFlow templates include the definition and type, so no need to go to the server and fetch like with Whiteboards
-  const getInnovationFlowTemplateDefinition = async (template: InnovationFlowTemplate & Identifiable) => {
-    const { data } = await fetchInnovationFlowTemplateDefinition({
-      variables: {
-        innovationFlowTemplateID: template.id,
-      },
-    });
-    if (!data?.lookup.innovationFlowTemplate) {
-      throw new Error(`Innovation Flow template id:'${template.id}' not found`);
-    }
-    return {
-      ...template,
-      definition: data.lookup.innovationFlowTemplate.definition,
-    };
+  // InnovationFlow templates include the value (definition), so no need to go to the server and fetch like we do with Whiteboards
+  const getInnovationFlowTemplateDefinition = (
+    template: InnovationFlowTemplate & Identifiable
+  ): Promise<InnovationFlowTemplate & Identifiable> => {
+    return Promise.resolve(template);
   };
 
   return (
-    <CollaborationTemplatesLibrary
+    <CollaborationTemplatesLibrary<InnovationFlowTemplate, Identifiable, Identifiable>
       dialogTitle={t('templateLibrary.innovationFlowTemplates.title')}
-      onSelectTemplate={onSelectTemplate}
+      onImportTemplate={onImportTemplate}
       templateCardComponent={InnovationFlowTemplateCard}
-      // TODO figure out why it's failing, InnovationFlowTemplatePreview requires an Identifiable
-      // @ts-ignore
       templatePreviewComponent={InnovationFlowTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}
       fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
-      loadingTemplateContent={loadingInnovationFlowTemplateDefinition}
       getTemplateWithContent={getInnovationFlowTemplateDefinition}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
