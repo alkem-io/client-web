@@ -2925,6 +2925,31 @@ export const StorageAggregatorFragmentDoc = gql`
   ${LoadableStorageAggregatorFragmentDoc}
   ${StorageBucketFragmentDoc}
 `;
+export const ProfileInfoWithVisualFragmentDoc = gql`
+  fragment ProfileInfoWithVisual on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+export const AdminCalloutTemplateFragmentDoc = gql`
+  fragment AdminCalloutTemplate on CalloutTemplate {
+    id
+    type
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -2942,21 +2967,6 @@ export const InnovationPackProfileFragmentDoc = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-`;
-export const ProfileInfoWithVisualFragmentDoc = gql`
-  fragment ProfileInfoWithVisual on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: CARD) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export const AdminPostTemplateFragmentDoc = gql`
   fragment AdminPostTemplate on PostTemplate {
@@ -20912,6 +20922,9 @@ export const AdminSpaceTemplatesDocument = gql`
           id
           myPrivileges
         }
+        calloutTemplates {
+          ...AdminCalloutTemplate
+        }
         postTemplates {
           ...AdminPostTemplate
         }
@@ -20924,6 +20937,7 @@ export const AdminSpaceTemplatesDocument = gql`
       }
     }
   }
+  ${AdminCalloutTemplateFragmentDoc}
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}

@@ -790,7 +790,8 @@
     "calloutTemplates": {
       "name": "Callout template",
       "title": "Template Library: Callouts",
-      "defaultDescription": ""
+      "type": "Callout type",
+      "description": "Description"
     },
     "postTemplates": {
       "name": "Post template",

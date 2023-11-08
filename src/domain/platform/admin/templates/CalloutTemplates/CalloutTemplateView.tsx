@@ -1,29 +1,29 @@
 import { Box, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminCalloutTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
 }));
 
-interface PostTemplateViewProps {
-  template: AdminPostTemplateFragment;
+interface CalloutTemplateViewProps {
+  template: AdminCalloutTemplateFragment;
 }
 
-const PostTemplateView = ({ template }: PostTemplateViewProps) => {
+const CalloutTemplateView = ({ template }: CalloutTemplateViewProps) => {
   const { t } = useTranslation();
 
   const {
     profile: { tagset: { tags } = {}, description = '' },
     type: templateType,
-    defaultDescription,
   } = template;
 
   return (
-    <>
+    <Gutters>
       <Box>
         <TypographyTitle>{t('common.description')}</TypographyTitle>
         <Typography variant="body2" component="div">
@@ -35,19 +35,13 @@ const PostTemplateView = ({ template }: PostTemplateViewProps) => {
         <TagsComponent tags={tags || []} />
       </Box>
       <Box>
-        <TypographyTitle>{t('post-edit.type.title')}</TypographyTitle>
+        <TypographyTitle>{t('templateLibrary.calloutTemplates.type')}</TypographyTitle>
         <Typography variant="h6" color="primary">
           {templateType}
         </Typography>
       </Box>
-      <Box>
-        <TypographyTitle>{t('templateLibrary.postTemplates.defaultDescription')}</TypographyTitle>
-        <Typography variant="body2" component="div">
-          <WrapperMarkdown>{defaultDescription}</WrapperMarkdown>
-        </Typography>
-      </Box>
-    </>
+    </Gutters>
   );
 };
 
-export default PostTemplateView;
+export default CalloutTemplateView;

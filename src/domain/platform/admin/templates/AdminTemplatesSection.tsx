@@ -102,10 +102,12 @@ type AdminTemplatesSectionProps<
   getImportedWhiteboardTemplateContent?: (template: TemplateWithInnovationPack<T>) => void;
   whiteboardTemplateContent?: V | undefined;
   importedTemplateContent?: V | undefined;
-  createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
-  editTemplateDialogComponent: ComponentType<
-    DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
-  >;
+  createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>> | undefined;
+  editTemplateDialogComponent:
+    | ComponentType<
+        DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+      >
+    | undefined;
   onCreateTemplate: (template: SubmittedValues & { templatesSetId: string }) => MutationResult<TemplateCreationResult>;
   onUpdateTemplate: (
     template: Partial<SubmittedValues> & ProfileUpdate & { templateId: string }
@@ -157,10 +159,10 @@ const AdminTemplatesSection = <
   getImportedWhiteboardTemplateContent = () => {},
   ...dialogProps
 }: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DialogProps>) => {
-  const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
+  const CreateTemplateDialog = (createTemplateDialogComponent ?? (() => null)) as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
-  const EditTemplateDialog = editTemplateDialogComponent as ComponentType<
+  const EditTemplateDialog = (editTemplateDialogComponent ?? (() => null)) as ComponentType<
     EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
   >;
 
@@ -265,6 +267,9 @@ const AdminTemplatesSection = <
   const deletingTemplate = deletingTemplateId ? templates?.find(({ id }) => id === deletingTemplateId) : undefined;
 
   const buildTemplateEditLink = (template: T) => {
+    if (!editTemplateDialogComponent) {
+      return;
+    }
     const viewLink = buildTemplateLink(template);
     return {
       editUrl: `${viewLink.to}/edit`,
@@ -305,9 +310,11 @@ const AdminTemplatesSection = <
               </Button>
             )}
             &nbsp;
-            <Button variant="outlined" onClick={openCreateTemplateDialog}>
-              {t('common.create-new')}
-            </Button>
+            {createTemplateDialogComponent && (
+              <Button variant="outlined" onClick={openCreateTemplateDialog}>
+                {t('common.create-new')}
+              </Button>
+            )}
           </Box>
         }
       >
