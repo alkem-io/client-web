@@ -8,12 +8,6 @@ import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CalloutTemplateCard from './CalloutTemplateCard';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
 import CalloutTemplateView from './CalloutTemplateView';
-/*
-import CalloutImportTemplateCard from './CalloutImportTemplateCard';
-import CalloutTemplateView from './CalloutTemplateView';
-import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
-import EditCalloutTemplateDialog from './EditCalloutTemplateDialog';
-*/
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
