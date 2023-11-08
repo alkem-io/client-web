@@ -29630,25 +29630,6 @@ export type CalloutTemplatePreviewQuery = {
                     type: TagsetType;
                   }>
                 | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
-              displayLocationTagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
             whiteboard?:
@@ -29860,19 +29841,6 @@ export type CalloutTemplatePreviewFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }>
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      displayLocationTagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
         | undefined;
       storageBucket: { __typename?: 'StorageBucket'; id: string };
     };

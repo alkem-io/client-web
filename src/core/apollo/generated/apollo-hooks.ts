@@ -3417,12 +3417,6 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
         tagsets {
           ...TagsetDetails
         }
-        references {
-          ...ReferenceDetails
-        }
-        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-          ...TagsetDetails
-        }
         storageBucket {
           id
         }
@@ -3444,7 +3438,6 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardRtDetailsFragmentDoc}
 `;

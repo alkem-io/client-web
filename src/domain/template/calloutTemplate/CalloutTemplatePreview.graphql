@@ -21,12 +21,6 @@ fragment CalloutTemplatePreview on CalloutTemplate {
       tagsets {
         ...TagsetDetails
       }
-      references {
-        ...ReferenceDetails
-      }
-      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-        ...TagsetDetails
-      }
       storageBucket {
         id
       }
