@@ -27336,6 +27336,42 @@ export type AdminSpaceTemplatesQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          calloutTemplates: Array<{
+            __typename?: 'CalloutTemplate';
+            id: string;
+            type: CalloutType;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          }>;
           postTemplates: Array<{
             __typename?: 'PostTemplate';
             id: string;
@@ -27450,11 +27486,10 @@ export type AdminSpaceTemplatesQuery = {
   };
 };
 
-export type AdminInnovationFlowTemplateFragment = {
-  __typename?: 'InnovationFlowTemplate';
+export type AdminCalloutTemplateFragment = {
+  __typename?: 'CalloutTemplate';
   id: string;
-  definition: string;
-  type: InnovationFlowType;
+  type: CalloutType;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -27562,6 +27597,44 @@ export type AdminWhiteboardTemplateFragment = {
   };
 };
 
+export type AdminInnovationFlowTemplateFragment = {
+  __typename?: 'InnovationFlowTemplate';
+  id: string;
+  definition: string;
+  type: InnovationFlowType;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type ProfileInfoWithVisualFragment = {
   __typename?: 'Profile';
   id: string;
@@ -27616,6 +27689,15 @@ export type SpaceTemplateSetIdQueryVariables = Exact<{
 export type SpaceTemplateSetIdQuery = {
   __typename?: 'Query';
   space: { __typename?: 'Space'; id: string; templates?: { __typename?: 'TemplatesSet'; id: string } | undefined };
+};
+
+export type DeleteCalloutTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteCalloutTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteCalloutTemplate: { __typename?: 'CalloutTemplate'; id: string };
 };
 
 export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;

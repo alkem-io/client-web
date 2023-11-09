@@ -2939,6 +2939,31 @@ export const StorageAggregatorFragmentDoc = gql`
   ${LoadableStorageAggregatorFragmentDoc}
   ${StorageBucketFragmentDoc}
 `;
+export const ProfileInfoWithVisualFragmentDoc = gql`
+  fragment ProfileInfoWithVisual on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+export const AdminCalloutTemplateFragmentDoc = gql`
+  fragment AdminCalloutTemplate on CalloutTemplate {
+    id
+    type
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -2956,21 +2981,6 @@ export const InnovationPackProfileFragmentDoc = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-`;
-export const ProfileInfoWithVisualFragmentDoc = gql`
-  fragment ProfileInfoWithVisual on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: CARD) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export const AdminPostTemplateFragmentDoc = gql`
   fragment AdminPostTemplate on PostTemplate {
@@ -21238,6 +21248,9 @@ export const AdminSpaceTemplatesDocument = gql`
           id
           myPrivileges
         }
+        calloutTemplates {
+          ...AdminCalloutTemplate
+        }
         postTemplates {
           ...AdminPostTemplate
         }
@@ -21250,6 +21263,7 @@ export const AdminSpaceTemplatesDocument = gql`
       }
     }
   }
+  ${AdminCalloutTemplateFragmentDoc}
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
@@ -21442,6 +21456,54 @@ export function refetchSpaceTemplateSetIdQuery(variables: SchemaTypes.SpaceTempl
   return { query: SpaceTemplateSetIdDocument, variables: variables };
 }
 
+export const DeleteCalloutTemplateDocument = gql`
+  mutation deleteCalloutTemplate($templateId: UUID!) {
+    deleteCalloutTemplate(deleteData: { ID: $templateId }) {
+      id
+    }
+  }
+`;
+export type DeleteCalloutTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCalloutTemplateMutation,
+  SchemaTypes.DeleteCalloutTemplateMutationVariables
+>;
+
+/**
+ * __useDeleteCalloutTemplateMutation__
+ *
+ * To run a mutation, you first call `useDeleteCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCalloutTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCalloutTemplateMutation, { data, loading, error }] = useDeleteCalloutTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useDeleteCalloutTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCalloutTemplateMutation,
+    SchemaTypes.DeleteCalloutTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCalloutTemplateMutation,
+    SchemaTypes.DeleteCalloutTemplateMutationVariables
+  >(DeleteCalloutTemplateDocument, options);
+}
+
+export type DeleteCalloutTemplateMutationHookResult = ReturnType<typeof useDeleteCalloutTemplateMutation>;
+export type DeleteCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalloutTemplateMutation>;
+export type DeleteCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCalloutTemplateMutation,
+  SchemaTypes.DeleteCalloutTemplateMutationVariables
+>;
 export const InnovationPacksDocument = gql`
   query InnovationPacks {
     platform {

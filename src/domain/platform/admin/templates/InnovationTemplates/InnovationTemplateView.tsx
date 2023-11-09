@@ -3,7 +3,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
 
@@ -35,7 +34,6 @@ const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
       </Box>
       <Box>
         <TypographyTitle>{t('common.tags')}</TypographyTitle>
-        <SectionSpacer half />
         <TagsComponent tags={tags || []} />
       </Box>
       <Box>

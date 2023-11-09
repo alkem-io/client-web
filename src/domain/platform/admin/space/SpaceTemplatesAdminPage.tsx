@@ -14,10 +14,12 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import AdminWhiteboardTemplatesSection from '../templates/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
+import AdminCalloutTemplatesSection from '../templates/CalloutTemplates/AdminCalloutTemplatesSection';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
   routePrefix: string;
+  calloutTemplatesRoutePath: string;
   postTemplatesRoutePath: string;
   whiteboardTemplatesRoutePath: string;
   innovationTemplatesRoutePath: string;
@@ -27,12 +29,13 @@ interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
   spaceId,
   routePrefix,
+  calloutTemplatesRoutePath,
   postTemplatesRoutePath,
   whiteboardTemplatesRoutePath,
   innovationTemplatesRoutePath,
   edit = false,
 }) => {
-  const { postTemplateId, whiteboardTemplateId, innovationTemplateId } = useParams();
+  const { calloutTemplateId, postTemplateId, whiteboardTemplateId, innovationTemplateId } = useParams();
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
@@ -45,6 +48,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
     useInnovationPacksLazyQuery();
 
   const {
+    calloutTemplates,
     postTemplates,
     whiteboardTemplates,
     innovationFlowTemplates,
@@ -86,6 +90,19 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
       <Gutters>
+        <AdminCalloutTemplatesSection
+          templateId={calloutTemplateId}
+          templatesSetId={templatesSetID}
+          templates={calloutTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${calloutTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={[]}
+          canImportTemplates={canImportTemplates}
+        />
         <AdminPostTemplatesSection
           templateId={postTemplateId}
           templatesSetId={templatesSetID}
