@@ -51,7 +51,6 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ onSelect, disabl
               <Button
                 size="large"
                 startIcon={<Icon />}
-                // startIcon={<Icon fontSize="large" component={calloutIcons[calloutType]} />}
                 onClick={handleClick(calloutType)}
                 variant="outlined"
                 disabled={disabled}
