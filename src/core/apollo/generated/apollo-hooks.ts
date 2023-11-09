@@ -21329,50 +21329,8 @@ export const CreateCalloutTemplateDocument = gql`
       }
     ) {
       id
-      type
-      profile {
-        ...TemplateCardProfileInfo
-      }
-      framing {
-        profile {
-          id
-          displayName
-          description
-          tagset {
-            ...TagsetDetails
-          }
-          tagsets {
-            ...TagsetDetails
-          }
-          storageBucket {
-            id
-          }
-        }
-        whiteboard {
-          ...WhiteboardDetails
-          ...WhiteboardContent
-        }
-        whiteboardRt {
-          ...WhiteboardRtDetails
-          ...WhiteboardRtContent
-        }
-      }
-      contributionPolicy {
-        state
-      }
-      contributionDefaults {
-        id
-        postDescription
-        whiteboardContent
-      }
     }
   }
-  ${TemplateCardProfileInfoFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${WhiteboardDetailsFragmentDoc}
-  ${WhiteboardContentFragmentDoc}
-  ${WhiteboardRtDetailsFragmentDoc}
-  ${WhiteboardRtContentFragmentDoc}
 `;
 export type CreateCalloutTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCalloutTemplateMutation,

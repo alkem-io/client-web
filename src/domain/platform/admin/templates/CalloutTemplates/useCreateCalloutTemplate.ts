@@ -18,6 +18,7 @@ import { WhiteboardFieldSubmittedValues } from '../../../../collaboration/callou
 import { WhiteboardRtFieldSubmittedValues } from '../../../../collaboration/callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardRtField';
 import { CalloutLayoutProps } from '../../../../collaboration/CalloutBlock/CalloutLayout';
 import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import { evictFromCache } from '../../../../../core/apollo/utils/removeFromCache';
 
 export interface CalloutCreationType {
   framing: {
@@ -133,6 +134,9 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
               : undefined,
           },
           contributionPolicy: callout.contributionPolicy,
+        },
+        update: cache => {
+          evictFromCache(cache, templatesSetId, 'TemplatesSet');
         },
       });
 
