@@ -15,7 +15,10 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import { useWhiteboardTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCalloutTemplateContentLazyQuery,
+  useWhiteboardTemplateContentLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../core/ui/actions/Actions';
@@ -28,6 +31,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import CalloutTemplatesLibrary from '../CalloutTemplatesLibrary/CalloutTemplatesLibrary';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -53,6 +57,7 @@ export interface CalloutCreationDialogProps {
   displayLocation: CalloutDisplayLocation;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
+  canCreateCalloutFromTemplate?: boolean;
 }
 
 export interface TemplateProfile {
@@ -76,6 +81,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   displayLocation,
   flowState,
   journeyTypeName,
+  canCreateCalloutFromTemplate = false,
 }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
@@ -144,7 +150,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
         result = await onCreateCallout(newCallout);
       } catch (ex) {
-        console.error(ex); // eslint-disable no-console
+        // eslint-disable-next-line no-console
+        console.error(ex);
       } finally {
         setCallout({});
         closePublishDialog();
@@ -159,6 +166,46 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
   }, [onClose]);
 
+  const [fetchCalloutTemplateContent] = useCalloutTemplateContentLazyQuery();
+
+  const handleSelectTemplate = async ({ id: calloutTemplateId }: Identifiable) => {
+    const { data } = await fetchCalloutTemplateContent({
+      variables: {
+        calloutTemplateId,
+      },
+    });
+
+    const template = data?.lookup.calloutTemplate;
+
+    if (!template) {
+      throw new Error("Couldn't load CalloutTemplate");
+    }
+
+    const whiteboard =
+      template.type === CalloutType.Whiteboard
+        ? template.framing.whiteboard
+        : template.type === CalloutType.WhiteboardRt
+        ? template.framing.whiteboardRt
+        : undefined;
+
+    setCallout({
+      description: template.framing.profile.description,
+      tags: template.framing.profile.tagset?.tags,
+      references: template.framing.profile.references,
+      type: template.type,
+      postDescription: template.contributionDefaults?.postDescription,
+      whiteboardContent: template.contributionDefaults?.whiteboardContent,
+      whiteboard: whiteboard && {
+        content: whiteboard.content,
+        profileData: {
+          displayName: 'Whiteboard',
+        },
+        previewImages: [],
+      },
+    });
+    setSelectedCalloutType(template.type);
+  };
+
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
 
   return (
@@ -170,7 +217,14 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           </DialogHeader>
           <DialogContent>
             <Gutters>
-              <CalloutTypeSelect value={selectedCalloutType} onSelect={handleSelectCalloutType} />
+              <CalloutTypeSelect
+                onSelect={handleSelectCalloutType}
+                extraButtons={
+                  canCreateCalloutFromTemplate ? (
+                    <CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />
+                  ) : undefined
+                }
+              />
             </Gutters>
           </DialogContent>
         </>

@@ -7,6 +7,7 @@ import CardsLayout from '../../../../core/ui/card/cardsLayout/CardsLayout';
 import { Text } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { times } from 'lodash';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const GallerySkeleton: FC<BoxProps> = props => {
   return (
@@ -19,9 +20,9 @@ const GallerySkeleton: FC<BoxProps> = props => {
 };
 
 export interface CollaborationTemplatesLibraryGalleryProps<Template extends TemplateBase> {
-  templates: Template[] | undefined;
+  templates: (Template & Identifiable)[] | undefined;
   templateCardComponent: ComponentType<TemplateCardBaseProps<Template>>;
-  onPreviewTemplate: (template: Template) => void;
+  onPreviewTemplate: (template: Template & Identifiable) => void;
   loading?: boolean;
 }
 

@@ -1,18 +1,31 @@
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Visual } from '../../../common/visual/Visual';
 
-export interface TemplateBase extends Identifiable {
-  description?: string;
-  tags?: string[];
+export interface TemplateBase {
+  profile: {
+    displayName: string;
+    description?: string;
+    tagset?: {
+      tags: string[];
+    };
+    visual?: Visual;
+  };
 }
 
-export interface TemplateBaseWithContent extends TemplateBase {}
+interface TemplateInnovationPack {
+  profile: {
+    displayName: string;
+  };
+  provider?: {
+    profile: {
+      displayName: string;
+      avatar?: Visual;
+    };
+  };
+}
 
-export interface TemplateCardBaseProps<Template extends TemplateBase> {
+export interface TemplateCardBaseProps<Template extends TemplateBase = TemplateBase> {
   template?: Template;
+  innovationPack?: TemplateInnovationPack;
   loading?: boolean;
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-}
-
-export interface TemplatePreviewBaseProps<TemplateValue extends TemplateBaseWithContent> {
-  template?: TemplateValue;
 }

@@ -23,6 +23,7 @@ const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultCom
 }: CardSegmentCaptionProps & BoxProps<D, P>) => {
   return (
     <Box
+      flexShrink={0}
       display="flex"
       gap={1}
       height={gutters(2)}

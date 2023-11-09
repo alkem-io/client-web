@@ -1,0 +1,38 @@
+mutation createCalloutTemplate(
+  $templatesSetId: UUID!
+  $framing: CreateCalloutFramingInput!
+  $contributionDefaults: CreateCalloutContributionDefaultsInput!
+  $contributionPolicy: CreateCalloutContributionPolicyInput!
+  $profile: CreateProfileInput!
+  $type: CalloutType!
+  $tags: [String!]
+) {
+  createCalloutTemplate(
+    calloutTemplateInput: {
+      templatesSetID: $templatesSetId
+      framing: $framing
+      contributionDefaults: $contributionDefaults
+      contributionPolicy: $contributionPolicy
+      profile: $profile
+      type: $type
+      tags: $tags
+    }
+  ) {
+    id
+  }
+}
+
+query SpaceTemplateSetId($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    templates {
+      id
+    }
+  }
+}
+
+mutation deleteCalloutTemplate($templateId: UUID!) {
+  deleteCalloutTemplate(deleteData: { ID: $templateId }) {
+    id
+  }
+}

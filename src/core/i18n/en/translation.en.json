@@ -146,7 +146,8 @@
     "use": "Use",
     "fullscreen": "Toggle full screen",
     "changeLanguage": "Change language",
-    "getHelp": "Get help"
+    "getHelp": "Get help",
+    "saveAsTemplate": "Save as template"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -199,6 +200,7 @@
     "callout": "Callout",
     "callouts": "Callouts",
     "collaborationTools": "Collaboration Tools",
+    "createdBy": "Created by",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Calendar",
@@ -285,6 +287,7 @@
     "space-settings": "$t(common.settings)",
     "search": "Search",
     "storage": "Storage",
+    "type": "Type",
     "reference": "Reference",
     "references": "References",
     "notifications": "Notifications",
@@ -466,9 +469,14 @@
         "OTHER": "Other"
       },
       "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard Templates",
-        "PostTemplate": "Post Templates",
-        "InnovationFlowTemplate": "Innovation Flows"
+        "WhiteboardTemplate": "Whiteboard Template",
+        "WhiteboardTemplate_plural": "Whiteboard Templates",
+        "PostTemplate": "Post Template",
+        "PostTemplate_plural": "Post Templates",
+        "InnovationFlowTemplate": "Innovation Flow",
+        "InnovationFlowTemplate_plural": "Innovation Flows",
+        "CalloutTemplate": "Callout Template",
+        "CalloutTemplate_plural": "Callout Templates"
       }
     },
     "blocks": {
@@ -678,7 +686,7 @@
       },
       "vision": {
         "title": "What is this community about?",
-        "description": "What is the frame of reference for this Space?",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
         "placeholder": ""
       },
       "who": {
@@ -710,7 +718,7 @@
       },
       "vision": {
         "title": "Future Vision",
-        "description": "What does success look like? What should a solution to this Challenge comprise?",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Challenge",
         "placeholder": ""
       },
       "who": {
@@ -750,7 +758,7 @@
       },
       "vision": {
         "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
+        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this information will also be shown as a standalone description on the Dashboard of this Opportunity.",
         "placeholder": ""
       },
       "who": {
@@ -779,6 +787,12 @@
     }
   },
   "templateLibrary": {
+    "calloutTemplates": {
+      "name": "Callout template",
+      "title": "Template Library: Collaboration Tools",
+      "type": "Callout type",
+      "description": "Description"
+    },
     "postTemplates": {
       "name": "Post template",
       "title": "Template Library: Posts",
@@ -1055,7 +1069,8 @@
         "LINK_COLLECTION": "Collection of Links",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard RealTime"
-      }
+      },
+      "callout-templates-library": "...or have a look at the library!"
     },
     "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",

@@ -229,6 +229,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         mergeWhiteboard(whiteboardApi, template.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+        // @ts-ignore
         logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`));
       }
     }
@@ -283,7 +284,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                   maxWidth={gutters(30)}
                 />
               )}
-              {options.canEdit && <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />}
+              {options.canEdit && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
               <span>
                 RT<sup title=":)">beta</sup>
               </span>

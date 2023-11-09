@@ -60,6 +60,7 @@ export interface JourneyDashboardViewProps
   callouts: {
     groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
+    canCreateCalloutFromTemplate: boolean;
     calloutNames: string[];
     loading: boolean;
     refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
@@ -177,6 +178,7 @@ const JourneyDashboardView = ({
           callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
           spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
+          canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
           journeyTypeName={journeyTypeName}
           calloutNames={callouts.calloutNames}
@@ -202,6 +204,7 @@ const JourneyDashboardView = ({
           callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
           spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
+          canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
           journeyTypeName={journeyTypeName}
           calloutNames={callouts.calloutNames}

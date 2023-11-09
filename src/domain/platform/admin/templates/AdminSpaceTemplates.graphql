@@ -7,6 +7,9 @@ query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
         id
         myPrivileges
       }
+      calloutTemplates {
+        ...AdminCalloutTemplate
+      }
       postTemplates {
         ...AdminPostTemplate
       }
@@ -20,9 +23,8 @@ query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
   }
 }
 
-fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
+fragment AdminCalloutTemplate on CalloutTemplate {
   id
-  definition
   type
   profile {
     ...ProfileInfoWithVisual
@@ -40,6 +42,15 @@ fragment AdminPostTemplate on PostTemplate {
 
 fragment AdminWhiteboardTemplate on WhiteboardTemplate {
   id
+  profile {
+    ...ProfileInfoWithVisual
+  }
+}
+
+fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
+  id
+  definition
+  type
   profile {
     ...ProfileInfoWithVisual
   }

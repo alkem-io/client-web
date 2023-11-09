@@ -3,7 +3,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
@@ -33,7 +32,6 @@ const PostTemplateView = ({ template }: PostTemplateViewProps) => {
       </Box>
       <Box>
         <TypographyTitle>{t('common.tags')}</TypographyTitle>
-        <SectionSpacer half />
         <TagsComponent tags={tags || []} />
       </Box>
       <Box>

@@ -3,29 +3,21 @@ import React, { ComponentType, ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
-import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
-import { TemplateInnovationPackMetaInfo } from './InnovationPack';
+import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import { Identifiable } from '../../../../../core/utils/Identifiable';
 
-export interface ImportTemplatesDialogPreviewStepProps<
-  T extends Template,
-  Q extends T & TemplateInnovationPackMetaInfo,
-  V extends TemplateValue
-> {
+export interface ImportTemplatesDialogPreviewStepProps<T extends Template, V extends T> {
   onClose: () => void;
-  template: Q;
-  templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
+  template: T & Identifiable;
+  templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<T & Identifiable>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
-  getImportedTemplateContent?: (template: Q) => void;
+  getImportedTemplateContent?: (template: T) => void;
   importedTemplateContent?: V | undefined;
   actions?: ReactNode;
 }
 
-const ImportTemplatesDialogPreviewStep = <
-  T extends Template,
-  Q extends T & TemplateInnovationPackMetaInfo,
-  V extends TemplateValue
->({
+const ImportTemplatesDialogPreviewStep = <T extends Template, V extends T>({
   template,
   templatePreviewCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
@@ -33,7 +25,7 @@ const ImportTemplatesDialogPreviewStep = <
   importedTemplateContent,
   actions,
   onClose,
-}: ImportTemplatesDialogPreviewStepProps<T, Q, V>) => {
+}: ImportTemplatesDialogPreviewStepProps<T, V>) => {
   const { t } = useTranslation();
 
   const getTemplateContent = useCallback(

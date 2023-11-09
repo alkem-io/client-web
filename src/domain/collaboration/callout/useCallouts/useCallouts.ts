@@ -60,6 +60,7 @@ export type TypedCallout = Pick<
   draft: boolean;
   editable: boolean;
   movable: boolean;
+  canSaveAsTemplate: boolean;
   flowStates: string[] | undefined;
   displayLocation: string;
   comments: CommentsWithMessagesFragmentWithCallout;
@@ -77,6 +78,7 @@ export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
+  canCreateCalloutFromTemplate: boolean;
   canReadCallout: boolean;
   calloutNames: string[];
   loading: boolean;
@@ -144,6 +146,9 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const canCreateCallout =
     collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout) ?? false;
 
+  const canCreateCalloutFromTemplate =
+    collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.SaveAsTemplate) ?? false;
+
   const canReadCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
   const callouts = useMemo(
@@ -151,7 +156,10 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       collaboration?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const movable = collaboration.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const movable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const canSaveAsTemplate = collaboration?.authorization?.myPrivileges?.includes(
+          AuthorizationPrivilege.SaveAsTemplate
+        );
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
@@ -176,6 +184,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           draft,
           editable,
           movable,
+          canSaveAsTemplate,
           flowStates,
           displayLocation: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
         } as TypedCallout;
@@ -233,6 +242,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     callouts,
     groupedCallouts,
     canCreateCallout,
+    canCreateCalloutFromTemplate,
     canReadCallout,
     calloutNames,
     loading: calloutsLoading,

@@ -1,36 +1,11 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { getVisualCardBanner } from '../../../../common/visual/utils/visuals.utils';
-import { WhiteboardIcon } from '../../../../collaboration/whiteboard/icon/WhiteboardIcon';
-import InnovationPackIcon from '../../../../collaboration/InnovationPack/InnovationPackIcon';
-import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
-import ContributeCard from '../../../../../core/ui/card/ContributeCard';
-import CardHeader from '../../../../../core/ui/card/CardHeader';
-import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
-import CardImage from '../../../../../core/ui/card/CardImage';
-import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
-import { Caption } from '../../../../../core/ui/typography';
+import WhiteboardTemplateCard from '../../../../collaboration/whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
 
-interface WhiteboardImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
+interface WhiteboardImportTemplateCardProps extends TemplateImportCardComponentProps {}
 
-const WhiteboardImportTemplateCard = ({ template, onClick }: WhiteboardImportTemplateCardProps) => {
-  return (
-    <ContributeCard onClick={onClick}>
-      <CardHeader title={template.profile.displayName} iconComponent={WhiteboardIcon}>
-        <CardHeaderCaption noWrap logoUrl={template.provider?.profile.avatar?.uri}>
-          {template.provider?.profile.displayName}
-        </CardHeaderCaption>
-      </CardHeader>
-      <CardImage
-        src={getVisualCardBanner(template.profile.visual)}
-        alt={template.profile.displayName}
-        defaultImage={<WhiteboardIcon />}
-      />
-      <CardSegmentCaption icon={<InnovationPackIcon />}>
-        <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>
-      </CardSegmentCaption>
-    </ContributeCard>
-  );
+const WhiteboardImportTemplateCard = ({ template, ...props }: WhiteboardImportTemplateCardProps) => {
+  return <WhiteboardTemplateCard template={template} innovationPack={template.innovationPack} {...props} />;
 };
 
 export default WhiteboardImportTemplateCard;

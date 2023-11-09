@@ -1,11 +1,13 @@
 import { FC } from 'react';
-import { TemplatePreviewBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { InnovationFlowTemplate } from '../InnovationFlowTemplateCard/InnovationFlowTemplate';
 import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import { useInnovationFlowTemplateDefinitionQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Box, CircularProgress } from '@mui/material';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
-interface InnovationFlowTemplatePreviewProps extends TemplatePreviewBaseProps<InnovationFlowTemplate> {}
+interface InnovationFlowTemplatePreviewProps {
+  template?: Identifiable;
+}
 
 const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({ template }) => {
   const { data, loading } = useInnovationFlowTemplateDefinitionQuery({
@@ -16,15 +18,20 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
   });
 
   const templateDefinition = data?.lookup.innovationFlowTemplate?.definition;
+
   if (loading || !templateDefinition) {
     return (
       <Box textAlign="center">
         <CircularProgress />
       </Box>
     );
-  } else {
-    return <SafeInnovationFlowVisualizer definition={templateDefinition} />;
   }
+
+  return (
+    <PageContentBlock>
+      <SafeInnovationFlowVisualizer definition={templateDefinition} />
+    </PageContentBlock>
+  );
 };
 
 export default InnovationFlowTemplatePreview;

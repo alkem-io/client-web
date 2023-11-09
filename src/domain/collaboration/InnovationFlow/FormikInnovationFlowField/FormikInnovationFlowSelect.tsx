@@ -8,11 +8,11 @@ import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { BlockSectionTitle, BlockTitle, Caption, Text } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import InnovationFlowTemplatesLibrary from '../InnovationFlowTemplatesLibrary/InnovationFlowTemplatesLibrary';
-import { InnovationFlowTemplate } from '../InnovationFlowTemplateCard/InnovationFlowTemplate';
 import { useInnovationFlowTemplateDefinitionQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
 import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const DiagramContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -51,9 +51,10 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
     return tErr(meta.error as TranslationKey, { field: title });
   }, [isError, meta.error, tErr, title]);
 
-  const handleSelectTemplate = (template: InnovationFlowTemplate) => {
+  const handleSelectTemplate = (template: Identifiable) => {
     helpers.setValue(template.id);
   };
+
   const { data: innovationFlowData, loading: loadingInnovationFlow } = useInnovationFlowTemplateDefinitionQuery({
     variables: { innovationFlowTemplateID: field.value },
     skip: !field.value,
@@ -65,7 +66,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
     <Box>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <BlockTitle>{title}</BlockTitle>
-        <InnovationFlowTemplatesLibrary onSelectTemplate={handleSelectTemplate} filterType={type} disabled={disabled} />
+        <InnovationFlowTemplatesLibrary onImportTemplate={handleSelectTemplate} filterType={type} disabled={disabled} />
       </Box>
       {(loadingInnovationFlow || loading) && <CircularProgress size={20} />}
       {template && (

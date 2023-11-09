@@ -27,6 +27,7 @@ interface JourneyCalloutsTabViewProps extends JourneyLocation {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
+  canCreateCalloutFromTemplate: boolean;
   calloutNames: string[];
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
@@ -42,6 +43,7 @@ const JourneyCalloutsTabView = ({
   callouts: allCallouts,
   groupedCallouts,
   canCreateCallout,
+  canCreateCalloutFromTemplate,
   calloutNames,
   loading,
   onCalloutsSortOrderUpdate,
@@ -101,6 +103,7 @@ const JourneyCalloutsTabView = ({
               callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeLeft])}
               spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
+              canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loading}
               journeyTypeName={journeyTypeName}
               calloutNames={calloutNames}
@@ -126,6 +129,7 @@ const JourneyCalloutsTabView = ({
               callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeRight])}
               spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
+              canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loading}
               journeyTypeName={journeyTypeName}
               calloutNames={calloutNames}

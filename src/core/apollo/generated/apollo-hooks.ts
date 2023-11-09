@@ -405,6 +405,35 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
+export const TemplateCardProfileInfoFragmentDoc = gql`
+  fragment TemplateCardProfileInfo on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      id
+      uri
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export const CalloutTemplateCardFragmentDoc = gql`
+  fragment CalloutTemplateCard on CalloutTemplate {
+    id
+    type
+    profile {
+      ...TemplateCardProfileInfo
+    }
+    contributionPolicy {
+      allowedContributionTypes
+      state
+    }
+  }
+  ${TemplateCardProfileInfoFragmentDoc}
+`;
 export const ProfileDisplayNameFragmentDoc = gql`
   fragment ProfileDisplayName on Profile {
     id
@@ -2503,7 +2532,7 @@ export const SpaceInfoFragmentDoc = gql`
       id
       myPrivileges
     }
-    collaboration {
+    collaboration @include(if: $includeCollaboration) {
       id
       authorization {
         id
@@ -2650,21 +2679,6 @@ export const SpaceDashboardNavigationCommunityFragmentDoc = gql`
     id
     myMembershipStatus
   }
-`;
-export const TemplateCardProfileInfoFragmentDoc = gql`
-  fragment TemplateCardProfileInfo on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: CARD) {
-      id
-      uri
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const PostTemplateCardFragmentDoc = gql`
   fragment PostTemplateCard on PostTemplate {
@@ -2925,6 +2939,31 @@ export const StorageAggregatorFragmentDoc = gql`
   ${LoadableStorageAggregatorFragmentDoc}
   ${StorageBucketFragmentDoc}
 `;
+export const ProfileInfoWithVisualFragmentDoc = gql`
+  fragment ProfileInfoWithVisual on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+export const AdminCalloutTemplateFragmentDoc = gql`
+  fragment AdminCalloutTemplate on CalloutTemplate {
+    id
+    type
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -2942,21 +2981,6 @@ export const InnovationPackProfileFragmentDoc = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-`;
-export const ProfileInfoWithVisualFragmentDoc = gql`
-  fragment ProfileInfoWithVisual on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: CARD) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export const AdminPostTemplateFragmentDoc = gql`
   fragment AdminPostTemplate on PostTemplate {
@@ -3391,6 +3415,42 @@ export const PostInCalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
     }
   }
   ${ProfileStorageConfigFragmentDoc}
+`;
+export const CalloutTemplatePreviewFragmentDoc = gql`
+  fragment CalloutTemplatePreview on CalloutTemplate {
+    id
+    type
+    framing {
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        storageBucket {
+          id
+        }
+      }
+      whiteboard {
+        ...WhiteboardDetails
+      }
+      whiteboardRt {
+        ...WhiteboardRtDetails
+      }
+    }
+    contributionPolicy {
+      state
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardRtDetailsFragmentDoc}
 `;
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
@@ -5340,6 +5400,7 @@ export const PlatformInnovationFlowTemplatesLibraryDocument = gql`
           }
           provider {
             id
+            nameID
             profile {
               ...TemplateProviderProfile
             }
@@ -5762,6 +5823,282 @@ export function refetchActivityLogOnCollaborationQuery(
   variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
+}
+
+export const SpaceCalloutTemplatesLibraryDocument = gql`
+  query SpaceCalloutTemplatesLibrary($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      templates {
+        id
+        calloutTemplates {
+          ...CalloutTemplateCard
+        }
+      }
+      host {
+        id
+        nameID
+        profile {
+          ...TemplateProviderProfile
+        }
+      }
+    }
+  }
+  ${CalloutTemplateCardFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
+`;
+
+/**
+ * __useSpaceCalloutTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `useSpaceCalloutTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCalloutTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCalloutTemplatesLibraryQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceCalloutTemplatesLibraryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceCalloutTemplatesLibraryQuery,
+    SchemaTypes.SpaceCalloutTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceCalloutTemplatesLibraryQuery,
+    SchemaTypes.SpaceCalloutTemplatesLibraryQueryVariables
+  >(SpaceCalloutTemplatesLibraryDocument, options);
+}
+
+export function useSpaceCalloutTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCalloutTemplatesLibraryQuery,
+    SchemaTypes.SpaceCalloutTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceCalloutTemplatesLibraryQuery,
+    SchemaTypes.SpaceCalloutTemplatesLibraryQueryVariables
+  >(SpaceCalloutTemplatesLibraryDocument, options);
+}
+
+export type SpaceCalloutTemplatesLibraryQueryHookResult = ReturnType<typeof useSpaceCalloutTemplatesLibraryQuery>;
+export type SpaceCalloutTemplatesLibraryLazyQueryHookResult = ReturnType<
+  typeof useSpaceCalloutTemplatesLibraryLazyQuery
+>;
+export type SpaceCalloutTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCalloutTemplatesLibraryQuery,
+  SchemaTypes.SpaceCalloutTemplatesLibraryQueryVariables
+>;
+export function refetchSpaceCalloutTemplatesLibraryQuery(
+  variables: SchemaTypes.SpaceCalloutTemplatesLibraryQueryVariables
+) {
+  return { query: SpaceCalloutTemplatesLibraryDocument, variables: variables };
+}
+
+export const PlatformCalloutTemplatesLibraryDocument = gql`
+  query PlatformCalloutTemplatesLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          id
+          nameID
+          profile {
+            id
+            displayName
+          }
+          provider {
+            id
+            nameID
+            profile {
+              ...TemplateProviderProfile
+            }
+          }
+          templates {
+            id
+            calloutTemplates {
+              ...CalloutTemplateCard
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+  ${CalloutTemplateCardFragmentDoc}
+`;
+
+/**
+ * __usePlatformCalloutTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `usePlatformCalloutTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformCalloutTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformCalloutTemplatesLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformCalloutTemplatesLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformCalloutTemplatesLibraryQuery,
+    SchemaTypes.PlatformCalloutTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformCalloutTemplatesLibraryQuery,
+    SchemaTypes.PlatformCalloutTemplatesLibraryQueryVariables
+  >(PlatformCalloutTemplatesLibraryDocument, options);
+}
+
+export function usePlatformCalloutTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformCalloutTemplatesLibraryQuery,
+    SchemaTypes.PlatformCalloutTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformCalloutTemplatesLibraryQuery,
+    SchemaTypes.PlatformCalloutTemplatesLibraryQueryVariables
+  >(PlatformCalloutTemplatesLibraryDocument, options);
+}
+
+export type PlatformCalloutTemplatesLibraryQueryHookResult = ReturnType<typeof usePlatformCalloutTemplatesLibraryQuery>;
+export type PlatformCalloutTemplatesLibraryLazyQueryHookResult = ReturnType<
+  typeof usePlatformCalloutTemplatesLibraryLazyQuery
+>;
+export type PlatformCalloutTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformCalloutTemplatesLibraryQuery,
+  SchemaTypes.PlatformCalloutTemplatesLibraryQueryVariables
+>;
+export function refetchPlatformCalloutTemplatesLibraryQuery(
+  variables?: SchemaTypes.PlatformCalloutTemplatesLibraryQueryVariables
+) {
+  return { query: PlatformCalloutTemplatesLibraryDocument, variables: variables };
+}
+
+export const CalloutTemplateContentDocument = gql`
+  query CalloutTemplateContent($calloutTemplateId: UUID!) {
+    lookup {
+      calloutTemplate(ID: $calloutTemplateId) {
+        id
+        type
+        profile {
+          ...TemplateCardProfileInfo
+        }
+        framing {
+          profile {
+            id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            tagsets {
+              ...TagsetDetails
+            }
+            storageBucket {
+              id
+            }
+            references {
+              ...ReferenceDetails
+            }
+          }
+          whiteboard {
+            ...WhiteboardDetails
+            ...WhiteboardContent
+          }
+          whiteboardRt {
+            ...WhiteboardRtDetails
+            ...WhiteboardRtContent
+          }
+        }
+        contributionPolicy {
+          state
+        }
+        contributionDefaults {
+          id
+          postDescription
+          whiteboardContent
+        }
+      }
+    }
+  }
+  ${TemplateCardProfileInfoFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
+  ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardContentFragmentDoc}
+  ${WhiteboardRtDetailsFragmentDoc}
+  ${WhiteboardRtContentFragmentDoc}
+`;
+
+/**
+ * __useCalloutTemplateContentQuery__
+ *
+ * To run a query within a React component, call `useCalloutTemplateContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutTemplateContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutTemplateContentQuery({
+ *   variables: {
+ *      calloutTemplateId: // value for 'calloutTemplateId'
+ *   },
+ * });
+ */
+export function useCalloutTemplateContentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutTemplateContentQuery,
+    SchemaTypes.CalloutTemplateContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutTemplateContentQuery, SchemaTypes.CalloutTemplateContentQueryVariables>(
+    CalloutTemplateContentDocument,
+    options
+  );
+}
+
+export function useCalloutTemplateContentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutTemplateContentQuery,
+    SchemaTypes.CalloutTemplateContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutTemplateContentQuery, SchemaTypes.CalloutTemplateContentQueryVariables>(
+    CalloutTemplateContentDocument,
+    options
+  );
+}
+
+export type CalloutTemplateContentQueryHookResult = ReturnType<typeof useCalloutTemplateContentQuery>;
+export type CalloutTemplateContentLazyQueryHookResult = ReturnType<typeof useCalloutTemplateContentLazyQuery>;
+export type CalloutTemplateContentQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutTemplateContentQuery,
+  SchemaTypes.CalloutTemplateContentQueryVariables
+>;
+export function refetchCalloutTemplateContentQuery(variables: SchemaTypes.CalloutTemplateContentQueryVariables) {
+  return { query: CalloutTemplateContentDocument, variables: variables };
 }
 
 export const UpdateCalloutsSortOrderDocument = gql`
@@ -7062,6 +7399,7 @@ export const PlatformPostTemplatesLibraryDocument = gql`
           }
           provider {
             id
+            nameID
             profile {
               ...TemplateProviderProfile
             }
@@ -8020,6 +8358,7 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
           }
           provider {
             id
+            nameID
             profile {
               ...TemplateProviderProfile
             }
@@ -19295,7 +19634,7 @@ export function refetchSpaceCommunityPageQuery(variables: SchemaTypes.SpaceCommu
 }
 
 export const SpaceProviderDocument = gql`
-  query spaceProvider($spaceId: UUID_NAMEID!) {
+  query spaceProvider($spaceId: UUID_NAMEID!, $includeCollaboration: Boolean = false) {
     space(ID: $spaceId) {
       ...SpaceInfo
     }
@@ -19316,6 +19655,7 @@ export const SpaceProviderDocument = gql`
  * const { data, loading, error } = useSpaceProviderQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      includeCollaboration: // value for 'includeCollaboration'
  *   },
  * });
  */
@@ -20909,6 +21249,9 @@ export const AdminSpaceTemplatesDocument = gql`
           id
           myPrivileges
         }
+        calloutTemplates {
+          ...AdminCalloutTemplate
+        }
         postTemplates {
           ...AdminPostTemplate
         }
@@ -20921,6 +21264,7 @@ export const AdminSpaceTemplatesDocument = gql`
       }
     }
   }
+  ${AdminCalloutTemplateFragmentDoc}
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
@@ -20978,6 +21322,189 @@ export function refetchAdminSpaceTemplatesQuery(variables: SchemaTypes.AdminSpac
   return { query: AdminSpaceTemplatesDocument, variables: variables };
 }
 
+export const CreateCalloutTemplateDocument = gql`
+  mutation createCalloutTemplate(
+    $templatesSetId: UUID!
+    $framing: CreateCalloutFramingInput!
+    $contributionDefaults: CreateCalloutContributionDefaultsInput!
+    $contributionPolicy: CreateCalloutContributionPolicyInput!
+    $profile: CreateProfileInput!
+    $type: CalloutType!
+    $tags: [String!]
+  ) {
+    createCalloutTemplate(
+      calloutTemplateInput: {
+        templatesSetID: $templatesSetId
+        framing: $framing
+        contributionDefaults: $contributionDefaults
+        contributionPolicy: $contributionPolicy
+        profile: $profile
+        type: $type
+        tags: $tags
+      }
+    ) {
+      id
+    }
+  }
+`;
+export type CreateCalloutTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateCalloutTemplateMutation,
+  SchemaTypes.CreateCalloutTemplateMutationVariables
+>;
+
+/**
+ * __useCreateCalloutTemplateMutation__
+ *
+ * To run a mutation, you first call `useCreateCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCalloutTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCalloutTemplateMutation, { data, loading, error }] = useCreateCalloutTemplateMutation({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      framing: // value for 'framing'
+ *      contributionDefaults: // value for 'contributionDefaults'
+ *      contributionPolicy: // value for 'contributionPolicy'
+ *      profile: // value for 'profile'
+ *      type: // value for 'type'
+ *      tags: // value for 'tags'
+ *   },
+ * });
+ */
+export function useCreateCalloutTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateCalloutTemplateMutation,
+    SchemaTypes.CreateCalloutTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateCalloutTemplateMutation,
+    SchemaTypes.CreateCalloutTemplateMutationVariables
+  >(CreateCalloutTemplateDocument, options);
+}
+
+export type CreateCalloutTemplateMutationHookResult = ReturnType<typeof useCreateCalloutTemplateMutation>;
+export type CreateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalloutTemplateMutation>;
+export type CreateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateCalloutTemplateMutation,
+  SchemaTypes.CreateCalloutTemplateMutationVariables
+>;
+export const SpaceTemplateSetIdDocument = gql`
+  query SpaceTemplateSetId($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      templates {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceTemplateSetIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceTemplateSetIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceTemplateSetIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceTemplateSetIdQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceTemplateSetIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceTemplateSetIdQuery,
+    SchemaTypes.SpaceTemplateSetIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceTemplateSetIdQuery, SchemaTypes.SpaceTemplateSetIdQueryVariables>(
+    SpaceTemplateSetIdDocument,
+    options
+  );
+}
+
+export function useSpaceTemplateSetIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceTemplateSetIdQuery,
+    SchemaTypes.SpaceTemplateSetIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceTemplateSetIdQuery, SchemaTypes.SpaceTemplateSetIdQueryVariables>(
+    SpaceTemplateSetIdDocument,
+    options
+  );
+}
+
+export type SpaceTemplateSetIdQueryHookResult = ReturnType<typeof useSpaceTemplateSetIdQuery>;
+export type SpaceTemplateSetIdLazyQueryHookResult = ReturnType<typeof useSpaceTemplateSetIdLazyQuery>;
+export type SpaceTemplateSetIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceTemplateSetIdQuery,
+  SchemaTypes.SpaceTemplateSetIdQueryVariables
+>;
+export function refetchSpaceTemplateSetIdQuery(variables: SchemaTypes.SpaceTemplateSetIdQueryVariables) {
+  return { query: SpaceTemplateSetIdDocument, variables: variables };
+}
+
+export const DeleteCalloutTemplateDocument = gql`
+  mutation deleteCalloutTemplate($templateId: UUID!) {
+    deleteCalloutTemplate(deleteData: { ID: $templateId }) {
+      id
+    }
+  }
+`;
+export type DeleteCalloutTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCalloutTemplateMutation,
+  SchemaTypes.DeleteCalloutTemplateMutationVariables
+>;
+
+/**
+ * __useDeleteCalloutTemplateMutation__
+ *
+ * To run a mutation, you first call `useDeleteCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCalloutTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCalloutTemplateMutation, { data, loading, error }] = useDeleteCalloutTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useDeleteCalloutTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCalloutTemplateMutation,
+    SchemaTypes.DeleteCalloutTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCalloutTemplateMutation,
+    SchemaTypes.DeleteCalloutTemplateMutationVariables
+  >(DeleteCalloutTemplateDocument, options);
+}
+
+export type DeleteCalloutTemplateMutationHookResult = ReturnType<typeof useDeleteCalloutTemplateMutation>;
+export type DeleteCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalloutTemplateMutation>;
+export type DeleteCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCalloutTemplateMutation,
+  SchemaTypes.DeleteCalloutTemplateMutationVariables
+>;
 export const InnovationPacksDocument = gql`
   query InnovationPacks {
     platform {
@@ -22886,6 +23413,69 @@ export type PlatformStorageConfigQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.PlatformStorageConfigQueryVariables) {
   return { query: PlatformStorageConfigDocument, variables: variables };
+}
+
+export const CalloutTemplatePreviewDocument = gql`
+  query CalloutTemplatePreview($calloutTemplateId: UUID!) {
+    lookup {
+      calloutTemplate(ID: $calloutTemplateId) {
+        ...CalloutTemplatePreview
+      }
+    }
+  }
+  ${CalloutTemplatePreviewFragmentDoc}
+`;
+
+/**
+ * __useCalloutTemplatePreviewQuery__
+ *
+ * To run a query within a React component, call `useCalloutTemplatePreviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutTemplatePreviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutTemplatePreviewQuery({
+ *   variables: {
+ *      calloutTemplateId: // value for 'calloutTemplateId'
+ *   },
+ * });
+ */
+export function useCalloutTemplatePreviewQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutTemplatePreviewQuery,
+    SchemaTypes.CalloutTemplatePreviewQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutTemplatePreviewQuery, SchemaTypes.CalloutTemplatePreviewQueryVariables>(
+    CalloutTemplatePreviewDocument,
+    options
+  );
+}
+
+export function useCalloutTemplatePreviewLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutTemplatePreviewQuery,
+    SchemaTypes.CalloutTemplatePreviewQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutTemplatePreviewQuery, SchemaTypes.CalloutTemplatePreviewQueryVariables>(
+    CalloutTemplatePreviewDocument,
+    options
+  );
+}
+
+export type CalloutTemplatePreviewQueryHookResult = ReturnType<typeof useCalloutTemplatePreviewQuery>;
+export type CalloutTemplatePreviewLazyQueryHookResult = ReturnType<typeof useCalloutTemplatePreviewLazyQuery>;
+export type CalloutTemplatePreviewQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutTemplatePreviewQuery,
+  SchemaTypes.CalloutTemplatePreviewQueryVariables
+>;
+export function refetchCalloutTemplatePreviewQuery(variables: SchemaTypes.CalloutTemplatePreviewQueryVariables) {
+  return { query: CalloutTemplatePreviewDocument, variables: variables };
 }
 
 export const WhiteboardTemplateContentDocument = gql`

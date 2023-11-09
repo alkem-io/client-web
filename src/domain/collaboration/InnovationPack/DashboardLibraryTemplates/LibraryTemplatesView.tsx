@@ -41,7 +41,7 @@ const LibraryTemplatesView = ({
   onClick,
   hasMore = false,
   ...props
-}: LibraryTemplatesViewProps & PageContentBlockProps) => {
+}: Omit<PageContentBlockProps, 'onClick'> & LibraryTemplatesViewProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
