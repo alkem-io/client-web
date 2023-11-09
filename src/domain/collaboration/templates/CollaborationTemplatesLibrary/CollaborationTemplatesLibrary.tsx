@@ -33,7 +33,7 @@ const DisabledTemplateInfo = () => {
 export interface CollaborationTemplatesLibraryProps<
   Template extends TemplateBase,
   TemplateWithContent extends {},
-  TemplatePreview extends Partial<TemplateWithContent>
+  TemplatePreview extends {}
 > {
   dialogTitle: string;
   onImportTemplate: (template: Template & TemplateWithContent) => void;
@@ -67,7 +67,7 @@ export interface CollaborationTemplatesLibraryProps<
 const CollaborationTemplatesLibrary = <
   Template extends TemplateBase,
   TemplateWithContent extends {},
-  TemplatePreview extends Partial<TemplateWithContent>
+  TemplatePreview extends {}
 >({
   dialogTitle,
   onImportTemplate,

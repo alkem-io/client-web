@@ -92,7 +92,7 @@ const CollaborationTemplatesLibraryPreview = <Template extends TemplateBase, Tem
                 {innovationPack?.provider?.profile.displayName[0]}
               </Avatar>
             }
-            component={LinkNoUnderline}
+            component={innovationPack?.provider ? LinkNoUnderline : undefined}
             to={innovationPack?.provider && buildOrganizationUrl(innovationPack?.provider?.nameID)}
           >
             <BlockSectionTitle>{innovationPack?.provider?.profile.displayName}</BlockSectionTitle>

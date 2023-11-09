@@ -96,6 +96,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.ChallengesLeft]}
                 spaceId={spaceNameId}
                 canCreateCallout={callouts.canCreateCallout}
+                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="space"
                 calloutNames={callouts.calloutNames}
@@ -109,6 +110,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.ChallengesRight]}
                 spaceId={spaceNameId}
                 canCreateCallout={callouts.canCreateCallout}
+                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="space"
                 calloutNames={callouts.calloutNames}

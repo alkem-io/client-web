@@ -1068,7 +1068,8 @@
         "LINK_COLLECTION": "Collection of Links",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard RealTime"
-      }
+      },
+      "callout-templates-library": "...or have a look at the library!"
     },
     "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
