@@ -168,7 +168,6 @@ const CalloutLayout = ({
 
   const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
   const handleSaveAsTemplate = async (values: CalloutTemplateFormSubmittedValues) => {
-    console.log(callout);
     await handleCreateCalloutTemplate(values, callout, spaceNameId);
     setSaveAsTemplateDialogOpen(false);
   };

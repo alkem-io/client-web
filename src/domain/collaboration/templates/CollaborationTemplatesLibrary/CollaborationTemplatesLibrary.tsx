@@ -124,7 +124,6 @@ const CollaborationTemplatesLibrary = <
 
   const handleSelectTemplate = () => {
     if (previewTemplate) {
-      console.log('previewTemplate: ', previewTemplate);
       onImportTemplate(previewTemplate);
       handleClose();
     }
