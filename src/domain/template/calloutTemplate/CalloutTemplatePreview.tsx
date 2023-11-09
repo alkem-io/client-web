@@ -24,12 +24,14 @@ const CalloutTemplatePreview = ({ template }: CalloutTemplatePreviewProps) => {
 
   const { framing } = data.lookup.calloutTemplate;
 
+  const whiteboard = data.lookup.calloutTemplate.framing.whiteboard ?? data.lookup.calloutTemplate.framing.whiteboardRt;
+
   return (
     <PageContentBlock>
       <BlockTitle>{framing.profile.displayName}</BlockTitle>
       <WrapperMarkdown>{framing.profile.description ?? ''}</WrapperMarkdown>
       <TagsComponent tags={framing.profile.tagset?.tags ?? []} />
-      <WhiteboardPreview frameable={data.lookup.calloutTemplate} />
+      {whiteboard && <WhiteboardPreview whiteboard={whiteboard} displayName={framing.profile.displayName} />}
     </PageContentBlock>
   );
 };

@@ -11,27 +11,20 @@ interface Whiteboard {
 }
 
 interface WhiteboardPreviewProps {
-  frameable: {
-    framing: {
-      profile: { displayName: string };
-      whiteboard?: Whiteboard;
-      whiteboardRt?: Whiteboard;
-    };
-  };
+  displayName?: string;
+  whiteboard: Whiteboard | undefined;
   onClick?: MouseEventHandler;
   onClose?: () => void;
 }
 
-const WhiteboardPreview = ({ frameable, onClose, ...props }: WhiteboardPreviewProps) => {
+const WhiteboardPreview = ({ displayName, whiteboard, onClose, ...props }: WhiteboardPreviewProps) => {
   const { t } = useTranslation();
-
-  const whiteboard = frameable.framing.whiteboardRt ?? frameable.framing.whiteboard;
 
   return (
     <ImageWithCaption
       caption={t('callout.singleWhiteboard.clickToSee')}
       src={whiteboard?.profile.preview?.uri}
-      alt={frameable.framing.profile.displayName}
+      alt={displayName}
       defaultImage={<WhiteboardIcon />}
       {...props}
     />

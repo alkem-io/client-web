@@ -53,7 +53,11 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           onClose={onClose}
           journeyTypeName={journeyTypeName}
         >
-          <WhiteboardPreview frameable={callout} onClick={() => setIsWhiteboardDialogOpen(true)} />
+          <WhiteboardPreview
+            whiteboard={firstWhiteboard}
+            displayName={callout.framing.profile.displayName}
+            onClick={() => setIsWhiteboardDialogOpen(true)}
+          />
           {isWhiteboardDialogOpen && (
             <WhiteboardProvider
               {...{

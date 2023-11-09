@@ -10,7 +10,6 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
-import { TemplateType } from '../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { gutters } from '../../../../core/ui/grid/utils';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -25,7 +24,6 @@ export interface CollaborationTemplatesLibraryPreviewProps<Template extends Temp
   templateInfo?: ReactNode;
   loading?: boolean;
   actions?: ReactNode;
-  templateType?: TemplateType;
   innovationPack?: {
     provider?: {
       nameID: string;
@@ -42,7 +40,6 @@ const CollaborationTemplatesLibraryPreview = <Template extends TemplateBase, Tem
   templateCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
   templateInfo,
-  templateType,
   innovationPack,
   loading,
   actions,
@@ -76,28 +73,26 @@ const CollaborationTemplatesLibraryPreview = <Template extends TemplateBase, Tem
           <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
           <TagsComponent tags={template?.profile.tagset?.tags ?? []} height={gutters()} />
         </PageContentBlockSeamless>
-        <PageContentBlockSeamless disablePadding disableGap>
-          <BlockSectionTitle>{t('common.type')}</BlockSectionTitle>
-          <CardText>{templateType && t(`common.enums.templateTypes.${templateType}` as const)}</CardText>
-        </PageContentBlockSeamless>
-        <PageContentBlockSeamless disablePadding disableGap>
-          <BlockSectionTitle>{t('common.createdBy')}</BlockSectionTitle>
-          <BadgeCardView
-            visual={
-              <Avatar
-                src={innovationPack?.provider?.profile.avatar?.uri}
-                aria-label="User avatar"
-                alt={t('common.avatar-of', { user: innovationPack?.provider?.profile.displayName })}
-              >
-                {innovationPack?.provider?.profile.displayName[0]}
-              </Avatar>
-            }
-            component={innovationPack?.provider ? LinkNoUnderline : undefined}
-            to={innovationPack?.provider && buildOrganizationUrl(innovationPack?.provider?.nameID)}
-          >
-            <BlockSectionTitle>{innovationPack?.provider?.profile.displayName}</BlockSectionTitle>
-          </BadgeCardView>
-        </PageContentBlockSeamless>
+        {innovationPack?.provider && (
+          <PageContentBlockSeamless disablePadding disableGap>
+            <BlockSectionTitle>{t('common.createdBy')}</BlockSectionTitle>
+            <BadgeCardView
+              visual={
+                <Avatar
+                  src={innovationPack.provider.profile.avatar?.uri}
+                  aria-label="User avatar"
+                  alt={t('common.avatar-of', { user: innovationPack.provider.profile.displayName })}
+                >
+                  {innovationPack.provider.profile.displayName[0]}
+                </Avatar>
+              }
+              component={LinkNoUnderline}
+              to={buildOrganizationUrl(innovationPack.provider.nameID)}
+            >
+              <BlockSectionTitle>{innovationPack.provider.profile.displayName}</BlockSectionTitle>
+            </BadgeCardView>
+          </PageContentBlockSeamless>
+        )}
       </PageContentColumn>
       <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">
         <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>

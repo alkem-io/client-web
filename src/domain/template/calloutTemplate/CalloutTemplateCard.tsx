@@ -14,8 +14,7 @@ import {
 import { CalloutContributionType, CalloutState, CalloutType } from '../../../core/apollo/generated/graphql-schema';
 import SwapColors from '../../../core/ui/palette/SwapColors';
 import { ReferenceIcon } from '../../shared/components/References/icons/ReferenceIcon';
-import { PostIcon } from '../../collaboration/post/icon/PostIcon';
-import { BlockOutlined, DesignServicesOutlined, ForumOutlined } from '@mui/icons-material';
+import { BlockOutlined, DesignServicesOutlined, ForumOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 import { gutters } from '../../../core/ui/grid/utils';
 import Gutters from '../../../core/ui/grid/Gutters';
 import CardDetails from '../../../core/ui/card/CardDetails';
@@ -33,7 +32,7 @@ interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate
 
 const CONTRIBUTION_ICON: Record<CalloutContributionType, ComponentType<SvgIconProps>> = {
   [CalloutContributionType.Link]: ReferenceIcon,
-  [CalloutContributionType.Post]: PostIcon,
+  [CalloutContributionType.Post]: LibraryBooksOutlined,
   [CalloutContributionType.Whiteboard]: WhiteboardIcon,
 };
 
@@ -64,7 +63,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
         </CardDescriptionWithTags>
       </CardDetails>
       <SwapColors>
-        <Gutters row component={Paper} height={gutters(2)} alignItems="center" justifyContent="center" square>
+        <Gutters row component={Paper} height={gutters(2)} alignItems="center" justifyContent="space-evenly" square>
           {CalloutTypeIcon && <CalloutTypeIcon />}
           {template?.contributionPolicy.allowedContributionTypes.map(type => {
             const Icon = CONTRIBUTION_ICON[type];
