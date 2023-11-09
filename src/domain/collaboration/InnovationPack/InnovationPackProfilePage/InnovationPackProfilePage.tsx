@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { ComponentType, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useInnovationPackProfilePageQuery,
@@ -18,14 +18,10 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '../../../../core/ui/typography';
 import ReferencesListSmallItem from '../../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import { PostTemplate, postTemplateMapper } from '../../post/PostTemplateCard/PostTemplate';
 import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
-import { whiteboardTemplateMapper } from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
 import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { innovationFlowTemplateMapper } from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplate';
 import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import TemplatePreviewDialog, { TemplatePreview } from '../TemplatePreviewDialog/TemplatePreviewDialog';
+import TemplatePreviewDialog, { TemplatePreview } from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
 
@@ -33,6 +29,7 @@ export enum TemplateType {
   WhiteboardTemplate = 'WhiteboardTemplate',
   PostTemplate = 'PostTemplate',
   InnovationFlowTemplate = 'InnovationFlowTemplate',
+  CalloutTemplate = 'CalloutTemplate',
 }
 
 const InnovationPackProfilePage = () => {
@@ -53,8 +50,6 @@ const InnovationPackProfilePage = () => {
   const { whiteboardTemplates, postTemplates, innovationFlowTemplates } =
     data?.platform.library.innovationPack?.templates ?? {};
 
-  const { profile: providerProfile } = data?.platform.library.innovationPack?.provider ?? {};
-
   const { innovationPack } = data?.platform.library ?? {};
 
   const [selectedTemplate, setSelectedTemplate] = useState<TemplatePreview | undefined>();
@@ -64,10 +59,23 @@ const InnovationPackProfilePage = () => {
   const { data: whiteboardTemplateContentData, loading: loadingWhiteboardTemplateContent } =
     useWhiteboardTemplateContentQuery({
       variables: {
-        whiteboardTemplateId: selectedTemplate?.template.id!,
+        whiteboardTemplateId: selectedTemplate?.template['id']!,
       },
       skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
     });
+
+  const previewedTemplate = useMemo<TemplatePreview | undefined>(() => {
+    if (!selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate) {
+      return selectedTemplate;
+    }
+    return {
+      ...selectedTemplate,
+      template: {
+        ...selectedTemplate.template,
+        ...whiteboardTemplateContentData?.lookup.whiteboardTemplate,
+      },
+    };
+  }, [selectedTemplate, whiteboardTemplateContentData]);
 
   const canUpdate = innovationPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
@@ -110,34 +118,28 @@ const InnovationPackProfilePage = () => {
             <TemplatesBlock
               title={t('common.enums.templateTypes.WhiteboardTemplate')}
               templates={whiteboardTemplates}
-              mapper={whiteboardTemplateMapper}
               cardComponent={WhiteboardTemplateCard}
               templateType={TemplateType.WhiteboardTemplate}
               onClickCard={setSelectedTemplate}
               emptyLabel={t('pages.innovationPack.whiteboardTemplatesEmpty')}
-              providerProfile={providerProfile}
               innovationPack={innovationPack}
             />
             <TemplatesBlock
               title={t('common.enums.templateTypes.PostTemplate')}
               templates={postTemplates}
-              mapper={postTemplateMapper}
-              cardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
+              cardComponent={PostTemplateCard}
               templateType={TemplateType.PostTemplate}
               onClickCard={setSelectedTemplate}
               emptyLabel={t('pages.innovationPack.postTemplatesEmpty')}
-              providerProfile={providerProfile}
               innovationPack={innovationPack}
             />
             <TemplatesBlock
               title={t('common.enums.templateTypes.InnovationFlowTemplate')}
               templates={innovationFlowTemplates}
-              mapper={innovationFlowTemplateMapper}
               cardComponent={InnovationFlowTemplateCard}
               templateType={TemplateType.InnovationFlowTemplate}
               onClickCard={setSelectedTemplate}
               emptyLabel={t('pages.innovationPack.innovationFlowTemplatesEmpty')}
-              providerProfile={providerProfile}
               innovationPack={innovationPack}
             />
           </PageContentColumn>
@@ -146,8 +148,8 @@ const InnovationPackProfilePage = () => {
       <TemplatePreviewDialog
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
-        template={selectedTemplate}
-        templateWithContent={whiteboardTemplateContentData?.lookup.whiteboardTemplate}
+        templatePreview={previewedTemplate}
+        innovationPack={innovationPack}
         loadingTemplateContent={loadingWhiteboardTemplateContent}
       />
     </>

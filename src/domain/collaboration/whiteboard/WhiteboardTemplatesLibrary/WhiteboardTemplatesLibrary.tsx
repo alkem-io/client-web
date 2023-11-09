@@ -2,36 +2,38 @@ import { compact } from 'lodash';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  usePlatformWhiteboardTemplatesLibraryLazyQuery,
   useSpaceWhiteboardTemplatesLibraryLazyQuery,
   useWhiteboardTemplateContentLazyQuery,
-  usePlatformWhiteboardTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import {
-  WhiteboardTemplate,
-  whiteboardTemplateMapper,
-  WhiteboardTemplateWithContent,
-} from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import WhiteboardTemplateCard from '../WhiteboardTemplateCard/WhiteboardTemplateCard';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface WhiteboardTemplatesLibraryProps {
-  onSelectTemplate: (template: WhiteboardTemplateWithContent) => void;
+  onImportTemplate: (template: WhiteboardTemplateWithContent) => void;
 }
 
-const applyFilter = (filter: string[], templates: WhiteboardTemplate[] | undefined) => {
+const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
+  filter: string[],
+  templates: T[] | undefined
+) => {
   if (filter.length === 0) {
     return templates;
   }
   return templates?.filter(whiteboard => {
     const whiteboardString =
-      `${whiteboard.displayName} ${whiteboard.provider.displayName} ${whiteboard.innovationPack.displayName}`.toLowerCase();
+      `${whiteboard.profile.displayName} ${whiteboard.innovationPack?.provider?.profile.displayName} ${whiteboard.innovationPack?.profile.displayName}`.toLowerCase();
     return filter.some(term => whiteboardString.includes(term.toLowerCase()));
   });
 };
 
-const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSelectTemplate }) => {
+const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onImportTemplate }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
@@ -51,9 +53,16 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
     () =>
       applyFilter(
         filter,
-        spaceData?.space.templates?.whiteboardTemplates.map<WhiteboardTemplate>(template =>
-          whiteboardTemplateMapper(template, spaceData?.space.host?.profile)
-        )
+        spaceData?.space.templates?.whiteboardTemplates.map(template => ({
+          ...template,
+          innovationPack: {
+            // TODO ???
+            profile: {
+              displayName: '',
+            },
+            provider: spaceData?.space.host,
+          },
+        }))
       ),
     [spaceData, filter]
   );
@@ -66,18 +75,19 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
     () =>
       applyFilter(
         filter,
-        platformData?.platform.library.innovationPacks.flatMap(ip =>
-          compact(
-            ip.templates?.whiteboardTemplates.map<WhiteboardTemplate>(template =>
-              whiteboardTemplateMapper(template, ip.provider?.profile, ip)
-            )
+        compact(
+          platformData?.platform.library.innovationPacks.flatMap(ip =>
+            ip.templates?.whiteboardTemplates.map(template => ({
+              ...template,
+              innovationPack: ip,
+            }))
           )
         )
       ),
     [platformData]
   );
 
-  const getWhiteboardTemplateWithContent = useCallback(async (template: WhiteboardTemplate) => {
+  const getWhiteboardTemplateWithContent = useCallback(async (template: TemplateBase & Identifiable) => {
     const { data } = await fetchWhiteboardTemplateContent({
       variables: {
         whiteboardTemplateId: template.id,
@@ -93,9 +103,9 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
   }, []);
 
   return (
-    <CollaborationTemplatesLibrary
+    <CollaborationTemplatesLibrary<TemplateBase, WhiteboardTemplateWithContent, { content?: string }>
       dialogTitle={t('templateLibrary.whiteboardTemplates.title')}
-      onSelectTemplate={onSelectTemplate}
+      onImportTemplate={onImportTemplate}
       templateCardComponent={WhiteboardTemplateCard}
       templatePreviewComponent={WhiteboardTemplatePreview}
       filter={filter}

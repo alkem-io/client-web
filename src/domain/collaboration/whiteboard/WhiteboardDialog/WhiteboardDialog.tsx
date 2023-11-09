@@ -209,6 +209,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         mergeWhiteboard(whiteboardApi, template.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+        // @ts-ignore
         logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`));
       }
     }
@@ -280,7 +281,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                       maxWidth={gutters(30)}
                     />
                   )}
-                  <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />
+                  <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
                 </>
               ) : (
                 <>

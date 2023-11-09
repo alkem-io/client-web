@@ -1,4 +1,4 @@
-import { Box, Button, ButtonProps, Dialog, DialogContent, Link } from '@mui/material';
+import { Box, Button, ButtonProps, DialogContent, Link } from '@mui/material';
 import React, { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../LibraryIcon';
@@ -8,11 +8,13 @@ import CollaborationTemplatesLibraryPreview from './CollaborationTemplatesLibrar
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogIcon from '../../../../core/ui/dialog/DialogIcon';
 import { ImageSearch as ImageSearchIcon, InfoOutlined } from '@mui/icons-material';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import { TemplateBase, TemplateBaseWithContent, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
+import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { identity } from 'lodash';
 
 enum TemplateSource {
   Space,
@@ -31,13 +33,14 @@ const DisabledTemplateInfo = () => {
 
 export interface CollaborationTemplatesLibraryProps<
   Template extends TemplateBase,
-  TemplateWithContent extends TemplateBaseWithContent
+  TemplateWithContent extends {},
+  TemplatePreview extends {}
 > {
   dialogTitle: string;
-  onSelectTemplate: (template: TemplateWithContent) => void;
+  onImportTemplate: (template: Template & TemplateWithContent) => void;
   // Components:
   templateCardComponent: ComponentType<TemplateCardBaseProps<Template>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateWithContent>>;
+  templatePreviewComponent: ComponentType<{ template?: TemplatePreview }>;
 
   // Filtering
   filter?: string[];
@@ -46,15 +49,22 @@ export interface CollaborationTemplatesLibraryProps<
   // Data
   fetchSpaceTemplatesOnLoad?: boolean;
   fetchTemplatesFromSpace?: () => void;
-  templatesFromSpace?: Template[];
+  templatesFromSpace?: Identifiables<Template>;
   loadingTemplatesFromSpace?: boolean;
 
   // For big templates like Whiteboards and InnovationFlows that have their content separated
+  // TODO decide whether content should be loaded by Preview components (already the case for some Template types)
+  /**
+   * @deprecated
+   */
   loadingTemplateContent?: boolean;
-  getTemplateWithContent?: (template: Template) => Promise<TemplateWithContent | undefined>;
+  /**
+   * @deprecated
+   */
+  getTemplateWithContent?: (template: Template & Identifiable) => Promise<(Template & TemplateWithContent) | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
-  templatesFromPlatform?: Template[];
+  templatesFromPlatform?: Identifiables<Template>;
   loadingTemplatesFromPlatform?: boolean;
   disableUsePlatformTemplates?: boolean;
 
@@ -63,10 +73,11 @@ export interface CollaborationTemplatesLibraryProps<
 
 const CollaborationTemplatesLibrary = <
   Template extends TemplateBase,
-  TemplateWithValue extends TemplateBaseWithContent
+  TemplateWithContent extends {},
+  TemplatePreview extends {}
 >({
   dialogTitle,
-  onSelectTemplate,
+  onImportTemplate,
   templateCardComponent,
   templatePreviewComponent,
   filter = [],
@@ -76,13 +87,13 @@ const CollaborationTemplatesLibrary = <
   templatesFromSpace,
   loadingTemplatesFromSpace = false,
   loadingTemplateContent = false,
-  getTemplateWithContent,
+  getTemplateWithContent = identity,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
   disableUsePlatformTemplates = false,
   buttonProps = {},
-}: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
+}: CollaborationTemplatesLibraryProps<Template, TemplateWithContent, TemplatePreview>) => {
   const { t } = useTranslation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -92,7 +103,7 @@ const CollaborationTemplatesLibrary = <
   };
 
   // Show gallery or show preview of this template:
-  const [previewTemplate, setPreviewTemplate] = useState<TemplateWithValue>();
+  const [previewTemplate, setPreviewTemplate] = useState<Template & TemplateWithContent>();
   const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
 
   // Load Space Templates by default:
@@ -102,7 +113,7 @@ const CollaborationTemplatesLibrary = <
     }
   }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
 
-  const handlePreviewTemplate = async (template: Template, source: TemplateSource) => {
+  const handlePreviewTemplate = async (template: Template & Identifiable, source: TemplateSource) => {
     setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
     setPreviewTemplate(await getTemplateWithContent?.(template));
   };
@@ -120,7 +131,7 @@ const CollaborationTemplatesLibrary = <
 
   const handleSelectTemplate = () => {
     if (previewTemplate) {
-      onSelectTemplate(previewTemplate);
+      onImportTemplate(previewTemplate);
       handleClose();
     }
   };
@@ -135,27 +146,19 @@ const CollaborationTemplatesLibrary = <
   return (
     <>
       <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)} {...buttonProps} />
-      <Dialog
-        open={dialogOpen}
-        onClose={handleClose}
-        PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(150) } }}
-        maxWidth={false}
-        fullWidth
-      >
-        <DialogHeader onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
-          <DialogIcon>
-            <LibraryIcon />
-          </DialogIcon>
-          {dialogTitle}
-          <MultipleSelect
-            onChange={onFilterChange}
-            value={filter}
-            minLength={2}
-            containerProps={{
-              marginLeft: 'auto',
-            }}
-            size="small"
-          />
+      <DialogWithGrid open={dialogOpen} onClose={handleClose} columns={12}>
+        <DialogHeader title={dialogTitle} onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
+          {!previewTemplate && (
+            <MultipleSelect
+              onChange={onFilterChange}
+              value={filter}
+              minLength={2}
+              containerProps={{
+                marginLeft: 'auto',
+              }}
+              size="small"
+            />
+          )}
         </DialogHeader>
         <DialogContent>
           {!previewTemplate && !loadingPreview ? (
@@ -197,7 +200,7 @@ const CollaborationTemplatesLibrary = <
             </Gutters>
           ) : (
             <CollaborationTemplatesLibraryPreview
-              template={previewTemplate}
+              template={previewTemplate as unknown as Template & TemplatePreview}
               templateCardComponent={templateCardComponent}
               templatePreviewComponent={templatePreviewComponent}
               templateInfo={templateUseDisabled ? <DisabledTemplateInfo /> : undefined}
@@ -217,7 +220,7 @@ const CollaborationTemplatesLibrary = <
             />
           )}
         </DialogContent>
-      </Dialog>
+      </DialogWithGrid>
     </>
   );
 };

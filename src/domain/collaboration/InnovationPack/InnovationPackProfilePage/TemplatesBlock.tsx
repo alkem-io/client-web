@@ -4,48 +4,42 @@ import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCo
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { CaptionSmall } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { TemplateCardInnovationPack, TemplateCardProviderProfile } from '../../templates/TemplateCard/Types';
-import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { Identifiables } from '../../../../core/utils/Identifiable';
+import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
-interface TemplatesBlockProps<Template extends Identifiable, TemplateCardProps extends Identifiable, TemplateType> {
-  templates: Template[] | undefined;
+interface TemplatesBlockProps<Template extends TemplateBase, TemplateType> {
+  templates: Identifiables<Template> | undefined;
   title: ReactNode;
-  mapper: (
-    template: Template,
-    providerProfile?: TemplateCardProviderProfile,
-    innovationPack?: TemplateCardInnovationPack
-  ) => TemplateCardProps;
-  providerProfile?: TemplateCardProviderProfile;
-  innovationPack?: TemplateCardInnovationPack;
+  innovationPack?: TemplateCardBaseProps<Template>['innovationPack'];
   templateType: TemplateType;
   onClickCard: ({ template: TemplateCardProps, templateType: TemplateType }) => void;
   emptyLabel: ReactNode;
-  cardComponent: ComponentType<TemplateCardBaseProps<TemplateCardProps>>;
+  cardComponent: ComponentType<TemplateCardBaseProps<Template>>;
 }
 
-const TemplatesBlock = <Template extends Identifiable, TemplateCardProps extends Identifiable, TemplateType>({
+const TemplatesBlock = <Template extends TemplateBase, TemplateType>({
   templates,
   title,
-  providerProfile,
   innovationPack,
-  mapper,
   templateType,
   emptyLabel,
   cardComponent: Card,
   onClickCard,
-}: TemplatesBlockProps<Template, TemplateCardProps, TemplateType>) => {
-  const handleClick = (template: TemplateCardProps) => onClickCard({ template, templateType });
+}: TemplatesBlockProps<Template, TemplateType>) => {
+  const handleClick = (template: Template) => onClickCard({ template, templateType });
 
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={<EllipsableWithCount count={templates?.length}>{title}</EllipsableWithCount>} />
       <ScrollableCardsLayoutContainer>
-        {templates
-          ?.map(template => mapper(template, providerProfile, innovationPack))
-          .map(template => (
-            <Card key={template.id} template={template} onClick={() => handleClick(template)} />
-          ))}
+        {templates?.map(template => (
+          <Card
+            key={template.id}
+            template={template}
+            innovationPack={innovationPack}
+            onClick={() => handleClick(template)}
+          />
+        ))}
         {templates?.length === 0 && <CaptionSmall>{emptyLabel}</CaptionSmall>}
       </ScrollableCardsLayoutContainer>
     </PageContentBlock>

@@ -7,15 +7,11 @@ import {
   useDeleteInnovationFlowTemplateMutation,
   useUpdateInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { InnovationTemplateFormSubmittedValues } from './InnovationTemplateForm';
-import {
-  AdminInnovationFlowTemplateFragment,
-  UpdateInnovationFlowTemplateMutation,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import InnovationTemplateView from './InnovationTemplateView';
-import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
+import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import InnovationImportTemplateCard from './InnovationImportTemplateCard';
@@ -34,8 +30,12 @@ interface AdminInnovationTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionProps) => {
+const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInnovationTemplatesSectionProps) => {
   const { t } = useTranslation();
+
+  const [createInnovationFlowTemplate] = useCreateInnovationFlowTemplateMutation();
+  const [updateInnovationFlowTemplate] = useUpdateInnovationFlowTemplateMutation();
+  const [deleteInnovationFlowTemplate] = useDeleteInnovationFlowTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -49,14 +49,19 @@ const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionP
       templatePreviewComponent={InnovationTemplateView}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}
-      useCreateTemplateMutation={useCreateInnovationFlowTemplateMutation}
-      useUpdateTemplateMutation={
-        useUpdateInnovationFlowTemplateMutation as MutationHook<
-          Partial<InnovationTemplateFormSubmittedValues> & { templateId: string },
-          UpdateInnovationFlowTemplateMutation
-        >
-      }
-      useDeleteTemplateMutation={useDeleteInnovationFlowTemplateMutation}
+      onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => {
+        return updateInnovationFlowTemplate({
+          variables: {
+            ...variables,
+            definition: variables.definition!,
+          },
+          refetchQueries,
+        });
+      }}
+      onDeleteTemplate={async variables => {
+        await deleteInnovationFlowTemplate({ variables, refetchQueries });
+      }}
     />
   );
 };

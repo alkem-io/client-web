@@ -7,6 +7,7 @@ interface SpaceTemplatesAdminRoutesProps extends SettingsPageProps {
 }
 
 enum RoutePaths {
+  calloutTemplatesRoutePath = 'callout-templates',
   postTemplatesRoutePath = 'post-templates',
   whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
@@ -18,6 +19,14 @@ const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
   return (
     <Routes>
       <Route index element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />} />
+      <Route
+        path={`${RoutePaths.calloutTemplatesRoutePath}/:calloutTemplateId`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
+      />
+      <Route
+        path={`${RoutePaths.calloutTemplatesRoutePath}/:calloutTemplateId/edit`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
+      />
       <Route
         path={`${RoutePaths.postTemplatesRoutePath}/:postTemplateId`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}

@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import { Box, IconButton, Menu } from '@mui/material';
 import {
   Authorization,
@@ -44,6 +45,9 @@ import References from '../../shared/components/References/References';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { WhiteboardFragmentWithCallout, WhiteboardRtFragmentWithCallout } from '../callout/useCallouts/useCallouts';
+import CreateCalloutTemplateDialog from '../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
+import { CalloutTemplateFormSubmittedValues } from '../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
+import { useCreateCalloutTemplate } from '../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -61,8 +65,8 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
           id: string;
         };
       };
-      whiteboard: WhiteboardFragmentWithCallout;
-      whiteboardRt: WhiteboardRtFragmentWithCallout;
+      whiteboard?: WhiteboardFragmentWithCallout;
+      whiteboardRt?: WhiteboardRtFragmentWithCallout;
     };
     comments?: {
       messages: MessageDetailsFragment[] | undefined;
@@ -83,6 +87,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     draft: boolean;
     editable?: boolean;
     movable?: boolean;
+    canSaveAsTemplate?: boolean;
     authorization?: Authorization;
     authorName?: string;
     authorAvatarUri?: string;
@@ -151,8 +156,20 @@ const CalloutLayout = ({
     [callout.draft, t]
   );
   const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
-    await onVisibilityChange(callout.id, visibility, sendNotification);
+    await onVisibilityChange?.(callout.id, visibility, sendNotification);
     setVisibilityDialogOpen(false);
+  };
+
+  const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
+  const handleSaveAsTemplateDialogOpen = () => {
+    setSaveAsTemplateDialogOpen(true);
+    setSettingsAnchorEl(null);
+  };
+
+  const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
+  const handleSaveAsTemplate = async (values: CalloutTemplateFormSubmittedValues) => {
+    await handleCreateCalloutTemplate(values, callout, spaceNameId);
+    setSaveAsTemplateDialogOpen(false);
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
   const handleEditDialogOpen = () => {
@@ -163,7 +180,7 @@ const CalloutLayout = ({
   const handleEditDialogClosed = () => setEditDialogOpened(false);
   const handleCalloutEdit = useCallback(
     async (newCallout: CalloutEditType) => {
-      await onCalloutEdit(newCallout);
+      await onCalloutEdit?.(newCallout);
       setEditDialogOpened(false);
     },
     [onCalloutEdit, setEditDialogOpened]
@@ -269,6 +286,15 @@ const CalloutLayout = ({
         >
           {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
         </MenuItemWithIcon>
+        {callout.canSaveAsTemplate && (
+          <MenuItemWithIcon
+            key="saveAsTemplate"
+            iconComponent={DownloadForOfflineOutlinedIcon}
+            onClick={handleSaveAsTemplateDialogOpen}
+          >
+            {t('buttons.saveAsTemplate')}
+          </MenuItemWithIcon>
+        )}
         {!expanded &&
           callout.movable && [
             /* Put MenuItems into an array to avoid a weird warning from MUI
@@ -316,18 +342,25 @@ const CalloutLayout = ({
       >
         <CalloutSummary callout={callout} />
       </CalloutVisibilityChangeDialog>
-      <CalloutEditDialog
-        open={editDialogOpened}
-        onClose={handleEditDialogClosed}
-        calloutType={callout.type}
-        callout={callout}
-        onCalloutEdit={handleCalloutEdit}
-        onDelete={onCalloutDelete}
-        canChangeCalloutLocation
-        calloutNames={calloutNames}
-        templates={templates}
-        journeyTypeName={journeyTypeName}
+      <CreateCalloutTemplateDialog
+        open={saveAsTemplateDialogOpen}
+        onClose={() => setSaveAsTemplateDialogOpen(false)}
+        onSubmit={handleSaveAsTemplate}
       />
+      {onCalloutDelete && (
+        <CalloutEditDialog
+          open={editDialogOpened}
+          onClose={handleEditDialogClosed}
+          calloutType={callout.type}
+          callout={callout}
+          onCalloutEdit={handleCalloutEdit}
+          onDelete={onCalloutDelete}
+          canChangeCalloutLocation
+          calloutNames={calloutNames}
+          templates={templates}
+          journeyTypeName={journeyTypeName}
+        />
+      )}
     </>
   );
 };

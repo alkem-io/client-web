@@ -1,14 +1,11 @@
 import { forwardRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import ImageWithCaption from '../../../shared/components/ImageWithCaption';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
 import WhiteboardsManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsManagementViewWrapper';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
-import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -32,8 +29,8 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
     },
     ref
   ) => {
-    const { t } = useTranslation();
     const [isWhiteboardDialogOpen, setIsWhiteboardDialogOpen] = useState(false);
+
     const handleCloseWhiteboardDialog = () => {
       onClose?.();
       setIsWhiteboardDialogOpen(false);
@@ -42,6 +39,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
     if (!callout.framing.whiteboard) {
       return null;
     }
+
     const firstWhiteboard = callout.framing.whiteboard;
 
     return (
@@ -55,11 +53,9 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           onClose={onClose}
           journeyTypeName={journeyTypeName}
         >
-          <ImageWithCaption
-            caption={t('callout.singleWhiteboard.clickToSee')}
-            src={firstWhiteboard.profile.preview?.uri}
-            alt={callout.framing.profile.displayName}
-            defaultImage={<WhiteboardIcon />}
+          <WhiteboardPreview
+            whiteboard={firstWhiteboard}
+            displayName={callout.framing.profile.displayName}
             onClick={() => setIsWhiteboardDialogOpen(true)}
           />
           {isWhiteboardDialogOpen && (
@@ -81,7 +77,6 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                     opportunityNameId,
                   })}
                   readOnlyDisplayName
-                  updatePrivilege={AuthorizationPrivilege.Contribute}
                   {...entities}
                   {...state}
                 />

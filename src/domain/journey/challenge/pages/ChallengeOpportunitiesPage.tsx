@@ -98,6 +98,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesLeft]}
                 spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
+                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="challenge"
                 calloutNames={callouts.calloutNames}
@@ -111,6 +112,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesRight]}
                 spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
+                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="challenge"
                 calloutNames={callouts.calloutNames}

@@ -7,15 +7,11 @@ import {
   useDeletePostTemplateMutation,
   useUpdatePostTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { PostTemplateFormSubmittedValues } from './PostTemplateForm';
-import {
-  AdminPostTemplateFragment,
-  UpdatePostTemplateMutation,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import PostTemplateView from './PostTemplateView';
-import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
+import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import PostImportTemplateCard from './PostImportTemplateCard';
@@ -34,8 +30,12 @@ interface AdminPostTemplatesSectionProps {
   canImportTemplates: boolean;
 }
 
-const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
+const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTemplatesSectionProps) => {
   const { t } = useTranslation();
+
+  const [createPostTemplate] = useCreatePostTemplateMutation();
+  const [updatePostTemplate] = useUpdatePostTemplateMutation();
+  const [deletePostTemplate] = useDeletePostTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -49,16 +49,11 @@ const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
       templatePreviewComponent={PostTemplateView}
       createTemplateDialogComponent={CreatePostTemplateDialog}
       editTemplateDialogComponent={EditPostTemplateDialog}
-      // TODO: Remove these
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      useCreateTemplateMutation={useCreatePostTemplateMutation as any}
-      useUpdateTemplateMutation={
-        useUpdatePostTemplateMutation as MutationHook<
-          Partial<PostTemplateFormSubmittedValues> & { templateId: string },
-          UpdatePostTemplateMutation
-        >
-      }
-      useDeleteTemplateMutation={useDeletePostTemplateMutation}
+      onCreateTemplate={variables => createPostTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => updatePostTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={async variables => {
+        await deletePostTemplate({ variables, refetchQueries });
+      }}
     />
   );
 };

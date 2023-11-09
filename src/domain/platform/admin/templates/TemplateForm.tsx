@@ -30,7 +30,7 @@ interface TemplateFormProps<Values extends TemplateProfileValues> {
   visual?: Visual;
   onSubmit: (values: Values & TemplateInfoSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
-  children: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
+  children?: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
   validator: yup.ObjectSchemaDefinition<Partial<Values>>;
 }
 

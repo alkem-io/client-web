@@ -5,7 +5,7 @@ import filterFn, { ValueType } from '../../../../core/utils/filtering/filterFn';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { compact } from 'lodash';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
-import TemplatePreviewDialog, { TemplatePreview } from '../TemplatePreviewDialog/TemplatePreviewDialog';
+import TemplatePreviewDialog, { TemplatePreview } from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
 import { useWhiteboardTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 
@@ -18,10 +18,10 @@ interface DashboardLibraryTemplatesProps {
 const templatesValueGetter = (template: LibraryTemplateCardProps): ValueType => ({
   id: template.id,
   values: compact([
-    template.displayName,
-    template.innovationPack.displayName,
-    template.provider.displayName,
-    ...(template.tags ?? []),
+    template.profile.displayName,
+    template.innovationPack?.profile.displayName,
+    template.innovationPack?.provider?.profile.displayName,
+    ...(template.profile.tagset?.tags ?? []),
   ]),
 });
 
@@ -56,6 +56,23 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
     );
   }, [templates, filter]);
 
+  const templatePreview = useMemo(() => {
+    if (!selectedTemplate) {
+      return undefined;
+    }
+    const template =
+      selectedTemplate.templateType !== TemplateType.WhiteboardTemplate
+        ? selectedTemplate
+        : {
+            ...selectedTemplate,
+            ...whiteboardTemplateContentData?.lookup?.whiteboardTemplate,
+          };
+    return {
+      template,
+      templateType: selectedTemplate?.templateType,
+    } as TemplatePreview;
+  }, []);
+
   return (
     <>
       <LibraryTemplatesView
@@ -85,12 +102,8 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
       <TemplatePreviewDialog
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
-        template={
-          selectedTemplate
-            ? ({ template: selectedTemplate, templateType: selectedTemplate?.templateType } as TemplatePreview)
-            : undefined
-        }
-        templateWithContent={whiteboardTemplateContentData?.lookup?.whiteboardTemplate}
+        templatePreview={templatePreview}
+        innovationPack={selectedTemplate?.innovationPack}
         loadingTemplateContent={loadingWhiteboardTemplateContent}
       />
     </>
