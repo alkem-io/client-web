@@ -102,7 +102,11 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
             profile: {
               displayName: callout.framing.profile.displayName,
               description: callout.framing.profile.description,
-              referencesData: callout.framing.profile.references,
+              referencesData: callout.framing.profile.references?.map(reference => ({
+                name: reference.name,
+                description: reference.description,
+                uri: reference.uri,
+              })),
               tagsets,
             },
             whiteboard: callout.framing.whiteboard && {
