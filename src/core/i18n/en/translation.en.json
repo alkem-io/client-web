@@ -678,7 +678,7 @@
       },
       "vision": {
         "title": "What is this community about?",
-        "description": "What is the frame of reference for this Space?",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
         "placeholder": ""
       },
       "who": {
@@ -710,7 +710,7 @@
       },
       "vision": {
         "title": "Future Vision",
-        "description": "What does success look like? What should a solution to this Challenge comprise?",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Challenge",
         "placeholder": ""
       },
       "who": {
@@ -750,7 +750,7 @@
       },
       "vision": {
         "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
+        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this information will also be shown as a standalone description on the Dashboard of this Opportunity.",
         "placeholder": ""
       },
       "who": {
