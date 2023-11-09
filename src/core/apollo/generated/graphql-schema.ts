@@ -63,6 +63,32 @@ export enum ActivityEventType {
   UpdateSent = 'UPDATE_SENT',
 }
 
+export type ActivityFeed = {
+  __typename?: 'ActivityFeed';
+  activityFeed: Array<ActivityLogEntry>;
+  pageInfo: PageInfo;
+  total: Scalars['Float'];
+};
+
+export type ActivityFeedQueryArgs = {
+  /** Returns only events that the current user triggered; Includes all by default. */
+  myActivity?: InputMaybe<Scalars['Boolean']>;
+  /** Pagination options. */
+  pagination?: InputMaybe<PaginationInput>;
+  /** Activity from which Spaces to include; Includes all by default. */
+  roles?: InputMaybe<Array<ActivityFeedRoles>>;
+  /** Activity from which Spaces to include; Includes all by default. */
+  spaceIds?: InputMaybe<Array<Scalars['UUID']>>;
+  /** What events to include; Includes all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
+};
+
+export enum ActivityFeedRoles {
+  Admin = 'ADMIN',
+  Lead = 'LEAD',
+  Member = 'MEMBER',
+}
+
 export type ActivityLogEntry = {
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
   child: Scalars['Boolean'];
@@ -875,27 +901,27 @@ export enum CalloutVisibility {
   Published = 'PUBLISHED',
 }
 
-export type Challenge = {
+export type Challenge = Journey & {
   __typename?: 'Challenge';
   /** The Agent representing this Challenge. */
   agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  /** The authorization rules for the Journey */
   authorization?: Maybe<Authorization>;
   /** The set of child Challenges within this challenge. */
   challenges?: Maybe<Array<Challenge>>;
-  /** Collaboration object for the base challenge */
+  /** Collaboration object for the Journey */
   collaboration?: Maybe<Collaboration>;
   /** The community for the challenge. */
   community?: Maybe<Community>;
   /** The context for the challenge. */
   context?: Maybe<Context>;
-  /** The ID of the entity */
+  /** The ID of the Journey */
   id: Scalars['UUID'];
   /** The InnovationFlow for the Challenge. */
   innovationFlow?: Maybe<InnovationFlow>;
   /** Metrics about activity within this Challenge. */
   metrics?: Maybe<Array<Nvp>>;
-  /** A name identifier of the entity, unique within a given scope. */
+  /** A name identifier of the Journey, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The Opportunities for the challenge. */
   opportunities?: Maybe<Array<Opportunity>>;
@@ -2087,6 +2113,17 @@ export type InvitationForRoleResult = {
   welcomeMessage?: Maybe<Scalars['UUID']>;
 };
 
+export type Journey = {
+  /** The authorization rules for the Journey */
+  authorization?: Maybe<Authorization>;
+  /** Collaboration object for the Journey */
+  collaboration?: Maybe<Collaboration>;
+  /** The ID of the Journey */
+  id: Scalars['UUID'];
+  /** A name identifier of the Journey, unique within a given scope. */
+  nameID: Scalars['NameID'];
+};
+
 export type Library = {
   __typename?: 'Library';
   /** The authorization rules for the entity */
@@ -2296,6 +2333,8 @@ export type MeQueryResults = {
   id: Scalars['String'];
   /** The invitations of the current authenticated user */
   invitations: Array<InvitationForRoleResult>;
+  /** The Journeys I am contributing to */
+  myJourneys: Array<MyJourneyResults>;
   /** The applications of the current authenticated user */
   spaceMemberships: Array<Space>;
   /** The current authenticated User;  null if not yet registered on the platform */
@@ -2308,6 +2347,12 @@ export type MeQueryResultsApplicationsArgs = {
 
 export type MeQueryResultsInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type MeQueryResultsMyJourneysArgs = {
+  filter?: InputMaybe<SpaceFilterInput>;
+  limit?: InputMaybe<Scalars['Float']>;
+  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -2333,8 +2378,6 @@ export type Message = {
 
 export type Metadata = {
   __typename?: 'Metadata';
-  /** Metrics about the activity on the platform */
-  metrics: Array<Nvp>;
   /** Collection of metadata about Alkemio services. */
   services: Array<ServiceMetadata>;
 };
@@ -3268,6 +3311,12 @@ export enum MutationType {
   Update = 'UPDATE',
 }
 
+export type MyJourneyResults = {
+  __typename?: 'MyJourneyResults';
+  journey: Journey;
+  latestActivity?: Maybe<ActivityLogEntry>;
+};
+
 export type Nvp = {
   __typename?: 'NVP';
   /** The ID of the entity */
@@ -3276,23 +3325,23 @@ export type Nvp = {
   value: Scalars['String'];
 };
 
-export type Opportunity = {
+export type Opportunity = Journey & {
   __typename?: 'Opportunity';
-  /** The authorization rules for the entity */
+  /** The authorization rules for the Journey */
   authorization?: Maybe<Authorization>;
-  /** Collaboration object for the base challenge */
+  /** Collaboration object for the Journey */
   collaboration?: Maybe<Collaboration>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
   /** The context for the Opportunity. */
   context?: Maybe<Context>;
-  /** The ID of the entity */
+  /** The ID of the Journey */
   id: Scalars['UUID'];
   /** The InnovationFlow for the Opportunity. */
   innovationFlow?: Maybe<InnovationFlow>;
   /** Metrics about the activity within this Opportunity. */
   metrics?: Maybe<Array<Nvp>>;
-  /** A name identifier of the entity, unique within a given scope. */
+  /** A name identifier of the Journey, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The parent entity name (challenge) ID. */
   parentNameID?: Maybe<Scalars['String']>;
@@ -3425,18 +3474,32 @@ export type PaginatedOrganization = {
   __typename?: 'PaginatedOrganization';
   organization: Array<Organization>;
   pageInfo: PageInfo;
+  total: Scalars['Float'];
 };
 
 export type PaginatedSpaces = {
   __typename?: 'PaginatedSpaces';
   pageInfo: PageInfo;
   spaces: Array<Space>;
+  total: Scalars['Float'];
 };
 
 export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
   pageInfo: PageInfo;
+  total: Scalars['Float'];
   users: Array<User>;
+};
+
+export type PaginationInput = {
+  /** A pivot cursor after which items are selected */
+  after?: InputMaybe<Scalars['UUID']>;
+  /** A pivot cursor before which items are selected */
+  before?: InputMaybe<Scalars['UUID']>;
+  /** Amount of items after the cursor */
+  first?: InputMaybe<Scalars['Int']>;
+  /** Amount of items before the cursor */
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type Platform = {
@@ -3733,6 +3796,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Activity events related to the current user. */
+  activityFeed: ActivityFeed;
   /** Retrieve the ActivityLog for the specified Collaboration */
   activityLogOnCollaboration: Array<ActivityLogEntry>;
   /** All Users that are members of a given room */
@@ -3781,6 +3846,10 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryActivityFeedArgs = {
+  args?: InputMaybe<ActivityFeedQueryArgs>;
 };
 
 export type QueryActivityLogOnCollaborationArgs = {
@@ -3935,17 +4004,17 @@ export type Relation = {
   type: Scalars['String'];
 };
 
-export type RelayPaginatedSpace = {
+export type RelayPaginatedSpace = Journey & {
   __typename?: 'RelayPaginatedSpace';
   /** The Agent representing this Space. */
   agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  /** The authorization rules for the Journey */
   authorization?: Maybe<Authorization>;
   /** A particular Challenge, either by its ID or nameID */
   challenge: Challenge;
   /** The challenges for the space. */
   challenges?: Maybe<Array<Challenge>>;
-  /** Collaboration object for the base challenge */
+  /** Collaboration object for the Journey */
   collaboration?: Maybe<Collaboration>;
   /** Get a Community within the Space. Defaults to the Community for the Space itself. */
   community?: Maybe<Community>;
@@ -3957,13 +4026,13 @@ export type RelayPaginatedSpace = {
   groups: Array<UserGroup>;
   /** The Space host. */
   host?: Maybe<Organization>;
-  /** The ID of the entity */
+  /** The ID of the Journey */
   id: Scalars['UUID'];
   /** The License governing platform functionality in use by this Space */
   license: License;
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
-  /** A name identifier of the entity, unique within a given scope. */
+  /** A name identifier of the Journey, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** All opportunities within the space */
   opportunities?: Maybe<Array<Opportunity>>;
@@ -4454,17 +4523,17 @@ export type Source = {
   uri?: Maybe<Scalars['String']>;
 };
 
-export type Space = {
+export type Space = Journey & {
   __typename?: 'Space';
   /** The Agent representing this Space. */
   agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  /** The authorization rules for the Journey */
   authorization?: Maybe<Authorization>;
   /** A particular Challenge, either by its ID or nameID */
   challenge: Challenge;
   /** The challenges for the space. */
   challenges?: Maybe<Array<Challenge>>;
-  /** Collaboration object for the base challenge */
+  /** Collaboration object for the Journey */
   collaboration?: Maybe<Collaboration>;
   /** Get a Community within the Space. Defaults to the Community for the Space itself. */
   community?: Maybe<Community>;
@@ -4476,13 +4545,13 @@ export type Space = {
   groups: Array<UserGroup>;
   /** The Space host. */
   host?: Maybe<Organization>;
-  /** The ID of the entity */
+  /** The ID of the Journey */
   id: Scalars['UUID'];
   /** The License governing platform functionality in use by this Space */
   license: License;
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
-  /** A name identifier of the entity, unique within a given scope. */
+  /** A name identifier of the Journey, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** All opportunities within the space */
   opportunities?: Maybe<Array<Opportunity>>;
@@ -24754,6 +24823,7 @@ export type CommunityPageCommunityFragment = {
 
 export type SpaceProviderQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpaceProviderQuery = {

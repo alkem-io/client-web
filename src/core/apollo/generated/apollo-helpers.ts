@@ -11,6 +11,12 @@ export type ActivityCreatedSubscriptionResultKeySpecifier = (
 export type ActivityCreatedSubscriptionResultFieldPolicy = {
   activity?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ActivityFeedKeySpecifier = ('activityFeed' | 'pageInfo' | 'total' | ActivityFeedKeySpecifier)[];
+export type ActivityFeedFieldPolicy = {
+  activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityLogEntryKeySpecifier = (
   | 'child'
   | 'collaborationID'
@@ -1219,6 +1225,13 @@ export type InvitationForRoleResultFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type JourneyKeySpecifier = ('authorization' | 'collaboration' | 'id' | 'nameID' | JourneyKeySpecifier)[];
+export type JourneyFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LibraryKeySpecifier = (
   | 'authorization'
   | 'id'
@@ -1333,6 +1346,7 @@ export type MeQueryResultsKeySpecifier = (
   | 'applications'
   | 'id'
   | 'invitations'
+  | 'myJourneys'
   | 'spaceMemberships'
   | 'user'
   | MeQueryResultsKeySpecifier
@@ -1341,6 +1355,7 @@ export type MeQueryResultsFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  myJourneys?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1361,9 +1376,8 @@ export type MessageFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MetadataKeySpecifier = ('metrics' | 'services' | MetadataKeySpecifier)[];
+export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
-  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   services?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
@@ -1679,6 +1693,11 @@ export type MutationFieldPolicy = {
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MyJourneyResultsKeySpecifier = ('journey' | 'latestActivity' | MyJourneyResultsKeySpecifier)[];
+export type MyJourneyResultsFieldPolicy = {
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  latestActivity?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
 export type NVPFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1793,19 +1812,27 @@ export type PageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PaginatedOrganizationKeySpecifier = ('organization' | 'pageInfo' | PaginatedOrganizationKeySpecifier)[];
+export type PaginatedOrganizationKeySpecifier = (
+  | 'organization'
+  | 'pageInfo'
+  | 'total'
+  | PaginatedOrganizationKeySpecifier
+)[];
 export type PaginatedOrganizationFieldPolicy = {
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PaginatedSpacesKeySpecifier = ('pageInfo' | 'spaces' | PaginatedSpacesKeySpecifier)[];
+export type PaginatedSpacesKeySpecifier = ('pageInfo' | 'spaces' | 'total' | PaginatedSpacesKeySpecifier)[];
 export type PaginatedSpacesFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PaginatedUsersKeySpecifier = ('pageInfo' | 'users' | PaginatedUsersKeySpecifier)[];
+export type PaginatedUsersKeySpecifier = ('pageInfo' | 'total' | 'users' | PaginatedUsersKeySpecifier)[];
 export type PaginatedUsersFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformKeySpecifier = (
@@ -1986,6 +2013,7 @@ export type ProjectFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
+  | 'activityFeed'
   | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
@@ -2013,6 +2041,7 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
+  activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2884,6 +2913,10 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ActivityCreatedSubscriptionResultKeySpecifier);
     fields?: ActivityCreatedSubscriptionResultFieldPolicy;
   };
+  ActivityFeed?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActivityFeedKeySpecifier | (() => undefined | ActivityFeedKeySpecifier);
+    fields?: ActivityFeedFieldPolicy;
+  };
   ActivityLogEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActivityLogEntryKeySpecifier | (() => undefined | ActivityLogEntryKeySpecifier);
     fields?: ActivityLogEntryFieldPolicy;
@@ -3248,6 +3281,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InvitationForRoleResultKeySpecifier | (() => undefined | InvitationForRoleResultKeySpecifier);
     fields?: InvitationForRoleResultFieldPolicy;
   };
+  Journey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | JourneyKeySpecifier | (() => undefined | JourneyKeySpecifier);
+    fields?: JourneyFieldPolicy;
+  };
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);
     fields?: LibraryFieldPolicy;
@@ -3287,6 +3324,10 @@ export type StrictTypedTypePolicies = {
   Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
     fields?: MutationFieldPolicy;
+  };
+  MyJourneyResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MyJourneyResultsKeySpecifier | (() => undefined | MyJourneyResultsKeySpecifier);
+    fields?: MyJourneyResultsFieldPolicy;
   };
   NVP?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | NVPKeySpecifier | (() => undefined | NVPKeySpecifier);

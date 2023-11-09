@@ -9,6 +9,7 @@ import {
   SpaceInfoFragment,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
+import { useUserContext } from '../../../community/user';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -79,6 +80,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const { spaceNameId = '' } = useUrlParams();
   // todo: still needed?
   const { error: configError } = useConfig();
+  const { isAuthenticated } = useUserContext();
 
   const {
     error: spaceError,
@@ -86,7 +88,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     loading,
     refetch: refetchSpace,
   } = useSpaceProviderQuery({
-    variables: { spaceId: spaceNameId },
+    variables: { spaceId: spaceNameId, includeCollaboration: isAuthenticated },
     errorPolicy: 'all',
     skip: !spaceNameId,
   });
