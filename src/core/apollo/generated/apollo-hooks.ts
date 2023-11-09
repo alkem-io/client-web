@@ -2503,7 +2503,7 @@ export const SpaceInfoFragmentDoc = gql`
       id
       myPrivileges
     }
-    collaboration {
+    collaboration @include(if: $includeCollaboration) {
       id
       authorization {
         id
@@ -19295,7 +19295,7 @@ export function refetchSpaceCommunityPageQuery(variables: SchemaTypes.SpaceCommu
 }
 
 export const SpaceProviderDocument = gql`
-  query spaceProvider($spaceId: UUID_NAMEID!) {
+  query spaceProvider($spaceId: UUID_NAMEID!, $includeCollaboration: Boolean = false) {
     space(ID: $spaceId) {
       ...SpaceInfo
     }
@@ -19316,6 +19316,7 @@ export const SpaceProviderDocument = gql`
  * const { data, loading, error } = useSpaceProviderQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      includeCollaboration: // value for 'includeCollaboration'
  *   },
  * });
  */

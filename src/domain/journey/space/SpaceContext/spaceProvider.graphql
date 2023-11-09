@@ -1,4 +1,4 @@
-query spaceProvider($spaceId: UUID_NAMEID!) {
+query spaceProvider($spaceId: UUID_NAMEID!, $includeCollaboration: Boolean = false) {
   space(ID: $spaceId) {
     ...SpaceInfo
   }
@@ -10,7 +10,7 @@ fragment SpaceInfo on Space {
     id
     myPrivileges
   }
-  collaboration {
+  collaboration @include(if: $includeCollaboration) {
     id
     authorization {
       id
