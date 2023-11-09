@@ -19,7 +19,7 @@ import DisabledUseButton from './DisabledUseButton';
 import DialogContent from '../../../core/ui/dialog/DialogContent';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
-import CalloutTemplateCard from '../calloutTemplate/CalloutTemplateCard';
+import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
 
 export type TemplatePreview =
   | {
@@ -35,7 +35,7 @@ export type TemplatePreview =
       templateType: TemplateType.InnovationFlowTemplate;
     }
   | {
-      template: TemplateBase & Identifiable;
+      template: CalloutTemplate & Identifiable;
       templateType: TemplateType.CalloutTemplate;
     };
 

@@ -1,4 +1,4 @@
-import { Box, Button, ButtonProps, Dialog, DialogContent, Link } from '@mui/material';
+import { Box, Button, ButtonProps, DialogContent, Link } from '@mui/material';
 import React, { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../LibraryIcon';
@@ -8,12 +8,13 @@ import CollaborationTemplatesLibraryPreview from './CollaborationTemplatesLibrar
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogIcon from '../../../../core/ui/dialog/DialogIcon';
 import { ImageSearch as ImageSearchIcon, InfoOutlined } from '@mui/icons-material';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { identity } from 'lodash';
 
 enum TemplateSource {
   Space,
@@ -53,7 +54,13 @@ export interface CollaborationTemplatesLibraryProps<
 
   // For big templates like Whiteboards and InnovationFlows that have their content separated
   // TODO decide whether content should be loaded by Preview components (already the case for some Template types)
+  /**
+   * @deprecated
+   */
   loadingTemplateContent?: boolean;
+  /**
+   * @deprecated
+   */
   getTemplateWithContent?: (template: Template & Identifiable) => Promise<(Template & TemplateWithContent) | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
@@ -80,7 +87,7 @@ const CollaborationTemplatesLibrary = <
   templatesFromSpace,
   loadingTemplatesFromSpace = false,
   loadingTemplateContent = false,
-  getTemplateWithContent,
+  getTemplateWithContent = identity,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
@@ -139,27 +146,19 @@ const CollaborationTemplatesLibrary = <
   return (
     <>
       <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)} {...buttonProps} />
-      <Dialog
-        open={dialogOpen}
-        onClose={handleClose}
-        PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(150) } }}
-        maxWidth={false}
-        fullWidth
-      >
-        <DialogHeader onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
-          <DialogIcon>
-            <LibraryIcon />
-          </DialogIcon>
-          {dialogTitle}
-          <MultipleSelect
-            onChange={onFilterChange}
-            value={filter}
-            minLength={2}
-            containerProps={{
-              marginLeft: 'auto',
-            }}
-            size="small"
-          />
+      <DialogWithGrid open={dialogOpen} onClose={handleClose} columns={12}>
+        <DialogHeader title={dialogTitle} onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
+          {!previewTemplate && (
+            <MultipleSelect
+              onChange={onFilterChange}
+              value={filter}
+              minLength={2}
+              containerProps={{
+                marginLeft: 'auto',
+              }}
+              size="small"
+            />
+          )}
         </DialogHeader>
         <DialogContent>
           {!previewTemplate && !loadingPreview ? (
@@ -221,7 +220,7 @@ const CollaborationTemplatesLibrary = <
             />
           )}
         </DialogContent>
-      </Dialog>
+      </DialogWithGrid>
     </>
   );
 };

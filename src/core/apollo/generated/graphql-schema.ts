@@ -9710,6 +9710,11 @@ export type SpaceCalloutTemplatesLibraryQuery = {
                 | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
+            contributionPolicy: {
+              __typename?: 'CalloutContributionPolicy';
+              allowedContributionTypes: Array<CalloutContributionType>;
+              state: CalloutState;
+            };
           }>;
         }
       | undefined;
@@ -9782,6 +9787,11 @@ export type PlatformCalloutTemplatesLibraryQuery = {
                     | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
+                contributionPolicy: {
+                  __typename?: 'CalloutContributionPolicy';
+                  allowedContributionTypes: Array<CalloutContributionType>;
+                  state: CalloutState;
+                };
               }>;
             }
           | undefined;
@@ -9848,6 +9858,15 @@ export type CalloutTemplateContentQuery = {
                   }>
                 | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
             };
             whiteboard?:
               | {
@@ -10050,6 +10069,11 @@ export type CalloutTemplateCardFragment = {
         }
       | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+  contributionPolicy: {
+    __typename?: 'CalloutContributionPolicy';
+    allowedContributionTypes: Array<CalloutContributionType>;
+    state: CalloutState;
   };
 };
 
@@ -29847,16 +29871,6 @@ export type CalloutTemplatePreviewQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              tagsets?:
-                | Array<{
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }>
-                | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
             whiteboard?:
@@ -30058,16 +30072,6 @@ export type CalloutTemplatePreviewFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
         | undefined;
       storageBucket: { __typename?: 'StorageBucket'; id: string };
     };

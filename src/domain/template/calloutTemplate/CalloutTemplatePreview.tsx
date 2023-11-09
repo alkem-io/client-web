@@ -1,6 +1,10 @@
-import CalloutView, { CalloutViewProps } from '../../collaboration/callout/CalloutView/CalloutView';
 import { useCalloutTemplatePreviewQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { Identifiable } from '../../../core/utils/Identifiable';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import { BlockTitle } from '../../../core/ui/typography';
+import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
+import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
+import WhiteboardPreview from '../../collaboration/whiteboard/whiteboardPreview/WhiteboardPreview';
 
 interface CalloutTemplatePreviewProps {
   template?: Identifiable;
@@ -14,19 +18,21 @@ const CalloutTemplatePreview = ({ template }: CalloutTemplatePreviewProps) => {
     skip: !template?.id,
   });
 
-  if (!data) {
+  if (!data?.lookup.calloutTemplate) {
     return null;
   }
 
+  const { framing } = data.lookup.calloutTemplate;
+
+  const whiteboard = data.lookup.calloutTemplate.framing.whiteboard ?? data.lookup.calloutTemplate.framing.whiteboardRt;
+
   return (
-    <CalloutView
-      callout={data?.lookup.calloutTemplate as CalloutViewProps['callout']}
-      journeyTypeName="space"
-      calloutNames={[]}
-      contributionsCount={0}
-      calloutUri=""
-      spaceNameId=""
-    />
+    <PageContentBlock>
+      <BlockTitle>{framing.profile.displayName}</BlockTitle>
+      <WrapperMarkdown>{framing.profile.description ?? ''}</WrapperMarkdown>
+      <TagsComponent tags={framing.profile.tagset?.tags ?? []} />
+      {whiteboard && <WhiteboardPreview whiteboard={whiteboard} displayName={framing.profile.displayName} />}
+    </PageContentBlock>
   );
 };
 

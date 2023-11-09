@@ -69,6 +69,9 @@ query CalloutTemplateContent($calloutTemplateId: UUID!) {
           storageBucket {
             id
           }
+          references {
+            ...ReferenceDetails
+          }
         }
         whiteboard {
           ...WhiteboardDetails
@@ -96,5 +99,9 @@ fragment CalloutTemplateCard on CalloutTemplate {
   type
   profile {
     ...TemplateCardProfileInfo
+  }
+  contributionPolicy {
+    allowedContributionTypes
+    state
   }
 }
