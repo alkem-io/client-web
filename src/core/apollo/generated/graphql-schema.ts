@@ -29847,16 +29847,6 @@ export type CalloutTemplatePreviewQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              tagsets?:
-                | Array<{
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }>
-                | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
             whiteboard?:
@@ -30058,16 +30048,6 @@ export type CalloutTemplatePreviewFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
         | undefined;
       storageBucket: { __typename?: 'StorageBucket'; id: string };
     };

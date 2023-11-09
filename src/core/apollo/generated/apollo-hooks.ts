@@ -3414,9 +3414,6 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
         tagset {
           ...TagsetDetails
         }
-        tagsets {
-          ...TagsetDetails
-        }
         storageBucket {
           id
         }
