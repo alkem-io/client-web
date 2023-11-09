@@ -78,6 +78,7 @@ export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
+  canCreateCalloutFromTemplate: boolean;
   canReadCallout: boolean;
   calloutNames: string[];
   loading: boolean;
@@ -144,6 +145,9 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
 
   const canCreateCallout =
     collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout) ?? false;
+
+  const canCreateCalloutFromTemplate =
+    collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.SaveAsTemplate) ?? false;
 
   const canReadCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
@@ -238,6 +242,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     callouts,
     groupedCallouts,
     canCreateCallout,
+    canCreateCalloutFromTemplate,
     canReadCallout,
     calloutNames,
     loading: calloutsLoading,

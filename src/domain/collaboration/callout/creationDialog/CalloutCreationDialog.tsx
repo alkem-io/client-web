@@ -54,6 +54,7 @@ export interface CalloutCreationDialogProps {
   displayLocation: CalloutDisplayLocation;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
+  canCreateCalloutFromTemplate?: boolean;
 }
 
 export interface TemplateProfile {
@@ -77,6 +78,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   displayLocation,
   flowState,
   journeyTypeName,
+  canCreateCalloutFromTemplate = false,
 }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
@@ -199,7 +201,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Gutters>
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
-                extraButtons={<CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />}
+                extraButtons={
+                  canCreateCalloutFromTemplate ? (
+                    <CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />
+                  ) : undefined
+                }
               />
             </Gutters>
           </DialogContent>

@@ -114,6 +114,7 @@ const SpaceCommunityPage = () => {
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.CommunityLeft]}
                 spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
+                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="space"
                 calloutNames={callouts.calloutNames}
@@ -146,6 +147,7 @@ const SpaceCommunityPage = () => {
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.CommunityRight]}
                 spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
+                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="space"
                 calloutNames={callouts.calloutNames}
