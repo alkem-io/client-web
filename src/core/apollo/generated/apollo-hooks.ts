@@ -427,6 +427,10 @@ export const CalloutTemplateCardFragmentDoc = gql`
     profile {
       ...TemplateCardProfileInfo
     }
+    contributionPolicy {
+      allowedContributionTypes
+      state
+    }
   }
   ${TemplateCardProfileInfoFragmentDoc}
 `;
@@ -6002,6 +6006,9 @@ export const CalloutTemplateContentDocument = gql`
             storageBucket {
               id
             }
+            references {
+              ...ReferenceDetails
+            }
           }
           whiteboard {
             ...WhiteboardDetails
@@ -6025,6 +6032,7 @@ export const CalloutTemplateContentDocument = gql`
   }
   ${TemplateCardProfileInfoFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardContentFragmentDoc}
   ${WhiteboardRtDetailsFragmentDoc}

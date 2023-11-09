@@ -1,44 +1,21 @@
 import { compact } from 'lodash';
-import { ComponentType, FC, useCallback, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import CalloutTemplateCard from '../../../template/calloutTemplate/CalloutTemplateCard';
-import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import CalloutTemplateCard, { CalloutTemplate } from '../../../template/calloutTemplate/CalloutTemplateCard';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import CalloutTemplatePreview from '../../../template/calloutTemplate/CalloutTemplatePreview';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import {
-  useCalloutTemplateContentLazyQuery,
   usePlatformCalloutTemplatesLibraryLazyQuery,
   useSpaceCalloutTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { Reference, Tagset } from '../../../common/profile/Profile';
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import { WhiteboardWithContent } from '../../whiteboard/containers/WhiteboardContentContainer';
-import { WhiteboardRtWithContent } from '../../whiteboard/containers/WhiteboardRtContentContainer';
-
-export interface CalloutTemplateWithValues extends TemplateBase {
-  type: CalloutType;
-  framing: {
-    profile: {
-      displayName: string;
-      description?: string;
-      tagset?: Tagset;
-      references?: Reference[];
-    };
-    whiteboard?: WhiteboardWithContent;
-    whiteboardRt?: WhiteboardRtWithContent;
-  };
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
-}
 
 export interface CalloutTemplatesLibraryProps {
-  onImportTemplate: (template: CalloutTemplateWithValues) => void;
+  onImportTemplate: (template: Identifiable) => void;
 }
 
 const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
@@ -103,25 +80,11 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
     [platformData]
   );
 
-  const [fetchCalloutTemplateContent, { loading: loadingCalloutTemplateContent }] =
-    useCalloutTemplateContentLazyQuery();
-
-  // Post templates include the value (defaultDescription and type), so no need to go to the server and fetch like with Whiteboards
-  const getCalloutTemplateContent = useCallback(async (template: TemplateBase & Identifiable) => {
-    const { data } = await fetchCalloutTemplateContent({
-      variables: {
-        calloutTemplateId: template.id,
-      },
-    });
-
-    return data?.lookup.calloutTemplate;
-  }, []);
-
   return (
-    <CollaborationTemplatesLibrary<TemplateBase, CalloutTemplateWithValues, Identifiable>
+    <CollaborationTemplatesLibrary<CalloutTemplate, Identifiable, Identifiable>
       dialogTitle={t('templateLibrary.calloutTemplates.title')}
       onImportTemplate={onImportTemplate}
-      templateCardComponent={CalloutTemplateCard as ComponentType<TemplateCardBaseProps<TemplateBase>>}
+      templateCardComponent={CalloutTemplateCard}
       templatePreviewComponent={CalloutTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}
@@ -129,8 +92,6 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
       fetchTemplatesFromSpace={fetchTemplatesFromSpace}
       templatesFromSpace={templatesFromSpace}
       loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      loadingTemplateContent={loadingCalloutTemplateContent}
-      getTemplateWithContent={getCalloutTemplateContent}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}

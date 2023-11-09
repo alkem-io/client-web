@@ -14,6 +14,7 @@ import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { identity } from 'lodash';
 
 enum TemplateSource {
   Space,
@@ -53,7 +54,13 @@ export interface CollaborationTemplatesLibraryProps<
 
   // For big templates like Whiteboards and InnovationFlows that have their content separated
   // TODO decide whether content should be loaded by Preview components (already the case for some Template types)
+  /**
+   * @deprecated
+   */
   loadingTemplateContent?: boolean;
+  /**
+   * @deprecated
+   */
   getTemplateWithContent?: (template: Template & Identifiable) => Promise<(Template & TemplateWithContent) | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
@@ -80,7 +87,7 @@ const CollaborationTemplatesLibrary = <
   templatesFromSpace,
   loadingTemplatesFromSpace = false,
   loadingTemplateContent = false,
-  getTemplateWithContent,
+  getTemplateWithContent = identity,
   fetchTemplatesFromPlatform,
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
