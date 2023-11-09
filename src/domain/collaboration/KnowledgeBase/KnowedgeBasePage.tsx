@@ -77,6 +77,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
             loading,
             canReadCallout,
             canCreateCallout,
+            canCreateCalloutFromTemplate,
             groupedCallouts,
             calloutNames,
             onCalloutsSortOrderUpdate,
@@ -120,6 +121,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                     callouts={groupedCallouts[CalloutDisplayLocation.Knowledge]}
                     spaceId={spaceNameId!}
                     canCreateCallout={canCreateCallout}
+                    canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
                     loading={loading}
                     journeyTypeName={journeyTypeName}
                     calloutNames={calloutNames}
@@ -135,6 +137,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               open={isCalloutCreationDialogOpen}
               onClose={handleCreateCalloutClosed}
               onCreateCallout={handleCreateCallout}
+              canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               isCreating={isCreating}
               calloutNames={calloutNames}
               templates={templates}

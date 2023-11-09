@@ -789,7 +789,7 @@
   "templateLibrary": {
     "calloutTemplates": {
       "name": "Callout template",
-      "title": "Template Library: Callouts",
+      "title": "Template Library: Collaboration Tools",
       "type": "Callout type",
       "description": "Description"
     },
@@ -1069,7 +1069,8 @@
         "LINK_COLLECTION": "Collection of Links",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard RealTime"
-      }
+      },
+      "callout-templates-library": "...or have a look at the library!"
     },
     "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",

@@ -6,15 +6,13 @@
  * - WhiteboardsRtManagementViewWrapper
  */
 import { forwardRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import ImageWithCaption from '../../../shared/components/ImageWithCaption';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { WhiteboardRtProvider } from '../../whiteboard/containers/WhiteboardRtProvider';
 import WhiteboardsRtManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsRtManagementViewWrapper';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
-import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
 
 interface SingleWhiteboardRtCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -38,8 +36,6 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
     },
     ref
   ) => {
-    const { t } = useTranslation();
-
     const [isWhiteboardDialogOpen, setIsWhiteboardDialogOpen] = useState(false);
     const handleCloseWhiteboardDialog = () => {
       onClose?.();
@@ -61,11 +57,9 @@ const SingleWhiteboardRtCallout = forwardRef<HTMLDivElement, SingleWhiteboardRtC
           onClose={onClose}
           journeyTypeName={journeyTypeName}
         >
-          <ImageWithCaption
-            caption={t('callout.singleWhiteboard.clickToSee')}
-            src={callout.framing.whiteboardRt.profile.preview?.uri}
-            alt={callout.framing.profile.displayName}
-            defaultImage={<WhiteboardIcon />}
+          <WhiteboardPreview
+            whiteboard={callout.framing.whiteboardRt}
+            displayName={callout.framing.profile.displayName}
             onClick={() => setIsWhiteboardDialogOpen(true)}
           />
           {isWhiteboardDialogOpen && (

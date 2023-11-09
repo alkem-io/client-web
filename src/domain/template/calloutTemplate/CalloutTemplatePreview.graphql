@@ -8,7 +8,6 @@ query CalloutTemplatePreview($calloutTemplateId: UUID!) {
 
 fragment CalloutTemplatePreview on CalloutTemplate {
   id
-  #nameID
   type
   framing {
     profile {
@@ -16,15 +15,6 @@ fragment CalloutTemplatePreview on CalloutTemplate {
       displayName
       description
       tagset {
-        ...TagsetDetails
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      references {
-        ...ReferenceDetails
-      }
-      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
         ...TagsetDetails
       }
       storageBucket {
