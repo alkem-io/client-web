@@ -126,11 +126,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             profile: {
               displayName: callout.displayName!,
               description: callout.description!,
-              referencesData: callout.references?.map(ref => ({
+              referencesData: callout.references!.map(ref => ({
                 name: ref.name,
                 uri: ref.uri,
                 description: ref.description,
-              }))!,
+              })),
               tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
             },
             whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
