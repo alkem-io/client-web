@@ -11,7 +11,7 @@ export interface IWhiteboardRtActions {
   onUpdate: (
     whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
     previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }
 
 export interface WhiteboardRtActionsContainerState {
@@ -30,7 +30,7 @@ const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ c
 
   const handleUpdateWhiteboardContent = useCallback(
     async (whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment) => {
-      await updateWhiteboardContent({
+      const result = await updateWhiteboardContent({
         variables: {
           input: {
             ID: whiteboard.id,
@@ -38,6 +38,7 @@ const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ c
           },
         },
       });
+      return !result.errors || result.errors.length === 0;
     },
     [updateWhiteboardContent, uploadVisuals]
   );

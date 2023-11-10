@@ -69,7 +69,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   };
   actions: {
     onCancel: (whiteboard: WhiteboardRtWithoutContent<Whiteboard>) => void;
-    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => void;
+    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => Promise<boolean>;
   };
   options: {
     show: boolean;
@@ -159,9 +159,12 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
   });
 
-  const handleUpdate = async (whiteboard: WhiteboardRtWithContent, state: RelevantExcalidrawState | undefined) => {
+  const handleUpdate = async (
+    whiteboard: WhiteboardRtWithContent,
+    state: RelevantExcalidrawState | undefined
+  ): Promise<boolean> => {
     if (!state) {
-      return;
+      return false;
     }
     const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
@@ -170,7 +173,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
-      return;
+      return false;
     }
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
@@ -307,9 +310,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                       },
                     }}
                     actions={{
-                      onUpdate: state => {
-                        handleUpdate(whiteboard, state);
-                      },
+                      onUpdate: state => handleUpdate(whiteboard, state),
                       onSavedToDatabase: () => {
                         refetchLastSaved({
                           whiteboardId: whiteboard.id,
