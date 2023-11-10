@@ -4,16 +4,14 @@ import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
 import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
-import { Save } from '@mui/icons-material';
 import Dialog from '@mui/material/Dialog';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, useTheme } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Box, CircularProgress } from '@mui/material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
@@ -36,8 +34,9 @@ import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 
-const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
+const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: boolean | undefined }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   // Re render it every second
   const [formattedTime, setFormattedTime] = useState<string>();
@@ -54,7 +53,12 @@ const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
     return null;
   }
 
-  return (
+  return saving ? (
+    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
+      <CircularProgress size={gutters(0.5)(theme)} />
+      {t('pages.whiteboard.savingWhiteboard')}
+    </Caption>
+  ) : (
     <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
       {t('common.last-saved', {
         datetime: formattedTime,
@@ -80,7 +84,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
     fullscreen?: boolean;
   };
   state?: {
-    updatingWhiteboard?: boolean;
+    updatingWhiteboardContent?: boolean;
     loadingWhiteboardValue?: boolean;
     changingWhiteboardLockState?: boolean;
   };
@@ -134,26 +138,6 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     [lastSaved?.lookup.whiteboardRt?.updatedDate]
   );
 
-  const getExcalidrawStateFromApi = async (
-    excalidrawApi: ExcalidrawAPIRefValue | null
-  ): Promise<RelevantExcalidrawState | undefined> => {
-    if (!excalidrawApi) {
-      return;
-    }
-
-    const imperativeApi = await excalidrawApi.readyPromise;
-
-    if (!imperativeApi) {
-      return;
-    }
-
-    const appState = imperativeApi.getAppState();
-    const elements = imperativeApi.getSceneElements();
-    const files = imperativeApi.getFiles();
-
-    return { appState, elements, files };
-  };
-
   const filesManager = useWhiteboardFilesManager({
     excalidrawApi: excalidrawApiRef.current,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
@@ -178,7 +162,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
-    return actions.onUpdate(
+    const result = await actions.onUpdate(
       {
         ...whiteboard,
         profile: {
@@ -189,17 +173,11 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       } as Whiteboard,
       previewImages
     );
-  };
-
-  const saveWhiteboard = async (whiteboard: Whiteboard) => {
-    const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
-
-    formikRef.current?.setTouched({ displayName: true }, true);
-
-    await handleUpdate(whiteboard, state);
 
     collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
     await refetchLastSaved(); // And update the caption
+
+    return result;
   };
 
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -339,20 +317,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
               {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              <LastSavedCaption date={lastSavedDate} />
-              {options.canEdit ? (
-                <LoadingButton
-                  startIcon={<Save />}
-                  onClick={() => saveWhiteboard(whiteboard!)}
-                  loadingPosition="start"
-                  variant="contained"
-                  loading={state?.updatingWhiteboard}
-                >
-                  {t('buttons.save')}
-                </LoadingButton>
-              ) : (
-                <Caption>You can't edit this whiteboard</Caption>
-              )}
+              <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
+              {!options.canEdit && <Caption>You can't edit this whiteboard</Caption>}
             </Actions>
           </>
         )}
