@@ -25456,6 +25456,7 @@ export type SpaceHostQuery = {
 export type SpacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   authorizedReadAccess?: InputMaybe<Scalars['Boolean']>;
+  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpacePageQuery = {

@@ -1,4 +1,8 @@
-query spacePage($spaceId: UUID_NAMEID!, $authorizedReadAccess: Boolean = false) {
+query spacePage(
+  $spaceId: UUID_NAMEID!
+  $authorizedReadAccess: Boolean = false
+  $authorizedReadAccessCommunity: Boolean = false
+) {
   space(ID: $spaceId) {
     ...SpacePage
   }
@@ -70,7 +74,7 @@ fragment SpacePage on Space {
     ...DashboardTopCallouts
     ...DashboardTimelineAuthorization
   }
-  community @include(if: $authorizedReadAccess) {
+  community @include(if: $authorizedReadAccessCommunity) {
     id
     myMembershipStatus
     ...EntityDashboardCommunity
