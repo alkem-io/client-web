@@ -51,7 +51,7 @@ export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
-  isCreating: boolean;
+  loading: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   displayLocation: CalloutDisplayLocation;
@@ -75,7 +75,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
   onCreateCallout,
-  isCreating,
+  loading,
   calloutNames,
   templates,
   displayLocation,
@@ -251,7 +251,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
             <FlexSpacer />
             <LoadingButton
-              loading={isCreating}
+              loading={loading}
               loadingIndicator={`${t('buttons.save-draft')}...`}
               onClick={() => handleSaveCallout(CalloutVisibility.Draft, sendNotification)}
               variant="outlined"
@@ -291,7 +291,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Actions padding={gutters()} justifyContent="end">
               <Button onClick={closePublishDialog}>{t('buttons.cancel')}</Button>
               <LoadingButton
-                loading={isCreating}
+                loading={loading}
                 loadingIndicator={`${t('buttons.publish')}...`}
                 onClick={() => handleSaveCallout(CalloutVisibility.Published, sendNotification)}
                 variant="contained"
