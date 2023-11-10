@@ -126,7 +126,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             profile: {
               displayName: callout.displayName!,
               description: callout.description!,
-              referencesData: callout.references!,
+              referencesData: callout.references!.map(ref => ({
+                name: ref.name,
+                uri: ref.uri,
+                description: ref.description,
+              })),
               tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
             },
             whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
@@ -188,10 +192,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         ? template.framing.whiteboardRt
         : undefined;
 
+    const references = template.type === CalloutType.LinkCollection ? undefined : template.framing.profile.references;
+
     setCallout({
       description: template.framing.profile.description,
       tags: template.framing.profile.tagset?.tags,
-      references: template.framing.profile.references,
+      references,
       type: template.type,
       postDescription: template.contributionDefaults?.postDescription,
       whiteboardContent: template.contributionDefaults?.whiteboardContent,

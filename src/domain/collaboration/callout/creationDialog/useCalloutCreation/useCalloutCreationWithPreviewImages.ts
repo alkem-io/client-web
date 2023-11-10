@@ -6,8 +6,8 @@ import { CalloutCreationType, CalloutCreationUtils, useCalloutCreation } from '.
 import {
   CalloutType,
   CreateCalloutMutation,
+  CreateReferenceInput,
   CreateTagsetInput,
-  Reference,
 } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
@@ -15,7 +15,7 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     profile: {
       description: string;
       displayName: string;
-      referencesData: Reference[];
+      referencesData: CreateReferenceInput[];
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;

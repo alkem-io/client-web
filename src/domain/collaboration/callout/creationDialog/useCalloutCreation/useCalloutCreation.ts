@@ -15,9 +15,9 @@ import {
   CalloutType,
   CalloutVisibility,
   CreateCalloutMutation,
+  CreateReferenceInput,
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { Reference } from '../../../../common/profile/Profile';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 import { WhiteboardRtFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
 import { getJourneyTypeName } from '../../../../journey/JourneyTypeName';
@@ -27,7 +27,7 @@ export interface CalloutCreationType {
     profile: {
       description: string;
       displayName: string;
-      referencesData: Reference[];
+      referencesData: CreateReferenceInput[];
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
