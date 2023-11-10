@@ -2532,13 +2532,6 @@ export const SpaceInfoFragmentDoc = gql`
       id
       myPrivileges
     }
-    collaboration @include(if: $includeCollaboration) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
     community {
       id
       authorization {
@@ -5825,6 +5818,203 @@ export function refetchActivityLogOnCollaborationQuery(
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
 
+export const CollaborationAuthorizationDocument = gql`
+  query CollaborationAuthorization(
+    $spaceNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeSpace: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    space(ID: $spaceNameId) {
+      id
+      ... on Space @include(if: $includeSpace) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCollaborationAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useCollaborationAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaborationAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaborationAuthorizationQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeSpace: // value for 'includeSpace'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCollaborationAuthorizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >(CollaborationAuthorizationDocument, options);
+}
+
+export function useCollaborationAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CollaborationAuthorizationQuery,
+    SchemaTypes.CollaborationAuthorizationQueryVariables
+  >(CollaborationAuthorizationDocument, options);
+}
+
+export type CollaborationAuthorizationQueryHookResult = ReturnType<typeof useCollaborationAuthorizationQuery>;
+export type CollaborationAuthorizationLazyQueryHookResult = ReturnType<typeof useCollaborationAuthorizationLazyQuery>;
+export type CollaborationAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaborationAuthorizationQuery,
+  SchemaTypes.CollaborationAuthorizationQueryVariables
+>;
+export function refetchCollaborationAuthorizationQuery(
+  variables: SchemaTypes.CollaborationAuthorizationQueryVariables
+) {
+  return { query: CollaborationAuthorizationDocument, variables: variables };
+}
+
+export const CollaborationPrivilegesDocument = gql`
+  query CollaborationPrivileges(
+    $spaceNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeSpace: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    space(ID: $spaceNameId) {
+      id
+      ... on Space @include(if: $includeSpace) {
+        id
+        collaboration {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        collaboration {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        collaboration {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCollaborationPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useCollaborationPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaborationPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaborationPrivilegesQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeSpace: // value for 'includeSpace'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCollaborationPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaborationPrivilegesQuery,
+    SchemaTypes.CollaborationPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CollaborationPrivilegesQuery, SchemaTypes.CollaborationPrivilegesQueryVariables>(
+    CollaborationPrivilegesDocument,
+    options
+  );
+}
+
+export function useCollaborationPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaborationPrivilegesQuery,
+    SchemaTypes.CollaborationPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CollaborationPrivilegesQuery,
+    SchemaTypes.CollaborationPrivilegesQueryVariables
+  >(CollaborationPrivilegesDocument, options);
+}
+
+export type CollaborationPrivilegesQueryHookResult = ReturnType<typeof useCollaborationPrivilegesQuery>;
+export type CollaborationPrivilegesLazyQueryHookResult = ReturnType<typeof useCollaborationPrivilegesLazyQuery>;
+export type CollaborationPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaborationPrivilegesQuery,
+  SchemaTypes.CollaborationPrivilegesQueryVariables
+>;
+export function refetchCollaborationPrivilegesQuery(variables: SchemaTypes.CollaborationPrivilegesQueryVariables) {
+  return { query: CollaborationPrivilegesDocument, variables: variables };
+}
+
 export const SpaceCalloutTemplatesLibraryDocument = gql`
   query SpaceCalloutTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -6350,205 +6540,6 @@ export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutation,
   SchemaTypes.CreateCalloutMutationVariables
 >;
-export const SpaceCollaborationIdDocument = gql`
-  query spaceCollaborationId($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      collaboration {
-        id
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceCollaborationIdQuery__
- *
- * To run a query within a React component, call `useSpaceCollaborationIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCollaborationIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceCollaborationIdQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceCollaborationIdQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceCollaborationIdQuery,
-    SchemaTypes.SpaceCollaborationIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceCollaborationIdQuery, SchemaTypes.SpaceCollaborationIdQueryVariables>(
-    SpaceCollaborationIdDocument,
-    options
-  );
-}
-
-export function useSpaceCollaborationIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceCollaborationIdQuery,
-    SchemaTypes.SpaceCollaborationIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceCollaborationIdQuery, SchemaTypes.SpaceCollaborationIdQueryVariables>(
-    SpaceCollaborationIdDocument,
-    options
-  );
-}
-
-export type SpaceCollaborationIdQueryHookResult = ReturnType<typeof useSpaceCollaborationIdQuery>;
-export type SpaceCollaborationIdLazyQueryHookResult = ReturnType<typeof useSpaceCollaborationIdLazyQuery>;
-export type SpaceCollaborationIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCollaborationIdQuery,
-  SchemaTypes.SpaceCollaborationIdQueryVariables
->;
-export function refetchSpaceCollaborationIdQuery(variables: SchemaTypes.SpaceCollaborationIdQueryVariables) {
-  return { query: SpaceCollaborationIdDocument, variables: variables };
-}
-
-export const ChallengeCollaborationIdDocument = gql`
-  query challengeCollaborationId($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      challenge(ID: $challengeId) {
-        id
-        collaboration {
-          id
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeCollaborationIdQuery__
- *
- * To run a query within a React component, call `useChallengeCollaborationIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeCollaborationIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeCollaborationIdQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeCollaborationIdQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeCollaborationIdQuery,
-    SchemaTypes.ChallengeCollaborationIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeCollaborationIdQuery, SchemaTypes.ChallengeCollaborationIdQueryVariables>(
-    ChallengeCollaborationIdDocument,
-    options
-  );
-}
-
-export function useChallengeCollaborationIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeCollaborationIdQuery,
-    SchemaTypes.ChallengeCollaborationIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeCollaborationIdQuery,
-    SchemaTypes.ChallengeCollaborationIdQueryVariables
-  >(ChallengeCollaborationIdDocument, options);
-}
-
-export type ChallengeCollaborationIdQueryHookResult = ReturnType<typeof useChallengeCollaborationIdQuery>;
-export type ChallengeCollaborationIdLazyQueryHookResult = ReturnType<typeof useChallengeCollaborationIdLazyQuery>;
-export type ChallengeCollaborationIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeCollaborationIdQuery,
-  SchemaTypes.ChallengeCollaborationIdQueryVariables
->;
-export function refetchChallengeCollaborationIdQuery(variables: SchemaTypes.ChallengeCollaborationIdQueryVariables) {
-  return { query: ChallengeCollaborationIdDocument, variables: variables };
-}
-
-export const OpportunityCollaborationIdDocument = gql`
-  query opportunityCollaborationId($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      opportunity(ID: $opportunityId) {
-        id
-        collaboration {
-          id
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOpportunityCollaborationIdQuery__
- *
- * To run a query within a React component, call `useOpportunityCollaborationIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityCollaborationIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityCollaborationIdQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityCollaborationIdQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityCollaborationIdQuery,
-    SchemaTypes.OpportunityCollaborationIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.OpportunityCollaborationIdQuery,
-    SchemaTypes.OpportunityCollaborationIdQueryVariables
-  >(OpportunityCollaborationIdDocument, options);
-}
-
-export function useOpportunityCollaborationIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityCollaborationIdQuery,
-    SchemaTypes.OpportunityCollaborationIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityCollaborationIdQuery,
-    SchemaTypes.OpportunityCollaborationIdQueryVariables
-  >(OpportunityCollaborationIdDocument, options);
-}
-
-export type OpportunityCollaborationIdQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdQuery>;
-export type OpportunityCollaborationIdLazyQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdLazyQuery>;
-export type OpportunityCollaborationIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityCollaborationIdQuery,
-  SchemaTypes.OpportunityCollaborationIdQueryVariables
->;
-export function refetchOpportunityCollaborationIdQuery(
-  variables: SchemaTypes.OpportunityCollaborationIdQueryVariables
-) {
-  return { query: OpportunityCollaborationIdDocument, variables: variables };
-}
-
 export const UpdateCalloutDocument = gql`
   mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
     updateCallout(calloutData: $calloutData) {
@@ -7212,101 +7203,6 @@ export type CalloutsLazyQueryHookResult = ReturnType<typeof useCalloutsLazyQuery
 export type CalloutsQueryResult = Apollo.QueryResult<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>;
 export function refetchCalloutsQuery(variables: SchemaTypes.CalloutsQueryVariables) {
   return { query: CalloutsDocument, variables: variables };
-}
-
-export const CollaborationAuthorizationDocument = gql`
-  query CollaborationAuthorization(
-    $spaceNameId: UUID_NAMEID!
-    $includeSpace: Boolean = false
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
-  ) {
-    space(ID: $spaceNameId) {
-      id
-      ... on Space @include(if: $includeSpace) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useCollaborationAuthorizationQuery__
- *
- * To run a query within a React component, call `useCollaborationAuthorizationQuery` and pass it any options that fit your needs.
- * When your component renders, `useCollaborationAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCollaborationAuthorizationQuery({
- *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      includeSpace: // value for 'includeSpace'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *   },
- * });
- */
-export function useCollaborationAuthorizationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CollaborationAuthorizationQuery,
-    SchemaTypes.CollaborationAuthorizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.CollaborationAuthorizationQuery,
-    SchemaTypes.CollaborationAuthorizationQueryVariables
-  >(CollaborationAuthorizationDocument, options);
-}
-
-export function useCollaborationAuthorizationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CollaborationAuthorizationQuery,
-    SchemaTypes.CollaborationAuthorizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CollaborationAuthorizationQuery,
-    SchemaTypes.CollaborationAuthorizationQueryVariables
-  >(CollaborationAuthorizationDocument, options);
-}
-
-export type CollaborationAuthorizationQueryHookResult = ReturnType<typeof useCollaborationAuthorizationQuery>;
-export type CollaborationAuthorizationLazyQueryHookResult = ReturnType<typeof useCollaborationAuthorizationLazyQuery>;
-export type CollaborationAuthorizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.CollaborationAuthorizationQuery,
-  SchemaTypes.CollaborationAuthorizationQueryVariables
->;
-export function refetchCollaborationAuthorizationQuery(
-  variables: SchemaTypes.CollaborationAuthorizationQueryVariables
-) {
-  return { query: CollaborationAuthorizationDocument, variables: variables };
 }
 
 export const SpacePostTemplatesLibraryDocument = gql`
@@ -19634,7 +19530,7 @@ export function refetchSpaceCommunityPageQuery(variables: SchemaTypes.SpaceCommu
 }
 
 export const SpaceProviderDocument = gql`
-  query spaceProvider($spaceId: UUID_NAMEID!, $includeCollaboration: Boolean = false) {
+  query spaceProvider($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       ...SpaceInfo
     }
@@ -19655,7 +19551,6 @@ export const SpaceProviderDocument = gql`
  * const { data, loading, error } = useSpaceProviderQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
- *      includeCollaboration: // value for 'includeCollaboration'
  *   },
  * });
  */

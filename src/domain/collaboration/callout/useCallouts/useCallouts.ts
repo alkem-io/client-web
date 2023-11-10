@@ -2,7 +2,6 @@ import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import {
   useCalloutsLazyQuery,
   useCalloutsQuery,
-  useCollaborationAuthorizationQuery,
   useUpdateCalloutsSortOrderMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -26,6 +25,7 @@ import { Tagset } from '../../../common/profile/Profile';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { useCollaborationAuthorization } from '../../authorization/useCollaborationAuthorization';
 
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
@@ -95,6 +95,15 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
 const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const journeyTypeName = getJourneyTypeName(params);
 
+  const {
+    canReadCollaboration,
+    canCreateCallout,
+    canCreateCalloutFromTemplate,
+    canReadCallout,
+    canSaveAsTemplate,
+    loading: authorizationLoading,
+  } = useCollaborationAuthorization();
+
   const variables = {
     spaceNameId: params.spaceNameId!,
     challengeNameId: params.challengeNameId,
@@ -104,17 +113,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     includeOpportunity: journeyTypeName === 'opportunity',
     displayLocations: params.displayLocations,
   };
-
-  const { data: authorizationData } = useCollaborationAuthorizationQuery({
-    variables,
-    skip: !params.spaceNameId,
-  });
-  const authorization = (
-    authorizationData?.space.opportunity ??
-    authorizationData?.space.challenge ??
-    authorizationData?.space
-  )?.authorization;
-  const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
   const {
     data: calloutsData,
@@ -143,23 +141,12 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const collaboration = (calloutsData?.space.opportunity ?? calloutsData?.space.challenge ?? calloutsData?.space)
     ?.collaboration;
 
-  const canCreateCallout =
-    collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout) ?? false;
-
-  const canCreateCalloutFromTemplate =
-    collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.SaveAsTemplate) ?? false;
-
-  const canReadCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
-
   const callouts = useMemo(
     () =>
       collaboration?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const movable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const canSaveAsTemplate = collaboration?.authorization?.myPrivileges?.includes(
-          AuthorizationPrivilege.SaveAsTemplate
-        );
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
@@ -245,7 +232,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     canCreateCalloutFromTemplate,
     canReadCallout,
     calloutNames,
-    loading: calloutsLoading,
+    loading: calloutsLoading || authorizationLoading,
     refetchCallouts,
     refetchCallout,
     onCalloutsSortOrderUpdate,

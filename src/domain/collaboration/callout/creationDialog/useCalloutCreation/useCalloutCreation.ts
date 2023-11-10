@@ -1,15 +1,6 @@
 import { useCallback, useState } from 'react';
+import { CalloutFragmentDoc, useCreateCalloutMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
-  CalloutFragmentDoc,
-  useChallengeCollaborationIdQuery,
-  useCreateCalloutMutation,
-  useSpaceCollaborationIdQuery,
-  useOpportunityCollaborationIdQuery,
-  useCollaborationAuthorizationQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import {
-  AuthorizationPrivilege,
   CalloutDisplayLocation,
   CalloutState,
   CalloutType,
@@ -20,7 +11,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 import { WhiteboardRtFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
-import { getJourneyTypeName } from '../../../../journey/JourneyTypeName';
+import { useCollaborationAuthorization } from '../../../authorization/useCollaborationAuthorization';
 
 export interface CalloutCreationType {
   framing: {
@@ -54,62 +45,17 @@ export interface CalloutCreationUtils {
   handleCreateCallout: (
     callout: CalloutCreationType
   ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
-  isCreating: boolean;
+  loading: boolean;
 }
 
 export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
-  const urlParams = useUrlParams();
-  const { spaceNameId, challengeNameId, opportunityNameId } = urlParams;
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
-  const journeyTypeName = getJourneyTypeName(urlParams);
-
-  const { data: authorizationData } = useCollaborationAuthorizationQuery({
-    variables: {
-      spaceNameId: spaceNameId!,
-      challengeNameId: challengeNameId,
-      opportunityNameId: opportunityNameId,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
-    },
-    skip: !spaceNameId,
-  });
-  const authorization = (
-    authorizationData?.space.opportunity ??
-    authorizationData?.space.challenge ??
-    authorizationData?.space
-  )?.authorization;
-  const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
-
-  const { data: spaceData } = useSpaceCollaborationIdQuery({
-    variables: { spaceId: spaceNameId! },
-    skip: !canReadCollaboration || !spaceNameId || !!challengeNameId || !!opportunityNameId,
-  });
-  const { data: challengeData } = useChallengeCollaborationIdQuery({
-    variables: {
-      spaceId: spaceNameId!,
-      challengeId: challengeNameId!,
-    },
-    skip: !canReadCollaboration || !spaceNameId || !challengeNameId || !!opportunityNameId,
-  });
-  const { data: opportunityData } = useOpportunityCollaborationIdQuery({
-    variables: {
-      spaceId: spaceNameId!,
-      opportunityId: opportunityNameId!,
-    },
-    skip: !canReadCollaboration || !spaceNameId || !opportunityNameId,
-  });
-
-  const collaborationID: string | undefined = (
-    spaceData?.space ??
-    challengeData?.space?.challenge ??
-    opportunityData?.space?.opportunity
-  )?.collaboration?.id;
+  const { collaborationId, loading } = useCollaborationAuthorization();
 
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {
-      if (!data || !collaborationID) {
+      if (!data || !collaborationId) {
         return;
       }
 
@@ -117,7 +63,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       const collabRefId = cache.identify({
         __typename: 'Collaboration',
-        id: collaborationID,
+        id: collaborationId,
       });
 
       if (!collabRefId) {
@@ -147,7 +93,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
-      if (!collaborationID) {
+      if (!collaborationId) {
         return;
       }
 
@@ -157,7 +103,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
         const result = await createCallout({
           variables: {
             calloutData: {
-              collaborationID,
+              collaborationID: collaborationId,
               ...callout,
             },
           },
@@ -170,7 +116,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
         setIsCreating(false);
       }
     },
-    [collaborationID, createCallout]
+    [collaborationId, createCallout]
   );
 
   return {
@@ -178,6 +124,6 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
     handleCreateCallout,
-    isCreating,
+    loading: loading || isCreating,
   };
 };
