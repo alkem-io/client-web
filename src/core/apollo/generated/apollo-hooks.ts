@@ -2627,7 +2627,7 @@ export const SpacePageFragmentDoc = gql`
       ...DashboardTopCallouts
       ...DashboardTimelineAuthorization
     }
-    community @include(if: $authorizedReadAccess) {
+    community @include(if: $authorizedReadAccessCommunity) {
       id
       myMembershipStatus
       ...EntityDashboardCommunity
@@ -19759,7 +19759,11 @@ export function refetchSpaceHostQuery(variables: SchemaTypes.SpaceHostQueryVaria
 }
 
 export const SpacePageDocument = gql`
-  query spacePage($spaceId: UUID_NAMEID!, $authorizedReadAccess: Boolean = false) {
+  query spacePage(
+    $spaceId: UUID_NAMEID!
+    $authorizedReadAccess: Boolean = false
+    $authorizedReadAccessCommunity: Boolean = false
+  ) {
     space(ID: $spaceId) {
       ...SpacePage
     }
@@ -19781,6 +19785,7 @@ export const SpacePageDocument = gql`
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      authorizedReadAccess: // value for 'authorizedReadAccess'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
