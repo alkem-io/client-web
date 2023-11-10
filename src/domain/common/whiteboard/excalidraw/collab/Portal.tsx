@@ -48,16 +48,15 @@ class Portal {
       this.collab.setCollaborators(clients);
     });
 
-    // TODO: cleanup here
+    // TODO: Remove these console.logs when this is stable
     this.socket.on('save-request', async callback => {
-      console.log('save-request received');
+      console.log('Save Request recevied from the server');
       const result = await this.onSaveRequest();
-      console.log('saved successfully: ', result);
-      console.log(callback);
       if (typeof callback === 'function') {
-        callback({ savedSuccesfully: result });
+        console.log('Returning save result to the server: ', result);
+        callback({ success: result });
       } else {
-        console.error('cant acknowledge of successful save');
+        console.error('Cannot acknowledge save result:', result);
       }
     });
 
