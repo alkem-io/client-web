@@ -100,6 +100,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     canCreateCallout,
     canCreateCalloutFromTemplate,
     canReadCallout,
+    canSaveAsTemplate,
     loading: authorizationLoading,
   } = useCollaborationAuthorization();
 
@@ -146,9 +147,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const movable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const canSaveAsTemplate = collaboration?.authorization?.myPrivileges?.includes(
-          AuthorizationPrivilege.SaveAsTemplate
-        );
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
