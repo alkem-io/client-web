@@ -15,7 +15,6 @@ import { Box, CircularProgress } from '@mui/material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
@@ -180,26 +179,21 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     return result;
   };
 
-  const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-
-    if (whiteboardApi) {
-      const elements = whiteboardApi.getSceneElements();
-      const appState = whiteboardApi.getAppState();
-      const files = whiteboardApi.getFiles();
-      const value = serializeAsJSON(elements, appState, files, 'local');
-
-      if (!isWhiteboardContentEqual(whiteboard?.content, value) || formikRef.current?.dirty) {
-        if (
-          !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
-        ) {
-          event.stopPropagation();
-          event.preventDefault();
-          return;
-        }
+  const onClose = async () => {
+    if (options.canEdit) {
+      const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
+      if (!whiteboard || !whiteboardApi) {
+        return;
       }
+      const content = JSON.parse(whiteboard?.content) as RelevantExcalidrawState;
+      const state = {
+        ...content,
+        elements: whiteboardApi.getSceneElements(),
+        appState: whiteboardApi.getAppState(),
+        files: whiteboardApi.getFiles(),
+      };
+      await handleUpdate(whiteboard, state);
     }
-
     actions.onCancel(whiteboard!);
   };
 
