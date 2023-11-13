@@ -48,15 +48,21 @@ class Portal {
       this.collab.setCollaborators(clients);
     });
 
-    // TODO: Remove these console.logs when this is stable
     this.socket.on('save-request', async callback => {
-      console.log('Save Request recevied from the server');
-      const result = await this.onSaveRequest();
-      if (typeof callback === 'function') {
-        console.log('Returning save result to the server: ', result);
-        callback({ success: result });
-      } else {
-        console.error('Cannot acknowledge save result:', result);
+      let result: boolean = false;
+      try {
+        result = await this.onSaveRequest();
+      } catch (ex) {
+        result = false;
+        // eslint-disable-next-line no-console
+        console.error('Error saving whiteboard content', ex);
+      } finally {
+        if (typeof callback === 'function') {
+          callback({ success: result });
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Cannot acknowledge save result:', result);
+        }
       }
     });
 
