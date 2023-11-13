@@ -54,7 +54,7 @@ const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: bo
 
   return saving ? (
     <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      <CircularProgress size={gutters(0.5)(theme)} />
+      <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
       {t('pages.whiteboard.savingWhiteboard')}
     </Caption>
   ) : (
