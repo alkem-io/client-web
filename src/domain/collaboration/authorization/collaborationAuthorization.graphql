@@ -1,0 +1,76 @@
+query CollaborationAuthorization(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid"
+  $opportunityNameId: UUID_NAMEID = "mockid"
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+
+query CollaborationPrivileges(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid"
+  $opportunityNameId: UUID_NAMEID = "mockid"
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    ... on Space @include(if: $includeSpace) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}

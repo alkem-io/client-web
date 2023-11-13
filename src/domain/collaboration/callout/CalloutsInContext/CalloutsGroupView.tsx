@@ -33,7 +33,7 @@ const CalloutsGroupView = ({
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
     handleCreateCallout,
-    isCreating,
+    loading,
   } = useCalloutCreationWithPreviewImages();
 
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery();
@@ -67,7 +67,7 @@ const CalloutsGroupView = ({
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
-        isCreating={isCreating}
+        loading={loading}
         calloutNames={calloutNames}
         templates={templates}
         displayLocation={displayLocation}
