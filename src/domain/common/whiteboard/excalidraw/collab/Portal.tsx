@@ -54,15 +54,8 @@ class Portal {
         result = await this.onSaveRequest();
       } catch (ex) {
         result = false;
-        // eslint-disable-next-line no-console
-        console.error('Error saving whiteboard content', ex);
       } finally {
-        if (typeof callback === 'function') {
-          callback({ success: result });
-        } else {
-          // eslint-disable-next-line no-console
-          console.error('Cannot acknowledge save result:', result);
-        }
+        callback({ success: result });
       }
     });
 
