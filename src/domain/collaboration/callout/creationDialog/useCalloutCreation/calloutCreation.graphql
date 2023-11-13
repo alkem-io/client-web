@@ -3,36 +3,3 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     ...Callout
   }
 }
-
-query spaceCollaborationId($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
-      id
-    }
-  }
-}
-
-query challengeCollaborationId($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    challenge(ID: $challengeId) {
-      id
-      collaboration {
-        id
-      }
-    }
-  }
-}
-
-query opportunityCollaborationId($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    opportunity(ID: $opportunityId) {
-      id
-      collaboration {
-        id
-      }
-    }
-  }
-}
