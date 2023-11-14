@@ -8,6 +8,7 @@ import PendingMembershipsUserMenuItem from '../../../domain/community/pendingMem
 import {
   AssignmentIndOutlined,
   DashboardOutlined,
+  ExitToAppOutlined,
   HdrStrongOutlined,
   LanguageOutlined,
   MeetingRoomOutlined,
@@ -26,6 +27,7 @@ import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import { useLocation } from 'react-router-dom';
 import NavigatableMenuItem from '../../../core/ui/menu/NavigatableMenuItem';
 import GlobalMenuSurface from '../../../core/ui/menu/GlobalMenuSurface';
+import { FocusTrap } from '@mui/base/FocusTrap';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -67,88 +69,93 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
               )}
             </Gutters>
           )}
-          <MenuList disablePadding sx={{ paddingY: 1 }}>
-            {!isAuthenticated && (
-              <NavigatableMenuItem
-                iconComponent={MeetingRoomOutlined}
-                route={buildLoginUrl(pathname)}
-                onClick={onClose}
-              >
-                <Typography variant="inherit" fontWeight="bold">
-                  {t('topbar.sign-in')}
-                </Typography>
-              </NavigatableMenuItem>
-            )}
-            <NavigatableMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
-              {t('pages.home.title')}
-            </NavigatableMenuItem>
-            {user && (
-              <NavigatableMenuItem
-                iconComponent={AssignmentIndOutlined}
-                route={buildUserProfileUrl(user.nameID)}
-                onClick={onClose}
-              >
-                {t('pages.user-profile.title')}
-              </NavigatableMenuItem>
-            )}
-            {user && (
-              <PendingMembershipsUserMenuItem>
-                {({ header, openDialog }) => (
-                  <NavigatableMenuItem
-                    iconComponent={HdrStrongOutlined}
-                    onClick={() => {
-                      openDialog();
-                      onClose?.();
-                    }}
-                  >
-                    {header}
-                  </NavigatableMenuItem>
-                )}
-              </PendingMembershipsUserMenuItem>
-            )}
-            <Divider sx={{ width: '85%', marginX: 'auto' }} />
-            {children}
-            {children && <Divider sx={{ width: '85%', marginX: 'auto' }} />}
-            {isAdmin && (
-              <NavigatableMenuItem iconComponent={SettingsIcon} route="/admin" onClick={onClose}>
-                {t('common.administration')}
-              </NavigatableMenuItem>
-            )}
-            <LanguageSelect
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
-            >
-              {({ openSelect }) => (
+          <FocusTrap open>
+            <MenuList autoFocus disablePadding sx={{ paddingY: 1 }}>
+              {!isAuthenticated && (
                 <NavigatableMenuItem
-                  iconComponent={LanguageOutlined}
-                  onClick={event => openSelect(event.currentTarget as HTMLElement)}
+                  iconComponent={MeetingRoomOutlined}
+                  route={buildLoginUrl(pathname)}
+                  onClick={onClose}
                 >
-                  {t('buttons.changeLanguage')}
+                  <Typography variant="inherit" fontWeight="bold">
+                    {t('topbar.sign-in')}
+                  </Typography>
                 </NavigatableMenuItem>
               )}
-            </LanguageSelect>
-            <NavigatableMenuItem
-              iconComponent={HelpOutlineIcon}
-              onClick={() => {
-                setIsHelpDialogOpen(true);
-                onClose?.();
-              }}
-            >
-              {t('buttons.getHelp')}
-            </NavigatableMenuItem>
-            {isAuthenticated && (
-              <NavigatableMenuItem iconComponent={MeetingRoomOutlined} route={AUTH_LOGOUT_PATH} onClick={onClose}>
-                {t('buttons.sign-out')}
+              <NavigatableMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
+                {t('pages.home.title')}
               </NavigatableMenuItem>
-            )}
-          </MenuList>
+              {user && (
+                <NavigatableMenuItem
+                  iconComponent={AssignmentIndOutlined}
+                  route={buildUserProfileUrl(user.nameID)}
+                  onClick={onClose}
+                >
+                  {t('pages.user-profile.title')}
+                </NavigatableMenuItem>
+              )}
+              {user && (
+                <PendingMembershipsUserMenuItem>
+                  {({ header, openDialog }) => (
+                    <NavigatableMenuItem
+                      iconComponent={HdrStrongOutlined}
+                      onClick={() => {
+                        openDialog();
+                        onClose?.();
+                      }}
+                    >
+                      {header}
+                    </NavigatableMenuItem>
+                  )}
+                </PendingMembershipsUserMenuItem>
+              )}
+              <Divider sx={{ width: '85%', marginX: 'auto' }} />
+              {children}
+              {children && <Divider sx={{ width: '85%', marginX: 'auto' }} />}
+              {isAdmin && (
+                <NavigatableMenuItem iconComponent={SettingsIcon} route="/admin" onClick={onClose}>
+                  {t('common.administration')}
+                </NavigatableMenuItem>
+              )}
+              <LanguageSelect
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
+              >
+                {({ openSelect }) => (
+                  <NavigatableMenuItem
+                    iconComponent={LanguageOutlined}
+                    onClick={event => openSelect(event.currentTarget as HTMLElement)}
+                  >
+                    {t('buttons.changeLanguage')}
+                  </NavigatableMenuItem>
+                )}
+              </LanguageSelect>
+              <NavigatableMenuItem
+                iconComponent={HelpOutlineIcon}
+                onClick={() => {
+                  setIsHelpDialogOpen(true);
+                  onClose?.();
+                }}
+              >
+                {t('buttons.getHelp')}
+              </NavigatableMenuItem>
+              {isAuthenticated && (
+                <NavigatableMenuItem iconComponent={MeetingRoomOutlined} route={AUTH_LOGOUT_PATH} onClick={onClose}>
+                  {t('buttons.sign-out')}
+                </NavigatableMenuItem>
+              )}
+              <NavigatableMenuItem tabOnly iconComponent={ExitToAppOutlined} onClick={onClose}>
+                {t('components.navigation.exitMenu')}
+              </NavigatableMenuItem>
+            </MenuList>
+          </FocusTrap>
         </Wrapper>
         <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
       </>
