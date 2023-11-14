@@ -1,5 +1,5 @@
-import { FC, ReactNode } from 'react';
-import { Box, BoxProps, styled } from '@mui/material';
+import { FC, MouseEventHandler, ReactNode } from 'react';
+import { Box, BoxProps, ButtonBase, styled } from '@mui/material';
 import ImageFadeIn from '../../../core/ui/image/ImageFadeIn';
 import { gutters } from '../../../core/ui/grid/utils';
 import hexToRGBA from '../../../core/utils/hexToRGBA';
@@ -10,9 +10,10 @@ interface ImageWithCaptionProps extends BoxProps<'img'> {
   caption: ReactNode | string;
   captionPosition?: 'top' | 'bottom';
   defaultImage?: ReactNode;
+  onClick?: MouseEventHandler;
 }
 
-const Container = styled(Box)(({ theme }) => ({
+const Container = styled(ButtonBase)(({ theme }) => ({
   position: 'relative',
   height: gutters(13)(theme),
   overflow: 'hidden',
