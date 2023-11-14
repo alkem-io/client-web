@@ -185,7 +185,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       if (!whiteboard || !whiteboardApi) {
         return;
       }
-      const content = JSON.parse(whiteboard?.content) as RelevantExcalidrawState;
+      const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
       const state = {
         ...content,
         elements: whiteboardApi.getSceneElements(),
