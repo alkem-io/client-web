@@ -174,7 +174,9 @@ const CollaborationTemplatesLibrary = <
                   />
                 </>
               )}
-              {!templatesFromPlatform && !loadingTemplatesFromPlatform && fetchTemplatesFromPlatform ? (
+              {(!templatesFromPlatform || templatesFromPlatform.length === 0) &&
+              !loadingTemplatesFromPlatform &&
+              fetchTemplatesFromPlatform ? (
                 <Link
                   component={Caption}
                   onClick={() => fetchTemplatesFromPlatform()}
