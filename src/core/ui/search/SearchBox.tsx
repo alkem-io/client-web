@@ -23,7 +23,7 @@ import { Collapsible } from '../navigation/Collapsible';
 interface SearchBoxProps<Option> {
   searchTerms: string;
   defaultSearchOption: Option;
-  searchOptions?: SelectOption<Option>[];
+  searchOptions?: Partial<SelectOption<Option>>[];
   onSearch?: (searchOption: Option) => void;
   onChange?: InputBaseProps['onChange'];
   onExpand?: (isExpanded: boolean) => void;

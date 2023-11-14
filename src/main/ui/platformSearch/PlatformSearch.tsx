@@ -31,7 +31,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
 
     const { spaceNameId, profile } = useSpace();
 
-    const searchOptions = useMemo<SelectOption<SearchScope>[] | undefined>(() => {
+    const searchOptions = useMemo<Partial<SelectOption<SearchScope>>[] | undefined>(() => {
       if (!spaceNameId) {
         return undefined;
       }
