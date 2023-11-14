@@ -240,10 +240,7 @@ const useWhiteboardFilesManager = ({
   const removeExcalidrawAttachment = async (
     file: BinaryFileData & { url?: string }
   ): Promise<BinaryFileDataWithUrl | undefined> => {
-    if (file.url) {
-      // The url was already set, just copy it and remove dataURL to the output:
-      return { ...file, dataURL: '' } as BinaryFileDataWithUrl;
-    } else if (fileStore[file.id]) {
+    if (fileStore[file.id]) {
       // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
       return { ...file, dataURL: '', url: fileStore[file.id].url } as BinaryFileDataWithUrl;
     } else if (file.dataURL && storageBucketId) {
@@ -254,8 +251,9 @@ const useWhiteboardFilesManager = ({
       log('Uploaded ', file.id, file, fileObject, id, url);
       return { ...file, url, dataURL: '' } as BinaryFileDataWithUrl;
     } else if (file.dataURL && !storageBucketId && allowFallbackToAttached) {
-      // no storageBucket was supplied, but allowFallbackToAttached was true, so we'll allow this file to be attached in the json for now
-      return { ...file } as BinaryFileDataWithUrl;
+      // no storageBucket was supplied, but allowFallbackToAttached is true, so we'll allow this file to be attached in the json for now
+      const { url, ...fileWithoutUrl } = file;
+      return { ...fileWithoutUrl } as BinaryFileDataWithUrl; // forced to cast because we are allowing attachments
     } else {
       console.error('File without url or dataURL. IGNORED', file);
     }
