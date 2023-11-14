@@ -13,7 +13,7 @@ import {
 import { ExpandMore, Search } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { BlockSectionTitle } from '../typography';
-import { SelectOption } from '@mui/base/SelectUnstyled/useSelect.types';
+import { SelectOption } from '@mui/base';
 import NavigationItemContainer from '../navigation/NavigationItemContainer';
 import NavigationItemButton from '../navigation/NavigationItemButton';
 import { useTranslation } from 'react-i18next';
