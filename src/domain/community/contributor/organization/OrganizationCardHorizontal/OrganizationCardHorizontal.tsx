@@ -38,6 +38,9 @@ const useStyles = makeStyles(theme =>
   })
 );
 
+/**
+ * @deprecated replace with OrganizationCard
+ */
 const OrganizationCardHorizontal: FC<OrganizationCardProps> = ({
   name,
   avatar,

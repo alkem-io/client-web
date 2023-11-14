@@ -1,16 +1,19 @@
-import React, { PropsWithChildren } from 'react';
-import { Paper } from '@mui/material';
+import React, { MouseEventHandler, PropsWithChildren } from 'react';
+import { ButtonBase, Paper } from '@mui/material';
 import withElevationOnHover from '../../../../shared/components/withElevationOnHover';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
 export interface OrganizationCardContainerProps {
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClick?: MouseEventHandler;
 }
 
 const OrganizationCardContainer = ({ onClick, children }: PropsWithChildren<OrganizationCardContainerProps>) => {
   return (
     <ElevatedPaper
+      // MUI generics are difficult to inherit from while preserving the original types
+      // @ts-ignore
+      component={onClick ? ButtonBase : Paper}
       sx={{
         background: theme => theme.palette.background.paper,
         display: 'flex',
