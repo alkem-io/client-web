@@ -6,7 +6,9 @@ const MarkdownListItem = ({ node, children, ...props }: ReactMarkdownProps) => {
   if (children && children.length === 1 && typeof children[0] === 'string') {
     return (
       <li {...props}>
-        <MarkdownParagraph node={node}>{children}</MarkdownParagraph>
+        <MarkdownParagraph node={node} overrideDisableParagraphPadding>
+          {children}
+        </MarkdownParagraph>
       </li>
     );
   } else {
