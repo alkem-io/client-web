@@ -1,7 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { BinaryFileData, DataURL, ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
+import Semaphore from 'ts-semaphore';
+
+const semaphore = new Semaphore(1);
 
 const isValidDataURL = (url: string) =>
   url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
@@ -82,14 +85,17 @@ const useWhiteboardFilesManager = ({
    * - Files that come from loadFiles, downloaded when the wb json is loaded into excalidraw and the files are requested from their Urls
    * - Files that are added by the user to the wb when editing and are uploaded
    */
-  const [fileStore, setFileStore] = useState<Record<string, BinaryFileDataWithUrl>>({});
+  const fileStore = useRef<Record<string, BinaryFileDataWithUrl>>({});
+  const [fileStoreVersion, setFileStoreVersion] = useState<number>(0); // This is used to force a re-render when the fileStore changes
+
   const fileStoreAddFile = (fileId: string, file: BinaryFileDataWithUrl) => {
-    log('changing fileStore version from', fileStore, ' to ', {
-      ...fileStore,
+    log('changing fileStore version from', fileStore.current, ' to ', {
+      ...fileStore.current,
       [fileId]: file,
     });
 
-    setFileStore({ ...fileStore, [fileId]: file });
+    fileStore.current = { ...fileStore.current, [fileId]: file };
+    setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
   };
 
   const [downloadingFiles, setDownloadingFiles] = useState(false);
@@ -108,9 +114,9 @@ const useWhiteboardFilesManager = ({
 
   const uploadFileToStorage = async (file: File): Promise<{ id: string; url: string }> => {
     const fileId = await generateIdFromFile(file);
-    if (fileStore[fileId]) {
-      log('file was already in our store', fileId, fileStore[fileId]);
-      return { id: fileId, url: fileStore[fileId].url };
+    if (fileStore.current[fileId]) {
+      log('file was already in our store', fileId, fileStore.current[fileId]);
+      return { id: fileId, url: fileStore.current[fileId].url };
     }
 
     if (!storageBucketId) {
@@ -196,12 +202,12 @@ const useWhiteboardFilesManager = ({
   const pushFilesToExcalidraw = async () => {
     const excalidraw = await excalidrawApi?.readyPromise;
     if (!excalidraw) {
-      log('excalidrawApi not ready yet or no files', excalidraw, fileStore);
+      log('excalidrawApi not ready yet or no files', excalidraw, fileStore.current);
       return;
     }
 
-    const filesAsArray = Object.keys(fileStore).map(fileId => fileStore[fileId]);
-    log('adding files from FilesManager', fileStore, filesAsArray);
+    const filesAsArray = Object.keys(fileStore.current).map(fileId => fileStore.current[fileId]);
+    log('adding files from FilesManager', fileStore.current, filesAsArray);
     excalidraw.addFiles(filesAsArray);
   };
 
@@ -237,26 +243,28 @@ const useWhiteboardFilesManager = ({
    * - Ensures that it has a url
    * - Removes dataURL
    */
-  const removeExcalidrawAttachment = async (
+  const removeExcalidrawAttachment = (
     file: BinaryFileData & { url?: string }
   ): Promise<BinaryFileDataWithUrl | undefined> => {
-    if (fileStore[file.id]) {
-      // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
-      return { ...file, dataURL: '', url: fileStore[file.id].url } as BinaryFileDataWithUrl;
-    } else if (file.dataURL && storageBucketId) {
-      log('NEED TO UPLOAD ', file.id, file);
-      const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
-      // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
-      const { id, url } = await uploadFileToStorage(fileObject);
-      log('Uploaded ', file.id, file, fileObject, id, url);
-      return { ...file, url, dataURL: '' } as BinaryFileDataWithUrl;
-    } else if (file.dataURL && !storageBucketId && allowFallbackToAttached) {
-      // no storageBucket was supplied, but allowFallbackToAttached is true, so we'll allow this file to be attached in the json for now
-      const { url, ...fileWithoutUrl } = file;
-      return { ...fileWithoutUrl } as BinaryFileDataWithUrl; // forced to cast because we are allowing attachments
-    } else {
-      console.error('File without url or dataURL. IGNORED', file);
-    }
+    return semaphore.use(async () => {
+      if (fileStore.current[file.id]) {
+        // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
+        return { ...file, dataURL: '', url: fileStore.current[file.id].url } as BinaryFileDataWithUrl;
+      } else if (file.dataURL && storageBucketId) {
+        log('NEED TO UPLOAD ', file.id, file);
+        const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
+        // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
+        const { id, url } = await uploadFileToStorage(fileObject);
+        log('Uploaded ', file.id, file, fileObject, id, url);
+        return { ...file, url, dataURL: '' } as BinaryFileDataWithUrl;
+      } else if (file.dataURL && !storageBucketId && allowFallbackToAttached) {
+        // no storageBucket was supplied, but allowFallbackToAttached is true, so we'll allow this file to be attached in the json for now
+        const { url, ...fileWithoutUrl } = file;
+        return { ...fileWithoutUrl } as BinaryFileDataWithUrl;
+      } else {
+        console.error('File without url or dataURL. IGNORED', file);
+      }
+    });
   };
 
   return useMemo(
@@ -271,7 +279,7 @@ const useWhiteboardFilesManager = ({
         downloadingFiles,
       },
     }),
-    [storageBucketId, excalidrawApi, fileStore]
+    [storageBucketId, excalidrawApi, fileStore.current, fileStoreVersion]
   );
 };
 
