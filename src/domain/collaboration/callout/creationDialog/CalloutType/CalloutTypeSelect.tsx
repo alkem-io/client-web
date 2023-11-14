@@ -6,8 +6,8 @@ import RouterLink from '../../../../../core/ui/link/RouterLink';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Caption } from '../../../../../core/ui/typography';
 import { useConfig } from '../../../../platform/config/useConfig';
-import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import { Button } from '@mui/material';
+import { useCollaborationAuthorization } from '../../../authorization/useCollaborationAuthorization';
 
 interface CalloutTypeSelectProps {
   onOpenCalloutTemplatesLibrary?: () => void;
@@ -34,7 +34,7 @@ const availableCalloutTypes: Record<CalloutType, CalloutTypeEnabledFunction> = {
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ onSelect, disabled = false, extraButtons }) => {
   const { t } = useTranslation();
   const { locations } = useConfig();
-  const { permissions } = useSpace();
+  const { collaborationPrivileges } = useCollaborationAuthorization();
 
   const handleClick = (value: CalloutType | undefined) => () => {
     onSelect(value);
@@ -45,7 +45,7 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ onSelect, disabl
       <>
         {(Object.keys(availableCalloutTypes) as CalloutType[]).map(calloutType => {
           const calloutTypeEnabled = availableCalloutTypes[calloutType];
-          if (calloutTypeEnabled(permissions.collaborationPrivileges)) {
+          if (calloutTypeEnabled(collaborationPrivileges)) {
             const Icon = calloutIcons[calloutType];
             return (
               <Button
