@@ -3,24 +3,28 @@ import { useTranslation } from 'react-i18next';
 import visibleOnFocus from './visibleOnFocus';
 import { Theme } from '@mui/material/styles';
 import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
-import { useNavigate } from 'react-router-dom';
 
 const SKIP_LINK_Z_INDEX = 1;
 
 interface SkipLinkProps {
   sx?: SystemStyleObject<Theme>;
-  anchor: string;
+  anchor?: Element | null;
 }
 
 const SkipLink = ({ anchor, sx }: SkipLinkProps) => {
   const { t } = useTranslation();
 
-  const navigate = useNavigate();
+  const handleClick = () => {
+    console.log(anchor);
 
-  const onClick = () => {
-    navigate(`#${anchor}`);
+    if (!anchor) {
+      return;
+    }
+    if (anchor.tagName === 'BUTTON' || anchor.tagName === 'A') {
+      (anchor as HTMLButtonElement | HTMLAnchorElement).focus();
+    }
     // @ts-ignore
-    document.getElementById(anchor)?.querySelector('button, [href], input, [tabindex="0"]')?.focus();
+    anchor.querySelector('button, [href], input, [tabindex="0"]')?.focus();
   };
 
   return (
@@ -28,7 +32,7 @@ const SkipLink = ({ anchor, sx }: SkipLinkProps) => {
       color="primary"
       variant="contained"
       size="small"
-      onClick={onClick}
+      onClick={handleClick}
       sx={visibleOnFocus()({ zIndex: SKIP_LINK_Z_INDEX, textTransform: 'none', ...sx })}
     >
       {t('buttons.skipLink')}

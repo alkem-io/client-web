@@ -4,7 +4,7 @@ import { cloneElement, PropsWithChildren, ReactElement, ReactNode } from 'react'
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
 import SkipLink from '../keyboardNavigation/SkipLink';
-import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
+import { useNextBlock } from '../keyboardNavigation/NextBlockAnchor';
 
 export interface PageContentBlockHeaderProps {
   title: ReactNode;
@@ -25,7 +25,7 @@ const PageContentBlockHeader = ({
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
-  const nextBlockAnchor = useNextBlockAnchor();
+  const nextBlock = useNextBlock();
 
   return (
     <>
@@ -36,7 +36,7 @@ const PageContentBlockHeader = ({
         gap={gutters(0.5)}
         position="relative"
       >
-        <SkipLink anchor={nextBlockAnchor} sx={{ position: 'absolute', right: 0, top: 0 }} />
+        <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0 }} />
         <Box
           flexGrow={1}
           minWidth={0}

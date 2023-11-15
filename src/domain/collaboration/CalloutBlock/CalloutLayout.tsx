@@ -49,7 +49,7 @@ import CreateCalloutTemplateDialog from '../../platform/admin/templates/CalloutT
 import { CalloutTemplateFormSubmittedValues } from '../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
 import { useCreateCalloutTemplate } from '../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
 import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
-import { useNextBlockAnchor } from '../../../core/ui/keyboardNavigation/NextBlockAnchor';
+import { useNextBlock } from '../../../core/ui/keyboardNavigation/NextBlockAnchor';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -204,7 +204,7 @@ const CalloutLayout = ({
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
-  const nextBlockAnchor = useNextBlockAnchor();
+  const nextBlockAnchor = useNextBlock();
 
   if (dontShow) {
     return null;
