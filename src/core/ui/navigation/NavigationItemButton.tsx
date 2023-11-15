@@ -1,8 +1,12 @@
 import React from 'react';
 import { IconButton, IconButtonProps } from '@mui/material';
+import { IconButtonTypeMap } from '@mui/material/IconButton/IconButton';
 
-const NavigationItemButton = ({ sx, ...props }: IconButtonProps) => {
-  return <IconButton sx={{ borderRadius: theme => `${theme.shape.borderRadius}px`, ...sx }} {...props} />;
+const NavigationItemButton = <D extends React.ElementType = IconButtonTypeMap['defaultComponent'], P = {}>({
+  sx,
+  ...props
+}: IconButtonProps<D, P>) => {
+  return <IconButton sx={{ borderRadius: 'unset', ...sx }} {...props} />;
 };
 
 export default NavigationItemButton;

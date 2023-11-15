@@ -1,14 +1,14 @@
-import React, { forwardRef, PropsWithChildren } from 'react';
-import { Paper, SxProps } from '@mui/material';
+import React, { forwardRef, MouseEventHandler, PropsWithChildren } from 'react';
+import { ButtonBase, Paper, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
 
-const ElevatedPaper = withElevationOnHover(Paper);
+const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 export interface ContributeCardProps {
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClick?: MouseEventHandler;
   highlighted?: boolean;
   sx?: SxProps<Theme>;
   columns?: number;
@@ -24,6 +24,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
     return (
       <GridItem columns={columns}>
         <ElevatedPaper
+          component={onClick ? ButtonBase : Paper}
           sx={{
             background: theme => (highlighted ? theme.palette.background.default : theme.palette.background.paper),
             display: 'flex',
