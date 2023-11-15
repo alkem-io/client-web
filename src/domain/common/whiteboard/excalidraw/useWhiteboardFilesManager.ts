@@ -242,6 +242,12 @@ const useWhiteboardFilesManager = ({
    * Finds a file in the fileStore and prepares it to be sent:
    * - Ensures that it has a url
    * - Removes dataURL
+   *
+   * A Semaphore is required in this function because it can be called multiple times in parallel by Collab.syncFiles
+   * Multiple upload requests were triggered because those `await uploadFileToStorage` were taking longer
+   * than the next call to this function from syncFiles.
+   * The semaphore ensures that the second call to this function will wait for the upload to finish
+   * and then the first condition will evaluate to `true` because the file will be already in the fileStore.
    */
   const removeExcalidrawAttachment = (
     file: BinaryFileData & { url?: string }
