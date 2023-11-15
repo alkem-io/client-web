@@ -42,7 +42,7 @@ export interface WhiteboardWhiteboardEntities {
 }
 
 export interface WhiteboardWhiteboardActions {
-  onUpdate?: (state: ExportedDataState) => void;
+  onUpdate?: (state: ExportedDataState) => Promise<boolean>;
   onSavedToDatabase?: () => void;
 }
 
@@ -207,6 +207,15 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             collabAPIRef={collabRef}
             onSavedToDatabase={actions.onSavedToDatabase}
             filesManager={filesManager}
+            onSaveRequest={async () => {
+              const state = {
+                ...(data as ExportedDataState),
+                elements: excalidrawAPI.getSceneElements(),
+                appState: excalidrawAPI.getAppState(),
+              };
+              const result = await actions.onUpdate?.(state);
+              return result ?? false;
+            }}
           />
         )}
       </div>

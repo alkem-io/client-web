@@ -49,6 +49,7 @@ interface PublicProps {
   collabAPIRef?: MutableRefObject<CollabAPI | null> | RefCallback<CollabAPI | null>;
   onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
   filesManager: WhiteboardFilesManager;
+  onSaveRequest: () => Promise<boolean>;
 }
 
 type Props = PublicProps;
@@ -73,7 +74,7 @@ class Collab extends PureComponent<Props, CollabState> {
       username: props.username,
       activeRoomLink: '',
     };
-    this.portal = new Portal(this, props.filesManager);
+    this.portal = new Portal({ collab: this, filesManager: props.filesManager, onSaveRequest: props.onSaveRequest });
     this.excalidrawAPI = props.excalidrawAPI;
     this.filesManager = props.filesManager;
     this.activeIntervalId = null;

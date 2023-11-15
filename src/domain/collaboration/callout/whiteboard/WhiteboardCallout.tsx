@@ -120,8 +120,9 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                     displayName: '',
                     storageBucket: {
                       // TODO: When creating a whiteboard a StorageBucketId is needed if we want to allow image uploading
-                      // in this case we are passing the parent's callout storageBucketId
-                      id: callout.framing.profile.storageBucket.id,
+                      // For now we are allowing files attached to the newly created whiteboards, so we can pass
+                      // an empty string here, and allowFilesAttached = true in the options
+                      id: '',
                     },
                   },
                   content: callout.contributionDefaults.whiteboardContent ?? '',
@@ -149,6 +150,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
                 show: showCreateWhiteboardDialog,
                 canEdit: true,
                 checkedOutByMe: true,
+                allowFilesAttached: true,
                 fullscreen,
               }}
               state={{}}

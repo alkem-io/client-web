@@ -5,13 +5,13 @@ import {
   WhiteboardRtDetailsFragment,
   WhiteboardRtContentFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface IWhiteboardRtActions {
   onUpdate: (
     whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
     previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }
 
 export interface WhiteboardRtActionsContainerState {
@@ -19,18 +19,18 @@ export interface WhiteboardRtActionsContainerState {
   deletingWhiteboard?: boolean;
   changingWhiteboardLockState?: boolean;
   updatingWhiteboard?: boolean;
+  updatingWhiteboardContent?: boolean;
 }
 
 export interface WhiteboardRtActionsContainerProps
   extends ContainerChildProps<{}, IWhiteboardRtActions, WhiteboardRtActionsContainerState> {}
 
 const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ children }) => {
-  const [updateWhiteboardContent, { loading: updatingWhiteboard }] = useUpdateWhiteboardContentRtMutation({});
-  const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
+  const [updateWhiteboardContent, { loading: updatingWhiteboardContent }] = useUpdateWhiteboardContentRtMutation({});
 
   const handleUpdateWhiteboardContent = useCallback(
     async (whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment) => {
-      await updateWhiteboardContent({
+      const result = await updateWhiteboardContent({
         variables: {
           input: {
             ID: whiteboard.id,
@@ -38,8 +38,9 @@ const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ c
           },
         },
       });
+      return !result.errors || result.errors.length === 0;
     },
-    [updateWhiteboardContent, uploadVisuals]
+    [updateWhiteboardContent]
   );
 
   const actions = useMemo<IWhiteboardRtActions>(
@@ -54,7 +55,7 @@ const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ c
       {children(
         {},
         {
-          updatingWhiteboard: updatingWhiteboard || uploadingVisuals,
+          updatingWhiteboardContent,
         },
         actions
       )}
