@@ -12,9 +12,10 @@ export interface BasePageContentBlockProps {
   halfWidth?: boolean;
   columns?: number;
   row?: boolean;
+  anchor?: string;
 }
 
-type BasePageContentBlockWithChildrenProps<Props extends { sx?: SxProps }> = BasePageContentBlockProps & {
+type BasePageContentBlockWithChildrenProps<Props extends { id?: string; sx?: SxProps }> = BasePageContentBlockProps & {
   component: ComponentType<Props>;
   padding: SystemCssProperties<Theme>['padding'];
 } & Props;
@@ -31,7 +32,7 @@ const getFlexDirection = ({ row, disableGap }: { row: boolean; disableGap: boole
 
 const BasePageContentBlock = forwardRef(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  <Props extends { sx?: SxProps<any> }>(
+  <Props extends { id?: string; sx?: SxProps<any> }>(
     {
       disablePadding = false,
       disableGap = false,
@@ -41,6 +42,7 @@ const BasePageContentBlock = forwardRef(
       sx,
       component: Component,
       padding,
+      anchor,
       ...props
     }: BasePageContentBlockWithChildrenProps<Props>,
     ref
@@ -62,7 +64,7 @@ const BasePageContentBlock = forwardRef(
 
     return (
       <GridProvider columns={columnsTaken ?? gridColumns}>
-        <Component ref={ref} sx={mergedSx} {...(props as unknown as Props)} />
+        <Component ref={ref} id={anchor} sx={mergedSx} {...(props as unknown as Props)} />
       </GridProvider>
     );
   }
