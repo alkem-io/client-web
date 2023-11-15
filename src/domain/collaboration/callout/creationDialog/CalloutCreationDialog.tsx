@@ -51,7 +51,7 @@ export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
-  isCreating: boolean;
+  loading: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   displayLocation: CalloutDisplayLocation;
@@ -75,7 +75,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
   onCreateCallout,
-  isCreating,
+  loading,
   calloutNames,
   templates,
   displayLocation,
@@ -126,7 +126,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             profile: {
               displayName: callout.displayName!,
               description: callout.description!,
-              referencesData: callout.references!,
+              referencesData: callout.references!.map(ref => ({
+                name: ref.name,
+                uri: ref.uri,
+                description: ref.description,
+              })),
               tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
             },
             whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
@@ -188,10 +192,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         ? template.framing.whiteboardRt
         : undefined;
 
+    const references = template.type === CalloutType.LinkCollection ? undefined : template.framing.profile.references;
+
     setCallout({
       description: template.framing.profile.description,
       tags: template.framing.profile.tagset?.tags,
-      references: template.framing.profile.references,
+      references,
       type: template.type,
       postDescription: template.contributionDefaults?.postDescription,
       whiteboardContent: template.contributionDefaults?.whiteboardContent,
@@ -251,7 +257,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
             <FlexSpacer />
             <LoadingButton
-              loading={isCreating}
+              loading={loading}
               loadingIndicator={`${t('buttons.save-draft')}...`}
               onClick={() => handleSaveCallout(CalloutVisibility.Draft, sendNotification)}
               variant="outlined"
@@ -291,7 +297,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Actions padding={gutters()} justifyContent="end">
               <Button onClick={closePublishDialog}>{t('buttons.cancel')}</Button>
               <LoadingButton
-                loading={isCreating}
+                loading={loading}
                 loadingIndicator={`${t('buttons.publish')}...`}
                 onClick={() => handleSaveCallout(CalloutVisibility.Published, sendNotification)}
                 variant="contained"

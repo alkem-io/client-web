@@ -1,7 +1,6 @@
 import { isEqual, omit } from 'lodash';
 
-const WHITEBOARD_PROP_SOURCE = 'source';
-
+const IGNORED_PROPERTIES = ['source', 'appState'];
 const isWhiteboardContentEqual = (lWhiteboardContent: string | undefined, rWhiteboardContent: string | undefined) => {
   if (!lWhiteboardContent && !rWhiteboardContent) {
     return true;
@@ -11,7 +10,7 @@ const isWhiteboardContentEqual = (lWhiteboardContent: string | undefined, rWhite
   }
   const lParsedContent = JSON.parse(lWhiteboardContent);
   const rParsedContent = JSON.parse(rWhiteboardContent);
-  return isEqual(omit(lParsedContent, WHITEBOARD_PROP_SOURCE), omit(rParsedContent, WHITEBOARD_PROP_SOURCE));
+  return isEqual(omit(lParsedContent, IGNORED_PROPERTIES), omit(rParsedContent, IGNORED_PROPERTIES));
 };
 
 export default isWhiteboardContentEqual;

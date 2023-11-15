@@ -1,9 +1,9 @@
 import { BoxProps, Fade } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import ScrollToTop from './ScrollToTop';
-import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '../../../main/ui/platformNavigation/constants';
 import Gutters from '../grid/Gutters';
 
+const FLOATING_ACTION_BUTTONS_Z_INDEX = 1200; // Dialogs are 1300
 export interface FloatingActionButtonsProps extends BoxProps {
   visible?: boolean;
   floatingActions?: ReactNode;
@@ -18,7 +18,7 @@ const FloatingActionButtons: FC<FloatingActionButtonsProps> = ({ visible = true,
         right={0}
         justifyContent="center"
         alignItems="center"
-        zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
+        zIndex={FLOATING_ACTION_BUTTONS_Z_INDEX}
         maxHeight="100vh"
         {...boxProps}
       >
