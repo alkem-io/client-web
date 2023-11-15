@@ -825,7 +825,8 @@
   },
   "components": {
     "navigation": {
-      "exitMenu": "Exit menu"
+      "exitMenu": "Exit menu",
+      "skipMenu": "Skip main menu"
     },
     "search": {
       "searchScope": {

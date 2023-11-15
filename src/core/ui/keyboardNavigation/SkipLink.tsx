@@ -1,3 +1,4 @@
+import { PropsWithChildren } from 'react';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import visibleOnFocus from './visibleOnFocus';
@@ -8,23 +9,22 @@ const SKIP_LINK_Z_INDEX = 1;
 
 interface SkipLinkProps {
   sx?: SystemStyleObject<Theme>;
-  anchor?: Element | null;
+  anchor?: Element | null | (() => Element | null);
 }
 
-const SkipLink = ({ anchor, sx }: SkipLinkProps) => {
+const SkipLink = ({ anchor, sx, children }: PropsWithChildren<SkipLinkProps>) => {
   const { t } = useTranslation();
 
   const handleClick = () => {
-    console.log(anchor);
-
-    if (!anchor) {
+    const anchorElement = typeof anchor === 'function' ? anchor() : anchor;
+    if (!anchorElement) {
       return;
     }
-    if (anchor.tagName === 'BUTTON' || anchor.tagName === 'A') {
+    if (anchorElement.tagName === 'BUTTON' || anchorElement.tagName === 'A') {
       (anchor as HTMLButtonElement | HTMLAnchorElement).focus();
     }
     // @ts-ignore
-    anchor.querySelector('button, [href], input, [tabindex="0"]')?.focus();
+    anchorElement.querySelector('button, [href], input, [tabindex="0"]')?.focus();
   };
 
   return (
@@ -35,7 +35,7 @@ const SkipLink = ({ anchor, sx }: SkipLinkProps) => {
       onClick={handleClick}
       sx={visibleOnFocus()({ zIndex: SKIP_LINK_Z_INDEX, textTransform: 'none', ...sx })}
     >
-      {t('buttons.skipLink')}
+      {children ?? t('buttons.skipLink')}
     </Button>
   );
 };

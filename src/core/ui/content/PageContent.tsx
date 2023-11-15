@@ -25,7 +25,7 @@ const PageContent = ({
   const globalGridColumns = useGlobalGridColumns();
 
   return (
-    <Box flexGrow={1} sx={{ backgroundColor: background, paddingBottom, ...sx }} {...props}>
+    <Box component="main" flexGrow={1} sx={{ backgroundColor: background, paddingBottom, ...sx }} {...props}>
       <GridContainer
         maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
         marginX="auto"
