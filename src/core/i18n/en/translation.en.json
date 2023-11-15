@@ -2062,6 +2062,7 @@
       "add-whiteboard": "Create whiteboard",
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
+      "savingWhiteboard": "Saving whiteboard...",
       "state": {
         "checkedout": "Someone else is currently editing this Whiteboard"
       },

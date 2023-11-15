@@ -4,20 +4,17 @@ import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
 import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
-import { Save } from '@mui/icons-material';
 import Dialog from '@mui/material/Dialog';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, useTheme } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Box, CircularProgress } from '@mui/material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
@@ -36,8 +33,9 @@ import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 
-const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
+const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: boolean | undefined }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   // Re render it every second
   const [formattedTime, setFormattedTime] = useState<string>();
@@ -54,7 +52,12 @@ const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
     return null;
   }
 
-  return (
+  return saving ? (
+    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
+      <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
+      {t('pages.whiteboard.savingWhiteboard')}
+    </Caption>
+  ) : (
     <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
       {t('common.last-saved', {
         datetime: formattedTime,
@@ -69,7 +72,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   };
   actions: {
     onCancel: (whiteboard: WhiteboardRtWithoutContent<Whiteboard>) => void;
-    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => void;
+    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => Promise<boolean>;
   };
   options: {
     show: boolean;
@@ -80,7 +83,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
     fullscreen?: boolean;
   };
   state?: {
-    updatingWhiteboard?: boolean;
+    updatingWhiteboardContent?: boolean;
     loadingWhiteboardValue?: boolean;
     changingWhiteboardLockState?: boolean;
   };
@@ -134,34 +137,17 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     [lastSaved?.lookup.whiteboardRt?.updatedDate]
   );
 
-  const getExcalidrawStateFromApi = async (
-    excalidrawApi: ExcalidrawAPIRefValue | null
-  ): Promise<RelevantExcalidrawState | undefined> => {
-    if (!excalidrawApi) {
-      return;
-    }
-
-    const imperativeApi = await excalidrawApi.readyPromise;
-
-    if (!imperativeApi) {
-      return;
-    }
-
-    const appState = imperativeApi.getAppState();
-    const elements = imperativeApi.getSceneElements();
-    const files = imperativeApi.getFiles();
-
-    return { appState, elements, files };
-  };
-
   const filesManager = useWhiteboardFilesManager({
     excalidrawApi: excalidrawApiRef.current,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
   });
 
-  const handleUpdate = async (whiteboard: WhiteboardRtWithContent, state: RelevantExcalidrawState | undefined) => {
+  const handleUpdate = async (
+    whiteboard: WhiteboardRtWithContent,
+    state: RelevantExcalidrawState | undefined
+  ): Promise<boolean> => {
     if (!state) {
-      return;
+      return false;
     }
     const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
@@ -170,12 +156,12 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
-      return;
+      return false;
     }
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
-    return actions.onUpdate(
+    const result = await actions.onUpdate(
       {
         ...whiteboard,
         profile: {
@@ -186,39 +172,28 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       } as Whiteboard,
       previewImages
     );
-  };
-
-  const saveWhiteboard = async (whiteboard: Whiteboard) => {
-    const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
-
-    formikRef.current?.setTouched({ displayName: true }, true);
-
-    await handleUpdate(whiteboard, state);
 
     collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
     await refetchLastSaved(); // And update the caption
+
+    return result;
   };
 
-  const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-
-    if (whiteboardApi) {
-      const elements = whiteboardApi.getSceneElements();
-      const appState = whiteboardApi.getAppState();
-      const files = whiteboardApi.getFiles();
-      const value = serializeAsJSON(elements, appState, files, 'local');
-
-      if (!isWhiteboardContentEqual(whiteboard?.content, value) || formikRef.current?.dirty) {
-        if (
-          !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
-        ) {
-          event.stopPropagation();
-          event.preventDefault();
-          return;
-        }
+  const onClose = async () => {
+    if (options.canEdit) {
+      const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
+      if (!whiteboard || !whiteboardApi) {
+        return;
       }
+      const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
+      const state = {
+        ...content,
+        elements: whiteboardApi.getSceneElements(),
+        appState: whiteboardApi.getAppState(),
+        files: whiteboardApi.getFiles(),
+      };
+      await handleUpdate(whiteboard, state);
     }
-
     actions.onCancel(whiteboard!);
   };
 
@@ -307,9 +282,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                       },
                     }}
                     actions={{
-                      onUpdate: state => {
-                        handleUpdate(whiteboard, state);
-                      },
+                      onUpdate: state => handleUpdate(whiteboard, state),
                       onSavedToDatabase: () => {
                         refetchLastSaved({
                           whiteboardId: whiteboard.id,
@@ -338,20 +311,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
               {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              <LastSavedCaption date={lastSavedDate} />
-              {options.canEdit ? (
-                <LoadingButton
-                  startIcon={<Save />}
-                  onClick={() => saveWhiteboard(whiteboard!)}
-                  loadingPosition="start"
-                  variant="contained"
-                  loading={state?.updatingWhiteboard}
-                >
-                  {t('buttons.save')}
-                </LoadingButton>
-              ) : (
-                <Caption>You can't edit this whiteboard</Caption>
-              )}
+              <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
+              {!options.canEdit && <Caption>You can't edit this whiteboard</Caption>}
             </Actions>
           </>
         )}

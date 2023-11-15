@@ -35,6 +35,7 @@ export interface ContextViewState {
   creatingWhiteboard?: boolean;
   changingWhiteboardLockState?: boolean;
   updatingWhiteboard?: boolean;
+  updatingWhiteboardContent?: boolean;
   error?: ApolloError;
 }
 

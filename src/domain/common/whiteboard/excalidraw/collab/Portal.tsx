@@ -7,17 +7,24 @@ import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 
+interface PortalProps {
+  collab: TCollabClass;
+  filesManager: WhiteboardFilesManager;
+  onSaveRequest: () => Promise<boolean>;
+}
 class Portal {
   collab: TCollabClass;
   filesManager: WhiteboardFilesManager;
+  onSaveRequest: () => Promise<boolean>;
   socket: Socket | null = null;
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
 
-  constructor(collab: TCollabClass, filesManager: WhiteboardFilesManager) {
+  constructor({ collab, filesManager, onSaveRequest }: PortalProps) {
     this.collab = collab;
     this.filesManager = filesManager;
+    this.onSaveRequest = onSaveRequest;
   }
 
   open(socket: Socket, id: string) {
@@ -39,6 +46,17 @@ class Portal {
     });
     this.socket.on('room-user-change', (clients: string[]) => {
       this.collab.setCollaborators(clients);
+    });
+
+    this.socket.on('save-request', async callback => {
+      let result: boolean = false;
+      try {
+        result = await this.onSaveRequest();
+      } catch (ex) {
+        result = false;
+      } finally {
+        callback({ success: result });
+      }
     });
 
     return socket;
