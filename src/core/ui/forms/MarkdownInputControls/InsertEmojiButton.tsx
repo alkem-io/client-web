@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { EmojiEmotionsOutlined } from '@mui/icons-material';
 import { useNotification } from '../../notifications/useNotification';
 import EmojiSelector from '../emoji/EmojiSelector';
+import { useTranslation } from 'react-i18next';
 
 interface InsertEmojiButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -12,6 +13,7 @@ interface InsertEmojiButtonProps extends IconButtonProps {
 }
 
 const InsertEmojiButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertEmojiButtonProps) => {
+  const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDialog = () => {
@@ -43,7 +45,13 @@ const InsertEmojiButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
 
   return (
     <>
-      <IconButton ref={buttonRef} onClick={openDialog} disabled={isDisabled} {...buttonProps}>
+      <IconButton
+        ref={buttonRef}
+        onClick={openDialog}
+        disabled={isDisabled}
+        aria-label={t('components.wysiwyg-editor.toolbar.emoji.emoji')}
+        {...buttonProps}
+      >
         <EmojiEmotionsOutlined />
       </IconButton>
       <EmojiSelector

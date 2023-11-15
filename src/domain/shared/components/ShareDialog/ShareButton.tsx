@@ -2,6 +2,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import { Button, IconButton, IconButtonProps, Tooltip } from '@mui/material';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { ShareDialog, ShareComponentProps } from './ShareDialog';
+import { useTranslation } from 'react-i18next';
 
 interface ShareButtonProps extends ShareComponentProps {
   disabled?: boolean;
@@ -19,6 +20,7 @@ const ShareButton: FC<ShareButtonProps> = ({
   sx,
   ...dialogProps
 }) => {
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -29,6 +31,7 @@ const ShareButton: FC<ShareButtonProps> = ({
             <Button
               variant="contained"
               color="primary"
+              aria-label={t('buttons.share')}
               aria-haspopup="true"
               aria-controls={dialogOpen ? 'share-dialog' : undefined}
               aria-expanded={dialogOpen ? 'true' : undefined}
@@ -41,6 +44,7 @@ const ShareButton: FC<ShareButtonProps> = ({
             </Button>
           ) : (
             <IconButton
+              aria-label={t('buttons.share')}
               aria-haspopup="true"
               aria-controls={dialogOpen ? 'share-dialog' : undefined}
               aria-expanded={dialogOpen ? 'true' : undefined}

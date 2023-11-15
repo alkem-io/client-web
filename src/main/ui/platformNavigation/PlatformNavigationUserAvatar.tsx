@@ -8,6 +8,7 @@ import MenuTriggerButton from '../../../core/ui/tooltip/MenuTriggerButton';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import NavigationItemContainer from '../../../core/ui/navigation/NavigationItemContainer';
 import NavigationItemButton from '../../../core/ui/navigation/NavigationItemButton';
+import { useTranslation } from 'react-i18next';
 
 interface PlatformNavigationUserAvatarProps {
   children: ReactElement<{ onClose?: () => void }>;
@@ -15,6 +16,7 @@ interface PlatformNavigationUserAvatarProps {
 }
 
 const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUserAvatarProps) => {
+  const { t } = useTranslation();
   const { user, isAuthenticated, loadingMe } = useUserContext();
 
   const theme = useTheme();
@@ -31,6 +33,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
               component={Avatar}
               src={user?.user.profile.avatar?.uri}
               sx={{ padding: 0 }}
+              aria-label={t('buttons.userMenu')}
               {...props}
             >
               {loadingMe && (

@@ -147,7 +147,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
     <>
       <IconButton
         ref={emojiButtonRef}
-        aria-label="Insert emoji"
+        aria-label={t('buttons.insertEmoji')}
         size="small"
         onClick={() => setEmojiSelectorOpen(!isEmojiSelectorOpen)}
         disabled={inactive || readOnly}

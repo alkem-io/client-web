@@ -106,6 +106,7 @@ const UserCard: FC<UserCardProps> = ({
                   </Typography>
                   {isContactable && (
                     <IconButton
+                      aria-label={t('common.email')}
                       onClick={event => {
                         event.preventDefault();
                         event.stopPropagation();

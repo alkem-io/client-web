@@ -4,7 +4,7 @@ import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import { CardText } from '../typography';
 import { Expandable } from './Expandable';
-import { ComponentType, PropsWithChildren } from 'react';
+import { ComponentType } from 'react';
 import { useElevationContext } from '../utils/ElevationContext';
 
 export interface BreadcrumbsItemProps extends Expandable {
@@ -14,6 +14,7 @@ export interface BreadcrumbsItemProps extends Expandable {
   iconComponent?: ComponentType<SvgIconProps>;
   uri?: string;
   accent?: boolean;
+  children: string | undefined;
   loading?: boolean;
 }
 
@@ -28,7 +29,7 @@ const BreadcrumbsItem = ({
   accent = false,
   loading = false,
   children,
-}: PropsWithChildren<BreadcrumbsItemProps>) => {
+}: BreadcrumbsItemProps) => {
   const theme = useTheme();
 
   return (
@@ -45,6 +46,7 @@ const BreadcrumbsItem = ({
         borderRadius: 0.5,
       }}
       onMouseEnter={() => onExpand?.()}
+      aria-label={children}
     >
       <Avatar
         src={avatar?.uri}

@@ -1,5 +1,5 @@
 import { ExpandMore, HelpOutlineOutlined, HubOutlined } from '@mui/icons-material';
-import { ButtonBase, Collapse, Skeleton, Tooltip, useMediaQuery, useTheme } from '@mui/material';
+import { ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -67,7 +67,9 @@ const DashboardNavigation = ({
             placement={tooltipPlacement}
             arrow
           >
-            <HelpOutlineOutlined fontSize="small" />
+            <IconButton size="small" aria-label={t('components.dashboardNavigation.help')}>
+              <HelpOutlineOutlined fontSize="small" />
+            </IconButton>
           </Tooltip>
         }
       />
