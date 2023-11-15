@@ -66,6 +66,11 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
     onClose();
   };
 
+  const handleSave = (currentReferences: CreateReferenceFormValues[]) => {
+    setHangingReferenceIds([]);
+    onSave(currentReferences);
+  };
+
   useEffect(() => {
     const run = async () => {
       const newId = await onAddMore();
@@ -198,7 +203,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                   </Box>
                   <Actions paddingX={gutters()} justifyContent="space-between">
                     <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
-                    <Button variant="contained" onClick={() => onSave(currentReferences)}>
+                    <Button variant="contained" onClick={() => handleSave(currentReferences)}>
                       {t('buttons.save')}
                     </Button>
                   </Actions>
