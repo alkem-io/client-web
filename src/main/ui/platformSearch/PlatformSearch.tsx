@@ -1,4 +1,4 @@
-import { SelectOption } from '@mui/base/SelectUnstyled/useSelect.types';
+import { SelectOption } from '@mui/base';
 import { useTranslation } from 'react-i18next';
 import React, { forwardRef, PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useSpace } from '../../../domain/journey/space/SpaceContext/useSpace';
@@ -31,7 +31,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
 
     const { spaceNameId, profile } = useSpace();
 
-    const searchOptions = useMemo<SelectOption<SearchScope>[] | undefined>(() => {
+    const searchOptions = useMemo<Partial<SelectOption<SearchScope>>[] | undefined>(() => {
       if (!spaceNameId) {
         return undefined;
       }
