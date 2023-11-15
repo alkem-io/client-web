@@ -1,10 +1,13 @@
-import { ComponentType, forwardRef } from 'react';
+import { ComponentType, forwardRef, useRef } from 'react';
 import { SxProps } from '@mui/material';
 import { gutters, useGridItem } from '../grid/utils';
 import GridProvider from '../grid/GridProvider';
 import { useDeclaredColumns } from '../grid/GridContext';
 import { SystemCssProperties } from '@mui/system/styleFunctionSx/styleFunctionSx';
 import { Theme } from '@mui/material/styles';
+import { useCombinedRefs } from '../../../domain/shared/utils/useCombinedRefs';
+import { BlockAnchorProvider } from '../keyboardNavigation/NextBlockAnchor';
+import { v4 as uuid } from 'uuid';
 
 export interface BasePageContentBlockProps {
   disablePadding?: boolean;
@@ -62,9 +65,15 @@ const BasePageContentBlock = forwardRef(
       ...sx,
     };
 
+    const combinedRef = useCombinedRefs(ref);
+
+    const defaultAnchor = useRef(uuid()).current;
+
     return (
       <GridProvider columns={columnsTaken ?? gridColumns}>
-        <Component ref={ref} id={anchor} sx={mergedSx} {...(props as unknown as Props)} />
+        <BlockAnchorProvider blockRef={combinedRef}>
+          <Component ref={combinedRef} id={anchor ?? defaultAnchor} sx={mergedSx} {...(props as unknown as Props)} />
+        </BlockAnchorProvider>
       </GridProvider>
     );
   }
