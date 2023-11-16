@@ -39,6 +39,7 @@ const ChatWidgetTitle = ({ onClickInfo, mobile = false }: ChatWidgetTitleProps) 
           color="primary"
           sx={{ position: 'absolute', top: 0, [infoButtonPosition]: 0 }}
           onClick={onClickInfo}
+          aria-label={t('common.help')}
         >
           <InfoOutlined />
         </IconButton>

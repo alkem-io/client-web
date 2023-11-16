@@ -5,14 +5,16 @@ import MenuTriggerButton from '../../../core/ui/tooltip/MenuTriggerButton';
 import StandalonePlatformNavigationMenu from './platformNavigationMenu/StandalonePlatformNavigationMenu';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import { WidgetsRounded } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 const PlatformNavigationMenuButton = () => {
+  const { t } = useTranslation();
   return (
     <MenuTriggerButton
       placement="bottom-end"
       renderTrigger={({ ref, ...props }) => (
         <NavigationItemContainer ref={ref as Ref<HTMLDivElement>}>
-          <NavigationItemButton color="primary" {...props}>
+          <NavigationItemButton color="primary" {...props} aria-label={t('buttons.toolsMenu')}>
             <WidgetsRounded />
           </NavigationItemButton>
         </NavigationItemContainer>

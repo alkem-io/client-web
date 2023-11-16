@@ -97,12 +97,12 @@ const ProfilePageBanner = ({
             {profile?.location && <LocationCaption {...profile?.location} />}
             <Actions gap={0}>
               {onSendMessage && (
-                <IconButton size="small" onClick={openMessageDialog}>
+                <IconButton size="small" onClick={openMessageDialog} aria-label={t('common.email')}>
                   <MailOutlined />
                 </IconButton>
               )}
               {settingsUri && (
-                <IconButton size="small" component={RouterLink} to={settingsUri}>
+                <IconButton size="small" component={RouterLink} to={settingsUri} aria-label={t('buttons.settings')}>
                   <SettingsOutlined />
                 </IconButton>
               )}

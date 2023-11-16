@@ -3,6 +3,7 @@ import { Close } from '@mui/icons-material';
 import { Box, BoxProps, IconButton, SvgIconProps } from '@mui/material';
 import ActionsBar from '../actions/ActionsBar/ActionsBar';
 import { BlockTitle } from '../typography';
+import { useTranslation } from 'react-i18next';
 
 export interface DialogHeaderProps {
   icon?: ReactElement<SvgIconProps>;
@@ -20,6 +21,7 @@ const DialogHeader = ({
   titleContainerProps,
   children,
 }: PropsWithChildren<DialogHeaderProps>) => {
+  const { t } = useTranslation();
   return (
     <Box display="flex" alignItems="start" padding={1}>
       <Box
@@ -38,7 +40,7 @@ const DialogHeader = ({
       </Box>
       <ActionsBar>
         {onClose && (
-          <IconButton onClick={onClose}>
+          <IconButton onClick={onClose} aria-label={t('buttons.close')}>
             <Close />
           </IconButton>
         )}

@@ -163,7 +163,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   return (
     <Box {...containerProps}>
       {isShrunk ? (
-        <IconButton onClick={() => setShrink(false)}>
+        <IconButton onClick={() => setShrink(false)} aria-label={t('common.search')}>
           <SearchIcon color="primary" />
         </IconButton>
       ) : (
@@ -190,7 +190,11 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                         handleRemove={handleRemove}
                         maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}
                       />
-                      <IconButton onClick={() => handleSearch(textInput)} disabled={disabled}>
+                      <IconButton
+                        onClick={() => handleSearch(textInput)}
+                        disabled={disabled}
+                        aria-label={t('common.search')}
+                      >
                         <SearchIcon color="primary" />
                       </IconButton>
                     </>

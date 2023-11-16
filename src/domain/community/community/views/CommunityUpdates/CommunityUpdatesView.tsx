@@ -130,6 +130,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   useEffect(() => {
     setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
   }, [setRemovedMessageId, orderedMessages]);
+  // TODO: Some translations are missing
 
   return (
     <>
@@ -285,6 +286,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                             setShowConfirmationDialog(true);
                           }}
                           size="large"
+                          aria-label={t('buttons.remove')}
                         >
                           <DeleteOutlineIcon />
                         </IconButton>
@@ -298,7 +300,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                           })}
                           onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
                           aria-expanded={expanded}
-                          aria-label="show more"
+                          aria-label={t('common.show-more')}
                           size="large"
                         >
                           <ExpandMoreIcon />

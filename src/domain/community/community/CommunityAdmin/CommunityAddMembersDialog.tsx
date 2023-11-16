@@ -107,7 +107,11 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
                       return <>{t('common.added')}</>;
                     } else {
                       return (
-                        <LoadingIconButton loading={loadingItemId === row.id} onClick={() => handleAdd(row.id)}>
+                        <LoadingIconButton
+                          loading={loadingItemId === row.id}
+                          onClick={() => handleAdd(row.id)}
+                          aria-label={t('common.add')}
+                        >
                           <AddIcon color="primary" />
                         </LoadingIconButton>
                       );

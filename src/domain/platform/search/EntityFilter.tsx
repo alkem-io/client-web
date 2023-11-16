@@ -44,7 +44,12 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
 
   return (
     <>
-      <IconButton ref={buttonRef} onClick={() => setFilterMenuOpen(true)} sx={{ marginRight: gutters(-0.5) }}>
+      <IconButton
+        ref={buttonRef}
+        onClick={() => setFilterMenuOpen(true)}
+        sx={{ marginRight: gutters(-0.5) }}
+        aria-label={t('common.filter')}
+      >
         <RoundedIcon component={FilterAltOutlinedIcon} size="medium" />
       </IconButton>
       {/* Popup menu for big screens */}
