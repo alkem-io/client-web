@@ -247,7 +247,11 @@ export const UserForm: FC<UserProps> = ({
                     {onVerify && (
                       <>
                         <Box marginLeft={1} />
-                        <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('ProofOfNameCredential')}>
+                        <IconButton
+                          sx={{ flexShrink: 0 }}
+                          onClick={() => onVerify('ProofOfNameCredential')}
+                          aria-label={t('common.verified-status.verified')}
+                        >
                           <HealthAndSafetyIcon />
                         </IconButton>
                       </>

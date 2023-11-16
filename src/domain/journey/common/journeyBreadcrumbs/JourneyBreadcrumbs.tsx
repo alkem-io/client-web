@@ -23,11 +23,21 @@ const JourneyBreadcrumbs = forwardRef<Collapsible, JourneyBreadcrumbsProps<Expan
       <Breadcrumbs ref={ref} {...props}>
         <BreadcrumbsRootItem />
         {breadcrumbs.map(({ journeyTypeName, displayName, ...item }) => (
-          <BreadcrumbsItem key={journeyTypeName} iconComponent={JourneyIcon[journeyTypeName]} accent {...item}>
+          <BreadcrumbsItem
+            key={journeyTypeName}
+            iconComponent={JourneyIcon[journeyTypeName]}
+            accent
+            aria-label={displayName}
+            {...item}
+          >
             {displayName}
           </BreadcrumbsItem>
         ))}
-        {settings && <BreadcrumbsItem iconComponent={Settings}>{t('common.settings')}</BreadcrumbsItem>}
+        {settings && (
+          <BreadcrumbsItem iconComponent={Settings} aria-label={t('common.settings')}>
+            {t('common.settings')}
+          </BreadcrumbsItem>
+        )}
       </Breadcrumbs>
     );
   }

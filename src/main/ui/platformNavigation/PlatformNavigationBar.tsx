@@ -13,6 +13,8 @@ import { UncontrolledExpandable } from '../../../core/ui/navigation/Uncontrolled
 import { useResizeDetector } from 'react-resize-detector';
 import { GUTTER_PX } from '../../../core/ui/grid/constants';
 import PlatformNavigationUncollapse from './PlatformNavigationUncollapse';
+import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
+import { useTranslation } from 'react-i18next';
 
 export interface PlatformNavigationBarProps {
   breadcrumbs?: ReactElement<UncontrolledExpandable & { ref: Ref<Collapsible> }>;
@@ -73,8 +75,12 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
     searchBoxRef.current?.collapse();
   }, [isMobile]);
 
+  const { t } = useTranslation();
+
   return (
     <NavigationBar>
+      <SkipLink anchor={() => document.querySelector('main')}>{t('components.navigation.skipMenu')}</SkipLink>
+
       <NavigationBarSideContent ref={buttonsContainerRef}>
         <Box
           display="flex"

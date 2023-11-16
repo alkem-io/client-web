@@ -12,6 +12,7 @@ import InnovationFlowProfileForm, { InnovationFlowProfileFormValues } from './In
 import InnovationFlowProfileView from './InnovationFlowProfileView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import Icon from '../../../../core/ui/icon/Icon';
+import { useTranslation } from 'react-i18next';
 
 export interface InnovationFlowProfile {
   id: string;
@@ -52,6 +53,7 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
   innovationFlow,
   children,
 }) => {
+  const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [editMode, setEditMode] = useState(false);
 
@@ -87,7 +89,10 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
                 <Box display="flex" justifyContent="space-between">
                   <BlockTitle>{innovationFlow?.profile.displayName}</BlockTitle>
                   {editable && (
-                    <IconButton onClick={() => setEditMode(editMode => !editMode)}>
+                    <IconButton
+                      onClick={() => setEditMode(editMode => !editMode)}
+                      aria-label={editMode ? t('buttons.cancel') : t('buttons.edit')}
+                    >
                       {editMode ? <Close /> : <EditIcon />}
                     </IconButton>
                   )}

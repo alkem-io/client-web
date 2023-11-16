@@ -48,6 +48,8 @@ import { WhiteboardFragmentWithCallout, WhiteboardRtFragmentWithCallout } from '
 import CreateCalloutTemplateDialog from '../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
 import { CalloutTemplateFormSubmittedValues } from '../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
 import { useCreateCalloutTemplate } from '../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
+import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
+import { useNextBlock } from '../../../core/ui/keyboardNavigation/NextBlockAnchor';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -202,6 +204,8 @@ const CalloutLayout = ({
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
+  const nextBlockAnchor = useNextBlock();
+
   if (dontShow) {
     return null;
   }
@@ -223,12 +227,17 @@ const CalloutLayout = ({
       <DialogHeader
         actions={
           <>
-            <IconButton onClick={expanded ? onClose : onExpand}>
+            <IconButton
+              onClick={expanded ? onClose : onExpand}
+              aria-label={t('buttons.expandWindow')}
+              aria-haspopup="true"
+            >
               {expanded ? <Close /> : <ExpandContentIcon />}
             </IconButton>
             {callout.editable && (
               <IconButton
                 id="callout-settings-button"
+                aria-label={t('buttons.settings')}
                 aria-haspopup="true"
                 aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
                 aria-expanded={settingsOpened ? 'true' : undefined}
@@ -240,7 +249,7 @@ const CalloutLayout = ({
             <ShareButton url={calloutUri} entityTypeName="callout" />
           </>
         }
-        titleContainerProps={{ flexDirection: 'column' }}
+        titleContainerProps={{ flexDirection: 'column', position: 'relative' }}
       >
         {hasCalloutDetails && (
           <Authorship authorAvatarUri={callout.authorAvatarUri} date={callout.publishedAt}>
@@ -250,6 +259,7 @@ const CalloutLayout = ({
           </Authorship>
         )}
         {!hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
+        <SkipLink anchor={nextBlockAnchor} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
       </DialogHeader>
       <Gutters minHeight={0} paddingTop={0}>
         {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}

@@ -171,7 +171,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
                   render: ({ row }) => {
                     const data = row as RenderParams['row'];
                     return data.url ? (
-                      <IconButton component={Link} href={data.url} target="_blank">
+                      <IconButton component={Link} href={data.url} target="_blank" aria-label={t('buttons.open')}>
                         {data.collapsible ? (
                           <ArrowForwardIcon fontSize="small" color="primary" />
                         ) : (

@@ -112,7 +112,11 @@ export const SearchableList = <
               primary={item.value}
               icon={
                 onDelete && (
-                  <SearchableListIconButton onClick={e => openModal(e, item)} size="large">
+                  <SearchableListIconButton
+                    onClick={e => openModal(e, item)}
+                    size="large"
+                    aria-label={t('buttons.delete')}
+                  >
                     <Delete color="error" fontSize="large" />
                   </SearchableListIconButton>
                 )

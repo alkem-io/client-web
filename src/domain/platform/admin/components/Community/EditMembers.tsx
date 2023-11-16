@@ -68,6 +68,7 @@ export const EditMembers = <Member extends Identifiable>({
   renderEmptyRow,
   isRemoveDisabled = () => false,
 }: EditMembersProps<Member>) => {
+  const { t } = useTranslation();
   const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
 
   const renderHeader = typeof header === 'function' ? header : () => header;
@@ -95,10 +96,10 @@ export const EditMembers = <Member extends Identifiable>({
                       <TableCell align="right">
                         <Cell>
                           <StyledButtonRemove
-                            aria-label="Remove"
                             size="small"
                             disabled={isRemoveDisabled(m) || updating}
                             onClick={() => onRemove(m.id)}
+                            aria-label={t('buttons.remove')}
                           >
                             <RemoveIcon />
                           </StyledButtonRemove>
@@ -213,7 +214,12 @@ export const AvailableMembers = <Member extends Identifiable>({
               {onAdd && (
                 <TableCell>
                   <Cell>
-                    <StyledButtonAdd aria-label="Add" size="small" onClick={() => onAdd(m.id)} disabled={updating}>
+                    <StyledButtonAdd
+                      size="small"
+                      onClick={() => onAdd(m.id)}
+                      disabled={updating}
+                      aria-label={t('common.add')}
+                    >
                       <AddIcon />
                     </StyledButtonAdd>
                   </Cell>

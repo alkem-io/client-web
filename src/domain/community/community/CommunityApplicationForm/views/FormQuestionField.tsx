@@ -60,6 +60,7 @@ const FormQuestionField: FC<FormQuestionFieldProps> = ({
             disabled={disabled || !canMoveUp || readOnly}
             size="small"
             sx={{ marginRight: -1 }}
+            aria-label={t('community.application-form.move-up')}
           >
             <ArrowUpwardIcon />
           </IconButton>
@@ -72,6 +73,7 @@ const FormQuestionField: FC<FormQuestionFieldProps> = ({
             disabled={disabled || !canMoveDown || readOnly}
             size="small"
             sx={{ marginLeft: -1, marginRight: -1 }}
+            aria-label={t('community.application-form.move-down')}
           >
             <ArrowDownwardIcon />
           </IconButton>
@@ -80,7 +82,12 @@ const FormQuestionField: FC<FormQuestionFieldProps> = ({
 
       <Tooltip title={t('community.application-form.delete-question')} placement={'bottom'}>
         <span>
-          <IconButton aria-label="Remove" onClick={onDelete} disabled={disabled || readOnly} size="large">
+          <IconButton
+            onClick={onDelete}
+            disabled={disabled || readOnly}
+            size="large"
+            aria-label={t('community.application-form.delete-question')}
+          >
             <DeleteIcon />
           </IconButton>
         </span>

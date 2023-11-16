@@ -50,7 +50,7 @@ const CalendarEventDetail = ({
               actions={
                 <>
                   {canEdit && (
-                    <IconButton onClick={onEdit}>
+                    <IconButton onClick={onEdit} aria-label={t('buttons.settings')}>
                       <SettingsIcon />
                     </IconButton>
                   )}

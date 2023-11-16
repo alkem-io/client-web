@@ -201,7 +201,11 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                           <TableCell>{space.license.visibility}</TableCell>
                           <TableCell>{space.host?.profile.displayName}</TableCell>
                           <TableCell>
-                            <IconButton color="warning" onClick={() => handleRemove(space.id)}>
+                            <IconButton
+                              color="warning"
+                              onClick={() => handleRemove(space.id)}
+                              aria-label={t('buttons.delete')}
+                            >
                               <Remove />
                             </IconButton>
                           </TableCell>

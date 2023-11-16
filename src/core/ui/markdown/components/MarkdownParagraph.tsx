@@ -4,12 +4,17 @@ import { CardText, Text } from '../../typography';
 import { gutters } from '../../grid/utils';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
 
-const MarkdownParagraph = ({ node, ...props }: ReactMarkdownProps) => {
+interface MarkdownParagraphProps extends ReactMarkdownProps {
+  overrideDisableParagraphPadding?: boolean;
+}
+
+const MarkdownParagraph = ({ node, overrideDisableParagraphPadding, ...props }: MarkdownParagraphProps) => {
   const { card, multiline, disableParagraphPadding } = useMarkdownOptions();
 
   const Component = card ? CardText : Text;
 
-  return <Component noWrap={!multiline} marginY={disableParagraphPadding ? 0 : gutters(0.5)} {...props} />;
+  const disableMargin = overrideDisableParagraphPadding ?? disableParagraphPadding;
+  return <Component noWrap={!multiline} marginY={disableMargin ? 0 : gutters(0.5)} {...props} />;
 };
 
 export default MarkdownParagraph;
