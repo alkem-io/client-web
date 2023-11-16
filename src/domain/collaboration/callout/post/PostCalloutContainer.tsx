@@ -27,7 +27,10 @@ interface PostCalloutContainerProps extends SimpleContainerProps<PostCalloutCont
 }
 
 const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ calloutId, children }, ref) => {
-  const { ref: intersectionObserverRef, inView } = useInView({
+  // TODO: Reenable LazyLoading
+  const inView = true;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { ref: intersectionObserverRef, inView: _inView } = useInView({
     delay: 500,
     trackVisibility: true,
     triggerOnce: true,

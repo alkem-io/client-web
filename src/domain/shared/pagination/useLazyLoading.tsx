@@ -10,8 +10,10 @@ interface Options {
 
 const useLazyLoading = <RefValue,>(Loader: ComponentType<{ ref: Ref<RefValue> }>, options: Options) => {
   const { hasMore, loading, updating = false, fetchMore } = options;
-
-  const { ref, inView } = useInView();
+  // TODO: Reenable LazyLoading
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { ref, inView: _inView } = useInView();
+  const inView = true;
 
   useEffect(() => {
     if (inView && !loading) {
