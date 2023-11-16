@@ -72,9 +72,8 @@ const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({
     subscribeToMore: subscribeToWhiteboard,
   } = useWhiteboardWithContentQuery({
     errorPolicy: 'all',
-    // TODO: Check if these policies are really needed
+    // Disable cache, we really want to make sure that the latest content is fetched
     fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-and-network',
     skip: skipWhiteboardQuery,
     variables: {
       whiteboardId: whiteboardId!,
