@@ -167,7 +167,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
               {
                 name: 'edit',
                 render: ({ row }) => (
-                  <IconButton onClick={() => setEditingOrganization(row)}>
+                  <IconButton onClick={() => setEditingOrganization(row)} aria-label={t('buttons.edit')}>
                     <EditIcon color="primary" />
                   </IconButton>
                 ),

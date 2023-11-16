@@ -100,5 +100,6 @@ export interface ShareOnPlatformButtonProps extends ButtonProps {
 }
 
 export const ShareButton: FC<ButtonProps> = props => {
-  return <Button sx={{ height: gutters(2) }} {...props} />;
+  const { t } = useTranslation();
+  return <Button sx={{ height: gutters(2) }} aria-label={t('buttons.share')} {...props} />;
 };

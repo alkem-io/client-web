@@ -50,6 +50,7 @@ const PoweredBy = ({ compact = false, preview = false, sx, ...props }: PoweredBy
         },
         ...sx,
       }}
+      aria-label={t('components.poweredBy.aria-label')}
       {...props}
     >
       <BlockSectionTitle flexShrink={0} textTransform="uppercase" fontSize={compact ? rem(10) : undefined}>

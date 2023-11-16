@@ -52,7 +52,7 @@ const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserC
     <>
       <ContributorCard
         headerActions={
-          <IconButton onClick={openMessageUserDialog}>
+          <IconButton onClick={openMessageUserDialog} aria-label={t('common.email')}>
             <EmailOutlinedIcon color="primary" />
           </IconButton>
         }

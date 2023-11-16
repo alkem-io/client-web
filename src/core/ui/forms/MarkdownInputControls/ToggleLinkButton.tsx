@@ -24,6 +24,7 @@ interface LinkProps {
 }
 
 const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: ToggleLinkButtonProps) => {
+  const { t } = useTranslation();
   const wasFocusedRef = useRef<boolean>(false);
 
   const subscribeToFocus = (editor: Editor) => {
@@ -97,8 +98,6 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
     href: 'https://',
   };
 
-  const { t } = useTranslation();
-
   const isDisabled = !editor || !editor.can().toggleLink(initialValues);
 
   const isActive = editor?.isActive('link');
@@ -111,6 +110,7 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
         onClick={handleClick}
         disabled={isDisabled}
         color={isActive ? 'secondary' : undefined}
+        aria-label={t('components.wysiwyg-editor.toolbar.link.link')}
         {...buttonProps}
       >
         <LinkOutlined />

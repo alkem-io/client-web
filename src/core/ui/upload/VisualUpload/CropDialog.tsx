@@ -204,7 +204,10 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
               </Box>
               <FormHelperText>
                 {tLinks('components.referenceSegment.url-helper-text', {
-                  terms: { href: locations?.terms },
+                  terms: {
+                    href: locations?.terms,
+                    'aria-label': t('components.referenceSegment.plaintext-helper-text'),
+                  },
                 })}
               </FormHelperText>
               <Box>

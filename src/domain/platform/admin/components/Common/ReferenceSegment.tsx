@@ -78,7 +78,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
             <BlockSectionTitle>{t('components.referenceSegment.title')}</BlockSectionTitle>
             <Tooltip title={t('components.referenceSegment.tooltips.add-reference')} placement={'bottom'}>
               <IconButton
-                aria-label="Add"
+                aria-label={t('callout.link-collection.add-another')}
                 onClick={() => {
                   handleAdd(push);
                 }}
@@ -110,7 +110,10 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       disabled={disabled || isRemoving(index)}
                       referenceID={attachment.id}
                       helperText={tLinks('components.referenceSegment.url-helper-text', {
-                        terms: { href: locations?.terms },
+                        terms: {
+                          href: locations?.terms,
+                          'aria-label': t('components.referenceSegment.plaintext-helper-text'),
+                        },
                       })}
                     />
                     <Box>
@@ -120,7 +123,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                         placement={'bottom'}
                       >
                         <IconButton
-                          aria-label="Remove"
+                          aria-label={t('common.remove')}
                           onClick={() => {
                             // TODO When onRemove doesn't have this callback signature anymore
                             // TODO remove branching and use `try { ... } finally { setRemoving(index, false) }`

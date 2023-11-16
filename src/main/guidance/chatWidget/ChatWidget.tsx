@@ -200,7 +200,7 @@ const ChatWidget = () => {
 
   return (
     <>
-      <ChatWidgetStyles ref={wrapperRef}>
+      <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')}>
         <Widget
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle mobile={isMobile} onClickInfo={() => setIsHelpDialogOpen(true)} />}

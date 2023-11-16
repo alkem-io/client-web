@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { isFileAttachmentUrl } from '../../../../core/utils/links';
 import { Attachment as AttachmentIcon } from '@mui/icons-material';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { useTranslation } from 'react-i18next';
 
 export interface ReferenceViewProps {
   reference: Reference;
@@ -46,6 +47,7 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
 };
 
 const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   return (
     <Root>
@@ -66,7 +68,7 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit
         <ReferenceDescription>{reference.description}</ReferenceDescription>
       </BadgeCardView>
       {canEdit && (
-        <IconButton size="small" onClick={onClickEdit} className="only-on-hover">
+        <IconButton size="small" onClick={onClickEdit} className="only-on-hover" aria-label={t('buttons.edit')}>
           <EditIcon />
         </IconButton>
       )}

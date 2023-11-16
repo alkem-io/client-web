@@ -25,6 +25,7 @@ interface ImageProps {
 }
 
 const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertImageButtonProps) => {
+  const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDialog = () => {
@@ -55,13 +56,16 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
     alt: '',
   };
 
-  const { t } = useTranslation();
-
   const isDisabled = !editor || !editor.can().setImage(initialValues);
 
   return (
     <>
-      <IconButton onClick={openDialog} disabled={isDisabled} {...buttonProps}>
+      <IconButton
+        onClick={openDialog}
+        disabled={isDisabled}
+        aria-label={t('components.wysiwyg-editor.toolbar.image.image')}
+        {...buttonProps}
+      >
         <AddPhotoAlternateOutlined />
       </IconButton>
       <DialogWithGrid open={isDialogOpen} onClose={closeDialog}>

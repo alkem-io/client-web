@@ -81,7 +81,7 @@ const InnovationFlowStates = ({
           ))}
         </Gutters>
         {showSettings && (
-          <IconButton color="primary" onClick={() => setShowSettingsDialog(true)}>
+          <IconButton color="primary" onClick={() => setShowSettingsDialog(true)} aria-label={t('buttons.settings')}>
             <SettingsIcon />
           </IconButton>
         )}

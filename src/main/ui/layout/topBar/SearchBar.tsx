@@ -66,7 +66,7 @@ const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={handleNavigateToSearchPage}>
+              <IconButton onClick={handleNavigateToSearchPage} aria-label={t('common.search')}>
                 <SearchIcon color="primary" />
               </IconButton>
             </InputAdornment>

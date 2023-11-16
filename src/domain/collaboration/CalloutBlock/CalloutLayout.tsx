@@ -227,12 +227,17 @@ const CalloutLayout = ({
       <DialogHeader
         actions={
           <>
-            <IconButton onClick={expanded ? onClose : onExpand}>
+            <IconButton
+              onClick={expanded ? onClose : onExpand}
+              aria-label={t('buttons.expandWindow')}
+              aria-haspopup="true"
+            >
               {expanded ? <Close /> : <ExpandContentIcon />}
             </IconButton>
             {callout.editable && (
               <IconButton
                 id="callout-settings-button"
+                aria-label={t('buttons.settings')}
                 aria-haspopup="true"
                 aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
                 aria-expanded={settingsOpened ? 'true' : undefined}

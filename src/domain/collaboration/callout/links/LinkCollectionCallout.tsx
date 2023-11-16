@@ -193,7 +193,11 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
                 </Caption>
               )}
               {canAddLinks && (
-                <IconButton aria-label="Add" size="small" onClick={() => setAddNewReferenceDialogOpen(true)}>
+                <IconButton
+                  aria-label={t('common.add')}
+                  size="small"
+                  onClick={() => setAddNewReferenceDialogOpen(true)}
+                >
                   <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
                 </IconButton>
               )}

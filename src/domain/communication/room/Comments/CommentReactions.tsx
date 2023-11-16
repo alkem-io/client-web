@@ -7,6 +7,7 @@ import { Box, IconButton } from '@mui/material';
 import { AddReactionOutlined } from '@mui/icons-material';
 import { CardText } from '../../../../core/ui/typography/components';
 import EmojiSelector from '../../../../core/ui/forms/emoji/EmojiSelector';
+import { useTranslation } from 'react-i18next';
 
 interface CommentReactionsReaction extends Identifiable {
   emoji: string;
@@ -31,6 +32,7 @@ const CommentReactions = ({
 }: CommentReactionsProps) => {
   const { user } = useUserContext();
   const userId = user?.user.id;
+  const { t } = useTranslation();
 
   const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {
     const sortedReactions = sortBy(reactions, r => r.emoji);
@@ -68,6 +70,7 @@ const CommentReactions = ({
           size="small"
           disabled={!canAddReaction}
           onClick={() => setIsReactionDialogOpen(true)}
+          aria-label={t('messaging.addReaction')}
         >
           <AddReactionOutlined fontSize="inherit" />
         </IconButton>

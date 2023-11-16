@@ -91,7 +91,7 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
                 {canDelete && (
                   <Box display="flex" justifyContent="start" padding={gutters()}>
                     <BlockSectionTitle>
-                      <IconButton onClick={onDelete} color="error">
+                      <IconButton onClick={onDelete} color="error" aria-label={t('buttons.delete')}>
                         <DeleteIcon />
                       </IconButton>
                       {t('callout.link-collection.delete-link')}

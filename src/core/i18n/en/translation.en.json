@@ -97,6 +97,9 @@
     "back": "Back",
     "next": "Next",
     "edit": "Edit",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "expandWindow": "Expand Window",
     "see-more": "See more",
     "see-all": "More {{subject}}",
     "readMore": "Read more",
@@ -111,6 +114,7 @@
     "send-message": "Send message",
     "edit-members": "Edit members",
     "insert": "Insert",
+    "open": "Open",
     "my-profile": "My profile",
     "new": "New",
     "sign-out": "Sign out",
@@ -130,6 +134,7 @@
     "find-template": "Find template",
     "change": "Change",
     "share": "Share",
+    "view": "View",
     "preview": "Preview",
     "import": "Import",
     "importing": "Importing...",
@@ -148,7 +153,10 @@
     "changeLanguage": "Change language",
     "getHelp": "Get help",
     "saveAsTemplate": "Save as template",
-    "skipLink": "Skip to next block"
+    "skipLink": "Skip to next block",
+    "toolsMenu": "Tools Menu",
+    "userMenu": "User Menu",
+    "scrollToTop": "Scroll to top"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -305,7 +313,9 @@
     "question": "Question",
     "questions": "Questions",
     "show-subject": "Show: ",
+    "show-more": "Show more",
     "show-all": "Show all",
+    "lock": "Locked",
     "title": "Title",
     "visibility": "Visibility",
     "warning": "Warning",
@@ -629,7 +639,11 @@
     "message": "Message",
     "message-optional": "Message (Optional)",
     "successfully-sent": "Message successfully sent",
-    "messageDeleted": "This message has been deleted."
+    "messageDeleted": "This message has been deleted.",
+    "insertEmoji": "Insert Emoji",
+    "addReaction": "Add reaction",
+    "addMention": "Mention someone",
+    "formattingHelp": "Formatting help"
   },
   "send-message-dialog": {
     "direct-message-title": "Send a message",
@@ -847,7 +861,8 @@
       "platform": "Everywhere on Alkemio"
     },
     "poweredBy": {
-      "label": "Powered by"
+      "label": "Powered by",
+      "aria-label": "Powered by Alkemio"
     },
     "journeyUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
@@ -1199,9 +1214,11 @@
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"
       },
-      "url-helper-text": "<terms>Click here</terms> for the terms and conditions."
+      "url-helper-text": "<terms>Click here</terms> for the terms and conditions.",
+      "plaintext-helper-text": "Click here for the terms and conditions."
     },
     "file-upload": {
+      "uploadFile": "Upload file",
       "file-size-error": "File size exceeds the {{limit}}MB limit",
       "file-upload-success": "File uploaded successfully"
     },

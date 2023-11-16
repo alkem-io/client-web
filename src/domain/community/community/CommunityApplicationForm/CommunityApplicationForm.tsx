@@ -161,13 +161,13 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ spaceId, 
               <Tooltip title={'Add question'} placement={'bottom'}>
                 <span>
                   <IconButton
-                    aria-label="Add"
                     onClick={() => {
                       handleAdd();
                     }}
                     color="primary"
                     disabled={disabled || loading}
                     size="large"
+                    aria-label={t('common.add')}
                   >
                     <AddIcon />
                   </IconButton>
