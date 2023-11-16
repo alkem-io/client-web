@@ -150,6 +150,7 @@
     "changeLanguage": "Change language",
     "getHelp": "Get help",
     "saveAsTemplate": "Save as template",
+    "skipLink": "Skip to next block",
     "toolsMenu": "Tools Menu",
     "userMenu": "User Menu",
     "scrollToTop": "Scroll to top"
@@ -829,7 +830,8 @@
   },
   "components": {
     "navigation": {
-      "exitMenu": "Exit menu"
+      "exitMenu": "Exit menu",
+      "skipMenu": "Skip main menu"
     },
     "search": {
       "searchScope": {

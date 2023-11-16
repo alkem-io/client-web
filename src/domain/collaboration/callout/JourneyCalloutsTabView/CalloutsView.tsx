@@ -153,7 +153,10 @@ const CalloutsView = ({
               onCalloutDelete={handleDelete}
               calloutUri={calloutUri}
               onExpand={() => handleExpand(callout)}
-              blockProps={typeof blockProps === 'function' ? blockProps(callout, index) : blockProps}
+              blockProps={{
+                ...(typeof blockProps === 'function' ? blockProps(callout, index) : blockProps),
+                anchor: `callout-${callout.nameID}`,
+              }}
               disableMarginal={disableMarginal}
               {...sortEvents}
               {...sortProps}
