@@ -233,7 +233,11 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
   const renderDeleteColumn = (row: TableItem) => {
     return (
       // TODO: Disabled for approved Applications for now: see #2900
-      <IconButton onClick={() => setDeletingItem(row)} disabled={row.lifecycle?.state === 'approved'}>
+      <IconButton
+        onClick={() => setDeletingItem(row)}
+        disabled={row.lifecycle?.state === 'approved'}
+        aria-label={t('buttons.delete')}
+      >
         {row.type === CandidateType.Invitation &&
         (row.lifecycle.state === 'approved' || row.lifecycle.state === 'rejected') ? (
           <RemoveIcon color="error" />
@@ -251,7 +255,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
           {t(canHandleInvitations ? 'community.pendingMemberships' : 'community.pendingApplications')}
         </BlockTitle>
         <Tooltip title={t('community.applicationsHelp')} arrow>
-          <IconButton>
+          <IconButton aria-label={t('common.help')}>
             <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
           </IconButton>
         </Tooltip>
@@ -269,7 +273,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
                 render: ({ row }: { row: TableItem }) =>
                   /* TODO: handle row type here and decide if show button or not, Application, invitation ... */
                   row.__typename === 'Application' && (
-                    <IconButton onClick={() => setSelectedItem(row)}>
+                    <IconButton onClick={() => setSelectedItem(row)} aria-label={t('buttons.view')}>
                       <VisibilityOutlinedIcon color="primary" />
                     </IconButton>
                   ),

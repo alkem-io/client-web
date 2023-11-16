@@ -22,7 +22,7 @@ const ScrollToTop = () => {
   if (!visible) return null;
 
   return (
-    <IconButton onClick={scrollToTop} aria-label={t('buttons.scrollToTop')}>
+    <IconButton onClick={scrollToTop} title={t('buttons.scrollToTop')} aria-label={t('buttons.scrollToTop')}>
       <ExpandLessIcon color="primary" fontSize="large" />
     </IconButton>
   );

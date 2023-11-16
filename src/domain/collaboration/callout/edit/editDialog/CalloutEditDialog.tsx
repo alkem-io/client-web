@@ -169,10 +169,22 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           </StorageConfigContextProvider>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
-          <LoadingButton loading={loading} disabled={loading} variant="outlined" onClick={handleDialogDelete}>
+          <LoadingButton
+            loading={loading}
+            disabled={loading}
+            variant="outlined"
+            onClick={handleDialogDelete}
+            aria-label={t('buttons.delete')}
+          >
             {t('buttons.delete')}
           </LoadingButton>
-          <LoadingButton loading={loading} disabled={!valid || loading} variant="contained" onClick={handleSave}>
+          <LoadingButton
+            loading={loading}
+            disabled={!valid || loading}
+            variant="contained"
+            onClick={handleSave}
+            aria-label={t('buttons.save')}
+          >
             {t('buttons.save')}
           </LoadingButton>
         </DialogActions>

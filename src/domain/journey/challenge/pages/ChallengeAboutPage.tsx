@@ -63,7 +63,7 @@ const ChallengeAboutPage: FC = () => {
             hostOrganizations={hostOrganization && [hostOrganization]}
             leadOrganizations={leadOrganizations}
             endButton={
-              <IconButton onClick={backToParentPage}>
+              <IconButton onClick={backToParentPage} aria-label={t('buttons.close')}>
                 <Close />
               </IconButton>
             }

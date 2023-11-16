@@ -9,6 +9,7 @@ import Section, { SectionProps, SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';
 import Button from '@mui/material/Button';
 import { Caption } from '../../../../core/ui/typography';
+import { useTranslation } from 'react-i18next';
 
 export interface DashboardGenericSectionProps {
   bannerUrl?: string;
@@ -71,6 +72,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   sideBanner,
   sideBannerRight,
 }) => {
+  const { t } = useTranslation();
   const navLinkIsRelative = navLink && navLink.search(relativeLinkRegex) > -1;
   const cleanNavLink = navLink && !navLinkIsRelative ? navLink.replace(relativeLinkRegex, '') : navLink;
   const routerNavLink = cleanNavLink && relativeStepBackRoute.concat(cleanNavLink);
@@ -121,7 +123,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
               })}
               onClick={() => setIsCollapsed(x => !x)}
               aria-expanded={!isCollapsed}
-              aria-label="show more"
+              aria-label={t('common.show-more')}
             >
               <ExpandMoreIcon />
             </IconButton>

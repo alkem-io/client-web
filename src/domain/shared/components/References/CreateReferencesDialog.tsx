@@ -154,7 +154,10 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                               fullWidth
                               referenceID={reference.id}
                               helperText={tLinks('components.referenceSegment.url-helper-text', {
-                                terms: { href: locations?.terms },
+                                terms: {
+                                  href: locations?.terms,
+                                  'aria-label': t('components.referenceSegment.plaintext-helper-text'),
+                                },
                               })}
                             />
                             <Box>
@@ -164,7 +167,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                                 placement={'bottom'}
                               >
                                 <IconButton
-                                  aria-label="Remove"
+                                  aria-label={t('buttons.delete')}
                                   onClick={async () => {
                                     if (currentReferences.length > 1) {
                                       // Remove the temporary reference from the server:
@@ -196,7 +199,11 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                   <Box display="flex" justifyContent="end" padding={gutters()}>
                     <BlockSectionTitle>
                       {t('callout.link-collection.add-another')}
-                      <IconButton onClick={handleAddMore} color="primary">
+                      <IconButton
+                        onClick={handleAddMore}
+                        color="primary"
+                        aria-label={t('callout.link-collection.add-another')}
+                      >
                         <AddIcon />
                       </IconButton>
                     </BlockSectionTitle>

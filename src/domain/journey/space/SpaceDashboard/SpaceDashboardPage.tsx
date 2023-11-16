@@ -14,12 +14,14 @@ import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDial
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
+import { useTranslation } from 'react-i18next';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
 }
 
 const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
+  const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
@@ -98,7 +100,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               hostOrganizations={entities.hostOrganizations}
               leadOrganizations={entities.space?.community?.leadOrganizations}
               endButton={
-                <IconButton onClick={backToDashboard}>
+                <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
                   <Close />
                 </IconButton>
               }

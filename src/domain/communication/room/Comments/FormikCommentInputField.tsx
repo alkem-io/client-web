@@ -147,10 +147,10 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
     <>
       <IconButton
         ref={emojiButtonRef}
-        aria-label={t('buttons.insertEmoji')}
         size="small"
         onClick={() => setEmojiSelectorOpen(!isEmojiSelectorOpen)}
         disabled={inactive || readOnly}
+        aria-label={t('messaging.insertEmoji')}
       >
         <EmojiEmotionsOutlinedIcon fontSize="small" />
       </IconButton>
@@ -161,10 +161,10 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         onEmojiClick={emojiClick}
       />
       <IconButton
-        aria-label="Mention someone"
         size="small"
         onClick={mentionButtonClick}
         disabled={inactive || readOnly}
+        aria-label={t('messaging.addMention')}
       >
         <AlternateEmailIcon fontSize="small" />
       </IconButton>
@@ -181,7 +181,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
       arrow
       placement="right"
       PopperComponent={PreFormatedPopper}
-      aria-label="tooltip-markdown"
+      aria-label={t('messaging.formattingHelp')}
     >
       <HelpIcon color="primary" />
     </Tooltip>
@@ -229,7 +229,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             }
             endAdornment={
               <InputAdornment position="end">
-                <IconButton aria-label="post comment" size="small" type="submit" disabled={submitDisabled}>
+                <IconButton size="small" type="submit" disabled={submitDisabled} aria-label={t('buttons.send')}>
                   <SendIcon />
                 </IconButton>
               </InputAdornment>

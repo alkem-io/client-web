@@ -21,6 +21,7 @@ const CalloutBlockFooter = ({ contributionsCount, onCreate }: CalloutBlockFooter
           color="primary"
           size="large"
           onClick={onCreate}
+          aria-label={t('common.add')}
           sx={{
             backgroundColor: 'background.paper',
             ':hover': theme => ({

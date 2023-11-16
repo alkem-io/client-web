@@ -56,12 +56,19 @@ const DashboardNavigationItemView = ({
                 placement={tooltipPlacement}
                 arrow
               >
-                <IconButton disableRipple onClick={preventDefault}>
+                <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
                   <LockOutlined />
                 </IconButton>
               </Tooltip>
             ) : (
-              children && <IconButton onClick={toggleExpand}>{isExpanded ? <ExpandLess /> : <ExpandMore />}</IconButton>
+              children && (
+                <IconButton
+                  onClick={toggleExpand}
+                  aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
+                >
+                  {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+              )
             )
           }
         >

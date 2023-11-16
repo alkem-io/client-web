@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import { Box, Divider } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled(MuiDialogTitle)(({ theme }) => ({
   margin: 0,
@@ -44,6 +45,7 @@ export interface DialogTitleWithIconProps extends DialogTitleProps {
 }
 
 const DialogTitleWithIcon = (props: DialogTitleWithIconProps) => {
+  const { t } = useTranslation();
   const { children, classes, onClose, icon, subtitle, ...rest } = props;
   return (
     <>
@@ -54,7 +56,7 @@ const DialogTitleWithIcon = (props: DialogTitleWithIconProps) => {
           {subtitle ? <Typography variant={'h6'}>{subtitle}</Typography> : null}
         </TitleBar>
         {onClose ? (
-          <IconButton aria-label="close" onClick={onClose} size="medium">
+          <IconButton onClick={onClose} size="medium" aria-label={t('buttons.close')}>
             <CloseIcon />
           </IconButton>
         ) : null}

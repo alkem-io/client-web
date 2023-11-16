@@ -1,6 +1,7 @@
 import React, { ChangeEvent, ChangeEventHandler, FC, useCallback, useRef } from 'react';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import { useTranslation } from 'react-i18next';
 
 interface UploadButtonProps {
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -12,6 +13,7 @@ interface UploadButtonProps {
 
 export const UploadButton: FC<UploadButtonProps> = ({ onChange, accept, icon, text, disabled }) => {
   const ref = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
 
   const handleButtonClick = () => {
     if (ref && ref.current) {
@@ -30,11 +32,11 @@ export const UploadButton: FC<UploadButtonProps> = ({ onChange, accept, icon, te
   );
 
   const button = icon ? (
-    <IconButton aria-label="upload image" onClick={handleButtonClick} disabled={disabled}>
+    <IconButton aria-label={t('components.file-upload.uploadFile')} onClick={handleButtonClick} disabled={disabled}>
       {icon}
     </IconButton>
   ) : (
-    <Button aria-label="upload image" onClick={handleButtonClick} disabled={disabled}>
+    <Button aria-label={text} onClick={handleButtonClick} disabled={disabled}>
       {text}
     </Button>
   );

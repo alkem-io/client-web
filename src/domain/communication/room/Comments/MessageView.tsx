@@ -78,7 +78,7 @@ export const MessageView = ({
             <Box display="flex" height={gutters()} justifyContent="space-between" alignItems="center">
               <Caption>{author?.displayName}</Caption>
               {canDelete && onDelete && (
-                <IconButton aria-label="Delete" onClick={() => onDelete(id)} size="small">
+                <IconButton onClick={() => onDelete(id)} size="small" aria-label={t('buttons.delete')}>
                   <DeleteOutlined fontSize="inherit" />
                 </IconButton>
               )}
