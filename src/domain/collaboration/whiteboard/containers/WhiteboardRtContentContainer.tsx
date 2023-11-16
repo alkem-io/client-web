@@ -38,9 +38,8 @@ const WhiteboardRtContentContainer: FC<WhiteboardRtContentContainerProps> = ({ c
   const skipWhiteboardQuery = !Boolean(whiteboardId);
   const { data: whiteboardWithContentData, loading: loadingWhiteboardWithContent } = useWhiteboardRtWithContentQuery({
     errorPolicy: 'all',
-    // TODO: Check if these policies are really needed
+    // Disable cache, we really want to make sure that the latest content is fetched, in case there is no one else editing at the moment
     fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-and-network',
     skip: skipWhiteboardQuery,
     variables: {
       whiteboardId: whiteboardId!,
