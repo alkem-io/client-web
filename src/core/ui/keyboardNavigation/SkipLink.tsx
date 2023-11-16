@@ -23,8 +23,7 @@ const SkipLink = ({ anchor, sx, children }: PropsWithChildren<SkipLinkProps>) =>
     if (anchorElement.tagName === 'BUTTON' || anchorElement.tagName === 'A') {
       (anchor as HTMLButtonElement | HTMLAnchorElement).focus();
     }
-    // @ts-ignore
-    anchorElement.querySelector('button, [href], input, [tabindex="0"]')?.focus();
+    anchorElement.querySelector<HTMLElement>('button, [href], input, [tabindex="0"]')?.focus();
   };
 
   return (
