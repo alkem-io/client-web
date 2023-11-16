@@ -886,7 +886,7 @@
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
+      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
     },
     "invitations": {
       "inviteOthers": "Invite others",
