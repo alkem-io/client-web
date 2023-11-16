@@ -40,6 +40,7 @@ export const ProfileChipView: FC<ProfileChipViewProps> = ({
           src={avatarUrl}
           loading="lazy"
           alt={t('common.avatar-of', { user: displayName })}
+          aria-label={t('common.avatar-of', { user: displayName })}
         />
         <Box>
           <BlockSectionTitle>{displayName}</BlockSectionTitle>

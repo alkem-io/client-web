@@ -86,7 +86,13 @@ const DashboardRecentContributionsBlock = ({
   return (
     <PageContentBlock {...blockProps}>
       <PageContentBlockHeader title={t('components.dashboardRecentContributions.title')}>
-        <AltToggle value={mode} options={modeOptions} onChange={setMode} sx={{ height: gutters() }} />
+        <AltToggle
+          value={mode}
+          options={modeOptions}
+          onChange={setMode}
+          sx={{ height: gutters() }}
+          aria-label={t('components.dashboardRecentContributions.modes.switchMode')}
+        />
       </PageContentBlockHeader>
 
       <Box position="relative" flexGrow={1} flexBasis={gutters(12)}>
