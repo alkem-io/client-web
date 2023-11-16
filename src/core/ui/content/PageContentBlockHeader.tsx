@@ -3,6 +3,8 @@ import { BlockTitle, CaptionSmall } from '../typography';
 import { cloneElement, PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
+import SkipLink from '../keyboardNavigation/SkipLink';
+import { useNextBlock } from '../keyboardNavigation/NextBlockAnchor';
 
 export interface PageContentBlockHeaderProps {
   title: ReactNode;
@@ -22,9 +24,19 @@ const PageContentBlockHeader = ({
 }: PropsWithChildren<PageContentBlockHeaderProps>) => {
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
+  const nextBlock = useNextBlock();
+
   return (
     <>
-      <Box display="flex" flexDirection="row" alignItems={isSmallScreen ? 'start' : 'center'} gap={gutters(0.5)}>
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems={isSmallScreen ? 'start' : 'center'}
+        gap={gutters(0.5)}
+        position="relative"
+      >
+        <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0 }} />
         <Box
           flexGrow={1}
           minWidth={0}
