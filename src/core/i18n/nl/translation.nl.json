@@ -2,9 +2,14 @@
   "chatbot": {
     "title": "Alkemio Help",
     "subtitle": "Stel hier je vraag om antwoorden direct te vinden of onze documentatie",
+    "intro": "Hallo, dit is de automatische begeleidingschat van Alkemio. Het kan je antwoorden geven op basis van Alkemio's documentatie. Waar ben je naar op zoek?",
     "infoDialog": {
       "title": "Alkemio Help",
       "content": "De Alkemio begeleiding chat genereert automatisch een antwoord op jouw vraag door de zoeken in de documentatie van Alkemio. Onthoud, er zit dus geen persoon aan de andere kant van het scherm ;-). Wil je iemand van het Alkemio team spreken? Neem dan contact op via de knop hieronder.\nAlle antwoorden (en bronnen) in deze chat zijn gebaseerd op de inhoud van ons Helpcentrum. De Generatieve AI kan de vraag interpreteren en begeleiding geven op basis van de Alkemio documentatie. Er zijn dus geen gegevens van gebruikers bij betrokken en de interactie kan niet worden gekoppeld aan individuele gebruikers."
+    },
+    "feedback": {
+      "message": "Is dit antwoord relevant?",
+      "tooltip": "Dit bericht is automatisch gegenereerd op basis van de documentatie van Alkemio. Je feedback is zeer relevant voor ons!"
     },
     "references": [
       {
@@ -24,7 +29,7 @@
   "notifications": {
     "releaseUpdates": {
       "icon": "🎉",
-      "title": "We hebben spannend nieuws, een nieuwe release vol interessante functionaliteiten!",
+      "title": "We hebben leuk nieuws, een nieuwe release vol interessante functionaliteiten!",
       "content": "Na een grote refresh van de lay-out en functionaliteiten van de Space, zijn we verder gaan kijken naar het updaten van de <b>Challenges & Opportunities</b>.<br/><br/>Deze zijn:<ul><li>Een prominentere rol voor de <b>Innovation Flow</b> die jouw Challenge of Opportunity zal leiden.</li><li>Daarnaast is het nu mogelijk om mensen zonder een Alkemio account uit te nodigen voor jouw Space.</li></ul><br/><br/>En nog veel meer... <b>Klik<clickhere>Klik hier</clickhere></b> om alles te lezen over de laatste wijzigingen.",
       "url": "https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20"
     }
@@ -92,6 +97,9 @@
     "back": "Terug",
     "next": "Volgende",
     "edit": "Pas aan",
+    "expand": "Uitklappen",
+    "collapse": "Inklappen",
+    "expandWindow": "Venster vergroten",
     "see-more": "Lees verder",
     "see-all": "Meer {{subject}}",
     "readMore": "Meer lezen",
@@ -106,6 +114,7 @@
     "send-message": "Verstuur bericht",
     "edit-members": "Pas leden aan",
     "insert": "Invoegen",
+    "open": "Openen",
     "my-profile": "Mijn profiel",
     "new": "Nieuw",
     "sign-out": "Log uit",
@@ -124,8 +133,8 @@
     "change-template": "Verander template",
     "find-template": "Template zoeken",
     "change": "Verander",
-    "library": "Bibliotheek",
     "share": "Delen",
+    "view": "Bekijk",
     "preview": "Voorbeeld",
     "import": "Importeer",
     "importing": "Importeren...",
@@ -140,7 +149,14 @@
     "moveToTop": "Bovenaan zetten",
     "moveToBottom": "Onderaan zetten",
     "use": "Gebruik",
-    "fullscreen": "Volledig scherm in-/uitschakelen"
+    "fullscreen": "Volledig scherm in-/uitschakelen",
+    "changeLanguage": "Taal wijzigen",
+    "getHelp": "Krijg hulp",
+    "saveAsTemplate": "Opslaan als template",
+    "skipLink": "Ga door naar het volgende blok",
+    "toolsMenu": "Tools menu",
+    "userMenu": "Gebruikersmenu",
+    "scrollToTop": "Scroll naar boven"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -181,6 +197,7 @@
     "activity": "Activiteit",
     "avatar": "Profielfoto",
     "avatar-of": "Avatar van {{user}}",
+    "beta": "Beta",
     "inspiration": "Inspiratie",
     "name": "Naam",
     "username": "Gebruikersnaam",
@@ -192,6 +209,7 @@
     "callout": "Oproep",
     "callouts": "Oproepen",
     "collaborationTools": "Collaboration Tools",
+    "createdBy": "Gemaakt door",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Kalender",
@@ -272,11 +290,13 @@
     "contribute": "Draag bij",
     "context": "Context",
     "community": "Community",
+    "library": "Library",
     "people": "Personen",
     "settings": "Instellingen",
     "space-settings": "$t(common.settings)",
     "search": "Zoek...",
     "storage": "Opslag",
+    "type": "Type",
     "reference": "Referentie",
     "references": "Referenties",
     "notifications": "Notificaties",
@@ -293,7 +313,9 @@
     "question": "Vraag",
     "questions": "Vragen",
     "show-subject": "Toon:",
+    "show-more": "Meer weergeven",
     "show-all": "Toon alles",
+    "lock": "Vergrendeld",
     "title": "Titel",
     "visibility": "Zichtbaarheid",
     "warning": "Waarschuwing",
@@ -459,8 +481,13 @@
       },
       "templateTypes": {
         "WhiteboardTemplate": "Whiteboard templates",
+        "WhiteboardTemplate_plural": "Whiteboard Templates",
         "PostTemplate": "Post Templates",
-        "InnovationFlowTemplate": "Innovatie flows"
+        "PostTemplate_plural": "Post Templates",
+        "InnovationFlowTemplate": "Innovatie flows",
+        "InnovationFlowTemplate_plural": "Innovation Flows",
+        "CalloutTemplate": "Callout Template",
+        "CalloutTemplate_plural": "Callout Templates"
       }
     },
     "blocks": {
@@ -612,7 +639,11 @@
     "message": "Bericht",
     "message-optional": "Bericht (optioneel)",
     "successfully-sent": "Bericht succesvol verstuurd",
-    "messageDeleted": "Dit bericht is verwijderd."
+    "messageDeleted": "Dit bericht is verwijderd.",
+    "insertEmoji": "Emoji toevoegen",
+    "addReaction": "Reactie toevoegen",
+    "addMention": "Vermeld iemand",
+    "formattingHelp": "Opmaak hulp"
   },
   "send-message-dialog": {
     "direct-message-title": "Verstuur een bericht",
@@ -714,6 +745,9 @@
         "title": "Tags",
         "description": "Vul de meest belangrijke tags in die ervoor zorgen dat de Challenge opvalt en makkelijk te vinden is.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Challenge Flow"
       }
     },
     "opportunity": {
@@ -751,6 +785,9 @@
         "title": "Tags",
         "description": "Vul de meest belangrijke tags in die ervoor zorgen dat de Challenge opvalt en makkelijk te vinden is.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Opportunity Flow"
       }
     }
   },
@@ -764,34 +801,69 @@
       "atLeastOne": "Selecteer ten minste één item."
     }
   },
-  "post-templates": {
-    "template-library": "Template Bibliotheek: Posts",
-    "post-template": "Post template",
-    "default-description": "Standaard text voor de Post",
-    "banner-narrow": "Smalle banner"
-  },
-  "whiteboard-templates": {
-    "template-library": "Template Bibliotheek: Whiteboards",
-    "filter-placeholder": "Templates zoeken...",
-    "whiteboard-template": "Whiteboard template",
-    "space-templates": "Templates geselecteerd door de host van deze community",
-    "load-platform-templates": "Of klik hier om door alle platform templates te bladeren",
-    "platform-templates": "Platform templates",
-    "error-importing": "Fout bij het importeren van Whiteboard Template",
-    "edit-template-button": "Template bewerken",
-    "edit-dialog-title": "Whiteboard template bewerken"
+  "templateLibrary": {
+    "calloutTemplates": {
+      "name": "Callout template",
+      "title": "Template Library: Collaboration Tools",
+      "type": "Callout type",
+      "description": "Description"
+    },
+    "postTemplates": {
+      "name": "Post template",
+      "title": "Template Library: Posts",
+      "defaultDescription": "Default Post content"
+    },
+    "whiteboardTemplates": {
+      "name": "Whiteboard template",
+      "title": "Template Library: Whiteboards",
+      "editTemplateButton": "Edit Template",
+      "editDialogTitle": "Edit Whiteboard Template",
+      "errorImporting": "Error importing Whiteboard Template"
+    },
+    "innovationFlowTemplates": {
+      "name": "Innovation Flow template",
+      "title": "Template Library: Innovation Flows",
+      "type": "Type"
+    },
+    "spaceTemplates": "Templates selected by the host of this community",
+    "platformTemplates": "Platform Templates",
+    "loadPlatformTemplates": "Or click here to browse through all platform templates",
+    "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
   },
   "innovation-templates": {
-    "innovation-template": "Innovation flow template",
     "definition": {
       "title": "Definitie",
       "placeholder": "Hier kun je de omschrijving van Xstate Visualizer plakken met de verschillende Innovation Flow states."
-    },
-    "type": {
-      "title": "Type"
     }
   },
   "components": {
+    "navigation": {
+      "exitMenu": "Exit menu",
+      "skipMenu": "Sla het hoofdmenu over"
+    },
+    "search": {
+      "searchScope": {
+        "full": "Search In:",
+        "short": "in:"
+      },
+      "scope": {
+        "platform": "Entire platform",
+        "space": "{{displayName}}"
+      }
+    },
+    "searchDialog": {
+      "headerTitle": "Search results"
+    },
+    "searchScope": {
+      "currentScope": "Search results for:",
+      "alternativeScope": "Didn’t find what you were looking for? Try searching in:",
+      "platform": "Everywhere on Alkemio"
+    },
+    "poweredBy": {
+      "label": "Powered by",
+      "aria-label": "Mogelijk gemaakt door Alkemio"
+    },
     "journeyUnauthorizedDialog": {
       "message": "Dit is een privé Community waarin de meeste context alleen zichtbaar is voor leden. Wil je lid worden? Klik hier om je aan te melden!"
     },
@@ -1017,7 +1089,8 @@
         "LINK_COLLECTION": "Collectie van links",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard RealTime"
-      }
+      },
+      "callout-templates-library": "...or have a look at the library!"
     },
     "post-creation": {
       "title": "Dien je antwoord in voor {{calloutDisplayName}}",
@@ -1103,7 +1176,7 @@
       "goToChallenge": "Ga naar $t(common.challenge)",
       "parent-pending": "Inschrijving van bovenliggende groep loopt",
       "applyTo": "Word lid",
-      "extendedMessage": "{{join}} onze {{journey}} en start making a change!",
+      "extendedMessage": "{{join}} van onze {{journey}} en maak impact!",
       "dialog-apply-parent": {
         "title": "Pas toe op <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Space."
@@ -1141,9 +1214,11 @@
         "add-reference": "Voeg een referentie toe",
         "remove-reference": "Verwijder de referentie"
       },
-      "url-helper-text": "Houd er rekening mee dat alle geüploade bestanden toegankelijk worden voor iedereen met de link en alleen verwijderd kunnen worden door het Alkemio team.<terms>Klik hier</terms> voor de algemene voorwaarden."
+      "url-helper-text": "Houd er rekening mee dat alle geüploade bestanden toegankelijk worden voor iedereen met de link en alleen verwijderd kunnen worden door het Alkemio team.<terms>Klik hier</terms> voor de algemene voorwaarden.",
+      "plaintext-helper-text": "Klik hier voor de algemene voorwaarden."
     },
     "file-upload": {
+      "uploadFile": "Bestand uploaden",
       "file-size-error": "Bestandsgrootte overschrijdt de limiet van {{limit}}MB",
       "file-upload-success": "Bestand succesvol geüpload"
     },
@@ -1401,6 +1476,11 @@
       "description": {
         "title": "Weet je zeker dat je de Innovatie Flow wilt veranderen? Hierdoor kan de set met states voor deze Challenge/Opportunity veranderen en zal de state worden veranderd naar de eerste state van de nieuwe Innovatie Flow."
       }
+    },
+    "innovationFlowTemplateSelect": {
+      "select": "Select different Flow",
+      "states": "States",
+      "required": "Please select an Innovation Flow"
     }
   },
   "navigation": {
@@ -1422,7 +1502,7 @@
     "feedback": "Feedback",
     "support": "Support",
     "about": "Over",
-    "copyright": "© 2023 Stichting Alkemio"
+    "copyright": "© 2023 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
@@ -1491,6 +1571,7 @@
     },
     "innovationLibrary": {
       "shortName": "Bibliotheek",
+      "fullName": "Best practices",
       "title": "De Innovatie Bibliotheek op Alkemio biedt templates en best practices om je te begeleiden",
       "subtitle": "Open de onderstaande Innovatiepakketten om alle templates voor whiteboards, posts en innovatie flows te verkennen. Als je meer wilt weten <click>klik dan hier</click>.",
       "useTemplateButton": "Vind dit template via de template bibliotheek in jouw Space om het te gebruiken.",
@@ -1561,7 +1642,10 @@
           "storage": {
             "description": "Hier kunt u de opslag van documenten voor deze {{entity}} zien.",
             "title": "Documenten",
+            "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
+            "emptyStorage": "(Empty)",
             "grid": {
+              "displayName": "Title",
               "mimeType": "Type",
               "size": "Bestandsgrootte",
               "uploadedBy": "Geüpload door",
@@ -1640,6 +1724,13 @@
             "title": "Zichtbaarheid",
             "public": "<b>Openbaar:</b> deze Space en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Alleen leden kunnen bijdragen.",
             "private": "<b>Privé:</b> deze Space is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor leden."
+          },
+          "license-features": {
+            "title": "Space Features",
+            "features": {
+              "WHITEBOART_RT": "RealTime Whiteboards",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+            }
           },
           "membership": {
             "title": "Lidmaatschap",
@@ -1741,6 +1832,8 @@
       }
     },
     "contributors": {
+      "fullName": "Find contributors",
+      "shortName": "$t(common.contributors)",
       "search": {
         "title": "Vind talent en expertise!",
         "subtitle": "Zoek naar andere mensen en organisaties die je kunnen helpen met je uitdaging, bijvoorbeeld gebaseerd op vaardigheden of interesses.",
@@ -1754,6 +1847,8 @@
       }
     },
     "search": {
+      "title": "Search",
+      "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
       "placeholder": "Zoek...",
       "results-disclaimer": "Hier zie je de eerste 8 resultaten. Als je je zoektermen verder specificeert zul je meer resultaten vinden.",
       "max-tags-reached": "U heeft de limiet van {{max}} tekens bereikt",
@@ -1791,6 +1886,8 @@
       "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
+      "fullName": "Explore challenges",
+      "shortName": "$t(common.challenges)",
       "search": {
         "title": "Verken de openbare Challenges",
         "subtitle": "Voer je zoektermen hieronder in (bijv. 'innovatie') om overeenkomende Challenges te vinden. Houd er rekening mee dat er in Alkemio zowel openbare als privé challenges zijn. Hier vind je alle Challenges van de openbare Spaces. Uitdagingen van privé Spaces zijn zichtbaar wanneer je bent aangemeld en lid bent van die specifieke Space.",
@@ -1828,6 +1925,8 @@
       "innovation-flow-info": "Klik om de Innovatie Flow te weergeven"
     },
     "home": {
+      "title": "My Dashboard",
+      "subtitle": "Ready to make some impact?",
       "sections": {
         "welcome": {
           "welcome-back": "Welkom terug {{username}}!",
@@ -1982,6 +2081,7 @@
       "add-whiteboard": "Creëer een whiteboard",
       "no-whiteboards": "Er zijn nog geen whiteboards gemaakt. Wees de eerste die er een toevoegt.",
       "locked-by": "{{user}} bewerkt momenteel dit whiteboard",
+      "savingWhiteboard": "Saving whiteboard...",
       "state": {
         "checkedout": "Iemand anders is momenteel dit Whiteboard aan het bewerken"
       },
@@ -2091,6 +2191,7 @@
       "header": "Instellingen gebruiker"
     },
     "user-profile": {
+      "title": "My profile",
       "tooltips": {
         "settings": "Instellingen gebruikersprofiel"
       },
@@ -2166,6 +2267,9 @@
     },
     "forum": {
       "title": "Vragen, suggesties of feedback? Stel ze hier aan het Alkemio team of andere gebruikers van het platform!",
+      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
+      "fullName": "Community help",
+      "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Discussie starten",
       "back": "Alle Discussies"
     }
@@ -2195,6 +2299,8 @@
     "fields": {
       "ID": "ID",
       "Password": "Wachtwoord",
+      "ShowPassword": "Show Password",
+      "HidePassword": "Hide Password",
       "E-Mail": "E-mailadres",
       "Email": "$t(kratos.fields.E-Mail)",
       "First Name": "Voornaam",
