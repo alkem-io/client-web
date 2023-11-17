@@ -65,13 +65,13 @@ const BasePageContentBlock = forwardRef(
       ...sx,
     };
 
-    const combinedRef = useCombinedRefs(ref);
+    const combinedRef = useCombinedRefs(null, ref);
 
     const defaultAnchor = useRef(uuid()).current;
 
     return (
       <GridProvider columns={columnsTaken ?? gridColumns}>
-        <BlockAnchorProvider blockRef={combinedRef}>
+        <BlockAnchorProvider block={combinedRef.current}>
           <Component ref={combinedRef} id={anchor ?? defaultAnchor} sx={mergedSx} {...(props as unknown as Props)} />
         </BlockAnchorProvider>
       </GridProvider>

@@ -1,4 +1,4 @@
-import React, { forwardRef, RefObject } from 'react';
+import React, { forwardRef } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import GridProvider from '../grid/GridProvider';
 import { GUTTER_MUI } from '../grid/constants';
@@ -16,13 +16,13 @@ export interface PageContentColumnProps extends BoxProps {
  * @constructor
  */
 const PageContentColumn = forwardRef<HTMLDivElement, PageContentColumnProps>(({ columns, children, ...props }, ref) => {
-  const combinedRef = useCombinedRefs(ref);
+  const combinedRef = useCombinedRefs(null, ref);
 
   return (
     <GridItem columns={columns}>
       <Box ref={combinedRef} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
         <GridProvider columns={columns}>
-          <BlockAnchorProvider blockRef={combinedRef as RefObject<Element>}>
+          <BlockAnchorProvider block={combinedRef.current}>
             {children}
             <NextBlockAnchor>
               <SkipLink />

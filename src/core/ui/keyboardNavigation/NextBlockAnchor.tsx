@@ -1,30 +1,21 @@
-import {
-  cloneElement,
-  createContext,
-  PropsWithChildren,
-  ReactElement,
-  RefObject,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { cloneElement, createContext, PropsWithChildren, ReactElement, useContext, useEffect, useState } from 'react';
 
 const BlockAnchorContext = createContext<Element | null | undefined>(undefined);
 
 interface BlockAnchorProviderProps {
-  blockRef: RefObject<Element | null>;
+  block: Element | null;
 }
 
-export const BlockAnchorProvider = ({ blockRef, children }: PropsWithChildren<BlockAnchorProviderProps>) => {
+export const BlockAnchorProvider = ({ block, children }: PropsWithChildren<BlockAnchorProviderProps>) => {
   const [nextBlock, setNextBlock] = useState<Element | null | undefined>();
 
   useEffect(() => {
-    const nextBlock = blockRef.current?.nextElementSibling;
+    const nextBlock = block?.nextElementSibling;
 
     if (nextBlock) {
       setNextBlock(nextBlock);
     }
-  }, [blockRef]);
+  }, [block]);
 
   return <BlockAnchorContext.Provider value={nextBlock}>{children}</BlockAnchorContext.Provider>;
 };
