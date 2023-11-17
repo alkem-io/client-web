@@ -72,7 +72,10 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   };
   actions: {
     onCancel: (whiteboard: WhiteboardRtWithoutContent<Whiteboard>) => void;
-    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => Promise<boolean>;
+    onUpdate: (
+      whiteboard: Whiteboard,
+      previewImages?: WhiteboardPreviewImage[]
+    ) => Promise<{ success: boolean; errors?: string[] }>;
   };
   options: {
     show: boolean;
@@ -145,9 +148,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const handleUpdate = async (
     whiteboard: WhiteboardRtWithContent,
     state: RelevantExcalidrawState | undefined
-  ): Promise<boolean> => {
+  ): Promise<{ success: boolean; errors?: string[] }> => {
     if (!state) {
-      return false;
+      return { success: false, errors: ['Excalidraw state not defined'] };
     }
     const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
@@ -156,7 +159,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
-      return false;
+      return { success: false, errors: ['Form not valid'] };
     }
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;

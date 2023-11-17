@@ -49,7 +49,7 @@ interface PublicProps {
   collabAPIRef?: MutableRefObject<CollabAPI | null> | RefCallback<CollabAPI | null>;
   onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
   filesManager: WhiteboardFilesManager;
-  onSaveRequest: () => Promise<boolean>;
+  onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
 }
 
 type Props = PublicProps;
