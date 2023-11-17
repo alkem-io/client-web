@@ -1,2331 +1,2437 @@
 {
   "chatbot": {
-    "title": "crwdns5309:0crwdne5309:0",
-    "subtitle": "crwdns5311:0crwdne5311:0",
+    "title": "crwdns8082:0crwdne8082:0",
+    "subtitle": "crwdns8084:0crwdne8084:0",
+    "intro": "crwdns8086:0crwdne8086:0",
     "infoDialog": {
-      "title": "crwdns5313:0crwdne5313:0",
-      "content": "crwdns5315:0crwdne5315:0"
+      "title": "crwdns8088:0crwdne8088:0",
+      "content": "crwdns8090:0crwdne8090:0"
+    },
+    "feedback": {
+      "message": "crwdns8092:0crwdne8092:0",
+      "tooltip": "crwdns8094:0crwdne8094:0"
     },
     "references": [
       {
-        "uri": "crwdns5317:0crwdne5317:0",
-        "title": "crwdns5319:0crwdne5319:0"
+        "uri": "crwdns8096:0crwdne8096:0",
+        "title": "crwdns8098:0crwdne8098:0"
       },
       {
-        "uri": "crwdns5321:0crwdne5321:0",
-        "title": "crwdns5323:0crwdne5323:0"
+        "uri": "crwdns8100:0crwdne8100:0",
+        "title": "crwdns8102:0crwdne8102:0"
       },
       {
-        "uri": "crwdns5325:0crwdne5325:0",
-        "title": "crwdns5327:0crwdne5327:0"
+        "uri": "crwdns8104:0crwdne8104:0",
+        "title": "crwdns8106:0crwdne8106:0"
       }
     ]
   },
   "notifications": {
     "releaseUpdates": {
-      "icon": "crwdns5205:0crwdne5205:0",
-      "title": "crwdns5207:0crwdne5207:0",
-      "content": "crwdns5209:0crwdne5209:0",
-      "url": "crwdns5211:0crwdne5211:0"
+      "icon": "crwdns8108:0crwdne8108:0",
+      "title": "crwdns8110:0crwdne8110:0",
+      "content": "crwdns8112:0crwdne8112:0",
+      "url": "crwdns8114:0crwdne8114:0"
     }
   },
   "cookie": {
-    "consent": "crwdns1468:0crwdne1468:0",
-    "settings": "crwdns1470:0crwdne1470:0",
-    "technical": "crwdns1472:0crwdne1472:0",
-    "analysis": "crwdns1474:0crwdne1474:0"
+    "consent": "crwdns8116:0crwdne8116:0",
+    "settings": "crwdns8118:0crwdne8118:0",
+    "technical": "crwdns8120:0crwdne8120:0",
+    "analysis": "crwdns8122:0crwdne8122:0"
   },
   "actions": {
-    "add-entity": "crwdns1476:0{{entity}}crwdne1476:0"
+    "add-entity": "crwdns8124:0{{entity}}crwdne8124:0"
   },
   "languages": {
-    "en": "crwdns3617:0crwdne3617:0",
-    "nl": "crwdns3619:0crwdne3619:0",
-    "es": "crwdns3621:0crwdne3621:0",
-    "bg": "crwdns3623:0crwdne3623:0",
-    "ua": "crwdns3625:0crwdne3625:0",
-    "de": "crwdns4323:0crwdne4323:0",
-    "fr": "crwdns4325:0crwdne4325:0",
-    "inContextTool": "crwdns5161:0crwdne5161:0"
+    "en": "crwdns8126:0crwdne8126:0",
+    "nl": "crwdns8128:0crwdne8128:0",
+    "es": "crwdns8130:0crwdne8130:0",
+    "bg": "crwdns8132:0crwdne8132:0",
+    "ua": "crwdns8134:0crwdne8134:0",
+    "de": "crwdns8136:0crwdne8136:0",
+    "fr": "crwdns8138:0crwdne8138:0",
+    "inContextTool": "crwdns8140:0crwdne8140:0"
   },
   "fields": {
-    "displayName": "crwdns3665:0crwdne3665:0",
-    "startTime": "crwdns3671:0crwdne3671:0",
-    "endTime": "crwdns3673:0crwdne3673:0",
-    "name": "crwdns4327:0crwdne4327:0"
+    "displayName": "crwdns8142:0crwdne8142:0",
+    "startTime": "crwdns8144:0crwdne8144:0",
+    "endTime": "crwdns8146:0crwdne8146:0",
+    "name": "crwdns8148:0crwdne8148:0"
   },
   "calendar": {
-    "add-event": "crwdns3675:0crwdne3675:0",
-    "edit-event": "crwdns3677:0crwdne3677:0",
-    "delete-event": "crwdns3679:0crwdne3679:0",
-    "delete-confirmation": "crwdns4329:0{{title}}crwdne4329:0",
+    "add-event": "crwdns8150:0crwdne8150:0",
+    "edit-event": "crwdns8152:0crwdne8152:0",
+    "delete-event": "crwdns8154:0crwdne8154:0",
+    "delete-confirmation": "crwdns8156:0{{title}}crwdne8156:0",
     "event": {
-      "type": "crwdns3683:0crwdne3683:0",
-      "multiple-days": "crwdns3685:0{{days}}crwdne3685:0",
-      "whole-day": "crwdns3687:0crwdne3687:0"
+      "type": "crwdns8158:0crwdne8158:0",
+      "multiple-days": "crwdns8160:0{{days}}crwdne8160:0",
+      "whole-day": "crwdns8162:0crwdne8162:0"
     },
     "validation": {
       "durationMinutes": {
-        "positive": "crwdns3705:0crwdne3705:0"
+        "positive": "crwdns8164:0crwdne8164:0"
       }
     },
-    "no-data": "crwdns3891:0crwdne3891:0",
-    "no-upcoming-events": "crwdns3893:0crwdne3893:0",
-    "past-events": "crwdns3895:0crwdne3895:0",
-    "show-calendar": "crwdns3997:0crwdne3997:0",
-    "defaultEventDescription": "crwdns3979:0$t(common.location)crwdnd3979:0$t(common.url)crwdnd3979:0$t(common.description)crwdne3979:0"
+    "no-data": "crwdns8166:0crwdne8166:0",
+    "no-upcoming-events": "crwdns8168:0crwdne8168:0",
+    "past-events": "crwdns8170:0crwdne8170:0",
+    "show-calendar": "crwdns8172:0crwdne8172:0",
+    "defaultEventDescription": "crwdns8174:0$t(common.location)crwdnd8174:0$t(common.url)crwdnd8174:0$t(common.description)crwdne8174:0"
   },
   "buttons": {
-    "leave": "crwdns3545:0crwdne3545:0",
-    "learn-more": "crwdns1478:0crwdne1478:0",
-    "load-more": "crwdns1480:0crwdne1480:0",
-    "load-count-more": "crwdns1482:0{{count}}crwdne1482:0",
-    "apply": "crwdns1484:0crwdne1484:0",
-    "explore": "crwdns3433:0crwdne3433:0",
-    "ok": "crwdns1488:0crwdne1488:0",
-    "create": "crwdns1490:0crwdne1490:0",
-    "publish": "crwdns1492:0crwdne1492:0",
-    "unpublish": "crwdns1494:0crwdne1494:0",
-    "save-draft": "crwdns1496:0crwdne1496:0",
-    "archive": "crwdns4331:0crwdne4331:0",
-    "save": "crwdns1498:0crwdne1498:0",
-    "back": "crwdns1500:0crwdne1500:0",
-    "next": "crwdns1502:0crwdne1502:0",
-    "edit": "crwdns1504:0crwdne1504:0",
-    "see-more": "crwdns1506:0crwdne1506:0",
-    "see-all": "crwdns3547:0{{subject}}crwdne3547:0",
-    "readMore": "crwdns5349:0crwdne5349:0",
-    "home": "crwdns1510:0crwdne1510:0",
-    "take-me-home": "crwdns1512:0crwdne1512:0",
-    "close": "crwdns1514:0crwdne1514:0",
-    "delete": "crwdns1516:0crwdne1516:0",
-    "submit": "crwdns1518:0crwdne1518:0",
-    "remove": "crwdns1520:0crwdne1520:0",
-    "cancel": "crwdns1522:0crwdne1522:0",
-    "explore-and-connect": "crwdns1524:0crwdne1524:0",
-    "send-message": "crwdns1526:0crwdne1526:0",
-    "edit-members": "crwdns1528:0crwdne1528:0",
-    "insert": "crwdns4009:0crwdne4009:0",
-    "my-profile": "crwdns1530:0crwdne1530:0",
-    "new": "crwdns1532:0crwdne1532:0",
-    "sign-out": "crwdns1534:0crwdne1534:0",
-    "cancel-project": "crwdns1536:0crwdne1536:0",
-    "create-project": "crwdns1538:0crwdne1538:0",
-    "processing": "crwdns1540:0crwdne1540:0",
-    "details": "crwdns1542:0crwdne1542:0",
-    "settings": "crwdns1544:0crwdne1544:0",
-    "member": "crwdns1546:0crwdne1546:0",
-    "profile": "crwdns1548:0crwdne1548:0",
-    "view-profile": "crwdns1550:0crwdne1550:0",
-    "edit-photo": "crwdns1552:0crwdne1552:0",
-    "accept-all-cookies": "crwdns1554:0crwdne1554:0",
-    "confirm-choice": "crwdns1556:0crwdne1556:0",
-    "confirm": "crwdns3124:0crwdne3124:0",
-    "change-template": "crwdns3126:0crwdne3126:0",
-    "find-template": "crwdns4117:0crwdne4117:0",
-    "change": "crwdns3128:0crwdne3128:0",
-    "library": "crwdns3435:0crwdne3435:0",
-    "share": "crwdns3421:0crwdne3421:0",
-    "preview": "crwdns3437:0crwdne3437:0",
-    "import": "crwdns3439:0crwdne3439:0",
-    "importing": "crwdns3441:0crwdne3441:0",
-    "go-to-entity": "crwdns3549:0{{entity}}crwdne3549:0",
-    "reply": "crwdns4333:0crwdne4333:0",
-    "select": "crwdns3787:0crwdne3787:0",
-    "change-field": "crwdns3789:0{{field}}crwdne3789:0",
-    "send": "crwdns3741:0crwdne3741:0",
-    "contact-leads": "crwdns3781:0{{contact}}crwdne3781:0",
-    "moveUp": "crwdns4103:0crwdne4103:0",
-    "moveDown": "crwdns4105:0crwdne4105:0",
-    "moveToTop": "crwdns4107:0crwdne4107:0",
-    "moveToBottom": "crwdns4109:0crwdne4109:0",
-    "use": "crwdns4119:0crwdne4119:0",
-    "fullscreen": "crwdns5339:0crwdne5339:0"
+    "leave": "crwdns8176:0crwdne8176:0",
+    "learn-more": "crwdns8178:0crwdne8178:0",
+    "load-more": "crwdns8180:0crwdne8180:0",
+    "load-count-more": "crwdns8182:0{{count}}crwdne8182:0",
+    "apply": "crwdns8184:0crwdne8184:0",
+    "explore": "crwdns8186:0crwdne8186:0",
+    "ok": "crwdns8188:0crwdne8188:0",
+    "create": "crwdns8190:0crwdne8190:0",
+    "publish": "crwdns8192:0crwdne8192:0",
+    "unpublish": "crwdns8194:0crwdne8194:0",
+    "save-draft": "crwdns8196:0crwdne8196:0",
+    "archive": "crwdns8198:0crwdne8198:0",
+    "save": "crwdns8200:0crwdne8200:0",
+    "back": "crwdns8202:0crwdne8202:0",
+    "next": "crwdns8204:0crwdne8204:0",
+    "edit": "crwdns8206:0crwdne8206:0",
+    "expand": "crwdns10894:0crwdne10894:0",
+    "collapse": "crwdns10896:0crwdne10896:0",
+    "expandWindow": "crwdns10898:0crwdne10898:0",
+    "see-more": "crwdns8208:0crwdne8208:0",
+    "see-all": "crwdns8210:0{{subject}}crwdne8210:0",
+    "readMore": "crwdns8212:0crwdne8212:0",
+    "home": "crwdns8214:0crwdne8214:0",
+    "take-me-home": "crwdns8216:0crwdne8216:0",
+    "close": "crwdns8218:0crwdne8218:0",
+    "delete": "crwdns8220:0crwdne8220:0",
+    "submit": "crwdns8222:0crwdne8222:0",
+    "remove": "crwdns8224:0crwdne8224:0",
+    "cancel": "crwdns8226:0crwdne8226:0",
+    "explore-and-connect": "crwdns8228:0crwdne8228:0",
+    "send-message": "crwdns8230:0crwdne8230:0",
+    "edit-members": "crwdns8232:0crwdne8232:0",
+    "insert": "crwdns8234:0crwdne8234:0",
+    "open": "crwdns10900:0crwdne10900:0",
+    "my-profile": "crwdns8236:0crwdne8236:0",
+    "new": "crwdns8238:0crwdne8238:0",
+    "sign-out": "crwdns8240:0crwdne8240:0",
+    "cancel-project": "crwdns8242:0crwdne8242:0",
+    "create-project": "crwdns8244:0crwdne8244:0",
+    "processing": "crwdns8246:0crwdne8246:0",
+    "details": "crwdns8248:0crwdne8248:0",
+    "settings": "crwdns8250:0crwdne8250:0",
+    "member": "crwdns8252:0crwdne8252:0",
+    "profile": "crwdns8254:0crwdne8254:0",
+    "view-profile": "crwdns8256:0crwdne8256:0",
+    "edit-photo": "crwdns8258:0crwdne8258:0",
+    "accept-all-cookies": "crwdns8260:0crwdne8260:0",
+    "confirm-choice": "crwdns8262:0crwdne8262:0",
+    "confirm": "crwdns8264:0crwdne8264:0",
+    "change-template": "crwdns8266:0crwdne8266:0",
+    "find-template": "crwdns8268:0crwdne8268:0",
+    "change": "crwdns8270:0crwdne8270:0",
+    "share": "crwdns8272:0crwdne8272:0",
+    "view": "crwdns10902:0crwdne10902:0",
+    "preview": "crwdns8274:0crwdne8274:0",
+    "import": "crwdns8276:0crwdne8276:0",
+    "importing": "crwdns8278:0crwdne8278:0",
+    "go-to-entity": "crwdns8280:0{{entity}}crwdne8280:0",
+    "reply": "crwdns8282:0crwdne8282:0",
+    "select": "crwdns8284:0crwdne8284:0",
+    "change-field": "crwdns8286:0{{field}}crwdne8286:0",
+    "send": "crwdns8288:0crwdne8288:0",
+    "contact-leads": "crwdns8290:0{{contact}}crwdne8290:0",
+    "moveUp": "crwdns8292:0crwdne8292:0",
+    "moveDown": "crwdns8294:0crwdne8294:0",
+    "moveToTop": "crwdns8296:0crwdne8296:0",
+    "moveToBottom": "crwdns8298:0crwdne8298:0",
+    "use": "crwdns8300:0crwdne8300:0",
+    "fullscreen": "crwdns8302:0crwdne8302:0",
+    "changeLanguage": "crwdns8304:0crwdne8304:0",
+    "getHelp": "crwdns8306:0crwdne8306:0",
+    "saveAsTemplate": "crwdns8308:0crwdne8308:0",
+    "skipLink": "crwdns10890:0crwdne10890:0",
+    "toolsMenu": "crwdns10904:0crwdne10904:0",
+    "userMenu": "crwdns10906:0crwdne10906:0",
+    "scrollToTop": "crwdns10908:0crwdne10908:0"
   },
   "tooltips": {
-    "click-more-info": "crwdns1558:0crwdne1558:0",
-    "click-delete": "crwdns1560:0crwdne1560:0"
+    "click-more-info": "crwdns8310:0crwdne8310:0",
+    "click-delete": "crwdns8312:0crwdne8312:0"
   },
   "topbar": {
-    "sign-in": "crwdns4135:0crwdne4135:0"
+    "sign-in": "crwdns8314:0crwdne8314:0"
   },
   "authentication": {
-    "sign-in": "crwdns1562:0crwdne1562:0",
-    "sign-up": "crwdns1564:0crwdne1564:0",
-    "sign-out": "crwdns1566:0crwdne1566:0",
-    "log-out": "crwdns1568:0crwdne1568:0",
-    "log-in": "crwdns1570:0crwdne1570:0",
-    "login": "crwdns1572:0crwdne1572:0",
-    "register": "crwdns1574:0crwdne1574:0",
+    "sign-in": "crwdns8316:0crwdne8316:0",
+    "sign-up": "crwdns8318:0crwdne8318:0",
+    "sign-out": "crwdns8320:0crwdne8320:0",
+    "log-out": "crwdns8322:0crwdne8322:0",
+    "log-in": "crwdns8324:0crwdne8324:0",
+    "login": "crwdns8326:0crwdne8326:0",
+    "register": "crwdns8328:0crwdne8328:0",
     "validation": {
-      "fill-fields": "crwdns1576:0crwdne1576:0"
+      "fill-fields": "crwdns8330:0crwdne8330:0"
     },
     "social-login": {
-      "connect": "crwdns3505:0{{provider}}crwdne3505:0",
+      "connect": "crwdns8332:0{{provider}}crwdne8332:0",
       "providers": {
-        "linkedin": "crwdns3507:0crwdne3507:0",
-        "microsoft": "crwdns3509:0crwdne3509:0"
+        "linkedin": "crwdns8334:0crwdne8334:0",
+        "microsoft": "crwdns8336:0crwdne8336:0"
       }
     },
     "signUp": {
-      "signUpEmail": "crwdns4335:0crwdne4335:0",
-      "alreadyHaveAccount": "crwdns4337:0crwdne4337:0"
+      "signUpEmail": "crwdns8338:0crwdne8338:0",
+      "alreadyHaveAccount": "crwdns8340:0crwdne8340:0"
     }
   },
   "common": {
-    "knowledge-base": "crwdns4279:0crwdne4279:0",
-    "or": "crwdns3511:0crwdne3511:0",
-    "permission": "crwdns3246:0crwdne3246:0",
-    "permissions": "crwdns3248:0crwdne3248:0",
-    "error-generic": "crwdns2962:0crwdne2962:0",
-    "activity": "crwdns4255:0crwdne4255:0",
-    "avatar": "crwdns1578:0crwdne1578:0",
-    "avatar-of": "crwdns3743:0{{user}}crwdne3743:0",
-    "inspiration": "crwdns2964:0crwdne2964:0",
-    "name": "crwdns1580:0crwdne1580:0",
-    "username": "crwdns1582:0crwdne1582:0",
-    "tags": "crwdns1584:0crwdne1584:0",
-    "administration": "crwdns1586:0crwdne1586:0",
-    "add": "crwdns1588:0crwdne1588:0",
-    "added": "crwdns4339:0crwdne4339:0",
-    "remove": "crwdns1590:0crwdne1590:0",
-    "callout": "crwdns1592:0crwdne1592:0",
-    "callouts": "crwdns3551:0crwdne3551:0",
-    "collaborationTools": "crwdns5165:0crwdne5165:0",
-    "whiteboard": "crwdns4341:0crwdne4341:0",
-    "whiteboards": "crwdns4343:0crwdne4343:0",
-    "calendar": "crwdns3691:0crwdne3691:0",
-    "comment": "crwdns1598:0crwdne1598:0",
-    "comments": "crwdns1600:0crwdne1600:0",
-    "contributions": "crwdns3553:0crwdne3553:0",
-    "card": "crwdns1602:0crwdne1602:0",
-    "cards": "crwdns1604:0crwdne1604:0",
-    "create": "crwdns1606:0crwdne1606:0",
-    "create-new": "crwdns1608:0crwdne1608:0",
-    "create-new-entity": "crwdns1610:0{{entity}}crwdne1610:0",
-    "date": "crwdns3693:0crwdne3693:0",
-    "description": "crwdns1612:0crwdne1612:0",
-    "event": "crwdns4345:0crwdne4345:0",
-    "events": "crwdns3897:0crwdne3897:0",
-    "about": "crwdns1614:0crwdne1614:0",
-    "aboutThis": "crwdns4261:0{{entity}}crwdne4261:0",
-    "explore": "crwdns3443:0crwdne3443:0",
-    "edit-entity": "crwdns1618:0{{entity}}crwdne1618:0",
-    "filter": "crwdns1620:0crwdne1620:0",
-    "filterby": "crwdns2930:0crwdne2930:0",
-    "forum": "crwdns4137:0crwdne4137:0",
-    "email": "crwdns1622:0crwdne1622:0",
-    "state": "crwdns1624:0crwdne1624:0",
-    "post": "crwdns4221:0crwdne4221:0",
-    "posts": "crwdns4223:0crwdne4223:0",
-    "status": "crwdns4347:0crwdne4347:0",
-    "aspect": "crwdns1626:0crwdne1626:0",
-    "aspects": "crwdns1628:0crwdne1628:0",
-    "host": "crwdns1630:0crwdne1630:0",
-    "lead": "crwdns1632:0crwdne1632:0",
-    "space": "crwdns4349:0crwdne4349:0",
-    "spaces": "crwdns4351:0crwdne4351:0",
-    "challenge": "crwdns1638:0crwdne1638:0",
-    "challenges": "crwdns1640:0crwdne1640:0",
-    "all-entities": "crwdns4281:0{{entityType}}crwdnd4281:0{{count}}crwdne4281:0",
-    "contributors": "crwdns1642:0crwdne1642:0",
-    "opportunity": "crwdns1644:0crwdne1644:0",
-    "opportunities": "crwdns1646:0crwdne1646:0",
-    "organization": "crwdns1648:0crwdne1648:0",
-    "organizations": "crwdns1650:0crwdne1650:0",
-    "communications": "crwdns4353:0crwdne4353:0",
-    "applications": "crwdns1654:0crwdne1654:0",
-    "introduction": "crwdns4085:0crwdne4085:0",
-    "interest": "crwdns1656:0crwdne1656:0",
-    "interests": "crwdns1658:0crwdne1658:0",
-    "project": "crwdns1660:0crwdne1660:0",
-    "role": "crwdns4355:0crwdne4355:0",
-    "agreement": "crwdns5021:0crwdne5021:0",
-    "agreements": "crwdns1662:0crwdne1662:0",
-    "templates": "crwdns1664:0crwdne1664:0",
-    "template": "crwdns3791:0crwdne3791:0",
-    "group": "crwdns1666:0crwdne1666:0",
-    "groups": "crwdns1668:0crwdne1668:0",
-    "user-group": "crwdns1670:0crwdne1670:0",
-    "user-groups": "crwdns1672:0crwdne1672:0",
-    "user": "crwdns1674:0crwdne1674:0",
-    "users": "crwdns1676:0crwdne1676:0",
-    "update": "crwdns1678:0crwdne1678:0",
-    "updates": "crwdns4357:0crwdne4357:0",
-    "no-updates": "crwdns4359:0crwdne4359:0",
-    "no-tags": "crwdns1684:0crwdne1684:0",
-    "no-references": "crwdns1686:0crwdne1686:0",
-    "field-required": "crwdns1688:0crwdne1688:0",
-    "field-min-length": "crwdns1690:0{{min}}crwdne1690:0",
-    "field-max-length": "crwdns1692:0{{max}}crwdne1692:0",
-    "last-saved": "crwdns5295:0{{datetime}}crwdne5295:0",
-    "membership": "crwdns1694:0crwdne1694:0",
-    "owner": "crwdns1696:0crwdne1696:0",
-    "admin": "crwdns1698:0crwdne1698:0",
-    "member": "crwdns1700:0crwdne1700:0",
-    "members": "crwdns1702:0crwdne1702:0",
-    "empty-string": "crwdns1704:0crwdne1704:0",
-    "discussion": "crwdns1706:0crwdne1706:0",
-    "discussions": "crwdns1708:0crwdne1708:0",
-    "disassociate": "crwdns3557:0crwdne3557:0",
-    "dashboard": "crwdns1710:0crwdne1710:0",
-    "contribute": "crwdns1712:0crwdne1712:0",
-    "context": "crwdns1714:0crwdne1714:0",
-    "community": "crwdns1716:0crwdne1716:0",
-    "people": "crwdns4257:0crwdne4257:0",
-    "settings": "crwdns1718:0crwdne1718:0",
-    "space-settings": "crwdns4361:0$t(common.settings)crwdne4361:0",
-    "search": "crwdns1720:0crwdne1720:0",
-    "storage": "crwdns4363:0crwdne4363:0",
-    "reference": "crwdns1722:0crwdne1722:0",
-    "references": "crwdns1724:0crwdne1724:0",
-    "notifications": "crwdns1726:0crwdne1726:0",
-    "credentials": "crwdns1728:0crwdne1728:0",
-    "my-profile": "crwdns1730:0crwdne1730:0",
-    "my-memberships": "crwdns1732:0crwdne1732:0",
-    "profile": "crwdns1734:0crwdne1734:0",
-    "social": "crwdns1736:0crwdne1736:0",
-    "lifecycle": "crwdns1738:0crwdne1738:0",
-    "location": "crwdns3981:0crwdne3981:0",
-    "home": "crwdns1740:0crwdne1740:0",
-    "visuals": "crwdns1742:0crwdne1742:0",
-    "authorization": "crwdns1744:0crwdne1744:0",
-    "question": "crwdns1746:0crwdne1746:0",
-    "questions": "crwdns1748:0crwdne1748:0",
-    "show-subject": "crwdns4365:0crwdne4365:0",
-    "show-all": "crwdns1750:0crwdne1750:0",
-    "title": "crwdns1752:0crwdne1752:0",
-    "visibility": "crwdns4367:0crwdne4367:0",
-    "warning": "crwdns1754:0crwdne1754:0",
-    "welcome": "crwdns4263:0crwdne4263:0",
-    "preview": "crwdns1756:0crwdne1756:0",
-    "help": "crwdns1758:0crwdne1758:0",
-    "helpCenter": "crwdns5368:0crwdne5368:0",
-    "loading": "crwdns2932:0crwdne2932:0",
-    "innovation-flow": "crwdns3026:0crwdne3026:0",
-    "innovation-flows": "crwdns3447:0crwdne3447:0",
-    "innovation-packs": "crwdns4187:0crwdne4187:0",
-    "innovation-hub": "crwdns4369:0crwdne4369:0",
-    "innovation-hubs": "crwdns4371:0crwdne4371:0",
-    "innovationPack": "crwdns4373:0crwdne4373:0",
-    "more": "crwdns3423:0crwdne3423:0",
-    "url": "crwdns3449:0crwdne3449:0",
-    "sources": "crwdns5329:0crwdne5329:0",
+    "knowledge-base": "crwdns8342:0crwdne8342:0",
+    "or": "crwdns8344:0crwdne8344:0",
+    "permission": "crwdns8346:0crwdne8346:0",
+    "permissions": "crwdns8348:0crwdne8348:0",
+    "error-generic": "crwdns8350:0crwdne8350:0",
+    "activity": "crwdns8352:0crwdne8352:0",
+    "avatar": "crwdns8354:0crwdne8354:0",
+    "avatar-of": "crwdns8356:0{{user}}crwdne8356:0",
+    "beta": "crwdns8358:0crwdne8358:0",
+    "inspiration": "crwdns8360:0crwdne8360:0",
+    "name": "crwdns8362:0crwdne8362:0",
+    "username": "crwdns8364:0crwdne8364:0",
+    "tags": "crwdns8366:0crwdne8366:0",
+    "administration": "crwdns8368:0crwdne8368:0",
+    "add": "crwdns8370:0crwdne8370:0",
+    "added": "crwdns8372:0crwdne8372:0",
+    "remove": "crwdns8374:0crwdne8374:0",
+    "callout": "crwdns8376:0crwdne8376:0",
+    "callouts": "crwdns8378:0crwdne8378:0",
+    "collaborationTools": "crwdns8380:0crwdne8380:0",
+    "createdBy": "crwdns8382:0crwdne8382:0",
+    "whiteboard": "crwdns8384:0crwdne8384:0",
+    "whiteboards": "crwdns8386:0crwdne8386:0",
+    "calendar": "crwdns8388:0crwdne8388:0",
+    "comment": "crwdns8390:0crwdne8390:0",
+    "comments": "crwdns8392:0crwdne8392:0",
+    "contributions": "crwdns8394:0crwdne8394:0",
+    "card": "crwdns8396:0crwdne8396:0",
+    "cards": "crwdns8398:0crwdne8398:0",
+    "create": "crwdns8400:0crwdne8400:0",
+    "create-new": "crwdns8402:0crwdne8402:0",
+    "create-new-entity": "crwdns8404:0{{entity}}crwdne8404:0",
+    "date": "crwdns8406:0crwdne8406:0",
+    "description": "crwdns8408:0crwdne8408:0",
+    "event": "crwdns8410:0crwdne8410:0",
+    "events": "crwdns8412:0crwdne8412:0",
+    "about": "crwdns8414:0crwdne8414:0",
+    "aboutThis": "crwdns8416:0{{entity}}crwdne8416:0",
+    "explore": "crwdns8418:0crwdne8418:0",
+    "edit-entity": "crwdns8420:0{{entity}}crwdne8420:0",
+    "filter": "crwdns8422:0crwdne8422:0",
+    "filterby": "crwdns8424:0crwdne8424:0",
+    "forum": "crwdns8426:0crwdne8426:0",
+    "email": "crwdns8428:0crwdne8428:0",
+    "state": "crwdns8430:0crwdne8430:0",
+    "post": "crwdns8432:0crwdne8432:0",
+    "posts": "crwdns8434:0crwdne8434:0",
+    "status": "crwdns8436:0crwdne8436:0",
+    "aspect": "crwdns8438:0crwdne8438:0",
+    "aspects": "crwdns8440:0crwdne8440:0",
+    "host": "crwdns8442:0crwdne8442:0",
+    "lead": "crwdns8444:0crwdne8444:0",
+    "space": "crwdns8446:0crwdne8446:0",
+    "spaces": "crwdns8448:0crwdne8448:0",
+    "challenge": "crwdns8450:0crwdne8450:0",
+    "challenges": "crwdns8452:0crwdne8452:0",
+    "all-entities": "crwdns8454:0{{entityType}}crwdnd8454:0{{count}}crwdne8454:0",
+    "contributors": "crwdns8456:0crwdne8456:0",
+    "opportunity": "crwdns8458:0crwdne8458:0",
+    "opportunities": "crwdns8460:0crwdne8460:0",
+    "organization": "crwdns8462:0crwdne8462:0",
+    "organizations": "crwdns8464:0crwdne8464:0",
+    "communications": "crwdns8466:0crwdne8466:0",
+    "applications": "crwdns8468:0crwdne8468:0",
+    "introduction": "crwdns8470:0crwdne8470:0",
+    "interest": "crwdns8472:0crwdne8472:0",
+    "interests": "crwdns8474:0crwdne8474:0",
+    "project": "crwdns8476:0crwdne8476:0",
+    "role": "crwdns8478:0crwdne8478:0",
+    "agreement": "crwdns8480:0crwdne8480:0",
+    "agreements": "crwdns8482:0crwdne8482:0",
+    "templates": "crwdns8484:0crwdne8484:0",
+    "template": "crwdns8486:0crwdne8486:0",
+    "group": "crwdns8488:0crwdne8488:0",
+    "groups": "crwdns8490:0crwdne8490:0",
+    "user-group": "crwdns8492:0crwdne8492:0",
+    "user-groups": "crwdns8494:0crwdne8494:0",
+    "user": "crwdns8496:0crwdne8496:0",
+    "users": "crwdns8498:0crwdne8498:0",
+    "update": "crwdns8500:0crwdne8500:0",
+    "updates": "crwdns8502:0crwdne8502:0",
+    "no-updates": "crwdns8504:0crwdne8504:0",
+    "no-tags": "crwdns8506:0crwdne8506:0",
+    "no-references": "crwdns8508:0crwdne8508:0",
+    "field-required": "crwdns8510:0crwdne8510:0",
+    "field-min-length": "crwdns8512:0{{min}}crwdne8512:0",
+    "field-max-length": "crwdns8514:0{{max}}crwdne8514:0",
+    "last-saved": "crwdns8516:0{{datetime}}crwdne8516:0",
+    "membership": "crwdns8518:0crwdne8518:0",
+    "owner": "crwdns8520:0crwdne8520:0",
+    "admin": "crwdns8522:0crwdne8522:0",
+    "member": "crwdns8524:0crwdne8524:0",
+    "members": "crwdns8526:0crwdne8526:0",
+    "empty-string": "crwdns8528:0crwdne8528:0",
+    "discussion": "crwdns8530:0crwdne8530:0",
+    "discussions": "crwdns8532:0crwdne8532:0",
+    "disassociate": "crwdns8534:0crwdne8534:0",
+    "dashboard": "crwdns8536:0crwdne8536:0",
+    "contribute": "crwdns8538:0crwdne8538:0",
+    "context": "crwdns8540:0crwdne8540:0",
+    "community": "crwdns8542:0crwdne8542:0",
+    "library": "crwdns8544:0crwdne8544:0",
+    "people": "crwdns8546:0crwdne8546:0",
+    "settings": "crwdns8548:0crwdne8548:0",
+    "space-settings": "crwdns8550:0$t(common.settings)crwdne8550:0",
+    "search": "crwdns8552:0crwdne8552:0",
+    "storage": "crwdns8554:0crwdne8554:0",
+    "type": "crwdns8556:0crwdne8556:0",
+    "reference": "crwdns8558:0crwdne8558:0",
+    "references": "crwdns8560:0crwdne8560:0",
+    "notifications": "crwdns8562:0crwdne8562:0",
+    "credentials": "crwdns8564:0crwdne8564:0",
+    "my-profile": "crwdns8566:0crwdne8566:0",
+    "my-memberships": "crwdns8568:0crwdne8568:0",
+    "profile": "crwdns8570:0crwdne8570:0",
+    "social": "crwdns8572:0crwdne8572:0",
+    "lifecycle": "crwdns8574:0crwdne8574:0",
+    "location": "crwdns8576:0crwdne8576:0",
+    "home": "crwdns8578:0crwdne8578:0",
+    "visuals": "crwdns8580:0crwdne8580:0",
+    "authorization": "crwdns8582:0crwdne8582:0",
+    "question": "crwdns8584:0crwdne8584:0",
+    "questions": "crwdns8586:0crwdne8586:0",
+    "show-subject": "crwdns8588:0crwdne8588:0",
+    "show-more": "crwdns10910:0crwdne10910:0",
+    "show-all": "crwdns8590:0crwdne8590:0",
+    "lock": "crwdns10912:0crwdne10912:0",
+    "title": "crwdns8592:0crwdne8592:0",
+    "visibility": "crwdns8594:0crwdne8594:0",
+    "warning": "crwdns8596:0crwdne8596:0",
+    "welcome": "crwdns8598:0crwdne8598:0",
+    "preview": "crwdns8600:0crwdne8600:0",
+    "help": "crwdns8602:0crwdne8602:0",
+    "helpCenter": "crwdns8604:0crwdne8604:0",
+    "loading": "crwdns8606:0crwdne8606:0",
+    "innovation-flow": "crwdns8608:0crwdne8608:0",
+    "innovation-flows": "crwdns8610:0crwdne8610:0",
+    "innovation-packs": "crwdns8612:0crwdne8612:0",
+    "innovation-hub": "crwdns8614:0crwdne8614:0",
+    "innovation-hubs": "crwdns8616:0crwdne8616:0",
+    "innovationPack": "crwdns8618:0crwdne8618:0",
+    "more": "crwdns8620:0crwdne8620:0",
+    "url": "crwdns8622:0crwdne8622:0",
+    "sources": "crwdns8624:0crwdne8624:0",
     "genders": {
-      "notSpecified": "crwdns1762:0crwdne1762:0",
-      "male": "crwdns1764:0crwdne1764:0",
-      "female": "crwdns1766:0crwdne1766:0"
+      "notSpecified": "crwdns8626:0crwdne8626:0",
+      "male": "crwdns8628:0crwdne8628:0",
+      "female": "crwdns8630:0crwdne8630:0"
     },
     "journeyTypes": {
-      "space": "crwdns5023:0$t(common.space)crwdne5023:0",
-      "space_plural": "crwdns5025:0$t(common.spaces)crwdne5025:0",
-      "challenge": "crwdns5027:0$t(common.challenge)crwdne5027:0",
-      "challenge_plural": "crwdns5029:0$t(common.challenges)crwdne5029:0",
-      "opportunity": "crwdns5031:0$t(common.opportunity)crwdne5031:0",
-      "opportunity_plural": "crwdns5033:0$t(common.opportunities)crwdne5033:0",
-      "agreement": "crwdns5035:0$t(common.agreement)crwdne5035:0",
-      "agreement_plural": "crwdns5037:0$t(common.agreements)crwdne5037:0"
+      "space": "crwdns8632:0$t(common.space)crwdne8632:0",
+      "space_plural": "crwdns8634:0$t(common.spaces)crwdne8634:0",
+      "challenge": "crwdns8636:0$t(common.challenge)crwdne8636:0",
+      "challenge_plural": "crwdns8638:0$t(common.challenges)crwdne8638:0",
+      "opportunity": "crwdns8640:0$t(common.opportunity)crwdne8640:0",
+      "opportunity_plural": "crwdns8642:0$t(common.opportunities)crwdne8642:0",
+      "agreement": "crwdns8644:0$t(common.agreement)crwdne8644:0",
+      "agreement_plural": "crwdns8646:0$t(common.agreements)crwdne8646:0"
     },
     "verified-status": {
-      "verified": "crwdns1768:0crwdne1768:0",
-      "not-verified": "crwdns1770:0crwdne1770:0"
+      "verified": "crwdns8648:0crwdne8648:0",
+      "not-verified": "crwdns8650:0crwdne8650:0"
     },
     "enums": {
       "innovationFlowState": {
-        "new": "crwdns5039:0crwdne5039:0",
-        "beingRefined": "crwdns5041:0crwdne5041:0",
-        "inProgress": "crwdns5043:0crwdne5043:0",
-        "complete": "crwdns5045:0crwdne5045:0",
-        "abandoned": "crwdns5047:0crwdne5047:0",
-        "archived": "crwdns5049:0crwdne5049:0"
+        "new": "crwdns8652:0crwdne8652:0",
+        "beingRefined": "crwdns8654:0crwdne8654:0",
+        "inProgress": "crwdns8656:0crwdne8656:0",
+        "complete": "crwdns8658:0crwdne8658:0",
+        "abandoned": "crwdns8660:0crwdne8660:0",
+        "archived": "crwdns8662:0crwdne8662:0"
       },
       "space-visibility": {
-        "ACTIVE": "crwdns4375:0crwdne4375:0",
-        "ARCHIVED": "crwdns4377:0crwdne4377:0",
-        "DEMO": "crwdns4379:0crwdne4379:0"
+        "ACTIVE": "crwdns8664:0crwdne8664:0",
+        "ARCHIVED": "crwdns8666:0crwdne8666:0",
+        "DEMO": "crwdns8668:0crwdne8668:0"
       },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
-          "name": "crwdns1772:0crwdne1772:0",
+          "name": "crwdns8670:0crwdne8670:0",
           "order": 0,
           "hidden": true
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "crwdns4381:0crwdne4381:0",
+          "name": "crwdns8676:0crwdne8676:0",
           "order": 0,
           "hidden": true
         },
         "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "crwdns1784:0crwdne1784:0",
+          "name": "crwdns8682:0crwdne8682:0",
           "order": 0,
           "hidden": true
         },
         "GLOBAL_REGISTERED": {
-          "name": "crwdns1790:0crwdne1790:0",
+          "name": "crwdns8688:0crwdne8688:0",
           "order": 0,
           "hidden": true
         },
         "HUB_ADMIN": {
-          "name": "crwdns4383:0crwdne4383:0",
+          "name": "crwdns8694:0crwdne8694:0",
           "order": 0,
           "hidden": true
         },
         "HUB_HOST": {
-          "name": "crwdns4385:0crwdne4385:0",
+          "name": "crwdns8700:0crwdne8700:0",
           "order": 0,
           "hidden": true
         },
         "HUB_MEMBER": {
-          "name": "crwdns4387:0crwdne4387:0",
+          "name": "crwdns8706:0crwdne8706:0",
           "order": 0,
           "hidden": true
         },
         "CHALLENGE_ADMIN": {
-          "name": "crwdns1814:0crwdne1814:0",
+          "name": "crwdns8712:0crwdne8712:0",
           "order": 0,
           "hidden": true
         },
         "CHALLENGE_LEAD": {
-          "name": "crwdns1820:0crwdne1820:0",
+          "name": "crwdns8718:0crwdne8718:0",
           "order": 0,
           "hidden": true
         },
         "CHALLENGE_MEMBER": {
-          "name": "crwdns1826:0crwdne1826:0",
+          "name": "crwdns8724:0crwdne8724:0",
           "order": 0,
           "hidden": true
         },
         "OPPORTUNITY_ADMIN": {
-          "name": "crwdns1832:0crwdne1832:0",
+          "name": "crwdns8730:0crwdne8730:0",
           "order": 0,
           "hidden": true
         },
         "OPPORTUNITY_MEMBER": {
-          "name": "crwdns1838:0crwdne1838:0",
+          "name": "crwdns8736:0crwdne8736:0",
           "order": 0,
           "hidden": true
         },
         "OPPORTUNITY_LEAD": {
-          "name": "crwdns1844:0crwdne1844:0",
+          "name": "crwdns8742:0crwdne8742:0",
           "order": 0,
           "hidden": true
         },
         "ORGANIZATION_OWNER": {
-          "name": "crwdns1850:0crwdne1850:0",
+          "name": "crwdns8748:0crwdne8748:0",
           "order": 0,
           "hidden": true
         },
         "ORGANIZATION_ADMIN": {
-          "name": "crwdns1856:0crwdne1856:0",
+          "name": "crwdns8754:0crwdne8754:0",
           "order": 0,
           "hidden": true
         },
         "ORGANIZATION_ASSOCIATE": {
-          "name": "crwdns3287:0crwdne3287:0",
+          "name": "crwdns8760:0crwdne8760:0",
           "order": 0,
           "hidden": true
         },
         "USER_SELF_MANAGEMENT": {
-          "name": "crwdns1868:0crwdne1868:0",
+          "name": "crwdns8766:0crwdne8766:0",
           "order": 0,
           "hidden": true
         },
         "USER_GROUP_MEMBER": {
-          "name": "crwdns1874:0crwdne1874:0",
+          "name": "crwdns8772:0crwdne8772:0",
           "order": 0,
           "hidden": true
         },
         "INNOVATION_PACK_PROVIDER": {
-          "name": "crwdns3293:0crwdne3293:0",
+          "name": "crwdns8778:0crwdne8778:0",
           "order": 0,
           "hidden": true
         }
       },
       "edit-mode": {
-        "new": "crwdns1880:0crwdne1880:0",
-        "edit": "crwdns1882:0crwdne1882:0",
-        "read-only": "crwdns1884:0crwdne1884:0"
+        "new": "crwdns8784:0crwdne8784:0",
+        "edit": "crwdns8786:0crwdne8786:0",
+        "read-only": "crwdns8788:0crwdne8788:0"
       },
       "discussion-category": {
-        "GENERAL": "crwdns1886:0crwdne1886:0",
-        "IDEAS": "crwdns1888:0crwdne1888:0",
-        "QUESTIONS": "crwdns1890:0crwdne1890:0",
-        "SHARING": "crwdns1892:0crwdne1892:0",
-        "PLATFORM_FUNCTIONALITIES": "crwdns4139:0crwdne4139:0",
-        "COMMUNITY_BUILDING": "crwdns4141:0crwdne4141:0",
-        "CHALLENGE_CENTRIC": "crwdns4143:0crwdne4143:0",
-        "HELP": "crwdns4145:0crwdne4145:0",
-        "OTHER": "crwdns4147:0crwdne4147:0"
+        "GENERAL": "crwdns8790:0crwdne8790:0",
+        "IDEAS": "crwdns8792:0crwdne8792:0",
+        "QUESTIONS": "crwdns8794:0crwdne8794:0",
+        "SHARING": "crwdns8796:0crwdne8796:0",
+        "PLATFORM_FUNCTIONALITIES": "crwdns8798:0crwdne8798:0",
+        "COMMUNITY_BUILDING": "crwdns8800:0crwdne8800:0",
+        "CHALLENGE_CENTRIC": "crwdns8802:0crwdne8802:0",
+        "HELP": "crwdns8804:0crwdne8804:0",
+        "OTHER": "crwdns8806:0crwdne8806:0"
       },
       "templateTypes": {
-        "WhiteboardTemplate": "crwdns4389:0crwdne4389:0",
-        "PostTemplate": "crwdns4391:0crwdne4391:0",
-        "InnovationFlowTemplate": "crwdns4393:0crwdne4393:0"
+        "WhiteboardTemplate": "crwdns8808:0crwdne8808:0",
+        "WhiteboardTemplate_plural": "crwdns8810:0crwdne8810:0",
+        "PostTemplate": "crwdns8812:0crwdne8812:0",
+        "PostTemplate_plural": "crwdns8814:0crwdne8814:0",
+        "InnovationFlowTemplate": "crwdns8816:0crwdne8816:0",
+        "InnovationFlowTemplate_plural": "crwdns8818:0crwdne8818:0",
+        "CalloutTemplate": "crwdns8820:0crwdne8820:0",
+        "CalloutTemplate_plural": "crwdns8822:0crwdne8822:0"
       }
     },
     "blocks": {
-      "users-contributing": "crwdns1894:0crwdne1894:0",
-      "all-contributing-users": "crwdns1896:0crwdne1896:0"
+      "users-contributing": "crwdns8824:0crwdne8824:0",
+      "all-contributing-users": "crwdns8826:0crwdne8826:0"
     },
     "time": {
-      "timeAgo": "crwdns5051:0{{time}}crwdne5051:0",
-      "second": "crwdns5053:0{{count}}crwdne5053:0",
-      "second_plural": "crwdns5055:0{{count}}crwdne5055:0",
-      "minute": "crwdns5057:0{{count}}crwdne5057:0",
-      "minute_plural": "crwdns5059:0{{count}}crwdne5059:0",
-      "hour": "crwdns5061:0{{count}}crwdne5061:0",
-      "hour_plural": "crwdns5063:0{{count}}crwdne5063:0",
-      "day": "crwdns5065:0{{count}}crwdne5065:0",
-      "day_plural": "crwdns5067:0{{count}}crwdne5067:0",
-      "month": "crwdns5069:0{{count}}crwdne5069:0",
-      "month_plural": "crwdns5071:0{{count}}crwdne5071:0",
-      "year": "crwdns5201:0{{count}}crwdne5201:0",
-      "year_plural": "crwdns5203:0{{count}}crwdne5203:0"
+      "timeAgo": "crwdns8828:0{{time}}crwdne8828:0",
+      "second": "crwdns8830:0{{count}}crwdne8830:0",
+      "second_plural": "crwdns8832:0{{count}}crwdne8832:0",
+      "minute": "crwdns8834:0{{count}}crwdne8834:0",
+      "minute_plural": "crwdns8836:0{{count}}crwdne8836:0",
+      "hour": "crwdns8838:0{{count}}crwdne8838:0",
+      "hour_plural": "crwdns8840:0{{count}}crwdne8840:0",
+      "day": "crwdns8842:0{{count}}crwdne8842:0",
+      "day_plural": "crwdns8844:0{{count}}crwdne8844:0",
+      "month": "crwdns8846:0{{count}}crwdne8846:0",
+      "month_plural": "crwdns8848:0{{count}}crwdne8848:0",
+      "year": "crwdns8850:0{{count}}crwdne8850:0",
+      "year_plural": "crwdns8852:0{{count}}crwdne8852:0"
     }
   },
   "community": {
-    "memberUsers": "crwdns4395:0{{count}}crwdne4395:0",
-    "leading-organizations": "crwdns1902:0crwdne1902:0",
-    "memberOrganizations": "crwdns4397:0{{count}}crwdne4397:0",
-    "pendingApplications": "crwdns5269:0crwdne5269:0",
-    "pendingMemberships": "crwdns5271:0crwdne5271:0",
-    "leads": "crwdns1906:0crwdne1906:0",
-    "members": "crwdns1908:0crwdne1908:0",
-    "host": "crwdns1910:0crwdne1910:0",
-    "members-count": "crwdns4401:0{{count}}crwdne4401:0",
-    "members-count_plural": "crwdns4403:0{{count}}crwdne4403:0",
-    "addMember": "crwdns4405:0crwdne4405:0",
-    "unauthorizedPermissionsChange": "crwdns4407:0crwdne4407:0",
+    "memberUsers": "crwdns8854:0{{count}}crwdne8854:0",
+    "leading-organizations": "crwdns8856:0crwdne8856:0",
+    "memberOrganizations": "crwdns8858:0{{count}}crwdne8858:0",
+    "pendingApplications": "crwdns8860:0crwdne8860:0",
+    "pendingMemberships": "crwdns8862:0crwdne8862:0",
+    "leads": "crwdns8864:0crwdne8864:0",
+    "members": "crwdns8866:0crwdne8866:0",
+    "host": "crwdns8868:0crwdne8868:0",
+    "members-count": "crwdns8870:0{{count}}crwdne8870:0",
+    "members-count_plural": "crwdns8872:0{{count}}crwdne8872:0",
+    "addMember": "crwdns8874:0crwdne8874:0",
+    "unauthorizedPermissionsChange": "crwdns8876:0crwdne8876:0",
     "application-form": {
-      "title": "crwdns4087:0crwdne4087:0",
-      "subtitle": "crwdns4409:0crwdne4409:0",
-      "required-question": "crwdns4091:0crwdne4091:0",
-      "move-up": "crwdns4093:0crwdne4093:0",
-      "move-down": "crwdns4095:0crwdne4095:0",
-      "delete-question": "crwdns4097:0crwdne4097:0",
-      "updated-successfully": "crwdns4099:0crwdne4099:0"
+      "title": "crwdns8878:0crwdne8878:0",
+      "subtitle": "crwdns8880:0crwdne8880:0",
+      "required-question": "crwdns8882:0crwdne8882:0",
+      "move-up": "crwdns8884:0crwdne8884:0",
+      "move-down": "crwdns8886:0crwdne8886:0",
+      "delete-question": "crwdns8888:0crwdne8888:0",
+      "updated-successfully": "crwdns8890:0crwdne8890:0"
     },
-    "applicationsHelp": "crwdns4411:0crwdne4411:0",
+    "applicationsHelp": "crwdns8892:0crwdne8892:0",
     "applicationStatus": {
-      "applicationReceived": "crwdns4413:0crwdne4413:0",
-      "applicationApproved": "crwdns4415:0crwdne4415:0",
-      "applicationRejected": "crwdns4417:0crwdne4417:0",
-      "applicationArchived": "crwdns4419:0crwdne4419:0"
+      "applicationReceived": "crwdns8894:0crwdne8894:0",
+      "applicationApproved": "crwdns8896:0crwdne8896:0",
+      "applicationRejected": "crwdns8898:0crwdne8898:0",
+      "applicationArchived": "crwdns8900:0crwdne8900:0"
     },
     "invitationStatus": {
-      "invited": "crwdns5073:0crwdne5073:0",
-      "accepted": "crwdns5075:0crwdne5075:0",
-      "rejected": "crwdns5077:0crwdne5077:0"
+      "invited": "crwdns8902:0crwdne8902:0",
+      "accepted": "crwdns8904:0crwdne8904:0",
+      "rejected": "crwdns8906:0crwdne8906:0"
     },
     "invitationExternalStatus": {
-      "invited": "crwdns5079:0crwdne5079:0"
+      "invited": "crwdns8908:0crwdne8908:0"
     },
     "confirmDeleteApplication": {
-      "title": "crwdns4421:0{{user}}crwdne4421:0",
-      "content": "crwdns4423:0crwdne4423:0"
+      "title": "crwdns8910:0{{user}}crwdne8910:0",
+      "content": "crwdns8912:0crwdne8912:0"
     },
     "confirmDeleteInvitation": {
-      "title": "crwdns5081:0{{user}}crwdne5081:0",
-      "content": "crwdns5083:0crwdne5083:0"
+      "title": "crwdns8914:0{{user}}crwdne8914:0",
+      "content": "crwdns8916:0crwdne8916:0"
     },
     "confirmDeleteInvitationExternal": {
-      "title": "crwdns5085:0{{user}}crwdne5085:0",
-      "content": "crwdns5087:0crwdne5087:0"
+      "title": "crwdns8918:0{{user}}crwdne8918:0",
+      "content": "crwdns8920:0crwdne8920:0"
     },
     "pendingMembership": {
-      "pendingMemberships": "crwdns5089:0crwdne5089:0",
-      "pendingMembershipsWithCount": "crwdns5091:0{{count}}crwdne5091:0",
-      "invitationsSectionTitle": "crwdns5093:0crwdne5093:0",
-      "applicationsSectionTitle": "crwdns5095:0crwdne5095:0",
+      "pendingMemberships": "crwdns8922:0crwdne8922:0",
+      "pendingMembershipsWithCount": "crwdns8924:0{{count}}crwdne8924:0",
+      "invitationsSectionTitle": "crwdns8926:0crwdne8926:0",
+      "applicationsSectionTitle": "crwdns8928:0crwdne8928:0",
       "invitationDialog": {
-        "title": "crwdns5097:0{{journey}}crwdne5097:0",
+        "title": "crwdns8930:0{{journey}}crwdne8930:0",
         "actions": {
-          "hide": "crwdns5099:0crwdne5099:0",
-          "reject": "crwdns5101:0crwdne5101:0",
-          "accept": "crwdns5103:0crwdne5103:0"
+          "hide": "crwdns8932:0crwdne8932:0",
+          "reject": "crwdns8934:0crwdne8934:0",
+          "accept": "crwdns8936:0crwdne8936:0"
         }
       },
-      "invitationTitle": "crwdns5105:0{{time}}crwdnd5105:0{{user}}crwdnd5105:0{{journey}}crwdne5105:0"
+      "invitationTitle": "crwdns8938:0{{time}}crwdnd8938:0{{user}}crwdnd8938:0{{journey}}crwdne8938:0"
     },
     "memberSettings": {
-      "title": "crwdns4425:0crwdne4425:0",
-      "lead": "crwdns4427:0crwdne4427:0",
-      "admin": "crwdns5341:0crwdne5341:0",
-      "maxLeadsWarning": "crwdns4431:0crwdne4431:0",
+      "title": "crwdns8940:0crwdne8940:0",
+      "lead": "crwdns8942:0crwdne8942:0",
+      "admin": "crwdns8944:0crwdne8944:0",
+      "maxLeadsWarning": "crwdns8946:0crwdne8946:0",
       "removeMember": {
-        "sectionTitle": "crwdns4433:0crwdne4433:0",
-        "remove": "crwdns5273:0crwdne5273:0",
-        "dialogTitle": "crwdns4437:0crwdne4437:0",
-        "dialogContent": "crwdns5275:0{{member}}crwdnd5275:0{{memberFirstName}}crwdnd5275:0{{memberFirstName}}crwdne5275:0"
+        "sectionTitle": "crwdns8948:0crwdne8948:0",
+        "remove": "crwdns8950:0crwdne8950:0",
+        "dialogTitle": "crwdns8952:0crwdne8952:0",
+        "dialogContent": "crwdns8954:0{{member}}crwdnd8954:0{{memberFirstName}}crwdnd8954:0{{memberFirstName}}crwdne8954:0"
       }
     }
   },
   "callout": {
-    "createFull": "crwdns5159:0crwdne5159:0",
-    "contributions": "crwdns3567:0{{count}}crwdne3567:0",
-    "contributions_plural": "crwdns3569:0{{count}}crwdne3569:0",
-    "draftNotice": "crwdns1912:0crwdne1912:0",
-    "closed": "crwdns4441:0crwdne4441:0",
-    "delete-confirm-title": "crwdns1914:0crwdne1914:0",
-    "delete-confirm-text": "crwdns4443:0crwdne4443:0",
-    "state-permission": "crwdns3369:0crwdne3369:0",
-    "permission-helptext": "crwdns3371:0crwdne3371:0",
-    "callout-location": "crwdns4287:0crwdne4287:0",
-    "alkemio-link": "crwdns4445:0crwdne4445:0",
+    "createFull": "crwdns8956:0crwdne8956:0",
+    "contributions": "crwdns8958:0{{count}}crwdne8958:0",
+    "contributions_plural": "crwdns8960:0{{count}}crwdne8960:0",
+    "draftNotice": "crwdns8962:0crwdne8962:0",
+    "closed": "crwdns8964:0crwdne8964:0",
+    "delete-confirm-title": "crwdns8966:0crwdne8966:0",
+    "delete-confirm-text": "crwdns8968:0crwdne8968:0",
+    "state-permission": "crwdns8970:0crwdne8970:0",
+    "permission-helptext": "crwdns8972:0crwdne8972:0",
+    "callout-location": "crwdns8974:0crwdne8974:0",
+    "alkemio-link": "crwdns8976:0crwdne8976:0",
     "link-collection": {
-      "add-link": "crwdns4447:0{{title}}crwdne4447:0",
-      "edit-link": "crwdns4449:0{{title}}crwdne4449:0",
-      "add-another": "crwdns4451:0crwdne4451:0",
-      "delete-link": "crwdns4453:0crwdne4453:0",
-      "save-to-add": "crwdns4455:0crwdne4455:0",
-      "click-to-see": "crwdns4457:0{{count}}crwdne4457:0",
-      "no-links-yet": "crwdns4459:0crwdne4459:0",
-      "delete-confirm-title": "crwdns4461:0crwdne4461:0",
-      "delete-confirm": "crwdns4463:0{{title}}crwdne4463:0",
-      "cancel-confirm-title": "crwdns4465:0crwdne4465:0",
-      "cancel-confirm": "crwdns4467:0crwdne4467:0",
-      "more-links": "crwdns4469:0{{count}}crwdne4469:0",
-      "new-temporary-reference": "crwdns4471:0{{temp}}crwdne4471:0"
+      "add-link": "crwdns8978:0{{title}}crwdne8978:0",
+      "edit-link": "crwdns8980:0{{title}}crwdne8980:0",
+      "add-another": "crwdns8982:0crwdne8982:0",
+      "delete-link": "crwdns8984:0crwdne8984:0",
+      "save-to-add": "crwdns8986:0crwdne8986:0",
+      "click-to-see": "crwdns8988:0{{count}}crwdne8988:0",
+      "no-links-yet": "crwdns8990:0crwdne8990:0",
+      "delete-confirm-title": "crwdns8992:0crwdne8992:0",
+      "delete-confirm": "crwdns8994:0{{title}}crwdne8994:0",
+      "cancel-confirm-title": "crwdns8996:0crwdne8996:0",
+      "cancel-confirm": "crwdns8998:0crwdne8998:0",
+      "more-links": "crwdns9000:0{{count}}crwdne9000:0",
+      "new-temporary-reference": "crwdns9002:0{{temp}}crwdne9002:0"
     },
     "singleWhiteboard": {
-      "clickToSee": "crwdns4473:0crwdne4473:0"
+      "clickToSee": "crwdns9004:0crwdne9004:0"
     },
     "callout-groups": {
-      "HOME_TOP": "crwdns5177:0crwdne5177:0",
-      "HOME_LEFT": "crwdns5179:0crwdne5179:0",
-      "HOME_RIGHT": "crwdns5181:0crwdne5181:0",
-      "CONTRIBUTE_LEFT": "crwdns5183:0crwdne5183:0",
-      "CONTRIBUTE_RIGHT": "crwdns5185:0crwdne5185:0",
-      "COMMUNITY_LEFT": "crwdns5187:0crwdne5187:0",
-      "COMMUNITY_RIGHT": "crwdns5189:0crwdne5189:0",
-      "CHALLENGES_LEFT": "crwdns5191:0crwdne5191:0",
-      "CHALLENGES_RIGHT": "crwdns5193:0crwdne5193:0",
-      "OPPORTUNITIES_LEFT": "crwdns5195:0crwdne5195:0",
-      "OPPORTUNITIES_RIGHT": "crwdns5197:0crwdne5197:0",
-      "KNOWLEDGE": "crwdns5199:0crwdne5199:0"
+      "HOME_TOP": "crwdns9006:0crwdne9006:0",
+      "HOME_LEFT": "crwdns9008:0crwdne9008:0",
+      "HOME_RIGHT": "crwdns9010:0crwdne9010:0",
+      "CONTRIBUTE_LEFT": "crwdns9012:0crwdne9012:0",
+      "CONTRIBUTE_RIGHT": "crwdns9014:0crwdne9014:0",
+      "COMMUNITY_LEFT": "crwdns9016:0crwdne9016:0",
+      "COMMUNITY_RIGHT": "crwdns9018:0crwdne9018:0",
+      "CHALLENGES_LEFT": "crwdns9020:0crwdne9020:0",
+      "CHALLENGES_RIGHT": "crwdns9022:0crwdne9022:0",
+      "OPPORTUNITIES_LEFT": "crwdns9024:0crwdne9024:0",
+      "OPPORTUNITIES_RIGHT": "crwdns9026:0crwdne9026:0",
+      "KNOWLEDGE": "crwdns9028:0crwdne9028:0"
     }
   },
   "journey-creation": {
-    "dialog-title": "crwdns3130:0{{entity}}crwdne3130:0"
+    "dialog-title": "crwdns9030:0{{entity}}crwdne9030:0"
   },
   "messaging": {
-    "message": "crwdns3745:0crwdne3745:0",
-    "message-optional": "crwdns3747:0crwdne3747:0",
-    "successfully-sent": "crwdns3749:0crwdne3749:0",
-    "messageDeleted": "crwdns5279:0crwdne5279:0"
+    "message": "crwdns9032:0crwdne9032:0",
+    "message-optional": "crwdns9034:0crwdne9034:0",
+    "successfully-sent": "crwdns9036:0crwdne9036:0",
+    "messageDeleted": "crwdns9038:0crwdne9038:0",
+    "insertEmoji": "crwdns10914:0crwdne10914:0",
+    "addReaction": "crwdns10916:0crwdne10916:0",
+    "addMention": "crwdns10918:0crwdne10918:0",
+    "formattingHelp": "crwdns10920:0crwdne10920:0"
   },
   "send-message-dialog": {
-    "direct-message-title": "crwdns3783:0crwdne3783:0",
-    "community-message-title": "crwdns3785:0{{contact}}crwdne3785:0"
+    "direct-message-title": "crwdns9040:0crwdne9040:0",
+    "community-message-title": "crwdns9042:0{{contact}}crwdne9042:0"
   },
   "share-dialog": {
-    "title": "crwdns3132:0{{entity}}crwdne3132:0",
-    "share-this": "crwdns3134:0{{entity}}crwdne3134:0",
-    "share-this-on": "crwdns3751:0{{entity}}crwdnd3751:0{{platform}}crwdne3751:0",
-    "or": "crwdns3753:0crwdne3753:0",
-    "url": "crwdns3136:0crwdne3136:0",
-    "warning": "crwdns3755:0crwdne3755:0",
+    "title": "crwdns9044:0{{entity}}crwdne9044:0",
+    "share-this": "crwdns9046:0{{entity}}crwdne9046:0",
+    "share-this-on": "crwdns9048:0{{entity}}crwdnd9048:0{{platform}}crwdne9048:0",
+    "or": "crwdns9050:0crwdne9050:0",
+    "url": "crwdns9052:0crwdne9052:0",
+    "warning": "crwdns9054:0crwdne9054:0",
     "platforms": {
       "clipboard": {
-        "title": "crwdns3757:0crwdne3757:0",
-        "copy": "crwdns3759:0crwdne3759:0",
-        "copied": "crwdns3761:0crwdne3761:0"
+        "title": "crwdns9056:0crwdne9056:0",
+        "copy": "crwdns9058:0crwdne9058:0",
+        "copied": "crwdns9060:0crwdne9060:0"
       },
       "alkemio": {
-        "name": "crwdns3763:0crwdne3763:0",
-        "title": "crwdns3765:0crwdne3765:0",
-        "description": "crwdns3767:0{{entity}}crwdne3767:0",
-        "default-template": "crwdns3769:0{{entity}}crwdne3769:0"
+        "name": "crwdns9062:0crwdne9062:0",
+        "title": "crwdns9064:0crwdne9064:0",
+        "description": "crwdns9066:0{{entity}}crwdne9066:0",
+        "default-template": "crwdns9068:0{{entity}}crwdne9068:0"
       },
       "linkedin": {
-        "title": "crwdns3771:0crwdne3771:0"
+        "title": "crwdns9070:0crwdne9070:0"
       },
       "twitter": {
-        "title": "crwdns3773:0crwdne3773:0"
+        "title": "crwdns9072:0crwdne9072:0"
       },
       "whatsapp": {
-        "title": "crwdns3775:0crwdne3775:0"
+        "title": "crwdns9074:0crwdne9074:0"
       },
       "email": {
-        "title": "crwdns3777:0crwdne3777:0"
+        "title": "crwdns9076:0crwdne9076:0"
       }
     }
   },
   "context": {
     "space": {
       "tagline": {
-        "title": "crwdns4479:0crwdne4479:0",
-        "description": "crwdns4481:0crwdne4481:0",
-        "placeholder": "crwdns4483:0crwdne4483:0"
+        "title": "crwdns9078:0crwdne9078:0",
+        "description": "crwdns9080:0crwdne9080:0",
+        "placeholder": "crwdns9082:0crwdne9082:0"
       },
       "background": {
-        "title": "crwdns4485:0crwdne4485:0",
-        "description": "crwdns4487:0crwdne4487:0",
-        "placeholder": "crwdns4489:0crwdne4489:0"
+        "title": "crwdns9084:0crwdne9084:0",
+        "description": "crwdns9086:0crwdne9086:0",
+        "placeholder": "crwdns9088:0crwdne9088:0"
       },
       "impact": {
-        "title": "crwdns4491:0crwdne4491:0",
-        "description": "crwdns4493:0crwdne4493:0",
-        "placeholder": "crwdns4495:0crwdne4495:0"
+        "title": "crwdns9090:0crwdne9090:0",
+        "description": "crwdns9092:0crwdne9092:0",
+        "placeholder": "crwdns9094:0crwdne9094:0"
       },
       "vision": {
-        "title": "crwdns4497:0crwdne4497:0",
-        "description": "crwdns4499:0crwdne4499:0",
-        "placeholder": "crwdns4501:0crwdne4501:0"
+        "title": "crwdns9096:0crwdne9096:0",
+        "description": "crwdns9098:0crwdne9098:0",
+        "placeholder": "crwdns9100:0crwdne9100:0"
       },
       "who": {
-        "title": "crwdns4503:0crwdne4503:0",
-        "description": "crwdns4505:0crwdne4505:0",
-        "placeholder": "crwdns4507:0crwdne4507:0"
+        "title": "crwdns9102:0crwdne9102:0",
+        "description": "crwdns9104:0crwdne9104:0",
+        "placeholder": "crwdns9106:0crwdne9106:0"
       }
     },
     "challenge": {
       "displayName": {
-        "title": "crwdns3048:0crwdne3048:0",
-        "description": "crwdns3050:0crwdne3050:0",
-        "placeholder": "crwdns3168:0crwdne3168:0"
+        "title": "crwdns9108:0crwdne9108:0",
+        "description": "crwdns9110:0crwdne9110:0",
+        "placeholder": "crwdns9112:0crwdne9112:0"
       },
       "tagline": {
-        "title": "crwdns3054:0crwdne3054:0",
-        "description": "crwdns3172:0crwdne3172:0",
-        "placeholder": "crwdns3174:0crwdne3174:0"
+        "title": "crwdns9114:0crwdne9114:0",
+        "description": "crwdns9116:0crwdne9116:0",
+        "placeholder": "crwdns9118:0crwdne9118:0"
       },
       "background": {
-        "title": "crwdns3060:0crwdne3060:0",
-        "description": "crwdns3178:0crwdne3178:0",
-        "placeholder": "crwdns3180:0crwdne3180:0"
+        "title": "crwdns9120:0crwdne9120:0",
+        "description": "crwdns9122:0crwdne9122:0",
+        "placeholder": "crwdns9124:0crwdne9124:0"
       },
       "impact": {
-        "title": "crwdns3182:0crwdne3182:0",
-        "description": "crwdns3186:0crwdne3186:0",
-        "placeholder": "crwdns3068:0crwdne3068:0"
+        "title": "crwdns9126:0crwdne9126:0",
+        "description": "crwdns9128:0crwdne9128:0",
+        "placeholder": "crwdns9130:0crwdne9130:0"
       },
       "vision": {
-        "title": "crwdns3070:0crwdne3070:0",
-        "description": "crwdns3072:0crwdne3072:0",
-        "placeholder": "crwdns3190:0crwdne3190:0"
+        "title": "crwdns9132:0crwdne9132:0",
+        "description": "crwdns9134:0crwdne9134:0",
+        "placeholder": "crwdns9136:0crwdne9136:0"
       },
       "who": {
-        "title": "crwdns3192:0crwdne3192:0",
-        "description": "crwdns3196:0crwdne3196:0",
-        "placeholder": "crwdns3078:0crwdne3078:0"
+        "title": "crwdns9138:0crwdne9138:0",
+        "description": "crwdns9140:0crwdne9140:0",
+        "placeholder": "crwdns9142:0crwdne9142:0"
       },
       "tags": {
-        "title": "crwdns3080:0crwdne3080:0",
-        "description": "crwdns3082:0crwdne3082:0",
-        "placeholder": "crwdns3198:0crwdne3198:0"
+        "title": "crwdns9144:0crwdne9144:0",
+        "description": "crwdns9146:0crwdne9146:0",
+        "placeholder": "crwdns9148:0crwdne9148:0"
+      },
+      "innovationFlow": {
+        "title": "crwdns9150:0crwdne9150:0"
       }
     },
     "opportunity": {
       "displayName": {
-        "title": "crwdns3086:0crwdne3086:0",
-        "description": "crwdns3088:0crwdne3088:0",
-        "placeholder": "crwdns3200:0crwdne3200:0"
+        "title": "crwdns9152:0crwdne9152:0",
+        "description": "crwdns9154:0crwdne9154:0",
+        "placeholder": "crwdns9156:0crwdne9156:0"
       },
       "tagline": {
-        "title": "crwdns3006:0crwdne3006:0",
-        "description": "crwdns3204:0crwdne3204:0",
-        "placeholder": "crwdns3206:0crwdne3206:0"
+        "title": "crwdns9158:0crwdne9158:0",
+        "description": "crwdns9160:0crwdne9160:0",
+        "placeholder": "crwdns9162:0crwdne9162:0"
       },
       "background": {
-        "title": "crwdns3208:0crwdne3208:0",
-        "description": "crwdns3212:0crwdne3212:0",
-        "placeholder": "crwdns3214:0crwdne3214:0"
+        "title": "crwdns9164:0crwdne9164:0",
+        "description": "crwdns9166:0crwdne9166:0",
+        "placeholder": "crwdns9168:0crwdne9168:0"
       },
       "impact": {
-        "title": "crwdns3014:0crwdne3014:0",
-        "description": "crwdns3218:0crwdne3218:0",
-        "placeholder": "crwdns3104:0crwdne3104:0"
+        "title": "crwdns9170:0crwdne9170:0",
+        "description": "crwdns9172:0crwdne9172:0",
+        "placeholder": "crwdns9174:0crwdne9174:0"
       },
       "vision": {
-        "title": "crwdns3220:0crwdne3220:0",
-        "description": "crwdns3224:0crwdne3224:0",
-        "placeholder": "crwdns3108:0crwdne3108:0"
+        "title": "crwdns9176:0crwdne9176:0",
+        "description": "crwdns9178:0crwdne9178:0",
+        "placeholder": "crwdns9180:0crwdne9180:0"
       },
       "who": {
-        "title": "crwdns3226:0crwdne3226:0",
-        "description": "crwdns3230:0crwdne3230:0",
-        "placeholder": "crwdns3112:0crwdne3112:0"
+        "title": "crwdns9182:0crwdne9182:0",
+        "description": "crwdns9184:0crwdne9184:0",
+        "placeholder": "crwdns9186:0crwdne9186:0"
       },
       "tags": {
-        "title": "crwdns3114:0crwdne3114:0",
-        "description": "crwdns3116:0crwdne3116:0",
-        "placeholder": "crwdns3232:0crwdne3232:0"
+        "title": "crwdns9188:0crwdne9188:0",
+        "description": "crwdns9190:0crwdne9190:0",
+        "placeholder": "crwdns9192:0crwdne9192:0"
+      },
+      "innovationFlow": {
+        "title": "crwdns9194:0crwdne9194:0"
       }
     }
   },
   "forms": {
     "validations": {
-      "required": "crwdns1918:0crwdne1918:0",
-      "minLength": "crwdns1920:0{{field}}crwdnd1920:0{{min}}crwdne1920:0",
-      "maxLength": "crwdns1922:0{{max}}crwdne1922:0",
-      "alphaNumeric": "crwdns1924:0{{field}}crwdne1924:0",
-      "nonBlank": "crwdns1926:0{{field}}crwdne1926:0",
-      "atLeastOne": "crwdns3779:0{{item}}crwdne3779:0"
+      "required": "crwdns9196:0crwdne9196:0",
+      "minLength": "crwdns9198:0{{field}}crwdnd9198:0{{min}}crwdne9198:0",
+      "maxLength": "crwdns9200:0{{max}}crwdne9200:0",
+      "alphaNumeric": "crwdns9202:0{{field}}crwdne9202:0",
+      "nonBlank": "crwdns9204:0{{field}}crwdne9204:0",
+      "atLeastOne": "crwdns9206:0{{item}}crwdne9206:0"
     }
   },
-  "post-templates": {
-    "template-library": "crwdns4509:0crwdne4509:0",
-    "post-template": "crwdns4511:0crwdne4511:0",
-    "default-description": "crwdns4513:0crwdne4513:0",
-    "banner-narrow": "crwdns4515:0crwdne4515:0"
-  },
-  "whiteboard-templates": {
-    "template-library": "crwdns4517:0crwdne4517:0",
-    "filter-placeholder": "crwdns4519:0crwdne4519:0",
-    "whiteboard-template": "crwdns4521:0crwdne4521:0",
-    "space-templates": "crwdns4523:0crwdne4523:0",
-    "load-platform-templates": "crwdns4525:0crwdne4525:0",
-    "platform-templates": "crwdns4527:0crwdne4527:0",
-    "error-importing": "crwdns4529:0crwdne4529:0",
-    "edit-template-button": "crwdns4531:0crwdne4531:0",
-    "edit-dialog-title": "crwdns4533:0crwdne4533:0"
+  "templateLibrary": {
+    "calloutTemplates": {
+      "name": "crwdns9208:0crwdne9208:0",
+      "title": "crwdns9210:0crwdne9210:0",
+      "type": "crwdns9212:0crwdne9212:0",
+      "description": "crwdns9214:0crwdne9214:0"
+    },
+    "postTemplates": {
+      "name": "crwdns9216:0crwdne9216:0",
+      "title": "crwdns9218:0crwdne9218:0",
+      "defaultDescription": "crwdns9220:0crwdne9220:0"
+    },
+    "whiteboardTemplates": {
+      "name": "crwdns9222:0crwdne9222:0",
+      "title": "crwdns9224:0crwdne9224:0",
+      "editTemplateButton": "crwdns9226:0crwdne9226:0",
+      "editDialogTitle": "crwdns9228:0crwdne9228:0",
+      "errorImporting": "crwdns9230:0crwdne9230:0"
+    },
+    "innovationFlowTemplates": {
+      "name": "crwdns9232:0crwdne9232:0",
+      "title": "crwdns9234:0crwdne9234:0",
+      "type": "crwdns9236:0crwdne9236:0"
+    },
+    "spaceTemplates": "crwdns9238:0crwdne9238:0",
+    "platformTemplates": "crwdns9240:0crwdne9240:0",
+    "loadPlatformTemplates": "crwdns9242:0crwdne9242:0",
+    "platformUseDisabled": "crwdns9244:0crwdne9244:0",
+    "disabledTemplateInfo": "crwdns9246:0crwdne9246:0"
   },
   "innovation-templates": {
-    "innovation-template": "crwdns1936:0crwdne1936:0",
     "definition": {
-      "title": "crwdns1938:0crwdne1938:0",
-      "placeholder": "crwdns1940:0crwdne1940:0"
-    },
-    "type": {
-      "title": "crwdns1942:0crwdne1942:0"
+      "title": "crwdns9248:0crwdne9248:0",
+      "placeholder": "crwdns9250:0crwdne9250:0"
     }
   },
   "components": {
+    "navigation": {
+      "exitMenu": "crwdns10886:0crwdne10886:0",
+      "skipMenu": "crwdns10892:0crwdne10892:0"
+    },
+    "search": {
+      "searchScope": {
+        "full": "crwdns9252:0crwdne9252:0",
+        "short": "crwdns9254:0crwdne9254:0"
+      },
+      "scope": {
+        "platform": "crwdns9256:0crwdne9256:0",
+        "space": "crwdns9258:0{{displayName}}crwdne9258:0"
+      }
+    },
+    "searchDialog": {
+      "headerTitle": "crwdns9260:0crwdne9260:0"
+    },
+    "searchScope": {
+      "currentScope": "crwdns9262:0crwdne9262:0",
+      "alternativeScope": "crwdns9264:0crwdne9264:0",
+      "platform": "crwdns9266:0crwdne9266:0"
+    },
+    "poweredBy": {
+      "label": "crwdns9268:0crwdne9268:0",
+      "aria-label": "crwdns10922:0crwdne10922:0"
+    },
     "journeyUnauthorizedDialog": {
-      "message": "crwdns4185:0crwdne4185:0"
+      "message": "crwdns9270:0crwdne9270:0"
     },
     "journeyPageBannerCard": {
-      "parentJourney": "crwdns5233:0crwdne5233:0"
+      "parentJourney": "crwdns9272:0crwdne9272:0"
     },
     "journeyMetrics": {
-      "title": "crwdns5213:0{{journey}}crwdne5213:0"
+      "title": "crwdns9274:0{{journey}}crwdne9274:0"
     },
     "dashboardNavigation": {
-      "help": "crwdns4535:0crwdne4535:0",
-      "privateChallenge": "crwdns4537:0crwdne4537:0",
-      "showAll": "crwdns4539:0crwdne4539:0"
+      "help": "crwdns9276:0crwdne9276:0",
+      "privateChallenge": "crwdns9278:0crwdne9278:0",
+      "showAll": "crwdns9280:0crwdne9280:0"
     },
     "dashboardRecentContributions": {
-      "title": "crwdns5351:0crwdne5351:0",
+      "title": "crwdns9282:0crwdne9282:0",
       "modes": {
-        "recentActivity": "crwdns5353:0crwdne5353:0",
-        "topCallouts": "crwdns5355:0crwdne5355:0"
+        "recentActivity": "crwdns9284:0crwdne9284:0",
+        "topCallouts": "crwdns9286:0crwdne9286:0"
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "crwdns5107:0{{currentState}}crwdnd5107:0{{selectedState}}crwdne5107:0"
+      "selectedStateNotice": "crwdns9288:0{{currentState}}crwdnd9288:0{{selectedState}}crwdne9288:0"
     },
     "invitations": {
-      "inviteOthers": "crwdns5235:0crwdne5235:0",
-      "inviteExistingUser": "crwdns5109:0crwdne5109:0",
-      "inviteExternalUser": "crwdns5111:0crwdne5111:0",
-      "inviteByURL": "crwdns5113:0crwdne5113:0",
-      "inviteOrganizations": "crwdns5115:0crwdne5115:0",
-      "defaultInvitationMessage": "crwdns5117:0{{space}}crwdne5117:0",
+      "inviteOthers": "crwdns9290:0crwdne9290:0",
+      "inviteExistingUser": "crwdns9292:0crwdne9292:0",
+      "inviteExternalUser": "crwdns9294:0crwdne9294:0",
+      "inviteByURL": "crwdns9296:0crwdne9296:0",
+      "inviteOrganizations": "crwdns9298:0crwdne9298:0",
+      "defaultInvitationMessage": "crwdns9300:0{{space}}crwdne9300:0",
       "inviteExistingUserDialog": {
-        "title": "crwdns5119:0crwdne5119:0",
-        "subtitle": "crwdns5121:0crwdne5121:0",
+        "title": "crwdns9302:0crwdne9302:0",
+        "subtitle": "crwdns9304:0crwdne9304:0",
         "selector": {
-          "alreadyApplied": "crwdns5382:0crwdne5382:0",
-          "alreadyInvited": "crwdns5384:0crwdne5384:0",
-          "alreadyMember": "crwdns5386:0crwdne5386:0"
+          "alreadyApplied": "crwdns9306:0crwdne9306:0",
+          "alreadyInvited": "crwdns9308:0crwdne9308:0",
+          "alreadyMember": "crwdns9310:0crwdne9310:0"
         }
       },
       "inviteExternalUserDialog": {
-        "title": "crwdns5123:0crwdne5123:0"
+        "title": "crwdns9312:0crwdne9312:0"
       }
     },
     "confirmation-dialog": {
       "delete-comment": {
-        "confirmation-title": "crwdns4111:0crwdne4111:0",
-        "confirmation-text": "crwdns4113:0crwdne4113:0"
+        "confirmation-title": "crwdns9314:0crwdne9314:0",
+        "confirmation-text": "crwdns9316:0crwdne9316:0"
       }
     },
     "wysiwyg-editor": {
       "generic": {
-        "add": "crwdns4011:0$t(common.add)crwdne4011:0",
-        "cancel": "crwdns4013:0$t(buttons.cancel)crwdne4013:0"
+        "add": "crwdns9318:0$t(common.add)crwdne9318:0",
+        "cancel": "crwdns9320:0$t(buttons.cancel)crwdne9320:0"
       },
       "toolbar": {
-        "blocktype.h1": "crwdns4015:0crwdne4015:0",
-        "blocktype.h2": "crwdns4017:0crwdne4017:0",
-        "blocktype.h3": "crwdns4019:0crwdne4019:0",
-        "blocktype.h4": "crwdns4021:0crwdne4021:0",
-        "blocktype.h5": "crwdns4023:0crwdne4023:0",
-        "blocktype.h6": "crwdns4025:0crwdne4025:0",
-        "blocktype.blockquote": "crwdns4027:0crwdne4027:0",
-        "blocktype.code": "crwdns4029:0crwdne4029:0",
-        "blocktype.blocktype": "crwdns4031:0crwdne4031:0",
-        "blocktype.normal": "crwdns4033:0crwdne4033:0",
-        "emoji.emoji": "crwdns4035:0crwdne4035:0",
-        "history.history": "crwdns4037:0crwdne4037:0",
-        "history.undo": "crwdns4039:0crwdne4039:0",
-        "history.redo": "crwdns4041:0crwdne4041:0",
-        "image.image": "crwdns4043:0crwdne4043:0",
-        "image.fileUpload": "crwdns4045:0crwdne4045:0",
-        "image.byURL": "crwdns4047:0crwdne4047:0",
-        "image.dropFileText": "crwdns4049:0crwdne4049:0",
-        "inline.bold": "crwdns4051:0crwdne4051:0",
-        "inline.italic": "crwdns4053:0crwdne4053:0",
-        "inline.strikethrough": "crwdns4055:0crwdne4055:0",
-        "inline.monospace": "crwdns4057:0crwdne4057:0",
-        "link.linkTitle": "crwdns4059:0crwdne4059:0",
-        "link.linkTarget": "crwdns4061:0crwdne4061:0",
-        "link.linkTargetOption": "crwdns4063:0crwdne4063:0",
-        "link.link": "crwdns4065:0crwdne4065:0",
-        "link.unlink": "crwdns4067:0crwdne4067:0",
-        "list.list": "crwdns4069:0crwdne4069:0",
-        "list.unordered": "crwdns4071:0crwdne4071:0",
-        "list.ordered": "crwdns4073:0crwdne4073:0",
-        "list.indent": "crwdns4075:0crwdne4075:0",
-        "list.outdent": "crwdns4077:0crwdne4077:0",
-        "remove.remove": "crwdns4079:0crwdne4079:0"
+        "blocktype.h1": "crwdns9322:0crwdne9322:0",
+        "blocktype.h2": "crwdns9324:0crwdne9324:0",
+        "blocktype.h3": "crwdns9326:0crwdne9326:0",
+        "blocktype.h4": "crwdns9328:0crwdne9328:0",
+        "blocktype.h5": "crwdns9330:0crwdne9330:0",
+        "blocktype.h6": "crwdns9332:0crwdne9332:0",
+        "blocktype.blockquote": "crwdns9334:0crwdne9334:0",
+        "blocktype.code": "crwdns9336:0crwdne9336:0",
+        "blocktype.blocktype": "crwdns9338:0crwdne9338:0",
+        "blocktype.normal": "crwdns9340:0crwdne9340:0",
+        "emoji.emoji": "crwdns9342:0crwdne9342:0",
+        "history.history": "crwdns9344:0crwdne9344:0",
+        "history.undo": "crwdns9346:0crwdne9346:0",
+        "history.redo": "crwdns9348:0crwdne9348:0",
+        "image.image": "crwdns9350:0crwdne9350:0",
+        "image.fileUpload": "crwdns9352:0crwdne9352:0",
+        "image.byURL": "crwdns9354:0crwdne9354:0",
+        "image.dropFileText": "crwdns9356:0crwdne9356:0",
+        "inline.bold": "crwdns9358:0crwdne9358:0",
+        "inline.italic": "crwdns9360:0crwdne9360:0",
+        "inline.strikethrough": "crwdns9362:0crwdne9362:0",
+        "inline.monospace": "crwdns9364:0crwdne9364:0",
+        "link.linkTitle": "crwdns9366:0crwdne9366:0",
+        "link.linkTarget": "crwdns9368:0crwdne9368:0",
+        "link.linkTargetOption": "crwdns9370:0crwdne9370:0",
+        "link.link": "crwdns9372:0crwdne9372:0",
+        "link.unlink": "crwdns9374:0crwdne9374:0",
+        "list.list": "crwdns9376:0crwdne9376:0",
+        "list.unordered": "crwdns9378:0crwdne9378:0",
+        "list.ordered": "crwdns9380:0crwdne9380:0",
+        "list.indent": "crwdns9382:0crwdne9382:0",
+        "list.outdent": "crwdns9384:0crwdne9384:0",
+        "remove.remove": "crwdns9386:0crwdne9386:0"
       },
       "image": {
-        "dialogHeader": "crwdns4081:0crwdne4081:0"
+        "dialogHeader": "crwdns9388:0crwdne9388:0"
       },
       "link": {
-        "dialogHeader": "crwdns4083:0crwdne4083:0"
+        "dialogHeader": "crwdns9390:0crwdne9390:0"
       },
       "validation": {
-        "maxLength": "crwdns4101:0crwdne4101:0"
+        "maxLength": "crwdns9392:0crwdne9392:0"
       }
     },
     "top-callouts": {
-      "title": "crwdns5343:0crwdne5343:0"
+      "title": "crwdns9394:0crwdne9394:0"
     },
     "associated-organization": {
       "confirmation-dialog": {
-        "title": "crwdns3571:0{{organization}}crwdne3571:0",
-        "text": "crwdns3573:0crwdne3573:0"
+        "title": "crwdns9396:0{{organization}}crwdne9396:0",
+        "text": "crwdns9398:0crwdne9398:0"
       }
     },
     "error-display": {
-      "title": "crwdns3451:0crwdne3451:0",
-      "went-wrong": "crwdns3453:0crwdne3453:0",
-      "contact-support-sentence": "crwdns3455:0crwdne3455:0",
+      "title": "crwdns9400:0crwdne9400:0",
+      "went-wrong": "crwdns9402:0crwdne9402:0",
+      "contact-support-sentence": "crwdns9404:0crwdne9404:0",
       "buttons": {
-        "reload": "crwdns3457:0crwdne3457:0",
-        "take-me-home": "crwdns3459:0crwdne3459:0",
-        "contact-support": "crwdns3461:0crwdne3461:0"
+        "reload": "crwdns9406:0crwdne9406:0",
+        "take-me-home": "crwdns9408:0crwdne9408:0",
+        "contact-support": "crwdns9410:0crwdne9410:0"
       }
     },
     "search-cards": {
-      "matched-terms": "crwdns1944:0crwdne1944:0"
+      "matched-terms": "crwdns9412:0crwdne9412:0"
     },
     "activity-log-section": {
-      "title": "crwdns3575:0crwdne3575:0",
-      "activity-sign-in-error-message": "crwdns3735:0crwdne3735:0",
-      "activity-join-error-message": "crwdns3737:0{{journeyType}}crwdne3737:0",
-      "activity-sign-in-and-join-error-message": "crwdns3739:0{{journeyType}}crwdne3739:0"
+      "title": "crwdns9414:0crwdne9414:0",
+      "activity-sign-in-error-message": "crwdns9416:0crwdne9416:0",
+      "activity-join-error-message": "crwdns9418:0{{journeyType}}crwdne9418:0",
+      "activity-sign-in-and-join-error-message": "crwdns9420:0{{journeyType}}crwdne9420:0"
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "crwdns5125:0{{time}}crwdnd5125:0{{user}}crwdnd5125:0$t(common.callout)crwdne5125:0",
-        "challenge-created": "crwdns5127:0{{time}}crwdnd5127:0{{user}}crwdnd5127:0$t(common.challenge)crwdne5127:0",
-        "discussion-comment-created": "crwdns5129:0{{time}}crwdnd5129:0{{user}}crwdnd5129:0{{calloutDisplayName}}crwdne5129:0",
-        "member-joined": "crwdns5265:0{{time}}crwdnd5265:0{{user}}crwdnd5265:0{{communityType}}crwdnd5265:0{{journeyDisplayName}}crwdne5265:0",
-        "opportunity-created": "crwdns5133:0{{time}}crwdnd5133:0{{user}}crwdnd5133:0$t(common.opportunity)crwdne5133:0",
-        "post-comment-created": "crwdns5135:0{{time}}crwdnd5135:0{{user}}crwdnd5135:0{{postDisplayName}}crwdne5135:0",
-        "post-created": "crwdns5137:0{{time}}crwdnd5137:0{{user}}crwdnd5137:0{{calloutDisplayName}}crwdne5137:0",
-        "callout-link-created": "crwdns5215:0{{time}}crwdnd5215:0{{user}}crwdnd5215:0{{calloutDisplayName}}crwdne5215:0",
-        "update-sent": "crwdns5139:0{{time}}crwdnd5139:0{{user}}crwdnd5139:0$t(common.update)crwdne5139:0",
-        "whiteboard-created": "crwdns5141:0{{time}}crwdnd5141:0{{user}}crwdnd5141:0$t(common.whiteboard)crwdnd5141:0{{calloutDisplayName}}crwdne5141:0",
-        "calendar-event-created": "crwdns5217:0{{time}}crwdnd5217:0{{user}}crwdnd5217:0{{eventDisplayName}}crwdne5217:0"
+        "callout-published": "crwdns9422:0{{time}}crwdnd9422:0{{user}}crwdnd9422:0$t(common.callout)crwdne9422:0",
+        "challenge-created": "crwdns9424:0{{time}}crwdnd9424:0{{user}}crwdnd9424:0$t(common.challenge)crwdne9424:0",
+        "discussion-comment-created": "crwdns9426:0{{time}}crwdnd9426:0{{user}}crwdnd9426:0{{calloutDisplayName}}crwdne9426:0",
+        "member-joined": "crwdns9428:0{{time}}crwdnd9428:0{{user}}crwdnd9428:0{{communityType}}crwdnd9428:0{{journeyDisplayName}}crwdne9428:0",
+        "opportunity-created": "crwdns9430:0{{time}}crwdnd9430:0{{user}}crwdnd9430:0$t(common.opportunity)crwdne9430:0",
+        "post-comment-created": "crwdns9432:0{{time}}crwdnd9432:0{{user}}crwdnd9432:0{{postDisplayName}}crwdne9432:0",
+        "post-created": "crwdns9434:0{{time}}crwdnd9434:0{{user}}crwdnd9434:0{{calloutDisplayName}}crwdne9434:0",
+        "callout-link-created": "crwdns9436:0{{time}}crwdnd9436:0{{user}}crwdnd9436:0{{calloutDisplayName}}crwdne9436:0",
+        "update-sent": "crwdns9438:0{{time}}crwdnd9438:0{{user}}crwdnd9438:0$t(common.update)crwdne9438:0",
+        "whiteboard-created": "crwdns9440:0{{time}}crwdnd9440:0{{user}}crwdnd9440:0$t(common.whiteboard)crwdnd9440:0{{calloutDisplayName}}crwdne9440:0",
+        "calendar-event-created": "crwdns9442:0{{time}}crwdnd9442:0{{user}}crwdnd9442:0{{eventDisplayName}}crwdne9442:0"
       },
-      "parent-link": "crwdns5143:0{{journeyDisplayName}}crwdne5143:0",
+      "parent-link": "crwdns9444:0{{journeyDisplayName}}crwdne9444:0",
       "activity-description": {
-        "callout-published": "crwdns3495:0{{displayName}}crwdne3495:0",
-        "challenge-created": "crwdns3280:0{{displayName}}crwdne3280:0",
-        "discussion-comment-created": "crwdns3276:0{{comment}}crwdne3276:0",
-        "member-joined": "crwdns5145:0{{user}}crwdne5145:0",
-        "opportunity-created": "crwdns3282:0{{displayName}}crwdne3282:0",
-        "post-comment-created": "crwdns4551:0{{comment}}crwdne4551:0",
-        "post-created": "crwdns4553:0{{postDisplayName}}crwdnd4553:0{{postDescription}}crwdne4553:0",
-        "callout-link-created": "crwdns5219:0{{linkName}}crwdnd5219:0{{linkDescription}}crwdne5219:0",
-        "update-sent": "crwdns3431:0{{update}}crwdne3431:0",
-        "whiteboard-created": "crwdns4549:0{{displayName}}crwdne4549:0",
-        "calendar-event-created": "crwdns5221:0{{eventDescription}}crwdne5221:0"
+        "callout-published": "crwdns9446:0{{displayName}}crwdne9446:0",
+        "challenge-created": "crwdns9448:0{{displayName}}crwdne9448:0",
+        "discussion-comment-created": "crwdns9450:0{{comment}}crwdne9450:0",
+        "member-joined": "crwdns9452:0{{user}}crwdne9452:0",
+        "opportunity-created": "crwdns9454:0{{displayName}}crwdne9454:0",
+        "post-comment-created": "crwdns9456:0{{comment}}crwdne9456:0",
+        "post-created": "crwdns9458:0{{postDisplayName}}crwdnd9458:0{{postDescription}}crwdne9458:0",
+        "callout-link-created": "crwdns9460:0{{linkName}}crwdnd9460:0{{linkDescription}}crwdne9460:0",
+        "update-sent": "crwdns9462:0{{update}}crwdne9462:0",
+        "whiteboard-created": "crwdns9464:0{{displayName}}crwdne9464:0",
+        "calendar-event-created": "crwdns9466:0{{eventDescription}}crwdne9466:0"
       }
     },
     "lifecycle": {
-      "currentState": "crwdns5167:0crwdne5167:0",
-      "changeState": "crwdns5169:0crwdne5169:0",
-      "error": "crwdns5171:0crwdne5171:0"
+      "currentState": "crwdns9468:0crwdne9468:0",
+      "changeState": "crwdns9470:0crwdne9470:0",
+      "error": "crwdns9472:0crwdne9472:0"
     },
     "activity-tooltip": {
-      "headline": "crwdns1962:0crwdne1962:0"
+      "headline": "crwdns9474:0crwdne9474:0"
     },
     "context-section": {
-      "create-post": "crwdns4555:0crwdne4555:0",
-      "give-feedback": "crwdns1966:0crwdne1966:0"
+      "create-post": "crwdns9476:0crwdne9476:0",
+      "give-feedback": "crwdns9478:0crwdne9478:0"
     },
     "callout-publish": {
-      "notify-members": "crwdns4133:0$t(common.community)crwdne4133:0"
+      "notify-members": "crwdns9480:0$t(common.community)crwdne9480:0"
     },
     "callout-creation": {
-      "title": "crwdns4557:0crwdne4557:0",
-      "titleWithType": "crwdns4309:0{{type}}crwdne4309:0",
-      "post-type-label": "crwdns4559:0crwdne4559:0",
-      "custom-template": "crwdns4229:0crwdne4229:0",
+      "title": "crwdns9482:0crwdne9482:0",
+      "titleWithType": "crwdns9484:0{{type}}crwdne9484:0",
+      "post-type-label": "crwdns9486:0crwdne9486:0",
+      "custom-template": "crwdns9488:0crwdne9488:0",
       "info-step": {
-        "title": "crwdns1972:0crwdne1972:0",
-        "description": "crwdns1974:0crwdne1974:0",
-        "type-comments": "crwdns1976:0crwdne1976:0",
-        "type-comments-help": "crwdns3885:0crwdne3885:0",
-        "type-posts": "crwdns4561:0crwdne4561:0",
-        "type-posts-help": "crwdns4563:0crwdne4563:0",
-        "type-whiteboards": "crwdns4565:0crwdne4565:0",
-        "type-whiteboards-help": "crwdns4567:0crwdne4567:0",
-        "unique-title-validation-text": "crwdns3463:0$t(common.callout)crwdne3463:0"
+        "title": "crwdns9490:0crwdne9490:0",
+        "description": "crwdns9492:0crwdne9492:0",
+        "type-comments": "crwdns9494:0crwdne9494:0",
+        "type-comments-help": "crwdns9496:0crwdne9496:0",
+        "type-posts": "crwdns9498:0crwdne9498:0",
+        "type-posts-help": "crwdns9500:0crwdne9500:0",
+        "type-whiteboards": "crwdns9502:0crwdne9502:0",
+        "type-whiteboards-help": "crwdns9504:0crwdne9504:0",
+        "unique-title-validation-text": "crwdns9506:0$t(common.callout)crwdne9506:0"
       },
       "whiteboard": {
-        "title": "crwdns4569:0crwdne4569:0",
-        "editDialogTitle": "crwdns4571:0crwdne4571:0"
+        "title": "crwdns9508:0crwdne9508:0",
+        "editDialogTitle": "crwdns9510:0crwdne9510:0"
       },
       "template-step": {
-        "title": "crwdns1988:0crwdne1988:0",
-        "no-templates": "crwdns1990:0crwdne1990:0",
-        "post-template-label": "crwdns4573:0crwdne4573:0",
-        "post-template-text": "crwdns4575:0crwdne4575:0",
-        "post-template-default-description": "crwdns4577:0crwdne4577:0",
-        "whiteboard-template-label": "crwdns4237:0crwdne4237:0",
-        "whiteboard-empty-template": "crwdns4239:0crwdne4239:0",
-        "whiteboard-reset-template": "crwdns4241:0crwdne4241:0",
-        "no-post-template-selected": "crwdns4579:0crwdne4579:0",
-        "no-whiteboard-template-selected": "crwdns4581:0crwdne4581:0"
+        "title": "crwdns9512:0crwdne9512:0",
+        "no-templates": "crwdns9514:0crwdne9514:0",
+        "post-template-label": "crwdns9516:0crwdne9516:0",
+        "post-template-text": "crwdns9518:0crwdne9518:0",
+        "post-template-default-description": "crwdns9520:0crwdne9520:0",
+        "whiteboard-template-label": "crwdns9522:0crwdne9522:0",
+        "whiteboard-empty-template": "crwdns9524:0crwdne9524:0",
+        "whiteboard-reset-template": "crwdns9526:0crwdne9526:0",
+        "no-post-template-selected": "crwdns9528:0crwdne9528:0",
+        "no-whiteboard-template-selected": "crwdns9530:0crwdne9530:0"
       },
       "create-step": {
-        "title": "crwdns1994:0crwdne1994:0",
-        "post-template-label": "crwdns4583:0crwdne4583:0"
+        "title": "crwdns9532:0crwdne9532:0",
+        "post-template-label": "crwdns9534:0crwdne9534:0"
       },
       "publish-dialog": {
-        "text": "crwdns5345:0{{calloutDisplayName}}crwdne5345:0",
-        "checkbox-label": "crwdns4253:0crwdne4253:0"
+        "text": "crwdns9536:0{{calloutDisplayName}}crwdne9536:0",
+        "checkbox-label": "crwdns9538:0crwdne9538:0"
       }
     },
     "calloutEdit": {
-      "titleWithType": "crwdns4311:0{{type}}crwdne4311:0"
+      "titleWithType": "crwdns9540:0{{type}}crwdne9540:0"
     },
     "calloutTypeSelect": {
-      "title": "crwdns4313:0crwdne4313:0",
+      "title": "crwdns9542:0crwdne9542:0",
       "label": {
-        "POST": "crwdns4585:0crwdne4585:0",
-        "POST_COLLECTION": "crwdns4587:0crwdne4587:0",
-        "WHITEBOARD_COLLECTION": "crwdns4589:0crwdne4589:0",
-        "LINK_COLLECTION": "crwdns4591:0crwdne4591:0",
-        "WHITEBOARD": "crwdns4593:0crwdne4593:0",
-        "WHITEBOARD_RT": "crwdns5293:0crwdne5293:0"
-      }
+        "POST": "crwdns9544:0crwdne9544:0",
+        "POST_COLLECTION": "crwdns9546:0crwdne9546:0",
+        "WHITEBOARD_COLLECTION": "crwdns9548:0crwdne9548:0",
+        "LINK_COLLECTION": "crwdns9550:0crwdne9550:0",
+        "WHITEBOARD": "crwdns9552:0crwdne9552:0",
+        "WHITEBOARD_RT": "crwdns9554:0crwdne9554:0"
+      },
+      "callout-templates-library": "crwdns9556:0crwdne9556:0"
     },
     "post-creation": {
-      "title": "crwdns4595:0{{calloutDisplayName}}crwdne4595:0",
+      "title": "crwdns9558:0{{calloutDisplayName}}crwdne9558:0",
       "type-step": {
-        "title": "crwdns4597:0crwdne4597:0",
-        "error": "crwdns4599:0crwdne4599:0",
-        "label": "crwdns4601:0crwdne4601:0",
-        "type-help-text-short": "crwdns4603:0crwdne4603:0"
+        "title": "crwdns9560:0crwdne9560:0",
+        "error": "crwdns9562:0crwdne9562:0",
+        "label": "crwdns9564:0crwdne9564:0",
+        "type-help-text-short": "crwdns9566:0crwdne9566:0"
       },
       "info-step": {
-        "title": "crwdns4605:0crwdne4605:0",
-        "description": "crwdns4607:0crwdne4607:0",
-        "description-placeholder": "crwdns4609:0crwdne4609:0",
-        "tags-help-text": "crwdns4611:0crwdne4611:0",
-        "name-help-text": "crwdns4613:0crwdne4613:0",
-        "name-id-help-text": "crwdns4615:0crwdne4615:0",
-        "unique-name-validation-text": "crwdns4617:0${path}crwdne4617:0"
+        "title": "crwdns9568:0crwdne9568:0",
+        "description": "crwdns9570:0crwdne9570:0",
+        "description-placeholder": "crwdns9572:0crwdne9572:0",
+        "tags-help-text": "crwdns9574:0crwdne9574:0",
+        "name-help-text": "crwdns9576:0crwdne9576:0",
+        "name-id-help-text": "crwdns9578:0crwdne9578:0",
+        "unique-name-validation-text": "crwdns9580:0${path}crwdne9580:0"
       },
       "create-step": {
-        "title": "crwdns4619:0crwdne4619:0",
-        "type": "crwdns4621:0crwdne4621:0",
-        "name": "crwdns4623:0crwdne4623:0",
-        "description": "crwdns4625:0crwdne4625:0",
-        "links": "crwdns4627:0crwdne4627:0",
-        "explanation": "crwdns4629:0crwdne4629:0"
+        "title": "crwdns9582:0crwdne9582:0",
+        "type": "crwdns9584:0crwdne9584:0",
+        "name": "crwdns9586:0crwdne9586:0",
+        "description": "crwdns9588:0crwdne9588:0",
+        "links": "crwdns9590:0crwdne9590:0",
+        "explanation": "crwdns9592:0crwdne9592:0"
       },
       "visuals-step": {
-        "title": "crwdns4631:0crwdne4631:0",
-        "headline": "crwdns4633:0crwdne4633:0",
-        "explanation": "crwdns4635:0crwdne4635:0",
-        "bottom-note": "crwdns4637:0crwdne4637:0"
+        "title": "crwdns9594:0crwdne9594:0",
+        "headline": "crwdns9596:0crwdne9596:0",
+        "explanation": "crwdns9598:0crwdne9598:0",
+        "bottom-note": "crwdns9600:0crwdne9600:0"
       }
     },
     "visual-upload": {
-      "loading": "crwdns2046:0crwdne2046:0",
-      "success": "crwdns2048:0crwdne2048:0",
-      "upload-hover": "crwdns2050:0crwdne2050:0",
-      "no-data": "crwdns2052:0crwdne2052:0"
+      "loading": "crwdns9602:0crwdne9602:0",
+      "success": "crwdns9604:0crwdne9604:0",
+      "upload-hover": "crwdns9606:0crwdne9606:0",
+      "no-data": "crwdns9608:0crwdne9608:0"
     },
     "tags-component": {
-      "more": "crwdns2054:0{{count}}crwdne2054:0",
-      "no-tags": "crwdns2056:0crwdne2056:0"
+      "more": "crwdns9610:0{{count}}crwdne9610:0",
+      "no-tags": "crwdns9612:0crwdne9612:0"
     },
     "remove-modal": {
-      "title": "crwdns2058:0crwdne2058:0"
+      "title": "crwdns9614:0crwdne9614:0"
     },
     "application-dialog": {
-      "title": "crwdns2060:0crwdne2060:0",
-      "created": "crwdns2062:0{{date}}crwdne2062:0",
-      "updated": "crwdns2064:0{{date}}crwdne2064:0"
+      "title": "crwdns9616:0crwdne9616:0",
+      "created": "crwdns9618:0{{date}}crwdne9618:0",
+      "updated": "crwdns9620:0{{date}}crwdne9620:0"
     },
     "credential-share-request-dialog": {
-      "title": "crwdns2066:0crwdne2066:0",
-      "content": "crwdns2068:0crwdne2068:0"
+      "title": "crwdns9622:0crwdne9622:0",
+      "content": "crwdns9624:0crwdne9624:0"
     },
     "alkemio-user-credential-offer-dialog": {
-      "title": "crwdns2070:0crwdne2070:0",
-      "content": "crwdns2072:0crwdne2072:0"
+      "title": "crwdns9626:0crwdne9626:0",
+      "content": "crwdns9628:0crwdne9628:0"
     },
     "alkemio-community-member-credential-offer-dialog": {
-      "title": "crwdns2074:0crwdne2074:0",
-      "content": "crwdns2076:0crwdne2076:0"
+      "title": "crwdns9630:0crwdne9630:0",
+      "content": "crwdns9632:0crwdne9632:0"
     },
     "edit-members": {
-      "no-available-members": "crwdns2078:0crwdne2078:0",
-      "user-not-found": "crwdns2080:0crwdne2080:0"
+      "no-available-members": "crwdns9634:0crwdne9634:0",
+      "user-not-found": "crwdns9636:0crwdne9636:0"
     },
     "application-button": {
-      "apply-parent": "crwdns2082:0crwdne2082:0",
-      "apply-disabled": "crwdns2084:0crwdne2084:0",
-      "apply-not-signed": "crwdns2086:0crwdne2086:0",
-      "apply-pending": "crwdns2088:0crwdne2088:0",
-      "join": "crwdns2090:0crwdne2090:0",
+      "apply-parent": "crwdns9638:0crwdne9638:0",
+      "apply-disabled": "crwdns9640:0crwdne9640:0",
+      "apply-not-signed": "crwdns9642:0crwdne9642:0",
+      "apply-pending": "crwdns9644:0crwdne9644:0",
+      "join": "crwdns9646:0crwdne9646:0",
       "acceptInvitation": {
-        "full": "crwdns5359:0crwdne5359:0",
-        "short": "crwdns5361:0crwdne5361:0"
+        "full": "crwdns9648:0crwdne9648:0",
+        "short": "crwdns9650:0crwdne9650:0"
       },
       "joinParentFirst": {
-        "full": "crwdns5363:0crwdne5363:0",
-        "short": "crwdns5365:0crwdne5365:0"
+        "full": "crwdns9652:0crwdne9652:0",
+        "short": "crwdns9654:0crwdne9654:0"
       },
-      "goToSpace": "crwdns5281:0$t(common.space)crwdne5281:0",
-      "goToChallenge": "crwdns5283:0$t(common.challenge)crwdne5283:0",
-      "parent-pending": "crwdns2094:0crwdne2094:0",
-      "applyTo": "crwdns4265:0crwdne4265:0",
-      "extendedMessage": "crwdns5357:0{{join}}crwdnd5357:0{{journey}}crwdne5357:0",
+      "goToSpace": "crwdns9656:0$t(common.space)crwdne9656:0",
+      "goToChallenge": "crwdns9658:0$t(common.challenge)crwdne9658:0",
+      "parent-pending": "crwdns9660:0crwdne9660:0",
+      "applyTo": "crwdns9662:0crwdne9662:0",
+      "extendedMessage": "crwdns9664:0{{join}}crwdnd9664:0{{journey}}crwdne9664:0",
       "dialog-apply-parent": {
-        "title": "crwdns5285:0{{parentCommunityName}}crwdne5285:0",
-        "body": "crwdns4641:0{{challengeName}}crwdnd4641:0{{spaceName}}crwdne4641:0"
+        "title": "crwdns9666:0{{parentCommunityName}}crwdne9666:0",
+        "body": "crwdns9668:0{{challengeName}}crwdnd9668:0{{spaceName}}crwdne9668:0"
       },
       "dialog-parent-app-pending": {
-        "title": "crwdns2100:0crwdne2100:0",
-        "body": "crwdns5287:0{{challengeName}}crwdnd5287:0{{spaceName}}crwdnd5287:0{{spaceName}}crwdnd5287:0{{challengeName}}crwdne5287:0"
+        "title": "crwdns9670:0crwdne9670:0",
+        "body": "crwdns9672:0{{challengeName}}crwdnd9672:0{{spaceName}}crwdnd9672:0{{spaceName}}crwdnd9672:0{{challengeName}}crwdne9672:0"
       },
       "dialog-join": {
-        "title": "crwdns2104:0crwdne2104:0",
-        "body": "crwdns2106:0crwdne2106:0",
-        "accept-terms": "crwdns2108:0crwdne2108:0"
+        "title": "crwdns9674:0crwdne9674:0",
+        "body": "crwdns9676:0crwdne9676:0",
+        "accept-terms": "crwdns9678:0crwdne9678:0"
       },
       "dialog-join-parent": {
-        "title": "crwdns5289:0{{parentCommunityName}}crwdne5289:0",
-        "body": "crwdns5291:0{{parentCommunityName}}crwdne5291:0"
+        "title": "crwdns9680:0{{parentCommunityName}}crwdne9680:0",
+        "body": "crwdns9682:0{{parentCommunityName}}crwdne9682:0"
       }
     },
     "organization-verified": {
-      "verified": "crwdns2114:0crwdne2114:0",
-      "not-verified": "crwdns2116:0crwdne2116:0"
+      "verified": "crwdns9684:0crwdne9684:0",
+      "not-verified": "crwdns9686:0crwdne9686:0"
     },
     "card-filter": {
-      "title": "crwdns2118:0crwdne2118:0"
+      "title": "crwdns9688:0crwdne9688:0"
     },
     "backdrop": {
-      "private": "crwdns3577:0{{blockName}}crwdne3577:0",
-      "authentication": "crwdns2122:0{{blockName}}crwdne2122:0",
-      "login": "crwdns2124:0{{blockName}}crwdne2124:0"
+      "private": "crwdns9690:0{{blockName}}crwdne9690:0",
+      "authentication": "crwdns9692:0{{blockName}}crwdne9692:0",
+      "login": "crwdns9694:0{{blockName}}crwdne9694:0"
     },
     "referenceSegment": {
-      "title": "crwdns2126:0crwdne2126:0",
-      "missing-refereneces": "crwdns3605:0crwdne3605:0",
+      "title": "crwdns9696:0crwdne9696:0",
+      "missing-refereneces": "crwdns9698:0crwdne9698:0",
       "tooltips": {
-        "add-reference": "crwdns2130:0crwdne2130:0",
-        "remove-reference": "crwdns2132:0crwdne2132:0"
+        "add-reference": "crwdns9700:0crwdne9700:0",
+        "remove-reference": "crwdns9702:0crwdne9702:0"
       },
-      "url-helper-text": "crwdns5277:0crwdne5277:0"
+      "url-helper-text": "crwdns9704:0crwdne9704:0",
+      "plaintext-helper-text": "crwdns10924:0crwdne10924:0"
     },
     "file-upload": {
-      "file-size-error": "crwdns3487:0{{limit}}crwdne3487:0",
-      "file-upload-success": "crwdns3475:0crwdne3475:0"
+      "uploadFile": "crwdns10926:0crwdne10926:0",
+      "file-size-error": "crwdns9706:0{{limit}}crwdne9706:0",
+      "file-upload-success": "crwdns9708:0crwdne9708:0"
     },
     "editSpaceForm": {
       "host": {
-        "title": "crwdns4647:0crwdne4647:0",
-        "select": "crwdns4649:0crwdne4649:0"
+        "title": "crwdns9710:0crwdne9710:0",
+        "select": "crwdns9712:0crwdne9712:0"
       },
-      "read-access": "crwdns4651:0crwdne4651:0",
-      "about": "crwdns5331:0crwdne5331:0",
-      "visibility": "crwdns5333:0{{visibility}}crwdne5333:0",
-      "readOnly": "crwdns5335:0crwdne5335:0"
+      "read-access": "crwdns9714:0crwdne9714:0",
+      "about": "crwdns9716:0crwdne9716:0",
+      "visibility": "crwdns9718:0{{visibility}}crwdne9718:0",
+      "readOnly": "crwdns9720:0crwdne9720:0"
     },
     "nameSegment": {
-      "name": "crwdns2140:0crwdne2140:0",
+      "name": "crwdns9722:0crwdne9722:0",
       "nameID": {
-        "title": "crwdns2142:0crwdne2142:0",
-        "placeholder": "crwdns2144:0crwdne2144:0"
+        "title": "crwdns9724:0crwdne9724:0",
+        "placeholder": "crwdns9726:0crwdne9726:0"
       }
     },
     "visualSegment": {
-      "title": "crwdns2164:0crwdne2164:0",
-      "avatar": "crwdns2166:0crwdne2166:0",
-      "banner": "crwdns2168:0crwdne2168:0",
-      "background": "crwdns2170:0crwdne2170:0"
+      "title": "crwdns9728:0crwdne9728:0",
+      "avatar": "crwdns9730:0crwdne9730:0",
+      "banner": "crwdns9732:0crwdne9732:0",
+      "background": "crwdns9734:0crwdne9734:0"
     },
     "profileSegment": {
       "avatar": {
-        "name": "crwdns2174:0crwdne2174:0",
-        "placeholder": "crwdns2176:0crwdne2176:0"
+        "name": "crwdns9736:0crwdne9736:0",
+        "placeholder": "crwdns9738:0crwdne9738:0"
       },
       "tagline": {
-        "name": "crwdns4653:0crwdne4653:0",
-        "placeholder": "crwdns4655:0crwdne4655:0"
+        "name": "crwdns9740:0crwdne9740:0",
+        "placeholder": "crwdns9742:0crwdne9742:0"
       },
       "description": {
-        "name": "crwdns2178:0crwdne2178:0",
-        "placeholder": "crwdns2180:0crwdne2180:0"
+        "name": "crwdns9744:0crwdne9744:0",
+        "placeholder": "crwdns9746:0crwdne9746:0"
       },
       "location": {
-        "title": "crwdns2182:0crwdne2182:0",
+        "title": "crwdns9748:0crwdne9748:0",
         "country": {
-          "name": "crwdns2184:0crwdne2184:0",
-          "placeholder": "crwdns2186:0crwdne2186:0"
+          "name": "crwdns9750:0crwdne9750:0",
+          "placeholder": "crwdns9752:0crwdne9752:0"
         },
         "city": {
-          "name": "crwdns2188:0crwdne2188:0",
-          "placeholder": "crwdns2190:0crwdne2190:0"
+          "name": "crwdns9754:0crwdne9754:0",
+          "placeholder": "crwdns9756:0crwdne9756:0"
         },
         "addressLine1": {
-          "name": "crwdns3719:0crwdne3719:0",
-          "placeholder": "crwdns3721:0crwdne3721:0"
+          "name": "crwdns9758:0crwdne9758:0",
+          "placeholder": "crwdns9760:0crwdne9760:0"
         },
         "addressLine2": {
-          "name": "crwdns3723:0crwdne3723:0",
-          "placeholder": "crwdns3725:0crwdne3725:0"
+          "name": "crwdns9762:0crwdne9762:0",
+          "placeholder": "crwdns9764:0crwdne9764:0"
         },
         "stateOrProvince": {
-          "name": "crwdns3727:0crwdne3727:0",
-          "placeholder": "crwdns3729:0crwdne3729:0"
+          "name": "crwdns9766:0crwdne9766:0",
+          "placeholder": "crwdns9768:0crwdne9768:0"
         },
         "postalCode": {
-          "name": "crwdns3731:0crwdne3731:0",
-          "placeholder": "crwdns3733:0crwdne3733:0"
+          "name": "crwdns9770:0crwdne9770:0",
+          "placeholder": "crwdns9772:0crwdne9772:0"
         }
       }
     },
     "organizationSegment": {
       "contactEmail": {
-        "name": "crwdns2192:0crwdne2192:0",
-        "placeholder": "crwdns2194:0crwdne2194:0"
+        "name": "crwdns9774:0crwdne9774:0",
+        "placeholder": "crwdns9776:0crwdne9776:0"
       },
       "domain": {
-        "name": "crwdns2196:0crwdne2196:0",
-        "placeholder": "crwdns2198:0crwdne2198:0"
+        "name": "crwdns9778:0crwdne9778:0",
+        "placeholder": "crwdns9780:0crwdne9780:0"
       },
       "legalEntityName": {
-        "name": "crwdns2200:0crwdne2200:0",
-        "placeholder": "crwdns2202:0crwdne2202:0"
+        "name": "crwdns9782:0crwdne9782:0",
+        "placeholder": "crwdns9784:0crwdne9784:0"
       },
       "website": {
-        "name": "crwdns2204:0crwdne2204:0",
-        "placeholder": "crwdns2206:0crwdne2206:0"
+        "name": "crwdns9786:0crwdne9786:0",
+        "placeholder": "crwdns9788:0crwdne9788:0"
       },
       "verified": {
-        "name": "crwdns2208:0crwdne2208:0",
-        "placeholder": "crwdns2210:0crwdne2210:0"
+        "name": "crwdns9790:0crwdne9790:0",
+        "placeholder": "crwdns9792:0crwdne9792:0"
       }
     },
     "card": {
-      "member": "crwdns2212:0crwdne2212:0",
-      "private": "crwdns2214:0crwdne2214:0",
-      "lead": "crwdns2216:0crwdne2216:0"
+      "member": "crwdns9794:0crwdne9794:0",
+      "private": "crwdns9796:0crwdne9796:0",
+      "lead": "crwdns9798:0crwdne9798:0"
     },
     "errorblock": {
-      "message": "crwdns2218:0{{blockName}}crwdne2218:0"
+      "message": "crwdns9800:0{{blockName}}crwdne9800:0"
     },
     "loading": {
-      "message": "crwdns2220:0{{blockName}}crwdne2220:0"
+      "message": "crwdns9802:0{{blockName}}crwdne9802:0"
     },
     "groupForm": {
-      "title": "crwdns2222:0crwdne2222:0"
+      "title": "crwdns9804:0crwdne9804:0"
     },
     "searchableList": {
-      "placeholder": "crwdns2224:0crwdne2224:0",
-      "load-more": "crwdns2226:0crwdne2226:0",
-      "info": "crwdns2228:0{{count}}crwdnd2228:0{{total}}crwdne2228:0"
+      "placeholder": "crwdns9806:0crwdne9806:0",
+      "load-more": "crwdns9808:0crwdne9808:0",
+      "info": "crwdns9810:0{{count}}crwdnd9810:0{{total}}crwdne9810:0"
     },
     "filter": {
-      "placeholder": "crwdns2230:0crwdne2230:0"
+      "placeholder": "crwdns9812:0crwdne9812:0"
     },
     "user-selector": {
-      "tooltip": "crwdns3839:0crwdne3839:0"
+      "tooltip": "crwdns9814:0crwdne9814:0"
     },
     "communityUpdates": {
-      "title": "crwdns2232:0crwdne2232:0",
-      "updatesTitle": "crwdns2234:0crwdne2234:0",
-      "msg-not-empty": "crwdns2236:0crwdne2236:0",
+      "title": "crwdns9816:0crwdne9816:0",
+      "updatesTitle": "crwdns9818:0crwdne9818:0",
+      "msg-not-empty": "crwdns9820:0crwdne9820:0",
       "actions": {
         "add": {
-          "buttonTitle": "crwdns2238:0crwdne2238:0"
+          "buttonTitle": "crwdns9822:0crwdne9822:0"
         },
         "remove": {
-          "confirmationTitle": "crwdns2240:0crwdne2240:0",
-          "confirmationContent": "crwdns2242:0crwdne2242:0",
-          "confirmationButtonTitle": "crwdns2244:0crwdne2244:0"
+          "confirmationTitle": "crwdns9824:0crwdne9824:0",
+          "confirmationContent": "crwdns9826:0crwdne9826:0",
+          "confirmationButtonTitle": "crwdns9828:0crwdne9828:0"
         }
       }
     },
     "profile": {
       "fields": {
         "bio": {
-          "title": "crwdns2246:0crwdne2246:0"
+          "title": "crwdns9830:0crwdne9830:0"
         },
         "description": {
-          "title": "crwdns2248:0crwdne2248:0"
+          "title": "crwdns9832:0crwdne9832:0"
         },
         "tagline": {
-          "title": "crwdns4657:0crwdne4657:0"
+          "title": "crwdns9834:0crwdne9834:0"
         },
         "phone": {
-          "title": "crwdns2250:0crwdne2250:0"
+          "title": "crwdns9836:0crwdne9836:0"
         },
         "telephone": {
-          "title": "crwdns2252:0crwdne2252:0"
+          "title": "crwdns9838:0crwdne9838:0"
         },
         "mobile": {
-          "title": "crwdns2254:0crwdne2254:0"
+          "title": "crwdns9840:0crwdne9840:0"
         },
         "keywords": {
-          "title": "crwdns2256:0crwdne2256:0"
+          "title": "crwdns9842:0crwdne9842:0"
         },
         "skills": {
-          "title": "crwdns2258:0crwdne2258:0"
+          "title": "crwdns9844:0crwdne9844:0"
         },
         "capabilities": {
-          "title": "crwdns2260:0crwdne2260:0"
+          "title": "crwdns9846:0crwdne9846:0"
         },
         "links": {
-          "title": "crwdns2262:0crwdne2262:0"
+          "title": "crwdns9848:0crwdne9848:0"
         },
         "location": {
-          "title": "crwdns2264:0crwdne2264:0"
+          "title": "crwdns9850:0crwdne9850:0"
         },
         "website": {
-          "title": "crwdns2266:0crwdne2266:0"
+          "title": "crwdns9852:0crwdne9852:0"
         }
       }
     },
     "associates": {
-      "title": "crwdns2268:0{{count}}crwdne2268:0",
-      "help": "crwdns2270:0crwdne2270:0"
+      "title": "crwdns9854:0{{count}}crwdne9854:0",
+      "help": "crwdns9856:0crwdne9856:0"
     },
     "contributions": {
-      "title": "crwdns2272:0crwdne2272:0",
-      "help": "crwdns4659:0crwdne4659:0"
+      "title": "crwdns9858:0crwdne9858:0",
+      "help": "crwdns9860:0crwdne9860:0"
     },
     "discussions-list": {
-      "name": "crwdns2276:0{{community}}crwdne2276:0",
-      "title": "crwdns2278:0{{count}}crwdne2278:0",
-      "posted": "crwdns2282:0{{name}}crwdnd2282:0{{- date}}crwdnd2282:0{{count}}crwdne2282:0",
-      "posted_plural": "crwdns2284:0{{name}}crwdnd2284:0{{- date}}crwdnd2284:0{{count}}crwdne2284:0"
+      "name": "crwdns9862:0{{community}}crwdne9862:0",
+      "title": "crwdns9864:0{{count}}crwdne9864:0",
+      "posted": "crwdns9866:0{{name}}crwdnd9866:0{{- date}}crwdnd9866:0{{count}}crwdne9866:0",
+      "posted_plural": "crwdns9868:0{{name}}crwdnd9868:0{{- date}}crwdnd9868:0{{count}}crwdne9868:0"
     },
     "discussion": {
-      "initiate": "crwdns4149:0crwdne4149:0",
-      "posted": "crwdns2286:0{{name}}crwdnd2286:0{{- date}}crwdnd2286:0{{count}}crwdne2286:0",
-      "posted_plural": "crwdns2288:0{{name}}crwdnd2288:0{{- date}}crwdnd2288:0{{count}}crwdne2288:0",
-      "summary": "crwdns5366:0$t(components.discussion.comment, {\"count\": {{comment}} })crwdne5366:0",
-      "comment": "crwdns2292:0{{count}}crwdne2292:0",
-      "comment_plural": "crwdns2294:0{{count}}crwdne2294:0",
-      "contributed": "crwdns2296:0{{count}}crwdne2296:0",
-      "contributed_plural": "crwdns2298:0{{count}}crwdne2298:0",
-      "cant-post": "crwdns2300:0crwdne2300:0",
-      "delete-discussion": "crwdns2302:0crwdne2302:0",
-      "delete-comment": "crwdns2304:0crwdne2304:0"
+      "initiate": "crwdns9870:0crwdne9870:0",
+      "posted": "crwdns9872:0{{name}}crwdnd9872:0{{- date}}crwdnd9872:0{{count}}crwdne9872:0",
+      "posted_plural": "crwdns9874:0{{name}}crwdnd9874:0{{- date}}crwdnd9874:0{{count}}crwdne9874:0",
+      "summary": "crwdns9876:0$t(components.discussion.comment, {\"count\": {{comment}} })crwdne9876:0",
+      "comment": "crwdns9878:0{{count}}crwdne9878:0",
+      "comment_plural": "crwdns9880:0{{count}}crwdne9880:0",
+      "contributed": "crwdns9882:0{{count}}crwdne9882:0",
+      "contributed_plural": "crwdns9884:0{{count}}crwdne9884:0",
+      "cant-post": "crwdns9886:0crwdne9886:0",
+      "delete-discussion": "crwdns9888:0crwdne9888:0",
+      "delete-comment": "crwdns9890:0crwdne9890:0"
     },
     "message": {
-      "root": "crwdns4661:0crwdne4661:0"
+      "root": "crwdns9892:0crwdne9892:0"
     },
     "post-comment": {
       "fields": {
         "description": {
-          "title": "crwdns2312:0crwdne2312:0",
-          "placeholder": "crwdns2314:0crwdne2314:0"
+          "title": "crwdns9894:0crwdne9894:0",
+          "placeholder": "crwdns9896:0crwdne9896:0"
         }
       },
       "buttons": {
-        "post": "crwdns2316:0crwdne2316:0"
+        "post": "crwdns9898:0crwdne9898:0"
       },
       "tooltip": {
-        "markdown-help": "crwdns2318:0[text]crwdne2318:0",
-        "mentions": "crwdns3841:0crwdne3841:0"
+        "markdown-help": "crwdns9900:0[text]crwdne9900:0",
+        "mentions": "crwdns9902:0crwdne9902:0"
       }
     },
     "new-discussion": {
       "title": {
-        "title": "crwdns2320:0crwdne2320:0",
-        "placeholder": "crwdns2322:0crwdne2322:0"
+        "title": "crwdns9904:0crwdne9904:0",
+        "placeholder": "crwdns9906:0crwdne9906:0"
       },
       "category": {
-        "title": "crwdns2324:0crwdne2324:0"
+        "title": "crwdns9908:0crwdne9908:0"
       },
       "description": {
-        "title": "crwdns2326:0crwdne2326:0",
-        "placeholder": "crwdns2328:0crwdne2328:0"
+        "title": "crwdns9910:0crwdne9910:0",
+        "placeholder": "crwdns9912:0crwdne9912:0"
       },
       "buttons": {
-        "post": "crwdns2330:0crwdne2330:0"
+        "post": "crwdns9914:0crwdne9914:0"
       }
     },
     "members-view": {
-      "title": "crwdns2332:0crwdne2332:0"
+      "title": "crwdns9916:0crwdne9916:0"
     },
     "community-section": {
       "discussions": {
-        "no-data-create": "crwdns2334:0crwdne2334:0",
-        "no-data-join": "crwdns2336:0crwdne2336:0",
-        "explore": "crwdns2338:0crwdne2338:0"
+        "no-data-create": "crwdns9918:0crwdne9918:0",
+        "no-data-join": "crwdns9920:0crwdne9920:0",
+        "explore": "crwdns9922:0crwdne9922:0"
       }
     },
     "update-innovation-flow": {
       "template-label": {
-        "title": "crwdns3234:0crwdne3234:0"
+        "title": "crwdns9924:0crwdne9924:0"
       }
     },
     "select-innovation-flow": {
-      "title": "crwdns3236:0crwdne3236:0"
+      "title": "crwdns9926:0crwdne9926:0"
     },
     "innovation-flow-template-segment": {
       "help-text": {
-        "title": "crwdns3238:0crwdne3238:0"
+        "title": "crwdns9928:0crwdne9928:0"
       }
     },
     "confirm-innovation-flow": {
       "description": {
-        "title": "crwdns3240:0crwdne3240:0"
+        "title": "crwdns9930:0crwdne9930:0"
       }
+    },
+    "innovationFlowTemplateSelect": {
+      "select": "crwdns9932:0crwdne9932:0",
+      "states": "crwdns9934:0crwdne9934:0",
+      "required": "crwdns9936:0crwdne9936:0"
     }
   },
   "navigation": {
     "admin": {
       "opportunity": {
-        "create": "crwdns2340:0crwdne2340:0",
-        "edit": "crwdns2342:0crwdne2342:0"
+        "create": "crwdns9938:0crwdne9938:0",
+        "edit": "crwdns9940:0crwdne9940:0"
       },
       "challenge": {
-        "create": "crwdns2344:0crwdne2344:0",
-        "edit": "crwdns2346:0crwdne2346:0"
+        "create": "crwdns9942:0crwdne9942:0",
+        "edit": "crwdns9944:0crwdne9944:0"
       }
     }
   },
   "footer": {
-    "terms": "crwdns2348:0crwdne2348:0",
-    "privacy": "crwdns2350:0crwdne2350:0",
-    "security": "crwdns2352:0crwdne2352:0",
-    "feedback": "crwdns2354:0crwdne2354:0",
-    "support": "crwdns2356:0crwdne2356:0",
-    "about": "crwdns2358:0crwdne2358:0",
-    "copyright": "crwdns3899:0crwdne3899:0"
+    "terms": "crwdns9946:0crwdne9946:0",
+    "privacy": "crwdns9948:0crwdne9948:0",
+    "security": "crwdns9950:0crwdne9950:0",
+    "feedback": "crwdns9952:0crwdne9952:0",
+    "support": "crwdns9954:0crwdne9954:0",
+    "about": "crwdns9956:0crwdne9956:0",
+    "copyright": "crwdns9958:0crwdne9958:0"
   },
   "innovationHub": {
-    "selectedSpaces": "crwdns4663:0{{space}}crwdne4663:0",
-    "foreignJourney": "crwdns4665:0{{journey}}crwdnd4665:0{{space}}crwdne4665:0",
+    "selectedSpaces": "crwdns9960:0{{space}}crwdne9960:0",
+    "foreignJourney": "crwdns9962:0{{journey}}crwdnd9962:0{{space}}crwdne9962:0",
     "outsideOfSpace": {
-      "forum": "crwdns4667:0{{space}}crwdne4667:0",
-      "challenges": "crwdns4669:0{{space}}crwdne4669:0",
-      "contributors": "crwdns4671:0{{space}}crwdne4671:0"
+      "forum": "crwdns9964:0{{space}}crwdne9964:0",
+      "challenges": "crwdns9966:0{{space}}crwdne9966:0",
+      "contributors": "crwdns9968:0{{space}}crwdne9968:0"
     },
-    "goToMainPage": "crwdns4673:0crwdne4673:0",
-    "remove": "crwdns4675:0crwdne4675:0"
+    "goToMainPage": "crwdns9970:0crwdne9970:0",
+    "remove": "crwdns9972:0crwdne9972:0"
   },
   "pages": {
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "crwdns2362:0{{entity}}crwdne2362:0",
-          "about": "crwdns3579:0{{entity}}crwdne3579:0",
-          "memberOf": "crwdns4269:0{{entity}}crwdne4269:0"
+          "description": "crwdns9974:0{{entity}}crwdne9974:0",
+          "about": "crwdns9976:0{{entity}}crwdne9976:0",
+          "memberOf": "crwdns9978:0{{entity}}crwdne9978:0"
         },
         "about": {
-          "description": "crwdns2364:0{{entity}}crwdne2364:0"
+          "description": "crwdns9980:0{{entity}}crwdne9980:0"
         },
         "community": {
-          "leading-contributors": "crwdns2368:0crwdne2368:0",
-          "contributors": "crwdns4259:0crwdne4259:0"
+          "leading-contributors": "crwdns9982:0crwdne9982:0",
+          "contributors": "crwdns9984:0crwdne9984:0"
         },
         "explore": {
-          "description": "crwdns2372:0crwdne2372:0"
+          "description": "crwdns9986:0crwdne9986:0"
         },
         "discussions": {
-          "description": "crwdns2374:0{{entity}}crwdne2374:0"
+          "description": "crwdns9988:0{{entity}}crwdne9988:0"
         },
         "whiteboards": {
-          "description": "crwdns4677:0{{entity}}crwdne4677:0"
+          "description": "crwdns9990:0{{entity}}crwdne9990:0"
         },
         "profile": {
-          "description": "crwdns2378:0crwdne2378:0"
+          "description": "crwdns9992:0crwdne9992:0"
         },
         "subentities": {
-          "description": "crwdns3581:0{{entities}}crwdnd3581:0{{parentEntity}}crwdne3581:0",
-          "list": "crwdns3583:0{{entities}}crwdne3583:0",
-          "empty": "crwdns3585:0{{entities}}crwdnd3585:0{{parentEntity}}crwdne3585:0",
-          "empty-list": "crwdns3587:0{{entities}}crwdnd3587:0{{parentEntity}}crwdne3587:0"
+          "description": "crwdns9994:0{{entities}}crwdnd9994:0{{parentEntity}}crwdne9994:0",
+          "list": "crwdns9996:0{{entities}}crwdne9996:0",
+          "empty": "crwdns9998:0{{entities}}crwdnd9998:0{{parentEntity}}crwdne9998:0",
+          "empty-list": "crwdns10000:0{{entities}}crwdnd10000:0{{parentEntity}}crwdne10000:0"
         },
         "recommendations": {
-          "title": "crwdns3607:0crwdne3607:0"
+          "title": "crwdns10002:0crwdne10002:0"
         }
       },
       "archived-notice": {
-        "archived-space": "crwdns4679:0crwdne4679:0",
-        "archived-journey": "crwdns4681:0{{journey}}crwdne4681:0"
+        "archived-space": "crwdns10004:0crwdne10004:0",
+        "archived-journey": "crwdns10006:0{{journey}}crwdne10006:0"
       },
       "demo-notice": {
-        "demo-space": "crwdns4683:0crwdne4683:0",
-        "demo-journey": "crwdns4685:0{{journey}}crwdne4685:0"
+        "demo-space": "crwdns10008:0crwdne10008:0",
+        "demo-journey": "crwdns10010:0{{journey}}crwdne10010:0"
       }
     },
     "contribute": {
-      "initial-text": "crwdns5347:0crwdne5347:0",
+      "initial-text": "crwdns10012:0crwdne10012:0",
       "innovationFlow": {
-        "title": "crwdns5173:0{{entity}}crwdnd5173:0{{innovationFlowDisplayName}}crwdne5173:0",
-        "readMore": "crwdns5175:0{{innovationFlowDisplayName}}crwdne5175:0"
+        "title": "crwdns10014:0{{entity}}crwdnd10014:0{{innovationFlowDisplayName}}crwdne10014:0",
+        "readMore": "crwdns10016:0{{innovationFlowDisplayName}}crwdne10016:0"
       },
-      "no-posts": "crwdns4687:0crwdne4687:0"
+      "no-posts": "crwdns10018:0crwdne10018:0"
     },
     "innovationLibrary": {
-      "shortName": "crwdns4689:0crwdne4689:0",
-      "title": "crwdns4691:0crwdne4691:0",
-      "subtitle": "crwdns4693:0crwdne4693:0",
-      "useTemplateButton": "crwdns4695:0crwdne4695:0",
+      "shortName": "crwdns10020:0$t(common.library)crwdne10020:0",
+      "fullName": "crwdns10022:0crwdne10022:0",
+      "title": "crwdns10024:0crwdne10024:0",
+      "subtitle": "crwdns10026:0crwdne10026:0",
+      "useTemplateButton": "crwdns10028:0crwdne10028:0",
       "innovationPacks": {
-        "headerTitle": "crwdns4697:0$t(common.innovation-packs)crwdne4697:0",
-        "dialogTitle": "crwdns4699:0$t(common.innovation-packs)crwdne4699:0"
+        "headerTitle": "crwdns10030:0$t(common.innovation-packs)crwdne10030:0",
+        "dialogTitle": "crwdns10032:0$t(common.innovation-packs)crwdne10032:0"
       },
       "libraryTemplates": {
-        "headerTitle": "crwdns4701:0crwdne4701:0",
-        "dialogTitle": "crwdns4703:0crwdne4703:0"
+        "headerTitle": "crwdns10034:0crwdne10034:0",
+        "dialogTitle": "crwdns10036:0crwdne10036:0"
       }
     },
     "innovationPack": {
-      "whiteboardTemplatesEmpty": "crwdns4705:0crwdne4705:0",
-      "postTemplatesEmpty": "crwdns4707:0crwdne4707:0",
-      "innovationFlowTemplatesEmpty": "crwdns4709:0crwdne4709:0"
+      "whiteboardTemplatesEmpty": "crwdns10038:0crwdne10038:0",
+      "postTemplatesEmpty": "crwdns10040:0crwdne10040:0",
+      "innovationFlowTemplatesEmpty": "crwdns10042:0crwdne10042:0"
     },
     "admin": {
       "generic": {
         "sections": {
           "profile": {
-            "description": "crwdns2384:0{{entity}}crwdne2384:0"
+            "description": "crwdns10044:0{{entity}}crwdne10044:0"
           },
           "context": {
-            "description": "crwdns2386:0{{entity}}crwdne2386:0"
+            "description": "crwdns10046:0{{entity}}crwdne10046:0"
           },
           "community": {
-            "description": "crwdns2388:0{{entity}}crwdne2388:0"
+            "description": "crwdns10048:0{{entity}}crwdne10048:0"
           },
           "communications": {
-            "description": "crwdns2390:0{{entity}}crwdne2390:0"
+            "description": "crwdns10050:0{{entity}}crwdne10050:0"
           },
           "calendar": {
-            "description": "crwdns3695:0crwdne3695:0"
+            "description": "crwdns10052:0crwdne10052:0"
           },
           "authorization": {
-            "description": "crwdns2392:0{{entity}}crwdne2392:0"
+            "description": "crwdns10054:0{{entity}}crwdne10054:0"
           },
           "templates": {
-            "description": "crwdns2394:0{{entity}}crwdne2394:0",
-            "delete-confirmation": "crwdns4711:0{{template}}crwdne4711:0",
+            "description": "crwdns10056:0{{entity}}crwdne10056:0",
+            "delete-confirmation": "crwdns10058:0{{template}}crwdne10058:0",
             "import": {
-              "title": "crwdns3477:0{{templateType}}crwdne3477:0",
-              "subtitle": "crwdns4713:0crwdne4713:0",
-              "callout-template-import-subtitle": "crwdns3793:0$t(common.callout)crwdne3793:0",
-              "no-templates": "crwdns4715:0crwdne4715:0",
-              "imported-successfully-notification": "crwdns3483:0crwdne3483:0"
+              "title": "crwdns10060:0{{templateType}}crwdne10060:0",
+              "subtitle": "crwdns10062:0crwdne10062:0",
+              "callout-template-import-subtitle": "crwdns10064:0$t(common.callout)crwdne10064:0",
+              "no-templates": "crwdns10066:0crwdne10066:0",
+              "imported-successfully-notification": "crwdns10068:0crwdne10068:0"
             }
           },
           "my-profile": {
-            "description": "crwdns2404:0crwdne2404:0"
+            "description": "crwdns10070:0crwdne10070:0"
           },
           "space-settings": {
-            "description": "crwdns4717:0crwdne4717:0"
+            "description": "crwdns10072:0crwdne10072:0"
           },
           "membership": {
-            "description": "crwdns2406:0crwdne2406:0"
+            "description": "crwdns10074:0crwdne10074:0"
           },
           "organizations": {
-            "description": "crwdns3387:0crwdne3387:0"
+            "description": "crwdns10076:0crwdne10076:0"
           },
           "notifications": {
-            "description": "crwdns2410:0crwdne2410:0"
+            "description": "crwdns10078:0crwdne10078:0"
           },
           "credentials": {
-            "description": "crwdns2412:0crwdne2412:0"
+            "description": "crwdns10080:0crwdne10080:0"
           },
           "storage": {
-            "description": "crwdns4719:0{{entity}}crwdne4719:0",
-            "title": "crwdns4721:0crwdne4721:0",
+            "description": "crwdns10082:0{{entity}}crwdne10082:0",
+            "title": "crwdns10084:0crwdne10084:0",
+            "directlyStored": "crwdns10086:0crwdne10086:0",
+            "emptyStorage": "crwdns10088:0crwdne10088:0",
             "grid": {
-              "mimeType": "crwdns4723:0crwdne4723:0",
-              "size": "crwdns4725:0crwdne4725:0",
-              "uploadedBy": "crwdns4727:0crwdne4727:0",
-              "uploadedAt": "crwdns4729:0crwdne4729:0"
+              "displayName": "crwdns10090:0crwdne10090:0",
+              "mimeType": "crwdns10092:0crwdne10092:0",
+              "size": "crwdns10094:0crwdne10094:0",
+              "uploadedBy": "crwdns10096:0crwdne10096:0",
+              "uploadedAt": "crwdns10098:0crwdne10098:0"
             },
             "delete": {
-              "title": "crwdns4731:0crwdne4731:0",
-              "content": "crwdns4733:0{{fileName}}crwdne4733:0"
+              "title": "crwdns10100:0crwdne10100:0",
+              "content": "crwdns10102:0{{fileName}}crwdne10102:0"
             }
           }
         }
       },
       "organization": {
-        "create-organization": "crwdns2414:0crwdne2414:0",
+        "create-organization": "crwdns10104:0crwdne10104:0",
         "authorization": {
           "preferences": {
-            "title": "crwdns2416:0crwdne2416:0",
-            "subtitle": "crwdns2418:0crwdne2418:0"
+            "title": "crwdns10106:0crwdne10106:0",
+            "subtitle": "crwdns10108:0crwdne10108:0"
           }
         },
         "notifications": {
-          "organization-created": "crwdns2420:0crwdne2420:0",
-          "organization-removed": "crwdns2422:0crwdne2422:0"
+          "organization-created": "crwdns10110:0crwdne10110:0",
+          "organization-removed": "crwdns10112:0crwdne10112:0"
         }
       },
       "challenge": {
         "authorization": {
           "preferences": {
-            "subtitle": "crwdns3485:0$t(common.challenge)crwdne3485:0"
+            "subtitle": "crwdns10114:0$t(common.challenge)crwdne10114:0"
           }
         },
         "community": {
           "preferences": {
-            "title": "crwdns2424:0crwdne2424:0",
-            "subtitle": "crwdns2426:0$t(common.challenge)crwdne2426:0"
+            "title": "crwdns10116:0crwdne10116:0",
+            "subtitle": "crwdns10118:0$t(common.challenge)crwdne10118:0"
           }
         },
         "sections": {
           "opportunities": {
-            "description": "crwdns2428:0crwdne2428:0"
+            "description": "crwdns10120:0crwdne10120:0"
           },
           "innovation-flow": {
-            "description": "crwdns3120:0crwdne3120:0"
+            "description": "crwdns10122:0crwdne10122:0"
           }
         },
         "notifications": {
-          "challenge-created": "crwdns2430:0crwdne2430:0",
-          "challenge-removed": "crwdns2432:0crwdne2432:0",
-          "challenge-updated": "crwdns2434:0crwdne2434:0"
+          "challenge-created": "crwdns10124:0crwdne10124:0",
+          "challenge-removed": "crwdns10126:0crwdne10126:0",
+          "challenge-updated": "crwdns10128:0crwdne10128:0"
         }
       },
       "space": {
         "sections": {
           "challenges": {
-            "description": "crwdns4735:0crwdne4735:0"
+            "description": "crwdns10130:0crwdne10130:0"
           }
         },
         "authorization": {
           "preferences": {
-            "subtitle": "crwdns4737:0$t(common.space)crwdne4737:0"
+            "subtitle": "crwdns10132:0$t(common.space)crwdne10132:0"
           }
         },
         "community": {
           "preferences": {
-            "title": "crwdns4739:0crwdne4739:0",
-            "subtitle": "crwdns4741:0$t(common.space)crwdne4741:0"
+            "title": "crwdns10134:0crwdne10134:0",
+            "subtitle": "crwdns10136:0$t(common.space)crwdne10136:0"
           }
         },
         "notifications": {
-          "space-created": "crwdns4743:0crwdne4743:0",
-          "space-removed": "crwdns4745:0{{name}}crwdne4745:0"
+          "space-created": "crwdns10138:0crwdne10138:0",
+          "space-removed": "crwdns10140:0{{name}}crwdne10140:0"
         },
         "settings": {
-          "savedSuccessfully": "crwdns4747:0crwdne4747:0",
+          "savedSuccessfully": "crwdns10142:0crwdne10142:0",
           "visibility": {
-            "title": "crwdns4749:0crwdne4749:0",
-            "public": "crwdns4751:0crwdne4751:0",
-            "private": "crwdns4753:0crwdne4753:0"
+            "title": "crwdns10144:0crwdne10144:0",
+            "public": "crwdns10146:0crwdne10146:0",
+            "private": "crwdns10148:0crwdne10148:0"
+          },
+          "license-features": {
+            "title": "crwdns10150:0crwdne10150:0",
+            "features": {
+              "WHITEBOART_RT": "crwdns10152:0crwdne10152:0",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "crwdns10154:0crwdne10154:0"
+            }
           },
           "membership": {
-            "title": "crwdns4755:0crwdne4755:0",
-            "noApplicationRequired": "crwdns4757:0crwdne4757:0",
-            "applicationRequired": "crwdns4759:0crwdne4759:0",
-            "invitationOnly": "crwdns4761:0crwdne4761:0",
-            "trustedApplicants": "crwdns4763:0crwdne4763:0",
-            "hostOrganizationJoin": "crwdns4765:0{{host}}crwdne4765:0"
+            "title": "crwdns10156:0crwdne10156:0",
+            "noApplicationRequired": "crwdns10158:0crwdne10158:0",
+            "applicationRequired": "crwdns10160:0crwdne10160:0",
+            "invitationOnly": "crwdns10162:0crwdne10162:0",
+            "trustedApplicants": "crwdns10164:0crwdne10164:0",
+            "hostOrganizationJoin": "crwdns10166:0{{host}}crwdne10166:0"
           },
           "memberActions": {
-            "title": "crwdns4767:0crwdne4767:0",
-            "createBlocks": "crwdns4769:0crwdne4769:0",
-            "createChallenges": "crwdns4771:0crwdne4771:0"
+            "title": "crwdns10168:0crwdne10168:0",
+            "createBlocks": "crwdns10170:0crwdne10170:0",
+            "createChallenges": "crwdns10172:0crwdne10172:0"
           }
         }
       },
       "opportunity": {
         "notifications": {
-          "opportunity-created": "crwdns2448:0crwdne2448:0",
-          "opportunity-removed": "crwdns2450:0crwdne2450:0",
-          "opportunity-updated": "crwdns2452:0crwdne2452:0"
+          "opportunity-created": "crwdns10174:0crwdne10174:0",
+          "opportunity-removed": "crwdns10176:0crwdne10176:0",
+          "opportunity-updated": "crwdns10178:0crwdne10178:0"
         },
         "sections": {
           "innovation-flow": {
-            "description": "crwdns3122:0crwdne3122:0"
+            "description": "crwdns10180:0crwdne10180:0"
           }
         }
       },
       "users": {
         "notifications": {
-          "user-removed": "crwdns2454:0crwdne2454:0"
+          "user-removed": "crwdns10182:0crwdne10182:0"
         }
       },
       "innovation-packs": {
         "fields": {
-          "provider": "crwdns4193:0crwdne4193:0"
+          "provider": "crwdns10184:0crwdne10184:0"
         },
-        "back-button": "crwdns4773:0$t(common.innovation-packs)crwdne4773:0",
-        "save-new-for-details": "crwdns4197:0crwdne4197:0",
-        "saved-successfully": "crwdns4199:0crwdne4199:0"
+        "back-button": "crwdns10186:0$t(common.innovation-packs)crwdne10186:0",
+        "save-new-for-details": "crwdns10188:0crwdne10188:0",
+        "saved-successfully": "crwdns10190:0crwdne10190:0"
       },
       "innovationHubs": {
         "fields": {
-          "host": "crwdns4775:0crwdne4775:0",
-          "subdomain": "crwdns4777:0crwdne4777:0"
+          "host": "crwdns10192:0crwdne10192:0",
+          "subdomain": "crwdns10194:0crwdne10194:0"
         },
-        "saveForMoreDetails": "crwdns4779:0$t(common.innovation-hub)crwdne4779:0",
-        "back": "crwdns4781:0$t(common.innovation-hubs)crwdne4781:0",
-        "saved": "crwdns4783:0crwdne4783:0"
+        "saveForMoreDetails": "crwdns10196:0$t(common.innovation-hub)crwdne10196:0",
+        "back": "crwdns10198:0$t(common.innovation-hubs)crwdne10198:0",
+        "saved": "crwdns10200:0crwdne10200:0"
       },
       "spaces": {
-        "updateVisibility": "crwdns4785:0crwdne4785:0",
-        "spaceSettings": "crwdns5267:0crwdne5267:0"
+        "updateVisibility": "crwdns10202:0crwdne10202:0",
+        "spaceSettings": "crwdns10204:0crwdne10204:0"
       },
       "innovationHub": {
         "spaceListFilter": {
           "header": {
-            "title": "crwdns5305:0crwdne5305:0",
-            "subtitle": "crwdns5307:0crwdne5307:0"
+            "title": "crwdns10206:0crwdne10206:0",
+            "subtitle": "crwdns10208:0crwdne10208:0"
           }
         }
       }
     },
     "feedback": {
-      "title": "crwdns2456:0crwdne2456:0",
-      "success": "crwdns2458:0crwdne2458:0"
+      "title": "crwdns10210:0crwdne10210:0",
+      "success": "crwdns10212:0crwdne10212:0"
     },
     "post": {
       "dashboard": {
         "comment": {
-          "placeholder": "crwdns4787:0crwdne4787:0"
+          "placeholder": "crwdns10214:0crwdne10214:0"
         }
       }
     },
     "visualEdit": {
       "avatar": {
-        "title": "crwdns5237:0crwdne5237:0",
-        "description1": "crwdns5239:0{{width}}crwdnd5239:0{{height}}crwdne5239:0",
-        "description2": "crwdns5241:0crwdne5241:0",
-        "description": "crwdns5243:0{{alternativeText}}crwdne5243:0"
+        "title": "crwdns10216:0crwdne10216:0",
+        "description1": "crwdns10218:0{{width}}crwdnd10218:0{{height}}crwdne10218:0",
+        "description2": "crwdns10220:0crwdne10220:0",
+        "description": "crwdns10222:0{{alternativeText}}crwdne10222:0"
       },
       "banner": {
-        "title": "crwdns5245:0crwdne5245:0",
-        "description1": "crwdns5247:0{{width}}crwdnd5247:0{{height}}crwdne5247:0",
-        "description2": "crwdns5249:0crwdne5249:0",
-        "description": "crwdns5251:0{{alternativeText}}crwdne5251:0"
+        "title": "crwdns10224:0crwdne10224:0",
+        "description1": "crwdns10226:0{{width}}crwdnd10226:0{{height}}crwdne10226:0",
+        "description2": "crwdns10228:0crwdne10228:0",
+        "description": "crwdns10230:0{{alternativeText}}crwdne10230:0"
       },
       "cardBanner": {
-        "title": "crwdns5297:0crwdne5297:0",
-        "description1": "crwdns5299:0{{width}}crwdnd5299:0{{height}}crwdne5299:0",
-        "description2": "crwdns5301:0crwdne5301:0",
-        "description": "crwdns5303:0{{alternativeText}}crwdne5303:0"
+        "title": "crwdns10232:0crwdne10232:0",
+        "description1": "crwdns10234:0{{width}}crwdnd10234:0{{height}}crwdne10234:0",
+        "description2": "crwdns10236:0crwdne10236:0",
+        "description": "crwdns10238:0{{alternativeText}}crwdne10238:0"
       },
       "form": {
         "altText": {
-          "placeholder": "crwdns5261:0crwdne5261:0",
-          "helpText": "crwdns5263:0crwdne5263:0"
+          "placeholder": "crwdns10240:0crwdne10240:0",
+          "helpText": "crwdns10242:0crwdne10242:0"
         }
       }
     },
     "contributors": {
+      "fullName": "crwdns10244:0crwdne10244:0",
+      "shortName": "crwdns10246:0$t(common.contributors)crwdne10246:0",
       "search": {
-        "title": "crwdns4275:0crwdne4275:0",
-        "subtitle": "crwdns4277:0crwdne4277:0",
-        "placeholder": "crwdns2484:0crwdne2484:0"
+        "title": "crwdns10248:0crwdne10248:0",
+        "subtitle": "crwdns10250:0crwdne10250:0",
+        "placeholder": "crwdns10252:0crwdne10252:0"
       },
       "organizations": {
-        "title": "crwdns2486:0crwdne2486:0"
+        "title": "crwdns10254:0crwdne10254:0"
       },
       "users": {
-        "title": "crwdns2488:0crwdne2488:0"
+        "title": "crwdns10256:0crwdne10256:0"
       }
     },
     "search": {
-      "placeholder": "crwdns3861:0crwdne3861:0",
-      "results-disclaimer": "crwdns4201:0crwdne4201:0",
-      "max-tags-reached": "crwdns3863:0{{max}}crwdne3863:0",
-      "search-suggestions": "crwdns3865:0crwdne3865:0",
+      "title": "crwdns10258:0crwdne10258:0",
+      "subtitle": "crwdns10260:0crwdne10260:0",
+      "placeholder": "crwdns10262:0crwdne10262:0",
+      "results-disclaimer": "crwdns10264:0crwdne10264:0",
+      "max-tags-reached": "crwdns10266:0{{max}}crwdne10266:0",
+      "search-suggestions": "crwdns10268:0crwdne10268:0",
       "suggestions-array": [
-        "crwdns3867:0crwdne3867:0",
-        "crwdns3869:0crwdne3869:0",
-        "crwdns3871:0crwdne3871:0",
-        "crwdns3873:0crwdne3873:0",
-        "crwdns3875:0crwdne3875:0",
-        "crwdns3877:0crwdne3877:0",
-        "crwdns3879:0crwdne3879:0",
-        "crwdns3881:0crwdne3881:0",
-        "crwdns3883:0crwdne3883:0"
+        "crwdns10270:0crwdne10270:0",
+        "crwdns10272:0crwdne10272:0",
+        "crwdns10274:0crwdne10274:0",
+        "crwdns10276:0crwdne10276:0",
+        "crwdns10278:0crwdne10278:0",
+        "crwdns10280:0crwdne10280:0",
+        "crwdns10282:0crwdne10282:0",
+        "crwdns10284:0crwdne10284:0",
+        "crwdns10286:0crwdne10286:0"
       ],
-      "user-not-logged": "crwdns2506:0crwdne2506:0",
+      "user-not-logged": "crwdns10288:0crwdne10288:0",
       "filter": {
         "type": {
-          "journey": "crwdns3955:0crwdne3955:0",
-          "contribution": "crwdns3957:0crwdne3957:0",
-          "contributor": "crwdns3959:0crwdne3959:0"
+          "journey": "crwdns10290:0crwdne10290:0",
+          "contribution": "crwdns10292:0crwdne10292:0",
+          "contributor": "crwdns10294:0crwdne10294:0"
         },
         "key": {
-          "all": "crwdns3961:0crwdne3961:0",
-          "space": "crwdns4789:0crwdne4789:0",
-          "challenge": "crwdns3965:0crwdne3965:0",
-          "opportunity": "crwdns3967:0crwdne3967:0",
-          "user": "crwdns3969:0crwdne3969:0",
-          "organization": "crwdns3971:0crwdne3971:0",
-          "post": "crwdns4791:0crwdne4791:0",
-          "whiteboard": "crwdns3975:0crwdne3975:0",
-          "callout": "crwdns3977:0crwdne3977:0"
+          "all": "crwdns10296:0crwdne10296:0",
+          "space": "crwdns10298:0crwdne10298:0",
+          "challenge": "crwdns10300:0crwdne10300:0",
+          "opportunity": "crwdns10302:0crwdne10302:0",
+          "user": "crwdns10304:0crwdne10304:0",
+          "organization": "crwdns10306:0crwdne10306:0",
+          "post": "crwdns10308:0crwdne10308:0",
+          "whiteboard": "crwdns10310:0crwdne10310:0",
+          "callout": "crwdns10312:0crwdne10312:0"
         }
       },
-      "journeyFilterTitle": "crwdns4793:0$t(common.spaces)crwdnd4793:0$t(common.challenges)crwdnd4793:0$t(common.opportunities)crwdne4793:0"
+      "journeyFilterTitle": "crwdns10314:0$t(common.spaces)crwdnd10314:0$t(common.challenges)crwdnd10314:0$t(common.opportunities)crwdne10314:0"
     },
     "challenge-explorer": {
+      "fullName": "crwdns10316:0crwdne10316:0",
+      "shortName": "crwdns10318:0$t(common.challenges)crwdne10318:0",
       "search": {
-        "title": "crwdns2934:0crwdne2934:0",
-        "subtitle": "crwdns4795:0crwdne4795:0",
-        "placeholder": "crwdns2938:0crwdne2938:0",
-        "default-search-term": "crwdns2940:0crwdne2940:0",
-        "no-results": "crwdns2942:0crwdne2942:0"
+        "title": "crwdns10320:0crwdne10320:0",
+        "subtitle": "crwdns10322:0crwdne10322:0",
+        "placeholder": "crwdns10324:0crwdne10324:0",
+        "default-search-term": "crwdns10326:0crwdne10326:0",
+        "no-results": "crwdns10328:0crwdne10328:0"
       },
       "side-note": {
-        "title": "crwdns2944:0crwdne2944:0",
-        "description": "crwdns4797:0crwdne4797:0"
+        "title": "crwdns10330:0crwdne10330:0",
+        "description": "crwdns10332:0crwdne10332:0"
       },
       "my-search": {
-        "title": "crwdns3635:0crwdne3635:0",
-        "subtitle": "crwdns4799:0crwdne4799:0"
+        "title": "crwdns10334:0crwdne10334:0",
+        "subtitle": "crwdns10336:0crwdne10336:0"
       },
       "my": {
-        "title": "crwdns3639:0crwdne3639:0",
-        "subtitle": "crwdns2954:0crwdne2954:0"
+        "title": "crwdns10338:0crwdne10338:0",
+        "subtitle": "crwdns10340:0crwdne10340:0"
       },
       "other": {
-        "title": "crwdns4801:0crwdne4801:0",
-        "subtitle": "crwdns4803:0crwdne4803:0",
-        "filter-by-space": "crwdns4805:0crwdne4805:0"
+        "title": "crwdns10342:0crwdne10342:0",
+        "subtitle": "crwdns10344:0crwdne10344:0",
+        "filter-by-space": "crwdns10346:0crwdne10346:0"
       }
     },
     "lead-organization": {
       "search": {
-        "leading-placeholder": "crwdns2526:0crwdne2526:0",
-        "available-placeholder": "crwdns2528:0crwdne2528:0"
+        "leading-placeholder": "crwdns10348:0crwdne10348:0",
+        "available-placeholder": "crwdns10350:0crwdne10350:0"
       }
     },
     "activity": {
-      "title": "crwdns2530:0{{blockName}}crwdne2530:0",
-      "spaces": "crwdns4807:0crwdne4807:0",
-      "innovation-flow-info": "crwdns3613:0crwdne3613:0"
+      "title": "crwdns10352:0{{blockName}}crwdne10352:0",
+      "spaces": "crwdns10354:0crwdne10354:0",
+      "innovation-flow-info": "crwdns10356:0crwdne10356:0"
     },
     "home": {
+      "title": "crwdns10358:0crwdne10358:0",
+      "subtitle": "crwdns10360:0crwdne10360:0",
       "sections": {
         "welcome": {
-          "welcome-back": "crwdns2544:0{{username}}crwdne2544:0",
-          "join": "crwdns2546:0crwdne2546:0",
+          "welcome-back": "crwdns10362:0{{username}}crwdne10362:0",
+          "join": "crwdns10364:0crwdne10364:0",
           "existing-user": {
-            "header": "crwdns2548:0crwdne2548:0",
-            "subheader": "crwdns2550:0crwdne2550:0",
-            "more-info": "crwdns2552:0crwdne2552:0",
-            "more-info-url": "crwdns2928:0crwdne2928:0"
+            "header": "crwdns10366:0crwdne10366:0",
+            "subheader": "crwdns10368:0crwdne10368:0",
+            "more-info": "crwdns10370:0crwdne10370:0",
+            "more-info-url": "crwdns10372:0crwdne10372:0"
           },
           "new-to-alkemio": {
-            "header": "crwdns2556:0crwdne2556:0",
-            "subheader": "crwdns2558:0crwdne2558:0",
-            "more-info": "crwdns2560:0crwdne2560:0",
-            "more-info-url": "crwdns2562:0crwdne2562:0"
+            "header": "crwdns10374:0crwdne10374:0",
+            "subheader": "crwdns10376:0crwdne10376:0",
+            "more-info": "crwdns10378:0crwdne10378:0",
+            "more-info-url": "crwdns10380:0crwdne10380:0"
           }
         },
         "space": {
-          "header": "crwdns4809:0crwdne4809:0",
-          "subheader": "crwdns4811:0crwdne4811:0",
-          "body": "crwdns4813:0crwdne4813:0",
-          "body1": "crwdns4815:0crwdne4815:0"
+          "header": "crwdns10382:0crwdne10382:0",
+          "subheader": "crwdns10384:0crwdne10384:0",
+          "body": "crwdns10386:0crwdne10386:0",
+          "body1": "crwdns10388:0crwdne10388:0"
         },
         "my-spaces": {
-          "header": "crwdns4817:0{{mySpacesCount}}crwdne4817:0"
+          "header": "crwdns10390:0{{mySpacesCount}}crwdne10390:0"
         },
         "organizations": {
-          "header": "crwdns2576:0crwdne2576:0",
-          "subheader": "crwdns2578:0crwdne2578:0"
+          "header": "crwdns10392:0crwdne10392:0",
+          "subheader": "crwdns10394:0crwdne10394:0"
         },
         "contributors-section": {
-          "title": "crwdns3284:0crwdne3284:0"
+          "title": "crwdns10396:0crwdne10396:0"
         },
         "footer": {
-          "headline": "crwdns4819:0crwdne4819:0",
+          "headline": "crwdns10398:0crwdne10398:0",
           "links": {
-            "foundation": "crwdns2582:0crwdne2582:0",
-            "contact-form": "crwdns2584:0crwdne2584:0",
-            "github": "crwdns4821:0crwdne4821:0"
+            "foundation": "crwdns10400:0crwdne10400:0",
+            "contact-form": "crwdns10402:0crwdne10402:0",
+            "github": "crwdns10404:0crwdne10404:0"
           }
         }
       }
     },
     "organization": {
       "settings": {
-        "tooltip": "crwdns2588:0crwdne2588:0"
+        "tooltip": "crwdns10406:0crwdne10406:0"
       },
       "verified-status": {
-        "help": "crwdns2590:0crwdne2590:0"
+        "help": "crwdns10408:0crwdne10408:0"
       }
     },
     "space": {
-      "title": "crwdns4823:0crwdne4823:0",
+      "title": "crwdns10410:0crwdne10410:0",
       "application": {
-        "title": "crwdns4825:0{{entity}}crwdnd4825:0{{name}}crwdne4825:0",
-        "subheader": "crwdns4827:0crwdne4827:0",
-        "finish": "crwdns4829:0crwdne4829:0",
-        "backButton": "crwdns4831:0crwdne4831:0",
-        "loading": "crwdns4833:0crwdne4833:0",
-        "errorBlockName": "crwdns4835:0crwdne4835:0"
+        "title": "crwdns10412:0{{entity}}crwdnd10412:0{{name}}crwdne10412:0",
+        "subheader": "crwdns10414:0crwdne10414:0",
+        "finish": "crwdns10416:0crwdne10416:0",
+        "backButton": "crwdns10418:0crwdne10418:0",
+        "loading": "crwdns10420:0crwdne10420:0",
+        "errorBlockName": "crwdns10422:0crwdne10422:0"
       },
       "sections": {
         "dashboard": {
-          "organization": "crwdns5147:0crwdne5147:0",
-          "hostTooltip": "crwdns5149:0crwdne5149:0",
-          "hostContact": "crwdns5151:0crwdne5151:0",
-          "leadingOrganizations": "crwdns5153:0crwdne5153:0",
-          "community": "crwdns4841:0crwdne4841:0"
+          "organization": "crwdns10424:0crwdne10424:0",
+          "hostTooltip": "crwdns10426:0crwdne10426:0",
+          "hostContact": "crwdns10428:0crwdne10428:0",
+          "leadingOrganizations": "crwdns10430:0crwdne10430:0",
+          "community": "crwdns10432:0crwdne10432:0"
         },
         "challenges": {
-          "header": "crwdns4843:0crwdne4843:0",
-          "subheader": "crwdns4845:0crwdne4845:0",
-          "body": "crwdns4847:0crwdne4847:0",
-          "no-data": "crwdns4849:0crwdne4849:0",
-          "description": "crwdns4851:0crwdne4851:0"
+          "header": "crwdns10434:0crwdne10434:0",
+          "subheader": "crwdns10436:0crwdne10436:0",
+          "body": "crwdns10438:0crwdne10438:0",
+          "no-data": "crwdns10440:0crwdne10440:0",
+          "description": "crwdns10442:0crwdne10442:0"
         },
         "contribute": {
-          "header": "crwdns4853:0crwdne4853:0"
+          "header": "crwdns10444:0crwdne10444:0"
         },
         "knowledge-base": {
-          "header": "crwdns4855:0crwdne4855:0"
+          "header": "crwdns10446:0crwdne10446:0"
         }
       }
     },
     "challenge": {
-      "title": "crwdns2628:0crwdne2628:0",
+      "title": "crwdns10448:0crwdne10448:0",
       "organizationBanner": {
-        "load-more": "crwdns2632:0crwdne2632:0"
+        "load-more": "crwdns10450:0crwdne10450:0"
       },
       "sections": {
         "dashboard": {
           "projects": {
-            "title": "crwdns2642:0crwdne2642:0",
-            "help-text": "crwdns2644:0crwdne2644:0"
+            "title": "crwdns10452:0crwdne10452:0",
+            "help-text": "crwdns10454:0crwdne10454:0"
           }
         },
         "opportunities": {
-          "description": "crwdns2646:0crwdne2646:0"
+          "description": "crwdns10456:0crwdne10456:0"
         }
       }
     },
     "opportunity": {
-      "title": "crwdns2650:0crwdne2650:0",
+      "title": "crwdns10458:0crwdne10458:0",
       "sections": {
         "dashboard": {
           "projects": {
-            "title": "crwdns2658:0crwdne2658:0",
-            "help-text": "crwdns2660:0crwdne2660:0"
+            "title": "crwdns10460:0crwdne10460:0",
+            "help-text": "crwdns10462:0crwdne10462:0"
           }
         },
         "community": {
-          "description": "crwdns4857:0crwdne4857:0"
+          "description": "crwdns10464:0crwdne10464:0"
         },
-        "apply": "crwdns2664:0crwdne2664:0",
+        "apply": "crwdns10466:0crwdne10466:0",
         "agreements": {
-          "description": "crwdns2666:0crwdne2666:0"
+          "description": "crwdns10468:0crwdne10468:0"
         },
         "projects": {
-          "more-projects": "crwdns2668:0crwdne2668:0",
+          "more-projects": "crwdns10470:0crwdne10470:0",
           "new-project": {
-            "header": "crwdns2670:0crwdne2670:0"
+            "header": "crwdns10472:0crwdne10472:0"
           }
         }
       }
     },
     "community": {
-      "title": "crwdns2672:0{{name}}crwdne2672:0",
+      "title": "crwdns10474:0{{name}}crwdne10474:0",
       "leading-organizations": {
-        "title": "crwdns2674:0{{count}}crwdne2674:0",
-        "help-text": "crwdns2676:0crwdne2676:0",
-        "no-data": "crwdns2678:0crwdne2678:0"
+        "title": "crwdns10476:0{{count}}crwdne10476:0",
+        "help-text": "crwdns10478:0crwdne10478:0",
+        "no-data": "crwdns10480:0crwdne10480:0"
       },
       "member-organizations": {
-        "no-data": "crwdns2680:0crwdne2680:0"
+        "no-data": "crwdns10482:0crwdne10482:0"
       },
       "space-host": {
-        "title": "crwdns4859:0crwdne4859:0",
-        "help-text": "crwdns4861:0crwdne4861:0"
+        "title": "crwdns10484:0crwdne10484:0",
+        "help-text": "crwdns10486:0crwdne10486:0"
       },
       "members": {
-        "help-text": "crwdns2688:0crwdne2688:0",
-        "no-data": "crwdns2690:0crwdne2690:0"
+        "help-text": "crwdns10488:0crwdne10488:0",
+        "no-data": "crwdns10490:0crwdne10490:0"
       },
       "updates": {
-        "title": "crwdns4863:0{{count}}crwdne4863:0",
-        "no-data": "crwdns2694:0crwdne2694:0"
+        "title": "crwdns10492:0{{count}}crwdne10492:0",
+        "no-data": "crwdns10494:0crwdne10494:0"
       }
     },
     "whiteboard": {
-      "header": "crwdns4865:0{{blockName}}crwdne4865:0",
-      "subheader": "crwdns4867:0crwdne4867:0",
-      "add-whiteboard": "crwdns4869:0crwdne4869:0",
-      "no-whiteboards": "crwdns4871:0crwdne4871:0",
-      "locked-by": "crwdns4873:0{{user}}crwdne4873:0",
+      "header": "crwdns10496:0{{blockName}}crwdne10496:0",
+      "subheader": "crwdns10498:0crwdne10498:0",
+      "add-whiteboard": "crwdns10500:0crwdne10500:0",
+      "no-whiteboards": "crwdns10502:0crwdne10502:0",
+      "locked-by": "crwdns10504:0{{user}}crwdne10504:0",
+      "savingWhiteboard": "crwdns10888:0crwdne10888:0",
       "state": {
-        "checkedout": "crwdns4875:0crwdne4875:0"
+        "checkedout": "crwdns10506:0crwdne10506:0"
       },
       "state-actions": {
-        "check-out": "crwdns4877:0crwdne4877:0",
-        "check-in": "crwdns4879:0crwdne4879:0",
-        "save-as-template": "crwdns4881:0crwdne4881:0",
-        "save-and-check-in": "crwdns4883:0crwdne4883:0",
-        "save": "crwdns4885:0crwdne4885:0",
-        "delete": "crwdns4887:0crwdne4887:0"
+        "check-out": "crwdns10508:0crwdne10508:0",
+        "check-in": "crwdns10510:0crwdne10510:0",
+        "save-as-template": "crwdns10512:0crwdne10512:0",
+        "save-and-check-in": "crwdns10514:0crwdne10514:0",
+        "save": "crwdns10516:0crwdne10516:0",
+        "delete": "crwdns10518:0crwdne10518:0"
       },
       "delete": {
-        "confirmation-title": "crwdns4889:0{{ blockName }}crwdne4889:0",
-        "confirmation-text": "crwdns4891:0crwdne4891:0"
+        "confirmation-title": "crwdns10520:0{{ blockName }}crwdne10520:0",
+        "confirmation-text": "crwdns10522:0crwdne10522:0"
       },
       "create-dialog": {
-        "header": "crwdns4893:0crwdne4893:0",
+        "header": "crwdns10524:0crwdne10524:0",
         "steps": {
-          "naming": "crwdns4895:0crwdne4895:0",
-          "templating": "crwdns4897:0crwdne4897:0",
-          "completing": "crwdns4899:0crwdne4899:0"
+          "naming": "crwdns10526:0crwdne10526:0",
+          "templating": "crwdns10528:0crwdne10528:0",
+          "completing": "crwdns10530:0crwdne10530:0"
         },
-        "no-template-selected": "crwdns4901:0crwdne4901:0"
+        "no-template-selected": "crwdns10532:0crwdne10532:0"
       },
       "template": {
-        "header": "crwdns4903:0crwdne4903:0",
-        "no-templates": "crwdns4905:0crwdne4905:0",
-        "how-to": "crwdns4907:0crwdne4907:0"
+        "header": "crwdns10534:0crwdne10534:0",
+        "no-templates": "crwdns10536:0crwdne10536:0",
+        "how-to": "crwdns10538:0crwdne10538:0"
       },
       "space": {
-        "templatesHeader": "crwdns4909:0crwdne4909:0",
-        "templatesSubheader": "crwdns4911:0crwdne4911:0"
+        "templatesHeader": "crwdns10540:0crwdne10540:0",
+        "templatesSubheader": "crwdns10542:0crwdne10542:0"
       },
       "challenge": {
-        "templatesHeader": "crwdns4913:0crwdne4913:0",
-        "templatesSubheader": "crwdns4915:0crwdne4915:0"
+        "templatesHeader": "crwdns10544:0crwdne10544:0",
+        "templatesSubheader": "crwdns10546:0crwdne10546:0"
       },
       "opportunity": {
-        "templatesHeader": "crwdns4917:0crwdne4917:0"
+        "templatesHeader": "crwdns10548:0crwdne10548:0"
       }
     },
     "login": {
-      "title": "crwdns3513:0crwdne3513:0",
-      "register": "crwdns3515:0crwdne3515:0"
+      "title": "crwdns10550:0crwdne10550:0",
+      "register": "crwdns10552:0crwdne10552:0"
     },
     "about": {
-      "title": "crwdns2756:0crwdne2756:0",
-      "description": "crwdns2758:0crwdne2758:0",
-      "powered-by": "crwdns2760:0{{name}}crwdnd2760:0{{version}}crwdne2760:0"
+      "title": "crwdns10554:0crwdne10554:0",
+      "description": "crwdns10556:0crwdne10556:0",
+      "powered-by": "crwdns10558:0{{name}}crwdnd10558:0{{version}}crwdne10558:0"
     },
     "error": {
-      "title": "crwdns2762:0crwdne2762:0",
-      "line1": "crwdns2764:0{{message}}crwdne2764:0",
-      "line2": "crwdns2766:0{{graphQLEndpoint}}crwdne2766:0",
-      "line3": "crwdns2768:0crwdne2768:0",
+      "title": "crwdns10560:0crwdne10560:0",
+      "line1": "crwdns10562:0{{message}}crwdne10562:0",
+      "line2": "crwdns10564:0{{graphQLEndpoint}}crwdne10564:0",
+      "line3": "crwdns10566:0crwdne10566:0",
       "buttons": {
-        "reload": "crwdns2770:0crwdne2770:0"
+        "reload": "crwdns10568:0crwdne10568:0"
       }
     },
     "four-ou-four": {
-      "title": "crwdns5374:0crwdne5374:0",
-      "message": "crwdns5376:0crwdne5376:0",
+      "title": "crwdns10570:0crwdne10570:0",
+      "message": "crwdns10572:0crwdne10572:0",
       "links": {
-        "home": "crwdns5378:0crwdne5378:0",
-        "faq": "crwdns5380:0crwdne5380:0"
+        "home": "crwdns10574:0crwdne10574:0",
+        "faq": "crwdns10576:0crwdne10576:0"
       }
     },
     "logout": {
-      "loading": "crwdns2776:0crwdne2776:0"
+      "loading": "crwdns10578:0crwdne10578:0"
     },
     "registration": {
-      "header": "crwdns2778:0crwdne2778:0",
-      "introduction": "crwdns3517:0crwdne3517:0",
-      "terms": "crwdns2780:0crwdne2780:0",
-      "login": "crwdns2782:0crwdne2782:0",
-      "reset-password": "crwdns3519:0crwdne3519:0"
+      "header": "crwdns10580:0crwdne10580:0",
+      "introduction": "crwdns10582:0crwdne10582:0",
+      "terms": "crwdns10584:0crwdne10584:0",
+      "login": "crwdns10586:0crwdne10586:0",
+      "reset-password": "crwdns10588:0crwdne10588:0"
     },
     "accept-terms": {
-      "introduction": "crwdns3521:0crwdne3521:0",
-      "greeting": "crwdns3523:0{{user}}crwdne3523:0",
-      "continue": "crwdns3525:0crwdne3525:0",
-      "tooltip": "crwdns3527:0crwdne3527:0"
+      "introduction": "crwdns10590:0crwdne10590:0",
+      "greeting": "crwdns10592:0{{user}}crwdne10592:0",
+      "continue": "crwdns10594:0crwdne10594:0",
+      "tooltip": "crwdns10596:0crwdne10596:0"
     },
     "registration-success": {
-      "header": "crwdns3529:0crwdne3529:0"
+      "header": "crwdns10598:0crwdne10598:0"
     },
     "verification-success": {
-      "header": "crwdns2788:0crwdne2788:0",
-      "subheader": "crwdns2790:0crwdne2790:0",
-      "message": "crwdns4919:0crwdne4919:0"
+      "header": "crwdns10600:0crwdne10600:0",
+      "subheader": "crwdns10602:0crwdne10602:0",
+      "message": "crwdns10604:0crwdne10604:0"
     },
     "recovery": {
-      "header": "crwdns3533:0crwdne3533:0",
+      "header": "crwdns10606:0crwdne10606:0",
       "message": {
-        "initial": "crwdns3541:0crwdne3541:0"
+        "initial": "crwdns10608:0crwdne10608:0"
       }
     },
     "verification": {
-      "header": "crwdns2798:0crwdne2798:0",
-      "message": "crwdns2800:0crwdne2800:0"
+      "header": "crwdns10610:0crwdne10610:0",
+      "message": "crwdns10612:0crwdne10612:0"
     },
     "verification-required": {
-      "header": "crwdns2802:0crwdne2802:0",
-      "message": "crwdns3537:0crwdne3537:0"
+      "header": "crwdns10614:0crwdne10614:0",
+      "message": "crwdns10616:0crwdne10616:0"
     },
     "settings": {
-      "header": "crwdns2808:0crwdne2808:0"
+      "header": "crwdns10618:0crwdne10618:0"
     },
     "user-profile": {
+      "title": "crwdns10620:0crwdne10620:0",
       "tooltips": {
-        "settings": "crwdns2810:0crwdne2810:0"
+        "settings": "crwdns10622:0crwdne10622:0"
       },
-      "member-of": "crwdns2812:0crwdne2812:0",
+      "member-of": "crwdns10624:0crwdne10624:0",
       "applications": {
-        "title": "crwdns2814:0crwdne2814:0"
+        "title": "crwdns10626:0crwdne10626:0"
       },
       "communities": {
-        "title": "crwdns2816:0crwdne2816:0",
-        "help": "crwdns2818:0crwdne2818:0"
+        "title": "crwdns10628:0crwdne10628:0",
+        "help": "crwdns10630:0crwdne10630:0"
       },
       "pending-applications": {
-        "title": "crwdns2820:0crwdne2820:0",
-        "help": "crwdns2822:0crwdne2822:0"
+        "title": "crwdns10632:0crwdne10632:0",
+        "help": "crwdns10634:0crwdne10634:0"
       },
       "associated-organizations": {
-        "title": "crwdns2824:0crwdne2824:0",
-        "help": "crwdns2826:0crwdne2826:0"
+        "title": "crwdns10636:0crwdne10636:0",
+        "help": "crwdns10638:0crwdne10638:0"
       },
       "verifiable-credentials": {
-        "title": "crwdns2828:0crwdne2828:0",
-        "help": "crwdns2830:0crwdne2830:0"
+        "title": "crwdns10640:0crwdne10640:0",
+        "help": "crwdns10642:0crwdne10642:0"
       }
     },
     "user-credentials": {
       "your-credentials": {
-        "title": "crwdns2832:0crwdne2832:0",
-        "description": "crwdns2834:0crwdne2834:0",
-        "add-credential": "crwdns2836:0crwdne2836:0"
+        "title": "crwdns10644:0crwdne10644:0",
+        "description": "crwdns10646:0crwdne10646:0",
+        "add-credential": "crwdns10648:0crwdne10648:0"
       },
-      "issue": "crwdns2838:0crwdne2838:0",
-      "added-successfully": "crwdns2840:0crwdne2840:0"
+      "issue": "crwdns10650:0crwdne10650:0",
+      "added-successfully": "crwdns10652:0crwdne10652:0"
     },
     "authentication-required": {
-      "header": "crwdns2842:0crwdne2842:0",
-      "subheader": "crwdns2844:0crwdne2844:0"
+      "header": "crwdns10654:0crwdne10654:0",
+      "subheader": "crwdns10656:0crwdne10656:0"
     },
     "user-notifications-settings": {
       "general": {
-        "title": "crwdns2846:0crwdne2846:0",
-        "subtitle": "crwdns2848:0crwdne2848:0"
+        "title": "crwdns10658:0crwdne10658:0",
+        "subtitle": "crwdns10660:0crwdne10660:0"
       },
       "user-administration": {
-        "title": "crwdns2850:0crwdne2850:0",
-        "subtitle": "crwdns2852:0crwdne2852:0"
+        "title": "crwdns10662:0crwdne10662:0",
+        "subtitle": "crwdns10664:0crwdne10664:0"
       },
       "community-administration": {
-        "title": "crwdns2854:0crwdne2854:0",
-        "subtitle": "crwdns2856:0crwdne2856:0"
+        "title": "crwdns10666:0crwdne10666:0",
+        "subtitle": "crwdns10668:0crwdne10668:0"
       },
       "user-communication": {
-        "title": "crwdns3657:0crwdne3657:0",
-        "subtitle": "crwdns3659:0crwdne3659:0"
+        "title": "crwdns10670:0crwdne10670:0",
+        "subtitle": "crwdns10672:0crwdne10672:0"
       },
       "organization-communication": {
-        "title": "crwdns3661:0crwdne3661:0",
-        "subtitle": "crwdns3663:0crwdne3663:0"
+        "title": "crwdns10674:0crwdne10674:0",
+        "subtitle": "crwdns10676:0crwdne10676:0"
       },
       "forum": {
-        "title": "crwdns4203:0crwdne4203:0",
-        "subtitle": "crwdns4205:0crwdne4205:0"
+        "title": "crwdns10678:0crwdne10678:0",
+        "subtitle": "crwdns10680:0crwdne10680:0"
       }
     },
     "help-dialog": {
-      "title": "crwdns3403:0crwdne3403:0",
-      "text": "crwdns3425:0crwdne3425:0",
+      "title": "crwdns10682:0crwdne10682:0",
+      "text": "crwdns10684:0crwdne10684:0",
       "icons": {
-        "help-center-faq": "crwdns3407:0crwdne3407:0",
-        "community-support-forum": "crwdns3427:0crwdne3427:0",
-        "new-user": "crwdns3415:0crwdne3415:0"
+        "help-center-faq": "crwdns10686:0crwdne10686:0",
+        "community-support-forum": "crwdns10688:0crwdne10688:0",
+        "new-user": "crwdns10690:0crwdne10690:0"
       },
-      "tips-and-tricks": "crwdns3419:0crwdne3419:0"
+      "tips-and-tricks": "crwdns10692:0crwdne10692:0"
     },
     "forum": {
-      "title": "crwdns4175:0crwdne4175:0",
-      "new-title": "crwdns4153:0crwdne4153:0",
-      "back": "crwdns4155:0crwdne4155:0"
+      "title": "crwdns10694:0crwdne10694:0",
+      "subtitle": "crwdns10696:0crwdne10696:0",
+      "fullName": "crwdns10698:0crwdne10698:0",
+      "shortName": "crwdns10700:0$t(common.forum)crwdne10700:0",
+      "new-title": "crwdns10702:0crwdne10702:0",
+      "back": "crwdns10704:0crwdne10704:0"
     }
   },
   "operations": {
     "user-group": {
-      "updated-successfuly": "crwdns2858:0{{name}}crwdne2858:0",
-      "deleted-successfuly": "crwdns2860:0{{name}}crwdne2860:0"
+      "updated-successfuly": "crwdns10706:0{{name}}crwdne10706:0",
+      "deleted-successfuly": "crwdns10708:0{{name}}crwdne10708:0"
     }
   },
   "kratos": {
     "errors": {
-      "401": "crwdns2862:0crwdne2862:0",
+      "401": "crwdns10710:0crwdne10710:0",
       "session": {
-        "default": "crwdns2864:0crwdne2864:0"
+        "default": "crwdns10712:0crwdne10712:0"
       }
     },
-    "loading-flow": "crwdns2866:0crwdne2866:0",
-    "loading-error": "crwdns2868:0crwdne2868:0",
+    "loading-flow": "crwdns10714:0crwdne10714:0",
+    "loading-error": "crwdns10716:0crwdne10716:0",
     "messages": {
-      "successfully-recovered-password": "crwdns2870:0crwdne2870:0",
-      "verification-flow-expired": "crwdns2872:0crwdne2872:0",
-      "recovery-flow-expired": "crwdns2874:0crwdne2874:0",
-      "verification-flow-continue": "crwdns4183:0crwdne4183:0",
-      "login-flow-account-exists": "crwdns4921:0crwdne4921:0"
+      "successfully-recovered-password": "crwdns10718:0crwdne10718:0",
+      "verification-flow-expired": "crwdns10720:0crwdne10720:0",
+      "recovery-flow-expired": "crwdns10722:0crwdne10722:0",
+      "verification-flow-continue": "crwdns10724:0crwdne10724:0",
+      "login-flow-account-exists": "crwdns10726:0crwdne10726:0"
     },
     "fields": {
-      "ID": "crwdns4923:0crwdne4923:0",
-      "Password": "crwdns4925:0crwdne4925:0",
-      "E-Mail": "crwdns4927:0crwdne4927:0",
-      "Email": "crwdns4929:0$t(kratos.fields.E-Mail)crwdne4929:0",
-      "First Name": "crwdns4931:0crwdne4931:0",
-      "Last Name": "crwdns4933:0crwdne4933:0",
-      "Sign in": "crwdns4935:0crwdne4935:0",
-      "Sign up": "crwdns4937:0crwdne4937:0",
-      "Submit": "crwdns4939:0crwdne4939:0",
-      "Verify code": "crwdns4941:0crwdne4941:0",
-      "Resend code": "crwdns4943:0crwdne4943:0",
-      "Save": "crwdns4945:0crwdne4945:0"
+      "ID": "crwdns10728:0crwdne10728:0",
+      "Password": "crwdns10730:0crwdne10730:0",
+      "ShowPassword": "crwdns10732:0crwdne10732:0",
+      "HidePassword": "crwdns10734:0crwdne10734:0",
+      "E-Mail": "crwdns10736:0crwdne10736:0",
+      "Email": "crwdns10738:0$t(kratos.fields.E-Mail)crwdne10738:0",
+      "First Name": "crwdns10740:0crwdne10740:0",
+      "Last Name": "crwdns10742:0crwdne10742:0",
+      "Sign in": "crwdns10744:0crwdne10744:0",
+      "Sign up": "crwdns10746:0crwdne10746:0",
+      "Submit": "crwdns10748:0crwdne10748:0",
+      "Verify code": "crwdns10750:0crwdne10750:0",
+      "Resend code": "crwdns10752:0crwdne10752:0",
+      "Save": "crwdns10754:0crwdne10754:0"
     }
   },
   "apollo": {
     "errors": {
-      "generic": "crwdns3707:0crwdne3707:0",
-      "generic-with-code": "crwdns3709:0{{code}}crwdne3709:0",
-      "ENTITY_NOT_FOUND": "crwdns3711:0crwdne3711:0",
-      "COMMUNITY_MEMBERSHIP": "crwdns5227:0{{message}}crwdne5227:0",
-      "FORMAT_NOT_SUPPORTED": "crwdns3713:0crwdne3713:0",
-      "BAD_USER_INPUT": "crwdns5229:0{{message}}crwdne5229:0",
-      "NOT_SUPPORTED": "crwdns5231:0{{message}}crwdne5231:0",
-      "OPERATION_NOT_ALLOWED": "crwdns4947:0{{message}}crwdne4947:0"
+      "generic": "crwdns10756:0crwdne10756:0",
+      "generic-with-code": "crwdns10758:0{{code}}crwdne10758:0",
+      "ENTITY_NOT_FOUND": "crwdns10760:0crwdne10760:0",
+      "COMMUNITY_MEMBERSHIP": "crwdns10762:0{{message}}crwdne10762:0",
+      "FORMAT_NOT_SUPPORTED": "crwdns10764:0crwdne10764:0",
+      "BAD_USER_INPUT": "crwdns10766:0{{message}}crwdne10766:0",
+      "NOT_SUPPORTED": "crwdns10768:0{{message}}crwdne10768:0",
+      "OPERATION_NOT_ALLOWED": "crwdns10770:0{{message}}crwdne10770:0"
     }
   },
   "dashboard-updates-section": {
-    "title": "crwdns4949:0{{count}}crwdne4949:0",
-    "dialog-title": "crwdns4951:0crwdne4951:0",
-    "no-data": "crwdns4953:0crwdne4953:0"
+    "title": "crwdns10772:0{{count}}crwdne10772:0",
+    "dialog-title": "crwdns10774:0crwdne10774:0",
+    "no-data": "crwdns10776:0crwdne10776:0"
   },
   "dashboard-discussions-section": {
-    "title": "crwdns2886:0{{count}}crwdne2886:0",
-    "no-data-create": "crwdns2888:0crwdne2888:0",
-    "no-data-join": "crwdns2890:0crwdne2890:0"
+    "title": "crwdns10778:0{{count}}crwdne10778:0",
+    "no-data-create": "crwdns10780:0crwdne10780:0",
+    "no-data-join": "crwdns10782:0crwdne10782:0"
   },
   "dashboard-community-section": {
-    "title": "crwdns2892:0crwdne2892:0"
+    "title": "crwdns10784:0crwdne10784:0"
   },
   "post-edit": {
-    "new": "crwdns4955:0crwdne4955:0",
-    "edit": "crwdns4957:0crwdne4957:0",
+    "new": "crwdns10786:0crwdne10786:0",
+    "edit": "crwdns10788:0crwdne10788:0",
     "type": {
-      "title": "crwdns4959:0crwdne4959:0",
-      "help-text": "crwdns4961:0crwdne4961:0"
+      "title": "crwdns10790:0crwdne10790:0",
+      "help-text": "crwdns10792:0crwdne10792:0"
     },
     "postLocation": {
-      "title": "crwdns4963:0crwdne4963:0",
-      "label": "crwdns4965:0crwdne4965:0",
-      "reminder": "crwdns4967:0crwdne4967:0",
-      "success": "crwdns4969:0crwdne4969:0",
-      "error": "crwdns4971:0crwdne4971:0"
+      "title": "crwdns10794:0crwdne10794:0",
+      "label": "crwdns10796:0crwdne10796:0",
+      "reminder": "crwdns10798:0crwdne10798:0",
+      "success": "crwdns10800:0crwdne10800:0",
+      "error": "crwdns10802:0crwdne10802:0"
     },
     "delete": {
-      "title": "crwdns5155:0crwdne5155:0",
-      "description": "crwdns5157:0crwdne5157:0"
+      "title": "crwdns10804:0crwdne10804:0",
+      "description": "crwdns10806:0crwdne10806:0"
     }
   },
   "innovation-edit": {
-    "new": "crwdns2902:0crwdne2902:0",
-    "edit": "crwdns2904:0crwdne2904:0"
+    "new": "crwdns10808:0crwdne10808:0",
+    "edit": "crwdns10810:0crwdne10810:0"
   },
   "contributors-section": {
-    "title": "crwdns2906:0crwdne2906:0"
+    "title": "crwdns10812:0crwdne10812:0"
   },
   "contributions-view": {
-    "no-data": "crwdns2914:0{{name, lowercase}}crwdne2914:0"
+    "no-data": "crwdns10814:0{{name, lowercase}}crwdne10814:0"
   },
   "credentials-view": {
-    "no-data": "crwdns2916:0crwdne2916:0"
+    "no-data": "crwdns10816:0crwdne10816:0"
   },
   "associated-organizations-view": {
-    "no-data": "crwdns2918:0{{name, lowercase}}crwdne2918:0"
+    "no-data": "crwdns10818:0{{name, lowercase}}crwdne10818:0"
   },
   "dashboard-contributors-section": {
-    "dialog-title": "crwdns2920:0crwdne2920:0",
-    "more": "crwdns2922:0{{count}}crwdne2922:0"
+    "dialog-title": "crwdns10820:0crwdne10820:0",
+    "more": "crwdns10822:0{{count}}crwdne10822:0"
   },
   "associates-view": {
-    "less": "crwdns2924:0crwdne2924:0",
-    "more": "crwdns2926:0{{count}}crwdne2926:0",
-    "sign-in": "crwdns4115:0crwdne4115:0"
+    "less": "crwdns10824:0crwdne10824:0",
+    "more": "crwdns10826:0{{count}}crwdne10826:0",
+    "sign-in": "crwdns10828:0crwdne10828:0"
   },
   "spaces-filter": {
-    "current-filter": "crwdns4973:0crwdne4973:0",
-    "show-all": "crwdns4975:0crwdne4975:0",
-    "other": "crwdns4977:0crwdne4977:0",
+    "current-filter": "crwdns10830:0crwdne10830:0",
+    "show-all": "crwdns10832:0crwdne10832:0",
+    "other": "crwdns10834:0crwdne10834:0",
     "config": [
       {
-        "key": "crwdns4979:0crwdne4979:0",
-        "name": "crwdns4981:0crwdne4981:0",
-        "tags": ["crwdns4983:0crwdne4983:0", "crwdns4985:0crwdne4985:0"]
+        "key": "crwdns10836:0crwdne10836:0",
+        "name": "crwdns10838:0crwdne10838:0",
+        "tags": ["crwdns10840:0crwdne10840:0", "crwdns10842:0crwdne10842:0"]
       },
       {
-        "key": "crwdns4987:0crwdne4987:0",
-        "name": "crwdns4989:0crwdne4989:0",
-        "tags": ["crwdns4991:0crwdne4991:0", "crwdns4993:0crwdne4993:0"]
+        "key": "crwdns10844:0crwdne10844:0",
+        "name": "crwdns10846:0crwdne10846:0",
+        "tags": ["crwdns10848:0crwdne10848:0", "crwdns10850:0crwdne10850:0"]
       },
       {
-        "key": "crwdns4995:0crwdne4995:0",
-        "name": "crwdns4997:0crwdne4997:0",
-        "tags": ["crwdns4999:0crwdne4999:0", "crwdns5001:0crwdne5001:0"]
+        "key": "crwdns10852:0crwdne10852:0",
+        "name": "crwdns10854:0crwdne10854:0",
+        "tags": ["crwdns10856:0crwdne10856:0", "crwdns10858:0crwdne10858:0"]
       },
       {
-        "key": "crwdns5003:0crwdne5003:0",
-        "name": "crwdns5005:0crwdne5005:0",
-        "tags": ["crwdns5007:0crwdne5007:0", "crwdns5009:0crwdne5009:0"]
+        "key": "crwdns10860:0crwdne10860:0",
+        "name": "crwdns10862:0crwdne10862:0",
+        "tags": ["crwdns10864:0crwdne10864:0", "crwdns10866:0crwdne10866:0"]
       },
       {
-        "key": "crwdns5011:0crwdne5011:0",
-        "name": "crwdns5013:0crwdne5013:0",
-        "tags": ["crwdns5015:0crwdne5015:0", "crwdns5017:0crwdne5017:0"]
+        "key": "crwdns10868:0crwdne10868:0",
+        "name": "crwdns10870:0crwdne10870:0",
+        "tags": ["crwdns10872:0crwdne10872:0", "crwdns10874:0crwdne10874:0"]
       }
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "crwdns5019:0$t(common.challenges)crwdnd5019:0$t(common.opportunities)crwdne5019:0"
+    "journeyFilterTitle": "crwdns10876:0$t(common.challenges)crwdnd10876:0$t(common.opportunities)crwdne10876:0"
   },
   "visuals-alt-text": {
     "banner": {
       "page": {
-        "text": "crwdns4301:0{{altText}}crwdne4301:0"
+        "text": "crwdns10878:0{{altText}}crwdne10878:0"
       },
       "card": {
-        "text": "crwdns4303:0{{altText}}crwdne4303:0"
+        "text": "crwdns10880:0{{altText}}crwdne10880:0"
       },
       "whiteboard": {
-        "text": "crwdns4305:0{{displayName}}crwdne4305:0"
+        "text": "crwdns10882:0{{displayName}}crwdne10882:0"
       }
     },
     "avatar": {
       "contributor": {
-        "text": "crwdns4307:0{{displayName}}crwdnd4307:0{{altText}}crwdne4307:0"
+        "text": "crwdns10884:0{{displayName}}crwdnd10884:0{{altText}}crwdne10884:0"
       }
     }
   }
