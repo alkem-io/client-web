@@ -1,35 +1,37 @@
-import { cloneElement, createContext, PropsWithChildren, ReactElement, useContext, useEffect, useState } from 'react';
+import {
+  cloneElement,
+  createContext,
+  PropsWithChildren,
+  ReactElement,
+  RefObject,
+  useCallback,
+  useContext,
+} from 'react';
 
-const BlockAnchorContext = createContext<Element | null | undefined>(undefined);
-
-interface BlockAnchorProviderProps {
-  block: Element | null;
+interface Anchor {
+  (): Element | null;
 }
 
-export const BlockAnchorProvider = ({ block, children }: PropsWithChildren<BlockAnchorProviderProps>) => {
-  const [nextBlock, setNextBlock] = useState<Element | null | undefined>();
+const BlockAnchorContext = createContext<Anchor | undefined>(undefined);
 
-  useEffect(() => {
-    const nextBlock = block?.nextElementSibling;
+interface BlockAnchorProviderProps {
+  blockRef: RefObject<Element | null>;
+}
 
-    if (nextBlock) {
-      setNextBlock(nextBlock);
-    }
-  }, [block]);
+export const BlockAnchorProvider = ({ blockRef, children }: PropsWithChildren<BlockAnchorProviderProps>) => {
+  const anchor = useCallback(() => blockRef.current?.nextElementSibling ?? null, [blockRef]);
 
-  return <BlockAnchorContext.Provider value={nextBlock}>{children}</BlockAnchorContext.Provider>;
+  return <BlockAnchorContext.Provider value={anchor}>{children}</BlockAnchorContext.Provider>;
 };
 
-interface NextBlockAnchorProps<Props extends { anchor?: Element | null }> {
+interface NextBlockAnchorProps<Props extends { anchor?: Anchor }> {
   children: ReactElement<Props>;
 }
 
-export const NextBlockAnchor = <Props extends { anchor?: Element | null }>({
-  children,
-}: NextBlockAnchorProps<Props>) => {
-  const nextBlock = useNextBlock();
+export const NextBlockAnchor = <Props extends { anchor?: Anchor }>({ children }: NextBlockAnchorProps<Props>) => {
+  const anchor = useNextBlockAnchor();
 
-  return nextBlock ? cloneElement(children, { anchor: nextBlock } as Props) : null;
+  return anchor ? cloneElement(children, { anchor } as Props) : null;
 };
 
-export const useNextBlock = () => useContext(BlockAnchorContext);
+export const useNextBlockAnchor = () => useContext(BlockAnchorContext);

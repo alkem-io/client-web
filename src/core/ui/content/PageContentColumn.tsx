@@ -22,7 +22,7 @@ const PageContentColumn = forwardRef<HTMLDivElement, PageContentColumnProps>(({ 
     <GridItem columns={columns}>
       <Box ref={combinedRef} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
         <GridProvider columns={columns}>
-          <BlockAnchorProvider block={combinedRef.current}>
+          <BlockAnchorProvider blockRef={combinedRef}>
             {children}
             <NextBlockAnchor>
               <SkipLink />

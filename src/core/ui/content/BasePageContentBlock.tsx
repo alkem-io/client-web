@@ -71,7 +71,7 @@ const BasePageContentBlock = forwardRef(
 
     return (
       <GridProvider columns={columnsTaken ?? gridColumns}>
-        <BlockAnchorProvider block={combinedRef.current}>
+        <BlockAnchorProvider blockRef={combinedRef}>
           <Component ref={combinedRef} id={anchor ?? defaultAnchor} sx={mergedSx} {...(props as unknown as Props)} />
         </BlockAnchorProvider>
       </GridProvider>
