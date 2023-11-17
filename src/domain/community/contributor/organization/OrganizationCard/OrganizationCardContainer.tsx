@@ -1,6 +1,7 @@
 import React, { MouseEventHandler, PropsWithChildren } from 'react';
-import { ButtonBase, Paper } from '@mui/material';
+import { Paper } from '@mui/material';
 import withElevationOnHover from '../../../../shared/components/withElevationOnHover';
+import ButtonBaseAlignReset from '../../../../../core/ui/button/ButtonBaseAlignReset';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
@@ -13,7 +14,7 @@ const OrganizationCardContainer = ({ onClick, children }: PropsWithChildren<Orga
     <ElevatedPaper
       // MUI generics are difficult to inherit from while preserving the original types
       // @ts-ignore
-      component={onClick ? ButtonBase : Paper}
+      component={onClick ? ButtonBaseAlignReset : Paper}
       sx={{
         background: theme => theme.palette.background.paper,
         display: 'flex',

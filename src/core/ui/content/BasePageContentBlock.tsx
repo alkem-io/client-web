@@ -65,7 +65,7 @@ const BasePageContentBlock = forwardRef(
       ...sx,
     };
 
-    const combinedRef = useCombinedRefs(ref);
+    const combinedRef = useCombinedRefs(null, ref);
 
     const defaultAnchor = useRef(uuid()).current;
 

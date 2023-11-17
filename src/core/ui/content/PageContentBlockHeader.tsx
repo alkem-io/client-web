@@ -4,7 +4,7 @@ import { cloneElement, PropsWithChildren, ReactElement, ReactNode } from 'react'
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
 import SkipLink from '../keyboardNavigation/SkipLink';
-import { useNextBlock } from '../keyboardNavigation/NextBlockAnchor';
+import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
 
 export interface PageContentBlockHeaderProps {
   title: ReactNode;
@@ -25,7 +25,7 @@ const PageContentBlockHeader = ({
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
-  const nextBlock = useNextBlock();
+  const nextBlock = useNextBlockAnchor();
 
   return (
     <>

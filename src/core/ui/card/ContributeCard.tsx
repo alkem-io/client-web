@@ -1,9 +1,10 @@
 import React, { forwardRef, MouseEventHandler, PropsWithChildren } from 'react';
-import { ButtonBase, Paper, SxProps } from '@mui/material';
+import { Paper, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
+import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
@@ -24,7 +25,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
     return (
       <GridItem columns={columns}>
         <ElevatedPaper
-          component={onClick ? ButtonBase : Paper}
+          component={onClick ? ButtonBaseAlignReset : Paper}
           sx={{
             background: theme => (highlighted ? theme.palette.background.default : theme.palette.background.paper),
             display: 'flex',
