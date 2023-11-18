@@ -32,7 +32,12 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
             <NavigationItemButton
               component={Avatar}
               src={user?.user.profile.avatar?.uri}
-              sx={{ padding: 0 }}
+              sx={{
+                padding: 0,
+                '&.Mui-focusVisible': {
+                  filter: 'invert(1)',
+                },
+              }}
               aria-label={t('buttons.userMenu')}
               {...props}
             >

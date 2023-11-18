@@ -101,7 +101,7 @@ export interface ButtonProps extends Record<string, unknown> {
   to?: string;
   onClick?: (e: Event) => void;
   text?: string;
-  variant?: 'default' | 'primary' | 'negative' | 'transparent' | 'semiTransparent' | 'whiteStatic';
+  variant?: 'default' | 'primary' | 'negative';
   inset?: boolean;
   small?: boolean;
   block?: boolean;
@@ -150,7 +150,7 @@ const WrapperButton: FC<ButtonProps> = forwardRef(
         }}
         component={Component}
         variant="outlined"
-        color={variant === 'primary' ? 'primary' : 'grey'}
+        color={variant === 'primary' ? 'primary' : undefined}
         startIcon={startIcon}
         disabled={disabled}
         {...props}

@@ -1,60 +1,34 @@
-import { alpha, Components, Theme } from '@mui/material/styles';
+import { Components, Theme } from '@mui/material/styles';
+import { ButtonProps } from '@mui/material';
+
+const getFocusVisibleStyle = (
+  theme: Theme,
+  { color, variant }: { color?: ButtonProps['color']; variant?: ButtonProps['variant'] }
+) => {
+  if (color === 'primary' && variant === 'contained') {
+    return {
+      color: theme.palette.primary.main,
+      backgroundColor: theme.palette.highlight.main,
+    };
+  }
+
+  return {
+    backgroundColor: theme.palette.highlight.main,
+  };
+};
 
 const MuiButton: Components<Theme>['MuiButton'] = {
-  variants: [
-    {
-      props: { variant: 'contained', color: 'grey' },
-      style: ({ theme }) => ({
-        color: theme.palette.getContrastText(theme.palette.grey[300]),
-      }),
-    },
-    {
-      props: { variant: 'outlined', color: 'grey' },
-      style: ({ theme }) => ({
-        color: theme.palette.primary.main,
-        borderColor: theme.palette.primary.main,
-        '&.Mui-disabled': {
-          border: `1px solid ${theme.palette.action.disabledBackground}`,
-        },
-        '&:hover': {
-          color: theme.palette.neutralLight.main,
-          borderColor: theme.palette.primary.main,
-          backgroundColor: alpha(theme.palette.primary.main, 0.7),
-        },
-      }),
-    },
-    {
-      props: { color: 'grey', variant: 'text' },
-      style: ({ theme }) => ({
-        color: theme.palette.text.primary,
-        '&:hover': {
-          backgroundColor: alpha(theme.palette.text.primary, theme.palette.action.hoverOpacity),
-        },
-      }),
-    },
-  ],
-
   styleOverrides: {
-    root: ({ theme }) => ({
+    root: ({ theme, ownerState }) => ({
       display: 'inline-flex',
       width: 'auto',
       padding: theme.spacing(0.5, 1.5),
+      '&.Mui-focusVisible': getFocusVisibleStyle(theme, ownerState),
     }),
   },
   defaultProps: {
     disableRipple: true,
   },
 };
-
-declare module '@mui/material/Button' {
-  interface ButtonPropsColorOverrides {
-    grey: true;
-    positive: true;
-    negative: true;
-    neutral: true;
-    neutralMedium: true;
-    neutralLight: true;
-  }
-}
 
 export default MuiButton;
