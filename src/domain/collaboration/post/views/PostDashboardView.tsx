@@ -1,7 +1,8 @@
 import React, { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError, FetchResult } from '@apollo/client';
-import { alpha, Avatar, Box, Grid } from '@mui/material';
+import { alpha, Box, Grid } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';

@@ -1,15 +1,20 @@
 import 'react-image-crop/dist/ReactCrop.css';
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Box, Skeleton } from '@mui/material';
+import { Avatar, Box, BoxProps, Skeleton } from '@mui/material';
 import { useNotification } from '../../notifications/useNotification';
 import { useUploadVisualMutation } from '../../../apollo/generated/apollo-hooks';
 import UploadButton from '../../button/UploadButton';
 import { Visual } from '../../../apollo/generated/graphql-schema';
 import { CropDialog } from './CropDialog';
-import ImageComponent from '../../../../domain/shared/components/ImageComponent';
+import Image from '../../image/Image';
 
 const DEFAULT_SIZE = 128;
+
+const ImagePlaceholder: FC<BoxProps<'img'>> = ({ src, alt, ...props }) => {
+  const { t } = useTranslation();
+  return src ? <Image src={src} alt={alt} {...props} /> : <Box {...props}>{t('components.visual-upload.no-data')}</Box>;
+};
 
 interface VisualUploadProps {
   visual?: Visual;
@@ -73,7 +78,19 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, al
             <Avatar sx={{ width, height }} />
           </Skeleton>
         ) : (
-          <ImageComponent src={visual?.uri} altText={altText} width={width} height={height} />
+          <ImagePlaceholder
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 1,
+              width,
+              height,
+              borderColor: theme => theme.palette.grey[400],
+            }}
+            src={visual?.uri}
+            alt={altText}
+          />
         )}
       </Box>
       {visual && (

@@ -2,6 +2,7 @@ import { Box, Paper, PaperProps, Skeleton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import SectionSpacer from './SectionSpacer';
+import Image from '../../../../core/ui/image/Image';
 
 const useNormalStyles = makeStyles(theme => ({
   bannerContainer: {
@@ -88,7 +89,7 @@ const Section: FC<SectionProps> = ({
       <Paper elevation={0} variant="outlined" classes={classes?.section} className={styles.container}>
         {bannerUrl ? (
           <Box position="relative" className={styles.bannerContainer} sx={sideBannerRight ? { order: 2 } : null}>
-            <img src={bannerUrl} alt="banner" onLoad={() => setBannerLoading(false)} className={styles.bannerImage} />
+            <Image src={bannerUrl} onLoad={() => setBannerLoading(false)} className={styles.bannerImage} />
             <div className={styles.overlay}>{bannerOverlay}</div>
             {bannerLoading && (
               <Paper square sx={{ position: 'absolute', inset: 0 }}>

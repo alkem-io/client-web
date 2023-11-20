@@ -1,5 +1,6 @@
 import React from 'react';
-import { Avatar, AvatarProps } from '@mui/material';
+import { AvatarProps } from '@mui/material';
+import Avatar from './Avatar';
 
 type Size = 'large';
 

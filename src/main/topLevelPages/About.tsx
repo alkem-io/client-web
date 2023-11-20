@@ -8,6 +8,7 @@ import useVersionControl from '../../domain/platform/metadata/useVersionControl'
 import useServerMetadata from '../../domain/platform/metadata/useServerMetadata';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
 import HelpDialog from '../../core/help/dialog/HelpDialog';
+import Image from '../../core/ui/image/Image';
 
 const useAboutStyles = makeStyles(theme => ({
   content: {
@@ -68,7 +69,7 @@ export const AboutPage = () => {
         <Grid item xs={12} lg={6}>
           <div className={styles.content}>
             <div className={styles.version}>
-              <img src="/logo.png" className={styles.logo} alt="Alkemio" />
+              <Image src="/logo.png" className={styles.logo} alt="Alkemio" />
               <WrapperTypography color={'neutralMedium'}>v{currentClientVersion}</WrapperTypography>
             </div>
             {services.length >= 1 && (

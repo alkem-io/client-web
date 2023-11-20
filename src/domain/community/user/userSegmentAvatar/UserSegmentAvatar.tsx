@@ -1,5 +1,5 @@
 import { Button as MUIButton, ButtonProps } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import { ComponentType, forwardRef } from 'react';
 
 export interface UserAvatarProps extends ButtonProps {

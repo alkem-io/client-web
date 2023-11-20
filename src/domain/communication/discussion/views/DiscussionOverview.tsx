@@ -1,4 +1,5 @@
-import { Avatar, AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';

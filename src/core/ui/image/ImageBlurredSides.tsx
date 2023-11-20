@@ -1,4 +1,5 @@
 import { Box, BoxProps, useTheme } from '@mui/material';
+import Image from './Image';
 
 type BlurRadius = number | string;
 type Side = 'left' | 'right';
@@ -49,7 +50,7 @@ const ImageBlurredSides = ({ src, blurRadius, sx, containerProps, ...props }: Im
     <Box display="flex" justifyContent="center" alignItems="stretch" {...containerProps}>
       <BlurredSide src={src} blurRadius={blurRadius} side="left" />
       <BlurredSide src={src} blurRadius={blurRadius} side="right" />
-      <Box component="img" src={src} {...props} flexShrink={0} sx={{ objectFit: 'cover', ...sx }} />
+      <Image src={src} {...props} flexShrink={0} sx={{ objectFit: 'cover', ...sx }} />
     </Box>
   );
 };

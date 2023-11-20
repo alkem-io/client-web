@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { Avatar, styled, AvatarProps, Tooltip, Link } from '@mui/material';
+import { styled, AvatarProps, Tooltip, Link } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import UserCard from '../../../community/user/userCard/UserCard';
 import { Author } from './models/author';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';

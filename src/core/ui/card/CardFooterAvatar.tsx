@@ -1,5 +1,6 @@
-import { Avatar, AvatarProps } from '@mui/material';
+import { AvatarProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
+import Avatar from '../avatar/Avatar';
 
 const size = (theme: Theme) => theme.spacing(2.5);
 
