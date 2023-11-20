@@ -7,7 +7,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { EntityPageSection } from '../../layout/EntityPageSection';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
-  color: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
   backgroundColor: theme.palette.primary.main,
   '.MuiTabs-flexContainer': {
     maxWidth: MAX_CONTENT_WIDTH_WITH_GUTTER_PX,
