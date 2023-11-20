@@ -10,12 +10,12 @@ import { BinaryFileDataWithUrl, WhiteboardFilesManager } from '../useWhiteboardF
 interface PortalProps {
   collab: TCollabClass;
   filesManager: WhiteboardFilesManager;
-  onSaveRequest: () => Promise<boolean>;
+  onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
 }
 class Portal {
   collab: TCollabClass;
   filesManager: WhiteboardFilesManager;
-  onSaveRequest: () => Promise<boolean>;
+  onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   socket: Socket | null = null;
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
@@ -49,13 +49,10 @@ class Portal {
     });
 
     this.socket.on('save-request', async callback => {
-      let result: boolean = false;
       try {
-        result = await this.onSaveRequest();
+        callback(await this.onSaveRequest());
       } catch (ex) {
-        result = false;
-      } finally {
-        callback({ success: result });
+        callback({ success: false, errors: [ex?.message ?? ex] });
       }
     });
 

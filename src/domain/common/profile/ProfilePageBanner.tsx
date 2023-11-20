@@ -86,7 +86,12 @@ const ProfilePageBanner = ({
       <PageBanner
         banner={banner}
         cardComponent={PageBannerCardWithVisual}
-        visual={<SizeableAvatar src={profile?.avatar?.uri} />}
+        visual={
+          <SizeableAvatar
+            src={profile?.avatar?.uri}
+            aria-label={t('common.avatar-of', { user: profile?.displayName })}
+          />
+        }
         header={
           <>
             <ThemeProvider theme={provideHubColor}>

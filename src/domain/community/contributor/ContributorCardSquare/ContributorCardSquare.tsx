@@ -1,4 +1,5 @@
-import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
+import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, ReactNode, useCallback, useMemo, useState } from 'react';

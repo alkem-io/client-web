@@ -8,7 +8,8 @@ import CollaborationTemplatesLibraryPreview from './CollaborationTemplatesLibrar
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { ImageSearch as ImageSearchIcon, InfoOutlined } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/ImageSearch';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -25,7 +26,7 @@ const DisabledTemplateInfo = () => {
   const { t } = useTranslation();
   return (
     <Box display="flex" gap={gutters(0.5)}>
-      <InfoOutlined />
+      <InfoOutlinedIcon />
       <Caption>{t('templateLibrary.disabledTemplateInfo')}</Caption>
     </Box>
   );
@@ -185,7 +186,7 @@ const CollaborationTemplatesLibrary = <
                   gap={1}
                   sx={{ cursor: 'pointer' }}
                 >
-                  <ImageSearchIcon /> {t('templateLibrary.loadPlatformTemplates')}
+                  <SearchIcon /> {t('templateLibrary.loadPlatformTemplates')}
                 </Link>
               ) : (
                 <>

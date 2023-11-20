@@ -83,7 +83,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
         <Link href={buildOrganizationUrl(row.nameID)} target="_blank">
-          <Avatar src={row.profile.avatar?.uri} />
+          <Avatar src={row.profile.avatar?.uri} alt={t('common.avatar-of', { user: row.profile.displayName })} />
         </Link>
       ),
     },

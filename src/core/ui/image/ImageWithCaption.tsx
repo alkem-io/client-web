@@ -1,10 +1,10 @@
 import { FC, MouseEventHandler, ReactNode } from 'react';
 import { Box, BoxProps, ButtonBase, styled } from '@mui/material';
-import ImageFadeIn from '../../../core/ui/image/ImageFadeIn';
-import { gutters } from '../../../core/ui/grid/utils';
-import hexToRGBA from '../../../core/utils/hexToRGBA';
-import { Caption } from '../../../core/ui/typography';
-import Centered from './Centered';
+import ImageFadeIn from './ImageFadeIn';
+import { gutters } from '../grid/utils';
+import hexToRGBA from '../../utils/hexToRGBA';
+import { Caption } from '../typography';
+import Centered from '../utils/Centered';
 
 interface ImageWithCaptionProps extends BoxProps<'img'> {
   caption: ReactNode | string;

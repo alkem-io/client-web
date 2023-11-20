@@ -4,6 +4,7 @@ import { makeStyles } from '@mui/styles';
 import ImageFadeIn from './ImageFadeIn';
 import WrapperTypography from '../typography/deprecated/WrapperTypography';
 import { Theme, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 type AvatarSizeName = 'md' | 'sm' | 'lg' | 'xl' | 'md2';
 
@@ -87,6 +88,7 @@ export interface AvatarProps {
  */
 const AlkemioAvatar = forwardRef<HTMLDivElement, AvatarProps>(
   ({ size = 'md', classes = {}, className, src, theme = 'dark', name, renderPopup }, ref) => {
+    const { t } = useTranslation();
     const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);
 
     const styles = useAvatarStyles(classes);
@@ -128,7 +130,7 @@ const AlkemioAvatar = forwardRef<HTMLDivElement, AvatarProps>(
             <ImageFadeIn
               className={clsx(styles.avatar, size, className)}
               src={src}
-              alt="avatar"
+              alt={t('common.avatar-of', { user: name })}
               onError={() => setHasFailedToLoad(true)}
             />
           )}

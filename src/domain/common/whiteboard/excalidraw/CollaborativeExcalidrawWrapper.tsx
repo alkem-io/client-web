@@ -42,7 +42,7 @@ export interface WhiteboardWhiteboardEntities {
 }
 
 export interface WhiteboardWhiteboardActions {
-  onUpdate?: (state: ExportedDataState) => Promise<boolean>;
+  onUpdate?: (state: ExportedDataState) => Promise<{ success: boolean; errors?: string[] }>;
   onSavedToDatabase?: () => void;
 }
 
@@ -214,7 +214,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
                 appState: excalidrawAPI.getAppState(),
               };
               const result = await actions.onUpdate?.(state);
-              return result ?? false;
+              return result ?? { success: false, errors: ['Update handler not defined'] };
             }}
           />
         )}

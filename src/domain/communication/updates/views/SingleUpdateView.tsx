@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Avatar, Box, Skeleton } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';

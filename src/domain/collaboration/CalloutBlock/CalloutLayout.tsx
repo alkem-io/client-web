@@ -252,7 +252,11 @@ const CalloutLayout = ({
         titleContainerProps={{ flexDirection: 'column', position: 'relative' }}
       >
         {hasCalloutDetails && (
-          <Authorship authorAvatarUri={callout.authorAvatarUri} date={callout.publishedAt}>
+          <Authorship
+            authorAvatarUri={callout.authorAvatarUri}
+            date={callout.publishedAt}
+            authorName={callout.authorName}
+          >
             {`${callout.authorName} • ${t('callout.contributions', {
               count: contributionsCount,
             })}`}
