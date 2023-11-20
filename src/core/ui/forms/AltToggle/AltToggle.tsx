@@ -18,6 +18,7 @@ const AltToggle = <Value1, Value2>({
   options,
   onChange,
   sx,
+  'aria-label': ariaLabel,
   ...stackProps
 }: AltToggleProps<Value1, Value2> & Omit<StackProps, 'onChange'>) => {
   const [leftOption, rightOption] = options;
@@ -46,7 +47,13 @@ const AltToggle = <Value1, Value2>({
       {...stackProps}
     >
       <Caption>{leftOption.label}</Caption>
-      <Switch checked={!isLeftOptionSelected} onChange={handleChange} />
+      <Switch
+        checked={!isLeftOptionSelected}
+        onChange={handleChange}
+        inputProps={{
+          'aria-label': `${ariaLabel} ${leftOption.label} / ${rightOption.label}`,
+        }}
+      />
       <Caption>{rightOption.label}</Caption>
     </Stack>
   );
