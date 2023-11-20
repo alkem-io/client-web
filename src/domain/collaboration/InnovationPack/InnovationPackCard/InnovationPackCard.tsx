@@ -65,7 +65,9 @@ const InnovationPackCard = ({
             {innovationFlowTemplatesCount}
           </CardFooterCountWithBadge>
         </Box>
-        <CardFooterBadge avatarUri={providerAvatarUri}>{providerDisplayName}</CardFooterBadge>
+        <CardFooterBadge avatarUri={providerAvatarUri} avatarDisplayName={providerDisplayName}>
+          {providerDisplayName}
+        </CardFooterBadge>
       </CardFooter>
     </ContributeCard>
   );

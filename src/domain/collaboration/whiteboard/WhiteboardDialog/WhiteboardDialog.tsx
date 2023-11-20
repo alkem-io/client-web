@@ -287,6 +287,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                 <>
                   <Authorship
                     authorAvatarUri={whiteboard?.createdBy?.profile.visual?.uri}
+                    authorName={whiteboard?.createdBy?.profile.displayName}
                     date={whiteboard?.createdDate}
                   >
                     {whiteboard?.createdBy?.profile.displayName}
@@ -332,7 +333,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               )}
               <FlexSpacer />
               {lockedBy && (
-                <Authorship authorAvatarUri={lockedBy.profile.visual?.uri}>
+                <Authorship authorAvatarUri={lockedBy.profile.visual?.uri} authorName={lockedBy.profile.displayName}>
                   {t('pages.whiteboard.locked-by', { user: lockedBy.profile.displayName })}
                 </Authorship>
               )}
