@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { FetchResult } from '@apollo/client';
-import { Avatar, AvatarProps, Box, styled } from '@mui/material';
+import { AvatarProps, Box, styled } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -62,7 +63,11 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
 
   return (
     <Box display="flex" alignItems="start" gap={gutters(0.5)} marginBottom={gutters(-1)}>
-      <UserAvatar src={userAvatarUri} variant="rounded" />
+      <UserAvatar
+        src={userAvatarUri}
+        variant="rounded"
+        aria-label={t('common.avatar-of', { user: user?.user?.profile.displayName })}
+      />
       <Box flexGrow={1} minWidth={0}>
         <Formik
           initialValues={initialValues}

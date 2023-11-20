@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import DialogWhiteBg from '../../../shared/components/DialogWhiteBg';
 import { Template } from './AdminTemplatesSection';
+import Image from '../../../../core/ui/image/Image';
 
 interface TemplateViewDialogProps<T extends Template> {
   template: T;
@@ -29,7 +30,7 @@ const TemplateViewDialog = <T extends Template>({
 
   return (
     <DialogWhiteBg open={open} onClose={onClose}>
-      {visual?.uri && <img src={visual.uri} alt={description} />}
+      {visual?.uri && <Image src={visual.uri} alt={description} />}
       <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Box display="flex" minWidth={theme => theme.spacing(46)} justifyContent="space-between" alignItems="center">
           <Typography variant="h5" color="primary" fontWeight="bold">

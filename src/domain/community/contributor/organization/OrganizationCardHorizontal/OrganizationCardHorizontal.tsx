@@ -1,4 +1,5 @@
-import { Avatar, Box, CardHeader, Skeleton, Typography } from '@mui/material';
+import { Box, CardHeader, Skeleton, Typography } from '@mui/material';
+import Avatar from '../../../../../core/ui/avatar/Avatar';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';

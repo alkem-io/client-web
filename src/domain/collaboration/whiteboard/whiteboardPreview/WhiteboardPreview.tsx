@@ -1,4 +1,4 @@
-import ImageWithCaption from '../../../shared/components/ImageWithCaption';
+import ImageWithCaption from '../../../../core/ui/image/ImageWithCaption';
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
 import { useTranslation } from 'react-i18next';
 import { Visual } from '../../../common/visual/Visual';

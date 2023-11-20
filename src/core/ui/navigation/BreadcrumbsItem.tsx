@@ -26,6 +26,7 @@ const BreadcrumbsItem = ({
   iconComponent: Icon,
   expanded = false,
   onExpand,
+  onCollapse,
   accent = false,
   loading = false,
   children,
@@ -46,6 +47,8 @@ const BreadcrumbsItem = ({
         borderRadius: 0.5,
       }}
       onMouseEnter={() => onExpand?.()}
+      onFocus={() => onExpand?.()}
+      onBlur={() => onCollapse?.()}
       aria-label={children}
     >
       <Avatar

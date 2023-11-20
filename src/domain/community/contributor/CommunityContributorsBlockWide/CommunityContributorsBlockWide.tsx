@@ -70,6 +70,7 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
             options={contributorTypeToggleOptions}
             onChange={setContributorType}
             sx={{ height: gutters() }}
+            aria-label={t('pages.generic.sections.community.switchMode')}
           />
         </PageContentBlockHeaderWithDialogAction>
         <CommunityContributorsBlockWideContent

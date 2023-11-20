@@ -20,12 +20,20 @@ export const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardProps>>(
   ({ columns = CONTRIBUTE_CARD_COLUMNS, to, onClick, sx, highlighted, children }, ref) => {
-    const content = to ? <RouterLink to={to}>{children}</RouterLink> : children;
+    const getComponent = () => {
+      if (onClick) {
+        return ButtonBaseAlignReset;
+      }
+      if (to) {
+        return RouterLink;
+      }
+      return Paper;
+    };
 
     return (
       <GridItem columns={columns}>
         <ElevatedPaper
-          component={onClick ? ButtonBaseAlignReset : Paper}
+          component={getComponent()}
           sx={{
             background: theme => (highlighted ? theme.palette.background.default : theme.palette.background.paper),
             display: 'flex',
@@ -35,9 +43,10 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
             ...sx,
           }}
           onClick={onClick}
+          to={to}
           ref={ref}
         >
-          {content}
+          {children}
         </ElevatedPaper>
       </GridItem>
     );

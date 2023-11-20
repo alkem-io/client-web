@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { Avatar, styled, AvatarProps, Tooltip, Link } from '@mui/material';
+import { styled, AvatarProps, Tooltip, Link } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import UserCard from '../../../community/user/userCard/UserCard';
 import { Author } from './models/author';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
@@ -70,7 +71,9 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
     <>
       <TooltipElement>
         <Link href={author?.url}>
-          <UserAvatar src={author?.avatarUrl}>{author?.displayName[0]}</UserAvatar>
+          <UserAvatar src={author?.avatarUrl} aria-label={t('common.avatar-of', { user: author?.displayName })}>
+            {author?.displayName}
+          </UserAvatar>
         </Link>
       </TooltipElement>
       <DirectMessageDialog

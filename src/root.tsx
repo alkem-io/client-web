@@ -52,12 +52,6 @@ const useGlobalStyles = makeStyles(theme => ({
       display: 'flex',
       flexDirection: 'column',
     },
-    '#main': {
-      display: 'flex',
-      flexDirection: 'column',
-      flexGrow: 1,
-      position: 'relative',
-    },
     '[aria-role="heading"]': subHeading,
   },
 }));

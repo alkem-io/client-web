@@ -57,7 +57,9 @@ const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>
 
       const onExpand = child.key ? () => handleItemHover(child.key!) : undefined;
 
-      return cloneElement(child, { expanded, onExpand } as Partial<ItemProps>);
+      const onCollapse = child.key ? () => handleItemLeave(child.key!) : undefined;
+
+      return cloneElement(child, { expanded, onExpand, onCollapse } as Partial<ItemProps>);
     });
 
     const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
@@ -90,6 +92,13 @@ const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>
       setExpandedState(prevExpandedState => ({
         ...prevExpandedState,
         [childKey]: true,
+      }));
+    };
+
+    const handleItemLeave = (childKey: string | number) => {
+      setExpandedState(prevExpandedState => ({
+        ...prevExpandedState,
+        [childKey]: false,
       }));
     };
 

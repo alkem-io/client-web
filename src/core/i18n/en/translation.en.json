@@ -881,6 +881,7 @@
     "dashboardRecentContributions": {
       "title": "Contributions",
       "modes": {
+        "switchMode": "Switch View",
         "recentActivity": "Most Recent",
         "topCallouts": "Most Active"
       }
@@ -1465,7 +1466,8 @@
       }
     },
     "select-innovation-flow": {
-      "title": "Change Innovation Flow"
+      "title": "Change Innovation Flow",
+      "innovationFlowSettings": "Innovation Flow Settings"
     },
     "innovation-flow-template-segment": {
       "help-text": {
@@ -1528,7 +1530,8 @@
         },
         "community": {
           "leading-contributors": "Leading Contributors",
-          "contributors": "Who's involved"
+          "contributors": "Who's involved",
+          "switchMode": "Switch View"
         },
         "explore": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."
