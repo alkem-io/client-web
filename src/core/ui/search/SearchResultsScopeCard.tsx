@@ -1,4 +1,5 @@
-import { Avatar, Box, Chip, CircularProgress, SvgIconProps, useTheme } from '@mui/material';
+import { Box, Chip, CircularProgress, SvgIconProps, useTheme } from '@mui/material';
+import Avatar from '../avatar/Avatar';
 import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import { CardText } from '../typography';

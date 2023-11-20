@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { FetchResult } from '@apollo/client';
-import { Avatar, AvatarProps, Box, styled } from '@mui/material';
+import { AvatarProps, Box, styled } from '@mui/material';
+import Avatar from '../../../../core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';

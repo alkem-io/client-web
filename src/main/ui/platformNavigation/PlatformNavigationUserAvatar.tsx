@@ -1,6 +1,7 @@
 import React, { ReactElement, Ref } from 'react';
 import { useUserContext } from '../../../domain/community/user';
-import { Avatar, CircularProgress, useTheme } from '@mui/material';
+import { CircularProgress, useTheme } from '@mui/material';
+import Avatar from '../../../core/ui/avatar/Avatar';
 import { Person } from '@mui/icons-material';
 import { gutters } from '../../../core/ui/grid/utils';
 import SwapColors from '../../../core/ui/palette/SwapColors';

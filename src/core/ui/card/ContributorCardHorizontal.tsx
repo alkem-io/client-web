@@ -1,4 +1,4 @@
-import { Avatar } from '@mui/material';
+import Avatar from '../avatar/Avatar';
 import { BlockSectionTitle } from '../typography';
 import getLocationString, { Location } from '../location/getLocationString';
 import BadgeCardView from '../list/BadgeCardView';

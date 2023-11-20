@@ -9,6 +9,7 @@ import { LinkWithState } from '../types/LinkWithState';
 const ElevatedPaper = withElevationOnHover(Paper);
 
 const ImagePreview = ({ src }: { src: string }) => {
+  // TODO: This image will not report an error if it cannot load
   const backgroundImage = `url(${src})`;
   return <Box flexGrow={1} sx={{ backgroundImage, backgroundSize: 'cover', backgroundPosition: 'center' }} />;
 };
