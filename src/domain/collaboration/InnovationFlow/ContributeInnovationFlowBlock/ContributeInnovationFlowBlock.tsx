@@ -7,7 +7,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { useInnovationFlowBlockQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import ImageFadeIn from '../../../../core/ui/image/ImageFadeIn';
-import { Link, Skeleton } from '@mui/material';
+import { Button, Skeleton } from '@mui/material';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import { Text } from '../../../../core/ui/typography';
 import { times } from 'lodash';
@@ -59,18 +59,25 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
                 alt={innovationFlow.profile.cardBanner.alternativeText}
               />
             )}
-            <Text component={Link} onClick={() => setInnovationFlowDialogOpen(true)} sx={{ cursor: 'pointer' }}>
-              <OpenInNewOutlinedIcon fontSize="small" sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />
-              <Trans
-                i18nKey="pages.contribute.innovationFlow.readMore"
-                values={{
-                  innovationFlowDisplayName: innovationFlow?.profile.displayName,
-                }}
-                components={{
-                  b: <strong />,
-                }}
-              />
-            </Text>
+            <Button
+              size="small"
+              variant="text"
+              startIcon={<OpenInNewOutlinedIcon fontSize="small" />}
+              onClick={() => setInnovationFlowDialogOpen(true)}
+              sx={{ alignSelf: 'start', padding: 0, paddingX: gutters(0.5), marginLeft: gutters(-0.5) }}
+            >
+              <Text textTransform="none">
+                <Trans
+                  i18nKey="pages.contribute.innovationFlow.readMore"
+                  values={{
+                    innovationFlowDisplayName: innovationFlow?.profile.displayName,
+                  }}
+                  components={{
+                    b: <strong />,
+                  }}
+                />
+              </Text>
+            </Button>
           </>
         )}
       </PageContentBlock>

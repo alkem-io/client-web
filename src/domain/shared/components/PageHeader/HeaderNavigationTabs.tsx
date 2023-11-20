@@ -26,6 +26,10 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     flexGrow: 1,
     minHeight: theme.spacing(5),
     top: -2,
+    color: theme.palette.primary.contrastText,
+    '&.Mui-focusVisible': {
+      color: theme.palette.primary.main,
+    },
   },
   '.MuiTab-root.button-tab': {
     flexGrow: 0,
