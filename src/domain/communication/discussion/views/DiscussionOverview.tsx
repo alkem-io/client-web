@@ -48,6 +48,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
               <Avatar
                 key={i}
                 src={a.avatarUrl}
+                aria-label={t('common.avatar-of', { user: a.firstName[0] })}
                 sx={theme => ({ height: theme.spacing(3.5), width: theme.spacing(3.5) })}
               >
                 {a.firstName[0]}
