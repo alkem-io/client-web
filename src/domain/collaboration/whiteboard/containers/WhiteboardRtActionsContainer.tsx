@@ -11,7 +11,7 @@ export interface IWhiteboardRtActions {
   onUpdate: (
     whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
     previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<boolean>;
+  ) => Promise<{ success: boolean; errors?: string[] }>;
 }
 
 export interface WhiteboardRtActionsContainerState {
@@ -49,7 +49,10 @@ const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ c
           },
         },
       });
-      return !result.errors || result.errors.length === 0;
+      return {
+        success: !result.errors || result.errors.length === 0,
+        errors: result.errors?.map(({ message }) => message),
+      };
     },
     [updateWhiteboardContent]
   );
