@@ -20,8 +20,6 @@ export const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardProps>>(
   ({ columns = CONTRIBUTE_CARD_COLUMNS, to, onClick, sx, highlighted, children }, ref) => {
-    const content = to ? <RouterLink to={to}>{children}</RouterLink> : children;
-
     const getComponent = () => {
       if (onClick) {
         return ButtonBaseAlignReset;
@@ -48,7 +46,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
           to={to}
           ref={ref}
         >
-          {content}
+          {children}
         </ElevatedPaper>
       </GridItem>
     );
