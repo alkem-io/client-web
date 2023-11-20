@@ -4,41 +4,34 @@ import {
   PropsWithChildren,
   ReactElement,
   RefObject,
+  useCallback,
   useContext,
-  useEffect,
-  useState,
 } from 'react';
 
-const BlockAnchorContext = createContext<Element | null | undefined>(undefined);
+interface Anchor {
+  (): Element | null;
+}
+
+const BlockAnchorContext = createContext<Anchor | undefined>(undefined);
 
 interface BlockAnchorProviderProps {
   blockRef: RefObject<Element | null>;
 }
 
 export const BlockAnchorProvider = ({ blockRef, children }: PropsWithChildren<BlockAnchorProviderProps>) => {
-  const [nextBlock, setNextBlock] = useState<Element | null | undefined>();
+  const anchor = useCallback(() => blockRef.current?.nextElementSibling ?? null, [blockRef]);
 
-  useEffect(() => {
-    const nextBlock = blockRef.current?.nextElementSibling;
-
-    if (nextBlock) {
-      setNextBlock(nextBlock);
-    }
-  }, [blockRef]);
-
-  return <BlockAnchorContext.Provider value={nextBlock}>{children}</BlockAnchorContext.Provider>;
+  return <BlockAnchorContext.Provider value={anchor}>{children}</BlockAnchorContext.Provider>;
 };
 
-interface NextBlockAnchorProps<Props extends { anchor?: Element | null }> {
+interface NextBlockAnchorProps<Props extends { anchor?: Anchor }> {
   children: ReactElement<Props>;
 }
 
-export const NextBlockAnchor = <Props extends { anchor?: Element | null }>({
-  children,
-}: NextBlockAnchorProps<Props>) => {
-  const nextBlock = useNextBlock();
+export const NextBlockAnchor = <Props extends { anchor?: Anchor }>({ children }: NextBlockAnchorProps<Props>) => {
+  const anchor = useNextBlockAnchor();
 
-  return nextBlock ? cloneElement(children, { anchor: nextBlock } as Props) : null;
+  return anchor ? cloneElement(children, { anchor } as Props) : null;
 };
 
-export const useNextBlock = () => useContext(BlockAnchorContext);
+export const useNextBlockAnchor = () => useContext(BlockAnchorContext);

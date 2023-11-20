@@ -2,9 +2,14 @@
   "chatbot": {
     "title": "Alkemio Help",
     "subtitle": "Ask your question to search through our documentation or browse it directly",
+    "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
       "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+    },
+    "feedback": {
+      "message": "Is the answer relevant?",
+      "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "references": [
       {
@@ -92,6 +97,9 @@
     "back": "Hinterseite",
     "next": "Nächste",
     "edit": "Bearbeiten",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "expandWindow": "Expand Window",
     "see-more": "Mehr anzeigen",
     "see-all": "Mehr {{subject}}",
     "readMore": "Read more",
@@ -106,6 +114,7 @@
     "send-message": "Nachricht senden",
     "edit-members": "Mitglieder bearbeiten",
     "insert": "Einfügen",
+    "open": "Open",
     "my-profile": "Mein Profil",
     "new": "Neu",
     "sign-out": "Abmelden",
@@ -124,8 +133,8 @@
     "change-template": "Anderes Template wählen",
     "find-template": "Vorlagen finden",
     "change": "Verändern",
-    "library": "Anbieter",
     "share": "Teilen",
+    "view": "View",
     "preview": "Vorschau",
     "import": "Import",
     "importing": "Wird importiert...",
@@ -140,7 +149,14 @@
     "moveToTop": "Nach oben bewegen",
     "moveToBottom": "Ganz nach unten",
     "use": "Verwenden",
-    "fullscreen": "Toggle full screen"
+    "fullscreen": "Toggle full screen",
+    "changeLanguage": "Change language",
+    "getHelp": "Get help",
+    "saveAsTemplate": "Save as template",
+    "skipLink": "Skip to next block",
+    "toolsMenu": "Tools Menu",
+    "userMenu": "User Menu",
+    "scrollToTop": "Scroll to top"
   },
   "tooltips": {
     "click-more-info": "Hier tippen für weitere Informationen",
@@ -181,6 +197,7 @@
     "activity": "Aktivität",
     "avatar": "Avatar",
     "avatar-of": "Avatar von {user}",
+    "beta": "Beta",
     "inspiration": "Inspiration",
     "name": "Namen",
     "username": "Username",
@@ -192,6 +209,7 @@
     "callout": "Legende",
     "callouts": "Legenden",
     "collaborationTools": "Werkzeuge zur Zusammenarbeit",
+    "createdBy": "Created by",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Kalender",
@@ -272,11 +290,13 @@
     "contribute": "Beitragen",
     "context": "Kontext",
     "community": "Community",
+    "library": "Library",
     "people": "Menschen",
     "settings": "Einstellungen",
     "space-settings": "$t(common.settings)",
     "search": "Suche...",
     "storage": "Speicher",
+    "type": "Type",
     "reference": "Referenz",
     "references": "Referenzen",
     "notifications": "Benachrichtigungen",
@@ -293,7 +313,9 @@
     "question": "Frage",
     "questions": "Frage",
     "show-subject": "Anzeige:",
+    "show-more": "Show more",
     "show-all": "Alle anzeigen",
+    "lock": "Locked",
     "title": "Titel",
     "visibility": "Sichtbarkeit",
     "warning": "Warnung",
@@ -459,8 +481,13 @@
       },
       "templateTypes": {
         "WhiteboardTemplate": "Whiteboard-Template",
+        "WhiteboardTemplate_plural": "Whiteboard Templates",
         "PostTemplate": "Beitragsvorlage",
-        "InnovationFlowTemplate": "Innovationsfluss"
+        "PostTemplate_plural": "Post Templates",
+        "InnovationFlowTemplate": "Innovationsfluss",
+        "InnovationFlowTemplate_plural": "Innovation Flows",
+        "CalloutTemplate": "Callout Template",
+        "CalloutTemplate_plural": "Callout Templates"
       }
     },
     "blocks": {
@@ -612,7 +639,11 @@
     "message": "Nachricht",
     "message-optional": "Nachricht (optional)",
     "successfully-sent": "Nachricht erfolgreich gesendet",
-    "messageDeleted": "This message has been deleted."
+    "messageDeleted": "This message has been deleted.",
+    "insertEmoji": "Insert Emoji",
+    "addReaction": "Add reaction",
+    "addMention": "Mention someone",
+    "formattingHelp": "Formatting help"
   },
   "send-message-dialog": {
     "direct-message-title": "Senden Sie eine Nachricht",
@@ -714,6 +745,9 @@
         "title": "Schlagwörter",
         "description": "Geben Sie Wörter ein, die für die Challenge entscheidend sind, um sie hervorheben und leichter zu finden.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Challenge Flow"
       }
     },
     "opportunity": {
@@ -751,6 +785,9 @@
         "title": "Schlagwörter",
         "description": "Geben Sie Wörter ein, die für die Challenge entscheidend sind, um sie hervorheben und leichter zu finden.",
         "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "Opportunity Flow"
       }
     }
   },
@@ -764,34 +801,69 @@
       "atLeastOne": "Mindestens ein {{item}} muss ausgewählt sein."
     }
   },
-  "post-templates": {
-    "template-library": "Vorlagen-Bibliothek: Karten",
-    "post-template": "Beitragsvorlage",
-    "default-description": "Standard Karteninhalt",
-    "banner-narrow": "Banner schmal"
-  },
-  "whiteboard-templates": {
-    "template-library": "Vorlagen-Bibliothek: Karten",
-    "filter-placeholder": "Vorlagen suchen...",
-    "whiteboard-template": "Whiteboard-Template",
-    "space-templates": "Vom Host dieser Community ausgewählte Vorlagen",
-    "load-platform-templates": "Oder klicken Sie hier, um durch alle Plattformvorlagen zu browsen",
-    "platform-templates": "Plattformvorlagen",
-    "error-importing": "Fehler beim Importieren der Leinenvorlage",
-    "edit-template-button": "Vorlage bearbeiten",
-    "edit-dialog-title": "Whiteboard-Template"
+  "templateLibrary": {
+    "calloutTemplates": {
+      "name": "Callout template",
+      "title": "Template Library: Collaboration Tools",
+      "type": "Callout type",
+      "description": "Description"
+    },
+    "postTemplates": {
+      "name": "Post template",
+      "title": "Template Library: Posts",
+      "defaultDescription": "Default Post content"
+    },
+    "whiteboardTemplates": {
+      "name": "Whiteboard template",
+      "title": "Template Library: Whiteboards",
+      "editTemplateButton": "Edit Template",
+      "editDialogTitle": "Edit Whiteboard Template",
+      "errorImporting": "Error importing Whiteboard Template"
+    },
+    "innovationFlowTemplates": {
+      "name": "Innovation Flow template",
+      "title": "Template Library: Innovation Flows",
+      "type": "Type"
+    },
+    "spaceTemplates": "Templates selected by the host of this community",
+    "platformTemplates": "Platform Templates",
+    "loadPlatformTemplates": "Or click here to browse through all platform templates",
+    "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
   },
   "innovation-templates": {
-    "innovation-template": "Innovationsflussvorlage",
     "definition": {
       "title": "Definition",
       "placeholder": "Hier können Sie die Beschreibung von Xstate Visualizer mit den verschiedenen Lebenszykluszuständen einfügen"
-    },
-    "type": {
-      "title": "Typ"
     }
   },
   "components": {
+    "navigation": {
+      "exitMenu": "Exit menu",
+      "skipMenu": "Skip main menu"
+    },
+    "search": {
+      "searchScope": {
+        "full": "Search In:",
+        "short": "in:"
+      },
+      "scope": {
+        "platform": "Entire platform",
+        "space": "{{displayName}}"
+      }
+    },
+    "searchDialog": {
+      "headerTitle": "Search results"
+    },
+    "searchScope": {
+      "currentScope": "Search results for:",
+      "alternativeScope": "Didn’t find what you were looking for? Try searching in:",
+      "platform": "Everywhere on Alkemio"
+    },
+    "poweredBy": {
+      "label": "Powered by",
+      "aria-label": "Powered by Alkemio"
+    },
     "journeyUnauthorizedDialog": {
       "message": "Dies ist eine private Community und die meisten Inhalte sind nur auf Mitglieder beschränkt. Wenn du beitreten möchtest, klicke hier, um dich zu bewerben."
     },
@@ -1017,7 +1089,8 @@
         "LINK_COLLECTION": "Diamantsammlung",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard RealTime"
-      }
+      },
+      "callout-templates-library": "...or have a look at the library!"
     },
     "post-creation": {
       "title": "Senden Sie Ihre Antwort an {{calloutDisplayName}}",
@@ -1141,9 +1214,11 @@
         "add-reference": "Referenz hinzufügen",
         "remove-reference": "Referenz entfernen"
       },
-      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team. <terms>Click here</terms> for the terms and conditions."
+      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team. <terms>Click here</terms> for the terms and conditions.",
+      "plaintext-helper-text": "Click here for the terms and conditions."
     },
     "file-upload": {
+      "uploadFile": "Upload file",
       "file-size-error": "Die Dateigröße überschreitet die maximale Größe von {0} MB",
       "file-upload-success": "Datei erfolgreich hochgeladen"
     },
@@ -1401,6 +1476,11 @@
       "description": {
         "title": "Sind Sie sicher, dass Sie den Innovationsfluss ändern möchten? Dies kann die Anzahl der Staaten für diese Herausforderung/Chance verändern und den Staat auf den ersten Stand des ausgewählten Innovationsflusses (re)stellen."
       }
+    },
+    "innovationFlowTemplateSelect": {
+      "select": "Select different Flow",
+      "states": "States",
+      "required": "Please select an Innovation Flow"
     }
   },
   "navigation": {
@@ -1422,7 +1502,7 @@
     "feedback": "Rückmeldung",
     "support": "Kundendienst",
     "about": "Über",
-    "copyright": "©️ 2023 Alkemio Stiftung"
+    "copyright": "© 2023 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Leerzeichen",
@@ -1491,6 +1571,7 @@
     },
     "innovationLibrary": {
       "shortName": "Anbieter",
+      "fullName": "Best practices",
       "title": "Innovationsbibliothek auf Alkemio ist hier, um Ihren Weg zu beeinflussen,",
       "subtitle": "Öffnen Sie die Innovationspakete unten, um alle Whiteboard-Templates, Post-Vorlagen und Innovationsströme, die Sie verwenden können, zu erforschen. Wenn Sie mehr über <click>erfahren möchten, klicken Sie hier</click>.",
       "useTemplateButton": "Greifen Sie auf diese Vorlage aus Ihrem Raum zu, um sie zu verwenden.",
@@ -1561,7 +1642,10 @@
           "storage": {
             "description": "Hier können Sie das Profil für diese {{entity}} bearbeiten.",
             "title": "Dokumente",
+            "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
+            "emptyStorage": "(Empty)",
             "grid": {
+              "displayName": "Title",
               "mimeType": "Typ",
               "size": "Größe",
               "uploadedBy": "Hochgeladen von",
@@ -1640,6 +1724,13 @@
             "title": "Sichtbarkeit",
             "public": "<b>Öffentlich:</b> dieser Raum und dessen Inhalt sind für alle auf der Plattform sichtbar. Benutzer können nur einen Beitrag leisten, wenn sie Mitglied sind.",
             "private": "<b>Private:</b> dieser Raum ist für alle auf der Plattform sichtbar, aber der Inhalt ist nur für Mitglieder sichtbar."
+          },
+          "license-features": {
+            "title": "Space Features",
+            "features": {
+              "WHITEBOART_RT": "RealTime Whiteboards",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+            }
           },
           "membership": {
             "title": "Mitgliedschaft",
@@ -1741,6 +1832,8 @@
       }
     },
     "contributors": {
+      "fullName": "Find contributors",
+      "shortName": "$t(common.contributors)",
       "search": {
         "title": "Finde Talent und Sachkenntnis!",
         "subtitle": "Suchen Sie nach anderen Personen und Organisationen, die Ihnen bei Ihrer Herausforderung helfen können, zum Beispiel basierend auf Fähigkeiten oder Interessen.",
@@ -1754,6 +1847,8 @@
       }
     },
     "search": {
+      "title": "Search",
+      "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
       "placeholder": "Suche...",
       "results-disclaimer": "Die ersten 8 Ergebnisse werden angezeigt. Bald können Sie alle sehen, aber im Moment geben Sie bitte Ihre Suchbegriffe an.",
       "max-tags-reached": "Sie haben die maximale Anzahl an {{max}} Zeichen erreicht",
@@ -1791,6 +1886,8 @@
       "journeyFilterTitle": "$t(common.spaces):$t(common.challenges):$t(common.opportunities)"
     },
     "challenge-explorer": {
+      "fullName": "Explore challenges",
+      "shortName": "$t(common.challenges)",
       "search": {
         "title": "Herausforderungen entdecken",
         "subtitle": "Geben Sie unten Ihre Suchbegriffe (z.B. 'Innovation') ein, um passende Herausforderungen zu finden. Bitte beachten Sie, dass es auf Alkemio sowohl öffentliche als auch private Challenge-Hubs gibt. Hier finden Sie alle Herausforderungen der öffentlichen Hubs. Herausforderungen von privaten Hubs sind sichtbar, wenn Sie angemeldet sind und ein Mitglied des jeweiligen Hubs.",
@@ -1828,6 +1925,8 @@
       "innovation-flow-info": "Hier klicken, um den Innovationsfluss anzuzeigen"
     },
     "home": {
+      "title": "My Dashboard",
+      "subtitle": "Ready to make some impact?",
       "sections": {
         "welcome": {
           "welcome-back": "Hallo, willkommen zurück bei Consentio!",
@@ -1982,6 +2081,7 @@
       "add-whiteboard": "Whiteboard leeren",
       "no-whiteboards": "Es wurden noch keine Whiteboards erstellt. Seien Sie der erste, der eins hinzufügt.",
       "locked-by": "{{user}} bearbeitet gerade dieses Whiteboard",
+      "savingWhiteboard": "Saving whiteboard...",
       "state": {
         "checkedout": "Jemand anderes bearbeitet gerade dieses Whiteboard"
       },
@@ -2091,6 +2191,7 @@
       "header": "Benutzereinstellungen"
     },
     "user-profile": {
+      "title": "My profile",
       "tooltips": {
         "settings": "Benutzerprofil und -einstellungen"
       },
@@ -2166,6 +2267,9 @@
     },
     "forum": {
       "title": "Fragen, Anregungen oder Feedback? Kontaktieren Sie das Alkemio Team oder andere Nutzer der Plattform!",
+      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
+      "fullName": "Community help",
+      "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Diskussion initiieren",
       "back": "mehr Diskussionen anzeigen"
     }
@@ -2195,6 +2299,8 @@
     "fields": {
       "ID": "ID",
       "Password": "Passwort",
+      "ShowPassword": "Show Password",
+      "HidePassword": "Hide Password",
       "E-Mail": "E-Mail",
       "Email": "$t(kratos.fields.E-Mail)",
       "First Name": "Vorname",

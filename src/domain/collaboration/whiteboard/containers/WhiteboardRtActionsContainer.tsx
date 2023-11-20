@@ -5,7 +5,7 @@ import {
   WhiteboardRtDetailsFragment,
   WhiteboardRtContentFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface IWhiteboardRtActions {
   onUpdate: (
@@ -27,9 +27,20 @@ export interface WhiteboardRtActionsContainerProps
 
 const WhiteboardRtActionsContainer: FC<WhiteboardRtActionsContainerProps> = ({ children }) => {
   const [updateWhiteboardContent, { loading: updatingWhiteboardContent }] = useUpdateWhiteboardContentRtMutation({});
+  const { uploadVisuals } = useUploadWhiteboardVisuals();
 
   const handleUpdateWhiteboardContent = useCallback(
-    async (whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment) => {
+    async (
+      whiteboard: WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
+      previewImages?: WhiteboardPreviewImage[]
+    ) => {
+      if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
+        uploadVisuals(
+          previewImages,
+          { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
+          whiteboard.nameID
+        );
+      }
       const result = await updateWhiteboardContent({
         variables: {
           input: {
