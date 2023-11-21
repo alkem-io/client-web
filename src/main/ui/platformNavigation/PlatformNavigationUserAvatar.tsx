@@ -34,6 +34,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
               src={user?.user.profile.avatar?.uri}
               sx={{
                 padding: 0,
+                cursor: 'pointer',
               }}
               aria-label={t('buttons.userMenu')}
               {...props}
@@ -54,6 +55,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
               padding={gutters(0.25)}
               display="flex"
               alignItems="stretch"
+              sx={{ pointerEvents: 'none' }}
             >
               <Box
                 component="a"
