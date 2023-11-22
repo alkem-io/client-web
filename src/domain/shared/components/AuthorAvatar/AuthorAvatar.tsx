@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { styled, AvatarProps, Tooltip, Link } from '@mui/material';
+import { styled, AvatarProps, Tooltip, Link, Box } from '@mui/material';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import UserCard from '../../../community/user/userCard/UserCard';
 import { Author } from './models/author';
@@ -59,7 +59,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
               sx: { '& > .MuiTooltip-tooltip': { background: 'transparent' } },
             }}
           >
-            {children}
+            <Box>{children}</Box>
           </Tooltip>
         ) : (
           <>{children}</>
