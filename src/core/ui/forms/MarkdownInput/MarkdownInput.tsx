@@ -222,16 +222,10 @@ export const MarkdownInput = memo(
           setPrevEditorHeight(0);
         };
 
-        const handleDestroy = () => {
-          setPrevEditorHeight(editor.view.dom.clientHeight);
-        };
-
         editor.on('create', handleCreate);
-        editor.on('destroy', handleDestroy);
 
         return () => {
           editor.off('create', handleCreate);
-          editor.off('destroy', handleDestroy);
         };
       };
 
@@ -250,6 +244,7 @@ export const MarkdownInput = memo(
         if (containerRef.current?.contains(event.relatedTarget)) {
           return;
         }
+        setPrevEditorHeight(editor?.view.dom.clientHeight ?? 0);
         setHasFocus(false);
         onBlur?.(event as React.FocusEvent<HTMLInputElement>);
       };
