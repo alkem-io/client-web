@@ -27,12 +27,21 @@
     ]
   },
   "notifications": {
-    "releaseUpdates": {
-      "icon": "🎉",
-      "title": "We have exciting news, a new release full of interesting functionalities is out!",
-      "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! <b><clickhere>Click here</clickhere></b> to read all about the latest changes.",
-      "url": "https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20"
-    }
+    "dont-show-notes": "Don't show these notes again",
+    "releaseUpdates": [
+      {
+        "id": "v0.51.0",
+        "icon": "🎉",
+        "title": "Имаме вълнуващи новини, излезе нова версия, пълна с интересни функции!",
+        "content": "<b>Exciting news!</b> We've refreshed the main navigation of the platform to let the focus be on your community. Alkemio as a brand is now less visible, taking the role of  \"powering\" your Space. This big and important change also allowed us to simplify the user navigation. So less buttons to distract you from your work inside your Space.<br/><br/>The new layout is as follows:<br/><ul><li><b>Menu:</b> besides your personal profile and settings, you will now find a menu that includes all the jobs you can do on the platform outside of your Space</li><li><b>Navigation:</b> in the top left, you will find the icons of the home page, Space, or Challenge to navigate back</li><li><b>Search:</b> as users were often confused by the two search options (in the Space or the entire platform), we have combined them into one search function with the option to filter</li></ul>We hope this release will bring you one step closer to efficient collaboration! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-11-01)** to read all about the latest changes.<br/><br/>"
+      },
+      {
+        "id": "0.41.0",
+        "icon": "🎉",
+        "title": "We have exciting news, a new release full of interesting functionalities is out!",
+        "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** to read all about the latest changes."
+      }
+    ]
   },
   "cookie": {
     "consent": "Натискайки \"Приеми всички бисквитки\", Вие се съгласявате на запазването на бисквитки на Вашето устройство за подобряване на уебсайт навигацията и анализиране как се използва той.",
@@ -881,12 +890,13 @@
     "dashboardRecentContributions": {
       "title": "Contributions",
       "modes": {
+        "switchMode": "Switch View",
         "recentActivity": "Most Recent",
         "topCallouts": "Most Active"
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state, but they will remain closed untill this state is activated by the Challenge admin."
+      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
     },
     "invitations": {
       "inviteOthers": "Invite others",
@@ -1465,7 +1475,8 @@
       }
     },
     "select-innovation-flow": {
-      "title": "Change Innovation Flow"
+      "title": "Change Innovation Flow",
+      "innovationFlowSettings": "Innovation Flow Settings"
     },
     "innovation-flow-template-segment": {
       "help-text": {
@@ -1528,7 +1539,8 @@
         },
         "community": {
           "leading-contributors": "Leading Contributors",
-          "contributors": "Who's involved"
+          "contributors": "Who's involved",
+          "switchMode": "Switch View"
         },
         "explore": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."

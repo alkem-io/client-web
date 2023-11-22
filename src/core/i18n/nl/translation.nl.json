@@ -27,12 +27,21 @@
     ]
   },
   "notifications": {
-    "releaseUpdates": {
-      "icon": "🎉",
-      "title": "We hebben leuk nieuws, een nieuwe release vol interessante functionaliteiten!",
-      "content": "Na een grote refresh van de lay-out en functionaliteiten van de Space, zijn we verder gaan kijken naar het updaten van de <b>Challenges & Opportunities</b>.<br/><br/>Deze zijn:<ul><li>Een prominentere rol voor de <b>Innovation Flow</b> die jouw Challenge of Opportunity zal leiden.</li><li>Daarnaast is het nu mogelijk om mensen zonder een Alkemio account uit te nodigen voor jouw Space.</li></ul><br/><br/>En nog veel meer... <b>Klik<clickhere>Klik hier</clickhere></b> om alles te lezen over de laatste wijzigingen.",
-      "url": "https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20"
-    }
+    "dont-show-notes": "Don't show these notes again",
+    "releaseUpdates": [
+      {
+        "id": "v0.51.0",
+        "icon": "🎉",
+        "title": "We hebben spannend nieuws, er is een nieuwe release vol interessante functionaliteiten uit!",
+        "content": "<b>Exciting news!</b> We've refreshed the main navigation of the platform to let the focus be on your community. Alkemio as a brand is now less visible, taking the role of  \"powering\" your Space. This big and important change also allowed us to simplify the user navigation. So less buttons to distract you from your work inside your Space.<br/><br/>The new layout is as follows:<br/><ul><li><b>Menu:</b> besides your personal profile and settings, you will now find a menu that includes all the jobs you can do on the platform outside of your Space</li><li><b>Navigation:</b> in the top left, you will find the icons of the home page, Space, or Challenge to navigate back</li><li><b>Search:</b> as users were often confused by the two search options (in the Space or the entire platform), we have combined them into one search function with the option to filter</li></ul>We hope this release will bring you one step closer to efficient collaboration! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-11-01)** to read all about the latest changes.<br/><br/>"
+      },
+      {
+        "id": "0.41.0",
+        "icon": "🎉",
+        "title": "We have exciting news, a new release full of interesting functionalities is out!",
+        "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** to read all about the latest changes."
+      }
+    ]
   },
   "cookie": {
     "consent": "Door op \"Accepteer Alle Cookies\" te klikken, gaat u ermee akkoord dat er cookies op uw apparaat worden opgeslagen die bijdragen aan de website navigatie en het anayleren van website gebruik.",
@@ -881,12 +890,13 @@
     "dashboardRecentContributions": {
       "title": "Bijdragen",
       "modes": {
+        "switchMode": "Verander Weergave",
         "recentActivity": "Meest Recent",
         "topCallouts": "Meest actief"
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "Deze Challenge is momenteel in fase <strong>{{currentState}}</strong>. Je kunt de oproepen voor de <strong>{{selectedState}}</strong> fase al bekijken, maar ze blijven gesloten totdat deze fase is geactiveerd door de Challenge Lead."
+      "selectedStateNotice": "Deze Challenge is momenteel in de <strong>{{currentState}}</strong> fase. Je kunt hier al een kijkje nemen naar de inhoud van de <strong>{{selectedState}}</strong> fase."
     },
     "invitations": {
       "inviteOthers": "Anderen uitnodigen",
@@ -1465,7 +1475,8 @@
       }
     },
     "select-innovation-flow": {
-      "title": "Wijzig Innovatie Flow"
+      "title": "Wijzig Innovatie Flow",
+      "innovationFlowSettings": "Innovatie-Flow Instellingen"
     },
     "innovation-flow-template-segment": {
       "help-text": {
@@ -1528,7 +1539,8 @@
         },
         "community": {
           "leading-contributors": "Leading bijdragers",
-          "contributors": "Wie is erbij betrokken"
+          "contributors": "Wie is erbij betrokken",
+          "switchMode": "Verander Weergave"
         },
         "explore": {
           "description": "Hier kun je je inzichten delen die bijdragen aan het verrijken van de context. Hier worden de kennis en ervaringen van de community verzameld."
