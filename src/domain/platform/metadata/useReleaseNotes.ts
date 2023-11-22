@@ -7,9 +7,25 @@ interface ReleaseNotesData {
   lastSeenNoteId: string;
 }
 
+type NoteType = {
+  id: string;
+  icon: string;
+  title: string;
+  content: string;
+};
+
 export const useReleaseNotes = () => {
   const { t } = useTranslation();
-  const [latestNote, ...previousNotes] = t('notifications.releaseUpdates', { returnObjects: true });
+  const notes = t('notifications.releaseUpdates', { returnObjects: true });
+  // get only the value and reverse it to get the latest note first
+  // json object keys are ordered in alphanumerical order
+  const [latestNote, ...previousNotes]: NoteType[] = Object.entries(notes)
+    .reverse()
+    .map(([key, note]) => ({
+      ...note,
+      id: key,
+      icon: t('notifications.icon'),
+    }));
 
   const checkLatestNoteViewed = () => {
     const data = localStorage.getItem(LOCALSTORAGE_RELEASE_NOTES_KEY);

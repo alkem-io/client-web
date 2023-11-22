@@ -28,20 +28,17 @@
   },
   "notifications": {
     "dont-show-notes": "Don't show these notes again",
-    "releaseUpdates": [
-      {
-        "id": "v0.51.0",
-        "icon": "🎉",
+    "icon": "🎉",
+    "releaseUpdates": {
+      "2": {
         "title": "У нас чудові новини: вийшов новий випуск, повний цікавих функцій!",
         "content": "<b>Exciting news!</b> We've refreshed the main navigation of the platform to let the focus be on your community. Alkemio as a brand is now less visible, taking the role of  \"powering\" your Space. This big and important change also allowed us to simplify the user navigation. So less buttons to distract you from your work inside your Space.<br/><br/>The new layout is as follows:<br/><ul><li><b>Menu:</b> besides your personal profile and settings, you will now find a menu that includes all the jobs you can do on the platform outside of your Space</li><li><b>Navigation:</b> in the top left, you will find the icons of the home page, Space, or Challenge to navigate back</li><li><b>Search:</b> as users were often confused by the two search options (in the Space or the entire platform), we have combined them into one search function with the option to filter</li></ul>We hope this release will bring you one step closer to efficient collaboration! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-11-01)** to read all about the latest changes.<br/><br/>"
       },
-      {
-        "id": "0.41.0",
-        "icon": "🎉",
+      "1": {
         "title": "We have exciting news, a new release full of interesting functionalities is out!",
         "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** to read all about the latest changes."
       }
-    ]
+    }
   },
   "cookie": {
     "consent": "Цей сайт використовує cookie файли для належної роботи, відповідно до нашої політики конфіденційності",

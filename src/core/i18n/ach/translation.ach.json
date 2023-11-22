@@ -28,20 +28,17 @@
   },
   "notifications": {
     "dont-show-notes": "crwdns10936:0crwdne10936:0",
-    "releaseUpdates": [
-      {
-        "id": "crwdns10938:0crwdne10938:0",
-        "icon": "crwdns10940:0crwdne10940:0",
-        "title": "crwdns10942:0crwdne10942:0",
-        "content": "crwdns10944:0crwdne10944:0"
+    "icon": "crwdns10964:0crwdne10964:0",
+    "releaseUpdates": {
+      "2": {
+        "title": "crwdns10958:0crwdne10958:0",
+        "content": "crwdns10960:0crwdne10960:0"
       },
-      {
-        "id": "crwdns10946:0crwdne10946:0",
-        "icon": "crwdns10948:0crwdne10948:0",
+      "1": {
         "title": "crwdns10950:0crwdne10950:0",
         "content": "crwdns10952:0crwdne10952:0"
       }
-    ]
+    }
   },
   "cookie": {
     "consent": "crwdns8116:0crwdne8116:0",
