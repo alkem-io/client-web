@@ -107,7 +107,7 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
             }
             classes={{ tooltip: styles.tooltip }}
           >
-            {children}
+            <Box>{children}</Box>
           </Tooltip>
         ) : (
           <>{children}</>
