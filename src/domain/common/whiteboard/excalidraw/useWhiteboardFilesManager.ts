@@ -267,8 +267,6 @@ const useWhiteboardFilesManager = ({
         // no storageBucket was supplied, but allowFallbackToAttached is true, so we'll allow this file to be attached in the json for now
         const { url, ...fileWithoutUrl } = file;
         return { ...fileWithoutUrl } as BinaryFileDataWithUrl;
-      } else {
-        console.error('File without url or dataURL. IGNORED', file);
       }
     });
   };
