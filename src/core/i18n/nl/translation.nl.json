@@ -36,7 +36,7 @@
       },
       "1": {
         "title": "Exciting news, we hebben een nieuwe versie van het paltform gereleased vol interessante functionaliteiten!",
-        "content": "Na een grote refresh van de lay-out en functionaliteiten van de Space, zijn we verder gaan kijken naar het updaten van de <b>Challenges & Opportunities</b>.<br/><br/>Deze zijn:<ul><li>Een prominentere rol voor de <b>Innovation Flow</b> die jouw Challenge of Opportunity zal leiden.</li><li>Daarnaast is het nu mogelijk om mensen zonder een Alkemio account uit te nodigen voor jouw Space.</li></ul><br/><br/>En nog veel meer... <b>Klik<clickhere>Klik hier</clickhere></b> om alles te lezen over de laatste wijzigingen."
+        "content": "Na een grote refresh van de lay-out en functionaliteiten van de Space, zijn we verder gaan kijken naar het updaten van de <b>Challenges & Opportunities</b>.<br/><br/>Deze zijn:<ul><li>Een prominentere rol voor de <b>Innovation Flow</b> die jouw Challenge of Opportunity zal leiden.</li><li>Daarnaast is het nu mogelijk om mensen zonder een Alkemio account uit te nodigen voor jouw Space.</li></ul><br/><br/>En nog veel meer... **[Klik hier](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** om alles te lezen over de laatste wijzigingen."
       }
     }
   },
@@ -2399,42 +2399,27 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": [
-          "Publieke Dienstverlening",
-          "Publieke Dienstverlening"
-        ]
+        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   },
