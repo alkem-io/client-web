@@ -4,7 +4,6 @@ import { Box, Button } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
 import WrapperTypography from '../../core/ui/typography/deprecated/WrapperTypography';
-import useVersionControl from '../../domain/platform/metadata/useVersionControl';
 import useServerMetadata from '../../domain/platform/metadata/useServerMetadata';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
 import HelpDialog from '../../core/help/dialog/HelpDialog';
@@ -53,7 +52,7 @@ const useAboutStyles = makeStyles(theme => ({
 
 export const AboutPage = () => {
   const styles = useAboutStyles();
-  const { currentClientVersion } = useVersionControl();
+  const currentClientVersion = import.meta.env.VITE_APP_VERSION ?? '';
   const { services } = useServerMetadata();
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);

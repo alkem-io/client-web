@@ -1,7 +1,7 @@
 import { ExpandMore, HelpOutlineOutlined, HubOutlined } from '@mui/icons-material';
 import { ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { ReactNode, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildChallengeUrl, buildOpportunityUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
@@ -18,7 +18,7 @@ import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 interface DashboardNavigationProps {
   spaceNameId: string | undefined;
   spaceVisibility?: SpaceVisibility;
-  displayName: ReactNode;
+  displayName: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   loading: boolean;
 }
@@ -60,7 +60,7 @@ const DashboardNavigation = ({
     <PageContentBlock>
       <PageContentBlockHeader
         icon={<HubOutlined />}
-        title={displayName}
+        title={t('components.dashboardNavigation.title', { space: displayName })}
         actions={
           <Tooltip
             title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
