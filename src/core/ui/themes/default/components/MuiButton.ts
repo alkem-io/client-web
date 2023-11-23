@@ -17,14 +17,35 @@ const getFocusVisibleStyle = (
   };
 };
 
+const PADDING: Record<'small' | 'medium' | 'large', { x: number; y: number }> = {
+  small: {
+    y: 0,
+    x: 1,
+  },
+  medium: {
+    y: 0.5,
+    x: 1.5,
+  },
+  large: {
+    y: 1,
+    x: 2,
+  },
+};
+
 const MuiButton: Components<Theme>['MuiButton'] = {
   styleOverrides: {
-    root: ({ theme, ownerState }) => ({
-      display: 'inline-flex',
-      width: 'auto',
-      padding: theme.spacing(0.5, 1.5),
-      '&.Mui-focusVisible': getFocusVisibleStyle(theme, ownerState),
-    }),
+    root: ({ theme, ownerState }) => {
+      const { size = 'medium' } = ownerState;
+
+      const padding = PADDING[size];
+
+      return {
+        display: 'inline-flex',
+        width: 'auto',
+        padding: theme.spacing(padding.y, padding.x),
+        '&.Mui-focusVisible': getFocusVisibleStyle(theme, ownerState),
+      };
+    },
   },
   defaultProps: {
     disableRipple: true,
