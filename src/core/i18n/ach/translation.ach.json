@@ -27,11 +27,17 @@
     ]
   },
   "notifications": {
+    "dont-show-notes": "crwdns10936:0crwdne10936:0",
+    "icon": "crwdns10964:0crwdne10964:0",
     "releaseUpdates": {
-      "icon": "crwdns8108:0crwdne8108:0",
-      "title": "crwdns8110:0crwdne8110:0",
-      "content": "crwdns8112:0crwdne8112:0",
-      "url": "crwdns8114:0crwdne8114:0"
+      "2": {
+        "title": "crwdns10958:0crwdne10958:0",
+        "content": "crwdns10960:0crwdne10960:0"
+      },
+      "1": {
+        "title": "crwdns10950:0crwdne10950:0",
+        "content": "crwdns10952:0crwdne10952:0"
+      }
     }
   },
   "cookie": {
@@ -881,12 +887,13 @@
     "dashboardRecentContributions": {
       "title": "crwdns9282:0crwdne9282:0",
       "modes": {
+        "switchMode": "crwdns10930:0crwdne10930:0",
         "recentActivity": "crwdns9284:0crwdne9284:0",
         "topCallouts": "crwdns9286:0crwdne9286:0"
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "crwdns9288:0{{currentState}}crwdnd9288:0{{selectedState}}crwdne9288:0"
+      "selectedStateNotice": "crwdns10928:0{{currentState}}crwdnd10928:0{{selectedState}}crwdne10928:0"
     },
     "invitations": {
       "inviteOthers": "crwdns9290:0crwdne9290:0",
@@ -1465,7 +1472,8 @@
       }
     },
     "select-innovation-flow": {
-      "title": "crwdns9926:0crwdne9926:0"
+      "title": "crwdns9926:0crwdne9926:0",
+      "innovationFlowSettings": "crwdns10932:0crwdne10932:0"
     },
     "innovation-flow-template-segment": {
       "help-text": {
@@ -1528,7 +1536,8 @@
         },
         "community": {
           "leading-contributors": "crwdns9982:0crwdne9982:0",
-          "contributors": "crwdns9984:0crwdne9984:0"
+          "contributors": "crwdns9984:0crwdne9984:0",
+          "switchMode": "crwdns10934:0crwdne10934:0"
         },
         "explore": {
           "description": "crwdns9986:0crwdne9986:0"

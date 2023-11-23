@@ -1,56 +1,53 @@
-import React, { FC, useCallback, useState } from 'react';
-import { Box, Dialog, DialogContent, Link, useTheme } from '@mui/material';
+import React, { FC, useCallback, useState, useEffect } from 'react';
+import { Box, Dialog, DialogContent, DialogActions, FormGroup, FormControlLabel, Switch } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import useVersionControl from '../../metadata/useVersionControl';
+import { useReleaseNotes } from '../../metadata/useReleaseNotes';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 const SKIP_THIS_VERSION = false; // if true the dialog is never shown
 const Icon = props => <Box sx={{ display: 'inline', fontSize: '1.5em', marginRight: gutters(0.5) }} {...props} />;
 
 const ReleaseUpdatesDialog: FC = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
+  // is the dialog shown is controlled by isLatestNoteViewed
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);
-  const { isCurrentVersionViewed, saveCurrentVersionViewed } = useVersionControl();
+  const [dontShowDialogSwitchValue, setDontShowDialogSwitchValue] = useState(false);
+
+  const { latestNote, isLatestNoteViewed, setIsLatestNoteViewed } = useReleaseNotes();
+
+  useEffect(() => setIsNotificationVisible(!isLatestNoteViewed), [isLatestNoteViewed]);
 
   const handleCloseNotification = useCallback(() => {
     setIsNotificationVisible(false);
-    saveCurrentVersionViewed();
-  }, [setIsNotificationVisible]);
+    setIsLatestNoteViewed(dontShowDialogSwitchValue);
+  }, [setIsNotificationVisible, setIsLatestNoteViewed, dontShowDialogSwitchValue]);
 
-  return !SKIP_THIS_VERSION && !isCurrentVersionViewed ? (
+  const handleDontShowAgainSwitch = (checked: boolean) => setDontShowDialogSwitchValue(checked);
+
+  return !SKIP_THIS_VERSION && !isLatestNoteViewed ? (
     <>
       {isNotificationVisible && (
         <Dialog open={isNotificationVisible} maxWidth="lg">
           <DialogHeader onClose={handleCloseNotification}>
             <BlockTitle>
-              <Icon>{t('notifications.releaseUpdates.icon')}</Icon>
-              {t('notifications.releaseUpdates.title')}
+              <Icon>{latestNote.icon}</Icon>
+              {latestNote.title}
             </BlockTitle>
           </DialogHeader>
           <DialogContent>
-            <Trans
-              i18nKey="notifications.releaseUpdates.content"
-              components={{
-                br: <br />,
-                b: <strong />,
-                i: <em />,
-                ul: <ul />,
-                li: <li />,
-                clickhere: (
-                  <Link
-                    underline="always"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    color={theme.palette.primary.main}
-                    href={t('notifications.releaseUpdates.url')}
-                  />
-                ),
-              }}
-            />
+            <WrapperMarkdown>{latestNote.content}</WrapperMarkdown>
           </DialogContent>
+          <DialogActions>
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch onChange={(_, checked) => handleDontShowAgainSwitch(checked)} />}
+                label={t('notifications.dont-show-notes')}
+              />
+            </FormGroup>
+          </DialogActions>
         </Dialog>
       )}
     </>
