@@ -27,7 +27,7 @@
     ]
   },
   "notifications": {
-    "dont-show-notes": "Don't show these notes again",
+    "dont-show-notes": "Don't show this message again",
     "icon": "🎉",
     "releaseUpdates": {
       "2": {
