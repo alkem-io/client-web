@@ -1,0 +1,41 @@
+query RecentJourney(
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $spaceId: UUID_NAMEID!
+  $challengeId: UUID!
+  $opportunityId: UUID!
+) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
+    id
+    profile {
+      id
+      url
+      avatar: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+      id
+      profile {
+        ...RecentJourneyProfile
+      }
+    }
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
+      id
+      profile {
+        ...RecentJourneyProfile
+      }
+    }
+  }
+}
+
+fragment RecentJourneyProfile on Profile {
+  id
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualUri
+  }
+}

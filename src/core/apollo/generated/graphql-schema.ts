@@ -422,16 +422,6 @@ export type AdminInnovationFlowSynchronizeStatesInput = {
   innovationFlowID: Scalars['UUID'];
 };
 
-export type AdminWhiteboardFilesResult = {
-  __typename?: 'AdminWhiteboardFilesResult';
-  /** Errors */
-  errors: Array<Scalars['String']>;
-  /** Successes */
-  results: Array<Scalars['String']>;
-  /** Warnings */
-  warns: Array<Scalars['String']>;
-};
-
 export type Agent = {
   __typename?: 'Agent';
   /** The authorization rules for the entity */
@@ -1948,6 +1938,14 @@ export type GrantAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type GrantOrganizationAuthorizationCredentialInput = {
+  /** The Organization to whom the credential is being granted. */
+  organizationID: Scalars['UUID'];
+  /** The resource to which this credential is tied. */
+  resourceID?: InputMaybe<Scalars['UUID']>;
+  type: AuthorizationCredential;
+};
+
 export type Groupable = {
   /** The groups contained by this entity. */
   groups?: Maybe<Array<UserGroup>>;
@@ -2200,6 +2198,10 @@ export type LookupQueryResults = {
   __typename?: 'LookupQueryResults';
   /** Lookup the specified Application */
   application?: Maybe<Application>;
+  /** Lookup the specified Authorization Policy */
+  authorizationPolicy?: Maybe<Authorization>;
+  /** The privileges granted to the specified user based on this Authorization Policy. */
+  authorizationPrivilegesForUser?: Maybe<Array<AuthorizationPrivilege>>;
   /** Lookup the specified Calendar */
   calendar?: Maybe<Calendar>;
   /** Lookup the specified CalendarEvent */
@@ -2244,6 +2246,15 @@ export type LookupQueryResults = {
 
 export type LookupQueryResultsApplicationArgs = {
   ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsAuthorizationPolicyArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsAuthorizationPrivilegesForUserArgs = {
+  authorizationID: Scalars['UUID'];
+  userID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCalendarArgs = {
@@ -2415,8 +2426,6 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Updates the States tagset to be synchronized with the Lifecycle states. */
   adminInnovationFlowSynchronizeStates: Tagset;
-  /** Uploads the files from the Whiteboard content into the StorageBucket of that Whiteboard. */
-  adminUploadFilesFromContentToStorageBucket: AdminWhiteboardFilesResult;
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -2579,6 +2588,8 @@ export type Mutation = {
   eventOnProject: Project;
   /** Trigger an event on the Organization Verification. */
   eventOnWhiteboardCheckout: WhiteboardCheckout;
+  /** Grants an authorization credential to an Organization. */
+  grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
@@ -2617,6 +2628,8 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Resets the interaction with the chat engine. */
   resetChatGuidance: Scalars['Boolean'];
+  /** Removes an authorization credential from an Organization. */
+  revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
   /** Sends a reply to a message from the specified Room. */
@@ -3043,6 +3056,10 @@ export type MutationEventOnWhiteboardCheckoutArgs = {
   whiteboardCheckoutEventData: WhiteboardCheckoutEventInput;
 };
 
+export type MutationGrantCredentialToOrganizationArgs = {
+  grantCredentialData: GrantOrganizationAuthorizationCredentialInput;
+};
+
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
@@ -3109,6 +3126,10 @@ export type MutationRemoveUserFromGroupArgs = {
 
 export type MutationRemoveUserFromOrganizationArgs = {
   membershipData: RemoveOrganizationAssociateInput;
+};
+
+export type MutationRevokeCredentialFromOrganizationArgs = {
+  revokeCredentialData: RevokeOrganizationAuthorizationCredentialInput;
 };
 
 export type MutationRevokeCredentialFromUserArgs = {
@@ -4200,6 +4221,14 @@ export type RevokeAuthorizationCredentialInput = {
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RevokeOrganizationAuthorizationCredentialInput = {
+  /** The Organization from whom the credential is being removed. */
+  organizationID: Scalars['UUID'];
+  /** The resource to which access is being removed. */
+  resourceID?: InputMaybe<Scalars['UUID']>;
+  type: AuthorizationCredential;
 };
 
 export type RolesOrganizationInput = {
@@ -31654,4 +31683,80 @@ export type ChallengeExplorerDataQuery = {
         }>
       | undefined;
   }>;
+};
+
+export type RecentJourneyQueryVariables = Exact<{
+  includeSpace?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+  spaceId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID'];
+  opportunityId: Scalars['UUID'];
+}>;
+
+export type RecentJourneyQuery = {
+  __typename?: 'Query';
+  space?: {
+    __typename?: 'Space';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type RecentJourneyProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type RecentJourneysQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+export type RecentJourneysQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    myJourneys: Array<{
+      __typename?: 'MyJourneyResults';
+      journey:
+        | { __typename: 'Challenge'; id: string }
+        | { __typename: 'Opportunity'; id: string }
+        | { __typename: 'RelayPaginatedSpace'; id: string }
+        | { __typename: 'Space'; id: string };
+    }>;
+  };
 };
