@@ -12,11 +12,13 @@ interface RecentJourneyHydratorProps {
     journey:
       | {
           profile: {
+            displayName: string;
             url: string;
             cardBanner?: Visual;
           };
         }
       | undefined;
+    journeyTypeName: JourneyTypeName;
   }>;
 }
 
@@ -48,7 +50,11 @@ const RecentJourneyHydrator = ({ journey, component: Component }: RecentJourneyH
 
   const hydratedJourney = data?.space ?? data?.lookup.challenge ?? data?.lookup.opportunity;
 
-  return <Component journey={hydratedJourney} />;
+  if (!journeyTypeName) {
+    return null;
+  }
+
+  return <Component journey={hydratedJourney} journeyTypeName={journeyTypeName} />;
 };
 
 export default RecentJourneyHydrator;

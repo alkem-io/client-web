@@ -1,9 +1,8 @@
 import React, { PropsWithChildren, useLayoutEffect, useState } from 'react';
-import { AppBar, Box, Paper, Slide } from '@mui/material';
+import { alpha, AppBar, Box, Paper, Slide } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
-import hexToRGBA from '../../utils/hexToRGBA';
 import { useScrolledUp, useScrollTop } from '../scroll/utils';
 import {
   PLATFORM_NAVIGATION_ITEM_ELEVATION,
@@ -23,7 +22,7 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
       <Paper
         elevation={transparent ? 0 : PLATFORM_NAVIGATION_MENU_ELEVATION}
         sx={{
-          backgroundColor: theme => hexToRGBA(theme.palette.primary.main, transparent ? 0 : 0.25),
+          backgroundColor: theme => alpha(theme.palette.primary.main, transparent ? 0 : 0.25),
           backdropFilter: transparent ? 'none' : 'blur(8px)',
           position: 'relative',
           height: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS - 1),

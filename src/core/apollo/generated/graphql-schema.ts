@@ -31703,6 +31703,7 @@ export type RecentJourneyQuery = {
       __typename?: 'Profile';
       id: string;
       url: string;
+      displayName: string;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
@@ -31716,6 +31717,7 @@ export type RecentJourneyQuery = {
             __typename?: 'Profile';
             id: string;
             url: string;
+            displayName: string;
             cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         }
@@ -31728,6 +31730,7 @@ export type RecentJourneyQuery = {
             __typename?: 'Profile';
             id: string;
             url: string;
+            displayName: string;
             cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         }
@@ -31739,6 +31742,7 @@ export type RecentJourneyProfileFragment = {
   __typename?: 'Profile';
   id: string;
   url: string;
+  displayName: string;
   cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 

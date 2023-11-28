@@ -3617,6 +3617,7 @@ export const RecentJourneyProfileFragmentDoc = gql`
   fragment RecentJourneyProfile on Profile {
     id
     url
+    displayName
     cardBanner: visual(type: CARD) {
       ...VisualUri
     }
