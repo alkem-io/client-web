@@ -11,20 +11,23 @@ interface PortalProps {
   collab: TCollabClass;
   filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
+  onCloseConnection: () => void;
 }
 class Portal {
   collab: TCollabClass;
   filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
+  onCloseConnection: () => void;
   socket: Socket | null = null;
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
 
-  constructor({ collab, filesManager, onSaveRequest }: PortalProps) {
+  constructor({ collab, filesManager, onSaveRequest, onCloseConnection }: PortalProps) {
     this.collab = collab;
     this.filesManager = filesManager;
     this.onSaveRequest = onSaveRequest;
+    this.onCloseConnection = onCloseConnection;
   }
 
   open(socket: Socket, id: string) {
@@ -55,11 +58,12 @@ class Portal {
         callback({ success: false, errors: [ex?.message ?? ex] });
       }
     });
+    this.socket.on('disconnect', () => this.close(true));
 
     return socket;
   }
 
-  close() {
+  close(remoteClose: boolean = false) {
     if (!this.socket) {
       return;
     }
@@ -68,6 +72,9 @@ class Portal {
     this.roomId = null;
     this.socketInitialized = false;
     this.broadcastedElementVersions = new Map();
+    if (remoteClose) {
+      this.onCloseConnection();
+    }
   }
 
   isOpen() {

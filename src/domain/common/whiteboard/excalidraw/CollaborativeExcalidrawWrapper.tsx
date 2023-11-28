@@ -9,7 +9,7 @@ import {
   ExportOpts,
 } from '@alkemio/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
-import { Box } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -20,6 +20,7 @@ import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import Collab, { CollabAPI } from './collab/Collab';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -67,6 +68,8 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     const styles = useActorWhiteboardStyles();
     const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, ref);
+    const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+    const [collaborationEnabled, setCollaborationEnabled] = useState(true);
 
     const { user } = useUserContext();
     const username = user?.user.profile.displayName ?? 'User';
@@ -161,8 +164,12 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
         collabAPI.startCollaboration({
           roomId: whiteboard.id,
         });
+        setCollaborationEnabled(true);
       }
-      return () => collabAPI?.stopCollaboration();
+      return () => {
+        setCollaborationEnabled(false);
+        collabAPI?.stopCollaboration();
+      };
     }, [collabAPI, whiteboard?.id]);
 
     const excalidrawRef = useCallback(
@@ -187,7 +194,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             ref={excalidrawRef}
             initialData={data}
             UIOptions={mergedUIOptions}
-            isCollaborating
+            isCollaborating={collaborationEnabled}
             gridModeEnabled
             onChange={onChange}
             onPointerUpdate={collabAPI?.onPointerUpdate}
@@ -216,8 +223,24 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
               const result = await actions.onUpdate?.(state);
               return result ?? { success: false, errors: ['Update handler not defined'] };
             }}
+            onCloseConnection={() => {
+              setCollaborationEnabled(false);
+              setCollaborationStoppedNoticeOpen(true);
+            }}
           />
         )}
+        <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
+          <DialogHeader title="Collaboration stopped" onClose={() => setCollaborationStoppedNoticeOpen(false)} />
+          <DialogContent>
+            <p>
+              Your connection with the whiteboard has been dropped. You can continue editing but your changes will not
+              be saved. Please refresh the page. If the problem persists, please contact your administrator.
+            </p>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>Ok</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
