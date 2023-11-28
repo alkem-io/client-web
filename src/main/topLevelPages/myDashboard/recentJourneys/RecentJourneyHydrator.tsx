@@ -8,8 +8,6 @@ interface RecentJourneyHydratorProps {
     id: string;
     __typename: string;
   };
-  // journeyId: string;
-  // journeyTypeName: JourneyTypeName;
   component: ComponentType<{
     journey:
       | {
