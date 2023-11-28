@@ -9,7 +9,7 @@ interface RecentJourneyCardProps {
     | {
         profile: {
           url: string;
-          avatar?: Visual;
+          cardBanner?: Visual;
         };
       }
     | undefined;
@@ -25,7 +25,7 @@ const RecentJourneyCard = ({ journey }: RecentJourneyCardProps) => {
       <ElevatedPaper component={RouterLink} loose to={journey?.profile.url ?? ''}>
         {journey && (
           <Avatar
-            src={journey?.profile.avatar?.uri}
+            src={journey?.profile.cardBanner?.uri}
             sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
             variant="square"
           />

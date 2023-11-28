@@ -3617,7 +3617,7 @@ export const RecentJourneyProfileFragmentDoc = gql`
   fragment RecentJourneyProfile on Profile {
     id
     url
-    avatar: visual(type: AVATAR) {
+    cardBanner: visual(type: CARD) {
       ...VisualUri
     }
   }
@@ -24571,11 +24571,7 @@ export const RecentJourneyDocument = gql`
     space(ID: $spaceId) @include(if: $includeSpace) {
       id
       profile {
-        id
-        url
-        avatar: visual(type: CARD) {
-          ...VisualUri
-        }
+        ...RecentJourneyProfile
       }
     }
     lookup {
@@ -24593,7 +24589,6 @@ export const RecentJourneyDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
   ${RecentJourneyProfileFragmentDoc}
 `;
 

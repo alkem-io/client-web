@@ -9,11 +9,7 @@ query RecentJourney(
   space(ID: $spaceId) @include(if: $includeSpace) {
     id
     profile {
-      id
-      url
-      avatar: visual(type: CARD) {
-        ...VisualUri
-      }
+      ...RecentJourneyProfile
     }
   }
   lookup {
@@ -35,7 +31,7 @@ query RecentJourney(
 fragment RecentJourneyProfile on Profile {
   id
   url
-  avatar: visual(type: AVATAR) {
+  cardBanner: visual(type: CARD) {
     ...VisualUri
   }
 }

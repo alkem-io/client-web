@@ -31703,7 +31703,7 @@ export type RecentJourneyQuery = {
       __typename?: 'Profile';
       id: string;
       url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
   lookup: {
@@ -31716,7 +31716,7 @@ export type RecentJourneyQuery = {
             __typename?: 'Profile';
             id: string;
             url: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         }
       | undefined;
@@ -31728,7 +31728,7 @@ export type RecentJourneyQuery = {
             __typename?: 'Profile';
             id: string;
             url: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         }
       | undefined;
@@ -31739,7 +31739,7 @@ export type RecentJourneyProfileFragment = {
   __typename?: 'Profile';
   id: string;
   url: string;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
 export type RecentJourneysQueryVariables = Exact<{

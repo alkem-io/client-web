@@ -13,7 +13,7 @@ interface RecentJourneyHydratorProps {
       | {
           profile: {
             url: string;
-            avatar?: Visual;
+            cardBanner?: Visual;
           };
         }
       | undefined;
