@@ -2131,6 +2131,11 @@
       },
       "opportunity": {
         "templatesHeader": "Templates defined in this Opportunity"
+      },
+      "whiteboardDisconnected": {
+        "title": "Whiteboard connection lost",
+        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
+        "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
       }
     },
     "login": {
