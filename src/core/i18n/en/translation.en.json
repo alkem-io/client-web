@@ -359,6 +359,12 @@
       "not-verified": ""
     },
     "enums": {
+      "communityRole": {
+        "ADMIN": "$t(common.admin)",
+        "LEAD": "$t(common.lead)",
+        "HOST": "$t(common.host)",
+        "MEMBER": "$t(common.member)"
+      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",

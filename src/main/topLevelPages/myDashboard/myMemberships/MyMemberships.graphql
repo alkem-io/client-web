@@ -2,6 +2,9 @@ query MyMemberships {
   me {
     spaceMemberships {
       id
+      license {
+        visibility
+      }
       metrics {
         name
         value
@@ -25,11 +28,17 @@ query MyMemberships {
       }
       challenges {
         id
+        community {
+          ...MyMembershipsChildJourneyCommunity
+        }
         profile {
           ...MyMembershipsChildJourneyProfile
         }
         opportunities {
           id
+          community {
+            ...MyMembershipsChildJourneyCommunity
+          }
           profile {
             ...MyMembershipsChildJourneyProfile
           }
@@ -37,6 +46,12 @@ query MyMemberships {
       }
     }
   }
+}
+
+fragment MyMembershipsChildJourneyCommunity on Community {
+  id
+  myMembershipStatus
+  myRoles
 }
 
 fragment MyMembershipsChildJourneyProfile on Profile {

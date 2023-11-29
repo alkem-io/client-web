@@ -3613,6 +3613,13 @@ export const InnovationPackCardFragmentDoc = gql`
   ${LibraryTemplatesFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
+export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
+  fragment MyMembershipsChildJourneyCommunity on Community {
+    id
+    myMembershipStatus
+    myRoles
+  }
+`;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   fragment MyMembershipsChildJourneyProfile on Profile {
     id
@@ -24577,6 +24584,9 @@ export const MyMembershipsDocument = gql`
     me {
       spaceMemberships {
         id
+        license {
+          visibility
+        }
         metrics {
           name
           value
@@ -24600,11 +24610,17 @@ export const MyMembershipsDocument = gql`
         }
         challenges {
           id
+          community {
+            ...MyMembershipsChildJourneyCommunity
+          }
           profile {
             ...MyMembershipsChildJourneyProfile
           }
           opportunities {
             id
+            community {
+              ...MyMembershipsChildJourneyCommunity
+            }
             profile {
               ...MyMembershipsChildJourneyProfile
             }
@@ -24614,6 +24630,7 @@ export const MyMembershipsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${MyMembershipsChildJourneyCommunityFragmentDoc}
   ${MyMembershipsChildJourneyProfileFragmentDoc}
 `;
 

@@ -31694,6 +31694,7 @@ export type MyMembershipsQuery = {
     spaceMemberships: Array<{
       __typename?: 'Space';
       id: string;
+      license: { __typename?: 'License'; visibility: SpaceVisibility };
       metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
       context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
       profile: {
@@ -31709,6 +31710,14 @@ export type MyMembershipsQuery = {
         | Array<{
             __typename?: 'Challenge';
             id: string;
+            community?:
+              | {
+                  __typename?: 'Community';
+                  id: string;
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myRoles?: Array<CommunityRole> | undefined;
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -31721,6 +31730,14 @@ export type MyMembershipsQuery = {
               | Array<{
                   __typename?: 'Opportunity';
                   id: string;
+                  community?:
+                    | {
+                        __typename?: 'Community';
+                        id: string;
+                        myMembershipStatus?: CommunityMembershipStatus | undefined;
+                        myRoles?: Array<CommunityRole> | undefined;
+                      }
+                    | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -31735,6 +31752,13 @@ export type MyMembershipsQuery = {
         | undefined;
     }>;
   };
+};
+
+export type MyMembershipsChildJourneyCommunityFragment = {
+  __typename?: 'Community';
+  id: string;
+  myMembershipStatus?: CommunityMembershipStatus | undefined;
+  myRoles?: Array<CommunityRole> | undefined;
 };
 
 export type MyMembershipsChildJourneyProfileFragment = {

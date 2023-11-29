@@ -9,18 +9,23 @@ import SpaceCard from '../../../../domain/journey/space/SpaceCard/SpaceCard';
 import getMetricCount from '../../../../domain/platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../../domain/platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
-import React from 'react';
+import React, { useMemo } from 'react';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import MyMembershipsChildJourneyCard from './MyMembershipsChildJourneyCard';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import useLandingUrl from '../../../landing/useLandingUrl';
 import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
+import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
 interface MyJourneysDialogProps {
   open: boolean;
   onClose: () => void;
 }
+
+const isMember = (journey: { community?: { myMembershipStatus?: CommunityMembershipStatus } }) => {
+  return journey.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+};
 
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const { t } = useTranslation();
@@ -29,12 +34,28 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
 
   const landingUrl = useLandingUrl();
 
+  const myMemberships = useMemo(
+    () =>
+      data?.me.spaceMemberships.map(space => {
+        return {
+          ...space,
+          challenges: space.challenges?.filter(isMember).map(challenge => {
+            return {
+              ...challenge,
+              opportunities: challenge.opportunities?.filter(isMember),
+            };
+          }),
+        };
+      }),
+    [data]
+  );
+
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
       <DialogContent>
         <Gutters disablePadding>
-          {data?.me.spaceMemberships.map(space => (
+          {myMemberships?.map(space => (
             <PageContentBlock row sx={{ background: theme => theme.palette.background.default, flexWrap: 'wrap' }}>
               <SpaceCard
                 banner={space.profile.cardBanner}
@@ -44,6 +65,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
                 journeyUri={space.profile.url}
                 tags={space.profile.tagset?.tags ?? []}
                 membersCount={getMetricCount(space.metrics, MetricType.Member)}
+                spaceVisibility={space.license.visibility}
               />
               <GridItem columns={9}>
                 <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
