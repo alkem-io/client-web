@@ -64,7 +64,6 @@ const SpacesSection = () => {
   }>['getSpaceCardProps'] = space => {
     return {
       locked: !space.authorization?.anonymousReadAccess,
-      isDemoSpace: space.license.visibility === SpaceVisibility.Demo,
       member: space.community?.myMembershipStatus === CommunityMembershipStatus.Member,
     };
   };

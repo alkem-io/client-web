@@ -3613,6 +3613,25 @@ export const InnovationPackCardFragmentDoc = gql`
   ${LibraryTemplatesFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
+export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
+  fragment MyMembershipsChildJourneyCommunity on Community {
+    id
+    myMembershipStatus
+    myRoles
+  }
+`;
+export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
+  fragment MyMembershipsChildJourneyProfile on Profile {
+    id
+    displayName
+    tagline
+    url
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const RecentJourneyProfileFragmentDoc = gql`
   fragment RecentJourneyProfile on Profile {
     id
@@ -24558,6 +24577,106 @@ export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
 >;
 export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
   return { query: ChallengeExplorerDataDocument, variables: variables };
+}
+
+export const MyMembershipsDocument = gql`
+  query MyMemberships {
+    me {
+      spaceMemberships {
+        id
+        license {
+          visibility
+        }
+        metrics {
+          name
+          value
+        }
+        context {
+          id
+          vision
+        }
+        profile {
+          id
+          url
+          displayName
+          tagline
+          tagset {
+            id
+            tags
+          }
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+        challenges {
+          id
+          community {
+            ...MyMembershipsChildJourneyCommunity
+          }
+          profile {
+            ...MyMembershipsChildJourneyProfile
+          }
+          opportunities {
+            id
+            community {
+              ...MyMembershipsChildJourneyCommunity
+            }
+            profile {
+              ...MyMembershipsChildJourneyProfile
+            }
+          }
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${MyMembershipsChildJourneyCommunityFragmentDoc}
+  ${MyMembershipsChildJourneyProfileFragmentDoc}
+`;
+
+/**
+ * __useMyMembershipsQuery__
+ *
+ * To run a query within a React component, call `useMyMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyMembershipsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyMembershipsQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MyMembershipsQuery, SchemaTypes.MyMembershipsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MyMembershipsQuery, SchemaTypes.MyMembershipsQueryVariables>(
+    MyMembershipsDocument,
+    options
+  );
+}
+
+export function useMyMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MyMembershipsQuery, SchemaTypes.MyMembershipsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MyMembershipsQuery, SchemaTypes.MyMembershipsQueryVariables>(
+    MyMembershipsDocument,
+    options
+  );
+}
+
+export type MyMembershipsQueryHookResult = ReturnType<typeof useMyMembershipsQuery>;
+export type MyMembershipsLazyQueryHookResult = ReturnType<typeof useMyMembershipsLazyQuery>;
+export type MyMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.MyMembershipsQuery,
+  SchemaTypes.MyMembershipsQueryVariables
+>;
+export function refetchMyMembershipsQuery(variables?: SchemaTypes.MyMembershipsQueryVariables) {
+  return { query: MyMembershipsDocument, variables: variables };
 }
 
 export const RecentJourneyDocument = gql`

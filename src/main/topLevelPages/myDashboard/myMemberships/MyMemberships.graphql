@@ -1,0 +1,65 @@
+query MyMemberships {
+  me {
+    spaceMemberships {
+      id
+      license {
+        visibility
+      }
+      metrics {
+        name
+        value
+      }
+      context {
+        id
+        vision
+      }
+      profile {
+        id
+        url
+        displayName
+        tagline
+        tagset {
+          id
+          tags
+        }
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+      challenges {
+        id
+        community {
+          ...MyMembershipsChildJourneyCommunity
+        }
+        profile {
+          ...MyMembershipsChildJourneyProfile
+        }
+        opportunities {
+          id
+          community {
+            ...MyMembershipsChildJourneyCommunity
+          }
+          profile {
+            ...MyMembershipsChildJourneyProfile
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment MyMembershipsChildJourneyCommunity on Community {
+  id
+  myMembershipStatus
+  myRoles
+}
+
+fragment MyMembershipsChildJourneyProfile on Profile {
+  id
+  displayName
+  tagline
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualUri
+  }
+}

@@ -10,8 +10,6 @@ import { Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-
 import { Visual } from '../../../common/visual/Visual';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
-export const ITEMS_PER_PAGE = 16;
-
 export interface SpaceAttrs extends Identifiable {
   nameID: string;
   context?: { vision?: string };
@@ -24,7 +22,6 @@ export interface SpaceAttrs extends Identifiable {
     };
     cardBanner?: Visual;
   };
-  // TODO inline types derived from generated GraphQL definitions
   license: {
     visibility?: SpaceVisibility;
   };

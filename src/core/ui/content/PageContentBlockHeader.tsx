@@ -1,10 +1,11 @@
 import { Box, SvgIconProps, Theme, useMediaQuery } from '@mui/material';
-import { BlockTitle, CaptionSmall } from '../typography';
-import { cloneElement, PropsWithChildren, ReactElement, ReactNode } from 'react';
+import { CaptionSmall } from '../typography';
+import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
 import SkipLink from '../keyboardNavigation/SkipLink';
 import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
+import BlockTitleWithIcon from './BlockTitleWithIcon';
 
 export interface PageContentBlockHeaderProps {
   title: ReactNode;
@@ -46,10 +47,7 @@ const PageContentBlockHeader = ({
           justifyContent="space-between"
           flexWrap="wrap"
         >
-          <Box display="flex" flexDirection="row" alignItems="start" gap={gutters(0.5)} minWidth={0}>
-            {icon && cloneElement(icon, { fontSize: 'small' })}
-            <BlockTitle noWrap>{title}</BlockTitle>
-          </Box>
+          <BlockTitleWithIcon title={title} icon={icon} />
           {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
           {children}
         </Box>
