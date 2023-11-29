@@ -6,44 +6,13 @@ import {
   useWhiteboardWithContentLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
-  CalloutDisplayLocation,
-  CalloutState,
   CalloutType,
-  CalloutVisibility,
   CreateCalloutTemplateMutation,
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { Reference } from '../../../../common/profile/Profile';
-import { WhiteboardFieldSubmittedValues } from '../../../../collaboration/callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { WhiteboardRtFieldSubmittedValues } from '../../../../collaboration/callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardRtField';
 import { CalloutLayoutProps } from '../../../../collaboration/CalloutBlock/CalloutLayout';
 import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import { evictFromCache } from '../../../../../core/apollo/utils/removeFromCache';
-
-export interface CalloutCreationType {
-  framing: {
-    profile: {
-      description: string;
-      displayName: string;
-      referencesData: Reference[];
-      tagsets?: CreateTagsetInput[];
-    };
-    whiteboard?: WhiteboardFieldSubmittedValues;
-    whiteboardRt?: WhiteboardRtFieldSubmittedValues;
-    tags?: string[];
-  };
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
-  type: CalloutType;
-  contributionPolicy: {
-    state: CalloutState;
-  };
-  displayLocation?: CalloutDisplayLocation;
-  visibility?: CalloutVisibility;
-  sendNotification?: boolean;
-}
 
 export interface CalloutCreationUtils {
   handleCreateCalloutTemplate: (

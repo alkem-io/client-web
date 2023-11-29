@@ -3613,6 +3613,17 @@ export const InnovationPackCardFragmentDoc = gql`
   ${LibraryTemplatesFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
+export const RecentJourneyProfileFragmentDoc = gql`
+  fragment RecentJourneyProfile on Profile {
+    id
+    url
+    displayName
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const AssignUserAsBetaTesterDocument = gql`
   mutation assignUserAsBetaTester($input: GrantAuthorizationCredentialInput!) {
     grantCredentialToUser(grantCredentialData: $input) {
@@ -24547,4 +24558,147 @@ export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
 >;
 export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
   return { query: ChallengeExplorerDataDocument, variables: variables };
+}
+
+export const RecentJourneyDocument = gql`
+  query RecentJourney(
+    $includeSpace: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $spaceId: UUID_NAMEID!
+    $challengeId: UUID!
+    $opportunityId: UUID!
+  ) {
+    space(ID: $spaceId) @include(if: $includeSpace) {
+      id
+      profile {
+        ...RecentJourneyProfile
+      }
+    }
+    lookup {
+      challenge(ID: $challengeId) @include(if: $includeChallenge) {
+        id
+        profile {
+          ...RecentJourneyProfile
+        }
+      }
+      opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
+        id
+        profile {
+          ...RecentJourneyProfile
+        }
+      }
+    }
+  }
+  ${RecentJourneyProfileFragmentDoc}
+`;
+
+/**
+ * __useRecentJourneyQuery__
+ *
+ * To run a query within a React component, call `useRecentJourneyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRecentJourneyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRecentJourneyQuery({
+ *   variables: {
+ *      includeSpace: // value for 'includeSpace'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useRecentJourneyQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>(
+    RecentJourneyDocument,
+    options
+  );
+}
+
+export function useRecentJourneyLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>(
+    RecentJourneyDocument,
+    options
+  );
+}
+
+export type RecentJourneyQueryHookResult = ReturnType<typeof useRecentJourneyQuery>;
+export type RecentJourneyLazyQueryHookResult = ReturnType<typeof useRecentJourneyLazyQuery>;
+export type RecentJourneyQueryResult = Apollo.QueryResult<
+  SchemaTypes.RecentJourneyQuery,
+  SchemaTypes.RecentJourneyQueryVariables
+>;
+export function refetchRecentJourneyQuery(variables: SchemaTypes.RecentJourneyQueryVariables) {
+  return { query: RecentJourneyDocument, variables: variables };
+}
+
+export const RecentJourneysDocument = gql`
+  query RecentJourneys($limit: Float) {
+    me {
+      myJourneys(limit: $limit) {
+        journey {
+          id
+          __typename
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useRecentJourneysQuery__
+ *
+ * To run a query within a React component, call `useRecentJourneysQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRecentJourneysQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRecentJourneysQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useRecentJourneysQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.RecentJourneysQuery, SchemaTypes.RecentJourneysQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RecentJourneysQuery, SchemaTypes.RecentJourneysQueryVariables>(
+    RecentJourneysDocument,
+    options
+  );
+}
+
+export function useRecentJourneysLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RecentJourneysQuery, SchemaTypes.RecentJourneysQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RecentJourneysQuery, SchemaTypes.RecentJourneysQueryVariables>(
+    RecentJourneysDocument,
+    options
+  );
+}
+
+export type RecentJourneysQueryHookResult = ReturnType<typeof useRecentJourneysQuery>;
+export type RecentJourneysLazyQueryHookResult = ReturnType<typeof useRecentJourneysLazyQuery>;
+export type RecentJourneysQueryResult = Apollo.QueryResult<
+  SchemaTypes.RecentJourneysQuery,
+  SchemaTypes.RecentJourneysQueryVariables
+>;
+export function refetchRecentJourneysQuery(variables?: SchemaTypes.RecentJourneysQueryVariables) {
+  return { query: RecentJourneysDocument, variables: variables };
 }
