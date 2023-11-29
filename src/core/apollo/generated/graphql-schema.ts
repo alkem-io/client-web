@@ -31685,6 +31685,67 @@ export type ChallengeExplorerDataQuery = {
   }>;
 };
 
+export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MyMembershipsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    spaceMemberships: Array<{
+      __typename?: 'Space';
+      id: string;
+      metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+      context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        displayName: string;
+        tagline: string;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+      challenges?:
+        | Array<{
+            __typename?: 'Challenge';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+            opportunities?:
+              | Array<{
+                  __typename?: 'Opportunity';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }>
+              | undefined;
+          }>
+        | undefined;
+    }>;
+  };
+};
+
+export type MyMembershipsChildJourneyProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  tagline: string;
+  url: string;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type RecentJourneyQueryVariables = Exact<{
   includeSpace?: InputMaybe<Scalars['Boolean']>;
   includeChallenge?: InputMaybe<Scalars['Boolean']>;

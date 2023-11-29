@@ -10,7 +10,11 @@ import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 import { GRID_COLUMNS_DESKTOP } from '../../../../core/ui/grid/constants';
 
-const RecentJourneysList = () => {
+interface RecentJourneysListProps {
+  onSeeMore?: () => void;
+}
+
+const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
   const { data } = useRecentJourneysQuery({
     variables: {
       limit: GRID_COLUMNS_DESKTOP / 2 - 1,
@@ -32,6 +36,7 @@ const RecentJourneysList = () => {
           component={Button}
           endIcon={<DoubleArrowOutlined />}
           sx={{ textTransform: 'none', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
+          onClick={onSeeMore}
         >
           <Caption>{t('pages.home.sections.recentJourneys.seeMore')}</Caption>
         </Paper>

@@ -1941,6 +1941,11 @@
         "recentJourneys": {
           "seeMore": "Explore all Spaces, Challenges, and Opportunities that you’re a member of"
         },
+        "myMemberships": {
+          "title": "My Memberships",
+          "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
+          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Spaces on the platform, or <landing>click here</landing> to create your own!"
+        },
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",

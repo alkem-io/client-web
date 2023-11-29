@@ -1,5 +1,5 @@
 import { Box, Grow } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
 import HomePageFooter from './HomePageFooter';
@@ -16,6 +16,7 @@ import Loading from '../../../core/ui/loading/Loading';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/useInnovationHub';
 import RecentJourneysList from '../myDashboard/recentJourneys/RecentJourneysList';
+import MyMembershipsDialog from '../myDashboard/myMemberships/MyMembershipsDialog';
 
 export const HomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -24,6 +25,8 @@ export const HomePage = () => {
   const isFromLanding = params.get('from') === 'landing';
 
   const { innovationHub, innovationHubLoading } = useInnovationHub();
+
+  const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
 
   if (innovationHubLoading) {
     return (
@@ -40,9 +43,10 @@ export const HomePage = () => {
   return (
     <HomePageLayout>
       <ReleaseUpdatesDialog />
+      <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
       <PageContent>
         <PageContentColumn columns={12}>
-          <RecentJourneysList />
+          <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
           {!isFromLanding && (
             <Grow in={!isLoadingAuthentication} appear>
               <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">

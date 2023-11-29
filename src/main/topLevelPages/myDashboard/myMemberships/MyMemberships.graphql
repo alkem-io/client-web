@@ -1,0 +1,50 @@
+query MyMemberships {
+  me {
+    spaceMemberships {
+      id
+      metrics {
+        name
+        value
+      }
+      context {
+        id
+        vision
+      }
+      profile {
+        id
+        url
+        displayName
+        tagline
+        tagset {
+          id
+          tags
+        }
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+      challenges {
+        id
+        profile {
+          ...MyMembershipsChildJourneyProfile
+        }
+        opportunities {
+          id
+          profile {
+            ...MyMembershipsChildJourneyProfile
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment MyMembershipsChildJourneyProfile on Profile {
+  id
+  displayName
+  tagline
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualUri
+  }
+}
