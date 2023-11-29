@@ -15,6 +15,7 @@ import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHo
 import Loading from '../../../core/ui/loading/Loading';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/useInnovationHub';
+import CreateAccountBanner from './CreateAccountBanner';
 import RecentJourneysList from '../myDashboard/recentJourneys/RecentJourneysList';
 
 export const HomePage = () => {
@@ -42,6 +43,7 @@ export const HomePage = () => {
       <ReleaseUpdatesDialog />
       <PageContent>
         <PageContentColumn columns={12}>
+          {!isLoadingAuthentication && !isAuthenticated && <CreateAccountBanner />}
           <RecentJourneysList />
           {!isFromLanding && (
             <Grow in={!isLoadingAuthentication} appear>
