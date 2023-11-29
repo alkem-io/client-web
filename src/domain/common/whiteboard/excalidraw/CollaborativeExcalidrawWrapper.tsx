@@ -7,7 +7,6 @@ import {
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@alkemio/excalidraw/types/types';
-import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -17,9 +16,6 @@ import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import Collab, { CollabAPI } from './collab/Collab';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -64,7 +60,6 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options, events, collabApiRef }, ref) => {
-    const { t } = useTranslation();
     const { whiteboard, filesManager } = entities;
 
     const [collabAPI, setCollabAPI] = useState<CollabAPI | null>(null);
@@ -73,7 +68,6 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     const styles = useActorWhiteboardStyles();
     const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, ref);
-    const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
     const [collaborationEnabled, setCollaborationEnabled] = useState(true);
 
     const { user } = useUserContext();
@@ -202,22 +196,9 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             onCloseConnection={() => {
               setCollaborationEnabled(false);
               events.onCollaborationEnabledChange?.(false);
-              setCollaborationStoppedNoticeOpen(true);
             }}
           />
         )}
-        <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
-          <DialogHeader
-            title={t('pages.whiteboard.whiteboardDisconnected.title')}
-            onClose={() => setCollaborationStoppedNoticeOpen(false)}
-          />
-          <DialogContent>
-            <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
-          </DialogActions>
-        </Dialog>
       </div>
     );
   }
