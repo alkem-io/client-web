@@ -2134,7 +2134,7 @@
       },
       "whiteboardDisconnected": {
         "title": "Whiteboard connection lost",
-        "message": "This whiteboard is no longer available for editing.<br/>The cause could be a network issue or because you lost access to the whiteboard. Please try closing and reopening the whiteboard or refreshing the page. <br />If the problem persists contact the administrator of your space.",
+        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
         "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
       }
     },
