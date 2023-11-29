@@ -21,6 +21,9 @@ import Collab, { CollabAPI } from './collab/Collab';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { useTranslation } from 'react-i18next';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { Text } from '../../../../core/ui/typography';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -60,6 +63,7 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
   ({ entities, actions, options, collabApiRef }, ref) => {
+    const { t } = useTranslation();
     const { whiteboard, filesManager } = entities;
 
     const [collabAPI, setCollabAPI] = useState<CollabAPI | null>(null);
@@ -195,6 +199,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             initialData={data}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborationEnabled}
+            viewModeEnabled={!collaborationEnabled}
             gridModeEnabled
             onChange={onChange}
             onPointerUpdate={collabAPI?.onPointerUpdate}
@@ -230,15 +235,17 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
           />
         )}
         <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
-          <DialogHeader title="Collaboration stopped" onClose={() => setCollaborationStoppedNoticeOpen(false)} />
+          <DialogHeader
+            title={t('pages.whiteboard.whiteboardDisconnected.title')}
+            onClose={() => setCollaborationStoppedNoticeOpen(false)}
+          />
           <DialogContent>
-            <p>
-              Your connection with the whiteboard has been dropped. You can continue editing but your changes will not
-              be saved. Please refresh the page. If the problem persists, please contact your administrator.
-            </p>
+            <Gutters>
+              <Text>{t('pages.whiteboard.whiteboardDisconnected')}</Text>
+            </Gutters>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>Ok</Button>
+            <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
           </DialogActions>
         </Dialog>
       </div>

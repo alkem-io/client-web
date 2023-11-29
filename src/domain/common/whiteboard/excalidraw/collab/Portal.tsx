@@ -58,12 +58,15 @@ class Portal {
         callback({ success: false, errors: [ex?.message ?? ex] });
       }
     });
-    this.socket.on('disconnect', () => this.close(true));
+    this.socket.on('disconnect', () => {
+      this.close();
+      this.onCloseConnection();
+    });
 
     return socket;
   }
 
-  close(remoteClose: boolean = false) {
+  close() {
     if (!this.socket) {
       return;
     }
@@ -72,9 +75,6 @@ class Portal {
     this.roomId = null;
     this.socketInitialized = false;
     this.broadcastedElementVersions = new Map();
-    if (remoteClose) {
-      this.onCloseConnection();
-    }
   }
 
   isOpen() {
