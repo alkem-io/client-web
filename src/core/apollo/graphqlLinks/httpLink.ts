@@ -7,7 +7,6 @@ import { env } from '../../../main/env';
 import { logger } from '../../logging/winston/logger';
 
 const WS_RETRY_ATTEMPTS = 5;
-const WS_RETRY_AWAIT = 5;
 const DOMAIN = env?.VITE_APP_ALKEMIO_DOMAIN ?? window.location.origin;
 
 export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => {
@@ -26,7 +25,6 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
           url: wsUrl,
           lazy: false,
           retryAttempts: WS_RETRY_ATTEMPTS,
-          retryWait: () => new Promise(resolve => setTimeout(resolve, WS_RETRY_AWAIT)),
           // https://www.apollographql.com/docs/react/data/subscriptions/#5-authenticate-over-websocket-optional
           // connectionParams: {},
           onNonLazyError: errorOrCloseEvent => {
