@@ -15,6 +15,7 @@ import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHo
 import Loading from '../../../core/ui/loading/Loading';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/useInnovationHub';
+import CreateAccountBanner from './CreateAccountBanner';
 import RecentJourneysList from '../myDashboard/recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from '../myDashboard/myMemberships/MyMembershipsDialog';
 
@@ -46,6 +47,7 @@ export const HomePage = () => {
       <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
       <PageContent>
         <PageContentColumn columns={12}>
+          {!isLoadingAuthentication && !isAuthenticated && <CreateAccountBanner />}
           <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
           {!isFromLanding && (
             <Grow in={!isLoadingAuthentication} appear>
