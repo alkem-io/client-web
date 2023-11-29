@@ -15,6 +15,7 @@ import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHo
 import Loading from '../../../core/ui/loading/Loading';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/useInnovationHub';
+import CreateAccountBanner from './CreateAccountBanner';
 
 export const HomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -41,6 +42,7 @@ export const HomePage = () => {
       <ReleaseUpdatesDialog />
       <PageContent>
         <PageContentColumn columns={12}>
+          {!isLoadingAuthentication && !isAuthenticated && <CreateAccountBanner />}
           {!isFromLanding && (
             <Grow in={!isLoadingAuthentication} appear>
               <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">

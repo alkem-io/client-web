@@ -1938,6 +1938,9 @@
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
       "sections": {
+        "createAccountBanner": {
+          "message": "<big>\uD83D\uDE80 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
+        },
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
