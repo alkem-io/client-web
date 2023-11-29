@@ -22,8 +22,7 @@ import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { Text } from '../../../../core/ui/typography';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -240,9 +239,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             onClose={() => setCollaborationStoppedNoticeOpen(false)}
           />
           <DialogContent>
-            <Gutters>
-              <Text>{t('pages.whiteboard.whiteboardDisconnected')}</Text>
-            </Gutters>
+            <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
