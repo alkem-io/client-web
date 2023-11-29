@@ -6,14 +6,11 @@ import {
   ExcalidrawAPIRefValue,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
-  ExportOpts,
 } from '@alkemio/excalidraw/types/types';
-import BackupIcon from '@mui/icons-material/Backup';
-import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
@@ -49,19 +46,24 @@ export interface WhiteboardWhiteboardActions {
   onSavedToDatabase?: () => void;
 }
 
+export interface WhiteboardWhiteboardEvents {
+  onCollaborationEnabledChange?: (collaborationEnabled: boolean) => void;
+}
+
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options?: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
+  events: WhiteboardWhiteboardEvents;
   collabApiRef?: Ref<CollabAPI | null>;
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
-  ({ entities, actions, options, collabApiRef }, ref) => {
+  ({ entities, actions, options, events, collabApiRef }, ref) => {
     const { t } = useTranslation();
     const { whiteboard, filesManager } = entities;
 
@@ -110,47 +112,15 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
       };
     }, [handleScroll]);
 
-    const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
-      () => (exportedElements, appState) =>
-        (
-          <Box className={'Card'}>
-            <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
-              <BackupIcon />
-            </Box>
-            <h2>Save to the Alkemio</h2>
-            <Box className={'Card-details'}>Save the scene in Alkemio and share it with others.</Box>
-            <button
-              className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
-              title="Save to Alkemio"
-              aria-label="Save to Alkemio"
-              type="button"
-              onClick={async () => {
-                if (actions.onUpdate) {
-                  await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
-                  const element = document.body.getElementsByClassName('Modal__close')[0];
-                  ReactDOM.findDOMNode(element)?.dispatchEvent(
-                    new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-                  );
-                }
-              }}
-            >
-              <div className="ToolIcon__label">Save to Alkemio</div>
-            </button>
-          </Box>
-        ),
-      [data, actions, styles.excalidrawAlkemioBackground]
-    );
-
     const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
       () => ({
         canvasActions: {
           export: {
             saveFileToDisk: true,
-            renderCustomUI,
           },
         },
       }),
-      [renderCustomUI]
+      []
     );
 
     const { UIOptions: externalUIOptions, ...restOptions } = options || {};
@@ -168,9 +138,11 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
           roomId: whiteboard.id,
         });
         setCollaborationEnabled(true);
+        events.onCollaborationEnabledChange?.(true);
       }
       return () => {
         setCollaborationEnabled(false);
+        events.onCollaborationEnabledChange?.(false);
         collabAPI?.stopCollaboration();
       };
     }, [collabAPI, whiteboard?.id]);
@@ -229,6 +201,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
             }}
             onCloseConnection={() => {
               setCollaborationEnabled(false);
+              events.onCollaborationEnabledChange?.(false);
               setCollaborationStoppedNoticeOpen(true);
             }}
           />

@@ -128,6 +128,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const { whiteboard } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
   const collabApiRef = useRef<CollabAPI>(null);
+  const [collaborationEnabled, setCollaborationEnabled] = useState(true);
 
   const styles = useStyles();
 
@@ -183,7 +184,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const onClose = async () => {
-    if (options.canEdit) {
+    if (options.canEdit && collaborationEnabled) {
       const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
       if (!whiteboard || !whiteboardApi) {
         return;
@@ -291,6 +292,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                           whiteboardId: whiteboard.id,
                         });
                       },
+                    }}
+                    events={{
+                      onCollaborationEnabledChange: setCollaborationEnabled,
                     }}
                   />
                 ) : (
