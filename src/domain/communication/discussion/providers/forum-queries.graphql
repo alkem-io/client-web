@@ -36,34 +36,38 @@ query platformDiscussions {
         anonymousReadAccess
       }
       discussions {
-        id
-        nameID
-        profile {
-          id
-          displayName
-          description
-          tagline
-          visual(type: AVATAR) {
-            ...VisualFull
-          }
-        }
-        category
-        timestamp
-        comments {
-          id
-          messagesCount
-          authorization {
-            myPrivileges
-          }
-        }
-        createdBy
-        authorization {
-          id
-          myPrivileges
-          anonymousReadAccess
-        }
+        ...DiscussionCard
       }
     }
+  }
+}
+
+fragment DiscussionCard on Discussion {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+    tagline
+    visual(type: AVATAR) {
+      ...VisualFull
+    }
+  }
+  category
+  timestamp
+  comments {
+    id
+    messagesCount
+    authorization {
+      myPrivileges
+    }
+  }
+  createdBy
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
   }
 }
 
