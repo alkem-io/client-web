@@ -1987,6 +1987,15 @@
         "contributors-section": {
           "title": "See who is driving Challenges on Alkemio"
         },
+        "moreAboutAlkemio": {
+          "title": "More about Alkemio",
+          "links": {
+            "foundation": "Alkemio Foundation",
+            "news": "News & Blog",
+            "github": "Github",
+            "contact": "Contact"
+          }
+        },
         "footer": {
           "headline": "More about Alkemio? Visit our website, contact us or take a look at our github repository",
           "links": {
