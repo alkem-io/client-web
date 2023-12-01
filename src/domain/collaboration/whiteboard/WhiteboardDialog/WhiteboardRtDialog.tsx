@@ -31,7 +31,6 @@ import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: boolean | undefined }) => {
@@ -272,55 +271,37 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 </span>
               </DialogHeader>
               <DialogContent classes={{ root: styles.dialogContent }}>
-                {!state?.loadingWhiteboardValue &&
-                  whiteboard &&
-                  (options.canEdit ? (
-                    <CollaborativeExcalidrawWrapper
-                      entities={{ whiteboard, filesManager }}
-                      ref={excalidrawApiRef}
-                      collabApiRef={collabApiRef}
-                      options={{
-                        UIOptions: {
-                          canvasActions: {
-                            export: {
-                              saveFileToDisk: true,
-                            },
+                {!state?.loadingWhiteboardValue && whiteboard && (
+                  <CollaborativeExcalidrawWrapper
+                    entities={{ whiteboard, filesManager }}
+                    ref={excalidrawApiRef}
+                    collabApiRef={collabApiRef}
+                    options={{
+                      viewModeEnabled: !options.canEdit,
+                      UIOptions: {
+                        canvasActions: {
+                          export: {
+                            saveFileToDisk: true,
                           },
                         },
-                      }}
-                      actions={{
-                        onUpdate: state => handleUpdate(whiteboard, state),
-                        onSavedToDatabase: () => {
-                          refetchLastSaved({
-                            whiteboardId: whiteboard.id,
-                          });
-                        },
-                      }}
-                      events={{
-                        onCollaborationEnabledChange: enabled => {
-                          setCollaborationEnabled(enabled);
-                          setCollaborationStoppedNoticeOpen(!enabled);
-                        },
-                      }}
-                    />
-                  ) : (
-                    <ExcalidrawWrapper
-                      ref={excalidrawApiRef}
-                      entities={{
-                        whiteboard,
-                        filesManager,
-                      }}
-                      actions={{}}
-                      options={{
-                        viewModeEnabled: true,
-                        UIOptions: {
-                          canvasActions: {
-                            export: false,
-                          },
-                        },
-                      }}
-                    />
-                  ))}
+                      },
+                    }}
+                    actions={{
+                      onUpdate: state => handleUpdate(whiteboard, state),
+                      onSavedToDatabase: () => {
+                        refetchLastSaved({
+                          whiteboardId: whiteboard.id,
+                        });
+                      },
+                    }}
+                    events={{
+                      onCollaborationEnabledChange: enabled => {
+                        setCollaborationEnabled(enabled);
+                        setCollaborationStoppedNoticeOpen(!enabled);
+                      },
+                    }}
+                  />
+                )}
                 {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
               </DialogContent>
               <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
