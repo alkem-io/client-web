@@ -27,7 +27,7 @@
     ]
   },
   "notifications": {
-    "dont-show-notes": "Don't show these notes again",
+    "dont-show-notes": "Don't show this message again",
     "icon": "🎉",
     "releaseUpdates": {
       "2": {
@@ -54,9 +54,10 @@
     "nl": "Dutch",
     "es": "Spanish",
     "bg": "Bulgarian",
-    "ua": "Ukranian",
+    "ua": "Ukrainian",
     "de": "German",
     "fr": "French",
+    "pt": "Portuguese (Brazil)",
     "inContextTool": "In context translation"
   },
   "fields": {
@@ -880,6 +881,7 @@
       "title": "{{journey}} statistics"
     },
     "dashboardNavigation": {
+      "title": "Challenges and Opportunities in {{space}}",
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
@@ -2130,6 +2132,11 @@
       },
       "opportunity": {
         "templatesHeader": "Templates defined in this Opportunity"
+      },
+      "whiteboardDisconnected": {
+        "title": "Whiteboard connection lost",
+        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
+        "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
       }
     },
     "login": {
