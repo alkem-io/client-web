@@ -24579,6 +24579,229 @@ export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.Challe
   return { query: ChallengeExplorerDataDocument, variables: variables };
 }
 
+export const LatestContributionsDocument = gql`
+  query LatestContributions(
+    $first: Int!
+    $after: UUID
+    $roles: [ActivityFeedRoles!]
+    $spaceIds: [UUID!]
+    $myActivity: Boolean
+  ) {
+    activityFeed(
+      args: {
+        pagination: { after: $after, first: $first }
+        roles: $roles
+        spaceIds: $spaceIds
+        myActivity: $myActivity
+      }
+    ) {
+      activityFeed {
+        id
+        collaborationID
+        createdDate
+        description
+        type
+        child
+        parentNameID
+        journeyDisplayName: parentDisplayName
+        __typename
+        triggeredBy {
+          id
+          nameID
+          firstName
+          lastName
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            tagsets {
+              ...TagsetDetails
+            }
+            location {
+              id
+              city
+              country
+            }
+          }
+        }
+        ... on ActivityLogEntryMemberJoined {
+          ...ActivityLogMemberJoined
+        }
+        ... on ActivityLogEntryCalloutPublished {
+          ...ActivityLogCalloutPublished
+        }
+        ... on ActivityLogEntryCalloutPostCreated {
+          ...ActivityLogCalloutPostCreated
+        }
+        ... on ActivityLogEntryCalloutLinkCreated {
+          ...ActivityLogCalloutLinkCreated
+        }
+        ... on ActivityLogEntryCalloutPostComment {
+          ...ActivityLogCalloutPostComment
+        }
+        ... on ActivityLogEntryCalloutWhiteboardCreated {
+          ...ActivityLogCalloutWhiteboardCreated
+        }
+        ... on ActivityLogEntryCalloutDiscussionComment {
+          ...ActivityLogCalloutDiscussionComment
+        }
+        ... on ActivityLogEntryChallengeCreated {
+          ...ActivityLogChallengeCreated
+        }
+        ... on ActivityLogEntryOpportunityCreated {
+          ...ActivityLogOpportunityCreated
+        }
+        ... on ActivityLogEntryUpdateSent {
+          ...ActivityLogUpdateSent
+        }
+        ... on ActivityLogEntryCalendarEventCreated {
+          ...ActivityLogCalendarEventCreated
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutLinkCreatedFragmentDoc}
+  ${ActivityLogCalloutPostCommentFragmentDoc}
+  ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogUpdateSentFragmentDoc}
+  ${ActivityLogCalendarEventCreatedFragmentDoc}
+`;
+
+/**
+ * __useLatestContributionsQuery__
+ *
+ * To run a query within a React component, call `useLatestContributionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestContributionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestContributionsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      roles: // value for 'roles'
+ *      spaceIds: // value for 'spaceIds'
+ *      myActivity: // value for 'myActivity'
+ *   },
+ * });
+ */
+export function useLatestContributionsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LatestContributionsQuery,
+    SchemaTypes.LatestContributionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LatestContributionsQuery, SchemaTypes.LatestContributionsQueryVariables>(
+    LatestContributionsDocument,
+    options
+  );
+}
+
+export function useLatestContributionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestContributionsQuery,
+    SchemaTypes.LatestContributionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LatestContributionsQuery, SchemaTypes.LatestContributionsQueryVariables>(
+    LatestContributionsDocument,
+    options
+  );
+}
+
+export type LatestContributionsQueryHookResult = ReturnType<typeof useLatestContributionsQuery>;
+export type LatestContributionsLazyQueryHookResult = ReturnType<typeof useLatestContributionsLazyQuery>;
+export type LatestContributionsQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestContributionsQuery,
+  SchemaTypes.LatestContributionsQueryVariables
+>;
+export function refetchLatestContributionsQuery(variables: SchemaTypes.LatestContributionsQueryVariables) {
+  return { query: LatestContributionsDocument, variables: variables };
+}
+
+export const LatestContributionsSpacesDocument = gql`
+  query LatestContributionsSpaces {
+    me {
+      spaceMemberships {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useLatestContributionsSpacesQuery__
+ *
+ * To run a query within a React component, call `useLatestContributionsSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestContributionsSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestContributionsSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLatestContributionsSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >(LatestContributionsSpacesDocument, options);
+}
+
+export function useLatestContributionsSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >(LatestContributionsSpacesDocument, options);
+}
+
+export type LatestContributionsSpacesQueryHookResult = ReturnType<typeof useLatestContributionsSpacesQuery>;
+export type LatestContributionsSpacesLazyQueryHookResult = ReturnType<typeof useLatestContributionsSpacesLazyQuery>;
+export type LatestContributionsSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestContributionsSpacesQuery,
+  SchemaTypes.LatestContributionsSpacesQueryVariables
+>;
+export function refetchLatestContributionsSpacesQuery(variables?: SchemaTypes.LatestContributionsSpacesQueryVariables) {
+  return { query: LatestContributionsSpacesDocument, variables: variables };
+}
+
 export const MyMembershipsDocument = gql`
   query MyMemberships {
     me {

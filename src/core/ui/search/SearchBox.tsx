@@ -1,16 +1,6 @@
 import React, { forwardRef, ReactElement, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import {
-  Box,
-  BoxProps,
-  ClickAwayListener,
-  Collapse,
-  Divider,
-  InputBase,
-  InputBaseProps,
-  MenuItem,
-  Select,
-} from '@mui/material';
-import { ExpandMore, Search } from '@mui/icons-material';
+import { Box, BoxProps, ClickAwayListener, Collapse, Divider, InputBase, InputBaseProps } from '@mui/material';
+import { Search } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { BlockSectionTitle } from '../typography';
 import { SelectOption } from '@mui/base';
@@ -19,6 +9,7 @@ import NavigationItemButton from '../navigation/NavigationItemButton';
 import { useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
 import { Collapsible } from '../navigation/Collapsible';
+import SeamlessSelect from '../forms/select/SeamlessSelect';
 
 interface SearchBoxProps<Option> {
   searchTerms: string;
@@ -122,36 +113,15 @@ const SearchBox = forwardRef<Collapsible, BoxProps & SearchBoxProps<string | num
               >
                 {searchOptions && (
                   <>
-                    <Select
+                    <SeamlessSelect
                       onOpen={handleSelectOpen}
                       onClose={handleSelectClose}
                       value={searchOption}
+                      options={searchOptions}
                       onChange={event => setSearchOption(event.target.value as Option)}
-                      size="small"
-                      IconComponent={ExpandMore}
-                      sx={{
-                        height: gutters(2),
-                        '.MuiOutlinedInput-notchedOutline': { border: 'none' },
-                        '.MuiSelect-icon': { top: 0, fontSize: gutters(1) },
-                      }}
-                      renderValue={() => (
-                        <Box display="flex">
-                          <BlockSectionTitle>
-                            {t(`components.search.searchScope.${compact ? 'short' : 'full'}` as const)}
-                          </BlockSectionTitle>
-                          <BlockSectionTitle whiteSpace="pre"> </BlockSectionTitle>
-                          <BlockSectionTitle color="primary" maxWidth="22vw" noWrap>
-                            {searchOptions?.find(({ value }) => value === searchOption)?.label}
-                          </BlockSectionTitle>
-                        </Box>
-                      )}
-                    >
-                      {searchOptions?.map(({ value, label }) => (
-                        <MenuItem value={value}>
-                          <BlockSectionTitle textTransform="none">{label}</BlockSectionTitle>
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      label={t(`components.search.searchScope.${compact ? 'short' : 'full'}` as const)}
+                      typographyComponent={BlockSectionTitle}
+                    />
                     <Divider orientation="vertical" sx={{ height: gutters(1) }} />
                   </>
                 )}

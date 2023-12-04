@@ -31685,6 +31685,549 @@ export type ChallengeExplorerDataQuery = {
   }>;
 };
 
+export type LatestContributionsQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  roles?: InputMaybe<Array<ActivityFeedRoles> | ActivityFeedRoles>;
+  spaceIds?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+  myActivity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type LatestContributionsQuery = {
+  __typename?: 'Query';
+  activityFeed: {
+    __typename?: 'ActivityFeed';
+    activityFeed: Array<
+      | {
+          __typename: 'ActivityLogEntryCalendarEventCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          calendar: { __typename?: 'Calendar'; id: string };
+          calendarEvent: {
+            __typename?: 'CalendarEvent';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutDiscussionComment';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutLinkCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          };
+          reference: {
+            __typename?: 'Reference';
+            id: string;
+            name: string;
+            description?: string | undefined;
+            uri: string;
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutPostComment';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          };
+          post: {
+            __typename?: 'Post';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutPostCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          };
+          post: {
+            __typename?: 'Post';
+            id: string;
+            nameID: string;
+            type: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutPublished';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            type: CalloutType;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutWhiteboardCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          };
+          whiteboard: {
+            __typename?: 'Whiteboard';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryChallengeCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          challenge: {
+            __typename?: 'Challenge';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryMemberJoined';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          communityType: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          user: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryOpportunityCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          opportunity: {
+            __typename?: 'Opportunity';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryUpdateSent';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          message: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+        }
+    >;
+    pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+  };
+};
+
+export type LatestContributionsSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LatestContributionsSpacesQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    spaceMemberships: Array<{
+      __typename?: 'Space';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+    }>;
+  };
+};
+
 export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyMembershipsQuery = {

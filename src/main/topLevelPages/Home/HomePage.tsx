@@ -1,16 +1,11 @@
-import { Box, Grow } from '@mui/material';
 import React, { useState } from 'react';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
 import HomePageFooter from './HomePageFooter';
-import AnonymousUserHome from './AnonymousUserHome';
-import AuthenticatedUserHome from './AuthenticatedUserHome';
 import ReleaseUpdatesDialog from '../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
 import HomePageLayout from './HomePageLayout';
 import PageContent from '../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import { gutters } from '../../../core/ui/grid/utils';
-import { useQueryParams } from '../../../core/routing/useQueryParams';
 import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
 import Loading from '../../../core/ui/loading/Loading';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -18,12 +13,11 @@ import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/use
 import CreateAccountBanner from './CreateAccountBanner';
 import RecentJourneysList from '../myDashboard/recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from '../myDashboard/myMemberships/MyMembershipsDialog';
+import LatestContributions from '../myDashboard/latestContributions/LatestContributions';
+import MyLatestContributions from '../myDashboard/latestContributions/MyLatestContributions';
 
 export const HomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
-
-  const params = useQueryParams();
-  const isFromLanding = params.get('from') === 'landing';
 
   const { innovationHub, innovationHubLoading } = useInnovationHub();
 
@@ -46,19 +40,16 @@ export const HomePage = () => {
       <ReleaseUpdatesDialog />
       <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
       <PageContent>
-        <PageContentColumn columns={12}>
+        <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
+        <PageContentColumn columns={8}>
+          <MyLatestContributions />
           {!isLoadingAuthentication && !isAuthenticated && <CreateAccountBanner />}
-          <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-          {!isFromLanding && (
-            <Grow in={!isLoadingAuthentication} appear>
-              <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">
-                {isAuthenticated ? <AuthenticatedUserHome /> : <AnonymousUserHome />}
-              </Box>
-            </Grow>
-          )}
           <SpacesSection />
           <ContributorsSection />
           <HomePageFooter />
+        </PageContentColumn>
+        <PageContentColumn columns={4}>
+          <LatestContributions />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>

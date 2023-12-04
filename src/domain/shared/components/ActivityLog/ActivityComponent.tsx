@@ -123,7 +123,7 @@ interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeN
   activity: ActivityLogResultType;
 }
 
-const ActivityViewChooser = ({
+export const ActivityViewChooser = ({
   activity,
   ...rest
 }: ActivityViewChooserProps): React.ReactElement<ActivityViewProps> => {

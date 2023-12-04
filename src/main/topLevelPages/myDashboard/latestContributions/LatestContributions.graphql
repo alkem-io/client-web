@@ -1,0 +1,82 @@
+query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles!], $spaceIds: [UUID!], $myActivity: Boolean) {
+  activityFeed(args: {
+    pagination: {
+      after: $after
+      first: $first
+    },
+    roles: $roles
+    spaceIds: $spaceIds
+    myActivity: $myActivity
+  }) {
+    activityFeed {
+      id
+      collaborationID
+      createdDate
+      description
+      type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
+      __typename
+      triggeredBy {
+        id
+        nameID
+        firstName
+        lastName
+        profile {
+          id
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
+      ... on ActivityLogEntryMemberJoined {
+        ...ActivityLogMemberJoined
+      }
+      ... on ActivityLogEntryCalloutPublished {
+        ...ActivityLogCalloutPublished
+      }
+      ... on ActivityLogEntryCalloutPostCreated {
+        ...ActivityLogCalloutPostCreated
+      }
+      ... on ActivityLogEntryCalloutLinkCreated {
+        ...ActivityLogCalloutLinkCreated
+      }
+      ... on ActivityLogEntryCalloutPostComment {
+        ...ActivityLogCalloutPostComment
+      }
+      ... on ActivityLogEntryCalloutWhiteboardCreated {
+        ...ActivityLogCalloutWhiteboardCreated
+      }
+      ... on ActivityLogEntryCalloutDiscussionComment {
+        ...ActivityLogCalloutDiscussionComment
+      }
+      ... on ActivityLogEntryChallengeCreated {
+        ...ActivityLogChallengeCreated
+      }
+      ... on ActivityLogEntryOpportunityCreated {
+        ...ActivityLogOpportunityCreated
+      }
+      ... on ActivityLogEntryUpdateSent {
+        ...ActivityLogUpdateSent
+      }
+      ... on ActivityLogEntryCalendarEventCreated {
+        ...ActivityLogCalendarEventCreated
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
