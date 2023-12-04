@@ -1081,6 +1081,37 @@ export const DiscussionDetailsFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
+export const DiscussionCardFragmentDoc = gql`
+  fragment DiscussionCard on Discussion {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      tagline
+      visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+    category
+    timestamp
+    comments {
+      id
+      messagesCount
+      authorization {
+        myPrivileges
+      }
+    }
+    createdBy
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
 export const AdminCommunityCandidateMemberFragmentDoc = gql`
   fragment AdminCommunityCandidateMember on User {
     id
@@ -9968,37 +9999,12 @@ export const PlatformDiscussionsDocument = gql`
           anonymousReadAccess
         }
         discussions {
-          id
-          nameID
-          profile {
-            id
-            displayName
-            description
-            tagline
-            visual(type: AVATAR) {
-              ...VisualFull
-            }
-          }
-          category
-          timestamp
-          comments {
-            id
-            messagesCount
-            authorization {
-              myPrivileges
-            }
-          }
-          createdBy
-          authorization {
-            id
-            myPrivileges
-            anonymousReadAccess
-          }
+          ...DiscussionCard
         }
       }
     }
   }
-  ${VisualFullFragmentDoc}
+  ${DiscussionCardFragmentDoc}
 `;
 
 /**
@@ -24900,6 +24906,79 @@ export type MyMembershipsQueryResult = Apollo.QueryResult<
 >;
 export function refetchMyMembershipsQuery(variables?: SchemaTypes.MyMembershipsQueryVariables) {
   return { query: MyMembershipsDocument, variables: variables };
+}
+
+export const RecentForumMessagesDocument = gql`
+  query recentForumMessages($limit: Float = 5) {
+    platform {
+      id
+      communication {
+        id
+        discussionCategories
+        authorization {
+          id
+          myPrivileges
+          anonymousReadAccess
+        }
+        discussions(orderBy: DISCUSSIONS_CREATEDATE_DESC, limit: $limit) {
+          ...DiscussionCard
+        }
+      }
+    }
+  }
+  ${DiscussionCardFragmentDoc}
+`;
+
+/**
+ * __useRecentForumMessagesQuery__
+ *
+ * To run a query within a React component, call `useRecentForumMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRecentForumMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRecentForumMessagesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useRecentForumMessagesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.RecentForumMessagesQuery,
+    SchemaTypes.RecentForumMessagesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RecentForumMessagesQuery, SchemaTypes.RecentForumMessagesQueryVariables>(
+    RecentForumMessagesDocument,
+    options
+  );
+}
+
+export function useRecentForumMessagesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RecentForumMessagesQuery,
+    SchemaTypes.RecentForumMessagesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RecentForumMessagesQuery, SchemaTypes.RecentForumMessagesQueryVariables>(
+    RecentForumMessagesDocument,
+    options
+  );
+}
+
+export type RecentForumMessagesQueryHookResult = ReturnType<typeof useRecentForumMessagesQuery>;
+export type RecentForumMessagesLazyQueryHookResult = ReturnType<typeof useRecentForumMessagesLazyQuery>;
+export type RecentForumMessagesQueryResult = Apollo.QueryResult<
+  SchemaTypes.RecentForumMessagesQuery,
+  SchemaTypes.RecentForumMessagesQueryVariables
+>;
+export function refetchRecentForumMessagesQuery(variables?: SchemaTypes.RecentForumMessagesQueryVariables) {
+  return { query: RecentForumMessagesDocument, variables: variables };
 }
 
 export const RecentJourneyDocument = gql`
