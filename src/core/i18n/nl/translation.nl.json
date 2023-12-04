@@ -27,16 +27,16 @@
     ]
   },
   "notifications": {
-    "dont-show-notes": "Deze notities niet meer weergeven",
+    "dont-show-notes": "Don't show this message again",
     "icon": "🎉",
     "releaseUpdates": {
       "2": {
         "title": "We hebben spannend nieuws, er is een nieuwe release vol interessante functionaliteiten uit!",
-        "content": "<b>Exciting news!</b> We've refreshed the main navigation of the platform to let the focus be on your community. Alkemio as a brand is now less visible, taking the role of  \"powering\" your Space. This big and important change also allowed us to simplify the user navigation. So less buttons to distract you from your work inside your Space.<br/><br/>The new layout is as follows:<br/><ul><li><b>Menu:</b> besides your personal profile and settings, you will now find a menu that includes all the jobs you can do on the platform outside of your Space</li><li><b>Navigation:</b> in the top left, you will find the icons of the home page, Space, or Challenge to navigate back</li><li><b>Search:</b> as users were often confused by the two search options (in the Space or the entire platform), we have combined them into one search function with the option to filter</li></ul>We hope this release will bring you one step closer to efficient collaboration! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-11-01)** to read all about the latest changes.<br/><br/>"
+        "content": "<b>Exciting News!</b> We hebben de hoofdnavigatie van het platform vernieuwd om de focus op jouw community te laten liggen. \"Alkemio\" is nu minder zichtbaar en de Spaces zullen \"Powered By Alkemio\" zijn. Deze grote en belangrijke verandering stelde ons ook in staat om de gebruikersnavigatie te vereenvoudigen. Minder knoppen om je af te leiden van je werk in de Space.<br/><br/>De nieuwe lay-out is als volgt:<br/><ul><li><li><b>Menu:</b> naast je persoonlijke profiel en instellingen, vind je nu een menu met alle activiteiten die je kunt doen op het platform buiten de Spaces</li><li><b>Navigatie:</b> in de linkerbovenhoek vind je de iconen van de startpagina Space, of Challenge om terug te navigeren</li><li><b>Zoek:</b> omdat gebruikers vaak in de war werden gebracht door de twee zoekopties (in de Space of het hele platform), hebben we ze in één zoekfunctie gecombineerd met de optie om te filteren</li></ul>We hopen dat deze release je één stap dichterbij een efficiënte samenwerking zal brengen! **[Klik hier](https://alkem-25488729. s-sites-eu1.com/alkemio-release-2023-11-01)** om alles over de laatste wijzigingen te lezen.<br/><br/>"
       },
       "1": {
         "title": "Exciting news, we hebben een nieuwe versie van het paltform gereleased vol interessante functionaliteiten!",
-        "content": "Na een grote refresh van de lay-out en functionaliteiten van de Space, zijn we verder gaan kijken naar het updaten van de <b>Challenges & Opportunities</b>.<br/><br/>Deze zijn:<ul><li>Een prominentere rol voor de <b>Innovation Flow</b> die jouw Challenge of Opportunity zal leiden.</li><li>Daarnaast is het nu mogelijk om mensen zonder een Alkemio account uit te nodigen voor jouw Space.</li></ul><br/><br/>En nog veel meer... **[Klik hier](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** om alles te lezen over de laatste wijzigingen."
+        "content": "Na een grote refresh van de lay-out en functionaliteiten van de Space, zijn we verder gaan kijken naar het updaten van de <b>Challenges & Opportunities</b>.<br/><br/>Deze zijn:<ul><li>Een prominentere rol voor de <b>Innovation Flow</b> die jouw Challenge of Opportunity zal leiden.</li><li>Daarnaast is het nu mogelijk om mensen zonder een Alkemio account uit te nodigen voor jouw Space.</li></ul><br/><br/>En nog veel meer... <b>Klik<clickhere>Klik hier</clickhere></b> om alles te lezen over de laatste wijzigingen."
       }
     }
   },
@@ -54,9 +54,10 @@
     "nl": "Nederlands",
     "es": "Spaans",
     "bg": "Bulgaars",
-    "ua": "Oekraïens",
+    "ua": "Ukrainian",
     "de": "Duits",
     "fr": "Frans",
+    "pt": "Portuguese (Brazil)",
     "inContextTool": "In context vertaling"
   },
   "fields": {
@@ -880,6 +881,7 @@
       "title": "{{journey}} statistieken"
     },
     "dashboardNavigation": {
+      "title": "Challenges en Opportunities in {{space}}",
       "help": "Deze Space bevat de volgende Challenges. Ook zijn de eventuele onderliggende Opportunities zichtbaar.",
       "privateChallenge": "Dit is een gesloten Challenge. Om de inhoud en eventuele onderliggende Opportunities te bekijken, kun je je aanmelden voor de Challenge.",
       "showAll": "Toon alle Challenges en Opportunities in deze Space"
@@ -1581,7 +1583,7 @@
     "innovationLibrary": {
       "shortName": "Bibliotheek",
       "fullName": "Best practices",
-      "title": "De Innovatie Bibliotheek op Alkemio biedt templates en best practices om je te begeleiden",
+      "title": "De Bibliotheek op Alkemio biedt templates en best practices om je te begeleiden",
       "subtitle": "Open de onderstaande Innovatiepakketten om alle templates voor whiteboards, posts en innovatie flows te verkennen. Als je meer wilt weten <click>klik dan hier</click>.",
       "useTemplateButton": "Vind dit template via de template bibliotheek in jouw Space om het te gebruiken.",
       "innovationPacks": {
@@ -1623,7 +1625,7 @@
             "description": "Hier kun je Templates maken en aanpassen voor deze {{entity}}.",
             "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Space? Alle informatie in de templates is namelijk ook aan te passen.",
             "import": {
-              "title": "Sjabloon bibliotheek: {{templateType}}",
+              "title": "Templates Bibliotheek: {{templateType}}",
               "subtitle": "Zoek templates om te gebruiken in je Space, Challenge of Opportunity. Selecteer een template en klik op 'importeer' om deze toe te voegen.",
               "callout-template-import-subtitle": "Vind een template die mensen kunnen gebruiken voor het bijdragen aan jouw $t(common.callout)",
               "no-templates": "Ert zijn geen templates gevonden in deze Space, maar neem een kijkje hieronder om andere templates van het platform te vinden",
@@ -2130,6 +2132,11 @@
       },
       "opportunity": {
         "templatesHeader": "Templates gedefinieerd in deze Opportunity"
+      },
+      "whiteboardDisconnected": {
+        "title": "Whiteboard connection lost",
+        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
+        "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
       }
     },
     "login": {

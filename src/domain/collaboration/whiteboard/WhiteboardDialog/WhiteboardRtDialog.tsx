@@ -11,7 +11,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress, DialogActions } from '@mui/material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
@@ -26,12 +26,12 @@ import {
   WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { Caption } from '../../../../core/ui/typography';
+import { Text, Caption } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: boolean | undefined }) => {
   const { t } = useTranslation();
@@ -128,6 +128,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const { whiteboard } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
   const collabApiRef = useRef<CollabAPI>(null);
+  const [collaborationEnabled, setCollaborationEnabled] = useState(true);
+  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
   const styles = useStyles();
 
@@ -183,7 +185,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const onClose = async () => {
-    if (options.canEdit) {
+    if (options.canEdit && collaborationEnabled) {
       const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
       if (!whiteboard || !whiteboardApi) {
         return;
@@ -227,55 +229,55 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   }, [initialValues]);
 
   return (
-    <Dialog
-      open={options.show}
-      aria-labelledby="whiteboard-dialog"
-      maxWidth={false}
-      fullWidth
-      classes={{
-        paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
-      }}
-      onClose={onClose}
-      fullScreen={options.fullscreen}
-    >
-      <Formik
-        innerRef={formikRef}
-        initialValues={initialValues}
-        onSubmit={() => {}}
-        validationSchema={whiteboardSchema}
+    <>
+      <Dialog
+        open={options.show}
+        aria-labelledby="whiteboard-dialog"
+        maxWidth={false}
+        fullWidth
+        classes={{
+          paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
+        }}
+        onClose={onClose}
+        fullScreen={options.fullscreen}
       >
-        {() => (
-          <>
-            <DialogHeader
-              actions={options.headerActions}
-              onClose={onClose}
-              titleContainerProps={{ flexDirection: 'row' }}
-            >
-              {options.fixedDialogTitle ? (
-                options.fixedDialogTitle
-              ) : (
-                <Box
-                  component={FormikInputField}
-                  title={t('fields.displayName')}
-                  name="displayName"
-                  size="small"
-                  maxWidth={gutters(30)}
-                />
-              )}
-              {options.canEdit && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
-              <span>
-                RT<sup title=":)">beta</sup>
-              </span>
-            </DialogHeader>
-            <DialogContent classes={{ root: styles.dialogContent }}>
-              {!state?.loadingWhiteboardValue &&
-                whiteboard &&
-                (options.canEdit ? (
+        <Formik
+          innerRef={formikRef}
+          initialValues={initialValues}
+          onSubmit={() => {}}
+          validationSchema={whiteboardSchema}
+        >
+          {() => (
+            <>
+              <DialogHeader
+                actions={options.headerActions}
+                onClose={onClose}
+                titleContainerProps={{ flexDirection: 'row' }}
+              >
+                {options.fixedDialogTitle ? (
+                  options.fixedDialogTitle
+                ) : (
+                  <Box
+                    component={FormikInputField}
+                    title={t('fields.displayName')}
+                    name="displayName"
+                    size="small"
+                    maxWidth={gutters(30)}
+                  />
+                )}
+                {options.canEdit && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
+                <span>
+                  RT<sup title=":)">beta</sup>
+                </span>
+              </DialogHeader>
+              <DialogContent classes={{ root: styles.dialogContent }}>
+                {!state?.loadingWhiteboardValue && whiteboard && (
                   <CollaborativeExcalidrawWrapper
                     entities={{ whiteboard, filesManager }}
                     ref={excalidrawApiRef}
                     collabApiRef={collabApiRef}
                     options={{
+                      viewModeEnabled: !options.canEdit,
                       UIOptions: {
                         canvasActions: {
                           export: {
@@ -292,35 +294,41 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                         });
                       },
                     }}
-                  />
-                ) : (
-                  <ExcalidrawWrapper
-                    ref={excalidrawApiRef}
-                    entities={{
-                      whiteboard,
-                      filesManager,
-                    }}
-                    actions={{}}
-                    options={{
-                      viewModeEnabled: true,
-                      UIOptions: {
-                        canvasActions: {
-                          export: false,
-                        },
+                    events={{
+                      onCollaborationEnabledChange: enabled => {
+                        setCollaborationEnabled(enabled);
+                        setCollaborationStoppedNoticeOpen(!enabled);
                       },
                     }}
                   />
-                ))}
-              {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
-            </DialogContent>
-            <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
-              {!options.canEdit && <Caption>You can't edit this whiteboard</Caption>}
-            </Actions>
-          </>
-        )}
-      </Formik>
-    </Dialog>
+                )}
+                {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
+              </DialogContent>
+              <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+                <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
+                {!options.canEdit && <Caption>You can't edit this whiteboard</Caption>}
+              </Actions>
+            </>
+          )}
+        </Formik>
+      </Dialog>
+      <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
+        <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
+        <DialogContent>
+          <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>
+          {lastSavedDate && (
+            <Text>
+              {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
+                lastSaved: formatTimeElapsed(lastSavedDate, t),
+              })}
+            </Text>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

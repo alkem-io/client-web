@@ -50,6 +50,7 @@ interface PublicProps {
   onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
   filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
+  onCloseConnection: () => void;
 }
 
 type Props = PublicProps;
@@ -65,6 +66,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
+  private onCloseConnection: () => void;
   private alreadySharedFiles: string[] = [];
 
   constructor(props: Props) {
@@ -74,12 +76,18 @@ class Collab extends PureComponent<Props, CollabState> {
       username: props.username,
       activeRoomLink: '',
     };
-    this.portal = new Portal({ collab: this, filesManager: props.filesManager, onSaveRequest: props.onSaveRequest });
+    this.portal = new Portal({
+      collab: this,
+      filesManager: props.filesManager,
+      onSaveRequest: props.onSaveRequest,
+      onCloseConnection: this.handleCloseConnection,
+    });
     this.excalidrawAPI = props.excalidrawAPI;
     this.filesManager = props.filesManager;
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
     this.onSavedToDatabase = props.onSavedToDatabase;
+    this.onCloseConnection = props.onCloseConnection;
     this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
@@ -140,6 +148,11 @@ class Collab extends PureComponent<Props, CollabState> {
 
   private onUnload = () => {
     this.destroySocketClient({ isUnload: true });
+  };
+
+  private handleCloseConnection = () => {
+    this.setCollaborators([]);
+    this.onCloseConnection();
   };
 
   stopCollaboration = () => {

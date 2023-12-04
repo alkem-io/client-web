@@ -40,7 +40,7 @@ interface SpaceWelcomeBlockContributor {
 }
 
 interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
-  displayName: ReactNode;
+  displayName: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
   spaceVisibility?: SpaceVisibility;
