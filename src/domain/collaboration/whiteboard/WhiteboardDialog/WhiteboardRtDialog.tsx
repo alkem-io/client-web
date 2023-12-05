@@ -24,7 +24,7 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import { WhiteboardRtWithContent, WhiteboardRtWithoutContent } from '../containers/WhiteboardRtContentContainer';
 import {
   WhiteboardPreviewImage,
-  generateWhiteboardPreviewImages,
+  // generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Text, Caption } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
@@ -156,7 +156,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     }
     const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    // Temporary disabled until we figure out how to throttle preview image upload
+    // const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
@@ -174,8 +175,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
           displayName,
         },
         content,
-      } as Whiteboard,
-      previewImages
+      } as Whiteboard
+      // previewImages
     );
 
     collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
