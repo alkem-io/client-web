@@ -24,7 +24,7 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import { WhiteboardRtWithContent, WhiteboardRtWithoutContent } from '../containers/WhiteboardRtContentContainer';
 import {
   WhiteboardPreviewImage,
-  // generateWhiteboardPreviewImages,
+  generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Text, Caption } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
@@ -149,15 +149,17 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
   const handleUpdate = async (
     whiteboard: WhiteboardRtWithContent,
-    state: RelevantExcalidrawState | undefined
+    state: RelevantExcalidrawState | undefined,
+    shouldUploadPreviewImages = false
   ): Promise<{ success: boolean; errors?: string[] }> => {
     if (!state) {
       return { success: false, errors: ['Excalidraw state not defined'] };
     }
     const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
-    // Temporary disabled until we figure out how to throttle preview image upload
-    // const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    const previewImages = shouldUploadPreviewImages
+      ? await generateWhiteboardPreviewImages(whiteboard, state)
+      : undefined;
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
@@ -175,8 +177,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
           displayName,
         },
         content,
-      } as Whiteboard
-      // previewImages
+      } as Whiteboard,
+      previewImages
     );
 
     collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
@@ -198,7 +200,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         appState: whiteboardApi.getAppState(),
         files: whiteboardApi.getFiles(),
       };
-      await handleUpdate(whiteboard, state);
+      await handleUpdate(whiteboard, state, true);
     }
     actions.onCancel(whiteboard!);
   };
