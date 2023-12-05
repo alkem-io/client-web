@@ -1,10 +1,12 @@
 import { List, ListItemText } from '@mui/material';
 import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Filter } from '../../../platform/admin/components/Common/Filter';
 import DiscussionOverview from './DiscussionOverview';
 import { Discussion } from '../models/Discussion';
 import { ViewProps } from '../../../../core/container/view';
+import { BlockTitle } from '../../../../core/ui/typography';
 
 interface DiscussionListViewEntities {
   discussions: Discussion[];
@@ -12,12 +14,8 @@ interface DiscussionListViewEntities {
 interface DiscussionListViewState {
   loading: boolean;
 }
-interface DiscussionListViewActions {
-  onClickDiscussion: (discussion: Discussion) => void;
-}
-interface DiscussionListViewOptions {
-  filterEnabled: boolean;
-}
+interface DiscussionListViewActions {}
+interface DiscussionListViewOptions {}
 
 interface DiscussionListViewProps
   extends ViewProps<
@@ -27,12 +25,15 @@ interface DiscussionListViewProps
     DiscussionListViewOptions
   > {}
 
-export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, state, actions, options }) => {
+export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, state }) => {
+  const { t } = useTranslation();
+
   const { discussions } = entities;
   const { loading } = state;
 
   return (
     <>
+      <BlockTitle>{t('components.discussions-list.title', { count: discussions.length })}</BlockTitle>
       {loading && (
         <List>
           <ListItemText
@@ -46,7 +47,7 @@ export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, stat
           />
         </List>
       )}
-      {!loading && options.filterEnabled && (
+      {!loading && (
         <Filter
           data={discussions}
           limitKeys={['title']}
@@ -58,18 +59,11 @@ export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, stat
           {filteredData => (
             <List>
               {filteredData.map((item, index) => (
-                <DiscussionOverview key={index} discussion={item} onClick={actions.onClickDiscussion} />
+                <DiscussionOverview key={index} discussion={item} />
               ))}
             </List>
           )}
         </Filter>
-      )}
-      {!loading && !options.filterEnabled && (
-        <List>
-          {discussions.map((item, index) => (
-            <DiscussionOverview key={index} discussion={item} onClick={actions.onClickDiscussion} />
-          ))}
-        </List>
       )}
     </>
   );

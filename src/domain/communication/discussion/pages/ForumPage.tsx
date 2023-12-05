@@ -10,7 +10,8 @@ import {
   CommunicationDiscussionUpdatedDocument,
   usePlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Discussion, useDiscussionMapper } from '../models/Discussion';
+import { Discussion } from '../models/Discussion';
+import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { compact } from 'lodash';
 import {
   AuthorizationPrivilege,
@@ -29,8 +30,6 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { BlockTitle } from '../../../../core/ui/typography';
-import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -74,17 +73,31 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
     data?.platform.communication.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateDiscussion) ??
     false;
 
-  const { discussionMapper } = useDiscussionMapper(
-    compact(data?.platform.communication.discussions?.map(d => d.createdBy))
-  );
+  const authors = useAuthorsDetails(compact(data?.platform.communication.discussions?.map(d => d.createdBy)));
 
   const discussions = useMemo(() => {
     return (
       data?.platform.communication.discussions
         ?.filter(d => categorySelected === ALL_CATEGORIES || d.category === categorySelected)
-        .map<Discussion>(discussionMapper) ?? []
+        .map<Discussion>(d => ({
+          id: d.id,
+          nameID: d.nameID,
+          title: d.profile.displayName,
+          category: d.category,
+          myPrivileges: d.authorization?.myPrivileges,
+          author: d.createdBy ? authors.getAuthor(d.createdBy) : undefined,
+          authors: authors.authors ?? [],
+          description: d.profile.description,
+          createdAt: d.timestamp ? new Date(d.timestamp) : undefined,
+          comments: {
+            id: d.comments.id,
+            messagesCount: d.comments.messagesCount,
+            messages: [],
+            myPrivileges: d.comments.authorization?.myPrivileges,
+          },
+        })) ?? []
     );
-  }, [data, discussionMapper, categorySelected]);
+  }, [data, authors, authors.authors, categorySelected]);
 
   const categories = useMemo(
     () => [
@@ -106,10 +119,6 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const loading = loadingDiscussions || loadingUser;
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
-
-  const handleClickDiscussion = (discussionNameId: string) => {
-    navigate(buildDiscussionUrl('/forum', discussionNameId));
-  };
 
   return (
     <StorageConfigContextProvider locationType="platform">
@@ -154,7 +163,6 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
               />
             }
           >
-            <BlockTitle>{t('components.discussions-list.title', { count: discussions.length })}</BlockTitle>
             <DiscussionListView
               entities={{
                 discussions,
@@ -162,12 +170,8 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
               state={{
                 loading: loading,
               }}
-              actions={{
-                onClickDiscussion: discussion => handleClickDiscussion(discussion.nameID),
-              }}
-              options={{
-                filterEnabled: true,
-              }}
+              actions={{}}
+              options={{}}
             />
             {!loading && communicationId && (
               <NewDiscussionDialog
