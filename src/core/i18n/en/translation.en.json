@@ -1977,6 +1977,12 @@
           "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
           "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
         },
+        "startingSpace": {
+          "icon": "🎉",
+          "title": "Starting a Space",
+          "description": "Ready to build a community on Alkemio? Click here to get started!",
+          "url": "https://alkemio.foundation/contact/"
+        },
         "my-spaces": {
           "header": "My Spaces ({{mySpacesCount}})"
         },
