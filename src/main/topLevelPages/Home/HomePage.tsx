@@ -17,6 +17,7 @@ import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/use
 import CreateAccountBanner from './CreateAccountBanner';
 import RecentJourneysList from '../myDashboard/recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from '../myDashboard/myMemberships/MyMembershipsDialog';
+import MoreAboutAlkemio from '../myDashboard/moreAboutAlkemio/MoreAboutAlkemio';
 
 export const HomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -57,6 +58,7 @@ export const HomePage = () => {
           )}
           <SpacesSection />
           <ContributorsSection />
+          <MoreAboutAlkemio />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>
