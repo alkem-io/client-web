@@ -2681,11 +2681,14 @@ export type TemplatesSetKeySpecifier = (
   | 'id'
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
+  | 'innovationFlowTemplatesCount'
   | 'policy'
   | 'postTemplate'
   | 'postTemplates'
+  | 'postTemplatesCount'
   | 'whiteboardTemplate'
   | 'whiteboardTemplates'
+  | 'whiteboardTemplatesCount'
   | TemplatesSetKeySpecifier
 )[];
 export type TemplatesSetFieldPolicy = {
@@ -2694,11 +2697,14 @@ export type TemplatesSetFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TemplatesSetPolicyKeySpecifier = ('minInnovationFlow' | TemplatesSetPolicyKeySpecifier)[];
 export type TemplatesSetPolicyFieldPolicy = {

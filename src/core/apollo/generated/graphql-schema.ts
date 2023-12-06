@@ -1029,8 +1029,7 @@ export type CommunicationDiscussionArgs = {
 };
 
 export type CommunicationDiscussionsArgs = {
-  limit?: InputMaybe<Scalars['Float']>;
-  orderBy?: InputMaybe<DiscussionsOrderBy>;
+  queryData?: InputMaybe<DiscussionsInput>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1855,6 +1854,13 @@ export enum DiscussionCategory {
   Sharing = 'SHARING',
 }
 
+export type DiscussionsInput = {
+  /** The number of Discussion entries to return; if omitted return all Discussions. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** The sort order of the Discussions to return. */
+  orderBy?: InputMaybe<DiscussionsOrderBy>;
+};
+
 export enum DiscussionsOrderBy {
   DiscussionsCreatedateAsc = 'DISCUSSIONS_CREATEDATE_ASC',
   DiscussionsCreatedateDesc = 'DISCUSSIONS_CREATEDATE_DESC',
@@ -2057,6 +2063,19 @@ export type InnovationPack = {
   templates?: Maybe<TemplatesSet>;
 };
 
+export type InnovationPacksInput = {
+  /** The number of Discussion entries to return; if omitted return all InnovationPacks. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** The sort order of the InnovationPacks to return. Defaults to number of templates Descending. */
+  orderBy?: InputMaybe<InnovationPacksOrderBy>;
+};
+
+export enum InnovationPacksOrderBy {
+  NumberOfTemplatesAsc = 'NUMBER_OF_TEMPLATES_ASC',
+  NumberOfTemplatesDesc = 'NUMBER_OF_TEMPLATES_DESC',
+  Random = 'RANDOM',
+}
+
 export type Invitation = {
   __typename?: 'Invitation';
   /** The authorization rules for the entity */
@@ -2149,6 +2168,10 @@ export type Library = {
 
 export type LibraryInnovationPackArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type LibraryInnovationPacksArgs = {
+  queryData?: InputMaybe<InnovationPacksInput>;
 };
 
 export type License = {
@@ -4905,16 +4928,22 @@ export type TemplatesSet = {
   innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
   /** The InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplates: Array<InnovationFlowTemplate>;
+  /** The total number of InnovationFlowTemplates in this TemplatesSet. */
+  innovationFlowTemplatesCount: Scalars['Float'];
   /** The policy for this TemplatesSet. */
   policy?: Maybe<TemplatesSetPolicy>;
   /** A single PostTemplate */
   postTemplate?: Maybe<PostTemplate>;
   /** The PostTemplates in this TemplatesSet. */
   postTemplates: Array<PostTemplate>;
+  /** The total number of PostTemplates in this TemplatesSet. */
+  postTemplatesCount: Scalars['Float'];
   /** A single WhiteboardTemplate */
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
   /** The WhiteboardTemplates in this TemplatesSet. */
   whiteboardTemplates: Array<WhiteboardTemplate>;
+  /** The total number of WhiteboardTemplates in this TemplatesSet. */
+  whiteboardTemplatesCount: Scalars['Float'];
 };
 
 export type TemplatesSetInnovationFlowTemplateArgs = {
