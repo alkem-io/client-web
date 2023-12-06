@@ -1029,8 +1029,7 @@ export type CommunicationDiscussionArgs = {
 };
 
 export type CommunicationDiscussionsArgs = {
-  limit?: InputMaybe<Scalars['Float']>;
-  orderBy?: InputMaybe<DiscussionsOrderBy>;
+  queryData?: InputMaybe<DiscussionsInput>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1855,6 +1854,13 @@ export enum DiscussionCategory {
   Sharing = 'SHARING',
 }
 
+export type DiscussionsInput = {
+  /** The number of Discussion entries to return; if omitted return all Discussions. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** The sort order of the Discussions to return. */
+  orderBy?: InputMaybe<DiscussionsOrderBy>;
+};
+
 export enum DiscussionsOrderBy {
   DiscussionsCreatedateAsc = 'DISCUSSIONS_CREATEDATE_ASC',
   DiscussionsCreatedateDesc = 'DISCUSSIONS_CREATEDATE_DESC',
@@ -2057,6 +2063,19 @@ export type InnovationPack = {
   templates?: Maybe<TemplatesSet>;
 };
 
+export type InnovationPacksInput = {
+  /** The number of Discussion entries to return; if omitted return all InnovationPacks. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** The sort order of the InnovationPacks to return. Defaults to number of templates ASC */
+  orderBy?: InputMaybe<InnovationPacksOrderBy>;
+};
+
+export enum InnovationPacksOrderBy {
+  NumberOfTemplatesAsc = 'NUMBER_OF_TEMPLATES_ASC',
+  NumberOfTemplatesDesc = 'NUMBER_OF_TEMPLATES_DESC',
+  Random = 'RANDOM',
+}
+
 export type Invitation = {
   __typename?: 'Invitation';
   /** The authorization rules for the entity */
@@ -2149,6 +2168,10 @@ export type Library = {
 
 export type LibraryInnovationPackArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type LibraryInnovationPacksArgs = {
+  queryData?: InputMaybe<InnovationPacksInput>;
 };
 
 export type License = {
@@ -4905,16 +4928,22 @@ export type TemplatesSet = {
   innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
   /** The InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplates: Array<InnovationFlowTemplate>;
+  /** The total number of InnovationFlowTemplates in this TemplatesSet. */
+  innovationFlowTemplatesCount: Scalars['Float'];
   /** The policy for this TemplatesSet. */
   policy?: Maybe<TemplatesSetPolicy>;
   /** A single PostTemplate */
   postTemplate?: Maybe<PostTemplate>;
   /** The PostTemplates in this TemplatesSet. */
   postTemplates: Array<PostTemplate>;
+  /** The total number of PostTemplates in this TemplatesSet. */
+  postTemplatesCount: Scalars['Float'];
   /** A single WhiteboardTemplate */
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
   /** The WhiteboardTemplates in this TemplatesSet. */
   whiteboardTemplates: Array<WhiteboardTemplate>;
+  /** The total number of WhiteboardTemplates in this TemplatesSet. */
+  whiteboardTemplatesCount: Scalars['Float'];
 };
 
 export type TemplatesSetInnovationFlowTemplateArgs = {
@@ -7907,7 +7936,7 @@ export type InnovationPackProfilePageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                 }
               | undefined;
@@ -27799,7 +27828,7 @@ export type InnovationPacksQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }
           | undefined;
@@ -27932,7 +27961,7 @@ export type InnovationPackProviderProfileWithAvatarFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
 
@@ -28126,7 +28155,7 @@ export type AdminInnovationPackQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                 }
               | undefined;
@@ -31363,6 +31392,9 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
               postTemplates: Array<{
                 __typename?: 'PostTemplate';
                 id: string;
@@ -31441,7 +31473,7 @@ export type InnovationLibraryQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }
           | undefined;
@@ -31450,7 +31482,7 @@ export type InnovationLibraryQuery = {
   };
 };
 
-export type InnovationPackCardFragment = {
+export type InnovationPackDataFragment = {
   __typename?: 'InnovationPack';
   id: string;
   nameID: string;
@@ -31474,6 +31506,9 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'TemplatesSet';
         id: string;
+        postTemplatesCount: number;
+        whiteboardTemplatesCount: number;
+        innovationFlowTemplatesCount: number;
         postTemplates: Array<{
           __typename?: 'PostTemplate';
           id: string;
@@ -31552,7 +31587,7 @@ export type InnovationPackCardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       }
     | undefined;
@@ -31561,6 +31596,9 @@ export type InnovationPackCardFragment = {
 export type LibraryTemplatesFragment = {
   __typename?: 'TemplatesSet';
   id: string;
+  postTemplatesCount: number;
+  whiteboardTemplatesCount: number;
+  innovationFlowTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'PostTemplate';
     id: string;
@@ -31740,6 +31778,105 @@ export type ChallengeExplorerDataQuery = {
         }>
       | undefined;
   }>;
+};
+
+export type InnovationLibraryBlockQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationLibraryBlockQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        };
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
+            }
+          | undefined;
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type InnovationPackCardFragment = {
+  __typename?: 'InnovationPack';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+  };
+  templates?:
+    | {
+        __typename?: 'TemplatesSet';
+        postTemplatesCount: number;
+        whiteboardTemplatesCount: number;
+        innovationFlowTemplatesCount: number;
+      }
+    | undefined;
+  provider?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;

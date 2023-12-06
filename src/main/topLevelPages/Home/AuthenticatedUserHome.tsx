@@ -4,6 +4,7 @@ import MySpacesSection from '../../../domain/journey/space/MySpaces/MySpacesSect
 import { gutters } from '../../../core/ui/grid/utils';
 import RecentForumMessages from '../myDashboard/recentForumMessages/RecentForumMessages';
 import StartingSpace from '../myDashboard/startingSpace/StartingSpace';
+import InnovationLibraryBlock from '../myDashboard/innovationLibraryBlock/InnovationLibraryBlock';
 
 const AuthenticatedUserHome = forwardRef<HTMLDivElement>((props, ref) => {
   return (
@@ -11,6 +12,7 @@ const AuthenticatedUserHome = forwardRef<HTMLDivElement>((props, ref) => {
       <MySpacesSection />
       {/* TODO: This is not the final location for this block */}
       <RecentForumMessages />
+      <InnovationLibraryBlock />
       <StartingSpace />
     </Box>
   );
