@@ -624,6 +624,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
@@ -1026,6 +1027,10 @@ export type Communication = {
 
 export type CommunicationDiscussionArgs = {
   ID: Scalars['String'];
+};
+
+export type CommunicationDiscussionsArgs = {
+  queryData?: InputMaybe<DiscussionsInput>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1848,6 +1853,18 @@ export enum DiscussionCategory {
   PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
   Questions = 'QUESTIONS',
   Sharing = 'SHARING',
+}
+
+export type DiscussionsInput = {
+  /** The number of Discussion entries to return; if omitted return all Discussions. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** The sort order of the Discussions to return. */
+  orderBy?: InputMaybe<DiscussionsOrderBy>;
+};
+
+export enum DiscussionsOrderBy {
+  DiscussionsCreatedateAsc = 'DISCUSSIONS_CREATEDATE_ASC',
+  DiscussionsCreatedateDesc = 'DISCUSSIONS_CREATEDATE_DESC',
 }
 
 export type Document = {
