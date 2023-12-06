@@ -2,7 +2,6 @@ import { Box, Grow } from '@mui/material';
 import React, { useState } from 'react';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
-import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
 import ReleaseUpdatesDialog from '../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
@@ -58,7 +57,6 @@ export const HomePage = () => {
           )}
           <SpacesSection />
           <ContributorsSection />
-          <HomePageFooter />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>
