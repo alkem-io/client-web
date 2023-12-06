@@ -149,14 +149,17 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
   const handleUpdate = async (
     whiteboard: WhiteboardRtWithContent,
-    state: RelevantExcalidrawState | undefined
+    state: RelevantExcalidrawState | undefined,
+    shouldUploadPreviewImages = false
   ): Promise<{ success: boolean; errors?: string[] }> => {
     if (!state) {
       return { success: false, errors: ['Excalidraw state not defined'] };
     }
     const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    const previewImages = shouldUploadPreviewImages
+      ? await generateWhiteboardPreviewImages(whiteboard, state)
+      : undefined;
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
@@ -197,7 +200,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         appState: whiteboardApi.getAppState(),
         files: whiteboardApi.getFiles(),
       };
-      await handleUpdate(whiteboard, state);
+      await handleUpdate(whiteboard, state, true);
     }
     actions.onCancel(whiteboard!);
   };
