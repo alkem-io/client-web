@@ -1,7 +1,7 @@
 import { Box, Grow } from '@mui/material';
 import React, { useState } from 'react';
 import ContributorsSection from './ContributorsSection';
-import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
+import ExploreOtherChallenges from '../myDashboard/exploreOtherChallenges/ExploreOtherChallenges';
 import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
@@ -56,7 +56,7 @@ export const HomePage = () => {
               </Box>
             </Grow>
           )}
-          <SpacesSection />
+          <ExploreOtherChallenges />
           <ContributorsSection />
           <HomePageFooter />
         </PageContentColumn>

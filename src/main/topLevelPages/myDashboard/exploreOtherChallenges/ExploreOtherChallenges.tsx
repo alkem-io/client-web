@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Box } from '@mui/material';
 import DashboardSpacesSection, {
   DashboardSpaceSectionProps,
-} from '../../../shared/components/DashboardSections/DashboardSpacesSection';
+} from '../../../../domain/shared/components/DashboardSections/DashboardSpacesSection';
 import { useDashboardSpacesPaginatedQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../core/ui/loading/Loading';
 import { Caption } from '../../../../core/ui/typography';
@@ -13,15 +13,15 @@ import {
   DashboardSpacesPaginatedQueryVariables,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
-import FilterByTag from '../FilterByTag/FilterByTag';
-import FilterButtons from '../FilterByTag/FilterButtons';
+import FilterByTag from '../../../../domain/journey/space/FilterByTag/FilterByTag';
+import FilterButtons from '../../../../domain/journey/space/FilterByTag/FilterButtons';
 import { useTranslation } from 'react-i18next';
-import useLazyLoading from '../../../shared/pagination/useLazyLoading';
-import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
+import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
+import usePaginatedQuery from '../../../../domain/shared/pagination/usePaginatedQuery';
 
 const SPACES_PAGE_SIZE = 10;
 
-const SpacesSection = () => {
+const ExploreOtherChallenges = () => {
   const { t: tLineBreaks } = useTranslationWithLineBreaks();
   const { t: tRaw } = useTranslation();
 
@@ -104,4 +104,4 @@ const SpacesSection = () => {
   );
 };
 
-export default SpacesSection;
+export default ExploreOtherChallenges;
