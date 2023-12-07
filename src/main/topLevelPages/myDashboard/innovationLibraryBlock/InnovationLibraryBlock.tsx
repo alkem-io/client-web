@@ -5,7 +5,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { Caption } from '../../../../core/ui/typography';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import InnovationPackCard from '../../../../domain/collaboration/InnovationPack/InnovationPackCard/InnovationPackCard';
 import useInnovationPackCardProps from '../../../../domain/collaboration/InnovationPack/DashboardInnovationPacks/useInnovationPackCardProps';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -18,18 +18,19 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
   const { data, loading } = useInnovationLibraryBlockQuery();
   const innovationPacks = useInnovationPackCardProps(data?.platform.library.innovationPacks);
   const innovationPack = innovationPacks && innovationPacks.length > 0 ? innovationPacks[0] : undefined;
+  const theme = useTheme();
 
-  return (
+  return loading || innovationPack ? (
     <PageContentBlock>
       <PageContentBlockHeader title={t('pages.home.sections.innovationLibraryBlock.title')} />
-      <Box display="flex" flexDirection="row" gap={gutters()}>
-        {(loading || !innovationPack) && <ContributeCardSkeleton />}
+      <Box display="flex" gap={gutters()} sx={{ [theme.breakpoints.only('xs')]: { flexWrap: 'wrap' } }}>
+        {loading && <ContributeCardSkeleton />}
         {!loading && innovationPack && <InnovationPackCard {...innovationPack} />}
         <Caption>{t('pages.home.sections.innovationLibraryBlock.description')}</Caption>
       </Box>
       <SeeMore label="pages.home.sections.innovationLibraryBlock.seeMore" to="/innovation-library" />
     </PageContentBlock>
-  );
+  ) : null;
 };
 
 export default InnovationLibraryBlock;

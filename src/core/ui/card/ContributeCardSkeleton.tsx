@@ -1,21 +1,15 @@
 import { Skeleton } from '@mui/material';
 import React from 'react';
-import ContributeCard, { CONTRIBUTE_CARD_COLUMNS } from './ContributeCard';
+import ContributeCard, { ContributeCardProps } from './ContributeCard';
 import CardHeader from './CardHeader';
-import CardFooter from './CardFooter';
-import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
 import { gutters } from '../grid/utils';
 
-const ContributeCardSkeleton = () => {
-  const breakpoint = useCurrentBreakpoint();
-
+const ContributeCardSkeleton = (props: ContributeCardProps) => {
   return (
-    <ContributeCard columns={breakpoint === 'xs' ? 2 : CONTRIBUTE_CARD_COLUMNS}>
+    <ContributeCard {...props}>
       <CardHeader title={<Skeleton />} />
-      <Skeleton variant="rectangular" sx={{ height: gutters(5) }} />
-      <CardFooter flexDirection="column" alignItems="stretch" height="auto">
-        <Skeleton sx={{ marginY: gutters() }} />
-      </CardFooter>
+      <Skeleton variant="rectangular" sx={{ height: gutters(8) }} />
+      <Skeleton sx={{ margin: gutters() }} />
     </ContributeCard>
   );
 };
