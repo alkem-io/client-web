@@ -24697,7 +24697,7 @@ export const RecentForumMessagesDocument = gql`
           myPrivileges
           anonymousReadAccess
         }
-        discussions(orderBy: DISCUSSIONS_CREATEDATE_DESC, limit: $limit) {
+        discussions(queryData: { orderBy: DISCUSSIONS_CREATEDATE_DESC, limit: $limit }) {
           ...DiscussionCard
         }
       }

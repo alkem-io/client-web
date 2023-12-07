@@ -2,7 +2,8 @@ import { Box, Grow } from '@mui/material';
 import React, { useState } from 'react';
 import ContributorsSection from './ContributorsSection';
 import ExploreOtherChallenges from '../myDashboard/exploreOtherChallenges/ExploreOtherChallenges';
-import HomePageFooter from './HomePageFooter';
+import RecentForumMessages from '../myDashboard/recentForumMessages/RecentForumMessages';
+import MoreAboutAlkemio from '../myDashboard/moreAboutAlkemio/MoreAboutAlkemio';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
 import ReleaseUpdatesDialog from '../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
@@ -58,7 +59,8 @@ export const HomePage = () => {
           )}
           <ExploreOtherChallenges />
           <ContributorsSection />
-          <HomePageFooter />
+          <RecentForumMessages />
+          <MoreAboutAlkemio />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>

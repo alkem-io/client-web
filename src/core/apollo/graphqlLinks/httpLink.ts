@@ -6,7 +6,7 @@ import { createClient } from 'graphql-ws';
 import { env } from '../../../main/env';
 import { logger } from '../../logging/winston/logger';
 
-const WS_RETRY_ATTEMPTS = 10;
+const WS_RETRY_ATTEMPTS = 5;
 const DOMAIN = env?.VITE_APP_ALKEMIO_DOMAIN ?? window.location.origin;
 
 export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => {
