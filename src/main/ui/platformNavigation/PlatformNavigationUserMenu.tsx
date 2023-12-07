@@ -28,6 +28,7 @@ import { useLocation } from 'react-router-dom';
 import NavigatableMenuItem from '../../../core/ui/menu/NavigatableMenuItem';
 import GlobalMenuSurface from '../../../core/ui/menu/GlobalMenuSurface';
 import { FocusTrap } from '@mui/base/FocusTrap';
+import usePlatformOrigin from '../../../domain/platform/routes/usePlatformOrigin';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -39,6 +40,9 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const { t } = useTranslation();
 
     const { pathname } = useLocation();
+
+    const platformOrigin = usePlatformOrigin();
+    const homeUrl = platformOrigin && `${platformOrigin}${ROUTE_HOME}`;
 
     const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated } = useUserContext();
 
@@ -82,7 +86,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                   </Typography>
                 </NavigatableMenuItem>
               )}
-              <NavigatableMenuItem iconComponent={DashboardOutlined} route={ROUTE_HOME} onClick={onClose}>
+              <NavigatableMenuItem iconComponent={DashboardOutlined} route={homeUrl} onClick={onClose}>
                 {t('pages.home.title')}
               </NavigatableMenuItem>
               {user && (

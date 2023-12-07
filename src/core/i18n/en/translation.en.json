@@ -54,9 +54,10 @@
     "nl": "Dutch",
     "es": "Spanish",
     "bg": "Bulgarian",
-    "ua": "Ukranian",
+    "ua": "Ukrainian",
     "de": "German",
     "fr": "French",
+    "pt": "Portuguese (Brazil)",
     "inContextTool": "In context translation"
   },
   "fields": {
@@ -2007,12 +2008,13 @@
           "title": "Latest Contributions in the Forum",
           "seeMore": "Browse through the rest of the Forum"
         },
-        "footer": {
-          "headline": "More about Alkemio? Visit our website, contact us or take a look at our github repository",
+        "moreAboutAlkemio": {
+          "title": "More about Alkemio",
           "links": {
             "foundation": "Alkemio Foundation",
-            "contact-form": "Contact Form",
-            "github": "github"
+            "news": "News & Blog",
+            "github": "Github",
+            "contact": "Contact"
           }
         }
       }

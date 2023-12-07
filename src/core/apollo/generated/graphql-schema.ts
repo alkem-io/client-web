@@ -99,6 +99,10 @@ export type ActivityLogEntry = {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -124,6 +128,10 @@ export type ActivityLogEntryCalendarEventCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -147,6 +155,10 @@ export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -170,6 +182,10 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -195,6 +211,10 @@ export type ActivityLogEntryCalloutPostComment = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -220,6 +240,10 @@ export type ActivityLogEntryCalloutPostCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -245,6 +269,10 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -268,6 +296,10 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -293,6 +325,10 @@ export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -318,6 +354,10 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -341,6 +381,10 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The Opportunity that was created. */
   opportunity: Opportunity;
   /** The display name of the parent */
@@ -364,6 +408,10 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The Message that been sent to this Community. */
   message: Scalars['String'];
   /** The display name of the parent */
@@ -624,6 +672,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
@@ -1029,8 +1078,7 @@ export type CommunicationDiscussionArgs = {
 };
 
 export type CommunicationDiscussionsArgs = {
-  limit?: InputMaybe<Scalars['Float']>;
-  orderBy?: InputMaybe<DiscussionsOrderBy>;
+  queryData?: InputMaybe<DiscussionsInput>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1855,6 +1903,13 @@ export enum DiscussionCategory {
   Sharing = 'SHARING',
 }
 
+export type DiscussionsInput = {
+  /** The number of Discussion entries to return; if omitted return all Discussions. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** The sort order of the Discussions to return. */
+  orderBy?: InputMaybe<DiscussionsOrderBy>;
+};
+
 export enum DiscussionsOrderBy {
   DiscussionsCreatedateAsc = 'DISCUSSIONS_CREATEDATE_ASC',
   DiscussionsCreatedateDesc = 'DISCUSSIONS_CREATEDATE_DESC',
@@ -2057,6 +2112,19 @@ export type InnovationPack = {
   templates?: Maybe<TemplatesSet>;
 };
 
+export type InnovationPacksInput = {
+  /** The number of Discussion entries to return; if omitted return all InnovationPacks. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** The sort order of the InnovationPacks to return. Defaults to number of templates Descending. */
+  orderBy?: InputMaybe<InnovationPacksOrderBy>;
+};
+
+export enum InnovationPacksOrderBy {
+  NumberOfTemplatesAsc = 'NUMBER_OF_TEMPLATES_ASC',
+  NumberOfTemplatesDesc = 'NUMBER_OF_TEMPLATES_DESC',
+  Random = 'RANDOM',
+}
+
 export type Invitation = {
   __typename?: 'Invitation';
   /** The authorization rules for the entity */
@@ -2133,6 +2201,12 @@ export type Journey = {
   nameID: Scalars['NameID'];
 };
 
+export enum JourneyType {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+  Space = 'SPACE',
+}
+
 export type Library = {
   __typename?: 'Library';
   /** The authorization rules for the entity */
@@ -2149,6 +2223,10 @@ export type Library = {
 
 export type LibraryInnovationPackArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type LibraryInnovationPacksArgs = {
+  queryData?: InputMaybe<InnovationPacksInput>;
 };
 
 export type License = {
@@ -4905,16 +4983,22 @@ export type TemplatesSet = {
   innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
   /** The InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplates: Array<InnovationFlowTemplate>;
+  /** The total number of InnovationFlowTemplates in this TemplatesSet. */
+  innovationFlowTemplatesCount: Scalars['Float'];
   /** The policy for this TemplatesSet. */
   policy?: Maybe<TemplatesSetPolicy>;
   /** A single PostTemplate */
   postTemplate?: Maybe<PostTemplate>;
   /** The PostTemplates in this TemplatesSet. */
   postTemplates: Array<PostTemplate>;
+  /** The total number of PostTemplates in this TemplatesSet. */
+  postTemplatesCount: Scalars['Float'];
   /** A single WhiteboardTemplate */
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
   /** The WhiteboardTemplates in this TemplatesSet. */
   whiteboardTemplates: Array<WhiteboardTemplate>;
+  /** The total number of WhiteboardTemplates in this TemplatesSet. */
+  whiteboardTemplatesCount: Scalars['Float'];
 };
 
 export type TemplatesSetInnovationFlowTemplateArgs = {

@@ -1,27 +1,19 @@
-import React, { useState } from 'react';
-import ContributorsSection from './ContributorsSection';
-import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
-import HomePageFooter from './HomePageFooter';
-import ReleaseUpdatesDialog from '../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
+import React from 'react';
 import HomePageLayout from './HomePageLayout';
-import PageContent from '../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
 import Loading from '../../../core/ui/loading/Loading';
-import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/useInnovationHub';
-import CreateAccountBanner from './CreateAccountBanner';
-import RecentJourneysList from '../myDashboard/recentJourneys/RecentJourneysList';
-import MyMembershipsDialog from '../myDashboard/myMemberships/MyMembershipsDialog';
-import LatestContributions from '../myDashboard/latestContributions/LatestContributions';
-import MyLatestContributions from '../myDashboard/latestContributions/MyLatestContributions';
+import LegacyHomePage from '../myDashboard/legacy/LegacyHomePage';
+import useHasPlatformLevelPrivilege from '../../../domain/community/user/PlatformLevelAuthorization/useHasPlatformLevelPrivilege';
+import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
+import MyDashboard from '../myDashboard/MyDashboard';
 
-export const HomePage = () => {
-  const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
-
+const HomePage = () => {
   const { innovationHub, innovationHubLoading } = useInnovationHub();
 
-  const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
+  const [canAccessDashboardRefresh, { loading: isLoadingPrivileges }] = useHasPlatformLevelPrivilege(
+    AuthorizationPrivilege.AccessDashboardRefresh
+  );
 
   if (innovationHubLoading) {
     return (
@@ -35,25 +27,19 @@ export const HomePage = () => {
     return <InnovationHubHomePage innovationHub={innovationHub} />;
   }
 
-  return (
-    <HomePageLayout>
-      <ReleaseUpdatesDialog />
-      <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
-      <PageContent>
-        <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-        <PageContentColumn columns={8}>
-          <MyLatestContributions />
-          {!isLoadingAuthentication && !isAuthenticated && <CreateAccountBanner />}
-          <SpacesSection />
-          <ContributorsSection />
-          <HomePageFooter />
-        </PageContentColumn>
-        <PageContentColumn columns={4}>
-          <LatestContributions />
-        </PageContentColumn>
-      </PageContent>
-    </HomePageLayout>
-  );
+  if (isLoadingPrivileges) {
+    return (
+      <HomePageLayout>
+        <Loading />
+      </HomePageLayout>
+    );
+  }
+
+  if (canAccessDashboardRefresh) {
+    return <MyDashboard />;
+  } else {
+    return <LegacyHomePage />;
+  }
 };
 
 export default HomePage;
