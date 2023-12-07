@@ -624,7 +624,6 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
-  AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
@@ -1030,7 +1029,8 @@ export type CommunicationDiscussionArgs = {
 };
 
 export type CommunicationDiscussionsArgs = {
-  queryData?: InputMaybe<DiscussionsInput>;
+  limit?: InputMaybe<Scalars['Float']>;
+  orderBy?: InputMaybe<DiscussionsOrderBy>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1854,13 +1854,6 @@ export enum DiscussionCategory {
   Questions = 'QUESTIONS',
   Sharing = 'SHARING',
 }
-
-export type DiscussionsInput = {
-  /** The number of Discussion entries to return; if omitted return all Discussions. */
-  limit?: InputMaybe<Scalars['Float']>;
-  /** The sort order of the Discussions to return. */
-  orderBy?: InputMaybe<DiscussionsOrderBy>;
-};
 
 export enum DiscussionsOrderBy {
   DiscussionsCreatedateAsc = 'DISCUSSIONS_CREATEDATE_ASC',
@@ -16863,6 +16856,53 @@ export type PlatformDiscussionsQuery = {
   };
 };
 
+export type DiscussionCardFragment = {
+  __typename?: 'Discussion';
+  id: string;
+  nameID: string;
+  category: DiscussionCategory;
+  timestamp?: number | undefined;
+  createdBy?: string | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline: string;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
+  comments: {
+    __typename?: 'Room';
+    id: string;
+    messagesCount: number;
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        anonymousReadAccess: boolean;
+      }
+    | undefined;
+};
+
 export type PlatformDiscussionQueryVariables = Exact<{
   discussionId: Scalars['String'];
 }>;
@@ -31785,6 +31825,79 @@ export type MyMembershipsChildJourneyProfileFragment = {
   tagline: string;
   url: string;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type RecentForumMessagesQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+export type RecentForumMessagesQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    communication: {
+      __typename?: 'Communication';
+      id: string;
+      discussionCategories: Array<DiscussionCategory>;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            anonymousReadAccess: boolean;
+          }
+        | undefined;
+      discussions?:
+        | Array<{
+            __typename?: 'Discussion';
+            id: string;
+            nameID: string;
+            category: DiscussionCategory;
+            timestamp?: number | undefined;
+            createdBy?: string | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagline: string;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+            comments: {
+              __typename?: 'Room';
+              id: string;
+              messagesCount: number;
+              authorization?:
+                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
+          }>
+        | undefined;
+    };
+  };
 };
 
 export type RecentJourneyQueryVariables = Exact<{

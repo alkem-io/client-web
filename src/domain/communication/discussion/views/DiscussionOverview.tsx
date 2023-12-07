@@ -2,28 +2,25 @@ import { AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListIte
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { Discussion } from '../models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
-import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
 import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import { formatLongDate } from '../../../../core/utils/time/utils';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;
+  onClick?: (discussion: Discussion) => void;
 }
 
 const SHOW_AVATARS = false;
 
-const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
+const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion, onClick }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { pathname } = useResolvedPath('..');
 
-  const { nameID, title, createdAt, author, authors = [], comments, category } = discussion;
+  const { title, createdAt, author, authors = [], comments, category } = discussion;
 
   return (
-    <ListItemButton disableGutters onClick={() => navigate(buildDiscussionUrl(pathname, nameID))}>
+    <ListItemButton disableGutters onClick={() => onClick?.(discussion)}>
       <ListItemIcon sx={{ justifyContent: 'center' }}>
         <DiscussionIcon color="primary" category={category} fontSize="large" />
       </ListItemIcon>
