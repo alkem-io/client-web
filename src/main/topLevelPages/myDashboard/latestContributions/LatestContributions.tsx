@@ -21,6 +21,7 @@ import { Box, SelectChangeEvent } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import SeamlessSelect from '../../../../core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
+import { getJourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
 
 const ROLE_OPTION_ALL = 'ROLE_OPTION_ALL';
 const SPACE_OPTION_ALL = 'SPACE_OPTION_ALL';
@@ -30,7 +31,10 @@ const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, Act
 const LatestContributions = () => {
   const { t } = useTranslation();
 
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = useState<{
+    space: string;
+    role: ActivityFeedRoles | typeof ROLE_OPTION_ALL;
+  }>({
     space: SPACE_OPTION_ALL,
     role: ROLE_OPTION_ALL,
   });
@@ -112,8 +116,8 @@ const LatestContributions = () => {
               <ActivityViewChooser
                 key={activity.id}
                 activity={activity as ActivityLogResultType}
-                journeyTypeName="space"
-                journeyLocation={{ spaceNameId: activity.parentNameID }}
+                journeyTypeName={getJourneyTypeName(activity.journeyType)}
+                journeyUrl={activity.journey?.profile.url ?? ''}
               />
             );
           })}

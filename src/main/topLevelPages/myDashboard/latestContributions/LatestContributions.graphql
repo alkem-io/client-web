@@ -18,6 +18,30 @@ query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles
       parentNameID
       journeyDisplayName: parentDisplayName
       __typename
+      journeyType
+      journey {
+        id
+        ...on Space {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+        ...on RelayPaginatedSpace {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+        ...on Challenge {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+        ...on Opportunity {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+      }
       triggeredBy {
         id
         nameID
@@ -79,4 +103,10 @@ query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles
       endCursor
     }
   }
+}
+
+fragment RecentContributionsJourneyProfile on Profile {
+  id
+  url
+  displayName
 }

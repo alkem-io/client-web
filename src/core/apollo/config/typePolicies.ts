@@ -60,6 +60,7 @@ export const typePolicies: TypedTypePolicies = {
       usersPaginated: paginationFieldPolicy(['filter'], 'User'),
       organizationsPaginated: paginationFieldPolicy(['filter'], 'Organization'),
       spacesPaginated: paginationFieldPolicy(['filter'], 'Space'),
+      activityFeed: paginationFieldPolicy(['spaceIds', 'roles', 'myActivity'], 'Space'),
     },
   },
 };

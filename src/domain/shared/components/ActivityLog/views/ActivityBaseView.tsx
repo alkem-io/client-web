@@ -1,10 +1,10 @@
 import React, { FC, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import AuthorAvatar from '../../AuthorAvatar/AuthorAvatar';
 import { Author } from '../../AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
+import RouterLink from '../../../../../core/ui/link/RouterLink';
 
 export interface ActivityBaseViewProps {
   title: ReactNode;
@@ -27,7 +27,15 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({ author, title, loa
       }
     >
       <Caption>{loading ? <Skeleton width="60%" /> : title}</Caption>
-      {loading ? <Skeleton /> : url ? <Link to={url}>{children}</Link> : children}
+      {loading ? (
+        <Skeleton />
+      ) : url ? (
+        <RouterLink to={url} loose>
+          {children}
+        </RouterLink>
+      ) : (
+        children
+      )}
     </BadgeCardView>
   );
 };

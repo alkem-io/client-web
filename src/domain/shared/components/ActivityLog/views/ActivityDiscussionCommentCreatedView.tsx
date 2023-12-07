@@ -18,7 +18,7 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   callout,
   description,
@@ -33,7 +33,7 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
     },
   });
 
-  const url = buildCalloutUrl(callout.nameID, journeyLocation);
+  const url = buildCalloutUrl(callout.nameID, journeyUrl);
 
   return (
     <ActivityBaseView
@@ -46,7 +46,7 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
             values: {
               calloutDisplayName: callout.framing.profile.displayName,

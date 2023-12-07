@@ -16,7 +16,7 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
   createdDate,
   journeyTypeName,
   journeyDisplayName,
-  journeyLocation,
+  journeyUrl,
   member,
   communityType,
 }) => {
@@ -42,7 +42,7 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
             author: member, // Important to show the user that joined, not the person that triggered it
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
             values: {
               communityType,

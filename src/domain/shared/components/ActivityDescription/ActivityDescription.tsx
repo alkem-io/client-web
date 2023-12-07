@@ -1,11 +1,10 @@
 import React, { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
-import { buildJourneyUrl, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
-import { Link } from '@mui/material';
 import journeyIcon from '../JourneyIcon/JourneyIcon';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
@@ -13,7 +12,7 @@ export interface ActivityDescriptionProps {
   components?: Record<string, ReactElement>;
   createdDate: Date | string;
   journeyDisplayName?: string; // Callout name or Journey name
-  journeyLocation?: JourneyLocation;
+  journeyUrl?: string;
   journeyTypeName: JourneyTypeName | undefined;
   author?: {
     displayName: string;
@@ -28,7 +27,7 @@ const ActivityDescription = ({
   i18nKey,
   createdDate,
   journeyDisplayName,
-  journeyLocation,
+  journeyUrl,
   journeyTypeName,
   author,
   values = {},
@@ -47,7 +46,7 @@ const ActivityDescription = ({
     if (author) {
       mergedValues['user'] = author.displayName;
       if (author.url) {
-        mergedComponents['userlink'] = <Link href={author.url} />;
+        mergedComponents['userlink'] = <RouterLink to={author.url} loose />;
       } else {
         mergedComponents['userlink'] = <span />;
       }
@@ -75,16 +74,23 @@ const ActivityDescription = ({
       mergedValues['journeyType'] = t(`common.${journeyTypeName}` as const);
     }
 
-    if (journeyLocation) {
-      mergedComponents['parentlink'] = <Link href={buildJourneyUrl(journeyLocation)} />;
-    } else {
-      mergedComponents['parentlink'] = <span />;
-    }
+    mergedComponents['parentlink'] = journeyUrl ? <RouterLink to={journeyUrl} loose /> : <span />;
+
     return {
       values: mergedValues,
       components: mergedComponents,
     };
-  }, [createdDate, t, author, author?.displayName, author?.url, journeyDisplayName, journeyTypeName, i18nKey]);
+  }, [
+    createdDate,
+    t,
+    author,
+    author?.displayName,
+    author?.url,
+    journeyDisplayName,
+    journeyTypeName,
+    journeyUrl,
+    i18nKey,
+  ]);
 
   return (
     <>

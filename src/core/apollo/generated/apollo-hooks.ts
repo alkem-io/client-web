@@ -3644,6 +3644,13 @@ export const InnovationPackCardFragmentDoc = gql`
   ${LibraryTemplatesFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
+export const RecentContributionsJourneyProfileFragmentDoc = gql`
+  fragment RecentContributionsJourneyProfile on Profile {
+    id
+    url
+    displayName
+  }
+`;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
   fragment MyMembershipsChildJourneyCommunity on Community {
     id
@@ -24611,6 +24618,30 @@ export const LatestContributionsDocument = gql`
         parentNameID
         journeyDisplayName: parentDisplayName
         __typename
+        journeyType
+        journey {
+          id
+          ... on Space {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+          ... on RelayPaginatedSpace {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+          ... on Challenge {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+          ... on Opportunity {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+        }
         triggeredBy {
           id
           nameID
@@ -24673,6 +24704,7 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
+  ${RecentContributionsJourneyProfileFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { buildChallengeUrl } from '../../../../../main/routing/urlBuilders';
+import { addChallengeUrl } from '../../../../../main/routing/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
@@ -16,7 +16,7 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   challenge,
 }) => {
@@ -28,7 +28,8 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
       escapeValue: false,
     },
   });
-  const url = buildChallengeUrl(journeyLocation.spaceNameId, challenge.nameID!);
+
+  const url = addChallengeUrl(journeyUrl, challenge.nameID);
 
   return (
     <ActivityBaseView
@@ -41,7 +42,7 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
           }}
           withLinkToParent={Boolean(journeyTypeName)}

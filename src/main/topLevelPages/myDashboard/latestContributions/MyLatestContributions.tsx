@@ -8,6 +8,7 @@ import {
   ActivityViewChooser,
 } from '../../../../domain/shared/components/ActivityLog/ActivityComponent';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import { getJourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 4;
 
@@ -31,8 +32,8 @@ const MyLatestContributions = () => {
               <ActivityViewChooser
                 key={activity.id}
                 activity={activity as ActivityLogResultType}
-                journeyTypeName="space"
-                journeyLocation={{ spaceNameId: activity.parentNameID }}
+                journeyTypeName={getJourneyTypeName(activity.journeyType)}
+                journeyUrl={activity.journey?.profile.url ?? ''}
               />
             );
           })}

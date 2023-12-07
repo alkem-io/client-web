@@ -31848,7 +31848,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -31890,7 +31913,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -31934,7 +31980,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -31985,7 +32054,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32035,7 +32127,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32086,7 +32201,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32131,7 +32269,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32181,7 +32342,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32222,8 +32406,31 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           communityType: string;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32282,7 +32489,30 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32323,8 +32553,31 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           parentNameID: string;
+          journeyType?: JourneyType | undefined;
           message: string;
           journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -32353,6 +32606,13 @@ export type LatestContributionsQuery = {
     >;
     pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
   };
+};
+
+export type RecentContributionsJourneyProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
 };
 
 export type LatestContributionsSpacesQueryVariables = Exact<{ [key: string]: never }>;

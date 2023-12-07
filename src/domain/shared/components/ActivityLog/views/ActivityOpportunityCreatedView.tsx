@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { buildOpportunityUrl } from '../../../../../main/routing/urlBuilders';
+import { addOpportunityUrl } from '../../../../../main/routing/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
 import { Caption } from '../../../../../core/ui/typography';
 import ActivityDescriptionByType from '../../ActivityDescription/ActivityDescriptionByType';
@@ -16,7 +16,7 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   opportunity,
 }) => {
@@ -28,7 +28,8 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
       escapeValue: false,
     },
   });
-  const url = buildOpportunityUrl(journeyLocation.spaceNameId, journeyLocation.challengeNameId!, opportunity.nameID!);
+
+  const url = addOpportunityUrl(journeyUrl, opportunity.nameID);
 
   return (
     <ActivityBaseView
@@ -41,7 +42,7 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
           }}
           withLinkToParent={Boolean(journeyTypeName)}

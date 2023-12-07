@@ -16,7 +16,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   message,
 }) => {
@@ -30,7 +30,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
     },
   });
 
-  const url = buildUpdatesUrl(journeyLocation);
+  const url = buildUpdatesUrl(journeyUrl);
 
   return (
     <ActivityBaseView
@@ -43,7 +43,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
           }}
           withLinkToParent={Boolean(journeyTypeName)}
