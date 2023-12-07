@@ -23,6 +23,8 @@ export type ActivityLogEntryKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'triggeredBy'
@@ -35,6 +37,8 @@ export type ActivityLogEntryFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -48,6 +52,8 @@ export type ActivityLogEntryCalendarEventCreatedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'triggeredBy'
@@ -62,6 +68,8 @@ export type ActivityLogEntryCalendarEventCreatedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -74,6 +82,8 @@ export type ActivityLogEntryCalloutDiscussionCommentKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'triggeredBy'
@@ -87,6 +97,8 @@ export type ActivityLogEntryCalloutDiscussionCommentFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -99,6 +111,8 @@ export type ActivityLogEntryCalloutLinkCreatedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'reference'
@@ -113,6 +127,8 @@ export type ActivityLogEntryCalloutLinkCreatedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   reference?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -126,6 +142,8 @@ export type ActivityLogEntryCalloutPostCommentKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'post'
@@ -140,6 +158,8 @@ export type ActivityLogEntryCalloutPostCommentFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -153,6 +173,8 @@ export type ActivityLogEntryCalloutPostCreatedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'post'
@@ -167,6 +189,8 @@ export type ActivityLogEntryCalloutPostCreatedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -180,6 +204,8 @@ export type ActivityLogEntryCalloutPublishedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'triggeredBy'
@@ -193,6 +219,8 @@ export type ActivityLogEntryCalloutPublishedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -205,6 +233,8 @@ export type ActivityLogEntryCalloutWhiteboardCreatedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'triggeredBy'
@@ -219,6 +249,8 @@ export type ActivityLogEntryCalloutWhiteboardCreatedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -232,6 +264,8 @@ export type ActivityLogEntryChallengeCreatedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'triggeredBy'
@@ -245,6 +279,8 @@ export type ActivityLogEntryChallengeCreatedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -258,6 +294,8 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'parentDisplayName'
   | 'parentNameID'
   | 'triggeredBy'
@@ -273,6 +311,8 @@ export type ActivityLogEntryMemberJoinedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -285,6 +325,8 @@ export type ActivityLogEntryOpportunityCreatedKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'opportunity'
   | 'parentDisplayName'
   | 'parentNameID'
@@ -298,6 +340,8 @@ export type ActivityLogEntryOpportunityCreatedFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -310,6 +354,8 @@ export type ActivityLogEntryUpdateSentKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'journey'
+  | 'journeyType'
   | 'message'
   | 'parentDisplayName'
   | 'parentNameID'
@@ -324,6 +370,8 @@ export type ActivityLogEntryUpdateSentFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyType?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
