@@ -17,13 +17,13 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
   const { t } = useTranslation();
   const { data, loading } = useInnovationLibraryBlockQuery();
   const innovationPacks = useInnovationPackCardProps(data?.platform.library.innovationPacks);
-
   const innovationPack = innovationPacks && innovationPacks.length > 0 ? innovationPacks[0] : undefined;
+
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('pages.home.sections.innovationLibraryBlock.title')} />
       <Box display="flex" flexDirection="row" gap={gutters()}>
-        {loading || (!innovationPack && <ContributeCardSkeleton />)}
+        {(loading || !innovationPack) && <ContributeCardSkeleton />}
         {!loading && innovationPack && <InnovationPackCard {...innovationPack} />}
         <Caption>{t('pages.home.sections.innovationLibraryBlock.description')}</Caption>
       </Box>
