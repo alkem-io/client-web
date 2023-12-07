@@ -15,6 +15,7 @@ import CreateAccountBanner from '../Home/CreateAccountBanner';
 import RecentJourneysList from './recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
 import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
+import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -41,6 +42,7 @@ export const MyDashboard = () => {
           )}
           <SpacesSection />
           <ContributorsSection />
+          <RecentForumMessages />
           <MoreAboutAlkemio />
         </PageContentColumn>
       </PageContent>
