@@ -1,7 +1,7 @@
 import { Box, Grow } from '@mui/material';
 import React from 'react';
 import ContributorsSection from '../../Home/ContributorsSection';
-import SpacesSection from '../../../../domain/journey/space/DashboardSpaces/SpacesSection';
+import ExploreOtherChallenges from '../exploreOtherChallenges/ExploreOtherChallenges';
 import AnonymousUserHome from '../../Home/AnonymousUserHome';
 import AuthenticatedUserHome from '../../Home/AuthenticatedUserHome';
 import ReleaseUpdatesDialog from '../../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
@@ -31,7 +31,7 @@ export const LegacyHomePage = () => {
               </Box>
             </Grow>
           )}
-          <SpacesSection />
+          <ExploreOtherChallenges />
           <ContributorsSection />
           <MoreAboutAlkemio />
         </PageContentColumn>
