@@ -27,7 +27,7 @@
     ]
   },
   "notifications": {
-    "dont-show-notes": "Deze notities niet meer weergeven",
+    "dont-show-notes": "Don't show this message again",
     "icon": "🎉",
     "releaseUpdates": {
       "2": {
@@ -54,9 +54,10 @@
     "nl": "Nederlands",
     "es": "Spaans",
     "bg": "Bulgaars",
-    "ua": "Oekraïens",
+    "ua": "Ukrainian",
     "de": "Duits",
     "fr": "Frans",
+    "pt": "Portuguese (Brazil)",
     "inContextTool": "In context vertaling"
   },
   "fields": {
@@ -880,6 +881,7 @@
       "title": "{{journey}} statistieken"
     },
     "dashboardNavigation": {
+      "title": "Challenges en Opportunities in {{space}}",
       "help": "Deze Space bevat de volgende Challenges. Ook zijn de eventuele onderliggende Opportunities zichtbaar.",
       "privateChallenge": "Dit is een gesloten Challenge. Om de inhoud en eventuele onderliggende Opportunities te bekijken, kun je je aanmelden voor de Challenge.",
       "showAll": "Toon alle Challenges en Opportunities in deze Space"
@@ -2130,6 +2132,11 @@
       },
       "opportunity": {
         "templatesHeader": "Templates gedefinieerd in deze Opportunity"
+      },
+      "whiteboardDisconnected": {
+        "title": "Whiteboard connection lost",
+        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
+        "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
       }
     },
     "login": {
@@ -2399,42 +2406,27 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": [
-          "Publieke Dienstverlening",
-          "Publieke Dienstverlening"
-        ]
+        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   },

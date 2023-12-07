@@ -71,7 +71,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
       template,
       templateType: selectedTemplate?.templateType,
     } as TemplatePreview;
-  }, []);
+  }, [selectedTemplate, whiteboardTemplateContentData]);
 
   return (
     <>
