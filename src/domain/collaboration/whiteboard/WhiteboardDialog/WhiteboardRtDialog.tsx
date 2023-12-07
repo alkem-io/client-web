@@ -130,6 +130,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const collabApiRef = useRef<CollabAPI>(null);
   const [collaborationEnabled, setCollaborationEnabled] = useState(true);
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+  const editModeEnabled = options.canEdit && collaborationEnabled;
 
   const styles = useStyles();
 
@@ -188,7 +189,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const onClose = async () => {
-    if (options.canEdit && collaborationEnabled) {
+    if (editModeEnabled && collaborationEnabled) {
       const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
       if (!whiteboard || !whiteboardApi) {
         return;
@@ -268,7 +269,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     maxWidth={gutters(30)}
                   />
                 )}
-                {options.canEdit && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
+                {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
                 <span>
                   RT<sup title=":)">beta</sup>
                 </span>
@@ -280,7 +281,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     ref={excalidrawApiRef}
                     collabApiRef={collabApiRef}
                     options={{
-                      viewModeEnabled: !options.canEdit,
+                      viewModeEnabled: !editModeEnabled,
                       UIOptions: {
                         canvasActions: {
                           export: {
@@ -309,7 +310,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
               </DialogContent>
               <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
                 <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
-                {!options.canEdit && <Caption>You can't edit this whiteboard</Caption>}
+                {!editModeEnabled && <Caption>You can't edit this whiteboard</Caption>}
               </Actions>
             </>
           )}
