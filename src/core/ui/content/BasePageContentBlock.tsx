@@ -1,5 +1,5 @@
 import { ComponentType, forwardRef, useRef } from 'react';
-import { BoxProps, SxProps } from '@mui/material';
+import { SxProps } from '@mui/material';
 import { gutters, useGridItem } from '../grid/utils';
 import GridProvider from '../grid/GridProvider';
 import { useDeclaredColumns } from '../grid/GridContext';
@@ -15,7 +15,7 @@ export interface BasePageContentBlockProps {
   halfWidth?: boolean;
   columns?: number;
   row?: boolean;
-  flexWrap?: BoxProps['flexWrap'];
+  flexWrap?: SystemCssProperties<Theme>['flexWrap'];
   anchor?: string;
 }
 
