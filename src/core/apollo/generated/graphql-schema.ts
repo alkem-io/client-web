@@ -99,6 +99,10 @@ export type ActivityLogEntry = {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -124,6 +128,10 @@ export type ActivityLogEntryCalendarEventCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -147,6 +155,10 @@ export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -170,6 +182,10 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -195,6 +211,10 @@ export type ActivityLogEntryCalloutPostComment = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -220,6 +240,10 @@ export type ActivityLogEntryCalloutPostCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -245,6 +269,10 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -268,6 +296,10 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -293,6 +325,10 @@ export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -318,6 +354,10 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
@@ -341,6 +381,10 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The Opportunity that was created. */
   opportunity: Opportunity;
   /** The display name of the parent */
@@ -364,6 +408,10 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The type of journey */
+  journeyType?: Maybe<JourneyType>;
   /** The Message that been sent to this Community. */
   message: Scalars['String'];
   /** The display name of the parent */
@@ -624,6 +672,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
@@ -2151,6 +2200,12 @@ export type Journey = {
   /** A name identifier of the Journey, unique within a given scope. */
   nameID: Scalars['NameID'];
 };
+
+export enum JourneyType {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+  Space = 'SPACE',
+}
 
 export type Library = {
   __typename?: 'Library';
