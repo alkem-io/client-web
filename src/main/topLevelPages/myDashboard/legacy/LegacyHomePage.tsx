@@ -2,7 +2,6 @@ import { Box, Grow } from '@mui/material';
 import React from 'react';
 import ContributorsSection from '../../Home/ContributorsSection';
 import SpacesSection from '../../../../domain/journey/space/DashboardSpaces/SpacesSection';
-import HomePageFooter from '../../Home/HomePageFooter';
 import AnonymousUserHome from '../../Home/AnonymousUserHome';
 import AuthenticatedUserHome from '../../Home/AuthenticatedUserHome';
 import ReleaseUpdatesDialog from '../../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
@@ -12,6 +11,8 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import RecentForumMessages from '../recentForumMessages/RecentForumMessages';
+import MoreAboutAlkemio from '../moreAboutAlkemio/MoreAboutAlkemio';
 
 export const LegacyHomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -33,7 +34,8 @@ export const LegacyHomePage = () => {
           )}
           <SpacesSection />
           <ContributorsSection />
-          <HomePageFooter />
+          <RecentForumMessages />
+          <MoreAboutAlkemio />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>

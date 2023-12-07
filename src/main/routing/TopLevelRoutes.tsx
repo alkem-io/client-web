@@ -53,7 +53,7 @@ export const TopLevelRoutes: FC = () => {
           path={ROUTE_HOME}
           element={
             <NonIdentity>
-              <WithApmTransaction path="/home">
+              <WithApmTransaction path={ROUTE_HOME}>
                 <HomePage />
               </WithApmTransaction>
             </NonIdentity>
