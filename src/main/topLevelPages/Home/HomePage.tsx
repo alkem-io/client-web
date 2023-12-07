@@ -2,7 +2,6 @@ import { Box, Grow } from '@mui/material';
 import React, { useState } from 'react';
 import ContributorsSection from './ContributorsSection';
 import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
-import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
 import ReleaseUpdatesDialog from '../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
@@ -18,6 +17,8 @@ import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/use
 import CreateAccountBanner from './CreateAccountBanner';
 import RecentJourneysList from '../myDashboard/recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from '../myDashboard/myMemberships/MyMembershipsDialog';
+import MoreAboutAlkemio from '../myDashboard/moreAboutAlkemio/MoreAboutAlkemio';
+import RecentForumMessages from '../myDashboard/recentForumMessages/RecentForumMessages';
 
 export const HomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -58,7 +59,8 @@ export const HomePage = () => {
           )}
           <SpacesSection />
           <ContributorsSection />
-          <HomePageFooter />
+          <RecentForumMessages />
+          <MoreAboutAlkemio />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>

@@ -2066,7 +2066,7 @@ export type InnovationPack = {
 export type InnovationPacksInput = {
   /** The number of Discussion entries to return; if omitted return all InnovationPacks. */
   limit?: InputMaybe<Scalars['Float']>;
-  /** The sort order of the InnovationPacks to return. Defaults to number of templates ASC */
+  /** The sort order of the InnovationPacks to return. Defaults to number of templates Descending. */
   orderBy?: InputMaybe<InnovationPacksOrderBy>;
 };
 
