@@ -1,5 +1,5 @@
 import { ComponentType, forwardRef, useRef } from 'react';
-import { SxProps } from '@mui/material';
+import { BoxProps, SxProps } from '@mui/material';
 import { gutters, useGridItem } from '../grid/utils';
 import GridProvider from '../grid/GridProvider';
 import { useDeclaredColumns } from '../grid/GridContext';
@@ -15,7 +15,7 @@ export interface BasePageContentBlockProps {
   halfWidth?: boolean;
   columns?: number;
   row?: boolean;
-  wrap?: boolean;
+  flexWrap?: BoxProps['flexWrap'];
   anchor?: string;
 }
 
@@ -42,7 +42,7 @@ const BasePageContentBlock = forwardRef(
       disableGap = false,
       halfWidth = false,
       row = false,
-      wrap = undefined,
+      flexWrap,
       columns,
       sx,
       component: Component,
@@ -62,7 +62,7 @@ const BasePageContentBlock = forwardRef(
       padding: disablePadding ? undefined : padding,
       display: disableGap ? undefined : 'flex',
       flexDirection: getFlexDirection({ row, disableGap }),
-      flexWrap: wrap ? 'wrap' : wrap === false ? 'nowrap' : undefined,
+      flexWrap,
       gap: disableGap ? undefined : gutters(),
       ...getGridItemStyle(columnsTaken),
       ...sx,

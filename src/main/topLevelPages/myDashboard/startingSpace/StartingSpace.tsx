@@ -8,7 +8,7 @@ const StartingSpace = () => {
   const { t } = useTranslation();
   return (
     <Link href={t('pages.home.sections.startingSpace.url')}>
-      <PageContentBlock accent row wrap>
+      <PageContentBlock accent row flexWrap="wrap">
         <BlockTitle>
           {t('pages.home.sections.startingSpace.icon')} {t('pages.home.sections.startingSpace.title')}
         </BlockTitle>
