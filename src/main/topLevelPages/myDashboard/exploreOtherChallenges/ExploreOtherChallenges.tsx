@@ -5,7 +5,6 @@ import DashboardSpacesSection, {
 } from '../../../../domain/shared/components/DashboardSections/DashboardSpacesSection';
 import { useDashboardSpacesPaginatedQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../core/ui/loading/Loading';
-import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 import {
   CommunityMembershipStatus,
@@ -82,16 +81,12 @@ const ExploreOtherChallenges = () => {
     >
       {({ items: filteredSpaces, value, handleChange }) => (
         <DashboardSpacesSection
-          headerText={tLineBreaks('pages.home.sections.space.header')}
+          headerText={tLineBreaks('pages.home.sections.exploreOtherChallenges.header')}
           spaces={filteredSpaces}
           getSpaceCardProps={getSpaceCardProps}
           loader={spacesLoader}
           scrollable
         >
-          <Box>
-            <Caption>{tLineBreaks('pages.home.sections.space.body')}</Caption>
-            <Caption>{tLineBreaks('pages.home.sections.space.body1')}</Caption>
-          </Box>
           <FilterButtons
             value={value}
             config={tRaw('spaces-filter.config', { returnObjects: true })}

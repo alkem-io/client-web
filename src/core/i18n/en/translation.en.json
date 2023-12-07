@@ -1972,11 +1972,8 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
-        "space": {
-          "header": "Explore the Challenge Spaces!",
-          "subheader": "",
-          "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
-          "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
+        "exploreOtherChallenges": {
+          "header": "Explore the other Challenge Spaces!"
         },
         "my-spaces": {
           "header": "My Spaces ({{mySpacesCount}})"
@@ -2421,7 +2418,7 @@
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "spaces-filter": {
-    "current-filter": "Choose the topics you care most about! Current filter: ",
+    "current-filter": "Current filter: ",
     "show-all": "Show All",
     "other": "Other",
     "config": [
