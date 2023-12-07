@@ -8,6 +8,7 @@ import translationBg from './bg/translation.bg.json';
 import translationUa from './ua/translation.ua.json';
 import translationDe from './de/translation.de.json';
 import translationFr from './fr/translation.fr.json';
+import translationPt from './pt/translation.pt.json';
 import inContextTranslation from './ach/translation.ach.json';
 import { env } from '../../main/env';
 
@@ -33,6 +34,9 @@ export const resources = {
   fr: {
     translation: translationFr,
   },
+  pt: {
+    translation: translationPt,
+  },
   inContextTool: {
     translation: inContextTranslation,
   },
@@ -40,7 +44,7 @@ export const resources = {
 
 type Language = keyof typeof resources;
 
-export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua', 'de', 'fr'];
+export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua', 'de', 'fr', 'pt'];
 
 if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');
