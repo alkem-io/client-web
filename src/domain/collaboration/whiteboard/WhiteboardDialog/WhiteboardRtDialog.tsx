@@ -130,6 +130,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const collabApiRef = useRef<CollabAPI>(null);
   const [collaborationEnabled, setCollaborationEnabled] = useState(true);
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+  const editModeEnabled = options.canEdit && collaborationEnabled;
 
   const styles = useStyles();
 
@@ -149,14 +150,17 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
   const handleUpdate = async (
     whiteboard: WhiteboardRtWithContent,
-    state: RelevantExcalidrawState | undefined
+    state: RelevantExcalidrawState | undefined,
+    shouldUploadPreviewImages = false
   ): Promise<{ success: boolean; errors?: string[] }> => {
     if (!state) {
       return { success: false, errors: ['Excalidraw state not defined'] };
     }
     const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    const previewImages = shouldUploadPreviewImages
+      ? await generateWhiteboardPreviewImages(whiteboard, state)
+      : undefined;
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
@@ -185,7 +189,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const onClose = async () => {
-    if (options.canEdit && collaborationEnabled) {
+    if (editModeEnabled && collaborationEnabled) {
       const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
       if (!whiteboard || !whiteboardApi) {
         return;
@@ -197,7 +201,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         appState: whiteboardApi.getAppState(),
         files: whiteboardApi.getFiles(),
       };
-      await handleUpdate(whiteboard, state);
+      await handleUpdate(whiteboard, state, true);
     }
     actions.onCancel(whiteboard!);
   };
@@ -265,7 +269,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     maxWidth={gutters(30)}
                   />
                 )}
-                {options.canEdit && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
+                {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
                 <span>
                   RT<sup title=":)">beta</sup>
                 </span>
@@ -277,7 +281,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     ref={excalidrawApiRef}
                     collabApiRef={collabApiRef}
                     options={{
-                      viewModeEnabled: !options.canEdit,
+                      viewModeEnabled: !editModeEnabled,
                       UIOptions: {
                         canvasActions: {
                           export: {
@@ -306,7 +310,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
               </DialogContent>
               <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
                 <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
-                {!options.canEdit && <Caption>You can't edit this whiteboard</Caption>}
+                {!editModeEnabled && <Caption>You can't edit this whiteboard</Caption>}
               </Actions>
             </>
           )}
