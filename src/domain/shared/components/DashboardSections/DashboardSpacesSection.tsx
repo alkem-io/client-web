@@ -9,6 +9,9 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../common/visual/Visual';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Link } from '@mui/material';
+import { Caption } from '../../../../core/ui/typography';
+import { useTranslation } from 'react-i18next';
 
 export interface SpaceAttrs extends Identifiable {
   nameID: string;
@@ -47,6 +50,7 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
   scrollable = false,
   ...props
 }: PropsWithChildren<DashboardSpaceSectionProps<ExtraAttrs>>) => {
+  const { t } = useTranslation();
   return (
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
@@ -69,6 +73,9 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
         ))}
         {loader}
       </ScrollableCardsLayoutContainer>
+      <Link href="/challenges" textAlign="right">
+        <Caption>{t('common.show-all')}</Caption>
+      </Link>
     </PageContentBlock>
   );
 };

@@ -1972,6 +1972,9 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
+        "exploreOtherChallenges": {
+          "header": "Explore the other Challenge Spaces!"
+        },
         "innovationLibraryBlock": {
           "title": "Innovation library: Have you seen this one yet...?",
           "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
@@ -2432,7 +2435,7 @@
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "spaces-filter": {
-    "current-filter": "Choose the topics you care most about! Current filter: ",
+    "current-filter": "Current filter: ",
     "show-all": "Show All",
     "other": "Other",
     "config": [
