@@ -76,6 +76,9 @@ const LatestContributions = () => {
       spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
       roles: filter.role === ROLE_OPTION_ALL ? undefined : [filter.role],
     },
+    options: {
+      errorPolicy: 'all',
+    },
   });
 
   const roleOptions = useMemo(() => {
@@ -116,7 +119,7 @@ const LatestContributions = () => {
               <ActivityViewChooser
                 key={activity.id}
                 activity={activity as ActivityLogResultType}
-                journeyTypeName={getJourneyTypeName(activity.journeyType)}
+                journeyTypeName={getJourneyTypeName(activity.journey?.profile.type)}
                 journeyUrl={activity.journey?.profile.url ?? ''}
               />
             );

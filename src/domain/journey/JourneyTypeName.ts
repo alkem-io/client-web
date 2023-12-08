@@ -1,10 +1,10 @@
 import { JourneyLocation } from '../../main/routing/urlBuilders';
-import { JourneyType } from '../../core/apollo/generated/graphql-schema';
+import { ProfileType } from '../../core/apollo/generated/graphql-schema';
 
 export type JourneyTypeName = 'space' | 'challenge' | 'opportunity';
 
 export const getJourneyTypeName = (
-  journeyLocation: Partial<JourneyLocation> | JourneyType | undefined
+  journeyLocation: Partial<JourneyLocation> | ProfileType | undefined
 ): JourneyTypeName | undefined => {
   if (typeof journeyLocation === 'undefined') {
     return undefined;

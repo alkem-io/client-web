@@ -1,13 +1,13 @@
 query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles!], $spaceIds: [UUID!], $myActivity: Boolean) {
-  activityFeed(args: {
-    pagination: {
-      after: $after
-      first: $first
-    },
-    roles: $roles
-    spaceIds: $spaceIds
-    myActivity: $myActivity
-  }) {
+  activityFeed(
+    after: $after
+    first: $first
+    args: {
+      roles: $roles
+      spaceIds: $spaceIds
+      myActivity: $myActivity
+    }
+  ) {
     activityFeed {
       id
       collaborationID
@@ -18,7 +18,6 @@ query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles
       parentNameID
       journeyDisplayName: parentDisplayName
       __typename
-      journeyType
       journey {
         id
         ...on Space {
@@ -109,4 +108,5 @@ fragment RecentContributionsJourneyProfile on Profile {
   id
   url
   displayName
+  type
 }

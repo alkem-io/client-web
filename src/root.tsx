@@ -24,6 +24,9 @@ import { useInitialChatWidgetMessage } from './main/guidance/chatWidget/ChatWidg
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
+    '*:focus': {
+      border: '2px solid red',
+    },
     '*': {
       scrollbarColor: `${theme.palette.primary.main} transparent`,
     },

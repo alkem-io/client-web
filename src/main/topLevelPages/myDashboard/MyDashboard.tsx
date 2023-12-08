@@ -11,7 +11,7 @@ import RecentJourneysList from './recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
 import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
 import LatestContributions from './latestContributions/LatestContributions';
-import MyLatestContributions from './latestContributions/MyLatestContributions';
+import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();

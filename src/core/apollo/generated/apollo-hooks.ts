@@ -171,6 +171,7 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -181,10 +182,12 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
     callout {
       id
       nameID
+      type
       framing {
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -269,10 +272,12 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
     callout {
       id
       nameID
+      type
       framing {
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -3649,6 +3654,7 @@ export const RecentContributionsJourneyProfileFragmentDoc = gql`
     id
     url
     displayName
+    type
   }
 `;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
@@ -24600,14 +24606,7 @@ export const LatestContributionsDocument = gql`
     $spaceIds: [UUID!]
     $myActivity: Boolean
   ) {
-    activityFeed(
-      args: {
-        pagination: { after: $after, first: $first }
-        roles: $roles
-        spaceIds: $spaceIds
-        myActivity: $myActivity
-      }
-    ) {
+    activityFeed(after: $after, first: $first, args: { roles: $roles, spaceIds: $spaceIds, myActivity: $myActivity }) {
       activityFeed {
         id
         collaborationID
@@ -24618,7 +24617,6 @@ export const LatestContributionsDocument = gql`
         parentNameID
         journeyDisplayName: parentDisplayName
         __typename
-        journeyType
         journey {
           id
           ... on Space {

@@ -1959,7 +1959,10 @@
           }
         },
         "myLatestContributions": {
-          "title": "My Latest Contributions"
+          "title": "My Latest Contributions",
+          "card": {
+            "journey": "in: <journeyicon /> {{journey}}"
+          }
         },
         "createAccountBanner": {
           "message": "<big>\uD83D\uDE80 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
