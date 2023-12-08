@@ -330,7 +330,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           </Dialog>
           <Dialog open={isConfirmCloseDialogOpen} maxWidth="xs">
             <DialogHeader onClose={closeConfirmCloseDialog}>
-              <Box display="flex">{t('buttons.close')}</Box>
+              <Box display="flex">{t('components.callout-creation.close-dialog.title')}</Box>
             </DialogHeader>
             <DialogContent>
               <Gutters>
@@ -348,10 +348,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               </Gutters>
             </DialogContent>
             <Actions padding={gutters()} justifyContent="end">
-              <Button onClick={closeConfirmCloseDialog}>{t('buttons.cancel')}</Button>
-              <Button variant="contained" onClick={handleClose}>
-                {t('buttons.yes-close')}
+              <Button variant="contained" onClick={closeConfirmCloseDialog}>
+                {t('buttons.cancel')}
               </Button>
+              <Button onClick={handleClose}>{t('buttons.yes-close')}</Button>
             </Actions>
           </Dialog>
         </>

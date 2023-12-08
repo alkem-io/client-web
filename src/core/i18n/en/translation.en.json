@@ -1087,6 +1087,7 @@
         "checkbox-label": "Yes, notify the community."
       },
       "close-dialog": {
+        "title": "Discard callout",
         "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
       }
     },
