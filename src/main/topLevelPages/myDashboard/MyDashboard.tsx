@@ -15,7 +15,9 @@ import CreateAccountBanner from '../Home/CreateAccountBanner';
 import RecentJourneysList from './recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
 import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
+import StartingSpace from './startingSpace/StartingSpace';
 import RecentForumMessages from './recentForumMessages/RecentForumMessages';
+import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -42,7 +44,9 @@ export const MyDashboard = () => {
           )}
           <ExploreOtherChallenges />
           <ContributorsSection />
+          <InnovationLibraryBlock />
           <RecentForumMessages />
+          <StartingSpace />
           <MoreAboutAlkemio />
         </PageContentColumn>
       </PageContent>

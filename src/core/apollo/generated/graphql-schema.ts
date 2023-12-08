@@ -7991,7 +7991,7 @@ export type InnovationPackProfilePageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                 }
               | undefined;
@@ -27883,7 +27883,7 @@ export type InnovationPacksQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }
           | undefined;
@@ -28016,7 +28016,7 @@ export type InnovationPackProviderProfileWithAvatarFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
 
@@ -28210,7 +28210,7 @@ export type AdminInnovationPackQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   };
                 }
               | undefined;
@@ -31447,6 +31447,9 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
               postTemplates: Array<{
                 __typename?: 'PostTemplate';
                 id: string;
@@ -31525,7 +31528,7 @@ export type InnovationLibraryQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }
           | undefined;
@@ -31534,7 +31537,7 @@ export type InnovationLibraryQuery = {
   };
 };
 
-export type InnovationPackCardFragment = {
+export type InnovationPackDataFragment = {
   __typename?: 'InnovationPack';
   id: string;
   nameID: string;
@@ -31558,6 +31561,9 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'TemplatesSet';
         id: string;
+        postTemplatesCount: number;
+        whiteboardTemplatesCount: number;
+        innovationFlowTemplatesCount: number;
         postTemplates: Array<{
           __typename?: 'PostTemplate';
           id: string;
@@ -31636,7 +31642,7 @@ export type InnovationPackCardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       }
     | undefined;
@@ -31645,6 +31651,9 @@ export type InnovationPackCardFragment = {
 export type LibraryTemplatesFragment = {
   __typename?: 'TemplatesSet';
   id: string;
+  postTemplatesCount: number;
+  whiteboardTemplatesCount: number;
+  innovationFlowTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'PostTemplate';
     id: string;
@@ -31824,6 +31833,105 @@ export type ChallengeExplorerDataQuery = {
         }>
       | undefined;
   }>;
+};
+
+export type InnovationLibraryBlockQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationLibraryBlockQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        };
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
+            }
+          | undefined;
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type InnovationPackCardFragment = {
+  __typename?: 'InnovationPack';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+  };
+  templates?:
+    | {
+        __typename?: 'TemplatesSet';
+        postTemplatesCount: number;
+        whiteboardTemplatesCount: number;
+        innovationFlowTemplatesCount: number;
+      }
+    | undefined;
+  provider?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;

@@ -3573,6 +3573,7 @@ export const LibraryTemplatesFragmentDoc = gql`
       type
       defaultDescription
     }
+    postTemplatesCount
     whiteboardTemplates {
       id
       profile {
@@ -3587,6 +3588,7 @@ export const LibraryTemplatesFragmentDoc = gql`
         }
       }
     }
+    whiteboardTemplatesCount
     innovationFlowTemplates {
       id
       profile {
@@ -3603,6 +3605,7 @@ export const LibraryTemplatesFragmentDoc = gql`
       definition
       type
     }
+    innovationFlowTemplatesCount
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -3615,14 +3618,14 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
       id
       displayName
       avatar: visual(type: AVATAR) {
-        id
-        uri
+        ...VisualUri
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
-export const InnovationPackCardFragmentDoc = gql`
-  fragment InnovationPackCard on InnovationPack {
+export const InnovationPackDataFragmentDoc = gql`
+  fragment InnovationPackData on InnovationPack {
     id
     nameID
     profile {
@@ -3642,6 +3645,30 @@ export const InnovationPackCardFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${LibraryTemplatesFragmentDoc}
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
+`;
+export const InnovationPackCardFragmentDoc = gql`
+  fragment InnovationPackCard on InnovationPack {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    templates {
+      postTemplatesCount
+      whiteboardTemplatesCount
+      innovationFlowTemplatesCount
+    }
+    provider {
+      ...InnovationPackProviderProfileWithAvatar
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
@@ -24304,12 +24331,12 @@ export const InnovationLibraryDocument = gql`
       library {
         id
         innovationPacks {
-          ...InnovationPackCard
+          ...InnovationPackData
         }
       }
     }
   }
-  ${InnovationPackCardFragmentDoc}
+  ${InnovationPackDataFragmentDoc}
 `;
 
 /**
@@ -24583,6 +24610,72 @@ export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
 >;
 export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
   return { query: ChallengeExplorerDataDocument, variables: variables };
+}
+
+export const InnovationLibraryBlockDocument = gql`
+  query InnovationLibraryBlock {
+    platform {
+      id
+      library {
+        id
+        innovationPacks(queryData: { limit: 1, orderBy: RANDOM }) {
+          ...InnovationPackCard
+        }
+      }
+    }
+  }
+  ${InnovationPackCardFragmentDoc}
+`;
+
+/**
+ * __useInnovationLibraryBlockQuery__
+ *
+ * To run a query within a React component, call `useInnovationLibraryBlockQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationLibraryBlockQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationLibraryBlockQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationLibraryBlockQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationLibraryBlockQuery,
+    SchemaTypes.InnovationLibraryBlockQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationLibraryBlockQuery, SchemaTypes.InnovationLibraryBlockQueryVariables>(
+    InnovationLibraryBlockDocument,
+    options
+  );
+}
+
+export function useInnovationLibraryBlockLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationLibraryBlockQuery,
+    SchemaTypes.InnovationLibraryBlockQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationLibraryBlockQuery, SchemaTypes.InnovationLibraryBlockQueryVariables>(
+    InnovationLibraryBlockDocument,
+    options
+  );
+}
+
+export type InnovationLibraryBlockQueryHookResult = ReturnType<typeof useInnovationLibraryBlockQuery>;
+export type InnovationLibraryBlockLazyQueryHookResult = ReturnType<typeof useInnovationLibraryBlockLazyQuery>;
+export type InnovationLibraryBlockQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationLibraryBlockQuery,
+  SchemaTypes.InnovationLibraryBlockQueryVariables
+>;
+export function refetchInnovationLibraryBlockQuery(variables?: SchemaTypes.InnovationLibraryBlockQueryVariables) {
+  return { query: InnovationLibraryBlockDocument, variables: variables };
 }
 
 export const MyMembershipsDocument = gql`

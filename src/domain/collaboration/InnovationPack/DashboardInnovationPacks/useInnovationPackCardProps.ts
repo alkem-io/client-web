@@ -17,9 +17,9 @@ const useInnovationPackCardProps = (
           tags: innovationPack.profile.tagset?.tags,
           providerDisplayName: innovationPack.provider?.profile.displayName,
           providerAvatarUri: innovationPack.provider?.profile.avatar?.uri,
-          whiteboardTemplatesCount: innovationPack.templates?.whiteboardTemplates.length,
-          postTemplatesCount: innovationPack.templates?.postTemplates.length,
-          innovationFlowTemplatesCount: innovationPack.templates?.innovationFlowTemplates.length,
+          whiteboardTemplatesCount: innovationPack.templates?.whiteboardTemplatesCount,
+          postTemplatesCount: innovationPack.templates?.postTemplatesCount,
+          innovationFlowTemplatesCount: innovationPack.templates?.innovationFlowTemplatesCount,
           innovationPackUri: buildInnovationPackUrl(innovationPack.nameID),
         };
       }),

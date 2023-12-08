@@ -15,6 +15,7 @@ export interface BasePageContentBlockProps {
   halfWidth?: boolean;
   columns?: number;
   row?: boolean;
+  flexWrap?: SystemCssProperties<Theme>['flexWrap'];
   anchor?: string;
 }
 
@@ -41,6 +42,7 @@ const BasePageContentBlock = forwardRef(
       disableGap = false,
       halfWidth = false,
       row = false,
+      flexWrap,
       columns,
       sx,
       component: Component,
@@ -60,6 +62,7 @@ const BasePageContentBlock = forwardRef(
       padding: disablePadding ? undefined : padding,
       display: disableGap ? undefined : 'flex',
       flexDirection: getFlexDirection({ row, disableGap }),
+      flexWrap,
       gap: disableGap ? undefined : gutters(),
       ...getGridItemStyle(columnsTaken),
       ...sx,
