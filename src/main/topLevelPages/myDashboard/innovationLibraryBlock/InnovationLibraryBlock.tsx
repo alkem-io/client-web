@@ -19,8 +19,11 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
   const innovationPacks = useInnovationPackCardProps(data?.platform.library.innovationPacks);
   const innovationPack = innovationPacks && innovationPacks.length > 0 ? innovationPacks[0] : undefined;
   const theme = useTheme();
+  if (!loading && !innovationPack) {
+    return null;
+  }
 
-  return loading || innovationPack ? (
+  return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('pages.home.sections.innovationLibraryBlock.title')} />
       <Box display="flex" gap={gutters()} sx={{ [theme.breakpoints.only('xs')]: { flexWrap: 'wrap' } }}>
@@ -30,7 +33,7 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
       </Box>
       <SeeMore label="pages.home.sections.innovationLibraryBlock.seeMore" to="/innovation-library" />
     </PageContentBlock>
-  ) : null;
+  );
 };
 
 export default InnovationLibraryBlock;
