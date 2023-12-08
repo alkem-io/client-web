@@ -27,7 +27,7 @@
     ]
   },
   "notifications": {
-    "dont-show-notes": "crwdns10936:0crwdne10936:0",
+    "dont-show-notes": "crwdns10972:0crwdne10972:0",
     "icon": "crwdns10964:0crwdne10964:0",
     "releaseUpdates": {
       "2": {
@@ -54,9 +54,10 @@
     "nl": "crwdns8128:0crwdne8128:0",
     "es": "crwdns8130:0crwdne8130:0",
     "bg": "crwdns8132:0crwdne8132:0",
-    "ua": "crwdns8134:0crwdne8134:0",
+    "ua": "crwdns10980:0crwdne10980:0",
     "de": "crwdns8136:0crwdne8136:0",
     "fr": "crwdns8138:0crwdne8138:0",
+    "pt": "crwdns10982:0crwdne10982:0",
     "inContextTool": "crwdns8140:0crwdne8140:0"
   },
   "fields": {
@@ -880,6 +881,7 @@
       "title": "crwdns9274:0{{journey}}crwdne9274:0"
     },
     "dashboardNavigation": {
+      "title": "crwdns10970:0{{space}}crwdne10970:0",
       "help": "crwdns9276:0crwdne9276:0",
       "privateChallenge": "crwdns9278:0crwdne9278:0",
       "showAll": "crwdns9280:0crwdne9280:0"
@@ -2130,6 +2132,11 @@
       },
       "opportunity": {
         "templatesHeader": "crwdns10548:0crwdne10548:0"
+      },
+      "whiteboardDisconnected": {
+        "title": "crwdns10974:0crwdne10974:0",
+        "message": "crwdns10976:0crwdne10976:0",
+        "lastSaved": "crwdns10978:0{{lastSaved}}crwdne10978:0"
       }
     },
     "login": {

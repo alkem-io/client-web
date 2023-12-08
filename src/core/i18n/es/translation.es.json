@@ -1,14 +1,14 @@
 {
   "chatbot": {
-    "title": "Alkemio Help",
-    "subtitle": "Ask your question to search through our documentation or browse it directly",
-    "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
+    "title": "Ayuda Alkemio",
+    "subtitle": "Haz tu pregunta para buscar a través de nuestra documentación o navega directamente por ella",
+    "intro": "Hola, este es el chat de orientación automatizado de Alkemio. Puede proporcionarte respuestas basadas en la documentación de Alkemio. ¿Qué estás buscando?",
     "infoDialog": {
-      "title": "Alkemio Help",
+      "title": "Ayuda Alkemio",
       "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
     },
     "feedback": {
-      "message": "Is the answer relevant?",
+      "message": "¿Es adecuada esta respuesta?",
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "references": [
@@ -27,7 +27,7 @@
     ]
   },
   "notifications": {
-    "dont-show-notes": "Don't show these notes again",
+    "dont-show-notes": "Don't show this message again",
     "icon": "🎉",
     "releaseUpdates": {
       "2": {
@@ -54,9 +54,10 @@
     "nl": "Holandés",
     "es": "Español",
     "bg": "Búlgaro",
-    "ua": "Ucraniano",
+    "ua": "Ukrainian",
     "de": "Alemán",
     "fr": "Francés",
+    "pt": "Portuguese (Brazil)",
     "inContextTool": "Traducción en contexto"
   },
   "fields": {
@@ -103,12 +104,12 @@
     "back": "Volver",
     "next": "Siguiente",
     "edit": "Editar",
-    "expand": "Expand",
-    "collapse": "Collapse",
-    "expandWindow": "Expand Window",
+    "expand": "Expandir",
+    "collapse": "Contraer",
+    "expandWindow": "Expandir ventana",
     "see-more": "Ver más",
     "see-all": "Más {{subject}}",
-    "readMore": "Read more",
+    "readMore": "Leer más",
     "home": "Inicio",
     "take-me-home": "Llévame a inicio",
     "close": "Cerrar",
@@ -120,7 +121,7 @@
     "send-message": "Enviar mensaje",
     "edit-members": "Editar miembros",
     "insert": "Insertar",
-    "open": "Open",
+    "open": "Abrir",
     "my-profile": "Mi perfil",
     "new": "Nuevo",
     "sign-out": "Cerrar sesión",
@@ -140,7 +141,7 @@
     "find-template": "Buscar plantilla",
     "change": "Cambiar",
     "share": "Compartir",
-    "view": "View",
+    "view": "Ver",
     "preview": "Previsualización",
     "import": "Importar",
     "importing": "Importando...",
@@ -155,10 +156,10 @@
     "moveToTop": "Mover al principio",
     "moveToBottom": "Mover al final",
     "use": "Usar",
-    "fullscreen": "Toggle full screen",
-    "changeLanguage": "Change language",
-    "getHelp": "Get help",
-    "saveAsTemplate": "Save as template",
+    "fullscreen": "Cambiar a pantalla completa",
+    "changeLanguage": "Cambiar idioma",
+    "getHelp": "Obtener ayuda",
+    "saveAsTemplate": "Guardar como plantilla",
     "skipLink": "Skip to next block",
     "toolsMenu": "Tools Menu",
     "userMenu": "User Menu",
@@ -880,6 +881,7 @@
       "title": "{{journey}} statistics"
     },
     "dashboardNavigation": {
+      "title": "Challenges and Opportunities in {{space}}",
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all Challenges and Opportunities in this Space"
@@ -2130,6 +2132,11 @@
       },
       "opportunity": {
         "templatesHeader": "Templates defined in this Opportunity"
+      },
+      "whiteboardDisconnected": {
+        "title": "Whiteboard connection lost",
+        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
+        "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
       }
     },
     "login": {

@@ -1,6 +1,6 @@
 {
   "chatbot": {
-    "title": "Alkemio Help",
+    "title": "Central de Ajuda Alkemio",
     "subtitle": "Ask your question to search through our documentation or browse it directly",
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
@@ -54,9 +54,10 @@
     "nl": "Dutch",
     "es": "Spanish",
     "bg": "Bulgarian",
-    "ua": "Ukranian",
+    "ua": "Ukrainian",
     "de": "German",
     "fr": "French",
+    "pt": "Portuguese (Brazil)",
     "inContextTool": "In context translation"
   },
   "fields": {
