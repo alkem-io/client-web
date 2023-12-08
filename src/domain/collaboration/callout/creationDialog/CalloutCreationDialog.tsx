@@ -130,9 +130,9 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
   const openConfirmCloseDialog = () => {
     if (isCalloutDataEntered(callout)) {
-      handleClose();
-    } else {
       setIsConfirmCloseDialogOpen(true);
+    } else {
+      handleClose();
     }
   };
   const closeConfirmCloseDialog = () => setIsConfirmCloseDialogOpen(false);
