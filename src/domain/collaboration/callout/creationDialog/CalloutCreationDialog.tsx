@@ -32,6 +32,7 @@ import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteb
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import CalloutTemplatesLibrary from '../CalloutTemplatesLibrary/CalloutTemplatesLibrary';
+import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -89,6 +90,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [isValid, setIsValid] = useState(false);
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
+  const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);
 
   useLayoutEffect(() => {
@@ -114,8 +116,26 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setSelectedCalloutType(value);
   };
 
+  const isCalloutDataEntered = (callout: CalloutCreationDialogFields) => {
+    return (
+      callout.displayName !== '' ||
+      callout.description !== '' ||
+      callout.references?.length !== 0 ||
+      callout.tags?.length !== 0 ||
+      callout.whiteboardContent !== JSON.stringify(EmptyWhiteboard)
+    );
+  };
+
   const openPublishDialog = () => setIsConfirmPublishDialogOpen(true);
   const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
+  const openConfirmCloseDialog = () => {
+    if (isCalloutDataEntered(callout)) {
+      handleClose();
+    } else {
+      setIsConfirmCloseDialogOpen(true);
+    }
+  };
+  const closeConfirmCloseDialog = () => setIsConfirmCloseDialogOpen(false);
 
   const handleSaveCallout = useCallback(
     async (visibility: CalloutVisibility, sendNotification: boolean) => {
@@ -168,6 +188,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const handleClose = useCallback(() => {
     onClose?.();
     setCallout({});
+    closeConfirmCloseDialog();
   }, [onClose]);
 
   const [fetchCalloutTemplateContent] = useCalloutTemplateContentLazyQuery();
@@ -237,7 +258,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       )}
       {selectedCalloutType && (
         <>
-          <DialogHeader onClose={handleClose}>
+          <DialogHeader onClose={openConfirmCloseDialog}>
             <Box display="flex" alignItems="center" gap={1}>
               {CalloutIcon && <CalloutIcon />}
               {t('components.callout-creation.titleWithType', {
@@ -254,7 +275,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             journeyTypeName={journeyTypeName}
           />
           <Actions padding={gutters()}>
-            <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
+            <Button onClick={openConfirmCloseDialog}>{t('buttons.cancel')}</Button>
             <FlexSpacer />
             <LoadingButton
               loading={loading}
@@ -305,6 +326,32 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               >
                 {t('buttons.publish')}
               </LoadingButton>
+            </Actions>
+          </Dialog>
+          <Dialog open={isConfirmCloseDialogOpen} maxWidth="xs">
+            <DialogHeader onClose={closeConfirmCloseDialog}>
+              <Box display="flex">{t('buttons.close')}</Box>
+            </DialogHeader>
+            <DialogContent>
+              <Gutters>
+                <Box>
+                  <Trans
+                    i18nKey="components.callout-creation.close-dialog.text"
+                    values={{
+                      calloutType: t(`components.calloutTypeSelect.label.${selectedCalloutType}` as const),
+                    }}
+                    components={{
+                      b: <strong />,
+                    }}
+                  />
+                </Box>
+              </Gutters>
+            </DialogContent>
+            <Actions padding={gutters()} justifyContent="end">
+              <Button onClick={closeConfirmCloseDialog}>{t('buttons.cancel')}</Button>
+              <Button variant="contained" onClick={handleClose}>
+                {t('buttons.yes-close')}
+              </Button>
             </Actions>
           </Dialog>
         </>
