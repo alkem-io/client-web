@@ -12,6 +12,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import MoreAboutAlkemio from '../moreAboutAlkemio/MoreAboutAlkemio';
+import useReleaseNotes from '../../../../domain/platform/metadata/useReleaseNotes';
 
 export const LegacyHomePage = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -19,9 +20,11 @@ export const LegacyHomePage = () => {
   const params = useQueryParams();
   const isFromLanding = params.get('from') === 'landing';
 
+  const releaseNotes = useReleaseNotes();
+
   return (
     <HomePageLayout>
-      <ReleaseUpdatesDialog />
+      <ReleaseUpdatesDialog {...releaseNotes} />
       <PageContent>
         <PageContentColumn columns={12}>
           {!isFromLanding && (

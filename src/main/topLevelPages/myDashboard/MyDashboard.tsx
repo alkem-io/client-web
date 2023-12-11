@@ -19,6 +19,7 @@ import StartingSpace from './startingSpace/StartingSpace';
 import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 import PlatformNewsDashboardBlock from '../../../domain/platform/notifications/ReleaseUpdates/PlatformNewsDashboardBlock';
+import useReleaseNotes from '../../../domain/platform/metadata/useReleaseNotes';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -28,9 +29,11 @@ export const MyDashboard = () => {
 
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
 
+  const { onOpen: onOpenReleaseNotes, dontShowAgain: dontShowReleaseNotesAgain, ...releaseNotes } = useReleaseNotes();
+
   return (
     <HomePageLayout>
-      <ReleaseUpdatesDialog />
+      <ReleaseUpdatesDialog {...releaseNotes} />
       <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
       <PageContent>
         <PageContentColumn columns={12}>
@@ -47,7 +50,7 @@ export const MyDashboard = () => {
           <ContributorsSection />
           <InnovationLibraryBlock />
           <RecentForumMessages />
-          <PlatformNewsDashboardBlock />
+          {!dontShowReleaseNotesAgain && <PlatformNewsDashboardBlock onOpen={onOpenReleaseNotes} />}
           <StartingSpace />
           <MoreAboutAlkemio />
         </PageContentColumn>

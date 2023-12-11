@@ -1,90 +1,93 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSessionState } from '../../../core/utils/sessionState';
 
 const LOCALSTORAGE_RELEASE_NOTES_KEY = 'releaseNotes';
+
+const SESSION_STATE_KEY_HAS_SEEN_RELEASE_NOTES = 'hasSeenReleaseNotes';
 
 interface ReleaseNotesData {
   lastSeenNoteId: string;
 }
 
-type NoteType = {
+interface UseReleaseNotesProvided {
+  note?: Note;
+  open: boolean;
+  onOpen: () => void;
+  onClose: (dontShowAgain: boolean) => void;
+  dontShowAgain: boolean;
+  onDontShowAgain: () => void;
+}
+
+export interface Note {
   id: string;
   icon: string;
   title: string;
   content: string;
+}
+
+const hasViewedLatestNote = (lastNoteId: string) => {
+  const data = localStorage.getItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
+  if (!data) {
+    return false;
+  }
+  try {
+    const { lastSeenNoteId } = JSON.parse(data) as ReleaseNotesData;
+    return lastSeenNoteId === lastNoteId;
+  } catch {
+    return false;
+  }
 };
 
-export const useReleaseNotes = () => {
+const useReleaseNotes = (): UseReleaseNotesProvided => {
   const { t } = useTranslation();
   const notes = t('notifications.releaseUpdates', { returnObjects: true });
   // get only the value and reverse it to get the latest note first
   // json object keys are ordered in alphanumerical order
-  const [latestNote, ...previousNotes]: NoteType[] = Object.entries(notes)
+  const [latestNote] = Object.entries(notes)
     .reverse()
-    .map(([key, note]) => ({
-      ...note,
-      id: key,
-      icon: t('notifications.icon'),
-    }));
+    .map(
+      ([key, note]): Note => ({
+        ...note,
+        id: key,
+        icon: t('notifications.icon'),
+      })
+    );
 
-  const checkLatestNoteViewed = () => {
-    const data = localStorage.getItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
-    if (!data) {
-      return false;
-    }
-    try {
-      const { lastSeenNoteId } = JSON.parse(data) as ReleaseNotesData;
-      return lastSeenNoteId === latestNote.id;
-    } catch {
-      return false;
-    }
-  };
+  const dontShowAgain = useRef(hasViewedLatestNote(latestNote.id)).current;
 
-  const [isLatestNoteViewed, setIsLatestNoteViewed] = useState(checkLatestNoteViewed());
+  const [hasClosedDialog, setHasClosedDialog] = useSessionState(SESSION_STATE_KEY_HAS_SEEN_RELEASE_NOTES, false);
 
-  const _setIsLatestNoteViewed = useCallback(
-    (isViewed: boolean) => {
-      if (isViewed) {
-        const data: ReleaseNotesData = {
-          lastSeenNoteId: latestNote.id,
-        };
-        localStorage.setItem(LOCALSTORAGE_RELEASE_NOTES_KEY, JSON.stringify(data));
-      } else {
-        localStorage.removeItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
+  const [isDialogOpen, setIsDialogOpen] = useState(!dontShowAgain && !hasClosedDialog);
+
+  const handleOpen = useCallback(() => setIsDialogOpen(true), [setIsDialogOpen]);
+
+  const handleClose = useCallback(
+    (dontShowAgain: boolean) => {
+      setIsDialogOpen(false);
+      setHasClosedDialog(true);
+      if (dontShowAgain) {
+        handleDontShowAgain();
       }
-      setIsLatestNoteViewed(isViewed);
     },
-    [setIsLatestNoteViewed]
+    [setIsDialogOpen]
   );
 
-  useEffect(() => {
-    // Detect value changes on other tabs:
-    const onStorageChange = (e: StorageEvent) => {
-      if (e.key !== LOCALSTORAGE_RELEASE_NOTES_KEY) {
-        return;
-      }
-
-      setIsLatestNoteViewed(e.newValue === latestNote.id);
+  const handleDontShowAgain = useCallback(() => {
+    const data: ReleaseNotesData = {
+      lastSeenNoteId: latestNote.id,
     };
-    window.addEventListener('storage', onStorageChange);
-
-    return () => window.removeEventListener('storage', onStorageChange);
-  }, []);
-
-  const triggerShowDialog = () => {
-    localStorage.removeItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
-    setIsLatestNoteViewed(false);
-    const event = new StorageEvent('storage', {
-      key: LOCALSTORAGE_RELEASE_NOTES_KEY,
-    });
-    window.dispatchEvent(event);
-  };
+    localStorage.setItem(LOCALSTORAGE_RELEASE_NOTES_KEY, JSON.stringify(data));
+  }, [latestNote.id]);
 
   return {
-    latestNote,
-    previousNotes,
-    isLatestNoteViewed,
-    setIsLatestNoteViewed: _setIsLatestNoteViewed,
-    triggerShowDialog,
+    open: isDialogOpen,
+    note: latestNote,
+    onOpen: handleOpen,
+    onClose: handleClose,
+    dontShowAgain: dontShowAgain,
+    onDontShowAgain: handleDontShowAgain,
   };
 };
+
+export default useReleaseNotes;
