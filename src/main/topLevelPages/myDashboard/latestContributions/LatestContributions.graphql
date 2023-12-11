@@ -1,4 +1,4 @@
-query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles!], $spaceIds: [UUID!], $myActivity: Boolean) {
+query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles!], $spaceIds: [UUID!], $myActivity: Boolean, $types: [ActivityEventType!]) {
   activityFeed(
     after: $after
     first: $first
@@ -6,6 +6,7 @@ query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles
       roles: $roles
       spaceIds: $spaceIds
       myActivity: $myActivity
+      types: $types
     }
   ) {
     activityFeed {

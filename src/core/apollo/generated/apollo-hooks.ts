@@ -24698,8 +24698,13 @@ export const LatestContributionsDocument = gql`
     $roles: [ActivityFeedRoles!]
     $spaceIds: [UUID!]
     $myActivity: Boolean
+    $types: [ActivityEventType!]
   ) {
-    activityFeed(after: $after, first: $first, args: { roles: $roles, spaceIds: $spaceIds, myActivity: $myActivity }) {
+    activityFeed(
+      after: $after
+      first: $first
+      args: { roles: $roles, spaceIds: $spaceIds, myActivity: $myActivity, types: $types }
+    ) {
       activityFeed {
         id
         collaborationID
@@ -24827,6 +24832,7 @@ export const LatestContributionsDocument = gql`
  *      roles: // value for 'roles'
  *      spaceIds: // value for 'spaceIds'
  *      myActivity: // value for 'myActivity'
+ *      types: // value for 'types'
  *   },
  * });
  */

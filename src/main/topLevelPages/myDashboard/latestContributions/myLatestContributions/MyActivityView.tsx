@@ -15,7 +15,7 @@ import calloutIcons from '../../../../../domain/collaboration/callout/utils/call
 import { CalloutType, ProfileType } from '../../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../../core/ui/grid/utils';
 
-export interface MyActivityBaseViewProps {
+export interface MyActivityViewProps {
   activity:
     | undefined
     | {
@@ -41,7 +41,7 @@ export interface MyActivityBaseViewProps {
   loading?: boolean;
 }
 
-const MyActivityBaseView = ({ activity, loading = false }: MyActivityBaseViewProps) => {
+const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
   const { t } = useTranslation();
 
   const timeElapsed = activity && formatTimeElapsed(activity.createdDate, t);
@@ -110,4 +110,4 @@ const MyActivityBaseView = ({ activity, loading = false }: MyActivityBaseViewPro
   );
 };
 
-export default MyActivityBaseView;
+export default MyActivityView;

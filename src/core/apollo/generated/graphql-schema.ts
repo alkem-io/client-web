@@ -31927,6 +31927,7 @@ export type LatestContributionsQueryVariables = Exact<{
   roles?: InputMaybe<Array<ActivityFeedRoles> | ActivityFeedRoles>;
   spaceIds?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
   myActivity?: InputMaybe<Scalars['Boolean']>;
+  types?: InputMaybe<Array<ActivityEventType> | ActivityEventType>;
 }>;
 
 export type LatestContributionsQuery = {
