@@ -329,20 +329,14 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             </Actions>
           </Dialog>
           <Dialog open={isConfirmCloseDialogOpen}>
-            <DialogHeader onClose={closeConfirmCloseDialog}>
-              <Box display="flex">{t('components.callout-creation.close-dialog.title')}</Box>
-            </DialogHeader>
+            <DialogHeader
+              onClose={closeConfirmCloseDialog}
+              title={t('components.callout-creation.close-dialog.title')}
+            />
             <DialogContent>
-              <Trans
-                i18nKey="components.callout-creation.close-dialog.text"
-                values={{
-                  calloutType: t(`components.calloutTypeSelect.label.${selectedCalloutType}` as const),
-                }}
-                components={{
-                  b: <strong />,
-                  br: <br />,
-                }}
-              />
+              {t('components.callout-creation.close-dialog.text', {
+                calloutType: t(`components.calloutTypeSelect.label.${selectedCalloutType}` as const),
+              })}
             </DialogContent>
             <Actions padding={gutters()} justifyContent="end">
               <Button variant="contained" onClick={closeConfirmCloseDialog}>

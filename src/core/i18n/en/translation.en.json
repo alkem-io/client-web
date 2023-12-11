@@ -1088,7 +1088,7 @@
       },
       "close-dialog": {
         "title": "Discard callout",
-        "text": "Are you sure you want to close this <b>{{calloutType}}</b>?<br/>Unsaved changes will be lost."
+        "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
       }
     },
     "calloutEdit": {
