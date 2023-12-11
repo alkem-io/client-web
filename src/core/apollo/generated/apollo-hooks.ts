@@ -171,6 +171,7 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -181,10 +182,12 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
     callout {
       id
       nameID
+      type
       framing {
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -269,10 +272,12 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
     callout {
       id
       nameID
+      type
       framing {
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -3670,6 +3675,14 @@ export const InnovationPackCardFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
+`;
+export const RecentContributionsJourneyProfileFragmentDoc = gql`
+  fragment RecentContributionsJourneyProfile on Profile {
+    id
+    url
+    displayName
+    type
+  }
 `;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
   fragment MyMembershipsChildJourneyCommunity on Community {
@@ -19397,130 +19410,6 @@ export function refetchOpportunityProfileInfoQuery(variables: SchemaTypes.Opport
   return { query: OpportunityProfileInfoDocument, variables: variables };
 }
 
-export const DashboardSpacesDocument = gql`
-  query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
-    spaces(filter: { visibilities: $visibilities }) {
-      ...SpaceDetailsProvider
-    }
-  }
-  ${SpaceDetailsProviderFragmentDoc}
-`;
-
-/**
- * __useDashboardSpacesQuery__
- *
- * To run a query within a React component, call `useDashboardSpacesQuery` and pass it any options that fit your needs.
- * When your component renders, `useDashboardSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDashboardSpacesQuery({
- *   variables: {
- *      visibilities: // value for 'visibilities'
- *   },
- * });
- */
-export function useDashboardSpacesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>(
-    DashboardSpacesDocument,
-    options
-  );
-}
-
-export function useDashboardSpacesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>(
-    DashboardSpacesDocument,
-    options
-  );
-}
-
-export type DashboardSpacesQueryHookResult = ReturnType<typeof useDashboardSpacesQuery>;
-export type DashboardSpacesLazyQueryHookResult = ReturnType<typeof useDashboardSpacesLazyQuery>;
-export type DashboardSpacesQueryResult = Apollo.QueryResult<
-  SchemaTypes.DashboardSpacesQuery,
-  SchemaTypes.DashboardSpacesQueryVariables
->;
-export function refetchDashboardSpacesQuery(variables?: SchemaTypes.DashboardSpacesQueryVariables) {
-  return { query: DashboardSpacesDocument, variables: variables };
-}
-
-export const DashboardSpacesPaginatedDocument = gql`
-  query DashboardSpacesPaginated($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
-    spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
-      spaces {
-        ...SpaceDetailsProvider
-      }
-      pageInfo {
-        ...PageInfo
-      }
-    }
-  }
-  ${SpaceDetailsProviderFragmentDoc}
-  ${PageInfoFragmentDoc}
-`;
-
-/**
- * __useDashboardSpacesPaginatedQuery__
- *
- * To run a query within a React component, call `useDashboardSpacesPaginatedQuery` and pass it any options that fit your needs.
- * When your component renders, `useDashboardSpacesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDashboardSpacesPaginatedQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      visibilities: // value for 'visibilities'
- *   },
- * });
- */
-export function useDashboardSpacesPaginatedQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.DashboardSpacesPaginatedQuery,
-    SchemaTypes.DashboardSpacesPaginatedQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.DashboardSpacesPaginatedQuery, SchemaTypes.DashboardSpacesPaginatedQueryVariables>(
-    DashboardSpacesPaginatedDocument,
-    options
-  );
-}
-
-export function useDashboardSpacesPaginatedLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.DashboardSpacesPaginatedQuery,
-    SchemaTypes.DashboardSpacesPaginatedQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.DashboardSpacesPaginatedQuery,
-    SchemaTypes.DashboardSpacesPaginatedQueryVariables
-  >(DashboardSpacesPaginatedDocument, options);
-}
-
-export type DashboardSpacesPaginatedQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedQuery>;
-export type DashboardSpacesPaginatedLazyQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedLazyQuery>;
-export type DashboardSpacesPaginatedQueryResult = Apollo.QueryResult<
-  SchemaTypes.DashboardSpacesPaginatedQuery,
-  SchemaTypes.DashboardSpacesPaginatedQueryVariables
->;
-export function refetchDashboardSpacesPaginatedQuery(variables: SchemaTypes.DashboardSpacesPaginatedQueryVariables) {
-  return { query: DashboardSpacesPaginatedDocument, variables: variables };
-}
-
 export const SpaceCommunityPageDocument = gql`
   query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
@@ -24612,6 +24501,130 @@ export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.Challe
   return { query: ChallengeExplorerDataDocument, variables: variables };
 }
 
+export const DashboardSpacesDocument = gql`
+  query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
+    spaces(filter: { visibilities: $visibilities }) {
+      ...SpaceDetailsProvider
+    }
+  }
+  ${SpaceDetailsProviderFragmentDoc}
+`;
+
+/**
+ * __useDashboardSpacesQuery__
+ *
+ * To run a query within a React component, call `useDashboardSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardSpacesQuery({
+ *   variables: {
+ *      visibilities: // value for 'visibilities'
+ *   },
+ * });
+ */
+export function useDashboardSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>(
+    DashboardSpacesDocument,
+    options
+  );
+}
+
+export function useDashboardSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>(
+    DashboardSpacesDocument,
+    options
+  );
+}
+
+export type DashboardSpacesQueryHookResult = ReturnType<typeof useDashboardSpacesQuery>;
+export type DashboardSpacesLazyQueryHookResult = ReturnType<typeof useDashboardSpacesLazyQuery>;
+export type DashboardSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardSpacesQuery,
+  SchemaTypes.DashboardSpacesQueryVariables
+>;
+export function refetchDashboardSpacesQuery(variables?: SchemaTypes.DashboardSpacesQueryVariables) {
+  return { query: DashboardSpacesDocument, variables: variables };
+}
+
+export const DashboardSpacesPaginatedDocument = gql`
+  query DashboardSpacesPaginated($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
+    spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
+      spaces {
+        ...SpaceDetailsProvider
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${SpaceDetailsProviderFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useDashboardSpacesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useDashboardSpacesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardSpacesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardSpacesPaginatedQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      visibilities: // value for 'visibilities'
+ *   },
+ * });
+ */
+export function useDashboardSpacesPaginatedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardSpacesPaginatedQuery, SchemaTypes.DashboardSpacesPaginatedQueryVariables>(
+    DashboardSpacesPaginatedDocument,
+    options
+  );
+}
+
+export function useDashboardSpacesPaginatedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.DashboardSpacesPaginatedQuery,
+    SchemaTypes.DashboardSpacesPaginatedQueryVariables
+  >(DashboardSpacesPaginatedDocument, options);
+}
+
+export type DashboardSpacesPaginatedQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedQuery>;
+export type DashboardSpacesPaginatedLazyQueryHookResult = ReturnType<typeof useDashboardSpacesPaginatedLazyQuery>;
+export type DashboardSpacesPaginatedQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardSpacesPaginatedQuery,
+  SchemaTypes.DashboardSpacesPaginatedQueryVariables
+>;
+export function refetchDashboardSpacesPaginatedQuery(variables: SchemaTypes.DashboardSpacesPaginatedQueryVariables) {
+  return { query: DashboardSpacesPaginatedDocument, variables: variables };
+}
+
 export const InnovationLibraryBlockDocument = gql`
   query InnovationLibraryBlock {
     platform {
@@ -24676,6 +24689,251 @@ export type InnovationLibraryBlockQueryResult = Apollo.QueryResult<
 >;
 export function refetchInnovationLibraryBlockQuery(variables?: SchemaTypes.InnovationLibraryBlockQueryVariables) {
   return { query: InnovationLibraryBlockDocument, variables: variables };
+}
+
+export const LatestContributionsDocument = gql`
+  query LatestContributions(
+    $first: Int!
+    $after: UUID
+    $roles: [ActivityFeedRoles!]
+    $spaceIds: [UUID!]
+    $myActivity: Boolean
+    $types: [ActivityEventType!]
+  ) {
+    activityFeed(
+      after: $after
+      first: $first
+      args: { roles: $roles, spaceIds: $spaceIds, myActivity: $myActivity, types: $types }
+    ) {
+      activityFeed {
+        id
+        collaborationID
+        createdDate
+        description
+        type
+        child
+        parentNameID
+        journeyDisplayName: parentDisplayName
+        journey {
+          id
+          ... on Space {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+          ... on RelayPaginatedSpace {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+          ... on Challenge {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+          ... on Opportunity {
+            profile {
+              ...RecentContributionsJourneyProfile
+            }
+          }
+        }
+        triggeredBy {
+          id
+          nameID
+          firstName
+          lastName
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            tagsets {
+              ...TagsetDetails
+            }
+            location {
+              id
+              city
+              country
+            }
+          }
+        }
+        ... on ActivityLogEntryMemberJoined {
+          ...ActivityLogMemberJoined
+        }
+        ... on ActivityLogEntryCalloutPublished {
+          ...ActivityLogCalloutPublished
+        }
+        ... on ActivityLogEntryCalloutPostCreated {
+          ...ActivityLogCalloutPostCreated
+        }
+        ... on ActivityLogEntryCalloutLinkCreated {
+          ...ActivityLogCalloutLinkCreated
+        }
+        ... on ActivityLogEntryCalloutPostComment {
+          ...ActivityLogCalloutPostComment
+        }
+        ... on ActivityLogEntryCalloutWhiteboardCreated {
+          ...ActivityLogCalloutWhiteboardCreated
+        }
+        ... on ActivityLogEntryCalloutDiscussionComment {
+          ...ActivityLogCalloutDiscussionComment
+        }
+        ... on ActivityLogEntryChallengeCreated {
+          ...ActivityLogChallengeCreated
+        }
+        ... on ActivityLogEntryOpportunityCreated {
+          ...ActivityLogOpportunityCreated
+        }
+        ... on ActivityLogEntryUpdateSent {
+          ...ActivityLogUpdateSent
+        }
+        ... on ActivityLogEntryCalendarEventCreated {
+          ...ActivityLogCalendarEventCreated
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${RecentContributionsJourneyProfileFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutLinkCreatedFragmentDoc}
+  ${ActivityLogCalloutPostCommentFragmentDoc}
+  ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogUpdateSentFragmentDoc}
+  ${ActivityLogCalendarEventCreatedFragmentDoc}
+`;
+
+/**
+ * __useLatestContributionsQuery__
+ *
+ * To run a query within a React component, call `useLatestContributionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestContributionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestContributionsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      roles: // value for 'roles'
+ *      spaceIds: // value for 'spaceIds'
+ *      myActivity: // value for 'myActivity'
+ *      types: // value for 'types'
+ *   },
+ * });
+ */
+export function useLatestContributionsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LatestContributionsQuery,
+    SchemaTypes.LatestContributionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LatestContributionsQuery, SchemaTypes.LatestContributionsQueryVariables>(
+    LatestContributionsDocument,
+    options
+  );
+}
+
+export function useLatestContributionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestContributionsQuery,
+    SchemaTypes.LatestContributionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LatestContributionsQuery, SchemaTypes.LatestContributionsQueryVariables>(
+    LatestContributionsDocument,
+    options
+  );
+}
+
+export type LatestContributionsQueryHookResult = ReturnType<typeof useLatestContributionsQuery>;
+export type LatestContributionsLazyQueryHookResult = ReturnType<typeof useLatestContributionsLazyQuery>;
+export type LatestContributionsQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestContributionsQuery,
+  SchemaTypes.LatestContributionsQueryVariables
+>;
+export function refetchLatestContributionsQuery(variables: SchemaTypes.LatestContributionsQueryVariables) {
+  return { query: LatestContributionsDocument, variables: variables };
+}
+
+export const LatestContributionsSpacesDocument = gql`
+  query LatestContributionsSpaces {
+    me {
+      spaceMemberships {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useLatestContributionsSpacesQuery__
+ *
+ * To run a query within a React component, call `useLatestContributionsSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestContributionsSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestContributionsSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLatestContributionsSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >(LatestContributionsSpacesDocument, options);
+}
+
+export function useLatestContributionsSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestContributionsSpacesQuery,
+    SchemaTypes.LatestContributionsSpacesQueryVariables
+  >(LatestContributionsSpacesDocument, options);
+}
+
+export type LatestContributionsSpacesQueryHookResult = ReturnType<typeof useLatestContributionsSpacesQuery>;
+export type LatestContributionsSpacesLazyQueryHookResult = ReturnType<typeof useLatestContributionsSpacesLazyQuery>;
+export type LatestContributionsSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestContributionsSpacesQuery,
+  SchemaTypes.LatestContributionsSpacesQueryVariables
+>;
+export function refetchLatestContributionsSpacesQuery(variables?: SchemaTypes.LatestContributionsSpacesQueryVariables) {
+  return { query: LatestContributionsSpacesDocument, variables: variables };
 }
 
 export const MyMembershipsDocument = gql`

@@ -17,7 +17,7 @@ export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedVi
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   calendarEvent,
   calendarEventDescription,
@@ -43,7 +43,7 @@ export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedVi
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
             values: {
               eventDisplayName: calendarEvent.profile.displayName,
@@ -52,7 +52,7 @@ export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedVi
           withLinkToParent={Boolean(journeyTypeName)}
         />
       }
-      url={buildEventUrl(calendarEvent.nameID, journeyLocation)}
+      url={buildEventUrl(calendarEvent.nameID, journeyUrl)}
     >
       <OneLineMarkdown>{description}</OneLineMarkdown>
     </ActivityBaseView>

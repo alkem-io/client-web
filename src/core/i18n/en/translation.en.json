@@ -1945,6 +1945,25 @@
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
       "sections": {
+        "latestContributions": {
+          "title": "Latest Contributions in my Spaces",
+          "filter": {
+            "space": {
+              "label": "Space:",
+              "all": "All Spaces"
+            },
+            "role": {
+              "label": "My role:",
+              "all": "All roles"
+            }
+          }
+        },
+        "myLatestContributions": {
+          "title": "My Latest Contributions",
+          "card": {
+            "journey": "in: <journeyicon /> {{journey}}"
+          }
+        },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
