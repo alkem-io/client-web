@@ -38,6 +38,9 @@
         "title": "We have exciting news, a new release full of interesting functionalities is out!",
         "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** to read all about the latest changes."
       }
+    },
+    "dashboardNotification": {
+      "message": "<big>🎉 Platform news!</big> <small>We have some exciting news for you... Click here to read all about it!</small>"
     }
   },
   "cookie": {

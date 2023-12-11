@@ -71,10 +71,20 @@ export const useReleaseNotes = () => {
     return () => window.removeEventListener('storage', onStorageChange);
   }, []);
 
+  const triggerShowDialog = () => {
+    localStorage.removeItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
+    setIsLatestNoteViewed(false);
+    const event = new StorageEvent('storage', {
+      key: LOCALSTORAGE_RELEASE_NOTES_KEY,
+    });
+    window.dispatchEvent(event);
+  };
+
   return {
     latestNote,
     previousNotes,
     isLatestNoteViewed,
     setIsLatestNoteViewed: _setIsLatestNoteViewed,
+    triggerShowDialog,
   };
 };

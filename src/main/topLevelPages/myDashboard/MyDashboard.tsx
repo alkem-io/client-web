@@ -18,6 +18,7 @@ import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
 import StartingSpace from './startingSpace/StartingSpace';
 import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
+import PlatformNewsDashboardBlock from '../../../domain/platform/notifications/ReleaseUpdates/PlatformNewsDashboardBlock';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -46,6 +47,7 @@ export const MyDashboard = () => {
           <ContributorsSection />
           <InnovationLibraryBlock />
           <RecentForumMessages />
+          <PlatformNewsDashboardBlock />
           <StartingSpace />
           <MoreAboutAlkemio />
         </PageContentColumn>
