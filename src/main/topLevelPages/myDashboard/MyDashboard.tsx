@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import ContributorsSection from '../Home/ContributorsSection';
-import SpacesSection from '../../../domain/journey/space/DashboardSpaces/SpacesSection';
+import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
 import ReleaseUpdatesDialog from '../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
 import HomePageLayout from '../Home/HomePageLayout';
 import PageContent from '../../../core/ui/content/PageContent';
@@ -10,6 +9,9 @@ import CreateAccountBanner from '../Home/CreateAccountBanner';
 import RecentJourneysList from './recentJourneys/RecentJourneysList';
 import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
 import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
+import StartingSpace from './startingSpace/StartingSpace';
+import RecentForumMessages from './recentForumMessages/RecentForumMessages';
+import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 import LatestContributions from './latestContributions/LatestContributions';
 import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
 
@@ -29,8 +31,10 @@ export const MyDashboard = () => {
         </PageContentColumn>
         <PageContentColumn columns={8}>
           <MyLatestContributions />
-          <SpacesSection />
-          <ContributorsSection />
+          <InnovationLibraryBlock />
+          <RecentForumMessages />
+          <ExploreOtherChallenges />
+          <StartingSpace />
           <MoreAboutAlkemio />
         </PageContentColumn>
         <PageContentColumn columns={4}>

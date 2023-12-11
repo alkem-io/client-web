@@ -2,6 +2,9 @@ import { useMediaQuery } from '@mui/material';
 import { Breakpoint, useTheme } from '@mui/material/styles';
 import { findKey } from 'lodash';
 
+/**
+ * @deprecated try using useColumns instead
+ */
 const useCurrentBreakpoint = (): Breakpoint => {
   const theme = useTheme();
 

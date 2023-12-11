@@ -1965,7 +1965,7 @@
           }
         },
         "createAccountBanner": {
-          "message": "<big>\uD83D\uDE80 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
+          "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
         "recentJourneys": {
           "seeMore": "Explore all Spaces, Challenges, and Opportunities that you’re a member of"
@@ -1991,11 +1991,23 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
+        "exploreOtherChallenges": {
+          "header": "Explore the other Challenge Spaces!"
+        },
+        "innovationLibraryBlock": {
+          "title": "Innovation library: Have you seen this one yet...?",
+          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "seeMore": "Explore more Innovation Packs"
+        },
         "space": {
           "header": "Explore the Challenge Spaces!",
           "subheader": "",
           "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
           "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
+        },
+        "startingSpace": {
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "url": "https://alkemio.foundation/contact/"
         },
         "my-spaces": {
           "header": "My Spaces ({{mySpacesCount}})"
@@ -2440,7 +2452,7 @@
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "spaces-filter": {
-    "current-filter": "Choose the topics you care most about! Current filter: ",
+    "current-filter": "Current filter: ",
     "show-all": "Show All",
     "other": "Other",
     "config": [

@@ -56,7 +56,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
       <DialogContent>
         <Gutters disablePadding>
           {myMemberships?.map(space => (
-            <PageContentBlock row sx={{ background: theme => theme.palette.background.default, flexWrap: 'wrap' }}>
+            <PageContentBlock row flexWrap="wrap" sx={{ background: theme => theme.palette.background.default }}>
               <SpaceCard
                 banner={space.profile.cardBanner}
                 displayName={space.profile.displayName}
