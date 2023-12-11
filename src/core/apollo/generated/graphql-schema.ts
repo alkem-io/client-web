@@ -31936,7 +31936,7 @@ export type LatestContributionsQuery = {
     __typename?: 'ActivityFeed';
     activityFeed: Array<
       | {
-          __typename: 'ActivityLogEntryCalendarEventCreated';
+          __typename?: 'ActivityLogEntryCalendarEventCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32024,7 +32024,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryCalloutDiscussionComment';
+          __typename?: 'ActivityLogEntryCalloutDiscussionComment';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32115,7 +32115,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryCalloutLinkCreated';
+          __typename?: 'ActivityLogEntryCalloutLinkCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32212,7 +32212,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryCalloutPostComment';
+          __typename?: 'ActivityLogEntryCalloutPostComment';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32308,7 +32308,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryCalloutPostCreated';
+          __typename?: 'ActivityLogEntryCalloutPostCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32406,7 +32406,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryCalloutPublished';
+          __typename?: 'ActivityLogEntryCalloutPublished';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32497,7 +32497,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryCalloutWhiteboardCreated';
+          __typename?: 'ActivityLogEntryCalloutWhiteboardCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32593,7 +32593,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryChallengeCreated';
+          __typename?: 'ActivityLogEntryChallengeCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32680,7 +32680,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryMemberJoined';
+          __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32786,7 +32786,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryOpportunityCreated';
+          __typename?: 'ActivityLogEntryOpportunityCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -32873,7 +32873,7 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename: 'ActivityLogEntryUpdateSent';
+          __typename?: 'ActivityLogEntryUpdateSent';
           id: string;
           collaborationID: string;
           createdDate: Date;

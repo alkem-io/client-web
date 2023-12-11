@@ -18,7 +18,6 @@ query LatestContributions($first: Int!, $after: UUID, $roles: [ActivityFeedRoles
       child
       parentNameID
       journeyDisplayName: parentDisplayName
-      __typename
       journey {
         id
         ...on Space {

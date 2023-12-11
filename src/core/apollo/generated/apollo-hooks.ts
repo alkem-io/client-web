@@ -24714,7 +24714,6 @@ export const LatestContributionsDocument = gql`
         child
         parentNameID
         journeyDisplayName: parentDisplayName
-        __typename
         journey {
           id
           ... on Space {
