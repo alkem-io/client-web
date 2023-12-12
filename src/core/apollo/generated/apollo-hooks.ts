@@ -24501,8 +24501,8 @@ export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.Challe
   return { query: ChallengeExplorerDataDocument, variables: variables };
 }
 
-export const WelcomeSpaceDocument = gql`
-  query WelcomeSpace($id: UUID_NAMEID!) {
+export const BecomeAMemberSpaceDocument = gql`
+  query BecomeAMemberSpace($id: UUID_NAMEID!) {
     space(ID: $id) {
       id
       nameID
@@ -24525,49 +24525,55 @@ export const WelcomeSpaceDocument = gql`
 `;
 
 /**
- * __useWelcomeSpaceQuery__
+ * __useBecomeAMemberSpaceQuery__
  *
- * To run a query within a React component, call `useWelcomeSpaceQuery` and pass it any options that fit your needs.
- * When your component renders, `useWelcomeSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useBecomeAMemberSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBecomeAMemberSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useWelcomeSpaceQuery({
+ * const { data, loading, error } = useBecomeAMemberSpaceQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useWelcomeSpaceQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.WelcomeSpaceQuery, SchemaTypes.WelcomeSpaceQueryVariables>
+export function useBecomeAMemberSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.BecomeAMemberSpaceQuery,
+    SchemaTypes.BecomeAMemberSpaceQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.WelcomeSpaceQuery, SchemaTypes.WelcomeSpaceQueryVariables>(
-    WelcomeSpaceDocument,
+  return Apollo.useQuery<SchemaTypes.BecomeAMemberSpaceQuery, SchemaTypes.BecomeAMemberSpaceQueryVariables>(
+    BecomeAMemberSpaceDocument,
     options
   );
 }
 
-export function useWelcomeSpaceLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.WelcomeSpaceQuery, SchemaTypes.WelcomeSpaceQueryVariables>
+export function useBecomeAMemberSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.BecomeAMemberSpaceQuery,
+    SchemaTypes.BecomeAMemberSpaceQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.WelcomeSpaceQuery, SchemaTypes.WelcomeSpaceQueryVariables>(
-    WelcomeSpaceDocument,
+  return Apollo.useLazyQuery<SchemaTypes.BecomeAMemberSpaceQuery, SchemaTypes.BecomeAMemberSpaceQueryVariables>(
+    BecomeAMemberSpaceDocument,
     options
   );
 }
 
-export type WelcomeSpaceQueryHookResult = ReturnType<typeof useWelcomeSpaceQuery>;
-export type WelcomeSpaceLazyQueryHookResult = ReturnType<typeof useWelcomeSpaceLazyQuery>;
-export type WelcomeSpaceQueryResult = Apollo.QueryResult<
-  SchemaTypes.WelcomeSpaceQuery,
-  SchemaTypes.WelcomeSpaceQueryVariables
+export type BecomeAMemberSpaceQueryHookResult = ReturnType<typeof useBecomeAMemberSpaceQuery>;
+export type BecomeAMemberSpaceLazyQueryHookResult = ReturnType<typeof useBecomeAMemberSpaceLazyQuery>;
+export type BecomeAMemberSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.BecomeAMemberSpaceQuery,
+  SchemaTypes.BecomeAMemberSpaceQueryVariables
 >;
-export function refetchWelcomeSpaceQuery(variables: SchemaTypes.WelcomeSpaceQueryVariables) {
-  return { query: WelcomeSpaceDocument, variables: variables };
+export function refetchBecomeAMemberSpaceQuery(variables: SchemaTypes.BecomeAMemberSpaceQueryVariables) {
+  return { query: BecomeAMemberSpaceDocument, variables: variables };
 }
 
 export const DashboardSpacesDocument = gql`

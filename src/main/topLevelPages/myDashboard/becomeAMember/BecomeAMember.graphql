@@ -1,4 +1,4 @@
-query WelcomeSpace($id: UUID_NAMEID!) {
+query BecomeAMemberSpace($id: UUID_NAMEID!) {
   space(ID: $id) {
     id
     nameID

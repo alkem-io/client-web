@@ -7,10 +7,10 @@ import { useTranslation } from 'react-i18next';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { Box } from '@mui/material';
-import { useWelcomeSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
 } from '../../../../domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import { useBecomeAMemberSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import SearchSuggestions from '../../../../core/ui/search/SearchSuggestions';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -23,7 +23,7 @@ const BecomeAMember: FC = () => {
   const { pathname } = useLocation();
   const [filter, setFilter] = useState<string[]>([]);
 
-  const { data, loading } = useWelcomeSpaceQuery({
+  const { data, loading } = useBecomeAMemberSpaceQuery({
     variables: {
       // Id of the space suggested is comming from the translation:
       id: t('pages.home.sections.becomeAMember.suggestedSpace.nameId'),

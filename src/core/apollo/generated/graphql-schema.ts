@@ -31721,11 +31721,11 @@ export type ChallengeExplorerDataQuery = {
   }>;
 };
 
-export type WelcomeSpaceQueryVariables = Exact<{
+export type BecomeAMemberSpaceQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID'];
 }>;
 
-export type WelcomeSpaceQuery = {
+export type BecomeAMemberSpaceQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
