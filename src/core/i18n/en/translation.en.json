@@ -1971,19 +1971,19 @@
           },
           "searchCommunity": {
             "title": "...or look for your Community below",
-            "searchSuggestions": "Search suggestions:",
-            "suggestionsArray": [
-              "Innovation",
-              "Energy",
-              "Inclusive",
-              "Design",
-              "3D",
-              "Community",
-              "Transition",
-              "SSI",
-              "Privacy"
-            ]
-          }
+            "searchSuggestions": "Search suggestions:"
+          },
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "Design",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",

@@ -76,7 +76,7 @@ const BecomeAMember: FC = () => {
             />
             <SearchSuggestions
               title={t('pages.home.sections.becomeAMember.searchCommunity.searchSuggestions')}
-              options={t('pages.home.sections.becomeAMember.searchCommunity.suggestionsArray', { returnObjects: true })}
+              options={t('pages.home.sections.becomeAMember.suggestionsArray', { returnObjects: true })}
               onSelect={term => setFilter([...filter, term].slice(0, 5))}
               value={filter}
             />
