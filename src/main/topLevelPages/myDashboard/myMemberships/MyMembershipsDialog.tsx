@@ -11,7 +11,7 @@ import { MetricType } from '../../../../domain/platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import React, { useMemo } from 'react';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import MyMembershipsChildJourneyCard from './MyMembershipsChildJourneyCard';
+import JourneyCardHorizontal from '../../../../domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import useLandingUrl from '../../../landing/useLandingUrl';
@@ -73,9 +73,9 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
                     {space.challenges?.map(challenge => (
                       <GridItem columns={4}>
                         <Gutters disablePadding>
-                          <MyMembershipsChildJourneyCard journey={challenge} journeyTypeName="challenge" />
+                          <JourneyCardHorizontal journey={challenge} journeyTypeName="challenge" />
                           {challenge.opportunities?.map(opportunity => (
-                            <MyMembershipsChildJourneyCard journey={opportunity} journeyTypeName="opportunity" />
+                            <JourneyCardHorizontal journey={opportunity} journeyTypeName="opportunity" />
                           ))}
                         </Gutters>
                       </GridItem>

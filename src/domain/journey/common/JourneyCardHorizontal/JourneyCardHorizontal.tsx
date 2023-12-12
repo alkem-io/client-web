@@ -3,18 +3,18 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { Avatar, Chip, Paper, Typography } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
-import { Visual } from '../../../../domain/common/visual/Visual';
-import withElevationOnHover from '../../../../domain/shared/components/withElevationOnHover';
+import { Visual } from '../../../common/visual/Visual';
+import withElevationOnHover from '../../../shared/components/withElevationOnHover';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import { JourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
-import JourneyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import { JourneyTypeName } from '../../JourneyTypeName';
+import JourneyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '../../../../core/ui/content/BlockTitleWithIcon';
 import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 
-interface MyMembershipsChildJourneyCardProps {
+interface JourneyCardHorizontalProps {
   journey: {
     profile: {
       url: string;
@@ -34,11 +34,11 @@ const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead] as const;
 
-const MyMembershipsChildJourneyCard = ({
+const JourneyCardHorizontal = ({
   journey,
   journeyTypeName,
   deepness = journeyTypeName === 'challenge' ? 0 : 1,
-}: MyMembershipsChildJourneyCardProps) => {
+}: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];
 
   const { t } = useTranslation();
@@ -77,4 +77,4 @@ const MyMembershipsChildJourneyCard = ({
   );
 };
 
-export default MyMembershipsChildJourneyCard;
+export default JourneyCardHorizontal;
