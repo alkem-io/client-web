@@ -31721,6 +31721,28 @@ export type ChallengeExplorerDataQuery = {
   }>;
 };
 
+export type WelcomeSpaceQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type WelcomeSpaceQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+    community?: { __typename?: 'Community'; id: string; myRoles?: Array<CommunityRole> | undefined } | undefined;
+  };
+};
+
 export type DashboardSpacesQueryVariables = Exact<{
   visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
 }>;
