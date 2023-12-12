@@ -1,0 +1,24 @@
+query NewMemberships {
+  me {
+    applications(states: ["new", "approved"]) {
+      id
+      communityID
+      displayName
+      state
+      spaceID
+      challengeID
+      opportunityID
+      createdDate
+    }
+    invitations(states: ["invited", "accepted"]) {
+      id
+      spaceID
+      challengeID
+      opportunityID
+      welcomeMessage
+      createdBy
+      createdDate
+      state
+    }
+  }
+}

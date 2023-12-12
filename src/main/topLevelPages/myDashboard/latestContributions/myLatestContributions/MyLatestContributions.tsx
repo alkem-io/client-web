@@ -28,7 +28,7 @@ const MyLatestContributions = () => {
   const activities = data?.activityFeed.activityFeed;
 
   return (
-    <PageContentBlock>
+    <PageContentBlock halfWidth>
       <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
       <ScrollerWithGradient>
         <Gutters>

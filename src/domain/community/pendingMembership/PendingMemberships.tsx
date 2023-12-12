@@ -11,13 +11,14 @@ import { Visual } from '../../common/visual/Visual';
 import { ContributionItem } from '../user/contribution';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { buildJourneyUrl, JourneyLocation } from '../../../main/routing/urlBuilders';
+import { VisualType } from '../../../core/apollo/generated/graphql-schema';
 
-interface JourneyDetails {
+export interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
   journeyDisplayName: string;
   journeyTagline: string | undefined;
   journeyTags: string[] | undefined;
-  journeyCardBanner: Visual | undefined;
+  journeyVisual: Visual | undefined;
   journeyUri: string | undefined;
 }
 
@@ -50,11 +51,19 @@ interface InvitationHydratorProvided {
   invitation: InvitationWithMeta | undefined;
 }
 
-interface InvitationHydratorProps {
+type InvitationHydratorProps = {
   invitation: InvitationItem;
-  withJourneyDetails?: boolean;
   children: (provided: InvitationHydratorProvided) => ReactNode;
-}
+} & (
+  | {
+      withJourneyDetails?: false;
+      visualType?: VisualType;
+    }
+  | {
+      withJourneyDetails: true;
+      visualType: VisualType;
+    }
+);
 
 type ChildJourneyLocation = Pick<JourneyLocation, 'challengeNameId' | 'opportunityNameId'>;
 
@@ -68,11 +77,17 @@ const getChildJourneyTypeName = (journeyLocation: ChildJourneyLocation): Journey
   return 'space';
 };
 
-export const InvitationHydrator = ({ invitation, withJourneyDetails = false, children }: InvitationHydratorProps) => {
+export const InvitationHydrator = ({
+  invitation,
+  withJourneyDetails = false,
+  visualType = VisualType.Avatar,
+  children,
+}: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: invitation.spaceId,
       fetchDetails: withJourneyDetails,
+      visualType,
     },
     skip: Boolean(invitation.challengeId || invitation.opportunityId),
   });
@@ -82,6 +97,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       spaceId: invitation.spaceId,
       challengeId: invitation.challengeId!,
       fetchDetails: withJourneyDetails,
+      visualType,
     },
     skip: !invitation.challengeId,
   });
@@ -91,6 +107,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       spaceId: invitation.spaceId,
       opportunityId: invitation.opportunityId!,
       fetchDetails: withJourneyDetails,
+      visualType,
     },
     skip: !invitation.opportunityId,
   });
@@ -126,7 +143,7 @@ export const InvitationHydrator = ({ invitation, withJourneyDetails = false, chi
       }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
-      journeyCardBanner: journey.profile.cardBanner,
+      journeyVisual: journey.profile.visual,
     };
   }, [invitation, journey, createdBy]);
 
@@ -139,14 +156,16 @@ interface ApplicationHydratorProvided {
 
 interface ApplicationHydratorProps {
   application: ContributionItem;
+  visualType: VisualType;
   children: (provided: ApplicationHydratorProvided) => ReactNode;
 }
 
-export const ApplicationHydrator = ({ application, children }: ApplicationHydratorProps) => {
+export const ApplicationHydrator = ({ application, visualType, children }: ApplicationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: application.spaceId,
       fetchDetails: true,
+      visualType,
     },
     skip: Boolean(application.challengeId || application.opportunityId),
   });
@@ -156,6 +175,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
       spaceId: application.spaceId,
       challengeId: application.challengeId!,
       fetchDetails: true,
+      visualType,
     },
     skip: !application.challengeId,
   });
@@ -165,6 +185,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
       spaceId: application.spaceId,
       opportunityId: application.opportunityId!,
       fetchDetails: true,
+      visualType,
     },
     skip: !application.opportunityId,
   });
@@ -189,7 +210,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
       }),
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
-      journeyCardBanner: journey.profile.cardBanner,
+      journeyVisual: journey.profile.visual,
     };
   }, [application, journey, spaceData, challengeData, opportunityData]);
 
