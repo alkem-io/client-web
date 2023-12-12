@@ -34,13 +34,13 @@ export const MyDashboard = () => {
           <MyLatestContributions />
           <TipsAndTricks />
           <InnovationLibraryBlock />
-          <RecentForumMessages />
           <ExploreOtherChallenges />
-          <StartingSpace />
+          <StartingSpace width="100%" />
           <MoreAboutAlkemio />
         </PageContentColumn>
         <PageContentColumn columns={4}>
           <LatestContributions />
+          <RecentForumMessages />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>
