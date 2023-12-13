@@ -268,14 +268,16 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               })}
             </Box>
           </DialogHeader>
-          <CalloutForm
-            calloutType={selectedCalloutType}
-            callout={callout}
-            calloutNames={calloutNames}
-            onChange={handleValueChange}
-            onStatusChanged={handleStatusChange}
-            journeyTypeName={journeyTypeName}
-          />
+          <DialogContent>
+            <CalloutForm
+              calloutType={selectedCalloutType}
+              callout={callout}
+              calloutNames={calloutNames}
+              onChange={handleValueChange}
+              onStatusChanged={handleStatusChange}
+              journeyTypeName={journeyTypeName}
+            />
+          </DialogContent>
           <Actions padding={gutters()}>
             <Button onClick={openConfirmCloseDialog}>{t('buttons.cancel')}</Button>
             <FlexSpacer />
