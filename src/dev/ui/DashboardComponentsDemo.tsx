@@ -50,6 +50,11 @@ const GridDemo = () => {
           </PageContentBlock>
           <PageContentBlock disableGap disablePadding>
             <PageContentBlockGrid>
+              <PageContentBlockHeaderWithDialogAction
+                fullWidth
+                title="Block with Dialog Action"
+                onDialogOpen={() => {}}
+              />
               <DummyContent columns={2} />
               <DummyContent columns={2} />
               <DummyContent columns={4} />
