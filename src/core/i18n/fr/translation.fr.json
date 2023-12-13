@@ -113,6 +113,7 @@
     "home": "Ma page d'accueil",
     "take-me-home": "Me ramener à l'accueil",
     "close": "Fermer",
+    "yes-close": "Yes, close",
     "delete": "Supprimer",
     "submit": "Envoyer",
     "remove": "Retirer",
@@ -1084,6 +1085,10 @@
       "publish-dialog": {
         "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, **who have their notifications for these actions turned on**, to receive a notification?",
         "checkbox-label": "Oui, notifier la communauté."
+      },
+      "close-dialog": {
+        "title": "Discard callout",
+        "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
       }
     },
     "calloutEdit": {

@@ -20122,6 +20122,7 @@ export type InviteExternalUserMutation = {
 export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   fetchDetails?: Scalars['Boolean'];
+  visualType: VisualType;
 }>;
 
 export type PendingMembershipsSpaceQuery = {
@@ -20136,7 +20137,7 @@ export type PendingMembershipsSpaceQuery = {
       id: string;
       displayName: string;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     };
   };
 };
@@ -20145,6 +20146,7 @@ export type PendingMembershipsChallengeQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
   fetchDetails?: Scalars['Boolean'];
+  visualType: VisualType;
 }>;
 
 export type PendingMembershipsChallengeQuery = {
@@ -20163,7 +20165,7 @@ export type PendingMembershipsChallengeQuery = {
         id: string;
         displayName: string;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
     };
   };
@@ -20173,6 +20175,7 @@ export type PendingMembershipsOpportunityQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
   fetchDetails?: Scalars['Boolean'];
+  visualType: VisualType;
 }>;
 
 export type PendingMembershipsOpportunityQuery = {
@@ -20192,7 +20195,7 @@ export type PendingMembershipsOpportunityQuery = {
         id: string;
         displayName: string;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
     };
   };
@@ -20217,7 +20220,7 @@ export type PendingMembershipsJourneyProfileFragment = {
   id: string;
   displayName: string;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-  cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type PendingMembershipsMembershipsFragment = {
@@ -33086,6 +33089,37 @@ export type MyMembershipsChildJourneyProfileFragment = {
   tagline: string;
   url: string;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type NewMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type NewMembershipsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    applications: Array<{
+      __typename?: 'ApplicationForRoleResult';
+      id: string;
+      communityID: string;
+      displayName: string;
+      state: string;
+      spaceID: string;
+      challengeID?: string | undefined;
+      opportunityID?: string | undefined;
+      createdDate: Date;
+    }>;
+    invitations: Array<{
+      __typename?: 'InvitationForRoleResult';
+      id: string;
+      spaceID: string;
+      challengeID?: string | undefined;
+      opportunityID?: string | undefined;
+      welcomeMessage?: string | undefined;
+      createdBy: string;
+      createdDate: Date;
+      state: string;
+    }>;
+  };
 };
 
 export type RecentForumMessagesQueryVariables = Exact<{
