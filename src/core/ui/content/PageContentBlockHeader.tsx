@@ -13,6 +13,7 @@ export interface PageContentBlockHeaderProps {
   actions?: ReactNode;
   dialogAction?: ReactNode;
   disclaimer?: ReactNode;
+  fullWidth?: boolean;
 }
 
 const PageContentBlockHeader = ({
@@ -21,6 +22,7 @@ const PageContentBlockHeader = ({
   actions,
   dialogAction,
   disclaimer,
+  fullWidth,
   children,
 }: PropsWithChildren<PageContentBlockHeaderProps>) => {
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
@@ -36,6 +38,7 @@ const PageContentBlockHeader = ({
         alignItems={isSmallScreen ? 'start' : 'center'}
         gap={gutters(0.5)}
         position="relative"
+        width={fullWidth ? '100%' : undefined}
       >
         <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0 }} />
         <Box
