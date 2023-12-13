@@ -10,23 +10,23 @@ import { Box } from '@mui/material';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
 } from '../../../../domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import { useBecomeAMemberSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useMembershipSuggestionSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import SearchSuggestions from '../../../../core/ui/search/SearchSuggestions';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { SEARCH_TERMS_URL_PARAM } from '../../../search/constants';
 
-const BecomeAMember: FC = () => {
+const MembershipSuggestions: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [filter, setFilter] = useState<string[]>([]);
 
-  const { data, loading } = useBecomeAMemberSpaceQuery({
+  const { data, loading } = useMembershipSuggestionSpaceQuery({
     variables: {
       // Id of the space suggested is comming from the translation:
-      id: t('pages.home.sections.becomeAMember.suggestedSpace.nameId'),
+      id: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
     },
   });
 
@@ -44,12 +44,12 @@ const BecomeAMember: FC = () => {
       <PageContentBlockGrid>
         <PageContentBlockHeader
           icon={<RocketLaunchOutlinedIcon />}
-          title={t('pages.home.sections.becomeAMember.title')}
+          title={t('pages.home.sections.membershipSuggestions.title')}
           fullWidth
         />
         <GridItem columns={4}>
           <Box>
-            <BlockSectionTitle>{t('pages.home.sections.becomeAMember.suggestedSpace.join')}</BlockSectionTitle>
+            <BlockSectionTitle>{t('pages.home.sections.membershipSuggestions.suggestedSpace.join')}</BlockSectionTitle>
             {loading && <JourneyCardHorizontalSkeleton />}
             {!loading && data?.space && (
               <JourneyCardHorizontal
@@ -63,7 +63,9 @@ const BecomeAMember: FC = () => {
         </GridItem>
         <GridItem columns={4}>
           <Box>
-            <BlockSectionTitle>{t('pages.home.sections.becomeAMember.searchCommunity.title')}</BlockSectionTitle>
+            <BlockSectionTitle>
+              {t('pages.home.sections.membershipSuggestions.searchCommunity.title')}
+            </BlockSectionTitle>
             <MultipleSelect
               onChange={setFilter}
               onSearchClick={handleNavigateToSearchPage}
@@ -75,8 +77,8 @@ const BecomeAMember: FC = () => {
               size="small"
             />
             <SearchSuggestions
-              title={t('pages.home.sections.becomeAMember.searchCommunity.searchSuggestions')}
-              options={t('pages.home.sections.becomeAMember.suggestionsArray', { returnObjects: true })}
+              title={t('pages.home.sections.membershipSuggestions.searchCommunity.searchSuggestions')}
+              options={t('pages.home.sections.membershipSuggestions.suggestionsArray', { returnObjects: true })}
               onSelect={term => setFilter([...filter, term].slice(0, 5))}
               value={filter}
             />
@@ -87,4 +89,4 @@ const BecomeAMember: FC = () => {
   );
 };
 
-export default BecomeAMember;
+export default MembershipSuggestions;

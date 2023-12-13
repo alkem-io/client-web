@@ -24506,81 +24506,6 @@ export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.Challe
   return { query: ChallengeExplorerDataDocument, variables: variables };
 }
 
-export const BecomeAMemberSpaceDocument = gql`
-  query BecomeAMemberSpace($id: UUID_NAMEID!) {
-    space(ID: $id) {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-        url
-        avatar: visual(type: CARD) {
-          ...VisualUri
-        }
-      }
-      community {
-        id
-        myRoles
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useBecomeAMemberSpaceQuery__
- *
- * To run a query within a React component, call `useBecomeAMemberSpaceQuery` and pass it any options that fit your needs.
- * When your component renders, `useBecomeAMemberSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBecomeAMemberSpaceQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useBecomeAMemberSpaceQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.BecomeAMemberSpaceQuery,
-    SchemaTypes.BecomeAMemberSpaceQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.BecomeAMemberSpaceQuery, SchemaTypes.BecomeAMemberSpaceQueryVariables>(
-    BecomeAMemberSpaceDocument,
-    options
-  );
-}
-
-export function useBecomeAMemberSpaceLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.BecomeAMemberSpaceQuery,
-    SchemaTypes.BecomeAMemberSpaceQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.BecomeAMemberSpaceQuery, SchemaTypes.BecomeAMemberSpaceQueryVariables>(
-    BecomeAMemberSpaceDocument,
-    options
-  );
-}
-
-export type BecomeAMemberSpaceQueryHookResult = ReturnType<typeof useBecomeAMemberSpaceQuery>;
-export type BecomeAMemberSpaceLazyQueryHookResult = ReturnType<typeof useBecomeAMemberSpaceLazyQuery>;
-export type BecomeAMemberSpaceQueryResult = Apollo.QueryResult<
-  SchemaTypes.BecomeAMemberSpaceQuery,
-  SchemaTypes.BecomeAMemberSpaceQueryVariables
->;
-export function refetchBecomeAMemberSpaceQuery(variables: SchemaTypes.BecomeAMemberSpaceQueryVariables) {
-  return { query: BecomeAMemberSpaceDocument, variables: variables };
-}
-
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
@@ -25014,6 +24939,81 @@ export type LatestContributionsSpacesQueryResult = Apollo.QueryResult<
 >;
 export function refetchLatestContributionsSpacesQuery(variables?: SchemaTypes.LatestContributionsSpacesQueryVariables) {
   return { query: LatestContributionsSpacesDocument, variables: variables };
+}
+
+export const MembershipSuggestionSpaceDocument = gql`
+  query MembershipSuggestionSpace($id: UUID_NAMEID!) {
+    space(ID: $id) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+        url
+        avatar: visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+      community {
+        id
+        myRoles
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useMembershipSuggestionSpaceQuery__
+ *
+ * To run a query within a React component, call `useMembershipSuggestionSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMembershipSuggestionSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMembershipSuggestionSpaceQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMembershipSuggestionSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.MembershipSuggestionSpaceQuery,
+    SchemaTypes.MembershipSuggestionSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.MembershipSuggestionSpaceQuery,
+    SchemaTypes.MembershipSuggestionSpaceQueryVariables
+  >(MembershipSuggestionSpaceDocument, options);
+}
+
+export function useMembershipSuggestionSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.MembershipSuggestionSpaceQuery,
+    SchemaTypes.MembershipSuggestionSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.MembershipSuggestionSpaceQuery,
+    SchemaTypes.MembershipSuggestionSpaceQueryVariables
+  >(MembershipSuggestionSpaceDocument, options);
+}
+
+export type MembershipSuggestionSpaceQueryHookResult = ReturnType<typeof useMembershipSuggestionSpaceQuery>;
+export type MembershipSuggestionSpaceLazyQueryHookResult = ReturnType<typeof useMembershipSuggestionSpaceLazyQuery>;
+export type MembershipSuggestionSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.MembershipSuggestionSpaceQuery,
+  SchemaTypes.MembershipSuggestionSpaceQueryVariables
+>;
+export function refetchMembershipSuggestionSpaceQuery(variables: SchemaTypes.MembershipSuggestionSpaceQueryVariables) {
+  return { query: MembershipSuggestionSpaceDocument, variables: variables };
 }
 
 export const MyMembershipsDocument = gql`

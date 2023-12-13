@@ -14,7 +14,7 @@ import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 import LatestContributions from './latestContributions/LatestContributions';
 import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
-import BecomeAMember from './becomeAMember/BecomeAMember';
+import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions';
 import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 
 export const MyDashboard = () => {
@@ -34,7 +34,7 @@ export const MyDashboard = () => {
         <PageContentColumn columns={8}>
           <NewMembershipsBlock onOpenMemberships={() => setIsMyMembershipsDialogOpen(true)} />
           <MyLatestContributions />
-          <BecomeAMember />
+          <MembershipSuggestions />
           <InnovationLibraryBlock />
           <RecentForumMessages />
           <ExploreOtherChallenges />
