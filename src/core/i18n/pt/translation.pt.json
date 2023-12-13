@@ -1,349 +1,350 @@
 {
   "chatbot": {
     "title": "Central de Ajuda Alkemio",
-    "subtitle": "Ask your question to search through our documentation or browse it directly",
-    "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
+    "subtitle": "Faça sua pergunta para pesquisar nossa documentação ou navegue diretamente",
+    "intro": "Olá, esse é o chat automatizado de orientação do Alkemio. Ele pode fornecer respostas com base na documentação do Alkemio. O que você está procurando?",
     "infoDialog": {
-      "title": "Alkemio Help",
-      "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+      "title": "Central de Ajuda Alkemio",
+      "content": "O bate-papo de orientação do Alkemio é um módulo de pesquisa avançado que o ajuda a gerar automaticamente uma resposta para a sua pergunta com base na documentação do Alkemio. Não há pessoas no outro lado da tela ;-). Se você quiser contactar alguém da equipe do Alkemio por favor use o botão de contato abaixo.\nAs respostas (e fontes) retornadas aqui são baseadas no conteúdo do centro de ajuda do Alkemio. A interação é com um mecanismo de IA, amplamente utilizado on-line, que é capaz de interpretar a sua pergunta e fornecer orientações sobre a ajuda mais relevante. Não há dados do usuário envolvidos, e a interação com o motor de busca não pode ser ligada a usuários individuais."
     },
     "feedback": {
-      "message": "Is the answer relevant?",
-      "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
+      "message": "A resposta é relevante?",
+      "tooltip": "Esta mensagem foi gerada automaticamente com base na documentação do Alkemio. Sua opinião é altamente relevante para nós!"
     },
     "references": [
       {
         "uri": "https://www.alkemio.org/help/getting-started/",
-        "title": "New user? Visit our Getting Started pages!"
+        "title": "Novo usuário? Visite nossas páginas de introdução!"
       },
       {
         "uri": "https://www.alkemio.org/help/",
-        "title": "Find your answers in the Help Center or FAQ"
+        "title": "Encontre suas respostas no Centro de Ajuda ou Perguntas Frequentes"
       },
       {
         "uri": "https://www.alkemio.org/support/",
-        "title": "Contact the Alkemio team"
+        "title": "Entre em contato com a equipe Alkemio"
       }
     ]
   },
   "notifications": {
-    "dont-show-notes": "Don't show this message again",
+    "dont-show-notes": "Não mostrar esta mensagem novamente",
     "icon": "🎉",
     "releaseUpdates": {
       "2": {
-        "title": "We have exciting news, a new release full of interesting functionalities is out!",
-        "content": "<b>Exciting news!</b> We've refreshed the main navigation of the platform to let the focus be on your community. Alkemio as a brand is now less visible, taking the role of  \"powering\" your Space. This big and important change also allowed us to simplify the user navigation. So less buttons to distract you from your work inside your Space.<br/><br/>The new layout is as follows:<br/><ul><li><b>Menu:</b> besides your personal profile and settings, you will now find a menu that includes all the jobs you can do on the platform outside of your Space</li><li><b>Navigation:</b> in the top left, you will find the icons of the home page, Space, or Challenge to navigate back</li><li><b>Search:</b> as users were often confused by the two search options (in the Space or the entire platform), we have combined them into one search function with the option to filter</li></ul>We hope this release will bring you one step closer to efficient collaboration! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-11-01)** to read all about the latest changes.<br/><br/>"
+        "title": "Temos novidades emocionantes, um novo lançamento cheio de funcionalidades interessantes foi lançado!",
+        "content": "<b>Notícias emocionantes!</b> Atualizamos a navegação principal da plataforma para deixar o foco ser em sua comunidade. Alkemio como marca agora é menos visível, assumindo a função de \"powering\" o seu Espaço. Esta grande e importante mudança também nos permitiu simplificar a navegação do usuário. Então, menos botões para distraí-lo do seu trabalho dentro do seu Espaço.<br/><br/>O novo layout é o seguinte:<br/><ul><li>Menu:<b></b> além de seu perfil pessoal e configurações, agora você encontrará um menu que inclui todos os trabalhos que você pode fazer na plataforma fora do seu Espaço</li><li><b>Navegação:</b> no canto superior esquerdo. você encontrará os ícones da página inicial, Espaço ou Desafio para navegar de volta</li><li><b>Pesquisa:</b> como usuários muitas vezes estavam confusos pelas duas opções de pesquisa (no Espaço ou toda a plataforma), nós os combinamos em uma função de pesquisa com a opção de filtrar</li></ul>Esperamos que esta versão traga um passo para você mais perto de uma colaboração eficiente! **[Clique aqui](https://alkem-25488729. s-sites-eu1.com/alkemio-release-2023-11-01)** para ler tudo sobre as últimas alterações.<br/><br/>"
       },
       "1": {
-        "title": "We have exciting news, a new release full of interesting functionalities is out!",
-        "content": "After a big refresh of the lay-out and functionalities of the Space, it was time to dive into the <b>Challenges & Opportunities</b> and make some updates.<br/><br/>They are:<ul><li>A more prominent role for the <b>innovation flow</b> that will guide your Challenge or Opportunity.</li><li>Now you can easily invite both Alkemio users as well as external people to \"my\" Space.</li></ul><br/><br/>Among others! **[Click here](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** to read all about the latest changes."
+        "title": "Temos novidades emocionantes, um novo lançamento cheio de funcionalidades interessantes foi lançado!",
+        "content": "Depois de uma grande atualização no layout e nas funcionalidades do Espaço, chegou a hora de mergulhar nos <b>Desafios e Oportunidades</b> e fazer algumas atualizações.<br/><br/>São elas:<ul ><li>Um papel mais proeminente para o <b>fluxo de inovação</b> que guiará seu Desafio ou Oportunidade.</li><li>Agora você pode facilmente convidar tanto usuários do Alkemio quanto pessoas externas para o \"meu \" Espaço.</li></ul><br/><br/>Entre outros! **[Clique aqui](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-07-20)** para ler tudo sobre as mudanças mais recentes."
       }
     }
   },
   "cookie": {
-    "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
-    "settings": "When visiting a website, information can be stored on your browser in the form of cookies. This information can be about you, your preferences and your device. Mostly, this information is used to make the website work as good as possible. Some websites use it for marketing purposes. As Alkemio does not allow any advertisement on its website, we only distinguish two types of cookies.",
-    "technical": "Technically necessary cookies: enable you to navigate and use the basis functions and to store preferences.",
-    "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience."
+    "consent": "Ao clicar em \"Aceitar todos os cookies\", você concorda com o armazenamento de cookies no seu dispositivo para aprimorar a navegação no site e analisar o uso do site.",
+    "settings": "Ao visitar um website, as informações podem ser armazenadas em seu navegador na forma de cookies. Esta informação pode ser sobre você, suas preferências e seu dispositivo. A maior parte destas informações são usadas para fazer o site funcionar o melhor possível. Alguns sites usam para fins de marketing. Como o Alkemio não permite qualquer anúncio em seu website, apenas distinguimos dois tipos de cookies.",
+    "technical": "Cookies tecnicamente necessários: permitem que você navegue e use as funções de base e armazene as preferências.",
+    "analysis": "Cookies de analise: nos permita determinar como os visitantes interagem com os nossos serviços, a fim de melhorar a experiência do usuário."
   },
   "actions": {
-    "add-entity": "Add {{entity}}"
+    "add-entity": "Adicionar {{entity}}"
   },
   "languages": {
-    "en": "English",
-    "nl": "Dutch",
-    "es": "Spanish",
-    "bg": "Bulgarian",
-    "ua": "Ukrainian",
-    "de": "German",
-    "fr": "French",
-    "pt": "Portuguese (Brazil)",
-    "inContextTool": "In context translation"
+    "en": "Inglês",
+    "nl": "Holandês",
+    "es": "Espanhol",
+    "bg": "Búlgaro",
+    "ua": "Ucraniano",
+    "de": "Alemão",
+    "fr": "Francês",
+    "pt": "Português (Brasil)",
+    "inContextTool": "Tradução contextual"
   },
   "fields": {
-    "displayName": "Title",
-    "startTime": "Start Time",
-    "endTime": "End Time",
-    "name": "Name"
+    "displayName": "Título",
+    "startTime": "Horário de Início",
+    "endTime": "Hora de término",
+    "name": "Nome"
   },
   "calendar": {
-    "add-event": "Add event",
-    "edit-event": "Edit event",
-    "delete-event": "Delete event",
-    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the space?",
+    "add-event": "Adicionar evento",
+    "edit-event": "Editar evento",
+    "delete-event": "Apagar evento",
+    "delete-confirmation": "Tem certeza que deseja excluir o evento: '{{title}}' do espaço?",
     "event": {
-      "type": "Type of Event",
-      "multiple-days": "{{days}} days",
-      "whole-day": "Entire Day"
+      "type": "Tipos de Evento",
+      "multiple-days": "{{days}} dias",
+      "whole-day": "Dia Inteiro"
     },
     "validation": {
       "durationMinutes": {
-        "positive": "Event End Time can't be before event Start Time"
+        "positive": "Hora Final do Evento não pode ser antes da Hora Inicial do Evento"
       }
     },
-    "no-data": "No events found",
-    "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
-    "past-events": "Past Events",
-    "show-calendar": "Show calendar",
+    "no-data": "Nenhum evento foi encontrado",
+    "no-upcoming-events": "Atualmente, não há eventos futuros para serem exibidos",
+    "past-events": "Eventos Anteriores",
+    "show-calendar": "Exibir calendário",
     "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):"
   },
   "buttons": {
-    "leave": "Leave",
-    "learn-more": "Learn more",
-    "load-more": "Load more",
-    "load-count-more": "Load {{count}} more",
-    "apply": "Apply",
-    "explore": "Contribute",
-    "ok": "Ok",
-    "create": "Create",
-    "publish": "Publish",
-    "unpublish": "Unpublish",
-    "save-draft": "Save as draft",
-    "archive": "Archive",
-    "save": "Save",
-    "back": "Back",
-    "next": "Next",
-    "edit": "Edit",
-    "expand": "Expand",
-    "collapse": "Collapse",
-    "expandWindow": "Expand Window",
-    "see-more": "See more",
-    "see-all": "More {{subject}}",
-    "readMore": "Read more",
-    "home": "Home",
-    "take-me-home": "Take me home",
-    "close": "Close",
-    "delete": "Delete",
-    "submit": "Submit",
-    "remove": "Remove",
-    "cancel": "Cancel",
-    "explore-and-connect": "Explore and connect",
-    "send-message": "Send message",
-    "edit-members": "Edit members",
-    "insert": "Insert",
-    "open": "Open",
-    "my-profile": "My profile",
-    "new": "New",
-    "sign-out": "Sign out",
-    "cancel-project": "Cancel project",
-    "create-project": "Create project",
-    "processing": "Processing...",
-    "details": "Details",
-    "settings": "Settings",
-    "member": "Member",
-    "profile": "Profile",
-    "view-profile": "View Profile",
-    "edit-photo": "Edit Photo",
-    "accept-all-cookies": "Accept All Cookies",
-    "confirm-choice": "Confirm Choice",
-    "confirm": "Confirm",
-    "change-template": "Change template",
-    "find-template": "Find template",
-    "change": "Change",
-    "share": "Share",
-    "view": "View",
-    "preview": "Preview",
-    "import": "Import",
-    "importing": "Importing...",
-    "go-to-entity": "Go to {{entity}}",
-    "reply": "Reply",
-    "select": "Select",
-    "change-field": "Change {{field}}",
-    "send": "Send",
-    "contact-leads": "Contact the {{contact}}(s)",
-    "moveUp": "Move up",
-    "moveDown": "Move down",
-    "moveToTop": "Move to top",
-    "moveToBottom": "Move to bottom",
-    "use": "Use",
-    "fullscreen": "Toggle full screen",
-    "changeLanguage": "Change language",
-    "getHelp": "Get help",
-    "saveAsTemplate": "Save as template",
-    "skipLink": "Skip to next block",
-    "toolsMenu": "Tools Menu",
-    "userMenu": "User Menu",
-    "scrollToTop": "Scroll to top"
+    "leave": "Sair",
+    "learn-more": "Saiba mais",
+    "load-more": "Carregar mais",
+    "load-count-more": "Carregar mais {{ count}}",
+    "apply": "Confirmar",
+    "explore": "Contribuir",
+    "ok": "Confirmar",
+    "create": "Criar",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "save-draft": "Salvar como rascunho",
+    "archive": "Arquivar",
+    "save": "Salvar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "edit": "Editar",
+    "expand": "Expandir",
+    "collapse": "Ocultar",
+    "expandWindow": "Expandir Janela",
+    "see-more": "Veja mais",
+    "see-all": "Mais {{subject}}",
+    "readMore": "Leia mais",
+    "home": "Início",
+    "take-me-home": "Voltar para a Página Inicial",
+    "close": "Fechar",
+    "yes-close": "Sim, fechar",
+    "delete": "Deletar",
+    "submit": "Enviar",
+    "remove": "Remover",
+    "cancel": "Cancelar",
+    "explore-and-connect": "Explore e conecte",
+    "send-message": "Enviar mensagem",
+    "edit-members": "Editar membros",
+    "insert": "Inserir",
+    "open": "Abrir",
+    "my-profile": "Meu perfil",
+    "new": "Novo",
+    "sign-out": "Sair da sessão",
+    "cancel-project": "Cancelar projeto",
+    "create-project": "Criar projeto",
+    "processing": "Processando...",
+    "details": "Detalhes",
+    "settings": "Configurações",
+    "member": "Membro",
+    "profile": "Perfil",
+    "view-profile": "Ver Perfil",
+    "edit-photo": "Editar Foto",
+    "accept-all-cookies": "Aceitar todos os \"cookies\"",
+    "confirm-choice": "Confirmar escolha",
+    "confirm": "Confirmar",
+    "change-template": "Alterar o template",
+    "find-template": "Encontrar o template",
+    "change": "Alterar",
+    "share": "Compartilhar",
+    "view": "Visualizar",
+    "preview": "Pré-visualizar",
+    "import": "Importar",
+    "importing": "Importando...",
+    "go-to-entity": "Ir para {{entity}}",
+    "reply": "Responder",
+    "select": "Selecionar",
+    "change-field": "Alterar {{field}}",
+    "send": "Enviar",
+    "contact-leads": "Contate o {{contact}}(s)",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "moveToTop": "Mover para o topo",
+    "moveToBottom": "Mover para o fim da página",
+    "use": "Usar",
+    "fullscreen": "Alternar para o modo tela cheia",
+    "changeLanguage": "Alterar idioma",
+    "getHelp": "Obter ajuda",
+    "saveAsTemplate": "Salvar como template",
+    "skipLink": "Pular para o próximo bloco",
+    "toolsMenu": "Menu de ferramentas",
+    "userMenu": "Menu de usuário",
+    "scrollToTop": "Rolar para o topo"
   },
   "tooltips": {
-    "click-more-info": "Click for more information",
-    "click-delete": "Click to delete"
+    "click-more-info": "Clique aqui para mais informações",
+    "click-delete": "Clique para excluir"
   },
   "topbar": {
-    "sign-in": "Log In | Sign Up"
+    "sign-in": "Login ou cadastre-se"
   },
   "authentication": {
-    "sign-in": "Sign in",
-    "sign-up": "Sign up",
-    "sign-out": "Sign out",
-    "log-out": "Log out",
-    "log-in": "Log in",
-    "login": "Login",
-    "register": "Register",
+    "sign-in": "Fazer login",
+    "sign-up": "Cadastre-se",
+    "sign-out": "Sair",
+    "log-out": "Sair",
+    "log-in": "Fazer login",
+    "login": "Entrar",
+    "register": "Cadastrar",
     "validation": {
-      "fill-fields": "Please fill required fields!"
+      "fill-fields": "Por favor, preencha os campos obrigatórios!"
     },
     "social-login": {
-      "connect": "Connect with {{provider}}",
+      "connect": "Conectar com {{provider}}",
       "providers": {
         "linkedin": "LinkedIn",
         "microsoft": "Microsoft"
       }
     },
     "signUp": {
-      "signUpEmail": "Sign up with E-Mail",
-      "alreadyHaveAccount": "Already have an account?"
+      "signUpEmail": "Cadastre-se com e-mail",
+      "alreadyHaveAccount": "Você já possui uma conta?"
     }
   },
   "common": {
-    "knowledge-base": "Knowledge base",
-    "or": "Or",
-    "permission": "Permission",
-    "permissions": "Permissions",
-    "error-generic": "Error occurred while loading",
-    "activity": "Activity",
+    "knowledge-base": "Base de conhecimento",
+    "or": "Ou",
+    "permission": "Permissão",
+    "permissions": "Permissões",
+    "error-generic": "Ocorreu um erro ao carregar",
+    "activity": "Atividade",
     "avatar": "Avatar",
-    "avatar-of": "Avatar of {{user}}",
+    "avatar-of": "Avatar de {{user}}",
     "beta": "Beta",
-    "inspiration": "Inspiration",
-    "name": "Name",
-    "username": "Username",
-    "tags": "Tags",
-    "administration": "Administration",
-    "add": "Add",
-    "added": "Added",
-    "remove": "Remove",
+    "inspiration": "Inspiração",
+    "name": "Nome",
+    "username": "Usuário(a)",
+    "tags": "Etiquetas",
+    "administration": "Administração",
+    "add": "Adicionar",
+    "added": "Adicionado",
+    "remove": "Remover",
     "callout": "Callout",
     "callouts": "Callouts",
-    "collaborationTools": "Collaboration Tools",
-    "createdBy": "Created by",
+    "collaborationTools": "Ferramentas de Colaboração",
+    "createdBy": "Desenvolvido por",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
-    "calendar": "Calendar",
-    "comment": "Comment",
-    "comments": "Comments",
-    "contributions": "Contributions",
-    "card": "Card",
-    "cards": "Cards",
-    "create": "Create",
-    "create-new": "Create new",
-    "create-new-entity": "Create new {{entity}}",
-    "date": "Date",
-    "description": "Description",
-    "event": "Event",
-    "events": "Events",
-    "about": "About",
-    "aboutThis": "About this {{entity}}",
-    "explore": "Contribute",
-    "edit-entity": "Edit {{entity}}",
-    "filter": "Filter",
-    "filterby": "Filter by...",
-    "forum": "Forum",
+    "calendar": "Calendário",
+    "comment": "Comentário",
+    "comments": "Comentários",
+    "contributions": "Contribuições",
+    "card": "Cartão",
+    "cards": "Cartões",
+    "create": "Criar",
+    "create-new": "Criar novo",
+    "create-new-entity": "Criar novo {{entity}}",
+    "date": "Data",
+    "description": "Descrição",
+    "event": "Evento",
+    "events": "Eventos",
+    "about": "Sobre",
+    "aboutThis": "Sobre este {{entity}}",
+    "explore": "Contribuir",
+    "edit-entity": "Editar {{entity}}",
+    "filter": "Filtrar",
+    "filterby": "Filtrar por...",
+    "forum": "Fórum",
     "email": "Email",
-    "state": "State",
-    "post": "Post",
-    "posts": "Posts",
+    "state": "Estado",
+    "post": "Publicação",
+    "posts": "Publicações",
     "status": "Status",
-    "aspect": "Card",
-    "aspects": "Cards",
+    "aspect": "Cartão",
+    "aspects": "Cartões",
     "host": "Host",
     "lead": "Lead",
-    "space": "Space",
-    "spaces": "Spaces",
-    "challenge": "Challenge",
-    "challenges": "Challenges",
-    "all-entities": "All {{entityType}} ({{count}})",
-    "contributors": "Contributors",
-    "opportunity": "Opportunity",
-    "opportunities": "Opportunities",
-    "organization": "Organization",
-    "organizations": "Organizations",
-    "communications": "Updates from the leads",
-    "applications": "Applications",
-    "introduction": "Introduction",
-    "interest": "Interest",
-    "interests": "Interests",
-    "project": "Project",
-    "role": "Role",
-    "agreement": "Agreement",
-    "agreements": "Agreements",
+    "space": "Espaço",
+    "spaces": "Espaços",
+    "challenge": "Desafio",
+    "challenges": "Desafios",
+    "all-entities": "Todos {{entityType}} ({{count}})",
+    "contributors": "Colaboradores",
+    "opportunity": "Oportunidade",
+    "opportunities": "Oportunidades",
+    "organization": "Organização",
+    "organizations": "Organizações",
+    "communications": "Atualizações dos líderes do Espaço",
+    "applications": "Pedidos",
+    "introduction": "Introdução",
+    "interest": "Interesse",
+    "interests": "Interesses",
+    "project": "Projeto",
+    "role": "Função",
+    "agreement": "Termos de uso",
+    "agreements": "Acordos",
     "templates": "Templates",
     "template": "Template",
-    "group": "Group",
-    "groups": "Groups",
-    "user-group": "User group",
-    "user-groups": "User groups",
-    "user": "User",
-    "users": "Users",
-    "update": "Update",
-    "updates": "Updates from the leads",
-    "no-updates": "No updates from the leads",
-    "no-tags": "No tags available",
-    "no-references": "No references available",
-    "field-required": "This field is required",
-    "field-min-length": "This field must be minimum of {{min}} characters",
-    "field-max-length": "This field must be maximum of {{max}} characters",
-    "last-saved": "Last saved: {{datetime}}",
-    "membership": "Membership",
-    "owner": "Owner",
+    "group": "Grupo",
+    "groups": "Grupos",
+    "user-group": "Grupo de usuários",
+    "user-groups": "Grupos de Usuários",
+    "user": "Usuário",
+    "users": "Usuários",
+    "update": "Atualização",
+    "updates": "Atualizações dos líderes do Espaço",
+    "no-updates": "Nenhuma atualização dos líderes do Espaço",
+    "no-tags": "Não há tags disponíveis",
+    "no-references": "Não há referências disponíveis",
+    "field-required": "Este campo é obrigatório",
+    "field-min-length": "Este campo deve ter no mínimo {{min}} caracteres",
+    "field-max-length": "Este campo deve ter no máximo {{max}} caracteres",
+    "last-saved": "Salvo por último: {{datetime}}",
+    "membership": "Membro",
+    "owner": "Responsável",
     "admin": "Admin",
-    "member": "Member",
-    "members": "Members",
+    "member": "Membro",
+    "members": "Membros",
     "empty-string": "",
-    "discussion": "Discussion",
-    "discussions": "Discussions",
-    "disassociate": "Disassociate",
-    "dashboard": "Dashboard",
-    "contribute": "Contribute",
-    "context": "Context",
-    "community": "Community",
-    "library": "Library",
-    "people": "People",
-    "settings": "Settings",
+    "discussion": "Discussão",
+    "discussions": "Discussões",
+    "disassociate": "Desassociar-se",
+    "dashboard": "Painel",
+    "contribute": "Contribuir",
+    "context": "Contexto",
+    "community": "Comunidade",
+    "library": "Biblioteca",
+    "people": "Pessoas",
+    "settings": "Configurações",
     "space-settings": "$t(common.settings)",
-    "search": "Search",
-    "storage": "Storage",
-    "type": "Type",
-    "reference": "Reference",
-    "references": "References",
-    "notifications": "Notifications",
-    "credentials": "Credentials",
-    "my-profile": "My profile",
-    "my-memberships": "My memberships",
-    "profile": "Profile",
+    "search": "Pesquisar",
+    "storage": "Armazenamento",
+    "type": "Tipo",
+    "reference": "Referência",
+    "references": "Referências",
+    "notifications": "Notificações",
+    "credentials": "Credenciais",
+    "my-profile": "Meu perfil",
+    "my-memberships": "Minhas associações",
+    "profile": "Perfil",
     "social": "Social",
-    "lifecycle": "Lifecycle",
-    "location": "Location",
+    "lifecycle": "Ciclo de vida",
+    "location": "Localização",
     "home": "Home",
-    "visuals": "Visuals",
-    "authorization": "Authorization",
-    "question": "Question",
-    "questions": "Questions",
-    "show-subject": "Show: ",
-    "show-more": "Show more",
-    "show-all": "Show all",
-    "lock": "Locked",
-    "title": "Title",
-    "visibility": "Visibility",
-    "warning": "Warning",
-    "welcome": "Welcome",
-    "preview": "Preview",
-    "help": "Help",
-    "helpCenter": "Help Center",
-    "loading": "Loading...",
-    "innovation-flow": "Innovation flow",
-    "innovation-flows": "Innovation Flows",
-    "innovation-packs": "Innovation Packs",
-    "innovation-hub": "Innovation Hub",
-    "innovation-hubs": "Innovation Hubs",
-    "innovationPack": "Innovation Pack",
-    "more": "More",
+    "visuals": "Visuais",
+    "authorization": "Autorização",
+    "question": "Pergunta",
+    "questions": "Questões",
+    "show-subject": "Mostrar: ",
+    "show-more": "Mostrar mais",
+    "show-all": "Mostrar todos",
+    "lock": "Bloqueado",
+    "title": "Título",
+    "visibility": "Visibilidade",
+    "warning": "Aviso",
+    "welcome": "Bem-vindo(a)",
+    "preview": "Pré-visualizar",
+    "help": "Ajuda",
+    "helpCenter": "Central de Ajuda",
+    "loading": "Carregando...",
+    "innovation-flow": "Fluxo de Inovação",
+    "innovation-flows": "Fluxos de Inovação",
+    "innovation-packs": "Pacotes de Inovação",
+    "innovation-hub": "Hub de Inovação",
+    "innovation-hubs": "Hubs de Inovação",
+    "innovationPack": "Pacote de Inovação",
+    "more": "Mais",
     "url": "URL",
-    "sources": "Sources",
+    "sources": "Fontes",
     "genders": {
-      "notSpecified": "not specified",
-      "male": "male",
-      "female": "female"
+      "notSpecified": "não especificado",
+      "male": "masculino",
+      "female": "feminino"
     },
     "journeyTypes": {
       "space": "$t(common.space)",
@@ -356,336 +357,336 @@
       "agreement_plural": "$t(common.agreements)"
     },
     "verified-status": {
-      "verified": "Verified",
+      "verified": "Verificado",
       "not-verified": ""
     },
     "enums": {
       "innovationFlowState": {
-        "new": "New",
-        "beingRefined": "Being Refined",
-        "inProgress": "In Progress",
-        "complete": "Complete",
-        "abandoned": "Abandoned",
-        "archived": "Archived"
+        "new": "Novo",
+        "beingRefined": "Sendo Refinado",
+        "inProgress": "Em Progresso",
+        "complete": "Concluído",
+        "abandoned": "Cancelado",
+        "archived": "Arquivado"
       },
       "space-visibility": {
-        "ACTIVE": "Active",
-        "ARCHIVED": "Archived",
+        "ACTIVE": "Ativo",
+        "ARCHIVED": "Arquivado",
         "DEMO": "Demo"
       },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
-          "name": "Global Admin",
+          "name": "Admin Global",
           "order": 0,
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Spaces",
+          "name": "Admin global dos Espaços",
           "order": 1,
           "hidden": false
         },
         "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Global Community Admin",
+          "name": "Admin global da Comunidade",
           "order": 2,
           "hidden": false
         },
         "GLOBAL_REGISTERED": {
-          "name": "Registered",
+          "name": "Registrado",
           "order": 999,
           "hidden": true
         },
         "HUB_ADMIN": {
-          "name": "Space Admin",
+          "name": "Admin do Espaço",
           "order": 3,
           "hidden": false
         },
         "HUB_HOST": {
-          "name": "Space Host",
+          "name": "Host do Espaço",
           "order": 4,
           "hidden": true
         },
         "HUB_MEMBER": {
-          "name": "Space Member",
+          "name": "Membro do Espaço",
           "order": 5,
           "hidden": true
         },
         "CHALLENGE_ADMIN": {
-          "name": "Challenge Admin",
+          "name": "Desafio Admin",
           "order": 6,
           "hidden": false
         },
         "CHALLENGE_LEAD": {
-          "name": "Challenge Lead",
+          "name": "Líder do Desafio",
           "order": 7,
           "hidden": true
         },
         "CHALLENGE_MEMBER": {
-          "name": "Challenge Member",
+          "name": "Membro do Desafio",
           "order": 8,
           "hidden": true
         },
         "OPPORTUNITY_ADMIN": {
-          "name": "Opportunity Admin",
+          "name": "Oportunidade Admin",
           "order": 9,
           "hidden": true
         },
         "OPPORTUNITY_MEMBER": {
-          "name": "Opportunity Member",
+          "name": "Membro da Oportunidade",
           "order": 10,
           "hidden": true
         },
         "OPPORTUNITY_LEAD": {
-          "name": "Opportunity Lead",
+          "name": "Líder da Oportunidade",
           "order": 11,
           "hidden": true
         },
         "ORGANIZATION_OWNER": {
-          "name": "Organization Owner",
+          "name": "Proprietário da Organização",
           "order": 12,
           "hidden": false
         },
         "ORGANIZATION_ADMIN": {
-          "name": "Organization Admin",
+          "name": "Admin da Organização",
           "order": 13,
           "hidden": false
         },
         "ORGANIZATION_ASSOCIATE": {
-          "name": "Organization Associate",
+          "name": "Associado da Organização",
           "order": 14,
           "hidden": true
         },
         "USER_SELF_MANAGEMENT": {
-          "name": "User Self Management",
+          "name": "Gerenciamento Pessoal de Usuário",
           "order": 15,
           "hidden": true
         },
         "USER_GROUP_MEMBER": {
-          "name": "User Group Member",
+          "name": "Usuário Membro do Grupo",
           "order": 16,
           "hidden": true
         },
         "INNOVATION_PACK_PROVIDER": {
-          "name": "Innovation Pack Provider",
+          "name": "Provedor do Pacote de Inovação",
           "order": 17,
           "hidden": true
         }
       },
       "edit-mode": {
-        "new": "New",
-        "edit": "Edit",
-        "read-only": "Read only"
+        "new": "Novo",
+        "edit": "Editar",
+        "read-only": "Somente leitura"
       },
       "discussion-category": {
-        "GENERAL": "General",
-        "IDEAS": "Ideas",
-        "QUESTIONS": "Questions",
-        "SHARING": "Sharing",
-        "PLATFORM_FUNCTIONALITIES": "Platform Functionalities",
-        "COMMUNITY_BUILDING": "Community Building",
-        "CHALLENGE_CENTRIC": "Working Challenge Centric",
-        "HELP": "Need Help?",
-        "OTHER": "Other"
+        "GENERAL": "Geral",
+        "IDEAS": "Idéias",
+        "QUESTIONS": "Questões",
+        "SHARING": "Compartilhamento",
+        "PLATFORM_FUNCTIONALITIES": "Funcionalidades da Plataforma",
+        "COMMUNITY_BUILDING": "Construção da Comunidade",
+        "CHALLENGE_CENTRIC": "Trabalhando com o Desafio como peça central",
+        "HELP": "Precisa de Ajuda?",
+        "OTHER": "Outros"
       },
       "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard Template",
-        "WhiteboardTemplate_plural": "Whiteboard Templates",
-        "PostTemplate": "Post Template",
-        "PostTemplate_plural": "Post Templates",
-        "InnovationFlowTemplate": "Innovation Flow",
-        "InnovationFlowTemplate_plural": "Innovation Flows",
-        "CalloutTemplate": "Callout Template",
-        "CalloutTemplate_plural": "Callout Templates"
+        "WhiteboardTemplate": "Template de Whiteboard",
+        "WhiteboardTemplate_plural": "Templates de Whiteboard",
+        "PostTemplate": "Template de Post",
+        "PostTemplate_plural": "Templates de Post",
+        "InnovationFlowTemplate": "Fluxo de Inovação",
+        "InnovationFlowTemplate_plural": "Fluxos de Inovação",
+        "CalloutTemplate": "Template de Callout",
+        "CalloutTemplate_plural": "Templates de Callout"
       }
     },
     "blocks": {
-      "users-contributing": "users that are contributing",
-      "all-contributing-users": "all contributing users"
+      "users-contributing": "usuários que estão contribuindo",
+      "all-contributing-users": "todos os usuários contribuintes"
     },
     "time": {
-      "timeAgo": "{{time}} ago",
-      "second": "{{count}} second",
-      "second_plural": "{{count}} seconds",
-      "minute": "{{count}} minute",
-      "minute_plural": "{{count}} minutes",
-      "hour": "{{count}} hour",
-      "hour_plural": "{{count}} hours",
-      "day": "{{count}} day",
-      "day_plural": "{{count}} days",
-      "month": "{{count}} month",
-      "month_plural": "{{count}} months",
-      "year": "{{count}} year",
-      "year_plural": "{{count}} years"
+      "timeAgo": "{{time}} atrás",
+      "second": "{{count}} segundo",
+      "second_plural": "{{count}} segundo",
+      "minute": "{{count}} minuto",
+      "minute_plural": "{{count}} minutos",
+      "hour": "{{count}} hora",
+      "hour_plural": "{{count}} horas",
+      "day": "{{count}} dia",
+      "day_plural": "{{count}} dias",
+      "month": "{{count}} Mês",
+      "month_plural": "{{count}} Meses",
+      "year": "{{count}} ano",
+      "year_plural": "{{count}} anos"
     }
   },
   "community": {
-    "memberUsers": "Member Users ({{count}})",
-    "leading-organizations": "Leading Organizations",
-    "memberOrganizations": "Member Organizations ({{count}})",
-    "pendingApplications": "Pending applications",
-    "pendingMemberships": "Pending applications & invitations",
+    "memberUsers": "Usuários membros ({{count}})",
+    "leading-organizations": "Organizações Líderes",
+    "memberOrganizations": "Organizações Membros ({{count}})",
+    "pendingApplications": "Solicitações pendentes",
+    "pendingMemberships": "Aplicações e convites pendentes",
     "leads": "Leads",
-    "members": "Members",
+    "members": "Membros",
     "host": "Host",
-    "members-count": "{{count}} Member",
-    "members-count_plural": "{{count}} Members",
-    "addMember": "Add member",
-    "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
+    "members-count": "Membro da {{count}}",
+    "members-count_plural": "Membros da {{count}}",
+    "addMember": "Adicionar membro",
+    "unauthorizedPermissionsChange": "Você não tem permissão para editar as permissões deste usuário",
     "application-form": {
-      "title": "Application Form",
-      "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
-      "required-question": "Required question",
-      "move-up": "Move question one position up",
-      "move-down": "Move question one position down",
-      "delete-question": "Delete question",
-      "updated-successfully": "Application form updated successfully."
+      "title": "Formulário de inscrição",
+      "subtitle": "Esta seção permite modificar as perguntas para os usuários que se candidatam ao Espaço. <br /><b>Observe que</b> estas perguntas só serão exibidas quando as opções de Adesão (no bloco acima) estiverem definidas para \"Aplicativos necessários\"",
+      "required-question": "Pergunta Obrigatória",
+      "move-up": "Mover a questão uma posição para cima",
+      "move-down": "Mover a questão uma posição para baixo",
+      "delete-question": "Excluir pergunta",
+      "updated-successfully": "Formulário de Inscrição atualizado com sucesso."
     },
-    "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
+    "applicationsHelp": "Aqui você pode encontrar todos que se candidataram a se tornar um membro deste Espaço. Clicando sobre eles, você pode rever a inscrição para aceitá-la ou rejeitá-la.",
     "applicationStatus": {
-      "applicationReceived": "Application Received",
-      "applicationApproved": "Application Approved",
-      "applicationRejected": "Application Rejected",
-      "applicationArchived": "Application Archived"
+      "applicationReceived": "Inscrição Recebida",
+      "applicationApproved": "Inscrição Aprovada",
+      "applicationRejected": "Inscrição rejeitada",
+      "applicationArchived": "Inscrição arquivada"
     },
     "invitationStatus": {
-      "invited": "Invited",
-      "accepted": "Invitation Accepted",
-      "rejected": "Invitation Rejected"
+      "invited": "Convidado",
+      "accepted": "Convite Aceito",
+      "rejected": "Convite Recusado"
     },
     "invitationExternalStatus": {
-      "invited": "Invited to join Alkemio & this Space"
+      "invited": "Convidado para participar do Alkemio e deste Espaço"
     },
     "confirmDeleteApplication": {
-      "title": "Deleting application from {{user}}",
-      "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+      "title": "Excluindo Inscrição de {{user}}",
+      "content": "Tem certeza que deseja arquivar esta inscrição? O pedido será rejeitado, se já não for o caso."
     },
     "confirmDeleteInvitation": {
-      "title": "Deleting invitation from {{user}}",
-      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+      "title": "Excluindo o convite de inscrição de {{user}}",
+      "content": "Tem certeza que deseja arquivar este convite? O pedido será rejeitado, se já não for o caso."
     },
     "confirmDeleteInvitationExternal": {
-      "title": "Deleting invitation from {{user}}",
-      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+      "title": "Excluindo o convite de {{user}}",
+      "content": "Tem certeza que deseja arquivar este convite? O pedido será rejeitado, se já não for o caso."
     },
     "pendingMembership": {
-      "pendingMemberships": "Pending Memberships",
-      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
-      "invitationsSectionTitle": "Invitations",
-      "applicationsSectionTitle": "Open applications",
+      "pendingMemberships": "Membros Pendentes",
+      "pendingMembershipsWithCount": "Membros Pendentes ({{count}})",
+      "invitationsSectionTitle": "Convites",
+      "applicationsSectionTitle": "Abrir inscrições",
       "invitationDialog": {
-        "title": "Pending Membership: {{journey}}",
+        "title": "Membros Pendentes: {{journey}}",
         "actions": {
-          "hide": "Hide this invitation",
-          "reject": "Decline",
-          "accept": "Join"
+          "hide": "Ocultar este convite",
+          "reject": "Recusar",
+          "accept": "Entrar"
         }
       },
-      "invitationTitle": "{{time}} {{user}} invited you to <journeyicon /> {{journey}}"
+      "invitationTitle": "{{time}} {{user}} convidou você para <journeyicon /> {{journey}}"
     },
     "memberSettings": {
-      "title": "Member Settings",
-      "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the Community. ",
-      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this community and all of its content and contributors.",
-      "maxLeadsWarning": "Note that there is a specific <b>maximum number of leads</b> for the communities. If the maximum number if reached, this option will be disabled for others.",
+      "title": "Configurações de Membro",
+      "lead": "Este membro é um <b>lead</b>: Leads são exibidos como hosts da Comunidade. ",
+      "admin": "Este membro é um admin<b></b>: ele(a) tem o direito de administrar esta comunidade e todo o seu conteúdo e colaboradores.",
+      "maxLeadsWarning": "Observe que há um <b>número máximo de leads</b> específico para as comunidades. Se o número máximo for atingido, esta opção será desabilitada para as demais.",
       "removeMember": {
-        "sectionTitle": "Remove member",
-        "remove": "Click here to remove this user from this Community. Be careful, this action cannot be undone.",
-        "dialogTitle": "Are you sure you want to remove this member?",
-        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
+        "sectionTitle": "Remover membro",
+        "remove": "Clique aqui para remover este usuário desta Comunidade. Tenha cuidado, esta ação não pode ser desfeita.",
+        "dialogTitle": "Tem certeza que deseja remover este membro?",
+        "dialogContent": "Clicando em CONFIRMAR, {{member}} será removido desta Comunidade e de todos os Desafios e Oportunidades {{memberFirstName}} subjacentes. As contribuições de {{memberFirstName}} permanecerão em vigor."
       }
     }
   },
   "callout": {
-    "createFull": "Add collaboration tool",
-    "contributions": "{{count}} Contribution",
-    "contributions_plural": "{{count}} Contributions",
-    "draftNotice": "DRAFT - This Callout is only visible for admins.",
-    "closed": "This Callout is closed. You can still comment on the individual Posts.",
-    "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
-    "state-permission": "Accept new responses",
-    "permission-helptext": "Use the switch below to close this callout for new entries.",
-    "callout-location": "Location: ",
-    "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
+    "createFull": "Adicionar ferramenta de colaboração",
+    "contributions": "Contribuição {{count}}",
+    "contributions_plural": "{{count}} contribuições",
+    "draftNotice": "RASCUNHO - Este Callout só é visível para admins.",
+    "closed": "Este Callout está fechado. Você ainda pode comentar nos posts individuais.",
+    "delete-confirm-title": "Excluir Callout?",
+    "delete-confirm-text": "Todos os posts, Whiteboards e mensagens sob o Callout também serão excluídos.",
+    "state-permission": "Aceitar novas respostas",
+    "permission-helptext": "Utilize o interruptor abaixo para fechar este Callout para novas entradas.",
+    "callout-location": "Localização: ",
+    "alkemio-link": "Clique aqui para ler mais sobre as ferramentas de colaboração do Alkemio",
     "link-collection": {
-      "add-link": "Add link to {{title}}",
-      "edit-link": "Edit {{title}}",
-      "add-another": "Add another link",
-      "delete-link": "Click here to delete this link",
-      "save-to-add": "Click ‘Save as draft’ or ‘Publish’ to start adding links.",
-      "click-to-see": "{{count}} links, click here to show all",
-      "no-links-yet": "There are no links yet, be the first to add one!",
-      "delete-confirm-title": "Delete this link?",
-      "delete-confirm": "Are you sure that you want to remove this link from {{title}}?",
-      "cancel-confirm-title": "Are you sure?",
-      "cancel-confirm": "If you leave this dialog, your new links will not be saved.",
-      "more-links": "{{count}} links, click here to show all",
-      "new-temporary-reference": "Temporary Link Id: {{temp}}"
+      "add-link": "Adicionar link ao {{title}}",
+      "edit-link": "Editar {{title}}",
+      "add-another": "Adicionar outro link",
+      "delete-link": "Clique aqui para excluir este link",
+      "save-to-add": "Clique em ‘Salvar como rascunho’ ou ‘Publicar’ para começar a adicionar links.",
+      "click-to-see": "Links {{count}}, clique aqui para mostrar todos",
+      "no-links-yet": "Ainda não há links, seja o primeiro a adicionar um!",
+      "delete-confirm-title": "Excluir este link?",
+      "delete-confirm": "Tem certeza que deseja remover este link do {{title}}?",
+      "cancel-confirm-title": "Você tem certeza?",
+      "cancel-confirm": "Se você deixar esta caixa de diálogo, seus novos links não serão salvos.",
+      "more-links": "Links {{count}}, clique aqui para mostrar todos",
+      "new-temporary-reference": "Id de link temporário: {{temp}}"
     },
     "singleWhiteboard": {
-      "clickToSee": "Click to see the full whiteboard"
+      "clickToSee": "Clique para ver o quadro completo"
     },
     "callout-groups": {
-      "HOME_TOP": "Dashboard Recommendations",
-      "HOME_LEFT": "Dashboard Left",
-      "HOME_RIGHT": "Dashboard Right",
-      "CONTRIBUTE_LEFT": "Contribute Left",
-      "CONTRIBUTE_RIGHT": "Contribute Right",
-      "COMMUNITY_LEFT": "Community Left",
-      "COMMUNITY_RIGHT": "Community Right",
-      "CHALLENGES_LEFT": "Challenges Left",
-      "CHALLENGES_RIGHT": "Challenges Right",
-      "OPPORTUNITIES_LEFT": "Opportunities Left",
-      "OPPORTUNITIES_RIGHT": "Opportunities Right",
-      "KNOWLEDGE": "Knowledge Base"
+      "HOME_TOP": "Recomendações do painel",
+      "HOME_LEFT": "Painel à Esquerda",
+      "HOME_RIGHT": "Painel à direita",
+      "CONTRIBUTE_LEFT": "Contribuir à esquerda",
+      "CONTRIBUTE_RIGHT": "Contribuir à Direita",
+      "COMMUNITY_LEFT": "Comunidade à esquerda",
+      "COMMUNITY_RIGHT": "Comunidade à direita",
+      "CHALLENGES_LEFT": "Desafios à esquerda",
+      "CHALLENGES_RIGHT": "Desafios à Direita",
+      "OPPORTUNITIES_LEFT": "Oportunidades à esquerda",
+      "OPPORTUNITIES_RIGHT": "Oportunidades à direita",
+      "KNOWLEDGE": "Base de Conhecimento"
     }
   },
   "journey-creation": {
-    "dialog-title": "Create a new {{entity}}"
+    "dialog-title": "Crie um novo {{entity}}"
   },
   "messaging": {
-    "message": "Message",
-    "message-optional": "Message (Optional)",
-    "successfully-sent": "Message successfully sent",
-    "messageDeleted": "This message has been deleted.",
-    "insertEmoji": "Insert Emoji",
-    "addReaction": "Add reaction",
-    "addMention": "Mention someone",
-    "formattingHelp": "Formatting help"
+    "message": "Mensagem",
+    "message-optional": "Mensagem (opcional)",
+    "successfully-sent": "Mensagem enviada com sucesso",
+    "messageDeleted": "Esta mensagem foi excluída.",
+    "insertEmoji": "Inserir emoji",
+    "addReaction": "Adicionar reação",
+    "addMention": "Mencionar alguém",
+    "formattingHelp": "Ajuda para formatação"
   },
   "send-message-dialog": {
-    "direct-message-title": "Send a message",
-    "community-message-title": "Send a message to {{contact}}(s)"
+    "direct-message-title": "Enviar uma mensagem",
+    "community-message-title": "Enviar uma mensagem para {{contact}}(s)"
   },
   "share-dialog": {
-    "title": "Copy the link below to share this {{entity}}",
-    "share-this": "Share this {{entity}}",
-    "share-this-on": "Share this {{entity}} on {{platform}}",
-    "or": "or",
+    "title": "Copie o link abaixo para compartilhar este {{entity}}",
+    "share-this": "Compartilhar esta {{entity}}",
+    "share-this-on": "Compartilhe esta {{entity}} em {{platform}}",
+    "or": "ou",
     "url": "URL",
-    "warning": "Please note that your personal email will be visible for the user when you send them a message.",
+    "warning": "Por favor, note que seu e-mail pessoal ficará visível para o usuário quando você enviar uma mensagem.",
     "platforms": {
       "clipboard": {
-        "title": "Copy Link",
-        "copy": "Copy",
-        "copied": "Copied!"
+        "title": "Copiar link",
+        "copy": "Copiar",
+        "copied": "Copiado!"
       },
       "alkemio": {
         "name": "Alkemio",
-        "title": "Share on Alkemio",
-        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message.",
-        "default-template": "Hi!\n\nI would like to share this {{entity}} with you.\n\nHave a look!"
+        "title": "Compartilhar no Alkemio",
+        "description": "Compartilhe esse {{entity}} diretamente com outros usuários do Alkemio. Você pode procurar usuários do Alkemio abaixo e anexar uma mensagem personalizada.",
+        "default-template": "Olá!\n\ngostaria de compartilhar este {{entity}} com você.\n\nDê uma olhada!"
       },
       "linkedin": {
-        "title": "Share on Linkedin"
+        "title": "Compartilhar no LinkedIn"
       },
       "twitter": {
-        "title": "Share on Twitter"
+        "title": "Compartilhar no Twitter"
       },
       "whatsapp": {
-        "title": "Share on Whatsapp"
+        "title": "Compartilhar no Whatsapp"
       },
       "email": {
-        "title": "Share through E-mail"
+        "title": "Compartilhar por e-mail"
       }
     }
   },
@@ -693,234 +694,234 @@
     "space": {
       "tagline": {
         "title": "Tagline",
-        "description": "Explain in one sentence what this Space is about.",
+        "description": "Explique em uma frase do que se trata esse Espaço.",
         "placeholder": ""
       },
       "background": {
-        "title": "Background",
-        "description": "Give a brief overview of the need for this Space and how it came about.",
+        "title": "Contexto",
+        "description": "Dê uma breve visão geral da necessidade deste Espaço e como ele se concretizou.",
         "placeholder": ""
       },
       "impact": {
-        "title": "Impact",
-        "description": "What will this Space change? How will people and organizations be affected?",
+        "title": "Impacto",
+        "description": "O que esse Espaço vai mudar? Como as pessoas e organizações serão afetadas?",
         "placeholder": ""
       },
       "vision": {
-        "title": "What is this community about?",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
+        "title": "Sobre o que é essa Comunidade?",
+        "description": "Por favor, note que estas informações também serão mostradas como uma descrição no Painel deste Espaço",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should be involved?",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Quem deveria estar envolvido?",
+        "description": "Pensem em indivíduos, organizações, organismos públicos, institutos de pesquisa, etc.",
         "placeholder": ""
       }
     },
     "challenge": {
       "displayName": {
-        "title": "Title",
-        "description": "Try to keep it short, descriptive and engaging",
+        "title": "Título",
+        "description": "Tente mantê-lo curto, descritivo e cativante",
         "placeholder": ""
       },
       "tagline": {
-        "title": "Challenge Statement",
-        "description": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with 'How might we...'",
+        "title": "Declaração do Desafio",
+        "description": "Explique em uma frase sobre o que é este Desafio. Também é possível faze-lo como uma pergunta, começando por \"Como podemos fazer...\"",
         "placeholder": ""
       },
       "background": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Challenge. Think of the 'What, where, when and who'.",
+        "title": "Realidade Atual",
+        "description": "Dê uma breve descrição do estado atual do Desafio, pense no \"Oque, onde, quando e quem\".",
         "placeholder": ""
       },
       "impact": {
-        "title": "Additional context",
-        "description": "Give a brief overview of how this Challenge is embedded in the wider picture. What is its impact? Why is it here?",
+        "title": "Contexto adicional",
+        "description": "Dê uma breve visão geral de como este Desafio é incorporado no cenário mais amplo. Qual é o seu impacto? Por que está aqui?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Future Vision",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Challenge",
+        "title": "Visão Futura",
+        "description": "Por favor, note que estas informações também serão mostradas como uma descrição no Painel deste Desafio",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should contribute",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Quem deveria contribuir",
+        "description": "Pensem em indivíduos, organizações, organismos públicos, institutos de pesquisa, etc.",
         "placeholder": ""
       },
       "tags": {
-        "title": "Tags",
-        "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
+        "title": "Etiquetas",
+        "description": "Digite as palavras-chave do Desafio para que ele se destaque e seja mais fácil de encontrar.",
         "placeholder": ""
       },
       "innovationFlow": {
-        "title": "Challenge Flow"
+        "title": "Fluxo do Desafio"
       }
     },
     "opportunity": {
       "displayName": {
-        "title": "Title",
-        "description": "Try to keep it short, descriptive and engaging",
+        "title": "Título",
+        "description": "Tente mantê-lo curto, descritivo e cativante",
         "placeholder": ""
       },
       "tagline": {
         "title": "Tagline",
-        "description": "In one sentence, explain what this Opportunity is about.",
+        "description": "Em uma frase, explique sobre o que é essa Oportunidade.",
         "placeholder": ""
       },
       "background": {
-        "title": "Background",
-        "description": "Give a brief overview of how this Opportunity was identified and how it is embedded in the wider picture.",
+        "title": "Contexto",
+        "description": "Dê uma breve descrição de como esta Oportunidade foi identificada e de como é incorporada em um contexto mais amplo.",
         "placeholder": ""
       },
       "impact": {
-        "title": "Impact",
-        "description": "What will this Opportunity change? How will people and organizations be affected, for good or bad?",
+        "title": "Impacto",
+        "description": "O que esta Oportunidade mudará? Como pessoas e organizações serão afetadas, para o bem ou para o mau?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this information will also be shown as a standalone description on the Dashboard of this Opportunity.",
+        "title": "Descrição",
+        "description": "Descreva a ideia e o impacto que ela terá no Desafio. Por favor, note que estas informações também serão mostradas como uma descrição no Painel desta Oportunidade.",
         "placeholder": ""
       },
       "who": {
-        "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Opportunity.",
+        "title": "Quem está envolvido?",
+        "description": "Descreva as pessoas e organizações que estão trabalhando atualmente nesta Oportunidade.",
         "placeholder": ""
       },
       "tags": {
-        "title": "Tags",
-        "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
+        "title": "Etiquetas",
+        "description": "Digite palavras-chave para o seu Desafio para que ele se destaque e seja mais fácil de encontrar.",
         "placeholder": ""
       },
       "innovationFlow": {
-        "title": "Opportunity Flow"
+        "title": "Fluxo da Oportunidade"
       }
     }
   },
   "forms": {
     "validations": {
-      "required": "This field is required!",
-      "minLength": "{{field}} should be at least {{min}} symbols long",
-      "maxLength": "Exceeded the limit of {{max}} characters",
-      "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
-      "nonBlank": "{{field}} must not consist of just spaces",
-      "atLeastOne": "At least one {{item}} must be selected."
+      "required": "Este campo é obrigatório!",
+      "minLength": "{{field}} deve ter pelo menos de {{min}} símbolos",
+      "maxLength": "Excedeu o limite de caracteres {{max}}",
+      "alphaNumeric": "{{field}} pode conter apenas caracteres latinos minúsculos, números e hífen",
+      "nonBlank": "{{field}} não deve consistir apenas de espaços",
+      "atLeastOne": "Pelo menos um {{item}} deve ser selecionado."
     }
   },
   "templateLibrary": {
     "calloutTemplates": {
       "name": "Callout template",
-      "title": "Template Library: Collaboration Tools",
-      "type": "Callout type",
-      "description": "Description"
+      "title": "Biblioteca de Templates: Ferramentas de Colaboração",
+      "type": "Tipo de Callout",
+      "description": "Descrição"
     },
     "postTemplates": {
-      "name": "Post template",
-      "title": "Template Library: Posts",
-      "defaultDescription": "Default Post content"
+      "name": "Template de postagem",
+      "title": "Biblioteca de Templates: Postagens",
+      "defaultDescription": "Conteúdo de postagem padrão"
     },
     "whiteboardTemplates": {
-      "name": "Whiteboard template",
-      "title": "Template Library: Whiteboards",
-      "editTemplateButton": "Edit Template",
-      "editDialogTitle": "Edit Whiteboard Template",
-      "errorImporting": "Error importing Whiteboard Template"
+      "name": "Template de Whiteboard",
+      "title": "Biblioteca de templates: Whiteboards",
+      "editTemplateButton": "Editar Template",
+      "editDialogTitle": "Editar Template da Whiteboard",
+      "errorImporting": "Erro ao importar o template do Whiteboard"
     },
     "innovationFlowTemplates": {
-      "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows",
-      "type": "Type"
+      "name": "Template de fluxo de Inovação",
+      "title": "Biblioteca de templates: Fluxos de Inovação",
+      "type": "Tipo"
     },
-    "spaceTemplates": "Templates selected by the host of this community",
-    "platformTemplates": "Platform Templates",
-    "loadPlatformTemplates": "Or click here to browse through all platform templates",
-    "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
-    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
+    "spaceTemplates": "Templates selecionados pelo host desta comunidade",
+    "platformTemplates": "Templates da Plataforma",
+    "loadPlatformTemplates": "Ou clique aqui para navegar por todos os templates da plataforma",
+    "platformUseDisabled": "Por favor, note que você só pode usar os templates selecionados para esta comunidade (veja acima). Se você quiser usar qualquer um dos templates abaixo, por favor peça ao administrador ou ao líder do Espaço para adicioná-los na seção template das Configurações do Espaço.",
+    "disabledTemplateInfo": "Por favor, note que você só pode usar os templates selecionados para esta comunidade, e o selecionado não faz parte. Se você quiser usar esse template abaixo, por favor peça ao administrador ou ao líder do Espaço para adicioná-los na seção template das Configurações do Espaço."
   },
   "innovation-templates": {
     "definition": {
-      "title": "Definition",
-      "placeholder": "Here you can paste the description from Xstate Visualizer with the various lifecycle states"
+      "title": "Definição",
+      "placeholder": "Aqui você pode colar a descrição do Visualizador Xstate com os vários estados do ciclo de vida"
     }
   },
   "components": {
     "navigation": {
-      "exitMenu": "Exit menu",
-      "skipMenu": "Skip main menu"
+      "exitMenu": "Sair do menu",
+      "skipMenu": "Ignorar o menu principal"
     },
     "search": {
       "searchScope": {
-        "full": "Search In:",
-        "short": "in:"
+        "full": "Pesquisar em:",
+        "short": "em:"
       },
       "scope": {
-        "platform": "Entire platform",
+        "platform": "Toda a plataforma",
         "space": "{{displayName}}"
       }
     },
     "searchDialog": {
-      "headerTitle": "Search results"
+      "headerTitle": "Resultados da pesquisa"
     },
     "searchScope": {
-      "currentScope": "Search results for:",
-      "alternativeScope": "Didn’t find what you were looking for? Try searching in:",
-      "platform": "Everywhere on Alkemio"
+      "currentScope": "Pesquisar resultados para:",
+      "alternativeScope": "Não encontrou o que estava procurando? Tente pesquisar em:",
+      "platform": "Em toda a Plataforma"
     },
     "poweredBy": {
-      "label": "Powered by",
-      "aria-label": "Powered by Alkemio"
+      "label": "Desenvolvido por",
+      "aria-label": "Desenvolvido por Alkemio"
     },
     "journeyUnauthorizedDialog": {
-      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
+      "message": "Esta é uma comunidade privada e o seu conteúdo é restrito apenas aos membros. Se você quiser entrar, clique aqui para se inscrever."
     },
     "journeyPageBannerCard": {
-      "parentJourney": "Part of:"
+      "parentJourney": "Parte de:"
     },
     "journeyMetrics": {
-      "title": "{{journey}} statistics"
+      "title": "Estatísticas {{journey}}"
     },
     "dashboardNavigation": {
-      "title": "Challenges and Opportunities in {{space}}",
-      "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
-      "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
-      "showAll": "Show all Challenges and Opportunities in this Space"
+      "title": "Desafios e Oportunidades em {{space}}",
+      "help": "Este espaço possui os seguintes Desafios. Quando estes Desafios tiverem Oportunidades, estes também serão visíveis.",
+      "privateChallenge": "Este é um Desafio privado. Para visualizar seu conteúdo e oportunidades potenciais, visite o Desafio e inscreva-se para se tornar um membro.",
+      "showAll": "Mostrar todos os Desafios e Oportunidades neste Espaço"
     },
     "dashboardRecentContributions": {
-      "title": "Contributions",
+      "title": "Contribuições",
       "modes": {
-        "switchMode": "Switch View",
-        "recentActivity": "Most Recent",
-        "topCallouts": "Most Active"
+        "switchMode": "Alternar visualização",
+        "recentActivity": "Mais Recente",
+        "topCallouts": "Mais Ativo"
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
+      "selectedStateNotice": "Este Desafio está atualmente no estado <strong>{{currentState}}</strong>. Você já pode dar uma olhada nas ferramentas para o estado <strong>{{selectedState}}</strong> aqui."
     },
     "invitations": {
-      "inviteOthers": "Invite others",
-      "inviteExistingUser": "Invite Alkemio users",
-      "inviteExternalUser": "Send email invitation",
-      "inviteByURL": "Copy magic \u2028URL",
-      "inviteOrganizations": "Invite Organizations",
-      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "inviteOthers": "Convidar outras pessoas",
+      "inviteExistingUser": "Convidar usuários Alkemio",
+      "inviteExternalUser": "Enviar um convite por email",
+      "inviteByURL": "Copiar URL mágica",
+      "inviteOrganizations": "Convidar Organizações",
+      "defaultInvitationMessage": "Olá, gostaria de convidar você para {{space}}. Clique no link abaixo para dar uma olhada ou aceitar o convite diretamente.",
       "inviteExistingUserDialog": {
-        "title": "Invite other Alkemio users to join this Space",
-        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
+        "title": "Convidar outros usuários do Alkemio para participar deste Espaço",
+        "subtitle": "Você pode procurar usuários do Alkemio abaixo e anexar uma mensagem personalizada.",
         "selector": {
-          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
-          "alreadyInvited": "This user is already invited",
-          "alreadyMember": "This user is already a member"
+          "alreadyApplied": "Este usuário tem uma aplicação pendente, aprove nas Configurações da Comunidade",
+          "alreadyInvited": "Este usuário já foi convidado",
+          "alreadyMember": "Este usuário já é um membro"
         }
       },
       "inviteExternalUserDialog": {
-        "title": "Send an email invitation"
+        "title": "Enviar um convite por email"
       }
     },
     "confirmation-dialog": {
       "delete-comment": {
-        "confirmation-title": "Deleting comment",
-        "confirmation-text": "Are you sure you want to delete this comment?"
+        "confirmation-title": "Excluir comentário",
+        "confirmation-text": "Você tem certeza que quer excluir este comentário?"
       }
     },
     "wysiwyg-editor": {
@@ -929,93 +930,93 @@
         "cancel": "$t(buttons.cancel)"
       },
       "toolbar": {
-        "blocktype.h1": "Header 1",
-        "blocktype.h2": "Header 2",
-        "blocktype.h3": "Header 3",
-        "blocktype.h4": "Header 4",
-        "blocktype.h5": "Header 5",
-        "blocktype.h6": "Header 6",
-        "blocktype.blockquote": "Blockquote",
-        "blocktype.code": "Code",
-        "blocktype.blocktype": "Block Type",
+        "blocktype.h1": "Cabeçalho 1",
+        "blocktype.h2": "Cabeçalho 2",
+        "blocktype.h3": "Cabeçalho 3",
+        "blocktype.h4": "Cabeçalho 4",
+        "blocktype.h5": "Cabeçalho 5",
+        "blocktype.h6": "Cabeçalho 6",
+        "blocktype.blockquote": "Bloco de citação",
+        "blocktype.code": "Código",
+        "blocktype.blocktype": "Tipo de bloco",
         "blocktype.normal": "Normal",
-        "emoji.emoji": "Emoticons",
-        "history.history": "History",
-        "history.undo": "Undo",
-        "history.redo": "Redo",
-        "image.image": "Visuals",
-        "image.fileUpload": "Upload File",
-        "image.byURL": "Paste URL",
-        "image.dropFileText": "Drop the file or click to upload",
-        "inline.bold": "Bold",
-        "inline.italic": "Italic",
-        "inline.strikethrough": "Strikethrough",
-        "inline.monospace": "Monospace",
-        "link.linkTitle": "Link Title",
+        "emoji.emoji": "Emojis",
+        "history.history": "Histórico",
+        "history.undo": "Desfazer",
+        "history.redo": "Refazer",
+        "image.image": "Ilustrações Visuais",
+        "image.fileUpload": "Carregar arquivo",
+        "image.byURL": "Colar URL",
+        "image.dropFileText": "Arraste e solte o arquivo ou clique para carregar",
+        "inline.bold": "Negrito",
+        "inline.italic": "Itálico",
+        "inline.strikethrough": "Tachado",
+        "inline.monospace": "Monoespaçado",
+        "link.linkTitle": "Título do link",
         "link.linkTarget": "URL",
-        "link.linkTargetOption": "Open link in new window",
+        "link.linkTargetOption": "Abrir link em uma nova janela",
         "link.link": "Link",
-        "link.unlink": "Remove Link",
-        "list.list": "List",
-        "list.unordered": "Unordered List",
-        "list.ordered": "Ordered List",
-        "list.indent": "Indent",
-        "list.outdent": "Remove indent",
-        "remove.remove": "Remove"
+        "link.unlink": "Excluir Link",
+        "list.list": "Lista",
+        "list.unordered": "Lista não Ordenada",
+        "list.ordered": "Lista Ordenada",
+        "list.indent": "Recuo",
+        "list.outdent": "Remover recuo",
+        "remove.remove": "Remover"
       },
       "image": {
-        "dialogHeader": "Insert Image"
+        "dialogHeader": "Inserir imagem"
       },
       "link": {
-        "dialogHeader": "Convert selection to Hyperlink"
+        "dialogHeader": "Converter seleção para Hiperlink"
       },
       "validation": {
-        "maxLength": "The resulting text goes beyond the size accepted by the server."
+        "maxLength": "O texto final ultrapassa o tamanho aceito pelo servidor."
       }
     },
     "top-callouts": {
-      "title": "Top Activity"
+      "title": "Atividade Principal"
     },
     "associated-organization": {
       "confirmation-dialog": {
-        "title": "Leaving {{organization}}",
-        "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
+        "title": "Saindo de {{organization}}",
+        "text": "Tem certeza que deseja sair? Talvez você não consiga ver o conteúdo ou fazer contribuições assim que não for mais um membro."
       }
     },
     "error-display": {
-      "title": "Ooops!",
-      "went-wrong": "Looks like something went wrong.",
-      "contact-support-sentence": "If this problem persists, please contact support.",
+      "title": "Ops!",
+      "went-wrong": "Parece que algo deu errado.",
+      "contact-support-sentence": "Se o problema persistir, por favor entre em contato.",
       "buttons": {
-        "reload": "Reload",
-        "take-me-home": "Take me home",
-        "contact-support": "Contact support"
+        "reload": "Recarregar",
+        "take-me-home": "Voltar para a Página Inicial",
+        "contact-support": "Contatar suporte"
       }
     },
     "search-cards": {
-      "matched-terms": "Matched Terms"
+      "matched-terms": "Termos Correspondentes"
     },
     "activity-log-section": {
-      "title": "Recent Contributions",
-      "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
+      "title": "Contribuições Recentes",
+      "activity-sign-in-error-message": "Para ver as contribuições recentes, faça login.",
+      "activity-join-error-message": "Para ver as recentes contribuições, junte-se se você ainda não é um membro deste {{journeyType}}.",
+      "activity-sign-in-and-join-error-message": "Para ver as recentes contribuições, por favor entre e junte-se se você ainda não é um membro deste {{journeyType}}."
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' published a new $t(common.callout)",
-        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.challenge)",
-        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{calloutDisplayName}}'",
-        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' joined the {{communityType}} '{{journeyDisplayName}}'",
-        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.opportunity)",
-        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{postDisplayName}}'",
-        "post-created": "{{time}} '<userlink>{{user}}</userlink>' added a Post to '{{calloutDisplayName}}'",
-        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' added a Link to '{{calloutDisplayName}}'",
-        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' shared a new $t(common.update)",
-        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'",
-        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' added a new calendar event '{{eventDisplayName}}'"
+        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' publicou um novo $t(common.callout)",
+        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' criou um novo $t(common.challenge)",
+        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' comentou em '{{calloutDisplayName}}'",
+        "member-joined": "{{time}} '<userlink>{{user}}</userlink>entrou no {{communityType}} '{{journeyDisplayName}}'",
+        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' criou um novo $t(common.opportunity)",
+        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' comentou em '{{postDisplayName}}'",
+        "post-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um Post em '{{calloutDisplayName}}'",
+        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um Link em '{{calloutDisplayName}}'",
+        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' compartilhou um novo $t(common.update)",
+        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um $t(common.whiteboard) em '{{calloutDisplayName}}'",
+        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um novo evento de calendário '{{eventDisplayName}}'"
       },
-      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
+      "parent-link": " em <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
       "activity-description": {
         "callout-published": "{{displayName}}",
         "challenge-created": "{{displayName}}",
@@ -1031,366 +1032,370 @@
       }
     },
     "lifecycle": {
-      "currentState": "Current State:",
-      "changeState": "Change State to:",
-      "error": "The definition was not able to be visualized"
+      "currentState": "Status Atual:",
+      "changeState": "Mudar status para:",
+      "error": "A definição não pôde ser visualizada"
     },
     "activity-tooltip": {
-      "headline": "Alkemio is growing! In total, the platform now hosts:"
+      "headline": "Alkemio está crescendo! No total, a plataforma agora hospeda:"
     },
     "context-section": {
-      "create-post": "Successfully created the Post",
-      "give-feedback": "Give feedback"
+      "create-post": "Post criado com sucesso",
+      "give-feedback": "Dar feedback"
     },
     "callout-publish": {
-      "notify-members": "Notify members of the $t(common.community)"
+      "notify-members": "Notificar membros do $t(common.community)"
     },
     "callout-creation": {
-      "title": "What do you want to ask your community?",
-      "titleWithType": "Create {{type}}",
-      "post-type-label": "Post label",
-      "custom-template": "Custom Template",
+      "title": "O que você gostaria de perguntar à sua comunidade?",
+      "titleWithType": "Criar {{type}}",
+      "post-type-label": "Etiqueta de postagem",
+      "custom-template": "Template personalizado",
       "info-step": {
-        "title": "Details",
-        "description": "Description",
-        "type-comments": "Comments",
-        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard.",
+        "title": "Detalhes",
+        "description": "Descrição",
+        "type-comments": "Comentários",
+        "type-comments-help": "Selecione 'Comentários' quando quiser que as pessoas respondam em um formato de texto simples, como um quadro de mensagem.",
         "type-posts": "Posts",
-        "type-posts-help": "Select Posts when you want people to answer in a card format.",
+        "type-posts-help": "Selecione os posts quando você quiser que as pessoas respondam no formato do cartão.",
         "type-whiteboards": "Whiteboards",
-        "type-whiteboards-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
-        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
+        "type-whiteboards-help": "Selecione 'Whiteboard' quando quiser que as pessoas respondam em um quadro visual, permitindo-lhes desenhar e usar texto.",
+        "unique-title-validation-text": "Este título já é usado para outro $t(common.callout)"
       },
       "whiteboard": {
         "title": "Whiteboard:",
-        "editDialogTitle": "Edit Whiteboard"
+        "editDialogTitle": "Editar Whiteboard"
       },
       "template-step": {
         "title": "Templates",
-        "no-templates": "No templates available",
-        "post-template-label": "Default text:",
-        "post-template-text": "Add default text to the posts, for example questions that you like people to answer.",
-        "post-template-default-description": "Default description",
+        "no-templates": "Não há templates disponíveis",
+        "post-template-label": "Texto predefinido:",
+        "post-template-text": "Adicione texto predefinido às postagens, por exemplo, perguntas que você gosta de pessoas para responder.",
+        "post-template-default-description": "Descrição Pré-definida",
         "whiteboard-template-label": "Template:",
-        "whiteboard-empty-template": "Empty Template",
-        "whiteboard-reset-template": "Reset Empty Template",
-        "no-post-template-selected": "Please select a Post template",
-        "no-whiteboard-template-selected": "Please select a whiteboard template"
+        "whiteboard-empty-template": "Template vazio",
+        "whiteboard-reset-template": "Redefinir o template vazio",
+        "no-post-template-selected": "Por favor, selecione um template de Post",
+        "no-whiteboard-template-selected": "Por favor, selecione um template de whiteboard"
       },
       "create-step": {
-        "title": "Create",
-        "post-template-label": "Choose Post template"
+        "title": "Criar",
+        "post-template-label": "Escolher um template de Post"
       },
       "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, <b>who have their notifications for these actions turned on</b>, to receive a notification?",
-        "checkbox-label": "Yes, notify the community."
+        "text": "Você está prestes a publicar {{calloutDisplayName}}.\nVocê deseja que os membros desta comunidade, <b>que têm as notificações para essas ações ativadas</b>, recebam uma notificação?",
+        "checkbox-label": "Sim, notifique a comunidade."
+      },
+      "close-dialog": {
+        "title": "Descartar callout",
+        "text": "Tem certeza que deseja fechar este {{calloutType}}? As alterações não salvas serão perdidas."
       }
     },
     "calloutEdit": {
-      "titleWithType": "Edit {{type}}"
+      "titleWithType": "Editar {{type}}"
     },
     "calloutTypeSelect": {
-      "title": "What would you like to add?",
+      "title": "O que você gostaria de adicionar?",
       "label": {
         "POST": "Post",
-        "POST_COLLECTION": "Call for Posts",
-        "WHITEBOARD_COLLECTION": "Call for Whiteboards",
-        "LINK_COLLECTION": "Collection of Links",
+        "POST_COLLECTION": "Chamada para Posts",
+        "WHITEBOARD_COLLECTION": "Chamada para Whiteboards",
+        "LINK_COLLECTION": "Coleção de Links",
         "WHITEBOARD": "Whiteboard",
-        "WHITEBOARD_RT": "Whiteboard RealTime"
+        "WHITEBOARD_RT": "Whiteboard em tempo real"
       },
-      "callout-templates-library": "...or have a look at the library!"
+      "callout-templates-library": "... ou dê uma olhada na biblioteca!"
     },
     "post-creation": {
-      "title": "Submit your answer to {{calloutDisplayName}}",
+      "title": "Enviar sua resposta para {{calloutDisplayName}}",
       "type-step": {
-        "title": "The type of the additional context to add.",
-        "error": "Error occurred while loading the types",
-        "label": "Post label",
-        "type-help-text-short": "Please choose the Post label that best matches the context you wish to share."
+        "title": "O tipo do contexto adicional a ser adicionado.",
+        "error": "Ocorreu um erro ao carregar os tipos",
+        "label": "Etiqueta de post",
+        "type-help-text-short": "Por favor, escolha a etiqueta de Post que melhor corresponde ao contexto que você deseja compartilhar."
       },
       "info-step": {
-        "title": "Details",
-        "description": "Please share the details",
-        "description-placeholder": "A description for this Post",
-        "tags-help-text": "Add free form tags to help quickly convey the key information about the Post. Good tags also help make the Post easier to find in searches.",
-        "name-help-text": "A descriptive name for this Post.",
-        "name-id-help-text": "Name ID help text",
-        "unique-name-validation-text": "${path} is already used in another Post"
+        "title": "Detalhes",
+        "description": "Por favor, compartilhe os detalhes",
+        "description-placeholder": "Uma descrição para este Post",
+        "tags-help-text": "Adicione tags de formulário livres para ajudar a transmitir rapidamente as principais informações sobre o Post. Boas tags também ajudam a tornar o Post mais fácil de encontrar nas pesquisas.",
+        "name-help-text": "Um nome descritivo para este Post.",
+        "name-id-help-text": "Nome da ID ajuda texto",
+        "unique-name-validation-text": "${path} já está sendo usado em outro Post"
       },
       "create-step": {
-        "title": "Create",
-        "type": "Type",
-        "name": "Name",
-        "description": "Description",
-        "links": "Relevant Links",
-        "explanation": "By completing this step the Post will be created and you will have the option to add visuals."
+        "title": "Criar",
+        "type": "Tipo",
+        "name": "Nome",
+        "description": "Descrição",
+        "links": "Links Relevantes",
+        "explanation": "Ao completar esta etapa, o Post será criado e você terá a opção de adicionar imagens."
       },
       "visuals-step": {
-        "title": "Visuals",
-        "headline": "Congratulations, you have now successfully created an Post!",
-        "explanation": "To further personalize your Post, please consider adding visuals such as a Banner to the Post.",
-        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding attachments and a Banner for the Dashboard card."
+        "title": "Ilustrações Visuais",
+        "headline": "Parabéns, você criou um post com sucesso!",
+        "explanation": "Para personalizar ainda mais o seu Post, por favor, considere adicionar ilustrações visuais como um banner ao Post.",
+        "bottom-note": "Você ainda terá a possibilidade de alterar esses recursos visuais na guia de configurações, bem como adicionar anexos e um banner para o cartão do painel."
       }
     },
     "visual-upload": {
-      "loading": "Image is loading",
-      "success": "Image uploaded successfully",
-      "upload-hover": "Upload image",
-      "no-data": "Not yet set"
+      "loading": "Carregando imagem",
+      "success": "A imagem foi carregada com sucesso",
+      "upload-hover": "Carregar imagem",
+      "no-data": "Ainda não definido"
     },
     "tags-component": {
-      "more": "+{{count}} more",
-      "no-tags": "No tags available."
+      "more": "+{{count}} mais",
+      "no-tags": "Não há tags disponíveis."
     },
     "remove-modal": {
-      "title": "Confirm remove"
+      "title": "Confirme a remoção"
     },
     "application-dialog": {
-      "title": "Application details",
-      "created": "Created on {{date}}",
-      "updated": "Last updated on {{date}}"
+      "title": "Detalhes da aplicação",
+      "created": "Criado em {{date}}",
+      "updated": "Última atualização em {{date}}"
     },
     "credential-share-request-dialog": {
-      "title": "Share your verified credentials",
-      "content": "Please select the credentials you would like to store on your Alkemio hosted wallet."
+      "title": "Compartilhe suas credenciais verificadas",
+      "content": "Por favor, selecione as credenciais que você gostaria de armazenar na sua carteira hospedada no Alkemio."
     },
     "alkemio-user-credential-offer-dialog": {
-      "title": "Alkemio User",
-      "content": "This credential allows the holder to prove that they are a verified Alkemio user."
+      "title": "Usuário Alkemio",
+      "content": "Esta credencial permite ao titular provar que é um usuário verificado do Alkemio."
     },
     "alkemio-community-member-credential-offer-dialog": {
-      "title": "Alkemio Community Member",
-      "content": "This credential allows the holder to prove that they are a member of the specified community within Alkemio."
+      "title": "Membro da Comunidade Alkemio",
+      "content": "Essa credencial permite que o titular prove que é membro de uma comunidade especifica no Alkemio."
     },
     "edit-members": {
-      "no-available-members": "No users available to add; please check members of containing community",
-      "user-not-found": "User not found!"
+      "no-available-members": "Não há usuários disponíveis para adicionar. Por favor, verifique os membros da comunidade existente",
+      "user-not-found": "Usuário não encontrado!"
     },
     "application-button": {
-      "apply-parent": "Apply to parent",
-      "apply-disabled": "Applications not enabled",
-      "apply-not-signed": "Sign in to apply",
-      "apply-pending": "Application pending",
-      "join": "Join",
+      "apply-parent": "Juntar-se ao recipiente",
+      "apply-disabled": "Aplicações não habilitadas",
+      "apply-not-signed": "Faça login para se inscrever",
+      "apply-pending": "Inscrição pendente",
+      "join": "Entrar",
       "acceptInvitation": {
-        "full": "You are invited to become a member of this Space, please click here to accept",
-        "short": "Accept Invitation"
+        "full": "Você foi convidado(a) a se tornar membro deste Espaço, clique aqui para aceitar",
+        "short": "Aceitar convite"
       },
       "joinParentFirst": {
-        "full": "To become a member of this Challenge, first become a member of the parent Space",
-        "short": "Please join parent Space first"
+        "full": "Para se tornar um membro deste Desafio, torne-se primeiro um membro do Espaço",
+        "short": "Por favor, junte-se ao Espaço primeiro"
       },
-      "goToSpace": "Go to $t(common.space)",
-      "goToChallenge": "Go to $t(common.challenge)",
-      "parent-pending": "Parent application pending",
-      "applyTo": "Apply to",
-      "extendedMessage": "{{join}} our {{journey}} and start making change!",
+      "goToSpace": "Ir para $t(common.space)",
+      "goToChallenge": "Ir para $t(common.challenge)",
+      "parent-pending": "Aplicação pendente",
+      "applyTo": "Aplicar para",
+      "extendedMessage": "{{join}} nosso {{journey}} e comece a fazer mudanças!",
       "dialog-apply-parent": {
-        "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the challenge you want to join in the Spaces' application form."
+        "title": "Candidate-se a <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "Para se juntar a <strong title='Challenge name'>'{{challengeName}}'</strong> você deve entrar no Espaço <strong title='Space name'>'{{spaceName}}'</strong> primeiro. Por favor, adicione o Desafio que você deseja ingressar no formulário de pedido do Espaço."
       },
       "dialog-parent-app-pending": {
-        "title": "Parent application pending!",
-        "body": "To join <strong title='Challenge name'>{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "title": "Inscrição pendente!",
+        "body": "Para se juntar a <strong title='Challenge name'>{{challengeName}}'</strong> você deve entrar no Espaço <strong title='Space name'>'{{spaceName}}'</strong> primeiro. Já existe uma inscrição pendente com <strong title='Space name'>'{{spaceName}}'</strong>, então você também pode enviar uma inscrição paralela para <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
-        "title": "Join community",
-        "body": "You can join this community without applying for a membership, because you have the right credentials.",
-        "accept-terms": "I understand and accept the terms and conditions for community members"
+        "title": "Junte-se à Comunidade",
+        "body": "Você pode se juntar a esta comunidade sem se candidatar, porque você tem as credenciais certas.",
+        "accept-terms": "Eu entendo e aceito os termos e condições para membros da comunidade"
       },
       "dialog-join-parent": {
-        "title": "Join <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "You can join this community without applying for a membership, because you have the right credentials. But first you have to join <strong title='Parent community name'>{{parentCommunityName}}</strong> and accept the terms and conditions there, then you can join this one."
+        "title": "Candidate-se a <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "Você pode se juntar a esta comunidade sem se candidatar, porque você tem as credenciais certas. Mas primeiro você tem que se juntar a <strong title='Parent community name'>{{parentCommunityName}}</strong> e aceitar os termos e condições lá, então você pode se juntar a este."
       }
     },
     "organization-verified": {
-      "verified": "Verified",
+      "verified": "Verificado",
       "not-verified": ""
     },
     "card-filter": {
-      "title": "Filter"
+      "title": "Filtro"
     },
     "backdrop": {
-      "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
-      "authentication": "Please sign in to see details about the {{blockName}}.",
-      "login": "Please log in to see {{blockName}}"
+      "private": "Está interessado em ler mais? Por favor, se cadastre ou faça login se você ainda não é um membro deste {{blockName}}!",
+      "authentication": "Por favor, faça login para ver detalhes sobre o {{blockName}}.",
+      "login": "Faça login para ver {{blockName}}"
     },
     "referenceSegment": {
-      "title": "References",
-      "missing-refereneces": "No references yet",
+      "title": "Referências",
+      "missing-refereneces": "Sem referências ainda",
       "tooltips": {
-        "add-reference": "Add a reference",
-        "remove-reference": "Remove the reference"
+        "add-reference": "Adicionar uma referência",
+        "remove-reference": "Remover a referência"
       },
-      "url-helper-text": "<terms>Click here</terms> for the terms and conditions.",
-      "plaintext-helper-text": "Click here for the terms and conditions."
+      "url-helper-text": "<terms>Clique aqui</terms> para os termos e condições.",
+      "plaintext-helper-text": "Clique aqui para os termos e condições."
     },
     "file-upload": {
-      "uploadFile": "Upload file",
-      "file-size-error": "File size exceeds the {{limit}}MB limit",
-      "file-upload-success": "File uploaded successfully"
+      "uploadFile": "Carregar arquivo",
+      "file-size-error": "O tamanho do arquivo excede o limite {{limit}}MB",
+      "file-upload-success": "Arquivo carregado com sucesso"
     },
     "editSpaceForm": {
       "host": {
         "title": "Host",
-        "select": "Select a host"
+        "select": "Selecione um host"
       },
-      "read-access": "Allow read access for non-space members to challenges",
-      "about": "About this Space",
-      "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
-      "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
+      "read-access": "Permitir acesso de leitura dos Desafios para membros que não pertencem ao Espaço",
+      "about": "Sobre este Espaço",
+      "visibility": "Este Espaço está atualmente no modo <strong>{{visibility}}</strong>",
+      "readOnly": "Se você quiser alterar qualquer uma destas informações, por favor entre em contato com a equipe do Alkemio aqui."
     },
     "nameSegment": {
-      "name": "Name",
+      "name": "Nome",
       "nameID": {
-        "title": "NameID",
-        "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
+        "title": "NomeID",
+        "placeholder": "Identificador de texto único, usado para caminhos de URL. Atenção: não pode ser modificado após a criação."
       }
     },
     "visualSegment": {
-      "title": "Visual",
+      "title": "Ilustrações Visuais",
       "avatar": "Avatar",
       "banner": "Banner",
-      "background": "Background"
+      "background": "Contexto"
     },
     "profileSegment": {
       "avatar": {
         "name": "Avatar",
-        "placeholder": "Enter an avatar URL..."
+        "placeholder": "Insira uma URL do avatar..."
       },
       "tagline": {
         "name": "Tagline",
-        "placeholder": "Enter a tagline"
+        "placeholder": "Digite uma tagline"
       },
       "description": {
-        "name": "Description",
-        "placeholder": "Enter a description"
+        "name": "Descrição",
+        "placeholder": "Digite uma descrição"
       },
       "location": {
-        "title": "Location",
+        "title": "Localização",
         "country": {
-          "name": "Country",
-          "placeholder": "Select a country"
+          "name": "País",
+          "placeholder": "Selecione um país"
         },
         "city": {
-          "name": "City",
-          "placeholder": "City name"
+          "name": "Cidade",
+          "placeholder": "Nome da cidade"
         },
         "addressLine1": {
-          "name": "Address line 1",
-          "placeholder": "Address line 1"
+          "name": "Linha de endereço 1",
+          "placeholder": "Linha de endereço 1"
         },
         "addressLine2": {
-          "name": "Address Line 2",
-          "placeholder": "Address Line 2"
+          "name": "Linha de Endereço 2",
+          "placeholder": "Linha de Endereço 2"
         },
         "stateOrProvince": {
-          "name": "State or Province",
-          "placeholder": "State or Province"
+          "name": "Estado ou Província",
+          "placeholder": "Estado ou Província"
         },
         "postalCode": {
-          "name": "Postal code",
-          "placeholder": "Postal code"
+          "name": "CEP",
+          "placeholder": "CEP"
         }
       }
     },
     "organizationSegment": {
       "contactEmail": {
-        "name": "Contact email",
-        "placeholder": "Enter a contact email"
+        "name": "E-mail de contato",
+        "placeholder": "Digite um e-mail de contato"
       },
       "domain": {
-        "name": "Domain",
-        "placeholder": "Enter the domain"
+        "name": "Domínio",
+        "placeholder": "Entre um domínio"
       },
       "legalEntityName": {
-        "name": "Legal entity name",
-        "placeholder": "Enter the legal name of this organization"
+        "name": "Nome da entidade legal",
+        "placeholder": "Digite o nome legal desta organização"
       },
       "website": {
         "name": "Website",
-        "placeholder": "Enter a website"
+        "placeholder": "Digite o website"
       },
       "verified": {
-        "name": "Verified status",
-        "placeholder": "Verified status"
+        "name": "Status verificado",
+        "placeholder": "Status verificado"
       }
     },
     "card": {
-      "member": "Member",
-      "private": "Private",
+      "member": "Membro",
+      "private": "Privado",
       "lead": "Lead"
     },
     "errorblock": {
-      "message": "Sorry, an error occurred while loading {{blockName}}."
+      "message": "Desculpe, ocorreu um erro ao carregar o {{blockName}}."
     },
     "loading": {
-      "message": "Loading {{blockName}}..."
+      "message": "Carregando {{blockName}}..."
     },
     "groupForm": {
-      "title": "Edit group"
+      "title": "Editar grupo"
     },
     "searchableList": {
-      "placeholder": "Search",
-      "load-more": "Load more",
-      "info": "Showing {{count}} from {{total}}"
+      "placeholder": "Pesquisar",
+      "load-more": "Carregar mais",
+      "info": "Mostrando {{count}} de {{total}}"
     },
     "filter": {
-      "placeholder": "Search"
+      "placeholder": "Pesquisar"
     },
     "user-selector": {
-      "tooltip": "Start typing to find users"
+      "tooltip": "Comece a digitar para encontrar usuários"
     },
     "communityUpdates": {
-      "title": "Let your community know what's next",
-      "updatesTitle": "Published updates",
-      "msg-not-empty": "Message cannot be empty",
+      "title": "Deixe a sua comunidade saber o que vem a seguir",
+      "updatesTitle": "Atualizações publicadas",
+      "msg-not-empty": "O corpo da mensagem não pode estar vazio",
       "actions": {
         "add": {
-          "buttonTitle": "Post Update"
+          "buttonTitle": "Publicar Atualização"
         },
         "remove": {
-          "confirmationTitle": "Removing update",
-          "confirmationContent": "Removing a community update is an irreversible. Are you sure you want to continue?",
-          "confirmationButtonTitle": "Yes"
+          "confirmationTitle": "Excluir a atualização",
+          "confirmationContent": "Remover uma atualização da comunidade é irreversível. Você tem certeza que deseja continuar?",
+          "confirmationButtonTitle": "Sim"
         }
       }
     },
     "profile": {
       "fields": {
         "bio": {
-          "title": "Bio"
+          "title": "Biografia"
         },
         "description": {
-          "title": "Description"
+          "title": "Descrição"
         },
         "tagline": {
           "title": "Tagline"
         },
         "phone": {
-          "title": "Phone"
+          "title": "Telefone"
         },
         "telephone": {
-          "title": "Telephone"
+          "title": "Telefone"
         },
         "mobile": {
-          "title": "Mobile"
+          "title": "Celular"
         },
         "keywords": {
-          "title": "Keywords"
+          "title": "Palavras-chave"
         },
         "skills": {
-          "title": "Skills"
+          "title": "Habilidades"
         },
         "capabilities": {
-          "title": "Capabilities"
+          "title": "Aptidão"
         },
         "links": {
           "title": "Links"
         },
         "location": {
-          "title": "Location"
+          "title": "Localização"
         },
         "website": {
           "title": "Website"
@@ -1398,74 +1403,74 @@
       }
     },
     "associates": {
-      "title": "Associates ({{count}})",
-      "help": "Users associated with this organization"
+      "title": "Membros associados ({{count}})",
+      "help": "Usuários associados a esta organização"
     },
     "contributions": {
-      "title": "Contributions",
-      "help": "The Spaces and Challenges that this organization is contributing to"
+      "title": "Contribuições",
+      "help": "Os Espaços e Desafios que esta organização está contribuindo para"
     },
     "discussions-list": {
-      "name": "Discussions - {{community}}",
-      "title": "Discussions ({{count}})",
-      "posted": "{{name}} on {{- date}} - {{count}} comment",
-      "posted_plural": "{{name}} on {{- date}} - {{count}} comments"
+      "name": "Discussões - {{community}}",
+      "title": "Discussões ({{count}})",
+      "posted": "{{name}} em {{- date}} - Comentário em {{count}}",
+      "posted_plural": "{{name}} em {{- date}} - Comentário em {{count}}"
     },
     "discussion": {
-      "initiate": "Initiate Discussion",
-      "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
-      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
+      "initiate": "Iniciar discussão",
+      "posted": "{{name}} iniciado em {{- date}} - Comentário em {{count}}",
+      "posted_plural": "{{name}} iniciado em {{- date}} - Comentário em {{count}}",
       "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
-      "comment": "{{count}} Comment",
-      "comment_plural": "{{count}} Comments",
-      "contributed": "{{count}} Person contributed",
-      "contributed_plural": "{{count}} People contributed",
-      "cant-post": "You can't reply to this discussion",
-      "delete-discussion": "Delete discussion?",
-      "delete-comment": "Delete comment?"
+      "comment": "Comentário {{count}}",
+      "comment_plural": "Comentários {{count}}",
+      "contributed": "A pessoa {{count}} contribuiu",
+      "contributed_plural": "{{count}} Pessoas contribuíram",
+      "cant-post": "Você não pode responder a esta discussão",
+      "delete-discussion": "Excluir discussão?",
+      "delete-comment": "Excluir comentário?"
     },
     "message": {
-      "root": "started the discussion"
+      "root": "iniciou a discussão"
     },
     "post-comment": {
       "fields": {
         "description": {
-          "title": "Comment on this discussion",
-          "placeholder": "Add further information on the discussion here"
+          "title": "Comentar nesta discussão",
+          "placeholder": "Adicione mais informações na discussão aqui"
         }
       },
       "buttons": {
-        "post": "Post comment"
+        "post": "Postar comentário"
       },
       "tooltip": {
-        "markdown-help": "You can add formatting to your comment,\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)",
-        "mentions": "Type a few characters to find relevant users"
+        "markdown-help": "Você pode adicionar formatação de texto ao seu comentário,\npor exemplo:\nTexto em negrito: **bold**\nTexto em itálico: *italic*\nCabeçalho: ##Title\nLink: [text](url)",
+        "mentions": "Digite alguns caracteres para encontrar usuários relevantes"
       }
     },
     "new-discussion": {
       "title": {
-        "title": "Title",
-        "placeholder": "Discussion title"
+        "title": "Título",
+        "placeholder": "Título da discussão"
       },
       "category": {
-        "title": "Category"
+        "title": "Categoria"
       },
       "description": {
-        "title": "Further information",
-        "placeholder": "Add further information on the discussion here"
+        "title": "Mais informações",
+        "placeholder": "Adicione mais informações na discussão aqui"
       },
       "buttons": {
-        "post": "Create discussion"
+        "post": "Criar discussão"
       }
     },
     "members-view": {
-      "title": "Active community members"
+      "title": "Membros ativos da comunidade"
     },
     "community-section": {
       "discussions": {
-        "no-data-create": "No discussions. Create a new discussion",
-        "no-data-join": "No discussions. Please join the community to create a discussion",
-        "explore": "Explore discussions"
+        "no-data-create": "Sem discussões. Crie uma nova discussão",
+        "no-data-join": "Não há discussões. Por favor, junte-se à comunidade para criar uma discussão",
+        "explore": "Explorar discussões"
       }
     },
     "update-innovation-flow": {
@@ -1474,959 +1479,959 @@
       }
     },
     "select-innovation-flow": {
-      "title": "Change Innovation Flow",
-      "innovationFlowSettings": "Innovation Flow Settings"
+      "title": "Alterar Fluxo de Inovação",
+      "innovationFlowSettings": "Configurações de Fluxo de inovação"
     },
     "innovation-flow-template-segment": {
       "help-text": {
-        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
+        "title": "Cuidado! Ao atualizar o Fluxo de Inovação, o status atual será (re)definido para o primeiro estado do fluxo selecionado."
       }
     },
     "confirm-innovation-flow": {
       "description": {
-        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
+        "title": "Tem certeza que deseja mudar o fluxo de inovação? Isto pode alterar o conjunto de status para este Desafio/Oportunidade e (re)definirá o status para o primeiro estado do selecionado Fluxo de Inovação."
       }
     },
     "innovationFlowTemplateSelect": {
-      "select": "Select different Flow",
-      "states": "States",
-      "required": "Please select an Innovation Flow"
+      "select": "Selecionar um fluxo diferente",
+      "states": "Status",
+      "required": "Por favor, selecione um Fluxo de Inovação"
     }
   },
   "navigation": {
     "admin": {
       "opportunity": {
-        "create": "Create opportunity",
-        "edit": "Edit opportunity"
+        "create": "Criar Oportunidade",
+        "edit": "Editar Oportunidade"
       },
       "challenge": {
-        "create": "Create challenge",
-        "edit": "Edit challenge"
+        "create": "Criar Desafio",
+        "edit": "Editar Desafio"
       }
     }
   },
   "footer": {
-    "terms": "Terms",
-    "privacy": "Privacy",
-    "security": "Security",
-    "feedback": "Feedback",
-    "support": "Support",
-    "about": "About",
-    "copyright": "© 2023 Alkemio B.V."
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "security": "Segurança",
+    "feedback": "Dê sua opinião",
+    "support": "Suporte",
+    "about": "Sobre",
+    "copyright": "©️ 2023 Alkemio B.V."
   },
   "innovationHub": {
-    "selectedSpaces": "{{space}} Spaces",
-    "foreignJourney": "This {{journey}} is not in the selection of {{space}}. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
+    "selectedSpaces": "{{space}} Espaços",
+    "foreignJourney": "Este {{journey}} não está na seleção de {{space}}. De qualquer forma, você é muito bem-vindo para contribuir. <strong>Se divirta ao explorar!</strong>",
     "outsideOfSpace": {
-      "forum": "This is the general Alkemio Forum, outside of the <strong>{{space}}</strong> space. You are very much invited to explore and contribute!",
-      "challenges": "Here you can find all Challenges that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
-      "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Spaces that are not selected by <strong>{{space}}. Enjoy connecting!</strong>"
+      "forum": "Este é o Fórum geral do Alkemio fora do Espaço <strong>{{space}}</strong>. Você está super convidado a explorar e contribuir!",
+      "challenges": "Aqui você pode encontrar todos os Desafios que estão hospedados em Alkemio, também os que não estão selecionados por <strong>{{space}}. Aproveite a navegação!</strong>",
+      "contributors": "Aqui você pode encontrar todas as pessoas e organizações que estão contribuindo no Alkemio, também em Espaços que não estão selecionados por <strong>{{space}}. Aproveite as conexões!</strong>"
     },
-    "goToMainPage": "Interested in collaborating in other Spaces? Click here to see them all on the universal Alkemio homepage.",
-    "remove": "Remove from hub"
+    "goToMainPage": "Interessado em colaborar em outros Espaços? Clique aqui para ver todos eles na página inicial do Alkemio.",
+    "remove": "Remover do hub"
   },
   "pages": {
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
-          "about": "About this {{entity}}",
-          "memberOf": "You’re a member of this {{entity}}"
+          "description": "Aqui você pode ver o resumo para este {{entity}}. Navegue pelas outras abas para ver informações mais detalhadas!",
+          "about": "Sobre este {{entity}}",
+          "memberOf": "Você é um membro deste {{entity}}"
         },
         "about": {
-          "description": "Here you can explore the context of this {{entity}}, as well as the community."
+          "description": "Aqui você pode explorar o contexto deste {{entity}}, bem como a comunidade."
         },
         "community": {
-          "leading-contributors": "Leading Contributors",
-          "contributors": "Who's involved",
-          "switchMode": "Switch View"
+          "leading-contributors": "Contribuidores Liderantes",
+          "contributors": "Quem está envolvido",
+          "switchMode": "Alternar visualização"
         },
         "explore": {
-          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."
+          "description": "Aqui você pode contribuir com suas ideias para entender o contexto. Trata-se de trazer à tona a sabedoria da sua comunidade."
         },
         "discussions": {
-          "description": "Here you can read and participate in discussions around this {{entity}}."
+          "description": "Aqui você pode ler e participar de discussões sobre este {{entity}}."
         },
         "whiteboards": {
-          "description": "Whiteboards can be seen as digital whiteboards. Here you can create a whiteboard for this {{entity}} as well as find ones created by the others."
+          "description": "Os whiteboards podem ser vistos como canvas digitais. Aqui você pode criar um whiteboard para este {{entity}}, bem como encontrar os criados pelos outros."
         },
         "profile": {
           "description": ""
         },
         "subentities": {
-          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
-          "list": "List of {{entities}}",
-          "empty": "No {{entities}} found in this {{parentEntity}}.",
-          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
+          "description": "Aqui você pode explorar o **{{entities}}** hospedado neste {{parentEntity}}. Filtrar por palavras-chave para mostrar apenas os tópicos que você se interessa.",
+          "list": "Lista de {{entities}}",
+          "empty": "Nenhum(a) {{entities}} encontrado neste(a) {{parentEntity}}.",
+          "empty-list": "Não há {{entities}} neste(a) {{parentEntity}} ainda."
         },
         "recommendations": {
-          "title": "Recommended by the Host"
+          "title": "Recomendado pelo Host"
         }
       },
       "archived-notice": {
-        "archived-space": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
-        "archived-journey": "This {{journey}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
+        "archived-space": "Este Espaço está atualmente arquivado. Interessado em trazê-lo de volta à vida? <contact>Clique aqui</contact> para entrar em contato com o Alkemio.",
+        "archived-journey": "Esta{{journey}} está em um espaço atualmente arquivado. Interessado em trazê-lo de volta à vida? <contact>Clique aqui</contact> para entrar em contato com o Alkemio."
       },
       "demo-notice": {
-        "demo-space": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
-        "demo-journey": "This {{journey}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
+        "demo-space": "Isto é um Espaço de Demo. <alkemio>Clique aqui</alkemio> para colaborar em Espaços ativos.",
+        "demo-journey": "{{journey}} está dentro de um Espaço Demo. <alkemio>Clique aqui</alkemio> para colaborar em Espaços ativos."
       }
     },
     "contribute": {
-      "initial-text": "In the Knowledge Base you will find relevant documents, insights and other materials about the topic. The leads of the Space can provide the content, but also community members can contribute.",
+      "initial-text": "Na Base de Conhecimento, você encontrará documentos, dicas e outros materiais relevantes sobre o tema. Os leads do Espaço podem fornecer o conteúdo, mas também membros da comunidade podem contribuir.",
       "innovationFlow": {
-        "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
-        "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
+        "title": "Este {{entity}} é guiado pelo(a) <b>{{innovationFlowDisplayName}}</b>. Este Fluxo de Inovação gera as estruturas do processo e convida você a tomar ações específicas por estágio.",
+        "readMore": "Leia mais sobre o/a <b>{{innovationFlowDisplayName}}</b>"
       },
-      "no-posts": "No Posts found"
+      "no-posts": "Nenhuma publicação encontrada"
     },
     "innovationLibrary": {
       "shortName": "$t(common.library)",
-      "fullName": "Best practices",
-      "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
-      "useTemplateButton": "Access this template from your Space to use it.",
+      "fullName": "Práticas recomendadas",
+      "title": "Biblioteca de Inovação no Alkemio está aqui para orientar o seu caminho para o impacto",
+      "subtitle": "Abra os pacotes de inovação abaixo para explorar todos os modelos de whiteboards, modelos de post e fluxos de inovação que você pode usar. Se você quer saber mais <click>clique aqui</click>.",
+      "useTemplateButton": "Acesse este modelo a partir do seu Espaço para utilizá-lo.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
         "dialogTitle": "$t(common.innovation-packs)"
       },
       "libraryTemplates": {
-        "headerTitle": "Browse through all available materials",
-        "dialogTitle": "All materials"
+        "headerTitle": "Navegue através de todos os materiais disponíveis",
+        "dialogTitle": "Todos os materiais"
       }
     },
     "innovationPack": {
-      "whiteboardTemplatesEmpty": "This Innovation Pack doesn’t have any whiteboard templates.",
-      "postTemplatesEmpty": "This Innovation Pack doesn’t have any post templates.",
-      "innovationFlowTemplatesEmpty": "This Innovation Pack doesn’t have any innovation flows."
+      "whiteboardTemplatesEmpty": "Este Pacote de Inovação não tem nenhum template de whiteboard.",
+      "postTemplatesEmpty": "Este Pacote de Inovação não tem nenhum template de publicação.",
+      "innovationFlowTemplatesEmpty": "Este Pacote de Inovação não tem nenhum template de fluxo de inovação."
     },
     "admin": {
       "generic": {
         "sections": {
           "profile": {
-            "description": "Here you can edit the profile for this {{entity}}."
+            "description": "Aqui você pode editar o perfil para este {{entity}}."
           },
           "context": {
-            "description": "Here you can edit the context for this {{entity}}."
+            "description": "Aqui você pode editar o contexto para este {{entity}}."
           },
           "community": {
-            "description": "Here you can edit the community settings for this {{entity}}."
+            "description": "Aqui você pode editar as configurações da comunidade para este {{entity}}."
           },
           "communications": {
-            "description": "Here you can post updates that will be visible to all members of this {{entity}}."
+            "description": "Aqui você pode postar atualizações que serão visíveis para todos os membros deste {{entity}}."
           },
           "calendar": {
             "description": ""
           },
           "authorization": {
-            "description": "Here you can tweak authorization settings for this {{entity}}."
+            "description": "Aqui você pode ajustar as configurações de autorização para este {{entity}}."
           },
           "templates": {
-            "description": "Here you can create and edit templates for this {{entity}}.",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the Space? You can also edit the information of this template.",
+            "description": "Aqui você pode criar e editar templates para este {{entity}}.",
+            "delete-confirmation": "Tem certeza que deseja excluir {{template}} do Espaço? Você também pode editar as informações deste modelo.",
             "import": {
-              "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your Space, Challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
-              "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "no-templates": "No templates found in this Space, find further platform templates below",
-              "imported-successfully-notification": "Template imported successfully"
+              "title": "Biblioteca de Templates: {{templateType}}",
+              "subtitle": "Encontre templates para usar no seu Espaço, Desafio ou oportunidade. Selecione o template e clique em 'selecionar' para adicioná-lo ao seu conjunto de templates.",
+              "callout-template-import-subtitle": "Encontre um template para as pessoas usarem ao contribuir para o seu $t(common.callout)",
+              "no-templates": "Nenhum template encontrado neste Espaço, encontre os templates da plataforma abaixo",
+              "imported-successfully-notification": "Template importado com sucesso"
             }
           },
           "my-profile": {
-            "description": "Here you can edit your profile details."
+            "description": "Aqui você pode editar os dados do seu perfil."
           },
           "space-settings": {
             "description": ""
           },
           "membership": {
-            "description": "Here you can see the membership information."
+            "description": "Aqui você pode ver as informações de adesão de membros."
           },
           "organizations": {
-            "description": "Here you can see the organizations that your user is associated with."
+            "description": "Aqui você pode ver as organizações às quais seu usuário está associado."
           },
           "notifications": {
-            "description": "Here you can edit your notifications preferences."
+            "description": "Aqui você pode editar suas preferências de notificações."
           },
           "credentials": {
-            "description": "Here you can see credentials."
+            "description": "Aqui você pode visualizar as credenciais."
           },
           "storage": {
-            "description": "Here you can see the document storage for this {{entity}}.",
-            "title": "Documents",
-            "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
-            "emptyStorage": "(Empty)",
+            "description": "Aqui você pode ver o armazenamento de documentos para este {{entity}}.",
+            "title": "Documentos",
+            "directlyStored": "Documentos armazenados diretamente (Enviados antes de outubro de 2023)",
+            "emptyStorage": "(Vazio)",
             "grid": {
-              "displayName": "Title",
-              "mimeType": "Type",
-              "size": "Size",
-              "uploadedBy": "Uploaded by",
-              "uploadedAt": "Uploaded at"
+              "displayName": "Título",
+              "mimeType": "Tipo",
+              "size": "Tamanho",
+              "uploadedBy": "Adicionada por",
+              "uploadedAt": "Carregado em"
             },
             "delete": {
-              "title": "Delete this document?",
-              "content": "Are you sure that you want to delete {{fileName}}?"
+              "title": "Excluir este documento?",
+              "content": "Tem certeza que deseja excluir {{fileName}}?"
             }
           }
         }
       },
       "organization": {
-        "create-organization": "Create organization",
+        "create-organization": "Criar uma nova organização",
         "authorization": {
           "preferences": {
-            "title": "Authorization",
-            "subtitle": "This section allows you to modify the organizations authorization"
+            "title": "Autorização",
+            "subtitle": "Esta seção permite que você modifique a autorização da organização"
           }
         },
         "notifications": {
-          "organization-created": "Organization created successfully.",
-          "organization-removed": "Organization removed successfully."
+          "organization-created": "Organização criada com sucesso.",
+          "organization-removed": "Organização removida com sucesso."
         }
       },
       "challenge": {
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.challenge) authorization preferences"
+            "subtitle": "Esta seção permite modificar as preferências de autorização do $t(common.challenge)"
           }
         },
         "community": {
           "preferences": {
-            "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences"
+            "title": "Membros",
+            "subtitle": "Esta seção lhe permite modificar as preferências de autorização do $t(common.challenge)"
           }
         },
         "sections": {
           "opportunities": {
-            "description": "Here you can edit opportunities for this challenge."
+            "description": "Aqui você pode editar as Oportunidades para este Desafio."
           },
           "innovation-flow": {
-            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
+            "description": "Aqui você muda o status deste Desafio ou escolhe um template de fluxo diferente a seguir."
           }
         },
         "notifications": {
-          "challenge-created": "Challenge created successfully.",
-          "challenge-removed": "Challenge removed successfully.",
-          "challenge-updated": "Challenge updated successfully."
+          "challenge-created": "Desafio criado com sucesso.",
+          "challenge-removed": "Desafio removido com sucesso.",
+          "challenge-updated": "Desafio atualizado com sucesso."
         }
       },
       "space": {
         "sections": {
           "challenges": {
-            "description": "Here you can edit challenges for this Space."
+            "description": "Aqui você pode editar os Desafios para este Espaço."
           }
         },
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
+            "subtitle": "Esta seção te permite modificar as preferências de autorização do $t(common.space)"
           }
         },
         "community": {
           "preferences": {
-            "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.space) membership preferences"
+            "title": "Membros",
+            "subtitle": "Esta seção lhe permite modificar as preferências de adesão $t(common.space)"
           }
         },
         "notifications": {
-          "space-created": "Space created successfuly.",
-          "space-removed": "Space '{{name}}' removed successfully."
+          "space-created": "Espaço criado com sucesso.",
+          "space-removed": "Espaço '{{name}}' removido com sucesso."
         },
         "settings": {
-          "savedSuccessfully": "Settings saved successfully",
+          "savedSuccessfully": "Configurações salvas com sucesso",
           "visibility": {
-            "title": "Visibility",
-            "public": "<b>Public:</b> this space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> this space is visible for everyone on the platform, but the content is only visible for members."
+            "title": "Visibilidade",
+            "public": "<b>Público:</b> este espaço e seu conteúdo são visíveis para todos na plataforma. Os usuários só podem contribuir se forem membros.",
+            "private": "<b>Privado:</b> este espaço é visível para todos na plataforma, mas o conteúdo só é visível para membros."
           },
           "license-features": {
-            "title": "Space Features",
+            "title": "Recursos do Espaço",
             "features": {
-              "WHITEBOART_RT": "RealTime Whiteboards",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+              "WHITEBOART_RT": "Whiteboards em TempoReal",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Criar template a partir do Callout"
             }
           },
           "membership": {
-            "title": "Membership",
-            "noApplicationRequired": "<b>No Application required:</b> all Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
-            "applicationRequired": "<b>Application required:</b> if people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
-            "invitationOnly": "<b>Invitation only:</b> users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
-            "trustedApplicants": "Trusted applicants",
-            "hostOrganizationJoin": "<b>Host organization:</b> allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited."
+            "title": "Membros",
+            "noApplicationRequired": "<b>Nenhuma Solicitação de adesão necessária:</b> todos os usuários do Alkemio podem entrar diretamente, sem que você tenha que rever as solicitações de adesão. Outros terão que criar uma conta Alkemio primeiro, para então poderem entrar neste Espaço diretamente.",
+            "applicationRequired": "<b>Solicitação de adesão necessária:</b> se as pessoas querem se tornar um membro, elas têm que preencher o formulário de candidatura. Você recebe as solicitações (<community>veja a guia da Comunidade aqui</community>) e pode optar por aceitá-los ou não. Se você quiser, pode optar por deixar o formulário vazio.",
+            "invitationOnly": "<b>Apenas por convite:</b> os usuários só podem se tornar um membro depois que você os convidar (<community>o que você pode fazer na guia da Comunidade aqui</community>) ou se forem adicionados manualmente. Não há botão para candidatar-se ou juntar-se.",
+            "trustedApplicants": "Solicitantes confiáveis",
+            "hostOrganizationJoin": "<b>Organização anfitrião:</b> permite que pessoas associadas ao <i>{{host}}</i> entrem diretamente, sem precisar solicitar ou ser convidada."
           },
           "memberActions": {
-            "title": "Member Actions",
-            "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
-            "createChallenges": "<b>Create Challenges</b>: allow members to create Challenges in this Space. If you deactivate this, you can still create Challenges yourself and add other people as an admin inside the Challenge."
+            "title": "Ações de membros",
+            "createBlocks": "<b>Criar blocos</b>: permite que os membros criem blocos para ferramentas e posts de colaboração. Se você desativar isso, os membros ainda poderão contribuir em postagens e chamadas existentes, mas não poderão criar novos blocos.",
+            "createChallenges": "<b>Criar Desafios</b>: permita que os membros criem Desafios neste Espaço. Se você desativar isto, você ainda pode criar Desafios você mesmo e adicionar outras pessoas como administrador dentro do Desafio."
           }
         }
       },
       "opportunity": {
         "notifications": {
-          "opportunity-created": "Opportunity created successfully.",
-          "opportunity-removed": "Opportunity removed successfully.",
-          "opportunity-updated": "Opportunity updated successfully."
+          "opportunity-created": "Organização criada com sucesso.",
+          "opportunity-removed": "Oportunidade removida com sucesso.",
+          "opportunity-updated": "Oportunidade atualizada com sucesso."
         },
         "sections": {
           "innovation-flow": {
-            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
+            "description": "Aqui você muda o status desta Oportunidade ou escolhe um template de Fluxo diferente a seguir."
           }
         }
       },
       "users": {
         "notifications": {
-          "user-removed": "User removed successfully."
+          "user-removed": "Membro removido com sucesso."
         }
       },
       "innovation-packs": {
         "fields": {
-          "provider": "Provider organization"
+          "provider": "Organização provedora"
         },
-        "back-button": "All $t(common.innovation-packs)",
-        "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
-        "saved-successfully": "Saved Successfully"
+        "back-button": "Todos $t(common.innovation-packs)",
+        "save-new-for-details": "Salve o novo Pacote de Inovação para editar os detalhes restantes",
+        "saved-successfully": "Salvo com sucesso"
       },
       "innovationHubs": {
         "fields": {
-          "host": "Host Organization",
-          "subdomain": "Subdomain"
+          "host": "Organização Host",
+          "subdomain": "Subdomínio"
         },
-        "saveForMoreDetails": "Save the new $t(common.innovation-hub) to edit the rest of the details",
-        "back": "All $t(common.innovation-hubs)",
-        "saved": "Saved Successfully"
+        "saveForMoreDetails": "Salve o novo $t(common.innovation-hub) para editar o resto dos detalhes",
+        "back": "Todos $t(common.innovation-hubs)",
+        "saved": "Salvo com sucesso"
       },
       "spaces": {
-        "updateVisibility": "Update Visibility",
-        "spaceSettings": "Space Settings"
+        "updateVisibility": "Atualizar Visibilidade",
+        "spaceSettings": "Configurações do Espaço"
       },
       "innovationHub": {
         "spaceListFilter": {
           "header": {
-            "title": "Current Selection",
-            "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
+            "title": "Seleção atual",
+            "subtitle": "A ordem abaixo é a ordem em que os Espaços ficarão visíveis na página inicial personalizada"
           }
         }
       }
     },
     "feedback": {
-      "title": "Give feedback on this community context",
-      "success": "Feedback submitted"
+      "title": "Dar feedback sobre o contexto desta comunidade",
+      "success": "Feedback enviado"
     },
     "post": {
       "dashboard": {
         "comment": {
-          "placeholder": "Type your comment here"
+          "placeholder": "Escreva aqui o seu comentário"
         }
       }
     },
     "visualEdit": {
       "avatar": {
         "title": "Avatar",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Journey card on page banner",
-        "description": "Description: {{alternativeText}}"
+        "description1": "Resolução: Largura {{width}} x {{height}} altura (pixels)",
+        "description2": "Uso: Cartão da jornada no banner da página",
+        "description": "Descrição: {{alternativeText}}"
       },
       "banner": {
-        "title": "Page banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on dashboard tab",
-        "description": "Description: {{alternativeText}}"
+        "title": "Banner da página",
+        "description1": "Resolução: Largura {{width}} x {{height}} altura (pixels)",
+        "description2": "Uso: Banner na aba dashboard",
+        "description": "Descrição: {{alternativeText}}"
       },
       "cardBanner": {
-        "title": "Card banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on cards",
-        "description": "Description: {{alternativeText}}"
+        "title": "Banner do cartão",
+        "description1": "Resolução: Largura {{width}} x {{height}} altura (pixels)",
+        "description2": "Uso: Banner nos cartões",
+        "description": "Descrição: {{alternativeText}}"
       },
       "form": {
         "altText": {
-          "placeholder": "Example: Multiple snow covered mountains",
-          "helpText": "Please describe this image for people who are unable to see it."
+          "placeholder": "Exemplo: Múltiplas montanhas cobertas de neve",
+          "helpText": "Por favor, descreva esta imagem para pessoas que não podem vê-la."
         }
       }
     },
     "contributors": {
-      "fullName": "Find contributors",
+      "fullName": "Encontrar contribuidores",
       "shortName": "$t(common.contributors)",
       "search": {
-        "title": "Find talent and expertise!",
-        "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
-        "placeholder": "Search…"
+        "title": "Encontre talento e conhecimento!",
+        "subtitle": "Procure outras pessoas e organizações que possam ajudá-lo com seu Desafio, por exemplo, com base em habilidades ou interesses.",
+        "placeholder": "Pesquisar…"
       },
       "organizations": {
-        "title": "Organizations"
+        "title": "Organizações"
       },
       "users": {
-        "title": "Users"
+        "title": "Usuários"
       }
     },
     "search": {
-      "title": "Search",
-      "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
-      "placeholder": "Search…",
-      "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
-      "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
-      "search-suggestions": "Search suggestions:",
+      "title": "Pesquisar",
+      "subtitle": "Encontre os Espaços, Contribuidores e Desafios, Oportunidades e conteúdo a partir dos Espaços disponíveis publicamente abaixo",
+      "placeholder": "Pesquisar…",
+      "results-disclaimer": "Mostrando os primeiros 8 resultados. Em breve, você poderá ver todos, mas, por enquanto, especifique os termos da sua pesquisa.",
+      "max-tags-reached": "Você atingiu o limite de {{max}} termos para pesquisar",
+      "search-suggestions": "Sugestões de busca:",
       "suggestions-array": [
-        "Innovation",
-        "Energy",
-        "Inclusive",
+        "Inovação",
+        "Energia",
+        "Inclusivo",
         "Design",
         "3D",
-        "Community",
-        "Transition",
+        "Comunidade",
+        "Transição",
         "SSI",
-        "Privacy"
+        "Privacidade"
       ],
-      "user-not-logged": "Login or Register to include users in your search results",
+      "user-not-logged": "Faça login ou registre-se para incluir usuários nos resultados da sua pesquisa",
       "filter": {
         "type": {
-          "journey": "Journey type",
-          "contribution": "Contribution type",
-          "contributor": "Contributor type"
+          "journey": "Tipo de jornada",
+          "contribution": "Tipo de contribuição",
+          "contributor": "Tipo de colaborador"
         },
         "key": {
-          "all": "All",
-          "space": "Spaces",
-          "challenge": "Challenges",
-          "opportunity": "Opportunities",
-          "user": "Users",
-          "organization": "Organizations",
-          "post": "Posts",
-          "whiteboard": "Whiteboards (available soon)",
-          "callout": "Callouts (available soon)"
+          "all": "Todos",
+          "space": "Espaços",
+          "challenge": "Desafios",
+          "opportunity": "Oportunidades",
+          "user": "Usuários",
+          "organization": "Organizações",
+          "post": "Publicações",
+          "whiteboard": "Whiteboards (disponíveis em breve)",
+          "callout": "Callouts (disponível em breve)"
         }
       },
       "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
-      "fullName": "Explore challenges",
+      "fullName": "Explorar Desafios",
       "shortName": "$t(common.challenges)",
       "search": {
-        "title": "Explore Public Challenges",
-        "subtitle": "Below you'll find all Challenges that you are member of. Curious to explore more? Scroll down and search for the topics that interest you!",
-        "placeholder": "Search...",
-        "default-search-term": "Innovation",
-        "no-results": "No results matched your search terms."
+        "title": "Explorar Desafios Públicos",
+        "subtitle": "Abaixo você encontrará todos os Desafios dos quais você é membro. Curioso para explorar mais? Role para baixo e procure os tópicos que te interessam!",
+        "placeholder": "Pesquisar...",
+        "default-search-term": "Inovação",
+        "no-results": "Nenhum resultado corresponde aos seus termos de pesquisa."
       },
       "side-note": {
-        "title": "The Alkemio Structure",
-        "description": "At Alkemio, all Challenges are part of a Space. Each Space has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
+        "title": "A Estrutura do Alkemio",
+        "description": "No Alkemio, todos os Desafios fazem parte de um Espaço. Cada espaço tem seu quadro de referência específico, no qual os Desafios são usados para entender os problemas apresentados."
       },
       "my-search": {
-        "title": "Explore other Challenges visible to you",
-        "subtitle": "Challenges in public Spaces are visible to everyone. Challenges in private Spaces are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
+        "title": "Explore outros Desafios visíveis para você",
+        "subtitle": "Desafios em Espaços públicos são visíveis para todos. Desafios em Espaços privados são visíveis apenas para os membros. Digite os seus termos de pesquisa (por exemplo, \"inovação\") abaixo para encontrar Desafios correspondentes. "
       },
       "my": {
-        "title": "My Challenges",
-        "subtitle": "Here you'll find the challenges that you are contributing to."
+        "title": "Meus Desafios",
+        "subtitle": "Aqui você encontrará os Desafios em que você está contribuindo."
       },
       "other": {
-        "title": "Other Challenges within My Spaces",
-        "subtitle": "Here you'll find the other challenges hosted by the Spaces that you are member of.",
-        "filter-by-space": "Filter by My Spaces"
+        "title": "Outros Desafios dentro dos meus Espaços",
+        "subtitle": "Aqui você encontrará os outros Desafios hospedados pelos Espaços dos quais você é membro.",
+        "filter-by-space": "Filtrar por Meus Espaços"
       }
     },
     "lead-organization": {
       "search": {
-        "leading-placeholder": "Search in name or tags",
-        "available-placeholder": "Search in name"
+        "leading-placeholder": "Pesquisar por nome ou tags",
+        "available-placeholder": "Pesquisar por nome"
       }
     },
     "activity": {
-      "title": "{{blockName}} Activity",
-      "spaces": "Challenge Spaces",
-      "innovation-flow-info": "Click to display the Innovation Flow"
+      "title": "Atividade {{blockName}}",
+      "spaces": "Espaços de Desafio",
+      "innovation-flow-info": "Clique para exibir o Fluxo de Inovação"
     },
     "home": {
-      "title": "My Dashboard",
-      "subtitle": "Ready to make some impact?",
+      "title": "Meu Painel",
+      "subtitle": "Pronto para gerar algum impacto?",
       "sections": {
         "welcome": {
-          "welcome-back": "Welcome back {{username}}!",
-          "join": "Want to join the community and see more?",
+          "welcome-back": "Bem-vindo(a) de volta, {{username}}!",
+          "join": "Deseja participar da comunidade e ver mais?",
           "existing-user": {
-            "header": "Existing user? Jump back in!",
-            "subheader": "Welcome back! Continue where you left off and start exploring new challenges.",
-            "more-info": "More about Alkemio",
+            "header": "Usuário existente? Entre novamente aqui!",
+            "subheader": "Bem-vindo(a) de volta! Continue onde parou e comece a explorar novos Desafios.",
+            "more-info": "Mais sobre Alkemio",
             "more-info-url": "https://alkemio.foundation/manifesto"
           },
           "new-to-alkemio": {
-            "header": "New to Alkemio?",
-            "subheader": "Easy for you to engage in effective and meaningful ways. Find solutions to challenges.",
-            "more-info": "Contact us!",
+            "header": "Novo em Alkemio?",
+            "subheader": "Fácil para você se engajar de forma efetiva e significativa. Encontre soluções para desafios.",
+            "more-info": "Fale conosco!",
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
         "space": {
-          "header": "Explore the Challenge Spaces!",
+          "header": "Explore os Espaços de Desafio!",
           "subheader": "",
-          "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
-          "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
+          "body": "Cada Espaço é uma comunidade com um espaço dedicado para Desafios compartilhados. Para conectar, colaborar e inovar juntos.",
+          "body1": "Para usuários, os Espaços são livres para entrar. Explore as opções, inclusive para espaços públicos e privados."
         },
         "my-spaces": {
-          "header": "My Spaces ({{mySpacesCount}})"
+          "header": "Meus Espaços ({{mySpacesCount}})"
         },
         "organizations": {
-          "header": "Organizations",
-          "subheader": "The entities that want to bring innnovation."
+          "header": "Organizações",
+          "subheader": "As entidades que querem trazer inovação."
         },
         "contributors-section": {
-          "title": "See who is driving Challenges on Alkemio"
+          "title": "Veja quem está conduzindo Desafios no Alkemio"
         },
         "footer": {
-          "headline": "More about Alkemio? Visit our website, contact us or take a look at our github repository",
+          "headline": "Mais sobre Alkemio? Visite nosso site, entre em contato conosco ou consulte o nosso repositório do github",
           "links": {
-            "foundation": "Alkemio Foundation",
-            "contact-form": "Contact Form",
-            "github": "github"
+            "foundation": "Fundação Alkemio",
+            "contact-form": "Formulário de Contato",
+            "github": "gitHub"
           }
         }
       }
     },
     "organization": {
       "settings": {
-        "tooltip": "Organization settings"
+        "tooltip": "Configurações da organização"
       },
       "verified-status": {
-        "help": "Verification status: has the identity and information about this Organization been formally verified"
+        "help": "Status da verificação: tem a identidade e as informações sobre essa organização foram formalmente verificadas"
       }
     },
     "space": {
-      "title": "Space",
+      "title": "Espaço",
       "application": {
-        "title": "Application to join {{entity}} \"{{name}}\"",
-        "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
-        "finish": "Thank you for completing your application for ",
-        "backButton": "Back",
-        "loading": "Loading questions",
-        "errorBlockName": "the questions"
+        "title": "Solicitação para se juntar a {{entity}} \"{{name}}\"",
+        "subheader": "Por favor, preencha as perguntas abaixo, as quais com seu perfil serão enviadas para o respectivo grupo.",
+        "finish": "Obrigado por completar sua inscrição para ",
+        "backButton": "Voltar",
+        "loading": "Carregando questões",
+        "errorBlockName": "as questões"
       },
       "sections": {
         "dashboard": {
-          "organization": "Hosted by",
-          "hostTooltip": "The host is the organization responsible for the creation of the Space.",
-          "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
-          "leadingOrganizations": "Leading Organizations",
-          "community": "Community"
+          "organization": "Hospedado por",
+          "hostTooltip": "O host é a organização responsável pela criação do Espaço.",
+          "hostContact": "Os hosts são responsáveis pelo conteúdo do Espaço. Quaisquer perguntas ou comentários, entre em contato conosco.",
+          "leadingOrganizations": "Organizações Principais",
+          "community": "Comunidade"
         },
         "challenges": {
-          "header": "Challenges",
-          "subheader": "There is no final frontier",
+          "header": "Desafios",
+          "subheader": "Não há uma fronteira final",
           "body": "",
-          "no-data": "No challenges available for this Space",
-          "description": "Here you can explore the Challenges hosted in this Space. Filter by key words to show just the topics you care about. "
+          "no-data": "Não há Desafios disponíveis para este Espaço",
+          "description": "Aqui você pode explorar os Desafios hospedados neste Espaço. Filtre por palavras-chave para mostrar apenas os tópicos que você se importa. "
         },
         "contribute": {
-          "header": "Contribute"
+          "header": "Contribuir"
         },
         "knowledge-base": {
-          "header": "Knowledge base"
+          "header": "Base de conhecimento"
         }
       }
     },
     "challenge": {
-      "title": "Challenge",
+      "title": "Desafio",
       "organizationBanner": {
-        "load-more": "And more ..."
+        "load-more": "E mais..."
       },
       "sections": {
         "dashboard": {
           "projects": {
-            "title": "Projects",
-            "help-text": "Projects related to this challenge"
+            "title": "Projetos",
+            "help-text": "Projetos relacionados a este Desafio"
           }
         },
         "opportunities": {
-          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about."
+          "description": "Aqui você pode explorar as Oportunidades que foram identificadas para progredir no Desafio. Filtre por palavras-chave para mostrar apenas os tópicos que você se importa."
         }
       }
     },
     "opportunity": {
-      "title": "Opportunity",
+      "title": "Oportunidade",
       "sections": {
         "dashboard": {
           "projects": {
-            "title": "Projects",
-            "help-text": "Projects related to this opportunity"
+            "title": "Projetos",
+            "help-text": "Projetos relacionados a esta Oportunidade"
           }
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared by the leads."
+          "description": "Aqui você pode explorar a Comunidade. Veja os usuários que estão contribuindo, bem como as atualizações que foram compartilhadas pelos leads."
         },
-        "apply": "Interested in collaboration?",
+        "apply": "Interessado(a) em colaborar?",
         "agreements": {
-          "description": "Agreements are the formation of concrete next steps to be taken. This new functionality will be available soon.\n\nIdeas, suggestions? Please reach out!"
+          "description": "Os acordos são a formação dos próximos passos concretos a serem dados. Esta nova funcionalidade estará disponível em breve.\n\nIdéias, sugestões? Por favor, entre em contato conosco!"
         },
         "projects": {
-          "more-projects": "MORE PROJECTS STARTING SOON",
+          "more-projects": "MAIS PROJETOS COMEÇANDO EM BREVE",
           "new-project": {
-            "header": "New project"
+            "header": "Novo projeto"
           }
         }
       }
     },
     "community": {
-      "title": "{{name}} community page",
+      "title": "Página da comunidade {{name}}",
       "leading-organizations": {
-        "title": "Leading organizations ({{count}})",
-        "help-text": "Shows different organizations, including the role you have",
-        "no-data": "No organization is leading at this time"
+        "title": "Organizações dirigentes ({{count}})",
+        "help-text": "Mostra diferentes organizações, incluindo o papel que você tem",
+        "no-data": "Nenhuma organização está liderando no momento"
       },
       "member-organizations": {
-        "no-data": "No organization is contributing at this time"
+        "no-data": "Nenhuma organização está contribuindo neste momento"
       },
       "space-host": {
-        "title": "Facilitating organization",
-        "help-text": "The Organization that is facilitating this Space."
+        "title": "Organização facilitadora",
+        "help-text": "A organização que está facilitando este Espaço."
       },
       "members": {
-        "help-text": "Shows members is this community, including the role they have",
-        "no-data": "No members available"
+        "help-text": "Mostra membros nessa comunidade, incluindo o papel que eles possuem",
+        "no-data": "Não há membros disponíveis"
       },
       "updates": {
-        "title": "Updates from the leads ({{count}})",
-        "no-data": "No updates available"
+        "title": "Atualizações dos Leads ({{count}})",
+        "no-data": "Não há atualizações disponíveis"
       }
     },
     "whiteboard": {
-      "header": "Whiteboards in this {{blockName}}",
-      "subheader": "Create your custom visualization and share it with others.",
-      "add-whiteboard": "Create whiteboard",
-      "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
-      "locked-by": "{{user}} is currently editing this Whiteboard",
-      "savingWhiteboard": "Saving whiteboard...",
+      "header": "Whiteboards neste {{blockName}}",
+      "subheader": "Crie sua visualização personalizada e compartilhe-a com outras pessoas.",
+      "add-whiteboard": "Criar whiteboard",
+      "no-whiteboards": "Nenhuma whiteboard foi criada ainda. Seja o primeiro a adicionar uma.",
+      "locked-by": "{{user}} está editando atualmente esta Whiteboard",
+      "savingWhiteboard": "Salvando Whiteboard...",
       "state": {
-        "checkedout": "Someone else is currently editing this Whiteboard"
+        "checkedout": "Outro usuário está editando esta Whiteboard no momento"
       },
       "state-actions": {
-        "check-out": "Edit",
+        "check-out": "Editar",
         "check-in": "Check-in",
-        "save-as-template": "Save as template",
-        "save-and-check-in": "Save & stop editing",
-        "save": "Save",
-        "delete": "Delete"
+        "save-as-template": "Salvar como template",
+        "save-and-check-in": "Salvar e parar de editar",
+        "save": "Salvar",
+        "delete": "Deletar"
       },
       "delete": {
-        "confirmation-title": "Deleting <b>{{ blockName }}</b>",
-        "confirmation-text": "Are you sure you want to delete this whiteboard? The action is irreversible."
+        "confirmation-title": "Excluindo <b>{{ blockName }}</b>",
+        "confirmation-text": "Tem certeza de que deseja excluir esta Whiteboard? A ação é irreversível."
       },
       "create-dialog": {
-        "header": "Create a new whiteboard",
+        "header": "Criar uma nova whiteboard",
         "steps": {
-          "naming": "Define a suitable name for your whiteboard. What will your whiteboard capture?",
-          "templating": "Choose from the list of templates if you want to use it as a blueprint for your whiteboard.",
-          "completing": "The whiteboard will be created with the following parameters"
+          "naming": "Defina um nome adequado para a sua whiteboard. Sobre oque será a sua whiteboard?",
+          "templating": "Escolha a partir da lista de templates, se você quiser usá-lo como um diagrama para o seu whiteboard.",
+          "completing": "O quadro será criado com os seguintes parâmetros"
         },
-        "no-template-selected": "To see a preview of the template please select one."
+        "no-template-selected": "Para ver uma visualização do template, por favor selecione uma opção."
       },
       "template": {
-        "header": "Templates defined in Alkemio",
-        "no-templates": "There are no templates defined here yet. Be the first to add one.",
-        "how-to": "To create a template create a new whiteboard or use an existing one and save it as a template."
+        "header": "Templates definidos por Alkemio",
+        "no-templates": "Não há templates definidos aqui ainda. Seja o primeiro a adicionar um.",
+        "how-to": "Para criar um template, crie um novo whiteboatd ou use um já existente e salve-o como um template."
       },
       "space": {
-        "templatesHeader": "Templates defined in this Space",
-        "templatesSubheader": "The templates defined in this Space can be used in every Challenge and Opportunity that this Space hosts."
+        "templatesHeader": "Templates definidos neste Espaço",
+        "templatesSubheader": "Os templates definidos neste Espaço podem ser usados em cada Desafio e Oportunidade que este Espaço hospeda."
       },
       "challenge": {
-        "templatesHeader": "Templates defined in this challenge",
-        "templatesSubheader": "The templates defined in this Challenge can be used in every Opportunity that is in the scope of this Challenge."
+        "templatesHeader": "Templates definidos neste Desafio",
+        "templatesSubheader": "Os templates definidos neste Desafio podem ser usados em cada Oportunidade que está no escopo deste Desafio."
       },
       "opportunity": {
-        "templatesHeader": "Templates defined in this Opportunity"
+        "templatesHeader": "Templates definidos neste Oportunidade"
       },
       "whiteboardDisconnected": {
-        "title": "Whiteboard connection lost",
-        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
-        "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
+        "title": "Conexão ao quadro foi perdida",
+        "message": "Desculpe pelo inconveniente! O whiteboard não está disponível para edição agora, possivelmente devido a uma questão de rede ou perda de acesso. Por favor, tente fechar e reabrir o quadro ou atualizar a página. Se o problema persistir, entre em contato com o administrador do Espaço para obter ajuda.",
+        "lastSaved": "O conteúdo deste quadro foi salvo pela última vez em {{lastSaved}}."
       }
     },
     "login": {
-      "title": "Sign in to Alkemio",
-      "register": "Don’t have an Alkemio account yet? <signup>Click here to sign up.</signup>"
+      "title": "Fazer login no Alkemio",
+      "register": "Ainda não tem uma conta no Alkemio? <signup>Clique aqui para se inscrever.</signup>"
     },
     "about": {
-      "title": "Reimagining collaboration",
-      "description": "Alkemio puts the Challenges central, each Challenge providing a central, neutral place for collaboration.",
-      "powered-by": "Powered by {{name}} v{{version}}"
+      "title": "Reimaginando a colaboração",
+      "description": "Alkemio coloca os Desafios no centro, cada Desafio fornecendo um lugar central e neutro para a colaboração.",
+      "powered-by": "Desenvolvido por {{name}} v{{version}}"
     },
     "error": {
-      "title": "Ooops!",
-      "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
-      "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
-      "line3": "If the error persists please contact support.",
+      "title": "Ops!",
+      "line1": "Parece que algo deu errado: <italic>{{message}}</italic>",
+      "line2": "Verifique se seu servidor ({{graphQLEndpoint}}) está disponível e recarregue a página.",
+      "line3": "Se o erro persistir, por favor contate o suporte.",
       "buttons": {
-        "reload": "Reload"
+        "reload": "Recarregar"
       }
     },
     "four-ou-four": {
-      "title": "Something went wrong...",
-      "message": "Sorry, the page you are looking for either doesn't exist or has been moved, or you don't have the rights to access it. This may happen because you aren't a member of the community yet or are not signed in. Don't worry, our team is there to help!",
+      "title": "Ocorreu um problema...",
+      "message": "Desculpe, a página que você está procurando não existe ou foi removida, ou você não tem permissão para acessá-la. Isso pode acontecer porque você ainda não é membro da comunidade ou não está logado. Não se preocupe, nosso time está lá para ajudar!",
       "links": {
         "home": "",
-        "faq": "Have a look in our FAQ and documentation to find what you are looking for, or contact the team."
+        "faq": "Dê uma olhada em nosso FAQ e documentos para encontrar o que você está procurando, ou entre em contato com a equipe."
       }
     },
     "logout": {
-      "loading": "Signing off ..."
+      "loading": "Saindo..."
     },
     "registration": {
-      "header": "Create an account to start using Alkemio",
-      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
-      "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
-      "login": "Have an account?",
-      "reset-password": "Reset password"
+      "header": "Crie uma conta para começar a usar Alkemio",
+      "introduction": "<p>Bem-vindo(a) ao Alkemio! Alkemio facilita a gestão de Desafios e tem colaboradores, de qualquer lugar, trabalhando em conjunto para encontrar soluções. Desafios tem uma posição central. O foco está no destino.</p><p>Para manter a Plataforma segura, aberta e construtiva cada usuário deve aceitar os Termos <terms>de Uso</terms> e <privacy>Política de Privacidade</privacy>. Por favor, leia esses documentos e aceite-os abaixo antes de continuar.</p>",
+      "terms": "Eu aceito os <terms>Termos de Uso</terms> e <privacy>Política de Privacidade</privacy>.",
+      "login": "Já tem uma conta?",
+      "reset-password": "Redefinir senha"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
-      "greeting": "Hi {{user}}, welcome at Alkemio!",
-      "continue": "Continue to the platform",
-      "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
+      "introduction": "<p>Alkemio facilita a gestão de Desafios e tem colaboradores, de qualquer lugar, trabalhando em conjunto para encontrar soluções. Desafios tem uma posição central. O foco está no destino.</p><p>Para manter a Plataforma segura, aberta e construtiva cada usuário deve aceitar os Termos <terms>de Uso</terms> e <privacy>Política de Privacidade</privacy>. Por favor, leia esses documentos e aceite-os abaixo antes de continuar.</p>",
+      "greeting": "Olá {{user}}, bem-vindo ao Alkemio!",
+      "continue": "Continuar para a plataforma",
+      "tooltip": "Por favor, leia e aceite os Termos de Uso e a Política de Privacidade antes de continuar"
     },
     "registration-success": {
-      "header": "Hi, thank you for signing up!"
+      "header": "Olá, obrigado por se cadastrar!"
     },
     "verification-success": {
-      "header": "Thank you for verifying your email address!",
-      "subheader": "Your profile is now fully activated on the platform. Enjoy!",
-      "message": "Please do consider filling out all posts of your profile. It helps with both applying to join communities and with others being able to connect with you."
+      "header": "Obrigado por verificar seu endereço de e-mail!",
+      "subheader": "Seu perfil agora está totalmente ativado na plataforma. Aproveite!",
+      "message": "Por favor, considere preencher todas as informações do seu perfil. Isso te ajuda tanto ao se candidatar aos Espaços e Comunidades, como a dar a possibilidade de outros se conectarem a você."
     },
     "recovery": {
-      "header": "Password recovery",
+      "header": "Recuperação de senha",
       "message": {
-        "initial": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+        "initial": "Por favor, digite seu endereço de e-mail abaixo para receber um código de recuperação que permitirá redefinir sua senha."
       }
     },
     "verification": {
-      "header": "Email verification",
-      "message": "To receive a new verification email, please enter your email address below."
+      "header": "Verificação de E-mail",
+      "message": "Para receber um novo e-mail de verificação, por favor digite seu endereço de e-mail abaixo."
     },
     "verification-required": {
-      "header": "Email verification is pending.",
-      "message": "You are nearly there... One last step is to verify your email. <br />Please check your inbox for an email with instructions.<br /><br /><again>If you have not received an email, click on this link to send again</again>."
+      "header": "Verificação de e-mail está pendente.",
+      "message": "Você está quase lá... Uma última etapa é verificar seu e-mail. <br />Verifique se há um e-mail com instruções em sua caixa de entrada.<br /><br /><again>Se você não recebeu um e-mail, clique neste link para enviar novamente</again>."
     },
     "settings": {
-      "header": "User Settings"
+      "header": "Configurações de Usuário"
     },
     "user-profile": {
-      "title": "My profile",
+      "title": "Meu perfil",
       "tooltips": {
-        "settings": "User profile settings"
+        "settings": "Configurações de perfil do usuário"
       },
-      "member-of": "Member of",
+      "member-of": "Membro de",
       "applications": {
-        "title": "Pending applications"
+        "title": "Solicitações pendentes"
       },
       "communities": {
-        "title": "Communities",
-        "help": "Communities the user is a part of"
+        "title": "Comunidades",
+        "help": "Comunidades que o usuário faz parte"
       },
       "pending-applications": {
-        "title": "Pending Applications",
-        "help": "Applications Pending for this user"
+        "title": "Solicitações pendentes",
+        "help": "Aplicações pendentes para este usuário"
       },
       "associated-organizations": {
-        "title": "Associated Organizations",
-        "help": "Organizations who the user is related to"
+        "title": "Organizações Associadas",
+        "help": "Organizações com as quais o usuário está relacionado"
       },
       "verifiable-credentials": {
-        "title": "Verifiable Credentials",
-        "help": "Credentials that the user holds issued by trusted parties"
+        "title": "Credenciais verificáveis",
+        "help": "Credenciais que o usuário possui emitidas por grupos confiáveis"
       }
     },
     "user-credentials": {
       "your-credentials": {
-        "title": "My Verifiable Credentials",
-        "description": "Alkemio caches your verifiable credentials in your cloud hosted wallet. The credentials you share will grant you privileges in communities across the platform.",
-        "add-credential": "Add Credential"
+        "title": "Minhas credenciais verificáveis",
+        "description": "Alkemio armazena suas credenciais verificáveis em sua carteira hospedada na nuvem. As credenciais que você compartilhar lhe concederão privilégios nas comunidades em toda a plataforma.",
+        "add-credential": "Adicionar Credencial"
       },
-      "issue": "Issue",
-      "added-successfully": "Credential successfully added"
+      "issue": "Emitir",
+      "added-successfully": "Credencial adicionada com sucesso"
     },
     "authentication-required": {
-      "header": "The page you are trying to reach requires you to be logged in.",
-      "subheader": "Please sign-in or register to continue!"
+      "header": "A página que você está tentando acessar requer que você esteja logado.",
+      "subheader": "Por favor, faça login ou registre-se para continuar!"
     },
     "user-notifications-settings": {
       "general": {
-        "title": "General",
-        "subtitle": "This section allows you to select your preferences regarding receiving messages"
+        "title": "Geral",
+        "subtitle": "Esta seção permite que você selecione suas preferências em relação ao recebimento de mensagens"
       },
       "user-administration": {
-        "title": "Platform Administration",
-        "subtitle": "This section is only visible to users that are a global admin on the platform"
+        "title": "Administração da Plataforma",
+        "subtitle": "Esta seção só é visível para os usuários que são um admin global na plataforma"
       },
       "community-administration": {
-        "title": "Community administration",
-        "subtitle": "This section allows you to select your preferences regarding the community administration"
+        "title": "Administração da comunidade",
+        "subtitle": "Esta seção permite que você selecione suas preferências em relação à administração da comunidade"
       },
       "user-communication": {
-        "title": "Mentions and messaging",
-        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging"
+        "title": "Menções e mensagens",
+        "subtitle": "Esta seção permite que você selecione suas preferências em relação a menções e mensagens diretas"
       },
       "organization-communication": {
-        "title": "Organization mentions and messaging",
-        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage"
+        "title": "Menções e mensagens da organização",
+        "subtitle": "Esta seção permite que você selecione suas preferências em relação a menções e mensagens diretas das organizações que você gerencia"
       },
       "forum": {
-        "title": "Forum",
-        "subtitle": "This section allows you to select your preferences regarding activities in the Forum"
+        "title": "Fórum",
+        "subtitle": "Esta seção permite que você selecione as suas preferências sobre as atividades no Fórum"
       }
     },
     "help-dialog": {
-      "title": "Looking for help?",
-      "text": "We want to help you successfully use the Alkemio platform, and to do so we want to make the process of using it and interacting easier. This is how you can have an impact on the topics you care about.<br /><br />Click on the icons below to find answers to your questions, contact the Alkemio team for support or just get started!",
+      "title": "Procurando ajuda?",
+      "text": "Queremos ajudá-lo a usar a plataforma Alkemio com sucesso, e para isso queremos facilitar o processo de utilização e de interação. É assim que você pode ter impacto nos tópicos que você se importa.<br /><br />Clique nos ícones abaixo para encontrar respostas às suas perguntas, entre em contato com a equipe do Alkemio para obter suporte ou você pode apenas começar!",
       "icons": {
-        "help-center-faq": "Help Center & FAQ",
-        "community-support-forum": "Contact us!",
-        "new-user": "New user? Start here!"
+        "help-center-faq": "Central de Ajuda & FAQ",
+        "community-support-forum": "Fale conosco!",
+        "new-user": "Novo usuário? Comece aqui!"
       },
-      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
+      "tips-and-tricks": "Procurando por dicas e truques? Encontre-os nos blog posts aqui!"
     },
     "forum": {
-      "title": "Questions, suggestions, or feedback?",
-      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
-      "fullName": "Community help",
+      "title": "Perguntas, sugestões ou comentários?",
+      "subtitle": "Entre em contato com a equipe do Alkemio ou com outros usuários da plataforma!",
+      "fullName": "Ajuda da comunidade",
       "shortName": "$t(common.forum)",
-      "new-title": "Alkemio Forum - Initiate Discussion",
-      "back": "See all discussions"
+      "new-title": "Fórum Alkemio - Iniciar discussão",
+      "back": "Ver todas as discussões"
     }
   },
   "operations": {
     "user-group": {
-      "updated-successfuly": "Group {{name}} has been updated!",
-      "deleted-successfuly": "Group {{name}} deleted successfully"
+      "updated-successfuly": "O grupo {{name}} foi atualizado!",
+      "deleted-successfuly": "Grupo {{name}} excluído com sucesso"
     }
   },
   "kratos": {
     "errors": {
-      "401": "Unauthenticated",
+      "401": "Não autenticado",
       "session": {
-        "default": "Can't get session information!"
+        "default": "Não é possível obter informações da sessão!"
       }
     },
-    "loading-flow": "Loading flow",
-    "loading-error": "Loading error",
+    "loading-flow": "Carregando o fluxo",
+    "loading-error": "Erro no carregamento",
     "messages": {
-      "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
-      "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
-      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
-      "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io."
+      "successfully-recovered-password": "Por favor, digite uma nova senha nos próximos 15 minutos para concluir a redefinição de senha.",
+      "verification-flow-expired": "O link de verificação expirou. Por favor, solicite um novo, enviando seu email novamente.",
+      "recovery-flow-expired": "Este link de redefinição de senha expirou. Por favor, solicite um novo enviando seu e-mail novamente.",
+      "verification-flow-continue": "Continuar",
+      "login-flow-account-exists": "Você está tentando entrar com uma conta LinkedIn/Microsoft, mas o endereço de e-mail associado já foi usado antes. Por favor, entre com este e-mail e senha ou tente redefinir a senha. Se isso não funcionar, por favor, envie um e-mail para support@alkem.io."
     },
     "fields": {
       "ID": "ID",
-      "Password": "Password",
-      "ShowPassword": "Show Password",
-      "HidePassword": "Hide Password",
-      "E-Mail": "E-Mail",
+      "Password": "Senha",
+      "ShowPassword": "Mostrar senha",
+      "HidePassword": "Esconder Senha",
+      "E-Mail": "E-mail",
       "Email": "$t(kratos.fields.E-Mail)",
-      "First Name": "First Name",
-      "Last Name": "Last Name",
-      "Sign in": "Sign in",
-      "Sign up": "Sign up",
-      "Submit": "Submit",
-      "Verify code": "Verify code",
-      "Resend code": "Resend code",
-      "Save": "Save"
+      "First Name": "Nome",
+      "Last Name": "Sobrenome",
+      "Sign in": "Fazer login",
+      "Sign up": "Cadastre-se",
+      "Submit": "Enviar",
+      "Verify code": "Verificar código",
+      "Resend code": "Reenviar código",
+      "Save": "Salvar"
     }
   },
   "apollo": {
     "errors": {
-      "generic": "An error occurred",
-      "generic-with-code": "An error occurred with code {{code}}",
-      "ENTITY_NOT_FOUND": "Entity not found",
-      "COMMUNITY_MEMBERSHIP": "Community membership error: {{message}}",
-      "FORMAT_NOT_SUPPORTED": "Format not supported",
-      "BAD_USER_INPUT": "Bad user input: {{message}}",
-      "NOT_SUPPORTED": "Not supported: {{message}}",
+      "generic": "Ocorreu um erro",
+      "generic-with-code": "Ocorreu um erro com o código {{code}}",
+      "ENTITY_NOT_FOUND": "Categoria não encontrada",
+      "COMMUNITY_MEMBERSHIP": "Erro de adesão à comunidade: {{message}}",
+      "FORMAT_NOT_SUPPORTED": "Formato não suportado",
+      "BAD_USER_INPUT": "Entrada de usuário inválida: {{message}}",
+      "NOT_SUPPORTED": "Não suportado: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}"
     }
   },
   "dashboard-updates-section": {
-    "title": "Updates from the leads ({{count}})",
-    "dialog-title": "All updates from the leads",
-    "no-data": "No updates available."
+    "title": "Atualizações dos Leads ({{count}})",
+    "dialog-title": "Todas as atualizações dos Leads",
+    "no-data": "Não há atualizações disponíveis."
   },
   "dashboard-discussions-section": {
-    "title": "Discussions ({{count}})",
-    "no-data-create": "No discussions available. Create a new discussion",
-    "no-data-join": "No discussions available. Please join the community to create a discussion"
+    "title": "Discussões ({{count}})",
+    "no-data-create": "Nenhuma discussão disponível. Criar uma nova",
+    "no-data-join": "Nenhuma discussão disponível. Por favor, junte-se à comunidade para criar uma"
   },
   "dashboard-community-section": {
-    "title": "Community"
+    "title": "Comunidade"
   },
   "post-edit": {
-    "new": "New Post",
-    "edit": "Edit Post",
+    "new": "Novo Post",
+    "edit": "Editar Post",
     "type": {
-      "title": "Post label",
-      "help-text": "What type of information do you want to share?"
+      "title": "Etiqueta de post",
+      "help-text": "Que tipo de informação você deseja compartilhar?"
     },
     "postLocation": {
-      "title": "Post location",
-      "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, Challenge or Opportunity.",
-      "success": "Successfully moved Post to the new Callout.",
-      "error": "Something went wrong when moving the Post, please try again."
+      "title": "Localização do post",
+      "label": "Contribuindo para Callout",
+      "reminder": "Tenha cuidado ao alterar o local dos Posts. Mover o Post para outro Callout fará com que ela desapareça do Callout atual. Isto poderá dificultar a recuperação das pessoas, incluindo a pessoa que criou este Post. Note que você só pode mover Posts dentro do mesmo Espaço, Desafio ou Oportunidade.",
+      "success": "Post movido com sucesso para o novo Callout.",
+      "error": "Algo deu errado ao mover o Post, por favor tente novamente."
     },
     "delete": {
-      "title": "Are you sure you want to delete this Post?",
-      "description": "This action cannot be undone"
+      "title": "Tem certeza que deseja excluir esse post?",
+      "description": "Esta ação não pode ser desfeita"
     }
   },
   "innovation-edit": {
-    "new": "New Innovation flow",
-    "edit": "Edit Innovation flow"
+    "new": "Novo Fluxo de Inovação",
+    "edit": "Editar Fluxo de Inovação"
   },
   "contributors-section": {
-    "title": "Contributors"
+    "title": "Colaboradores"
   },
   "contributions-view": {
-    "no-data": "No {{name, lowercase}} available"
+    "no-data": "Sem {{name, lowercase}} disponível"
   },
   "credentials-view": {
-    "no-data": "No credentials have been presented"
+    "no-data": "Nenhuma credencial foi apresentada"
   },
   "associated-organizations-view": {
-    "no-data": "No {{name, lowercase}} available"
+    "no-data": "Sem {{name, lowercase}} disponível"
   },
   "dashboard-contributors-section": {
-    "dialog-title": "Contributors",
-    "more": "...plus {{count}} more"
+    "dialog-title": "Colaboradores",
+    "more": "...mais {{count}} a mais"
   },
   "associates-view": {
-    "less": "show less",
-    "more": "...plus {{count}} more",
-    "sign-in": "Please sign in to see the users that are associated with this organization."
+    "less": "mostrar menos",
+    "more": "...mais {{count}} a mais",
+    "sign-in": "Por favor, faça login para ver os usuários associados a esta organização."
   },
   "spaces-filter": {
-    "current-filter": "Choose the topics you care most about! Current filter: ",
-    "show-all": "Show All",
-    "other": "Other",
+    "current-filter": "Escolha os tópicos que mais lhe interessam! Filtro atual: ",
+    "show-all": "Exibir Tudo",
+    "other": "Outros",
     "config": [
       {
-        "key": "energy-transition",
-        "name": "Energy Transition",
-        "tags": ["Energy Transition", "Energietransitie"]
+        "key": "transição-energética",
+        "name": "Transição Energética",
+        "tags": ["Transição Energética", "Transição Energética"]
       },
       {
-        "key": "inclusive-society",
-        "name": "Inclusive Society",
-        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
+        "key": "sociedade-inclusiva",
+        "name": "Sociedade Inclusiva",
+        "tags": ["Sociedade Inclusiva", "Sociedade Inclusiva"]
       },
       {
-        "key": "public-services",
-        "name": "Public Services",
-        "tags": ["Public Services", "Publieke Diensten"]
+        "key": "serviços-públicos",
+        "name": "Serviços Públicos",
+        "tags": ["Serviços Públicos", "Serviços Públicos"]
       },
       {
-        "key": "innovation",
-        "name": "Innovation",
-        "tags": ["Innovation", "Innovatie"]
+        "key": "inovação",
+        "name": "Inovação",
+        "tags": ["Inovação", "Inovação"]
       },
       {
-        "key": "digitalization-of-society",
-        "name": "Digitalization of Society",
-        "tags": ["Digitalization of Society", "Digitalisering"]
+        "key": "digitalização-da-sociedade",
+        "name": "Digitalização da sociedade",
+        "tags": ["Digitalização da sociedade", "Digitalização"]
       }
     ]
   },
@@ -2436,18 +2441,18 @@
   "visuals-alt-text": {
     "banner": {
       "page": {
-        "text": "Page banner: {{altText}}"
+        "text": "Banner da página: {{altText}}"
       },
       "card": {
-        "text": "Card banner: {{altText}}"
+        "text": "Banner do cartão: {{altText}}"
       },
       "whiteboard": {
-        "text": "Card banner showing a preview of {{displayName}} whiteboard"
+        "text": "Banner do cartão mostrando uma pré-visualização do whiteboard {{displayName}}"
       }
     },
     "avatar": {
       "contributor": {
-        "text": "{{displayName}}'s avatar: {{altText}}"
+        "text": "Avatar de {{displayName}}: {{altText}}"
       }
     }
   }

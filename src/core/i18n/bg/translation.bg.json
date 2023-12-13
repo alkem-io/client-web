@@ -113,6 +113,7 @@
     "home": "Начало",
     "take-me-home": "Заведи ме в началото",
     "close": "Затвори",
+    "yes-close": "Yes, close",
     "delete": "Изтрий",
     "submit": "Изпрати",
     "remove": "Премахни",
@@ -1084,6 +1085,10 @@
       "publish-dialog": {
         "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, **who have their notifications for these actions turned on**, to receive a notification?",
         "checkbox-label": "Yes, notify the community."
+      },
+      "close-dialog": {
+        "title": "Discard callout",
+        "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
       }
     },
     "calloutEdit": {
