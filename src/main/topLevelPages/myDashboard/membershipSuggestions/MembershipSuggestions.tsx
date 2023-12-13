@@ -6,7 +6,6 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import { useTranslation } from 'react-i18next';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
-import { Box } from '@mui/material';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
 } from '../../../../domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
@@ -16,6 +15,7 @@ import SearchSuggestions from '../../../../core/ui/search/SearchSuggestions';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { SEARCH_TERMS_URL_PARAM } from '../../../search/constants';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 const MembershipSuggestions: FC = () => {
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ const MembershipSuggestions: FC = () => {
           fullWidth
         />
         <GridItem columns={4}>
-          <Box>
+          <Gutters disablePadding>
             <BlockSectionTitle>{t('pages.home.sections.membershipSuggestions.suggestedSpace.join')}</BlockSectionTitle>
             {loading && <JourneyCardHorizontalSkeleton />}
             {!loading && data?.space && (
@@ -59,10 +59,10 @@ const MembershipSuggestions: FC = () => {
                 sx={{ display: 'inline-block', maxWidth: '100%' }}
               />
             )}
-          </Box>
+          </Gutters>
         </GridItem>
         <GridItem columns={4}>
-          <Box>
+          <Gutters disablePadding>
             <BlockSectionTitle>
               {t('pages.home.sections.membershipSuggestions.searchCommunity.title')}
             </BlockSectionTitle>
@@ -71,9 +71,6 @@ const MembershipSuggestions: FC = () => {
               onSearchClick={handleNavigateToSearchPage}
               value={filter}
               minLength={2}
-              containerProps={{
-                marginLeft: 'auto',
-              }}
               size="small"
             />
             <SearchSuggestions
@@ -82,7 +79,7 @@ const MembershipSuggestions: FC = () => {
               onSelect={term => setFilter([...filter, term].slice(0, 5))}
               value={filter}
             />
-          </Box>
+          </Gutters>
         </GridItem>
       </PageContentBlockGrid>
     </PageContentBlock>

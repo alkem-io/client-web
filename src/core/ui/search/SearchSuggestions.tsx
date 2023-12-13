@@ -21,13 +21,11 @@ const SearchSuggestions = <Option extends string>({
   const optionsShown = useMemo(() => differenceBy(options, value, option => option.toLowerCase()), [options, value]);
 
   return (
-    <Box display="flex" gap={gutters(0.5)} flexWrap="wrap" marginTop={gutters(1)}>
+    <Box display="flex" gap={gutters(0.5)} flexWrap="wrap">
       <Caption>{title}</Caption>
-      <Box display="flex" gap={gutters(0.5)} flexWrap="wrap">
-        {optionsShown.map(term => (
-          <Chip key={term} label={term} variant="filled" color="primary" onClick={() => onSelect(term)} />
-        ))}
-      </Box>
+      {optionsShown.map(term => (
+        <Chip key={term} label={term} variant="filled" color="primary" onClick={() => onSelect(term)} />
+      ))}
     </Box>
   );
 };
