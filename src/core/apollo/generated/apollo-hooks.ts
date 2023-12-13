@@ -1669,7 +1669,7 @@ export const PendingMembershipsJourneyProfileFragmentDoc = gql`
         id
         tags
       }
-      cardBanner: visual(type: CARD) {
+      visual(type: $visualType) {
         id
         uri
       }
@@ -14459,7 +14459,7 @@ export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutationVariables
 >;
 export const PendingMembershipsSpaceDocument = gql`
-  query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+  query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
     space(ID: $spaceId) {
       id
       nameID
@@ -14485,6 +14485,7 @@ export const PendingMembershipsSpaceDocument = gql`
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      fetchDetails: // value for 'fetchDetails'
+ *      visualType: // value for 'visualType'
  *   },
  * });
  */
@@ -14529,6 +14530,7 @@ export const PendingMembershipsChallengeDocument = gql`
     $spaceId: UUID_NAMEID!
     $challengeId: UUID_NAMEID!
     $fetchDetails: Boolean! = false
+    $visualType: VisualType!
   ) {
     space(ID: $spaceId) {
       id
@@ -14560,6 +14562,7 @@ export const PendingMembershipsChallengeDocument = gql`
  *      spaceId: // value for 'spaceId'
  *      challengeId: // value for 'challengeId'
  *      fetchDetails: // value for 'fetchDetails'
+ *      visualType: // value for 'visualType'
  *   },
  * });
  */
@@ -14606,6 +14609,7 @@ export const PendingMembershipsOpportunityDocument = gql`
     $spaceId: UUID_NAMEID!
     $opportunityId: UUID_NAMEID!
     $fetchDetails: Boolean! = false
+    $visualType: VisualType!
   ) {
     space(ID: $spaceId) {
       id
@@ -14638,6 +14642,7 @@ export const PendingMembershipsOpportunityDocument = gql`
  *      spaceId: // value for 'spaceId'
  *      opportunityId: // value for 'opportunityId'
  *      fetchDetails: // value for 'fetchDetails'
+ *      visualType: // value for 'visualType'
  *   },
  * });
  */
@@ -25034,6 +25039,78 @@ export type MyMembershipsQueryResult = Apollo.QueryResult<
 >;
 export function refetchMyMembershipsQuery(variables?: SchemaTypes.MyMembershipsQueryVariables) {
   return { query: MyMembershipsDocument, variables: variables };
+}
+
+export const NewMembershipsDocument = gql`
+  query NewMemberships {
+    me {
+      applications(states: ["new", "approved"]) {
+        id
+        communityID
+        displayName
+        state
+        spaceID
+        challengeID
+        opportunityID
+        createdDate
+      }
+      invitations(states: ["invited", "accepted"]) {
+        id
+        spaceID
+        challengeID
+        opportunityID
+        welcomeMessage
+        createdBy
+        createdDate
+        state
+      }
+    }
+  }
+`;
+
+/**
+ * __useNewMembershipsQuery__
+ *
+ * To run a query within a React component, call `useNewMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNewMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewMembershipsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewMembershipsQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.NewMembershipsQuery, SchemaTypes.NewMembershipsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.NewMembershipsQuery, SchemaTypes.NewMembershipsQueryVariables>(
+    NewMembershipsDocument,
+    options
+  );
+}
+
+export function useNewMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.NewMembershipsQuery, SchemaTypes.NewMembershipsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.NewMembershipsQuery, SchemaTypes.NewMembershipsQueryVariables>(
+    NewMembershipsDocument,
+    options
+  );
+}
+
+export type NewMembershipsQueryHookResult = ReturnType<typeof useNewMembershipsQuery>;
+export type NewMembershipsLazyQueryHookResult = ReturnType<typeof useNewMembershipsLazyQuery>;
+export type NewMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.NewMembershipsQuery,
+  SchemaTypes.NewMembershipsQueryVariables
+>;
+export function refetchNewMembershipsQuery(variables?: SchemaTypes.NewMembershipsQueryVariables) {
+  return { query: NewMembershipsDocument, variables: variables };
 }
 
 export const RecentForumMessagesDocument = gql`

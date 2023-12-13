@@ -1,4 +1,4 @@
-query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
   space(ID: $spaceId) {
     id
     nameID
@@ -8,7 +8,7 @@ query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = 
   }
 }
 
-query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $fetchDetails: Boolean! = false) {
+query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
   space(ID: $spaceId) {
     id
     nameID
@@ -26,6 +26,7 @@ query PendingMembershipsOpportunity(
   $spaceId: UUID_NAMEID!
   $opportunityId: UUID_NAMEID!
   $fetchDetails: Boolean! = false
+  $visualType: VisualType!
 ) {
   space(ID: $spaceId) {
     id
@@ -60,7 +61,7 @@ fragment PendingMembershipsJourneyProfile on Profile {
       id
       tags
     }
-    cardBanner: visual(type: CARD) {
+    visual(type: $visualType) {
       id
       uri
     }

@@ -14,6 +14,7 @@ import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 import LatestContributions from './latestContributions/LatestContributions';
 import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
+import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -30,6 +31,7 @@ export const MyDashboard = () => {
           <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
         </PageContentColumn>
         <PageContentColumn columns={8}>
+          <NewMembershipsBlock onOpenMemberships={() => setIsMyMembershipsDialogOpen(true)} />
           <MyLatestContributions />
           <InnovationLibraryBlock />
           <RecentForumMessages />

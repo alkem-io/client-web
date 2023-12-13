@@ -87,6 +87,26 @@ export const buildNewOrganizationUrl = () => {
 
 export type JourneyLocation = CoreEntityIdTypes;
 
+interface JourneyLocationApiData {
+  spaceID: string;
+  challengeID?: string;
+  opportunityID?: string;
+}
+
+export const mapApiDataToJourneyLocation = <Incoming extends JourneyLocationApiData>({
+  spaceID,
+  challengeID,
+  opportunityID,
+  ...apiData
+}: Incoming): Omit<Incoming, keyof JourneyLocationApiData> & JourneyLocation => {
+  return {
+    ...apiData,
+    spaceNameId: spaceID,
+    challengeNameId: challengeID,
+    opportunityNameId: opportunityID,
+  };
+};
+
 export const getJourneyLocationKey = (journeyTypeName: JourneyTypeName): keyof JourneyLocation => {
   switch (journeyTypeName) {
     case 'space':
