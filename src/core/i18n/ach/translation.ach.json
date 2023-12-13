@@ -57,7 +57,7 @@
     "ua": "crwdns10980:0crwdne10980:0",
     "de": "crwdns8136:0crwdne8136:0",
     "fr": "crwdns8138:0crwdne8138:0",
-    "pt": "crwdns10982:0crwdne10982:0",
+    "pt": "crwdns10984:0crwdne10984:0",
     "inContextTool": "crwdns8140:0crwdne8140:0"
   },
   "fields": {
@@ -113,6 +113,7 @@
     "home": "crwdns8214:0crwdne8214:0",
     "take-me-home": "crwdns8216:0crwdne8216:0",
     "close": "crwdns8218:0crwdne8218:0",
+    "yes-close": "crwdns10986:0crwdne10986:0",
     "delete": "crwdns8220:0crwdne8220:0",
     "submit": "crwdns8222:0crwdne8222:0",
     "remove": "crwdns8224:0crwdne8224:0",
@@ -1084,6 +1085,10 @@
       "publish-dialog": {
         "text": "crwdns9536:0{{calloutDisplayName}}crwdne9536:0",
         "checkbox-label": "crwdns9538:0crwdne9538:0"
+      },
+      "close-dialog": {
+        "title": "crwdns10988:0crwdne10988:0",
+        "text": "crwdns10990:0{{calloutType}}crwdne10990:0"
       }
     },
     "calloutEdit": {
@@ -1438,7 +1443,7 @@
         "post": "crwdns9898:0crwdne9898:0"
       },
       "tooltip": {
-        "markdown-help": "crwdns9900:0[text]crwdne9900:0",
+        "markdown-help": "crwdns9900:0crwdne9900:0",
         "mentions": "crwdns9902:0crwdne9902:0"
       }
     },
