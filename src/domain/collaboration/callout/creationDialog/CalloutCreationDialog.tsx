@@ -118,10 +118,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
   const isCalloutDataEntered = (callout: CalloutCreationDialogFields) => {
     return (
-      callout.displayName !== '' ||
-      callout.description !== '' ||
+      callout.displayName ||
+      callout.description ||
+      callout.postDescription ||
       callout.references?.length !== 0 ||
       callout.tags?.length !== 0 ||
+      callout.whiteboard?.content !== JSON.stringify(EmptyWhiteboard) ||
       callout.whiteboardContent !== JSON.stringify(EmptyWhiteboard)
     );
   };
