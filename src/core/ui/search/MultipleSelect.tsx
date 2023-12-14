@@ -20,6 +20,7 @@ import { MAX_TERMS_SEARCH } from '../../../main/search/SearchView';
 export interface MultipleSelectProps {
   value: string[];
   onChange: (terms: string[]) => void;
+  onSearchClick?: (terms: string[]) => void;
   disabled?: boolean;
   minLength?: number;
   autoFocus?: boolean;
@@ -48,7 +49,7 @@ const SelectedTerms: FC<SelectedTermsProps> = ({
   return (
     <Box
       display="flex"
-      flexWrap="nowrap"
+      flexWrap="wrap"
       justifyContent="flex-end"
       gap={gutters(0.5)}
       margin={gutters(0.5)}
@@ -69,6 +70,7 @@ const SelectedTerms: FC<SelectedTermsProps> = ({
 const MultipleSelect: FC<MultipleSelectProps> = ({
   value,
   onChange,
+  onSearchClick,
   disabled,
   minLength = 2,
   autoFocus,
@@ -144,6 +146,14 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   };
 
   const handleSearch = (textInput?: string) => {
+    if (onSearchClick) {
+      const terms = [...value];
+      if (textInput && textInput.trim().length > 0) {
+        terms.push(textInput.trim());
+      }
+      onSearchClick(terms);
+    }
+
     if (!textInput || textInput.trim().length === 0) {
       return;
     }

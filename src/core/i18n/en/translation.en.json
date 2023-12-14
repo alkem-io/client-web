@@ -361,6 +361,12 @@
       "not-verified": ""
     },
     "enums": {
+      "communityRole": {
+        "ADMIN": "$t(common.admin)",
+        "LEAD": "$t(common.lead)",
+        "HOST": "$t(common.host)",
+        "MEMBER": "$t(common.member)"
+      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",
@@ -1868,18 +1874,6 @@
       "placeholder": "Search…",
       "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
-      "search-suggestions": "Search suggestions:",
-      "suggestions-array": [
-        "Innovation",
-        "Energy",
-        "Inclusive",
-        "Design",
-        "3D",
-        "Community",
-        "Transition",
-        "SSI",
-        "Privacy"
-      ],
       "user-not-logged": "Login or Register to include users in your search results",
       "filter": {
         "type": {
@@ -1944,6 +1938,66 @@
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
       "sections": {
+        "latestContributions": {
+          "title": "Latest Contributions in my Spaces",
+          "filter": {
+            "space": {
+              "label": "Space:",
+              "all": "All Spaces"
+            },
+            "role": {
+              "label": "My role:",
+              "all": "All roles"
+            }
+          }
+        },
+        "myLatestContributions": {
+          "title": "My Latest Contributions",
+          "card": {
+            "journey": "in: <journeyicon /> {{journey}}"
+          }
+        },
+        "createAccountBanner": {
+          "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
+        },
+        "recentJourneys": {
+          "seeMore": "Explore all Spaces, Challenges, and Opportunities that you’re a member of"
+        },
+        "myMemberships": {
+          "title": "My Memberships",
+          "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
+          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Spaces on the platform, or <landing>click here</landing> to create your own!"
+        },
+        "membershipSuggestions": {
+          "title": "Become a member",
+          "suggestedSpace": {
+            "join": "Join our @ Alkemio Space!",
+            "nameId": "eco1"
+          },
+          "searchCommunity": {
+            "title": "...or look for your Community below",
+            "searchSuggestions": "Search suggestions:"
+          },
+          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+        },
+        "newMemberships": {
+          "title": "New Memberships",
+          "openMemberships": "Open applications & invitations",
+          "recentlyJoined": "Recently joined",
+          "seeMore": "Show all my memberships",
+          "invitation": {
+            "message": "You are <b>invited</b> to join <journeyicon /> {{journey}}",
+            "caption": "Click here to see the invitation"
+          },
+          "application": {
+            "message": "You <b>applied</b> to join <journeyicon /> {{journey}}",
+            "caption": "Your application still has to be approved"
+          },
+          "membership": {
+            "message": "<journeyicon /> {{journey}}",
+            "caption": "{{tagline}}"
+          }
+        },
         "welcome": {
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
@@ -1960,11 +2014,23 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
+        "exploreOtherChallenges": {
+          "header": "Explore the other Challenge Spaces!"
+        },
+        "innovationLibraryBlock": {
+          "title": "Innovation library: Have you seen this one yet...?",
+          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "seeMore": "Explore more Innovation Packs"
+        },
         "space": {
           "header": "Explore the Challenge Spaces!",
           "subheader": "",
           "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
           "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
+        },
+        "startingSpace": {
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "url": "https://alkemio.foundation/contact/"
         },
         "my-spaces": {
           "header": "My Spaces ({{mySpacesCount}})"
@@ -1976,12 +2042,48 @@
         "contributors-section": {
           "title": "See who is driving Challenges on Alkemio"
         },
-        "footer": {
-          "headline": "More about Alkemio? Visit our website, contact us or take a look at our github repository",
+        "forumMessages": {
+          "title": "Latest Contributions in the Forum",
+          "seeMore": "Browse through the rest of the Forum"
+        },
+        "tipsAndTricks": {
+          "title": "Tips & Tricks",
+          "findMore": "Find more tips & tricks",
+          "findMoreUrl": "https://welcome.alkem.io/blog/",
+          "items": [
+            {
+              "title": "New here? 👋 Welcome at the platform!",
+              "description": "Click here for some quick steps to get started",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Guiding your Challenge step by step",
+              "description": "How to use the innovation flow to structure your process",
+              "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "🧑‍🎨 Using whiteboards like a pro",
+              "description": "The keyboard-shortcuts that will change your life",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Starting a new Space",
+              "description": "👍 Have a look at the possibilities here! ",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            }
+          ]
+        },
+        "moreAboutAlkemio": {
+          "title": "More about Alkemio",
           "links": {
             "foundation": "Alkemio Foundation",
-            "contact-form": "Contact Form",
-            "github": "github"
+            "news": "News & Blog",
+            "github": "Github",
+            "contact": "Contact"
           }
         }
       }
@@ -2404,7 +2506,7 @@
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "spaces-filter": {
-    "current-filter": "Choose the topics you care most about! Current filter: ",
+    "current-filter": "Current filter: ",
     "show-all": "Show All",
     "other": "Other",
     "config": [

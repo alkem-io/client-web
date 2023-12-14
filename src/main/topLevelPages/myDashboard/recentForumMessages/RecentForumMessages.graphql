@@ -1,0 +1,30 @@
+query recentForumMessages($limit: Float = 5) {
+  platform {
+    id
+    communication {
+      id
+      discussionCategories
+      authorization {
+        id
+        myPrivileges
+        anonymousReadAccess
+      }
+      discussions(queryData: { orderBy: DISCUSSIONS_CREATEDATE_DESC, limit: $limit }) {
+        ...DiscussionCard
+      }
+    }
+  }
+}
+
+fragment VisualFull on Visual {
+  id
+  uri
+  name
+  allowedTypes
+  aspectRatio
+  maxHeight
+  maxWidth
+  minHeight
+  minWidth
+  alternativeText
+}

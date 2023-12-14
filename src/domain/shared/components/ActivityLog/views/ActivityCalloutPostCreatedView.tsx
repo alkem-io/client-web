@@ -20,7 +20,7 @@ export const ActivityCalloutPostCreatedView: FC<ActivityCalloutPostCreatedViewPr
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   callout,
   post,
@@ -38,7 +38,7 @@ export const ActivityCalloutPostCreatedView: FC<ActivityCalloutPostCreatedViewPr
     },
   });
 
-  const url = buildPostUrl(callout.nameID, post.nameID, journeyLocation);
+  const url = buildPostUrl(callout.nameID, post.nameID, journeyUrl);
 
   return (
     <ActivityBaseView
@@ -51,7 +51,7 @@ export const ActivityCalloutPostCreatedView: FC<ActivityCalloutPostCreatedViewPr
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
             values: {
               calloutDisplayName: callout.framing.profile.displayName,

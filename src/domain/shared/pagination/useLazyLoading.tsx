@@ -2,7 +2,7 @@ import { ComponentType, Ref, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface Options {
-  hasMore: boolean;
+  hasMore: boolean | undefined;
   loading: boolean;
   updating?: boolean;
   fetchMore: () => Promise<void>;

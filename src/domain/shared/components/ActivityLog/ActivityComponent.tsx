@@ -28,7 +28,7 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { getJourneyLocationKey, JourneyLocation } from '../../../../main/routing/urlBuilders';
+import { buildJourneyUrl, getJourneyLocationKey, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -62,7 +62,7 @@ export type ActivityLogResultType = ActivityLogResult<
   | ActivityLogCalendarEventCreatedFragment
 >;
 
-export interface ActivityLogComponentProps {
+export interface ActivityComponentProps {
   activities: ActivityLogResultType[] | undefined;
   journeyLocation: JourneyLocation | undefined;
   limit?: number;
@@ -82,7 +82,7 @@ const getActivityOriginJourneyTypeName = (
   return 'challenge';
 };
 
-export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation, limit, sx }) => {
+export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, journeyLocation, limit, sx }) => {
   const display = useMemo(() => {
     if (!activities || !journeyLocation) {
       return null;
@@ -98,12 +98,13 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
                 [getJourneyLocationKey(activityOriginJourneyTypeName)]: activity.parentNameID,
               }
             : journeyLocation;
+          const activityOriginJourneyUrl = buildJourneyUrl(activityOriginJourneyLocation);
 
           return (
             <ActivityViewChooser
               activity={activity}
               journeyTypeName={activityOriginJourneyTypeName}
-              journeyLocation={activityOriginJourneyLocation}
+              journeyUrl={activityOriginJourneyUrl}
               key={activity.id}
             />
           );
@@ -119,11 +120,11 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
   );
 };
 
-interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyLocation'> {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyTypeName' | 'journeyUrl'> {
   activity: ActivityLogResultType;
 }
 
-const ActivityViewChooser = ({
+export const ActivityViewChooser = ({
   activity,
   ...rest
 }: ActivityViewChooserProps): React.ReactElement<ActivityViewProps> => {

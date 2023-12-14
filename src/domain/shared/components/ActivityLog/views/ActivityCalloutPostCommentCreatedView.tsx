@@ -20,7 +20,7 @@ export const ActivityCalloutPostCommentCreatedView: FC<ActivityCalloutPostCommen
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   card,
   callout,
@@ -37,7 +37,7 @@ export const ActivityCalloutPostCommentCreatedView: FC<ActivityCalloutPostCommen
     },
   });
 
-  const url = buildPostUrl(callout.nameID, card.nameID, journeyLocation);
+  const url = buildPostUrl(callout.nameID, card.nameID, journeyUrl);
 
   return (
     <ActivityBaseView
@@ -50,7 +50,7 @@ export const ActivityCalloutPostCommentCreatedView: FC<ActivityCalloutPostCommen
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
             values: {
               postDisplayName: card.profile.displayName,

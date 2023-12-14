@@ -17,7 +17,7 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   callout,
   calloutType,
@@ -31,7 +31,8 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
       escapeValue: false,
     },
   });
-  const url = buildCalloutUrl(callout.nameID, journeyLocation);
+
+  const url = buildCalloutUrl(callout.nameID, journeyUrl);
 
   return (
     <ActivityBaseView
@@ -44,7 +45,7 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
             values: {
               calloutDisplayName: callout.framing.profile.displayName,

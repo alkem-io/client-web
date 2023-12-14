@@ -30,6 +30,10 @@ const AnonymousUserHomeBlock = ({ imageUri, imageAlign, children }: PropsWithChi
   );
 };
 
+/**
+ * @deprecated
+ * TODO remove this component
+ */
 const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
   const { t } = useTranslation();
   const banner1Url = './alkemio-banner/alkemio-side-banner-left.png';

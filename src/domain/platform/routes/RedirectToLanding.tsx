@@ -5,8 +5,7 @@ import { ROUTE_HOME } from './constants';
 import { useConfig } from '../config/useConfig';
 import useInnovationHub from '../../innovationHub/useInnovationHub/useInnovationHub';
 import { PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
-
-const getLandingUrl = ({ host }: { host: string }) => `//welcome.${host}/`;
+import useLandingUrl from '../../../main/landing/useLandingUrl';
 
 const RedirectToLanding = () => {
   const { isFeatureEnabled } = useConfig();
@@ -14,9 +13,10 @@ const RedirectToLanding = () => {
   const { innovationHub, innovationHubLoading } = useInnovationHub();
   const location = useLocation();
   const navigate = useNavigate();
-  const { locations } = useConfig();
 
   const isOnCustomHomepage = !!innovationHub;
+
+  const landingUrl = useLandingUrl();
 
   useLayoutEffect(() => {
     const homeRoute = `${ROUTE_HOME}${location.search}`;
@@ -32,10 +32,10 @@ const RedirectToLanding = () => {
 
     if (isAuthenticated || isOnCustomHomepage) {
       navigate(homeRoute);
-    } else if (locations) {
-      window.location.replace(getLandingUrl({ host: locations.domain }));
+    } else if (landingUrl) {
+      window.location.replace(landingUrl);
     }
-  }, [isAuthenticated, loadingAuthentication, isFeatureEnabled, innovationHubLoading, isOnCustomHomepage, locations]);
+  }, [isAuthenticated, loadingAuthentication, isFeatureEnabled, innovationHubLoading, isOnCustomHomepage, landingUrl]);
 
   return null;
 };

@@ -14,6 +14,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
+import { VisualType } from '../../../core/apollo/generated/graphql-schema';
 
 interface InvitationDialogProps {
   open: boolean;
@@ -41,7 +42,7 @@ const InvitationDialog = ({
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
       {invitation && (
-        <InvitationHydrator invitation={invitation} withJourneyDetails>
+        <InvitationHydrator invitation={invitation} withJourneyDetails visualType={VisualType.Card}>
           {({ invitation }) =>
             invitation && (
               <>
@@ -61,7 +62,7 @@ const InvitationDialog = ({
                     iconComponent={journeyIcon[invitation.journeyTypeName]}
                     header={invitation.journeyDisplayName}
                     tags={invitation.journeyTags ?? []}
-                    banner={invitation.journeyCardBanner}
+                    banner={invitation.journeyVisual}
                     journeyUri={invitation.journeyUri}
                   >
                     <JourneyCardTagline>{invitation.journeyTagline ?? ''}</JourneyCardTagline>

@@ -11,11 +11,17 @@ import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 
 export const buildSpaceUrl = (spaceNameId: string) => `/${spaceNameId}`;
 
+export const addChallengeUrl = (spaceUrl: string, challengeNameId: string) =>
+  spaceUrl.concat(`/challenges/${challengeNameId}`);
+
 export const buildChallengeUrl = (spaceNameId: string, challengeNameId: string) =>
-  buildSpaceUrl(spaceNameId).concat(`/challenges/${challengeNameId}`);
+  addChallengeUrl(buildSpaceUrl(spaceNameId), challengeNameId);
+
+export const addOpportunityUrl = (challengeUrl: string, opportunityNameId: string) =>
+  challengeUrl.concat(`/opportunities/${opportunityNameId}`);
 
 export const buildOpportunityUrl = (spaceNameId: string, challengeNameId: string, opportunityNameId: string) =>
-  buildChallengeUrl(spaceNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
+  addOpportunityUrl(buildChallengeUrl(spaceNameId, challengeNameId), opportunityNameId);
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
@@ -81,6 +87,26 @@ export const buildNewOrganizationUrl = () => {
 
 export type JourneyLocation = CoreEntityIdTypes;
 
+interface JourneyLocationApiData {
+  spaceID: string;
+  challengeID?: string;
+  opportunityID?: string;
+}
+
+export const mapApiDataToJourneyLocation = <Incoming extends JourneyLocationApiData>({
+  spaceID,
+  challengeID,
+  opportunityID,
+  ...apiData
+}: Incoming): Omit<Incoming, keyof JourneyLocationApiData> & JourneyLocation => {
+  return {
+    ...apiData,
+    spaceNameId: spaceID,
+    challengeNameId: challengeID,
+    opportunityNameId: opportunityID,
+  };
+};
+
 export const getJourneyLocationKey = (journeyTypeName: JourneyTypeName): keyof JourneyLocation => {
   switch (journeyTypeName) {
     case 'space':
@@ -92,7 +118,10 @@ export const getJourneyLocationKey = (journeyTypeName: JourneyTypeName): keyof J
   }
 };
 
-export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
+export const buildJourneyUrl = (journeyLocation: JourneyLocation | string) => {
+  if (typeof journeyLocation === 'string') {
+    return journeyLocation;
+  }
   if (isSpaceId(journeyLocation)) {
     return buildSpaceUrl(journeyLocation.spaceNameId);
   }
@@ -106,6 +135,7 @@ export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
       journeyLocation.opportunityNameId
     );
   }
+  return undefined as never;
 };
 
 export const buildJourneyUrlByJourneyTypeName = (
@@ -127,12 +157,12 @@ export const buildJourneyUrlByJourneyTypeName = (
   }
 };
 
-export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation) => {
+export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation | string) => {
   const calloutUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${calloutUrl}`;
 };
 
-export const buildUpdatesUrl = (journeyLocation: JourneyLocation) => {
+export const buildUpdatesUrl = (journeyLocation: JourneyLocation | string) => {
   const updatesPath = `/${EntityPageSection.Dashboard}/updates`;
   return `${buildJourneyUrl(journeyLocation)}${updatesPath}`;
 };
@@ -141,7 +171,7 @@ export const buildAboutUrl = (journeyLocation: JourneyLocation) => {
   return `${buildJourneyUrl(journeyLocation)}/about`;
 };
 
-export const buildPostUrl = (calloutNameId: string, postNameId: string, journeyLocation: JourneyLocation) => {
+export const buildPostUrl = (calloutNameId: string, postNameId: string, journeyLocation: JourneyLocation | string) => {
   const postUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/posts/${postNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${postUrl}`;
 };
@@ -149,13 +179,13 @@ export const buildPostUrl = (calloutNameId: string, postNameId: string, journeyL
 export const buildWhiteboardUrl = (
   calloutNameId: string,
   whiteboardNameId: string,
-  journeyLocation: JourneyLocation
+  journeyLocation: JourneyLocation | string
 ) => {
   const whiteboardUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/whiteboards/${whiteboardNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${whiteboardUrl}`;
 };
 
-export const buildEventUrl = (eventNameId: string, journeyLocation: JourneyLocation) => {
+export const buildEventUrl = (eventNameId: string, journeyLocation: JourneyLocation | string) => {
   const eventUrl = `/${EntityPageSection.Dashboard}/calendar/${eventNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${eventUrl}`;
 };

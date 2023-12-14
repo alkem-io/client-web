@@ -104,6 +104,7 @@ const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
 
       await fetchMoreRaw({
         variables: {
+          ...options.variables,
           first: itemsNumber,
           after: getPageInfo(data)?.endCursor,
         },
