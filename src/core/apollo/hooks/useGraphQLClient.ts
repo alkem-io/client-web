@@ -41,7 +41,6 @@ export const useGraphQLClient = (
         httpLink(graphQLEndpoint, enableWebSockets),
       ]),
       cache,
-      connectToDevTools: true,
     });
   }, [enableWebSockets, graphQLEndpoint, errorHandlerLink, cache]);
 };
