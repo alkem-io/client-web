@@ -30,6 +30,7 @@ const FooterItem = ({ link, iconComponent: Icon, children }: PropsWithChildren<F
       display="flex"
       flexDirection="column"
       alignItems="center"
+      minWidth={gutters(6)}
     >
       <Icon color="primary" sx={{ fontSize: 60, marginBottom: gutters() }} />
       <BlockTitle textAlign="center">{children}</BlockTitle>
