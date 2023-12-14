@@ -15,6 +15,7 @@ import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBl
 import LatestContributions from './latestContributions/LatestContributions';
 import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
 import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions';
+import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
 import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 
 export const MyDashboard = () => {
@@ -35,14 +36,15 @@ export const MyDashboard = () => {
           <NewMembershipsBlock onOpenMemberships={() => setIsMyMembershipsDialogOpen(true)} />
           <MyLatestContributions />
           <MembershipSuggestions />
+          <TipsAndTricks />
           <InnovationLibraryBlock />
-          <RecentForumMessages />
           <ExploreOtherChallenges />
-          <StartingSpace />
+          <StartingSpace width="100%" />
           <MoreAboutAlkemio />
         </PageContentColumn>
         <PageContentColumn columns={4}>
           <LatestContributions />
+          <RecentForumMessages />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>
