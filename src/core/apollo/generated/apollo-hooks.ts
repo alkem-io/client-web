@@ -24697,19 +24697,8 @@ export function refetchInnovationLibraryBlockQuery(variables?: SchemaTypes.Innov
 }
 
 export const LatestContributionsDocument = gql`
-  query LatestContributions(
-    $first: Int!
-    $after: UUID
-    $roles: [ActivityFeedRoles!]
-    $spaceIds: [UUID!]
-    $myActivity: Boolean
-    $types: [ActivityEventType!]
-  ) {
-    activityFeed(
-      after: $after
-      first: $first
-      args: { roles: $roles, spaceIds: $spaceIds, myActivity: $myActivity, types: $types }
-    ) {
+  query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQueryArgs) {
+    activityFeed(after: $after, first: $first, args: $filter) {
       activityFeed {
         id
         collaborationID
@@ -24833,10 +24822,7 @@ export const LatestContributionsDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
- *      roles: // value for 'roles'
- *      spaceIds: // value for 'spaceIds'
- *      myActivity: // value for 'myActivity'
- *      types: // value for 'types'
+ *      filter: // value for 'filter'
  *   },
  * });
  */

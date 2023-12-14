@@ -15,14 +15,15 @@ const MyLatestContributions = () => {
   const { data } = useLatestContributionsQuery({
     variables: {
       first: MY_LATEST_CONTRIBUTIONS_COUNT,
-      myActivity: true,
-      types: [
-        ActivityEventType.CalloutPublished,
-        ActivityEventType.CalloutPostCreated,
-        ActivityEventType.CalloutPostComment,
-      ],
+      filter: {
+        myActivity: true,
+        types: [
+          ActivityEventType.CalloutPublished,
+          ActivityEventType.CalloutPostCreated,
+          ActivityEventType.CalloutPostComment,
+        ],
+      },
     },
-    errorPolicy: 'all',
   });
 
   const activities = data?.activityFeed.activityFeed;

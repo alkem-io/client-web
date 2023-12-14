@@ -19,6 +19,7 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
   const innovationPacks = useInnovationPackCardProps(data?.platform.library.innovationPacks);
   const innovationPack = innovationPacks && innovationPacks.length > 0 ? innovationPacks[0] : undefined;
   const theme = useTheme();
+
   if (!loading && !innovationPack) {
     return null;
   }

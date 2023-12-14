@@ -1,5 +1,5 @@
 import { PropsWithChildren, Ref } from 'react';
-import { Box, BoxProps, useTheme } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { overflowBorderGradient } from './utils';
 
@@ -9,7 +9,6 @@ interface ScrollerWithGradientProps<ScrollerEl extends HTMLElement> {
   orientation?: Orientation;
   sx?: BoxProps['sx'];
   scrollerRef?: Ref<ScrollerEl>;
-  fullWidth?: boolean;
 }
 
 type Edge = 'top' | 'bottom' | 'left' | 'right';
@@ -67,14 +66,11 @@ const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
   maxHeight,
   scrollerRef,
   onScroll,
-  fullWidth = false,
   children,
   ...props
 }: PropsWithChildren<ScrollerWithGradientProps<ScrollerEl>> & BoxProps) => {
-  const theme = useTheme();
-  const width = fullWidth ? `calc(100% + ${gutters(2)(theme)})` : '100%';
   return (
-    <Box position="relative" width={width} margin={gutters(-1)} {...VERTICAL_SCROLL_CONTAINER_SX} {...props}>
+    <Box position="relative" margin={gutters(-1)} {...VERTICAL_SCROLL_CONTAINER_SX} {...props}>
       <Box
         ref={scrollerRef}
         maxHeight={maxHeight}

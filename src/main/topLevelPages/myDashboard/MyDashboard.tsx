@@ -17,11 +17,25 @@ import MyLatestContributions from './latestContributions/myLatestContributions/M
 import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions';
 import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
 import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
+import { useLatestContributionsSpacesQuery } from '../../../core/apollo/generated/apollo-hooks';
+import Loading from '../../../core/ui/loading/Loading';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
 
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
+
+  const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesQuery();
+
+  if (areSpacesLoading) {
+    return (
+      <HomePageLayout>
+        <Loading />
+      </HomePageLayout>
+    );
+  }
+
+  const hasSpaceMemberships = !!spacesData?.me.spaceMemberships.length;
 
   return (
     <HomePageLayout>
@@ -30,22 +44,29 @@ export const MyDashboard = () => {
       <PageContent>
         <PageContentColumn columns={12}>
           {!isLoadingAuthentication && !isAuthenticated && <CreateAccountBanner />}
-          <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
+          {hasSpaceMemberships && <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />}
         </PageContentColumn>
         <PageContentColumn columns={8}>
           <NewMembershipsBlock onOpenMemberships={() => setIsMyMembershipsDialogOpen(true)} />
           <MyLatestContributions />
           <MembershipSuggestions />
-          <TipsAndTricks />
-          <InnovationLibraryBlock />
+          {hasSpaceMemberships && <TipsAndTricks />}
+          {hasSpaceMemberships && <InnovationLibraryBlock />}
           <ExploreOtherChallenges />
           <StartingSpace width="100%" />
-          <MoreAboutAlkemio />
+          {hasSpaceMemberships && <MoreAboutAlkemio />}
         </PageContentColumn>
-        <PageContentColumn columns={4}>
-          <LatestContributions />
+        <PageContentColumn columns={4} flexDirection="column" alignSelf="stretch">
+          {!hasSpaceMemberships && <TipsAndTricks />}
+          {!hasSpaceMemberships && <InnovationLibraryBlock />}
+          {hasSpaceMemberships && <LatestContributions spaceMemberships={spacesData?.me.spaceMemberships} />}
           <RecentForumMessages />
         </PageContentColumn>
+        {!hasSpaceMemberships && (
+          <PageContentColumn columns={12}>
+            <MoreAboutAlkemio />
+          </PageContentColumn>
+        )}
       </PageContent>
     </HomePageLayout>
   );

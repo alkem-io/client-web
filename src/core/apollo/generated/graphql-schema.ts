@@ -31927,10 +31927,7 @@ export type InnovationPackCardFragment = {
 export type LatestContributionsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
-  roles?: InputMaybe<Array<ActivityFeedRoles> | ActivityFeedRoles>;
-  spaceIds?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
-  myActivity?: InputMaybe<Scalars['Boolean']>;
-  types?: InputMaybe<Array<ActivityEventType> | ActivityEventType>;
+  filter?: InputMaybe<ActivityFeedQueryArgs>;
 }>;
 
 export type LatestContributionsQuery = {
