@@ -103,6 +103,7 @@ fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
       profile {
         id
         displayName
+        url
       }
     }
   }
@@ -112,10 +113,12 @@ fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
   callout {
     id
     nameID
+    type
     framing {
       profile {
         id
         displayName
+        url
       }
     }
   }
@@ -220,10 +223,12 @@ fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussio
   callout {
     id
     nameID
+    type
     framing {
       profile {
         id
         displayName
+        url
       }
     }
   }

@@ -1,0 +1,10 @@
+query RecentJourneys($limit: Float) {
+  me {
+    myJourneys(limit: $limit) {
+      journey {
+        id
+        __typename
+      }
+    }
+  }
+}

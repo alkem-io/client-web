@@ -4,7 +4,10 @@ import { gutters } from '../grid/utils';
 import BasePageContentBlock, { BasePageContentBlockProps } from './BasePageContentBlock';
 import { SystemCssProperties } from '@mui/system/styleFunctionSx/styleFunctionSx';
 
-export interface PageContentBlockSeamlessProps extends BasePageContentBlockProps, BoxProps, PropsWithChildren<{}> {}
+export interface PageContentBlockSeamlessProps
+  extends BasePageContentBlockProps,
+    Omit<BoxProps, 'flexWrap'>,
+    PropsWithChildren<{}> {}
 
 const PageContentBlockSeamless = forwardRef<HTMLDivElement, PageContentBlockSeamlessProps>(
   (props: PageContentBlockSeamlessProps, ref) => {

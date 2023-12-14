@@ -1,0 +1,107 @@
+query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQueryArgs) {
+  activityFeed(
+    after: $after
+    first: $first
+    args: $filter
+  ) {
+    activityFeed {
+      id
+      collaborationID
+      createdDate
+      description
+      type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
+      journey {
+        id
+        ...on Space {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+        ...on RelayPaginatedSpace {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+        ...on Challenge {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+        ...on Opportunity {
+          profile {
+            ...RecentContributionsJourneyProfile
+          }
+        }
+      }
+      triggeredBy {
+        id
+        nameID
+        firstName
+        lastName
+        profile {
+          id
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
+      ... on ActivityLogEntryMemberJoined {
+        ...ActivityLogMemberJoined
+      }
+      ... on ActivityLogEntryCalloutPublished {
+        ...ActivityLogCalloutPublished
+      }
+      ... on ActivityLogEntryCalloutPostCreated {
+        ...ActivityLogCalloutPostCreated
+      }
+      ... on ActivityLogEntryCalloutLinkCreated {
+        ...ActivityLogCalloutLinkCreated
+      }
+      ... on ActivityLogEntryCalloutPostComment {
+        ...ActivityLogCalloutPostComment
+      }
+      ... on ActivityLogEntryCalloutWhiteboardCreated {
+        ...ActivityLogCalloutWhiteboardCreated
+      }
+      ... on ActivityLogEntryCalloutDiscussionComment {
+        ...ActivityLogCalloutDiscussionComment
+      }
+      ... on ActivityLogEntryChallengeCreated {
+        ...ActivityLogChallengeCreated
+      }
+      ... on ActivityLogEntryOpportunityCreated {
+        ...ActivityLogOpportunityCreated
+      }
+      ... on ActivityLogEntryUpdateSent {
+        ...ActivityLogUpdateSent
+      }
+      ... on ActivityLogEntryCalendarEventCreated {
+        ...ActivityLogCalendarEventCreated
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+fragment RecentContributionsJourneyProfile on Profile {
+  id
+  url
+  displayName
+  type
+}

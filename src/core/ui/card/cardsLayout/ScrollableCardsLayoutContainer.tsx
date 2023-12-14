@@ -17,7 +17,7 @@ const ScrollableCardsLayoutContainer = ({
   const orientation = orientationOverride ?? (breakpoint === 'xs' ? 'horizontal' : 'vertical');
 
   return (
-    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight} fullWidth>
+    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
       <PageContentBlockGrid
         cards={orientation === 'vertical'}
         noWrap={orientation === 'horizontal'}

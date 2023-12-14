@@ -1,4 +1,4 @@
-import { InnovationPackCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { InnovationPackDataFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
@@ -16,7 +16,7 @@ const templateInnovationPackHydrator =
   });
 
 const useLibraryTemplateCardProps = (
-  innovationPacks: InnovationPackCardFragment[] | undefined
+  innovationPacks: InnovationPackDataFragment[] | undefined
 ): (Identifiable & LibraryTemplateCardProps)[] | undefined => {
   return useMemo<LibraryTemplateCardProps[] | undefined>(
     () =>

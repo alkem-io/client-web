@@ -4,13 +4,13 @@ query InnovationLibrary {
     library {
       id
       innovationPacks {
-        ...InnovationPackCard
+        ...InnovationPackData
       }
     }
   }
 }
 
-fragment InnovationPackCard on InnovationPack {
+fragment InnovationPackData on InnovationPack {
   id
   nameID
   profile {
@@ -47,6 +47,7 @@ fragment LibraryTemplates on TemplatesSet {
     type
     defaultDescription
   }
+  postTemplatesCount
   whiteboardTemplates {
     id
     profile {
@@ -61,6 +62,7 @@ fragment LibraryTemplates on TemplatesSet {
       }
     }
   }
+  whiteboardTemplatesCount
   innovationFlowTemplates {
     id
     profile {
@@ -77,4 +79,5 @@ fragment LibraryTemplates on TemplatesSet {
     definition
     type
   }
+  innovationFlowTemplatesCount
 }

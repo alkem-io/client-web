@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { ActivityComponent, ActivityLogComponentProps } from '../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityComponent, ActivityComponentProps } from '../../../shared/components/ActivityLog/ActivityComponent';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { Caption } from '../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
@@ -18,7 +18,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { Box } from '@mui/material';
 
-export interface DashboardRecentContributionsBlockProps extends PageContentBlockProps, ActivityLogComponentProps {
+export interface DashboardRecentContributionsBlockProps extends PageContentBlockProps, ActivityComponentProps {
   readUsersAccess: boolean;
   entityReadAccess: boolean;
   activitiesLoading: boolean;

@@ -21,7 +21,7 @@ export interface UserMetadata {
   pendingInvitations: InvitationItem[];
 }
 
-const getPendingApplications = (applicationsData: ApplicationForRoleResult[]) => {
+export const getPendingApplications = (applicationsData: ApplicationForRoleResult[]) => {
   return (
     applicationsData.map<PendingApplication>(a => ({
       spaceId: a.spaceID,

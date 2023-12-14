@@ -14,6 +14,7 @@ import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/Sc
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
+import { VisualType } from '../../../core/apollo/generated/graphql-schema';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -102,14 +103,14 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
               <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
               <ScrollableCardsLayoutContainer>
                 {applications?.map(application => (
-                  <ApplicationHydrator key={application.id} application={application}>
+                  <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard
                           iconComponent={journeyIcon[hydratedApplication.journeyTypeName]}
                           header={hydratedApplication.journeyDisplayName}
                           tags={hydratedApplication.journeyTags ?? []}
-                          banner={hydratedApplication.journeyCardBanner}
+                          banner={hydratedApplication.journeyVisual}
                           journeyUri={hydratedApplication.journeyUri}
                         >
                           <JourneyCardTagline>{hydratedApplication.journeyTagline ?? ''}</JourneyCardTagline>

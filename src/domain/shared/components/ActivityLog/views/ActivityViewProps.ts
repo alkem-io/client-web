@@ -1,10 +1,9 @@
-import { JourneyLocation } from '../../../../../main/routing/urlBuilders';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { ActivityBaseViewProps } from './ActivityBaseView';
 
 export interface ActivityViewProps extends Pick<ActivityBaseViewProps, 'author' | 'loading'> {
   createdDate: Date | string;
-  journeyTypeName: JourneyTypeName | undefined;
-  journeyLocation: JourneyLocation;
+  journeyUrl: string;
+  journeyTypeName?: JourneyTypeName;
   journeyDisplayName: string | undefined;
 }

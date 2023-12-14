@@ -18,7 +18,7 @@ export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardC
   loading,
   createdDate,
   journeyTypeName,
-  journeyLocation,
+  journeyUrl,
   journeyDisplayName,
   callout,
   whiteboard,
@@ -32,7 +32,7 @@ export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardC
     },
   });
 
-  const url = buildWhiteboardUrl(callout.nameID, whiteboard.nameID, journeyLocation);
+  const url = buildWhiteboardUrl(callout.nameID, whiteboard.nameID, journeyUrl);
 
   return (
     <ActivityBaseView
@@ -45,7 +45,7 @@ export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardC
             author,
             createdDate,
             journeyTypeName,
-            journeyLocation,
+            journeyUrl,
             journeyDisplayName,
             values: {
               calloutDisplayName: callout.framing.profile.displayName,
