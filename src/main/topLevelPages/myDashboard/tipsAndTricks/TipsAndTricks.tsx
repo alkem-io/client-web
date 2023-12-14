@@ -5,7 +5,7 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
-import LinkNoUnderline from '../../../../domain/shared/components/LinkNoUnderline';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 import { Caption } from '../../../../core/ui/typography';
 
 interface TipsAndTricksProps {}
@@ -26,7 +26,7 @@ const TipsAndTricks: FC<TipsAndTricksProps> = () => {
               {item.title}
             </Avatar>
           }
-          component={LinkNoUnderline}
+          component={RouterLink}
           to={item.url}
         >
           <Caption>{item.title}</Caption>
