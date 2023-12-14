@@ -2,7 +2,7 @@ query configuration {
   platform {
     configuration {
       ...Configuration
-  }
+    }
   }
 }
 
@@ -26,6 +26,7 @@ fragment Configuration on Config {
     environment
     domain
     about
+    blog
     feedback
     privacy
     security

@@ -3080,6 +3080,7 @@ export const ConfigurationFragmentDoc = gql`
       environment
       domain
       about
+      blog
       feedback
       privacy
       security

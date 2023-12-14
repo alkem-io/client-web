@@ -1885,6 +1885,7 @@ export type PlatformFeatureFlagFieldPolicy = {
 export type PlatformLocationsKeySpecifier = (
   | 'about'
   | 'aup'
+  | 'blog'
   | 'community'
   | 'domain'
   | 'environment'
@@ -1907,6 +1908,7 @@ export type PlatformLocationsKeySpecifier = (
 export type PlatformLocationsFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   aup?: FieldPolicy<any> | FieldReadFunction<any>;
+  blog?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
