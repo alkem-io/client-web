@@ -3621,6 +3621,8 @@ export type PlatformLocations = {
   about: Scalars['String'];
   /** URL where users can get tips and tricks */
   aup: Scalars['String'];
+  /** URL to the blog of the platform */
+  blog: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
   /** Main domain of the environment */
@@ -28425,6 +28427,7 @@ export type ConfigurationQuery = {
         environment: string;
         domain: string;
         about: string;
+        blog: string;
         feedback: string;
         privacy: string;
         security: string;
@@ -28468,6 +28471,7 @@ export type ConfigurationFragment = {
     environment: string;
     domain: string;
     about: string;
+    blog: string;
     feedback: string;
     privacy: string;
     security: string;

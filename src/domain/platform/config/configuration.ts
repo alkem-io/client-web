@@ -6,6 +6,7 @@ export interface Configuration {
     environment: string;
     domain: string;
     about: string;
+    blog: string;
     feedback: string;
     privacy: string;
     security: string;

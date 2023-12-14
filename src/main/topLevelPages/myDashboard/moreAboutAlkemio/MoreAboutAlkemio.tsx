@@ -60,7 +60,7 @@ const MoreAboutAlkemio: FC<MoreAboutAlkemioProps> = () => {
             <FooterItem iconComponent={LanguageIcon} link={locations.foundation}>
               {t('pages.home.sections.moreAboutAlkemio.links.foundation')}
             </FooterItem>
-            <FooterItem iconComponent={NewspaperIcon} link={locations.foundation}>
+            <FooterItem iconComponent={NewspaperIcon} link={locations.blog}>
               {t('pages.home.sections.moreAboutAlkemio.links.news')}
             </FooterItem>
             <FooterItem iconComponent={GitHubIcon} link={locations.opensource}>
