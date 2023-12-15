@@ -25,11 +25,11 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
   }
 
   return (
-    <PageContentBlock>
+    <PageContentBlock columns={4}>
       <PageContentBlockHeader title={t('pages.home.sections.innovationLibraryBlock.title')} />
       <Box display="flex" gap={gutters()} sx={{ [theme.breakpoints.only('xs')]: { flexWrap: 'wrap' } }}>
-        {loading && <ContributeCardSkeleton />}
-        {!loading && innovationPack && <InnovationPackCard {...innovationPack} />}
+        {loading && <ContributeCardSkeleton columns={2.5} />}
+        {!loading && innovationPack && <InnovationPackCard columns={2.5} {...innovationPack} />}
         <Caption>{t('pages.home.sections.innovationLibraryBlock.description')}</Caption>
       </Box>
       <SeeMore label="pages.home.sections.innovationLibraryBlock.seeMore" to="/innovation-library" />

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
+import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
@@ -13,7 +13,7 @@ import { InnovationFlowIcon } from '../../../platform/admin/templates/Innovation
 import CardFooterCountWithBadge from '../../../../core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '../../../../core/ui/grid/utils';
 
-export interface InnovationPackCardProps {
+export interface InnovationPackCardProps extends ContributeCardProps {
   displayName: string;
   description: string | undefined;
   tags: string[] | undefined;

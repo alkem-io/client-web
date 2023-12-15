@@ -16,7 +16,7 @@ const TipsAndTricks: FC<TipsAndTricksProps> = () => {
   const items = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
 
   return (
-    <PageContentBlock>
+    <PageContentBlock columns={4}>
       <PageContentBlockHeader title={t('pages.home.sections.tipsAndTricks.title')} />
       {items.map((item, index) => (
         <BadgeCardView
