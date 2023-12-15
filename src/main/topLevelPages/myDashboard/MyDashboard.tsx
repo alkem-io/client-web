@@ -7,8 +7,11 @@ import { useLatestContributionsSpacesQuery } from '../../../core/apollo/generate
 import Loading from '../../../core/ui/loading/Loading';
 import MyDashboardWithMemberships from './MyDashboardWithMemberships';
 import MyDashboardWithoutMemberships from './MyDashboardWithoutMemberships';
+import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
+import MyDashboardUnauthenticated from './MyDashboardUnauthenticated';
 
 export const MyDashboard = () => {
+  const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
 
   const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesQuery();
@@ -27,7 +30,9 @@ export const MyDashboard = () => {
       <ReleaseUpdatesDialog />
       <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
       <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
-        {hasSpaceMemberships ? (
+        {!isAuthenticated && !isLoadingAuthentication ? (
+          <MyDashboardUnauthenticated />
+        ) : hasSpaceMemberships ? (
           <MyDashboardWithMemberships
             spacesData={spacesData}
             onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)}
