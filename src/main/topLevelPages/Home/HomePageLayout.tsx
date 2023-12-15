@@ -13,11 +13,13 @@ import SearchDialog from '../../search/SearchDialog';
 const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
   const { t } = useTranslation();
 
-  const { user: { user } = {} } = useUserContext();
+  const { user: { user } = {}, isAuthenticated } = useUserContext();
 
-  const title = t('pages.home.sections.welcome.welcome-back', {
-    username: user?.firstName,
-  });
+  const title = isAuthenticated
+    ? t('pages.home.sections.welcome.welcome-back', {
+        username: user?.firstName,
+      })
+    : t('pages.home.sections.welcome.welcome-unauthenticated');
 
   return (
     <>
