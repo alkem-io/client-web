@@ -29,6 +29,8 @@ const SPACE_OPTION_ALL = 'SPACE_OPTION_ALL';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
+const LATEST_CONTRIBUTIONS_PAGE_SIZE = 20;
+
 const Loader = forwardRef((props, ref) => {
   const theme = useTheme();
 
@@ -98,7 +100,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   >({
     useQuery: useLatestContributionsQuery,
     getPageInfo: data => data.activityFeed.pageInfo,
-    pageSize: 200, // TODO - this is a hack needed until pagination for this query is fixed on the server
+    pageSize: LATEST_CONTRIBUTIONS_PAGE_SIZE,
     variables: {
       filter: {
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
