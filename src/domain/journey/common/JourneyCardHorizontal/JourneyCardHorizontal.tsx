@@ -25,7 +25,7 @@ export const JourneyCardHorizontalSkeleton = () => (
   </ElevatedPaper>
 );
 
-interface JourneyCardHorizontalProps {
+export interface JourneyCardHorizontalProps {
   journey: {
     profile: {
       url: string;
