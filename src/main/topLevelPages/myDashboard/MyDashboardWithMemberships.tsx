@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import CreateAccountBanner from '../Home/CreateAccountBanner';
 import RecentJourneysList from './recentJourneys/RecentJourneysList';
 import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
 import StartingSpace from './startingSpace/StartingSpace';
@@ -13,7 +12,6 @@ import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
 import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
 import { LatestContributionsSpacesQuery } from '../../../core/apollo/generated/graphql-schema';
-import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { useColumns } from '../../../core/ui/grid/GridContext';
 
 interface MyDashboardWithMembershipsProps {
@@ -22,12 +20,11 @@ interface MyDashboardWithMembershipsProps {
 }
 
 const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ spacesData, onOpenMembershipsDialog }) => {
-  const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
   const columns = useColumns();
+
   return (
     <>
       <PageContentColumn columns={columns}>
-        {!isLoadingAuthentication && !isAuthenticated && <CreateAccountBanner />}
         <RecentJourneysList onSeeMore={() => onOpenMembershipsDialog()} />
       </PageContentColumn>
       <PageContentColumn columns={columns === 8 ? 8 : 4} flexDirection="column" alignSelf="stretch">
