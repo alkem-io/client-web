@@ -26,7 +26,7 @@ export const MyDashboard = () => {
     <HomePageLayout>
       <ReleaseUpdatesDialog />
       <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
-      <PageContent reverseFlexDirection>
+      <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
         {hasSpaceMemberships ? (
           <MyDashboardWithMemberships
             spacesData={spacesData}
