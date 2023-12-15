@@ -8,15 +8,17 @@ import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { Caption } from '../../../../core/ui/typography';
 
-interface TipsAndTricksProps {}
+interface TipsAndTricksProps {
+  columns?: number;
+}
 
-const TipsAndTricks: FC<TipsAndTricksProps> = () => {
+const TipsAndTricks: FC<TipsAndTricksProps> = ({ columns = 4 }) => {
   const { t } = useTranslation();
 
   const items = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
 
   return (
-    <PageContentBlock columns={4}>
+    <PageContentBlock columns={columns}>
       <PageContentBlockHeader title={t('pages.home.sections.tipsAndTricks.title')} />
       {items.map((item, index) => (
         <BadgeCardView

@@ -16,9 +16,11 @@ import { CONTRIBUTE_CARD_COLUMNS } from '../../../../core/ui/card/ContributeCard
 
 const DESCRIPTION_WIDTH_COLUMNS = 2;
 
-interface InnovationLibraryBlockProps {}
+interface InnovationLibraryBlockProps {
+  columns?: number;
+}
 
-const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
+const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = ({ columns = 4 }) => {
   const { t } = useTranslation();
   const { data, loading } = useInnovationLibraryBlockQuery();
   const innovationPacks = useInnovationPackCardProps(data?.platform.library.innovationPacks);
@@ -30,7 +32,7 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = () => {
   }
 
   return (
-    <PageContentBlock columns={4}>
+    <PageContentBlock columns={columns}>
       <PageContentBlockHeader title={t('pages.home.sections.innovationLibraryBlock.title')} />
       <Box display="flex" gap={gutters()} flexWrap={isMobile ? 'wrap' : 'nowrap'}>
         <GridProvider
