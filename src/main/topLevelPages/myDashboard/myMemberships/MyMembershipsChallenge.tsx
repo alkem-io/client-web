@@ -7,6 +7,7 @@ import GridItem from '../../../../core/ui/grid/GridItem';
 import { AuthorizationPrivilege, CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { useMyMembershipsChallengeQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 
 interface MyMembershipsChallengeProps {
   challenge: Identifiable & {
@@ -29,7 +30,13 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
     skip: !canReadChallenge,
   });
 
-  const hydratedChallenge = useMemo(() => ({ ...challenge, ...data?.lookup.challenge! }), [challenge, data]);
+  const hydratedChallenge = useMemo(() => {
+    return {
+      ...challenge,
+      ...data?.lookup.challenge!,
+      opportunities: data?.lookup.challenge?.opportunities?.filter(isJourneyMember),
+    };
+  }, [challenge, data]);
 
   if (!canReadChallenge) {
     return null;
