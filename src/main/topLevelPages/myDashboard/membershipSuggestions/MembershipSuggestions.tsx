@@ -28,6 +28,7 @@ const MembershipSuggestions: FC = () => {
       // Id of the space suggested is comming from the translation:
       id: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
     },
+    errorPolicy: 'ignore',
   });
 
   const handleNavigateToSearchPage = (terms: string[]) => {
