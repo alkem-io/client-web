@@ -33032,6 +33032,9 @@ export type MyMembershipsQuery = {
         | Array<{
             __typename?: 'Challenge';
             id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             community?:
               | {
                   __typename?: 'Community';
@@ -33040,39 +33043,56 @@ export type MyMembershipsQuery = {
                   myRoles?: Array<CommunityRole> | undefined;
                 }
               | undefined;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              tagline: string;
-              url: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            };
-            opportunities?:
-              | Array<{
-                  __typename?: 'Opportunity';
-                  id: string;
-                  community?:
-                    | {
-                        __typename?: 'Community';
-                        id: string;
-                        myMembershipStatus?: CommunityMembershipStatus | undefined;
-                        myRoles?: Array<CommunityRole> | undefined;
-                      }
-                    | undefined;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    tagline: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }>
-              | undefined;
           }>
         | undefined;
     }>;
+  };
+};
+
+export type MyMembershipsChallengeQueryVariables = Exact<{
+  challengeId: Scalars['UUID'];
+}>;
+
+export type MyMembershipsChallengeQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          opportunities?:
+            | Array<{
+                __typename?: 'Opportunity';
+                id: string;
+                community?:
+                  | {
+                      __typename?: 'Community';
+                      id: string;
+                      myMembershipStatus?: CommunityMembershipStatus | undefined;
+                      myRoles?: Array<CommunityRole> | undefined;
+                    }
+                  | undefined;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
   };
 };
 
