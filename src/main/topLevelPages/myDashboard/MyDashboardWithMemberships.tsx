@@ -7,7 +7,6 @@ import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 import LatestContributions from './latestContributions/LatestContributions';
 import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
-import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions';
 import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
 import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
@@ -34,7 +33,6 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
       <PageContentColumn columns={8}>
         <NewMembershipsBlock onOpenMemberships={() => onOpenMembershipsDialog()} />
         <MyLatestContributions />
-        <MembershipSuggestions />
         <TipsAndTricks halfWidth />
         <InnovationLibraryBlock halfWidth />
         <ExploreOtherChallenges />
