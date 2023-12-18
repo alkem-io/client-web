@@ -11,21 +11,17 @@ import { MetricType } from '../../../../domain/platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import React, { useMemo } from 'react';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import JourneyCardHorizontal from '../../../../domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import useLandingUrl from '../../../landing/useLandingUrl';
 import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
-import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import MyMembershipsChallenge from './MyMembershipsChallenge';
+import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 
 interface MyJourneysDialogProps {
   open: boolean;
   onClose: () => void;
 }
-
-const isMember = (journey: { community?: { myMembershipStatus?: CommunityMembershipStatus } }) => {
-  return journey.community?.myMembershipStatus === CommunityMembershipStatus.Member;
-};
 
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const { t } = useTranslation();
@@ -39,12 +35,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
       data?.me.spaceMemberships.map(space => {
         return {
           ...space,
-          challenges: space.challenges?.filter(isMember).map(challenge => {
-            return {
-              ...challenge,
-              opportunities: challenge.opportunities?.filter(isMember),
-            };
-          }),
+          challenges: space.challenges?.filter(isJourneyMember),
         };
       }),
     [data]
@@ -71,14 +62,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
                 <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
                   <GridProvider columns={8}>
                     {space.challenges?.map(challenge => (
-                      <GridItem columns={4}>
-                        <Gutters disablePadding>
-                          <JourneyCardHorizontal journey={challenge} journeyTypeName="challenge" />
-                          {challenge.opportunities?.map(opportunity => (
-                            <JourneyCardHorizontal journey={opportunity} journeyTypeName="opportunity" />
-                          ))}
-                        </Gutters>
-                      </GridItem>
+                      <MyMembershipsChallenge key={challenge.id} challenge={challenge} />
                     ))}
                     {!loading && !space.challenges?.length && (
                       <Caption alignSelf="center">{t('pages.home.sections.myMemberships.noChildMemberships')}</Caption>

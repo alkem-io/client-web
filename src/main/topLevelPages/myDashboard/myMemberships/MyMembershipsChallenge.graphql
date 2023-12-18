@@ -1,0 +1,19 @@
+query MyMembershipsChallenge($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        ...MyMembershipsChildJourneyProfile
+      }
+      opportunities {
+        id
+        community {
+          ...MyMembershipsChildJourneyCommunity
+        }
+        profile {
+          ...MyMembershipsChildJourneyProfile
+        }
+      }
+    }
+  }
+}
