@@ -27,7 +27,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
       <PageContentColumn columns={columns}>
         <RecentJourneysList onSeeMore={() => onOpenMembershipsDialog()} />
       </PageContentColumn>
-      <PageContentColumn columns={columns === 8 ? 8 : 4} flexDirection="column" alignSelf="stretch">
+      <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
         <LatestContributions spaceMemberships={spacesData?.me.spaceMemberships} />
         <RecentForumMessages />
       </PageContentColumn>
