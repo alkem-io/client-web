@@ -65,7 +65,7 @@ const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
               <Avatar src="" />
             </Skeleton>
           ) : (
-            <Avatar src={activity?.journey?.profile.avatar?.uri}>
+            <Avatar src={activity?.journey?.profile.avatar?.uri} sx={{ backgroundColor: 'transparent' }}>
               <SwapColors>
                 <Avatar
                   sx={{

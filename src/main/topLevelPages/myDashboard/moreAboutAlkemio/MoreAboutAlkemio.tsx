@@ -53,7 +53,7 @@ const MoreAboutAlkemio: FC<MoreAboutAlkemioProps> = () => {
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('pages.home.sections.moreAboutAlkemio.title')} />
-      <Box display="flex" flexWrap="wrap" justifyContent="space-around">
+      <Box display="flex" flexWrap="wrap" justifyContent="space-around" gap={gutters()}>
         {!locations && <LinksSkeleton />}
         {locations && (
           <>

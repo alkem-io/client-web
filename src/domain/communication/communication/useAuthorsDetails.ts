@@ -4,13 +4,15 @@ import { buildUserProfileUrl } from '../../../main/routing/urlBuilders';
 import { useAuthorDetailsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { uniq } from 'lodash';
 import { COUNTRIES_BY_CODE } from '../../common/location/countries.constants';
+import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 
 export const useAuthorsDetails = (authorIds: string[]) => {
   const uniqIds = uniq(authorIds).sort();
 
+  const { isAuthenticated } = useAuthenticationContext();
   const { data: authorData, loading } = useAuthorDetailsQuery({
     variables: { ids: uniqIds },
-    skip: uniqIds.length === 0,
+    skip: uniqIds.length === 0 || !isAuthenticated,
   });
 
   const authors = useMemo(

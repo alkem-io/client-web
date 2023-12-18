@@ -1972,7 +1972,7 @@
           "title": "Become a member",
           "suggestedSpace": {
             "join": "Join our @ Alkemio Space!",
-            "nameId": "eco1"
+            "nameId": "welcome-space"
           },
           "searchCommunity": {
             "title": "...or look for your Community below",
@@ -1999,6 +1999,7 @@
           }
         },
         "welcome": {
+          "welcomeUnauthenticated": "Welcome at Alkemio!",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
