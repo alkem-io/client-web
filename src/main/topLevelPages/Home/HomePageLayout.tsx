@@ -19,7 +19,7 @@ const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
     ? t('pages.home.sections.welcome.welcome-back', {
         username: user?.firstName,
       })
-    : t('pages.home.sections.welcome.welcome-unauthenticated');
+    : t('pages.home.sections.welcome.welcomeUnauthenticated');
 
   return (
     <>

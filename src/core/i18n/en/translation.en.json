@@ -1999,7 +1999,7 @@
           }
         },
         "welcome": {
-          "welcome-unauthenticated": "Welcome at Alkemio!",
+          "welcomeUnauthenticated": "Welcome at Alkemio!",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
