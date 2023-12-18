@@ -9,16 +9,16 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import { Caption } from '../../../../core/ui/typography';
 
 interface TipsAndTricksProps {
-  columns?: number;
+  halfWidth?: boolean;
 }
 
-const TipsAndTricks: FC<TipsAndTricksProps> = ({ columns = 4 }) => {
+const TipsAndTricks: FC<TipsAndTricksProps> = ({ halfWidth }) => {
   const { t } = useTranslation();
 
   const items = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
 
   return (
-    <PageContentBlock columns={columns}>
+    <PageContentBlock halfWidth={halfWidth}>
       <PageContentBlockHeader title={t('pages.home.sections.tipsAndTricks.title')} />
       {items.map((item, index) => (
         <BadgeCardView

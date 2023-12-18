@@ -19,8 +19,8 @@ const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
         <CreateAccountBanner />
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
-        <TipsAndTricks columns={columns} />
-        <InnovationLibraryBlock columns={columns} />
+        <TipsAndTricks />
+        <InnovationLibraryBlock />
         <RecentForumMessages />
       </PageContentColumn>
       <PageContentColumn columns={8}>

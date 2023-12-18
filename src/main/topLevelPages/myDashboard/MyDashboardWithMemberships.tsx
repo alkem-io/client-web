@@ -35,8 +35,8 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
         <NewMembershipsBlock onOpenMemberships={() => onOpenMembershipsDialog()} />
         <MyLatestContributions />
         <MembershipSuggestions />
-        <TipsAndTricks />
-        <InnovationLibraryBlock />
+        <TipsAndTricks halfWidth />
+        <InnovationLibraryBlock halfWidth />
         <ExploreOtherChallenges />
         <StartingSpace width="100%" />
         <MoreAboutAlkemio />

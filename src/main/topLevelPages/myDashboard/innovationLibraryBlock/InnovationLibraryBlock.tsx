@@ -18,10 +18,10 @@ import { useColumns } from '../../../../core/ui/grid/GridContext';
 const DESCRIPTION_WIDTH_COLUMNS = 2;
 
 interface InnovationLibraryBlockProps {
-  columns?: number;
+  halfWidth?: boolean;
 }
 
-const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = ({ columns = 4 }) => {
+const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = ({ halfWidth }) => {
   const { t } = useTranslation();
   const { data, loading } = useInnovationLibraryBlockQuery();
   const innovationPacks = useInnovationPackCardProps(data?.platform.library.innovationPacks);
@@ -33,7 +33,7 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = ({ columns = 4 }
   }
 
   return (
-    <PageContentBlock columns={columns}>
+    <PageContentBlock halfWidth={halfWidth}>
       <PageContentBlockHeader title={t('pages.home.sections.innovationLibraryBlock.title')} />
       <Box display="flex" gap={gutters()} flexWrap={isMobile ? 'wrap' : 'nowrap'}>
         <GridProvider
