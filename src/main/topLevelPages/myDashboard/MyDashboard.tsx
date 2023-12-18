@@ -38,7 +38,7 @@ export const MyDashboard = () => {
             onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)}
           />
         ) : (
-          <MyDashboardWithoutMemberships onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)} />
+          <MyDashboardWithoutMemberships />
         )}
       </PageContent>
     </HomePageLayout>
