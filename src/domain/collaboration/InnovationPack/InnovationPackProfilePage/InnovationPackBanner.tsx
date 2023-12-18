@@ -56,7 +56,7 @@ const InnovationPackBanner = ({
 }: InnovationPackBannerProps) => {
   return (
     <Root>
-      <PageContent column background="none">
+      <PageContent background="none" gridContainerProps={{ flexDirection: 'column' }}>
         <PageTitle>{displayName}</PageTitle>
         <Tagline>{tagline}</Tagline>
         <ContributorCardHorizontal

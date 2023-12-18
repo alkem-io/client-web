@@ -3621,6 +3621,8 @@ export type PlatformLocations = {
   about: Scalars['String'];
   /** URL where users can get tips and tricks */
   aup: Scalars['String'];
+  /** URL to the blog of the platform */
+  blog: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
   /** Main domain of the environment */
@@ -28425,6 +28427,7 @@ export type ConfigurationQuery = {
         environment: string;
         domain: string;
         about: string;
+        blog: string;
         feedback: string;
         privacy: string;
         security: string;
@@ -28468,6 +28471,7 @@ export type ConfigurationFragment = {
     environment: string;
     domain: string;
     about: string;
+    blog: string;
     feedback: string;
     privacy: string;
     security: string;
@@ -33028,6 +33032,9 @@ export type MyMembershipsQuery = {
         | Array<{
             __typename?: 'Challenge';
             id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             community?:
               | {
                   __typename?: 'Community';
@@ -33036,39 +33043,56 @@ export type MyMembershipsQuery = {
                   myRoles?: Array<CommunityRole> | undefined;
                 }
               | undefined;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              tagline: string;
-              url: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            };
-            opportunities?:
-              | Array<{
-                  __typename?: 'Opportunity';
-                  id: string;
-                  community?:
-                    | {
-                        __typename?: 'Community';
-                        id: string;
-                        myMembershipStatus?: CommunityMembershipStatus | undefined;
-                        myRoles?: Array<CommunityRole> | undefined;
-                      }
-                    | undefined;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    tagline: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }>
-              | undefined;
           }>
         | undefined;
     }>;
+  };
+};
+
+export type MyMembershipsChallengeQueryVariables = Exact<{
+  challengeId: Scalars['UUID'];
+}>;
+
+export type MyMembershipsChallengeQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          opportunities?:
+            | Array<{
+                __typename?: 'Opportunity';
+                id: string;
+                community?:
+                  | {
+                      __typename?: 'Community';
+                      id: string;
+                      myMembershipStatus?: CommunityMembershipStatus | undefined;
+                      myRoles?: Array<CommunityRole> | undefined;
+                    }
+                  | undefined;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
   };
 };
 

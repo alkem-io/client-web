@@ -28,38 +28,14 @@ query MyMemberships {
       }
       challenges {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         community {
           ...MyMembershipsChildJourneyCommunity
         }
-        profile {
-          ...MyMembershipsChildJourneyProfile
-        }
-        opportunities {
-          id
-          community {
-            ...MyMembershipsChildJourneyCommunity
-          }
-          profile {
-            ...MyMembershipsChildJourneyProfile
-          }
-        }
       }
     }
-  }
-}
-
-fragment MyMembershipsChildJourneyCommunity on Community {
-  id
-  myMembershipStatus
-  myRoles
-}
-
-fragment MyMembershipsChildJourneyProfile on Profile {
-  id
-  displayName
-  tagline
-  url
-  avatar: visual(type: AVATAR) {
-    ...VisualUri
   }
 }

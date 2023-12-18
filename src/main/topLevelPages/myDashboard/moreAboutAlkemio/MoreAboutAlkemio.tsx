@@ -53,14 +53,14 @@ const MoreAboutAlkemio: FC<MoreAboutAlkemioProps> = () => {
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('pages.home.sections.moreAboutAlkemio.title')} />
-      <Box display="flex" flexWrap="wrap" justifyContent="space-around">
+      <Box display="flex" flexWrap="wrap" justifyContent="space-around" gap={gutters()}>
         {!locations && <LinksSkeleton />}
         {locations && (
           <>
             <FooterItem iconComponent={LanguageIcon} link={locations.foundation}>
               {t('pages.home.sections.moreAboutAlkemio.links.foundation')}
             </FooterItem>
-            <FooterItem iconComponent={NewspaperIcon} link={locations.foundation}>
+            <FooterItem iconComponent={NewspaperIcon} link={locations.blog}>
               {t('pages.home.sections.moreAboutAlkemio.links.news')}
             </FooterItem>
             <FooterItem iconComponent={GitHubIcon} link={locations.opensource}>

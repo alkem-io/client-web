@@ -3080,6 +3080,7 @@ export const ConfigurationFragmentDoc = gql`
       environment
       domain
       about
+      blog
       feedback
       privacy
       security
@@ -25033,20 +25034,12 @@ export const MyMembershipsDocument = gql`
         }
         challenges {
           id
+          authorization {
+            id
+            myPrivileges
+          }
           community {
             ...MyMembershipsChildJourneyCommunity
-          }
-          profile {
-            ...MyMembershipsChildJourneyProfile
-          }
-          opportunities {
-            id
-            community {
-              ...MyMembershipsChildJourneyCommunity
-            }
-            profile {
-              ...MyMembershipsChildJourneyProfile
-            }
           }
         }
       }
@@ -25054,7 +25047,6 @@ export const MyMembershipsDocument = gql`
   }
   ${VisualUriFragmentDoc}
   ${MyMembershipsChildJourneyCommunityFragmentDoc}
-  ${MyMembershipsChildJourneyProfileFragmentDoc}
 `;
 
 /**
@@ -25100,6 +25092,82 @@ export type MyMembershipsQueryResult = Apollo.QueryResult<
 >;
 export function refetchMyMembershipsQuery(variables?: SchemaTypes.MyMembershipsQueryVariables) {
   return { query: MyMembershipsDocument, variables: variables };
+}
+
+export const MyMembershipsChallengeDocument = gql`
+  query MyMembershipsChallenge($challengeId: UUID!) {
+    lookup {
+      challenge(ID: $challengeId) {
+        id
+        profile {
+          ...MyMembershipsChildJourneyProfile
+        }
+        opportunities {
+          id
+          community {
+            ...MyMembershipsChildJourneyCommunity
+          }
+          profile {
+            ...MyMembershipsChildJourneyProfile
+          }
+        }
+      }
+    }
+  }
+  ${MyMembershipsChildJourneyProfileFragmentDoc}
+  ${MyMembershipsChildJourneyCommunityFragmentDoc}
+`;
+
+/**
+ * __useMyMembershipsChallengeQuery__
+ *
+ * To run a query within a React component, call `useMyMembershipsChallengeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyMembershipsChallengeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyMembershipsChallengeQuery({
+ *   variables: {
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useMyMembershipsChallengeQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.MyMembershipsChallengeQuery,
+    SchemaTypes.MyMembershipsChallengeQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MyMembershipsChallengeQuery, SchemaTypes.MyMembershipsChallengeQueryVariables>(
+    MyMembershipsChallengeDocument,
+    options
+  );
+}
+
+export function useMyMembershipsChallengeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.MyMembershipsChallengeQuery,
+    SchemaTypes.MyMembershipsChallengeQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MyMembershipsChallengeQuery, SchemaTypes.MyMembershipsChallengeQueryVariables>(
+    MyMembershipsChallengeDocument,
+    options
+  );
+}
+
+export type MyMembershipsChallengeQueryHookResult = ReturnType<typeof useMyMembershipsChallengeQuery>;
+export type MyMembershipsChallengeLazyQueryHookResult = ReturnType<typeof useMyMembershipsChallengeLazyQuery>;
+export type MyMembershipsChallengeQueryResult = Apollo.QueryResult<
+  SchemaTypes.MyMembershipsChallengeQuery,
+  SchemaTypes.MyMembershipsChallengeQueryVariables
+>;
+export function refetchMyMembershipsChallengeQuery(variables: SchemaTypes.MyMembershipsChallengeQueryVariables) {
+  return { query: MyMembershipsChallengeDocument, variables: variables };
 }
 
 export const NewMembershipsDocument = gql`

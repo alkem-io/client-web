@@ -37,6 +37,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
                 cursor: 'pointer',
               }}
               aria-label={t('buttons.userMenu')}
+              onClick={onClick}
               {...props}
             >
               {loadingMe && (

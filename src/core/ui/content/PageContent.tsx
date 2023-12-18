@@ -5,7 +5,6 @@ import GridContainer, { GridContainerProps } from '../grid/GridContainer';
 
 interface PageContentProps extends BoxProps {
   gridContainerProps?: GridContainerProps;
-  column?: boolean;
   background?: string;
 }
 
@@ -13,7 +12,6 @@ const PageContent = ({
   children,
   sx,
   gridContainerProps,
-  column = false,
   background = 'background.default',
   ...props
 }: PageContentProps) => {
@@ -26,12 +24,7 @@ const PageContent = ({
 
   return (
     <Box component="main" flexGrow={1} sx={{ backgroundColor: background, paddingBottom, ...sx }} {...props}>
-      <GridContainer
-        maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
-        marginX="auto"
-        flexDirection={column ? 'column' : undefined}
-        {...gridContainerProps}
-      >
+      <GridContainer maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto" {...gridContainerProps}>
         <GridProvider columns={globalGridColumns}>{children}</GridProvider>
       </GridContainer>
     </Box>
