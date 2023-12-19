@@ -15,17 +15,17 @@ const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = ()
   const columns = useColumns();
   return (
     <>
+      <PageContentColumn columns={8}>
+        <MembershipSuggestions />
+        <ExploreOtherChallenges />
+        <StartingSpace width="100%" />
+      </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
         <TipsAndTricks />
         <InnovationLibraryBlock />
         <RecentForumMessages />
       </PageContentColumn>
-      <PageContentColumn columns={8}>
-        <MembershipSuggestions />
-        <ExploreOtherChallenges />
-        <StartingSpace width="100%" />
-        <MoreAboutAlkemio />
-      </PageContentColumn>
+      <MoreAboutAlkemio />
     </>
   );
 };
