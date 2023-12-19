@@ -2053,28 +2053,28 @@
           "findMoreUrl": "https://welcome.alkem.io/blog/",
           "items": [
             {
-              "title": "New here? 👋 Welcome at the platform!",
-              "description": "Click here for some quick steps to get started",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "👋 Join the Welcome@Alkemio Space",
+              "description": "To find examples, best practices, tips and tricks",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/1057e0c1-2d47-4821-8848-20ec19cb2a0d",
+              "url": "https://alkem.io/welcome-space/dashboard"
             },
             {
-              "title": "Guiding your Challenge step by step",
-              "description": "How to use the innovation flow to structure your process",
-              "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
-            },
-            {
-              "title": "🧑‍🎨 Using whiteboards like a pro",
-              "description": "The keyboard-shortcuts that will change your life",
+              "title": "💭 Have a look at the FAQ",
+              "description": "To find answers to your most urgent questions",
               "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "url": "https://welcome.alkem.io/faq/"
             },
             {
-              "title": "Starting a new Space",
-              "description": "👍 Have a look at the possibilities here! ",
+              "title": "⚒️ Start a new Space",
+              "description": "To gather contributors for your envisioned change",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
+              "url": "https://welcome.alkem.io/want-to-own-space/"
+            },
+            {
+              "title": "📑 Read more about the Key concepts",
+              "description": "To help you get started smoothly on the platform",
               "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "url": "https://welcome.alkem.io/help/key-concepts/"
             }
           ]
         },
