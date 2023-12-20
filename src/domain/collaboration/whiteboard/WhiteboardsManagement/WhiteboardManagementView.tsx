@@ -150,7 +150,7 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
           title: (
             <Trans
               i18nKey="pages.whiteboard.delete.confirmation-title"
-              values={{ blockName: whiteboardBeingDeleted?.displayName }}
+              values={{ blockName: whiteboardBeingDeleted?.displayName, interpolation: { escapeValue: false } }}
               components={{ b: <strong /> }}
             />
           ),

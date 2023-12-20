@@ -31,6 +31,7 @@ const SpaceProfileFixedInformation = ({ visibility, host }: SpaceProfileFixedInf
         <BlockTitle>{t('common.visibility')}</BlockTitle>
         <Text>
           <Trans
+            t={t}
             i18nKey="components.editSpaceForm.visibility"
             values={{
               visibility: t(`common.enums.space-visibility.${visibility}` as const),

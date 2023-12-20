@@ -28,6 +28,7 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
     >
       <Caption>
         <Trans
+          t={t}
           i18nKey={`pages.home.sections.newMemberships.${membershipType}.message` as const}
           components={{
             journeyicon: JourneyIconComponent ? <JourneyIconComponent fontSize="inherit" /> : <span />,
@@ -35,6 +36,7 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
           }}
           values={{
             journey: membership?.journeyDisplayName,
+            interpolation: { escapeValue: false },
           }}
         />
       </Caption>
