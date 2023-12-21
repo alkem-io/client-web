@@ -94,12 +94,14 @@ const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
           <RouterLink to={activity?.journey?.profile.url ?? ''} loose onClick={handleJourneyLinkClick}>
             <CardText whiteSpace="pre">
               <Trans
+                t={t}
                 i18nKey="pages.home.sections.myLatestContributions.card.journey"
                 components={{
                   journeyicon: JourneyIconComponent ? <JourneyIconComponent fontSize="inherit" /> : <span />,
                 }}
                 values={{
                   journey: activity?.journey?.profile.displayName,
+                  interpolation: { escapeValue: false },
                 }}
               />
             </CardText>
