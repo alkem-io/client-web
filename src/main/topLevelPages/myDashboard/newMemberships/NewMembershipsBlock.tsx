@@ -191,7 +191,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         key={pendingMembership.id}
                         invitation={mapApiDataToContributionItem(pendingMembership)}
                         withJourneyDetails
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ invitation }) => (
                           <NewMembershipCard
@@ -207,7 +207,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                       <ApplicationHydrator
                         key={pendingMembership.id}
                         application={mapApiDataToContributionItem(pendingMembership)}
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ application: hydratedApplication }) => (
                           <NewMembershipCard
@@ -237,7 +237,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         key={membership.id}
                         invitation={mapApiDataToContributionItem(membership)}
                         withJourneyDetails
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ invitation }) => (
                           <NewMembershipCard
@@ -253,7 +253,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                       <ApplicationHydrator
                         key={membership.id}
                         application={mapApiDataToContributionItem(membership)}
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ application: hydratedApplication }) => (
                           <NewMembershipCard
