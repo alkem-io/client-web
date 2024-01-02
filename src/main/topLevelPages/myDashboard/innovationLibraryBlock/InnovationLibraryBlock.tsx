@@ -36,13 +36,10 @@ const InnovationLibraryBlock: FC<InnovationLibraryBlockProps> = ({ halfWidth }) 
     <PageContentBlock halfWidth={halfWidth}>
       <PageContentBlockHeader title={t('pages.home.sections.innovationLibraryBlock.title')} />
       <Box display="flex" gap={gutters()} flexWrap={isMobile ? 'wrap' : 'nowrap'}>
-        <GridProvider
-          columns={isMobile ? CONTRIBUTE_CARD_COLUMNS : CONTRIBUTE_CARD_COLUMNS + DESCRIPTION_WIDTH_COLUMNS}
-          force
-        >
+        <GridProvider columns={CONTRIBUTE_CARD_COLUMNS + DESCRIPTION_WIDTH_COLUMNS} force>
           {loading && <ContributeCardSkeleton />}
           {!loading && innovationPack && <InnovationPackCard {...innovationPack} />}
-          <GridItem columns={isMobile ? CONTRIBUTE_CARD_COLUMNS : DESCRIPTION_WIDTH_COLUMNS}>
+          <GridItem columns={DESCRIPTION_WIDTH_COLUMNS}>
             <Caption>{t('pages.home.sections.innovationLibraryBlock.description')}</Caption>
           </GridItem>
         </GridProvider>

@@ -26,6 +26,7 @@ import { ContributionItem } from '../../../../domain/community/user/contribution
 import NewMembershipCard from './NewMembershipCard';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
+import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -167,10 +168,17 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
     }
   };
 
+  const blockHeader = (
+    <>
+      {t('pages.home.sections.newMemberships.title')}
+      {pendingMemberships.length > 0 && <BadgeCounter count={pendingMemberships.length} />}
+    </>
+  );
+
   return (
     <>
       <PageContentBlock halfWidth>
-        <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
+        <PageContentBlockHeader title={blockHeader} />
         {pendingMemberships.length > 0 && (
           <>
             <Caption marginTop={gutters(-1)}>{t('pages.home.sections.newMemberships.openMemberships')}</Caption>
@@ -183,7 +191,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         key={pendingMembership.id}
                         invitation={mapApiDataToContributionItem(pendingMembership)}
                         withJourneyDetails
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ invitation }) => (
                           <NewMembershipCard
@@ -199,7 +207,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                       <ApplicationHydrator
                         key={pendingMembership.id}
                         application={mapApiDataToContributionItem(pendingMembership)}
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ application: hydratedApplication }) => (
                           <NewMembershipCard
@@ -210,6 +218,8 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         )}
                       </ApplicationHydrator>
                     );
+                  default:
+                    return null;
                 }
               })}
             </Gutters>
@@ -227,7 +237,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         key={membership.id}
                         invitation={mapApiDataToContributionItem(membership)}
                         withJourneyDetails
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ invitation }) => (
                           <NewMembershipCard
@@ -243,7 +253,7 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                       <ApplicationHydrator
                         key={membership.id}
                         application={mapApiDataToContributionItem(membership)}
-                        visualType={VisualType.Avatar}
+                        visualType={VisualType.Card}
                       >
                         {({ application: hydratedApplication }) => (
                           <NewMembershipCard
@@ -254,6 +264,8 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         )}
                       </ApplicationHydrator>
                     );
+                  default:
+                    return null;
                 }
               })}
             </Gutters>

@@ -80,7 +80,7 @@ const getChildJourneyTypeName = (journeyLocation: ChildJourneyLocation): Journey
 export const InvitationHydrator = ({
   invitation,
   withJourneyDetails = false,
-  visualType = VisualType.Avatar,
+  visualType = VisualType.Card,
   children,
 }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
