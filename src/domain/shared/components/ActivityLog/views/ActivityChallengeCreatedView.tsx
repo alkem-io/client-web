@@ -24,9 +24,6 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
 
   const description = t('components.activity-log-view.activity-description.challenge-created', {
     displayName: challenge.profile.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = addChallengeUrl(journeyUrl, challenge.nameID);

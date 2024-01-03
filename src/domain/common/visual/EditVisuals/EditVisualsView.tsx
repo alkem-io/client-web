@@ -26,9 +26,6 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals, visualTypes }) => 
             visual={avatar}
             altText={t('pages.visualEdit.avatar.description', {
               alternativeText: avatar?.alternativeText,
-              interpolation: {
-                escapeValue: false,
-              },
             })}
           />
           <VisualDescription visualTypeName="avatar" visual={avatar} />
@@ -40,9 +37,6 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals, visualTypes }) => 
             visual={banner}
             altText={t('pages.visualEdit.banner.description', {
               alternativeText: banner?.alternativeText,
-              interpolation: {
-                escapeValue: false,
-              },
             })}
           />
           <VisualDescription visualTypeName="banner" visual={banner} />
@@ -54,9 +48,6 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals, visualTypes }) => 
             visual={cardBanner}
             altText={t('pages.visualEdit.cardBanner.description', {
               alternativeText: cardBanner?.alternativeText,
-              interpolation: {
-                escapeValue: false,
-              },
             })}
           />
           <VisualDescription visualTypeName="cardBanner" visual={cardBanner} />

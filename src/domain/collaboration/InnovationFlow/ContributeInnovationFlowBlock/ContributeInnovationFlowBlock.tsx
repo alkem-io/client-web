@@ -72,7 +72,6 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
                   i18nKey="pages.contribute.innovationFlow.readMore"
                   values={{
                     innovationFlowDisplayName: innovationFlow?.profile.displayName,
-                    interpolation: { escapeValue: false },
                   }}
                   components={{
                     b: <strong />,

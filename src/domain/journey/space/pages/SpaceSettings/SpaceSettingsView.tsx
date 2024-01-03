@@ -219,7 +219,6 @@ export const SpaceSettingsView: FC = () => {
                       i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                       values={{
                         host: hostOrganization?.space?.host?.profile?.displayName,
-                        interpolation: { escapeValue: false },
                       }}
                       components={{ b: <strong />, i: <em /> }}
                     />

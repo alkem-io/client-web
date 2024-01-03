@@ -27,9 +27,6 @@ export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardC
 
   const description = t('components.activity-log-view.activity-description.whiteboard-created', {
     displayName: whiteboard.profile.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = buildWhiteboardUrl(callout.nameID, whiteboard.nameID, journeyUrl);

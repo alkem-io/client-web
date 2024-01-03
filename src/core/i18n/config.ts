@@ -58,9 +58,10 @@ i18n
     supportedLngs,
     resources,
     interpolation: {
-      format: function (value, format, _lng) {
+      format: (value, format, _lng) => {
         if (format === 'lowercase') return value.toLowerCase();
       },
+      escapeValue: false, // React already protects from XSS unless you use dangerouslySetInnerHTML (which we shouldn't)
     },
   });
 

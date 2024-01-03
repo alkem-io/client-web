@@ -30,9 +30,6 @@ const VisualDescription = ({ visualTypeName, visual }: VisualDescriptionProps) =
         <BlockSectionTitle>
           {t(`pages.visualEdit.${visualTypeName}.description` as const, {
             alternativeText: visual?.alternativeText,
-            interpolation: {
-              escapeValue: false,
-            },
           })}
         </BlockSectionTitle>
       )}

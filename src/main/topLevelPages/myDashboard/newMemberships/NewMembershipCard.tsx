@@ -36,7 +36,6 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
           }}
           values={{
             journey: membership?.journeyDisplayName,
-            interpolation: { escapeValue: false },
           }}
         />
       </Caption>
