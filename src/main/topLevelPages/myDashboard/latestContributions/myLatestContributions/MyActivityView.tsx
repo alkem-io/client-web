@@ -101,7 +101,6 @@ const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
                 }}
                 values={{
                   journey: activity?.journey?.profile.displayName,
-                  interpolation: { escapeValue: false },
                 }}
               />
             </CardText>

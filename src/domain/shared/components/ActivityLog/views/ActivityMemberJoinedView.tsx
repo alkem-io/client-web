@@ -24,9 +24,6 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
 
   const description = t('components.activity-log-view.activity-description.member-joined', {
     user: member.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = member.url;

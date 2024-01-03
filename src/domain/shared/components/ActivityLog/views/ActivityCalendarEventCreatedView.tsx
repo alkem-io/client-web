@@ -27,9 +27,6 @@ export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedVi
   const description = t('components.activity-log-view.activity-description.calendar-event-created', {
     eventDisplayName: calendarEvent.profile.displayName,
     eventDescription: calendarEventDescription,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   return (

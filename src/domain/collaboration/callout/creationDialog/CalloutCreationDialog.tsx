@@ -305,7 +305,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
                     i18nKey="components.callout-creation.publish-dialog.text"
                     values={{
                       calloutDisplayName: callout.displayName,
-                      interpolation: { escapeValue: false },
                     }}
                     components={{
                       b: <strong />,

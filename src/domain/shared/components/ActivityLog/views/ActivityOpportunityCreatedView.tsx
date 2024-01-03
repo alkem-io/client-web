@@ -24,9 +24,6 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
 
   const description = t('components.activity-log-view.activity-description.opportunity-created', {
     displayName: opportunity.profile.displayName,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = addOpportunityUrl(journeyUrl, opportunity.nameID);

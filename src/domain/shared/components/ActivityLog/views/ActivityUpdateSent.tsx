@@ -25,9 +25,6 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   const update = replaceQuotesInOldDescription(message);
   const translatedDescription = t('components.activity-log-view.activity-description.update-sent', {
     update,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = buildUpdatesUrl(journeyUrl);

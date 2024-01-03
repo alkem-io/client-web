@@ -32,9 +32,6 @@ export const ActivityCalloutPostCommentCreatedView: FC<ActivityCalloutPostCommen
   const translatedDescription = t('components.activity-log-view.activity-description.post-comment-created', {
     postDisplayName: card.profile.displayName,
     comment,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = buildPostUrl(callout.nameID, card.nameID, journeyUrl);
