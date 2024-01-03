@@ -48,9 +48,6 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
       message: t('share-dialog.platforms.alkemio.default-template', {
         url,
         entity: t(`common.${entityTypeName}` as const),
-        interpolation: {
-          escapeValue: false,
-        },
       }),
       users: [],
     }),

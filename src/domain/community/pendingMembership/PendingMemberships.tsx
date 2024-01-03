@@ -24,7 +24,7 @@ export interface JourneyDetails {
 
 export interface InvitationWithMeta extends JourneyDetails {
   id: string;
-  userDisplayName: string;
+  userDisplayName: string | undefined;
   welcomeMessage: string | undefined;
   createdDate: Date | string;
 }
@@ -80,6 +80,8 @@ const getChildJourneyTypeName = (journeyLocation: ChildJourneyLocation): Journey
 export const InvitationHydrator = ({
   invitation,
   withJourneyDetails = false,
+  // This fallback is for Typescript only,
+  // visualType is either required when withJourneyDetails is true or not used otherwise.
   visualType = VisualType.Avatar,
   children,
 }: InvitationHydratorProps) => {
@@ -87,7 +89,7 @@ export const InvitationHydrator = ({
     variables: {
       spaceId: invitation.spaceId,
       fetchDetails: withJourneyDetails,
-      visualType,
+      visualType: visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
     },
     skip: Boolean(invitation.challengeId || invitation.opportunityId),
   });
@@ -123,14 +125,14 @@ export const InvitationHydrator = ({
   const createdBy = userData?.users.find(user => user.id === invitation.createdBy);
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
-    if (!invitation || !journey || !createdBy) {
+    if (!invitation || !journey) {
       return undefined;
     }
     return {
       id: invitation.id,
       welcomeMessage: invitation.welcomeMessage,
       createdDate: invitation.createdDate,
-      userDisplayName: createdBy.profile.displayName,
+      userDisplayName: createdBy?.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
       journeyTypeName: getChildJourneyTypeName({
         challengeNameId: invitation.challengeId,
@@ -165,7 +167,7 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
     variables: {
       spaceId: application.spaceId,
       fetchDetails: true,
-      visualType,
+      visualType: visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
     },
     skip: Boolean(application.challengeId || application.opportunityId),
   });

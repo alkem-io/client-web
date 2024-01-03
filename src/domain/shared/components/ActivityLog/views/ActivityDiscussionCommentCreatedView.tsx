@@ -28,9 +28,6 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
   const comment = replaceQuotesInOldDescription(description);
   const translatedDescription = t('components.activity-log-view.activity-description.discussion-comment-created', {
     comment,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = buildCalloutUrl(callout.nameID, journeyUrl);

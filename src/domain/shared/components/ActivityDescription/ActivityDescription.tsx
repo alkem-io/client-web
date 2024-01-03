@@ -15,7 +15,7 @@ export interface ActivityDescriptionProps {
   journeyUrl?: string;
   journeyTypeName: JourneyTypeName | undefined;
   author?: {
-    displayName: string;
+    displayName?: string;
     url?: string;
   };
   withLinkToParent?: boolean;
@@ -98,9 +98,8 @@ const ActivityDescription = ({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         i18nKey={i18nKey as any}
         {...props}
-        shouldUnescape
       />
-      {withLinkToParent && <Trans i18nKey="components.activity-log-view.parent-link" {...props} shouldUnescape />}
+      {withLinkToParent && <Trans i18nKey="components.activity-log-view.parent-link" {...props} />}
     </>
   );
 };

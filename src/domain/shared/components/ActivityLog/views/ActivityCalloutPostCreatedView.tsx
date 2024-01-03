@@ -33,9 +33,6 @@ export const ActivityCalloutPostCreatedView: FC<ActivityCalloutPostCreatedViewPr
     postDisplayName: post.profile.displayName,
     postType: postType,
     postDescription: postDescription,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = buildPostUrl(callout.nameID, post.nameID, journeyUrl);

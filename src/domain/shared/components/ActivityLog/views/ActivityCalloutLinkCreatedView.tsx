@@ -29,9 +29,6 @@ export const ActivityCalloutLinkCreatedView: FC<ActivityCalloutLinkCreatedViewPr
   const description = t('components.activity-log-view.activity-description.callout-link-created', {
     linkName: linkName,
     linkDescription: linkDescription,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = buildCalloutUrl(callout.nameID, journeyUrl);

@@ -26,6 +26,7 @@ import { ContributionItem } from '../../../../domain/community/user/contribution
 import NewMembershipCard from './NewMembershipCard';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
+import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -167,10 +168,17 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
     }
   };
 
+  const blockHeader = (
+    <>
+      {t('pages.home.sections.newMemberships.title')}
+      {pendingMemberships.length > 0 && <BadgeCounter count={pendingMemberships.length} />}
+    </>
+  );
+
   return (
     <>
       <PageContentBlock halfWidth>
-        <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
+        <PageContentBlockHeader title={blockHeader} />
         {pendingMemberships.length > 0 && (
           <>
             <Caption marginTop={gutters(-1)}>{t('pages.home.sections.newMemberships.openMemberships')}</Caption>
@@ -210,6 +218,8 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         )}
                       </ApplicationHydrator>
                     );
+                  default:
+                    return null;
                 }
               })}
             </Gutters>
@@ -254,6 +264,8 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
                         )}
                       </ApplicationHydrator>
                     );
+                  default:
+                    return null;
                 }
               })}
             </Gutters>

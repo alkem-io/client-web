@@ -27,9 +27,6 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
   const description = t('components.activity-log-view.activity-description.callout-published', {
     displayName: callout.framing.profile.displayName,
     type: calloutType,
-    interpolation: {
-      escapeValue: false,
-    },
   });
 
   const url = buildCalloutUrl(callout.nameID, journeyUrl);
