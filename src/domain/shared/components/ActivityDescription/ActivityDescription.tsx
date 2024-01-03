@@ -15,7 +15,7 @@ export interface ActivityDescriptionProps {
   journeyUrl?: string;
   journeyTypeName: JourneyTypeName | undefined;
   author?: {
-    displayName: string;
+    displayName?: string;
     url?: string;
   };
   withLinkToParent?: boolean;
