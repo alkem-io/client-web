@@ -11,6 +11,10 @@
       "message": "Is the answer relevant?",
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
+    "menu": {
+      "clear": "Clear conversation",
+      "close": "Close window"
+    },
     "references": [
       {
         "uri": "https://www.alkemio.org/help/getting-started/",

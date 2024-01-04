@@ -2,7 +2,7 @@ import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useStat
 import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip, useMediaQuery } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { addResponseMessage, renderCustomComponent, Widget } from 'react-chat-widget';
+import { addResponseMessage, deleteMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
 import {
   useAskChatGuidanceQuestionQuery,
   useUpdateAnswerRelevanceMutation,
@@ -22,6 +22,7 @@ import { gutters } from '../../../core/ui/grid/utils';
 import { Caption } from '../../../core/ui/typography';
 import { InfoOutlined } from '@mui/icons-material';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '../../ui/platformNavigation/constants';
+import ChatWidgetMenu from './ChatWidgetMenu';
 
 type FeedbackType = 'positive' | 'negative';
 
@@ -159,10 +160,15 @@ const ChatWidget = () => {
     fetchPolicy: 'network-only',
   });
 
+  const messageIds = useRef<string[]>([]);
+
   useEffect(() => {
     if (data && !loading) {
       const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
-      addResponseMessage(responseMessageMarkdown);
+      if (data.askChatGuidanceQuestion.id) {
+        messageIds.current.push(data.askChatGuidanceQuestion.id);
+      }
+      addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
       renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
     }
   }, [data, loading]);
@@ -179,7 +185,7 @@ const ChatWidget = () => {
 
   const [footerContainer, setFooterContainer] = useState<HTMLDivElement | null>(null);
 
-  const getConversationContainer = () => {
+  const setupFooterContainer = () => {
     const conversationContainer = wrapperRef.current?.querySelector('.rcw-conversation-container');
     if (!conversationContainer) {
       setFooterContainer(null);
@@ -194,9 +200,34 @@ const ChatWidget = () => {
     setFooterContainer(footerContainer);
   };
 
-  useLayoutEffect(getConversationContainer, [chatToggleTime]);
+  useLayoutEffect(setupFooterContainer, [chatToggleTime]);
+
+  const [menuButtonContainer, setMenuButtonContainer] = useState<HTMLDivElement | null>(null);
+
+  const setupMenuButton = () => {
+    const messageInputContainer = wrapperRef.current?.querySelector('.rcw-sender');
+    if (!messageInputContainer) {
+      setMenuButtonContainer(null);
+      return;
+    }
+    let menuButtonContainer = messageInputContainer.querySelector('.menu-button-container') as HTMLDivElement | null;
+    if (!menuButtonContainer) {
+      menuButtonContainer = document.createElement('div');
+      menuButtonContainer.classList.add('menu-button-container');
+      messageInputContainer.appendChild(menuButtonContainer);
+    }
+    setMenuButtonContainer(menuButtonContainer);
+  };
+
+  useLayoutEffect(setupMenuButton, [chatToggleTime]);
 
   const isMobile = useMediaQuery('(orientation: portrait)');
+
+  const handleClearChat = () => {
+    for (const messageId of messageIds.current) {
+      deleteMessages(1, messageId);
+    }
+  };
 
   return (
     <>
@@ -211,6 +242,8 @@ const ChatWidget = () => {
       </ChatWidgetStyles>
       <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
       {footerContainer && createPortal(<ChatWidgetFooter />, footerContainer)}
+      {menuButtonContainer &&
+        createPortal(<ChatWidgetMenu onClear={handleClearChat} onClose={toggleWidget} />, menuButtonContainer)}
     </>
   );
 };
