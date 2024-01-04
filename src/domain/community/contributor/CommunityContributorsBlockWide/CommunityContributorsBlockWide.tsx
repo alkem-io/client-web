@@ -30,8 +30,6 @@ const config = [
   },
 ] as const;
 
-const COMPACT_VIEW_ITEMS_LIMIT = 3 * 8; // 3 rows on Desktop
-
 const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContributorsBlockWideProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -74,11 +72,13 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           />
         </PageContentBlockHeaderWithDialogAction>
         <CommunityContributorsBlockWideContent
-          users={users?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}
-          organizations={organizations?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}
+          // users={users?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}
+          users={users}
+          organizations={organizations}
           contributorType={contributorType}
           filter={filter}
           nested
+          compactView
         />
         <Actions justifyContent="end">
           <ButtonBase component={CaptionSmall} onClick={() => setIsDialogOpen(true)}>
