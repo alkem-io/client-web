@@ -11,7 +11,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box, Button, CircularProgress, DialogActions } from '@mui/material';
+import { Box, Button, CircularProgress, DialogActions, IconButton, Tooltip } from '@mui/material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
@@ -23,15 +23,17 @@ import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { WhiteboardRtWithContent, WhiteboardRtWithoutContent } from '../containers/WhiteboardRtContentContainer';
 import {
-  WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
+  WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { Text, Caption } from '../../../../core/ui/typography';
+import { Caption, Text } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { SaveOutlined } from '@mui/icons-material';
+import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 
 const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: boolean | undefined }) => {
   const { t } = useTranslation();
@@ -138,6 +140,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
   });
+
   const lastSavedDate = useMemo(
     () => lastSaved?.lookup.whiteboardRt?.updatedDate && new Date(lastSaved.lookup.whiteboardRt.updatedDate),
     [lastSaved?.lookup.whiteboardRt?.updatedDate]
@@ -188,20 +191,24 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     return result;
   };
 
+  const handleSave = async () => {
+    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
+    if (!whiteboard || !whiteboardApi) {
+      return;
+    }
+    const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
+    const state = {
+      ...content,
+      elements: whiteboardApi.getSceneElements(),
+      appState: whiteboardApi.getAppState(),
+      files: whiteboardApi.getFiles(),
+    };
+    await handleUpdate(whiteboard, state, true);
+  };
+
   const onClose = async () => {
     if (editModeEnabled && collaborationEnabled) {
-      const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-      if (!whiteboard || !whiteboardApi) {
-        return;
-      }
-      const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
-      const state = {
-        ...content,
-        elements: whiteboardApi.getSceneElements(),
-        appState: whiteboardApi.getAppState(),
-        files: whiteboardApi.getFiles(),
-      };
-      await handleUpdate(whiteboard, state, true);
+      await handleSave();
     }
     actions.onCancel(whiteboard!);
   };
@@ -308,8 +315,32 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 )}
                 {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
               </DialogContent>
-              <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+              <Actions
+                minHeight={gutters(3)}
+                paddingX={gutters()}
+                marginTop={gutters(-1)}
+                gap={gutters(0.5)}
+                justifyContent="start"
+                alignItems="center"
+              >
+                <Tooltip
+                  placement="right"
+                  arrow
+                  title={<Caption whiteSpace="pre">{t('pages.whiteboard.saveTooltip')}</Caption>}
+                  PopperProps={{ sx: { '.MuiTooltip-tooltip': { maxWidth: '50vw' } } }}
+                >
+                  <IconButton
+                    color="primary"
+                    size="small"
+                    sx={{ marginLeft: -0.5 }}
+                    onClick={handleSave}
+                    disabled={!editModeEnabled}
+                  >
+                    <SaveOutlined />
+                  </IconButton>
+                </Tooltip>
                 <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
+                <FlexSpacer />
                 {!editModeEnabled && <Caption>You can't edit this whiteboard</Caption>}
               </Actions>
             </>
