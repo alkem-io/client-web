@@ -8,7 +8,12 @@ query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = 
   }
 }
 
-query PendingMembershipsChallenge($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
+query PendingMembershipsChallenge(
+  $spaceId: UUID_NAMEID!
+  $challengeId: UUID_NAMEID!
+  $fetchDetails: Boolean! = false
+  $visualType: VisualType!
+) {
   space(ID: $spaceId) {
     id
     nameID
@@ -42,8 +47,8 @@ query PendingMembershipsOpportunity(
   }
 }
 
-query PendingMembershipsUser($userId: UUID!) {
-  users(IDs: [$userId]) {
+query PendingMembershipsUser($userId: UUID_NAMEID_EMAIL!) {
+  user(ID: $userId) {
     id
     profile {
       id
