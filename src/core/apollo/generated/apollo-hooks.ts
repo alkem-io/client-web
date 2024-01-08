@@ -14688,8 +14688,8 @@ export function refetchPendingMembershipsOpportunityQuery(
 }
 
 export const PendingMembershipsUserDocument = gql`
-  query PendingMembershipsUser($userId: UUID!) {
-    users(IDs: [$userId]) {
+  query PendingMembershipsUser($userId: UUID_NAMEID_EMAIL!) {
+    user(ID: $userId) {
       id
       profile {
         id
