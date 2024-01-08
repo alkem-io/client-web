@@ -2201,7 +2201,7 @@
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "savingWhiteboard": "Saving whiteboard...",
-      "saveTooltip": "Whiteboards are automatically saved, but\nyou can save whenever you want via this button.",
+      "saveTooltip": "Please note that the whiteboards are also automatically saved",
       "state": {
         "checkedout": "Someone else is currently editing this Whiteboard"
       },

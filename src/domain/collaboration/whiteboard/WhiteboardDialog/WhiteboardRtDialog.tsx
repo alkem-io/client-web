@@ -323,12 +323,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 justifyContent="start"
                 alignItems="center"
               >
-                <Tooltip
-                  placement="right"
-                  arrow
-                  title={<Caption whiteSpace="pre">{t('pages.whiteboard.saveTooltip')}</Caption>}
-                  PopperProps={{ sx: { '.MuiTooltip-tooltip': { maxWidth: '50vw' } } }}
-                >
+                <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
                   <IconButton
                     color="primary"
                     size="small"
