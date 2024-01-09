@@ -20204,16 +20204,12 @@ export type PendingMembershipsOpportunityQuery = {
 };
 
 export type PendingMembershipsUserQueryVariables = Exact<{
-  userId: Scalars['UUID'];
+  userId: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
 export type PendingMembershipsUserQuery = {
   __typename?: 'Query';
-  users: Array<{
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
+  user: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
 };
 
 export type PendingMembershipsJourneyProfileFragment = {
