@@ -24081,6 +24081,51 @@ export type UpdateAnswerRelevanceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAnswerRelevanceMutation,
   SchemaTypes.UpdateAnswerRelevanceMutationVariables
 >;
+export const ResetChatGuidanceDocument = gql`
+  mutation resetChatGuidance {
+    resetChatGuidance
+  }
+`;
+export type ResetChatGuidanceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ResetChatGuidanceMutation,
+  SchemaTypes.ResetChatGuidanceMutationVariables
+>;
+
+/**
+ * __useResetChatGuidanceMutation__
+ *
+ * To run a mutation, you first call `useResetChatGuidanceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetChatGuidanceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetChatGuidanceMutation, { data, loading, error }] = useResetChatGuidanceMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useResetChatGuidanceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ResetChatGuidanceMutation,
+    SchemaTypes.ResetChatGuidanceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ResetChatGuidanceMutation, SchemaTypes.ResetChatGuidanceMutationVariables>(
+    ResetChatGuidanceDocument,
+    options
+  );
+}
+
+export type ResetChatGuidanceMutationHookResult = ReturnType<typeof useResetChatGuidanceMutation>;
+export type ResetChatGuidanceMutationResult = Apollo.MutationResult<SchemaTypes.ResetChatGuidanceMutation>;
+export type ResetChatGuidanceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ResetChatGuidanceMutation,
+  SchemaTypes.ResetChatGuidanceMutationVariables
+>;
 export const AskChatGuidanceQuestionDocument = gql`
   query askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
     askChatGuidanceQuestion(chatData: $chatData) {

@@ -5,6 +5,7 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { addResponseMessage, dropMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
 import {
   useAskChatGuidanceQuestionQuery,
+  useResetChatGuidanceMutation,
   useUpdateAnswerRelevanceMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import logoSrc from '../../ui/logo/logoSmall.svg';
@@ -214,7 +215,10 @@ const ChatWidget = () => {
 
   const isMobile = useMediaQuery('(orientation: portrait)');
 
+  const [resetChatGuidance] = useResetChatGuidanceMutation();
+
   const handleClearChat = () => {
+    resetChatGuidance();
     dropMessages();
     addResponseMessage(t('chatbot.intro'));
   };
