@@ -2,7 +2,7 @@ import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useStat
 import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip, useMediaQuery } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { addResponseMessage, deleteMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
+import { addResponseMessage, dropMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
 import {
   useAskChatGuidanceQuestionQuery,
   useUpdateAnswerRelevanceMutation,
@@ -160,22 +160,13 @@ const ChatWidget = () => {
     fetchPolicy: 'network-only',
   });
 
-  const messageIds = useRef<string[]>([]);
-
   useEffect(() => {
     if (data && !loading) {
       const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
-      if (data.askChatGuidanceQuestion.id) {
-        messageIds.current.push(data.askChatGuidanceQuestion.id);
-      }
       addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
       renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
     }
   }, [data, loading]);
-
-  const handleNewUserMessage = message => {
-    setNewMessage(message);
-  };
 
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
@@ -224,9 +215,8 @@ const ChatWidget = () => {
   const isMobile = useMediaQuery('(orientation: portrait)');
 
   const handleClearChat = () => {
-    for (const messageId of messageIds.current) {
-      deleteMessages(1, messageId);
-    }
+    dropMessages();
+    addResponseMessage(t('chatbot.intro'));
   };
 
   return (
@@ -236,7 +226,7 @@ const ChatWidget = () => {
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle mobile={isMobile} onClickInfo={() => setIsHelpDialogOpen(true)} />}
           subtitle={<ChatWidgetSubtitle />}
-          handleNewUserMessage={handleNewUserMessage}
+          handleNewUserMessage={setNewMessage}
           handleToggle={() => setChatToggleTime(Date.now())}
         />
       </ChatWidgetStyles>
