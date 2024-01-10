@@ -2418,9 +2418,7 @@ export type MeQueryResultsInvitationsArgs = {
 };
 
 export type MeQueryResultsMyJourneysArgs = {
-  filter?: InputMaybe<SpaceFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
-  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -20204,16 +20202,12 @@ export type PendingMembershipsOpportunityQuery = {
 };
 
 export type PendingMembershipsUserQueryVariables = Exact<{
-  userId: Scalars['UUID'];
+  userId: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
 export type PendingMembershipsUserQuery = {
   __typename?: 'Query';
-  users: Array<{
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
+  user: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
 };
 
 export type PendingMembershipsJourneyProfileFragment = {
@@ -31271,6 +31265,10 @@ export type UpdateAnswerRelevanceMutationVariables = Exact<{
 }>;
 
 export type UpdateAnswerRelevanceMutation = { __typename?: 'Mutation'; updateAnswerRelevance: boolean };
+
+export type ResetChatGuidanceMutationVariables = Exact<{ [key: string]: never }>;
+
+export type ResetChatGuidanceMutation = { __typename?: 'Mutation'; resetChatGuidance: boolean };
 
 export type AskChatGuidanceQuestionQueryVariables = Exact<{
   chatData: ChatGuidanceInput;
