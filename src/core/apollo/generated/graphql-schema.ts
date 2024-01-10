@@ -31266,6 +31266,10 @@ export type UpdateAnswerRelevanceMutationVariables = Exact<{
 
 export type UpdateAnswerRelevanceMutation = { __typename?: 'Mutation'; updateAnswerRelevance: boolean };
 
+export type ResetChatGuidanceMutationVariables = Exact<{ [key: string]: never }>;
+
+export type ResetChatGuidanceMutation = { __typename?: 'Mutation'; resetChatGuidance: boolean };
+
 export type AskChatGuidanceQuestionQueryVariables = Exact<{
   chatData: ChatGuidanceInput;
 }>;
