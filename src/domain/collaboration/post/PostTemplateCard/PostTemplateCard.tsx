@@ -9,14 +9,14 @@ import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import { PostIcon } from '../../post/icon/PostIcon';
 
 interface PostTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
+      <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption noWrap logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}
