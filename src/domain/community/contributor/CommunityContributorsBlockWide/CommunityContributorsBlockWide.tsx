@@ -72,7 +72,6 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           />
         </PageContentBlockHeaderWithDialogAction>
         <CommunityContributorsBlockWideContent
-          // users={users?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}
           users={users}
           organizations={organizations}
           contributorType={contributorType}
