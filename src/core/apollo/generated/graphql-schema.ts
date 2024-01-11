@@ -2418,7 +2418,9 @@ export type MeQueryResultsInvitationsArgs = {
 };
 
 export type MeQueryResultsMyJourneysArgs = {
+  filter?: InputMaybe<SpaceFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
+  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -31957,6 +31959,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -31968,6 +31971,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -31979,6 +31983,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -31990,6 +31995,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32045,6 +32051,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32056,6 +32063,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32067,6 +32075,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32078,6 +32087,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32136,6 +32146,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32147,6 +32158,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32158,6 +32170,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32169,6 +32182,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32233,6 +32247,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32244,6 +32259,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32255,6 +32271,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32266,6 +32283,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32329,6 +32347,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32340,6 +32359,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32351,6 +32371,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32362,6 +32383,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32427,6 +32449,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32438,6 +32461,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32449,6 +32473,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32460,6 +32485,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32518,6 +32544,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32529,6 +32556,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32540,6 +32568,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32551,6 +32580,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32614,6 +32644,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32625,6 +32656,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32636,6 +32668,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32647,6 +32680,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32702,6 +32736,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32713,6 +32748,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32724,6 +32760,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32735,6 +32772,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32807,6 +32845,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32818,6 +32857,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32829,6 +32869,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32840,6 +32881,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32895,6 +32937,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32906,6 +32949,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32917,6 +32961,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32928,6 +32973,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32967,6 +33013,24 @@ export type RecentContributionsJourneyProfileFragment = {
   url: string;
   displayName: string;
   type?: ProfileType | undefined;
+};
+
+export type RecentContributionsSpaceProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  type?: ProfileType | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
+export type RecentContributionsChildJourneyProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  type?: ProfileType | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type LatestContributionsSpacesQueryVariables = Exact<{ [key: string]: never }>;

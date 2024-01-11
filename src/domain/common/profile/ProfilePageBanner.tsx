@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PageBanner from '../../../core/ui/layout/pageBanner/PageBanner';
 import PageBannerCardWithVisual from '../../journey/common/PageBanner/JourneyPageBannerCard/PageBannerCardWithVisual';
-import SizeableAvatar from '../../../core/ui/avatar/SizeableAvatar';
+import Avatar from '../../../core/ui/avatar/Avatar';
 import { PageTitle } from '../../../core/ui/typography';
 import LocationCaption from '../../../core/ui/location/LocationCaption';
 import { Actions } from '../../../core/ui/actions/Actions';
@@ -87,10 +87,7 @@ const ProfilePageBanner = ({
         banner={banner}
         cardComponent={PageBannerCardWithVisual}
         visual={
-          <SizeableAvatar
-            src={profile?.avatar?.uri}
-            aria-label={t('common.avatar-of', { user: profile?.displayName })}
-          />
+          <Avatar src={profile?.avatar?.uri} aria-label={t('common.avatar-of', { user: profile?.displayName })} />
         }
         header={
           <>

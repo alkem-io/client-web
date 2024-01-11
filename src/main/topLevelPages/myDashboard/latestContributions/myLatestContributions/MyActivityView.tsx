@@ -13,7 +13,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import calloutIcons from '../../../../../domain/collaboration/callout/utils/calloutIcons';
 import { CalloutType, ProfileType } from '../../../../../core/apollo/generated/graphql-schema';
-import { gutters } from '../../../../../core/ui/grid/utils';
 
 export interface MyActivityViewProps {
   activity:
@@ -34,7 +33,7 @@ export interface MyActivityViewProps {
             displayName: string;
             url: string;
             type: ProfileType;
-            avatar?: Visual;
+            avatar: Visual | undefined;
           };
         };
       };
@@ -65,20 +64,23 @@ const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
               <Avatar src="" />
             </Skeleton>
           ) : (
-            <Avatar src={activity?.journey?.profile.avatar?.uri} sx={{ backgroundColor: 'transparent' }}>
-              <SwapColors>
-                <Avatar
-                  sx={{
-                    width: gutters(1.5),
-                    height: gutters(1.5),
-                    borderRadius: '50%',
-                    backgroundColor: theme => theme.palette.background.paper,
-                  }}
-                >
-                  {CalloutIcon && <CalloutIcon color="primary" fontSize="small" />}
-                </Avatar>
-              </SwapColors>
-            </Avatar>
+            <Avatar
+              src={activity?.journey?.profile.avatar?.uri}
+              size="medium"
+              overlay={
+                <SwapColors>
+                  <Avatar
+                    size="small"
+                    sx={{
+                      borderRadius: '50%',
+                      backgroundColor: theme => theme.palette.background.paper,
+                    }}
+                  >
+                    {CalloutIcon && <CalloutIcon color="primary" fontSize="small" />}
+                  </Avatar>
+                </SwapColors>
+              }
+            />
           )
         }
       >
