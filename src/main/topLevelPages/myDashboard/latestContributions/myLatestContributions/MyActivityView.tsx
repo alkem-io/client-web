@@ -1,6 +1,6 @@
 import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
-import { BlockSectionTitle, Caption, CardText } from '../../../../../core/ui/typography';
+import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { Visual } from '../../../../../domain/common/visual/Visual';
@@ -8,9 +8,7 @@ import Avatar from '../../../../../core/ui/avatar/Avatar';
 import SwapColors from '../../../../../core/ui/palette/SwapColors';
 import { getJourneyTypeName } from '../../../../../domain/journey/JourneyTypeName';
 import JourneyIcon from '../../../../../domain/shared/components/JourneyIcon/JourneyIcon';
-import { formatTimeElapsed } from '../../../../../domain/shared/utils/formatTimeElapsed';
 import { Trans, useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
 import calloutIcons from '../../../../../domain/collaboration/callout/utils/calloutIcons';
 import { CalloutType, ProfileType } from '../../../../../core/apollo/generated/graphql-schema';
 
@@ -42,8 +40,6 @@ export interface MyActivityViewProps {
 
 const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
   const { t } = useTranslation();
-
-  const timeElapsed = activity && formatTimeElapsed(activity.createdDate, t);
 
   const CalloutIcon = activity && calloutIcons[activity.callout.type];
 
@@ -84,12 +80,9 @@ const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
           )
         }
       >
-        <Box display="flex" justifyContent="space-between">
-          <BlockSectionTitle component="span">
-            {loading ? <Skeleton width="60%" /> : activity?.callout.framing.profile.displayName}
-          </BlockSectionTitle>
-          <Caption>{loading ? <Skeleton width="60%" /> : timeElapsed}</Caption>
-        </Box>
+        <BlockSectionTitle component="p">
+          {loading ? <Skeleton width="60%" /> : activity?.callout.framing.profile.displayName}
+        </BlockSectionTitle>
         {loading ? (
           <Skeleton />
         ) : (
