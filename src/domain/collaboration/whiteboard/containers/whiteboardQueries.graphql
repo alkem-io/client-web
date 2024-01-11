@@ -43,6 +43,7 @@ fragment WhiteboardDetails on Whiteboard {
     }
   }
 }
+
 fragment WhiteboardRtDetails on WhiteboardRt {
   id
   nameID
@@ -60,6 +61,12 @@ fragment WhiteboardRtDetails on WhiteboardRt {
     profile {
       id
       displayName
+      url
+      location {
+        id
+        country
+        city
+      }
       visual(type: AVATAR) {
         id
         uri

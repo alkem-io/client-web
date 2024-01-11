@@ -538,6 +538,12 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
       profile {
         id
         displayName
+        url
+        location {
+          id
+          country
+          city
+        }
         visual(type: AVATAR) {
           id
           uri
