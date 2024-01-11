@@ -13,6 +13,7 @@ interface PortalProps {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
 }
+
 class Portal {
   collab: TCollabClass;
   filesManager: WhiteboardFilesManager;
@@ -22,6 +23,7 @@ class Portal {
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
+  isBroadcastReady = false;
 
   constructor({ collab, filesManager, onSaveRequest, onCloseConnection }: PortalProps) {
     this.collab = collab;
@@ -63,6 +65,10 @@ class Portal {
       this.onCloseConnection();
     });
 
+    this.socket.on('broadcast-ready', () => {
+      this.isBroadcastReady = true;
+    });
+
     return socket;
   }
 
@@ -85,6 +91,13 @@ class Portal {
     if (this.isOpen()) {
       const jsonStr = JSON.stringify(data);
       const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
+
+      if (!volatile && !this.isBroadcastReady) {
+        this.socket!.on('broadcast-ready', () => {
+          this.socket?.emit(WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
+        });
+        return;
+      }
 
       this.socket?.emit(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
     }
