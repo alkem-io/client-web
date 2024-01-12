@@ -23,7 +23,6 @@ class Portal {
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
-  isBroadcastReady = false;
 
   constructor({ collab, filesManager, onSaveRequest, onCloseConnection }: PortalProps) {
     this.collab = collab;
@@ -65,10 +64,6 @@ class Portal {
       this.onCloseConnection();
     });
 
-    this.socket.on('broadcast-ready', () => {
-      this.isBroadcastReady = true;
-    });
-
     return socket;
   }
 
@@ -92,16 +87,17 @@ class Portal {
       const jsonStr = JSON.stringify(data);
       const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
 
-      if (!volatile && !this.isBroadcastReady) {
-        this.socket!.on('broadcast-ready', () => {
-          this.socket?.emit(WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
-        });
-        return;
-      }
-
       this.socket?.emit(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
     }
   }
+
+  _broadcastRequestData = (data: SocketUpdateData) => {
+    if (this.isOpen()) {
+      const jsonStr = JSON.stringify(data);
+      const buffer = new TextEncoder().encode(jsonStr).buffer;
+      this.socket?.emit(WS_EVENTS.SERVER_REQUEST_BROADCAST, this.roomId, buffer);
+    }
+  };
 
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.UPDATE,
@@ -157,7 +153,7 @@ class Portal {
           },
         };
 
-        await this._broadcastSocketData(data as SocketUpdateData);
+        this._broadcastRequestData(data as SocketUpdateData);
       }
     }
   };
@@ -172,7 +168,7 @@ class Portal {
         },
       };
 
-      await this._broadcastSocketData(data as SocketUpdateData);
+      this._broadcastRequestData(data as SocketUpdateData);
     }
   };
 
