@@ -1979,7 +1979,10 @@
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
         "recentJourneys": {
-          "seeMore": "Explore all Spaces, Challenges, and Opportunities that you’re a member of"
+          "seeMore": {
+            "full": "Explore all your Spaces, Challenges, and Opportunities",
+            "short": "Explore all your Spaces"
+          }
         },
         "myMemberships": {
           "title": "My Memberships",
