@@ -11,7 +11,7 @@ interface JourneyAvatarProps extends SizeableAvatarProps {
   hideJourneyIcon?: boolean;
 }
 
-const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false, size }: JourneyAvatarProps) => {
+const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false, size = 'large' }: JourneyAvatarProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
   return (

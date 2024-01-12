@@ -87,7 +87,11 @@ const ProfilePageBanner = ({
         banner={banner}
         cardComponent={PageBannerCardWithVisual}
         visual={
-          <Avatar src={profile?.avatar?.uri} aria-label={t('common.avatar-of', { user: profile?.displayName })} />
+          <Avatar
+            src={profile?.avatar?.uri}
+            size="large"
+            aria-label={t('common.avatar-of', { user: profile?.displayName })}
+          />
         }
         header={
           <>

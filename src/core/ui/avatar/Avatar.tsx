@@ -16,7 +16,7 @@ export interface SizeableAvatarProps {
   overlay?: ReactNode;
 }
 
-const Avatar = ({ size = 'large', sx, overlay, ...props }: AvatarProps & SizeableAvatarProps) => {
+const Avatar = ({ size, sx, overlay, ...props }: AvatarProps & SizeableAvatarProps) => {
   const avatarSize = size && AvatarSize[size];
 
   if (overlay) {
