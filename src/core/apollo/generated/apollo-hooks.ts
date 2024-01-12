@@ -3691,6 +3691,26 @@ export const RecentContributionsJourneyProfileFragmentDoc = gql`
     type
   }
 `;
+export const RecentContributionsSpaceProfileFragmentDoc = gql`
+  fragment RecentContributionsSpaceProfile on Profile {
+    ...RecentContributionsJourneyProfile
+    avatar: visual(type: CARD) {
+      id
+      uri
+    }
+  }
+  ${RecentContributionsJourneyProfileFragmentDoc}
+`;
+export const RecentContributionsChildJourneyProfileFragmentDoc = gql`
+  fragment RecentContributionsChildJourneyProfile on Profile {
+    ...RecentContributionsJourneyProfile
+    avatar: visual(type: AVATAR) {
+      id
+      uri
+    }
+  }
+  ${RecentContributionsJourneyProfileFragmentDoc}
+`;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
   fragment MyMembershipsChildJourneyCommunity on Community {
     id
@@ -24764,22 +24784,22 @@ export const LatestContributionsDocument = gql`
           id
           ... on Space {
             profile {
-              ...RecentContributionsJourneyProfile
+              ...RecentContributionsSpaceProfile
             }
           }
           ... on RelayPaginatedSpace {
             profile {
-              ...RecentContributionsJourneyProfile
+              ...RecentContributionsSpaceProfile
             }
           }
           ... on Challenge {
             profile {
-              ...RecentContributionsJourneyProfile
+              ...RecentContributionsChildJourneyProfile
             }
           }
           ... on Opportunity {
             profile {
-              ...RecentContributionsJourneyProfile
+              ...RecentContributionsChildJourneyProfile
             }
           }
         }
@@ -24845,7 +24865,8 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
-  ${RecentContributionsJourneyProfileFragmentDoc}
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}

@@ -3,7 +3,7 @@ import SwapColors from '../../../../core/ui/palette/SwapColors';
 import React from 'react';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import { JourneyTypeName } from '../../JourneyTypeName';
-import SizeableAvatar, { SizeableAvatarProps } from '../../../../core/ui/avatar/SizeableAvatar';
+import Avatar, { SizeableAvatarProps } from '../../../../core/ui/avatar/Avatar';
 
 interface JourneyAvatarProps extends SizeableAvatarProps {
   journeyTypeName: JourneyTypeName;
@@ -11,12 +11,12 @@ interface JourneyAvatarProps extends SizeableAvatarProps {
   hideJourneyIcon?: boolean;
 }
 
-const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false, size }: JourneyAvatarProps) => {
+const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false, size = 'large' }: JourneyAvatarProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
   return (
     <Box position="relative">
-      <SizeableAvatar
+      <Avatar
         size={size}
         src={visualUri}
         sx={{
