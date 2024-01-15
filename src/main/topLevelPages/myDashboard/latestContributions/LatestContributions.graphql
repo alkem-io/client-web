@@ -17,22 +17,22 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
         id
         ...on Space {
           profile {
-            ...RecentContributionsJourneyProfile
+            ...RecentContributionsSpaceProfile
           }
         }
         ...on RelayPaginatedSpace {
           profile {
-            ...RecentContributionsJourneyProfile
+            ...RecentContributionsSpaceProfile
           }
         }
         ...on Challenge {
           profile {
-            ...RecentContributionsJourneyProfile
+            ...RecentContributionsChildJourneyProfile
           }
         }
         ...on Opportunity {
           profile {
-            ...RecentContributionsJourneyProfile
+            ...RecentContributionsChildJourneyProfile
           }
         }
       }
@@ -104,4 +104,20 @@ fragment RecentContributionsJourneyProfile on Profile {
   url
   displayName
   type
+}
+
+fragment RecentContributionsSpaceProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: CARD) {
+    id
+    uri
+  }
+}
+
+fragment RecentContributionsChildJourneyProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: AVATAR) {
+    id
+    uri
+  }
 }
