@@ -86,6 +86,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
     useEffect(() => {
       loadFiles(data);
     }, [data]);
+
     useEffect(() => {
       pushFilesToExcalidraw();
     }, [filesManager]);
