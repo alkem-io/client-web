@@ -16,7 +16,7 @@ const shouldDiscardRemoteElement = (
   local: ExcalidrawElement | undefined,
   remote: BroadcastedExcalidrawElement
 ): boolean => {
-  if (
+  return !!(
     local &&
     // local element is being edited
     (local.id === localAppState.editingElement?.id ||
@@ -27,10 +27,7 @@ const shouldDiscardRemoteElement = (
       // resolve conflicting edits deterministically by taking the one with
       // the lowest versionNonce
       (local.version === remote.version && local.versionNonce < remote.versionNonce))
-  ) {
-    return true;
-  }
-  return false;
+  );
 };
 
 export const reconcileElements = (
