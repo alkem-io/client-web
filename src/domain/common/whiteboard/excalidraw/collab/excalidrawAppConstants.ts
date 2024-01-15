@@ -53,6 +53,7 @@ export const FILE_CACHE_MAX_AGE_SEC = 31536000;
 export const WS_EVENTS = {
   SERVER_VOLATILE: 'server-volatile-broadcast',
   SERVER: 'server-broadcast',
+  SERVER_REQUEST_BROADCAST: 'server-request-broadcast',
 };
 
 export enum WS_SCENE_EVENT_TYPES {

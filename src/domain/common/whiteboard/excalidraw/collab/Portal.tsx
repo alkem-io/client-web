@@ -13,6 +13,7 @@ interface PortalProps {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
 }
+
 class Portal {
   collab: TCollabClass;
   filesManager: WhiteboardFilesManager;
@@ -90,6 +91,14 @@ class Portal {
     }
   }
 
+  _broadcastRequestData = (data: SocketUpdateData) => {
+    if (this.isOpen()) {
+      const jsonStr = JSON.stringify(data);
+      const buffer = new TextEncoder().encode(jsonStr).buffer;
+      this.socket?.emit(WS_EVENTS.SERVER_REQUEST_BROADCAST, this.roomId, buffer);
+    }
+  };
+
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.UPDATE,
     allElements: readonly ExcalidrawElement[],
@@ -144,7 +153,7 @@ class Portal {
           },
         };
 
-        await this._broadcastSocketData(data as SocketUpdateData);
+        this._broadcastRequestData(data as SocketUpdateData);
       }
     }
   };
@@ -159,7 +168,7 @@ class Portal {
         },
       };
 
-      await this._broadcastSocketData(data as SocketUpdateData);
+      this._broadcastRequestData(data as SocketUpdateData);
     }
   };
 
