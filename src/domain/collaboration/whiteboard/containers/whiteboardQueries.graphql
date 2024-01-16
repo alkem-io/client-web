@@ -28,33 +28,6 @@ fragment WhiteboardDetails on Whiteboard {
     myPrivileges
     anonymousReadAccess
   }
-  checkout {
-    ...CheckoutDetails
-  }
-  createdBy {
-    id
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        id
-        uri
-      }
-    }
-  }
-}
-fragment WhiteboardRtDetails on WhiteboardRt {
-  id
-  nameID
-  createdDate
-  profile {
-    ...WhiteboardProfile
-  }
-  authorization {
-    id
-    myPrivileges
-    anonymousReadAccess
-  }
   createdBy {
     id
     profile {
@@ -81,25 +54,6 @@ fragment WhiteboardSummary on Whiteboard {
 fragment WhiteboardContent on Whiteboard {
   id
   content
-}
-
-fragment WhiteboardRtContent on WhiteboardRt {
-  id
-  content
-}
-
-fragment CheckoutDetails on WhiteboardCheckout {
-  id
-  lockedBy
-  status
-  lifecycle {
-    id
-    nextEvents
-  }
-  authorization {
-    id
-    myPrivileges
-  }
 }
 
 query whiteboardTemplates($spaceId: UUID_NAMEID!) {
@@ -155,8 +109,8 @@ fragment CalloutWithWhiteboardRt on Callout {
     myPrivileges
   }
   framing {
-    whiteboardRt {
-      ...WhiteboardRtDetails
+    whiteboard {
+      ...WhiteboardDetails
     }
   }
 }
@@ -178,8 +132,8 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       }
     }
     framing {
-      whiteboardRt {
-        ...WhiteboardRtDetails
+      whiteboard {
+        ...WhiteboardDetails
       }
     }
   }
@@ -212,16 +166,16 @@ query WhiteboardWithContent($whiteboardId: UUID!) {
 
 query whiteboardRtWithContent($whiteboardId: UUID!) {
   lookup {
-    whiteboardRt(ID: $whiteboardId) {
-      ...WhiteboardRtDetails
-      ...WhiteboardRtContent
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
+      ...WhiteboardContent
     }
   }
 }
 
 query whiteboardRtLastUpdatedDate($whiteboardId: UUID!) {
   lookup {
-    whiteboardRt(ID: $whiteboardId) {
+    whiteboard(ID: $whiteboardId) {
       id
       updatedDate
     }
@@ -274,8 +228,8 @@ mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
   }
 }
 
-mutation updateWhiteboardRt($input: UpdateWhiteboardRtInput!) {
-  updateWhiteboardRt(whiteboardData: $input) {
+mutation updateWhiteboardRt($input: UpdateWhiteboardInput!) {
+  updateWhiteboard(whiteboardData: $input) {
     id
     profile {
       id

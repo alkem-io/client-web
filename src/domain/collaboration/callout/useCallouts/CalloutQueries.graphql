@@ -74,9 +74,6 @@ fragment Callout on Callout {
     whiteboard {
       ...WhiteboardDetails
     }
-    whiteboardRt {
-      ...WhiteboardRtDetails
-    }
   }
   contributionPolicy {
     state
