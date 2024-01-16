@@ -1,8 +1,5 @@
 /**
- * Same as WhiteboardContentContainer but:
- * - (Renamed value to content)
- * - Removed subscription, there's no whiteboardRtContentUpdated subscription yet
- * - Removed all the checkout
+ * Same as WhiteboardContentContainer but for Realtime Whiteboards
  */
 import { FC } from 'react';
 import { useWhiteboardRtWithContentQuery } from '../../../../core/apollo/generated/apollo-hooks';

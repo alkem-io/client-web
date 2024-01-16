@@ -70,12 +70,12 @@ const calculateInsertionPoint = (whiteboardA: BoundingBox, whiteboardB: Bounding
   return { x, y };
 };
 
-const mergeWhiteboard = (whiteboardApi: ExcalidrawImperativeAPI, whiteboardValue: string) => {
+const mergeWhiteboard = (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
   let parsedWhiteboard: unknown;
   try {
-    parsedWhiteboard = JSON.parse(whiteboardValue);
+    parsedWhiteboard = JSON.parse(whiteboardContent);
   } catch (err) {
-    throw new WhiteboardMergeError(`Unable to parse whiteboard value: ${err}`);
+    throw new WhiteboardMergeError(`Unable to parse whiteboard content: ${err}`);
   }
 
   if (!isWhiteboardLike(parsedWhiteboard)) throw new WhiteboardMergeError('Whiteboard verification failed');
