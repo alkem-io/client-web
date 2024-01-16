@@ -9336,6 +9336,126 @@ export function useWhiteboardContentUpdatedSubscription(
 export type WhiteboardContentUpdatedSubscriptionHookResult = ReturnType<typeof useWhiteboardContentUpdatedSubscription>;
 export type WhiteboardContentUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.WhiteboardContentUpdatedSubscription>;
+export const WhiteboardRtContentUpdatePolicyDocument = gql`
+  query WhiteboardRtContentUpdatePolicy($whiteboardId: UUID!) {
+    lookup {
+      whiteboardRt(ID: $whiteboardId) {
+        id
+        contentUpdatePolicy
+      }
+    }
+  }
+`;
+
+/**
+ * __useWhiteboardRtContentUpdatePolicyQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardRtContentUpdatePolicyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardRtContentUpdatePolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardRtContentUpdatePolicyQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardRtContentUpdatePolicyQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+  >(WhiteboardRtContentUpdatePolicyDocument, options);
+}
+
+export function useWhiteboardRtContentUpdatePolicyLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+  >(WhiteboardRtContentUpdatePolicyDocument, options);
+}
+
+export type WhiteboardRtContentUpdatePolicyQueryHookResult = ReturnType<typeof useWhiteboardRtContentUpdatePolicyQuery>;
+export type WhiteboardRtContentUpdatePolicyLazyQueryHookResult = ReturnType<
+  typeof useWhiteboardRtContentUpdatePolicyLazyQuery
+>;
+export type WhiteboardRtContentUpdatePolicyQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
+  SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+>;
+export function refetchWhiteboardRtContentUpdatePolicyQuery(
+  variables: SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+) {
+  return { query: WhiteboardRtContentUpdatePolicyDocument, variables: variables };
+}
+
+export const UpdateWhiteboardRtContentUpdatePolicyDocument = gql`
+  mutation UpdateWhiteboardRtContentUpdatePolicy($whiteboardId: UUID!, $contentUpdatePolicy: ContentUpdatePolicy!) {
+    updateWhiteboardRt(whiteboardData: { ID: $whiteboardId, contentUpdatePolicy: $contentUpdatePolicy }) {
+      id
+      contentUpdatePolicy
+    }
+  }
+`;
+export type UpdateWhiteboardRtContentUpdatePolicyMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
+  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardRtContentUpdatePolicyMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardRtContentUpdatePolicyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardRtContentUpdatePolicyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardRtContentUpdatePolicyMutation, { data, loading, error }] = useUpdateWhiteboardRtContentUpdatePolicyMutation({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *      contentUpdatePolicy: // value for 'contentUpdatePolicy'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardRtContentUpdatePolicyMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
+    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
+    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
+  >(UpdateWhiteboardRtContentUpdatePolicyDocument, options);
+}
+
+export type UpdateWhiteboardRtContentUpdatePolicyMutationHookResult = ReturnType<
+  typeof useUpdateWhiteboardRtContentUpdatePolicyMutation
+>;
+export type UpdateWhiteboardRtContentUpdatePolicyMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation>;
+export type UpdateWhiteboardRtContentUpdatePolicyMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
+  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
+>;
 export const ChallengePreferencesDocument = gql`
   query challengePreferences($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {

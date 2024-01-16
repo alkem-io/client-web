@@ -5,7 +5,8 @@ import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import GridItem from '../../../../core/ui/grid/GridItem';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import { Location } from '../../../../core/ui/location/getLocationString';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
 
 interface WhiteboardShareSettingsProps {
   createdBy:
@@ -20,31 +21,35 @@ interface WhiteboardShareSettingsProps {
         };
       }
     | undefined;
+  value: ContentUpdatePolicy | undefined;
+  onChange?: (contentUpdatePolicy: ContentUpdatePolicy) => void;
+  loading?: boolean;
+  updating?: boolean;
 }
 
-export enum WhiteboardRtShareSettingsOption {
-  Contributors = 'contributors',
-  Admins = 'admins',
-  Owner = 'owner',
-}
+const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, ContentUpdatePolicy.Owner];
 
-const OPTIONS = [
-  WhiteboardRtShareSettingsOption.Contributors,
-  WhiteboardRtShareSettingsOption.Admins,
-  WhiteboardRtShareSettingsOption.Owner,
-];
-
-const WhiteboardShareSettings = ({ createdBy }: WhiteboardShareSettingsProps) => {
+const WhiteboardShareSettings = ({
+  createdBy,
+  value,
+  onChange,
+  loading = false,
+  updating = false,
+}: WhiteboardShareSettingsProps) => {
   const { t } = useTranslation();
 
-  const [shareSettings, setShareSettings] = useState<WhiteboardRtShareSettingsOption>(
-    WhiteboardRtShareSettingsOption.Contributors
-  );
+  const [shareSettings, setShareSettings] = useState(value);
 
   const handleSettingsChange = (event: unknown, value: string) => {
-    // TODO submit value to backend
-    setShareSettings(value as WhiteboardRtShareSettingsOption);
+    setShareSettings(value as ContentUpdatePolicy);
+    onChange?.(value as ContentUpdatePolicy);
   };
+
+  useEffect(() => {
+    if (!updating) {
+      setShareSettings(value);
+    }
+  }, [value, updating]);
 
   return (
     <>
@@ -62,7 +67,7 @@ const WhiteboardShareSettings = ({ createdBy }: WhiteboardShareSettingsProps) =>
         <GridItem columns={4}>
           <Gutters disablePadding>
             <BlockSectionTitle>{t('components.shareSettings.editableBy.title')}</BlockSectionTitle>
-            <FormControl>
+            <FormControl disabled={loading || updating}>
               <RadioGroup
                 aria-labelledby="whiteboard-rt-share-settings"
                 value={shareSettings}

@@ -15,6 +15,7 @@ import { BlockTitle } from '../../../../core/ui/typography/components';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
+import useWhiteboardRtContentUpdatePolicy from '../whiteboardRt/contentUpdatePolicy/WhiteboardRtContentUpdatePolicy';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardNameId?: string;
@@ -78,6 +79,8 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
     }
   };
 
+  const contentUpdatePolicyProvided = useWhiteboardRtContentUpdatePolicy({ whiteboardId: whiteboard?.id });
+
   return (
     <>
       <WhiteboardRtContentContainer whiteboardId={whiteboard?.id}>
@@ -103,7 +106,10 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
                 headerActions: (
                   <>
                     <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl}>
-                      <WhiteboardShareSettings createdBy={entities.whiteboard?.createdBy} />
+                      <WhiteboardShareSettings
+                        createdBy={entities.whiteboard?.createdBy}
+                        {...contentUpdatePolicyProvided}
+                      />
                     </ShareButton>
                     <FullscreenButton />
                   </>

@@ -2418,9 +2418,7 @@ export type MeQueryResultsInvitationsArgs = {
 };
 
 export type MeQueryResultsMyJourneysArgs = {
-  filter?: InputMaybe<SpaceFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
-  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -16534,6 +16532,28 @@ export type WhiteboardContentUpdatedSubscriptionVariables = Exact<{
 export type WhiteboardContentUpdatedSubscription = {
   __typename?: 'Subscription';
   whiteboardContentUpdated: { __typename?: 'WhiteboardContentUpdated'; whiteboardID: string; content: string };
+};
+
+export type WhiteboardRtContentUpdatePolicyQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type WhiteboardRtContentUpdatePolicyQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboardRt?: { __typename?: 'WhiteboardRt'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+  };
+};
+
+export type UpdateWhiteboardRtContentUpdatePolicyMutationVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateWhiteboardRtContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardRt: { __typename?: 'WhiteboardRt'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
 export type ChallengePreferencesQueryVariables = Exact<{
