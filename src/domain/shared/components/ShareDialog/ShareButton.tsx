@@ -53,7 +53,6 @@ const ShareButton: FC<ShareButtonProps> = ({
               sx={{ color: theme => theme.palette.primary.main, ...sx }}
             >
               <ShareOutlinedIcon />
-              {title}
             </IconButton>
           )}
         </>

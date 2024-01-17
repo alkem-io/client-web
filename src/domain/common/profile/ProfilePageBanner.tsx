@@ -108,7 +108,7 @@ const ProfilePageBanner = ({
                 </IconButton>
               )}
               {settingsUri && (
-                <IconButton size="small" component={RouterLink} to={settingsUri} aria-label={t('buttons.settings')}>
+                <IconButton size="small" component={RouterLink} to={settingsUri} aria-label={t('common.settings')}>
                   <SettingsOutlined />
                 </IconButton>
               )}

@@ -24,7 +24,7 @@ const GeneralConsent: FC<GeneralConsentProps> = ({ handleOpenSettings }: General
           }}
           onClick={handleOpenSettings}
         >
-          {t('buttons.settings')}
+          {t('common.settings')}
         </Button>
         <Button
           variant="contained"
