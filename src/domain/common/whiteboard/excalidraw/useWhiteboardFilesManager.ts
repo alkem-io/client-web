@@ -263,8 +263,6 @@ const useWhiteboardFilesManager = ({
       })
     );
 
-    console.log('filesNext', filesNext, Object.keys(filesNext).length);
-
     return { files: filesNext, ...rest } as W;
   };
 
