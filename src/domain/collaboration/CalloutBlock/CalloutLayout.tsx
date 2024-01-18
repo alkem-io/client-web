@@ -237,7 +237,7 @@ const CalloutLayout = ({
             {callout.editable && (
               <IconButton
                 id="callout-settings-button"
-                aria-label={t('buttons.settings')}
+                aria-label={t('common.settings')}
                 aria-haspopup="true"
                 aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
                 aria-expanded={settingsOpened ? 'true' : undefined}

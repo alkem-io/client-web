@@ -134,7 +134,6 @@
     "create-project": "Create project",
     "processing": "Processing...",
     "details": "Details",
-    "settings": "Settings",
     "member": "Member",
     "profile": "Profile",
     "view-profile": "View Profile",
@@ -856,6 +855,21 @@
     }
   },
   "components": {
+    "shareSettings": {
+      "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "ownedBy": {
+        "title": "This whiteboard is owned by:"
+      },
+      "editableBy": {
+        "title": "This whiteboard can be edited by:",
+        "options": {
+          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
+          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "OWNER": "The owner of this whiteboard"
+        }
+      }
+    },
     "navigation": {
       "exitMenu": "Exit menu",
       "skipMenu": "Skip main menu"

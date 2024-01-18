@@ -1,12 +1,12 @@
 import React, { ComponentType, FC, useState } from 'react';
-import { Box, Button, ButtonProps, Dialog, Skeleton, TextField } from '@mui/material';
+import { Box, Button, ButtonProps, Skeleton, TextField } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { PageTitle } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
 import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
@@ -30,14 +30,15 @@ export interface ShareDialogProps extends ShareComponentProps {
 export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, entityTypeName, ...props }) => {
   const { t } = useTranslation();
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogHeader onClose={onClose}>
-        <PageTitle>{t('share-dialog.share-this', { entity: t(`common.${entityTypeName}` as const) })}</PageTitle>
-      </DialogHeader>
+    <DialogWithGrid columns={8} open={open} onClose={onClose}>
+      <DialogHeader
+        title={t('share-dialog.share-this', { entity: t(`common.${entityTypeName}` as const) })}
+        onClose={onClose}
+      />
       <DialogContent>
         <ShareComponent onClose={onClose} entityTypeName={entityTypeName} {...props} />
       </DialogContent>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 
@@ -48,7 +49,7 @@ export interface ShareComponentProps {
   onClose?: () => void;
 }
 
-export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose }) => {
+export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose, children }) => {
   const { t } = useTranslation();
   const [ShareHandler, setShareHandler] = useState<ComponentType<ShareOnPlatformHandlerProps>>();
   const fullUrl = window.location.protocol + '//' + window.location.host + url;
@@ -84,6 +85,7 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
         {t('share-dialog.or')}
       </Box>
       <ShareOnAlkemioButton setShareHandler={setShareHandler} />
+      {children}
     </Box>
   );
 };

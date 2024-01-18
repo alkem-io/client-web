@@ -6,7 +6,7 @@ type SectionSpacerProps = {
   half?: boolean;
 };
 /**
- * @deprecated Use flex gap instead
+ * @deprecated Use flex gap or ui/content/Spacer instead
  */
 const SectionSpacer: FC<SectionSpacerProps> = ({ double, half }) => {
   let size = 1;
