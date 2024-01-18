@@ -33,8 +33,11 @@ interface ActionSetExpectedHeight extends Action<ActionTypes.SetExpectedHeight> 
 }
 
 interface ActionAddChild extends Action<ActionTypes.AddChild> {}
+
 interface ActionRemoveChild extends Action<ActionTypes.RemoveChild> {}
+
 interface ActionFinish extends Action<ActionTypes.Finish> {}
+
 interface ActionReset extends Action<ActionTypes.Reset> {
   payload: number | undefined;
 }

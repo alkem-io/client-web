@@ -116,10 +116,12 @@ class Collab extends PureComponent<Props, CollabState> {
     window.removeEventListener(EVENT.UNLOAD, this.onUnload);
     window.removeEventListener(EVENT.POINTER_MOVE, this.onPointerMove);
     window.removeEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
+
     if (this.activeIntervalId) {
       window.clearInterval(this.activeIntervalId);
       this.activeIntervalId = null;
     }
+
     if (this.idleTimeoutId) {
       window.clearTimeout(this.idleTimeoutId);
       this.idleTimeoutId = null;
@@ -160,6 +162,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private destroySocketClient = (opts?: { isUnload: boolean }) => {
     this.lastBroadcastedOrReceivedSceneVersion = -1;
     this.portal.close();
+
     if (!opts?.isUnload) {
       this.setState({
         activeRoomLink: '',
@@ -197,6 +200,7 @@ class Collab extends PureComponent<Props, CollabState> {
           resolve(scene);
         });
       };
+
       this.fallbackInitializationHandler = fallbackInitializationHandler;
 
       try {
@@ -222,6 +226,7 @@ class Collab extends PureComponent<Props, CollabState> {
           if (isImageElement(element) && element.status === 'saved') {
             return newElementWith(element, { status: 'pending' });
           }
+
           return element;
         });
         // remove deleted elements from elements array & history to ensure we don't
@@ -272,27 +277,35 @@ class Collab extends PureComponent<Props, CollabState> {
               // Files missing in this client:
               const currentFiles = Object.keys(this.excalidrawAPI.getFiles());
               const missingFiles = requiredFilesIds.filter(fileId => !currentFiles.includes(fileId));
+
               if (missingFiles.length > 0) {
                 this.portal.broadcastFileRequest(missingFiles);
               }
+
               this.filesManager.loadFiles({ files: this.excalidrawAPI.getFiles() });
             }
+
             break;
           }
+
           case WS_SCENE_EVENT_TYPES.UPDATE: {
             this.handleRemoteSceneUpdate(this.reconcileElements(decryptedData.payload.elements));
             break;
           }
+
           case 'FILE_UPLOAD': {
             const payload = decryptedData.payload as SocketUpdateDataSource['FILE_UPLOAD']['payload'];
             const currentFiles = this.excalidrawAPI.getFiles();
+
             if (!currentFiles[payload.file.id]) {
               this.alreadySharedFiles.push(payload.file.id);
               this.excalidrawAPI.addFiles([payload.file]);
               this.filesManager.loadFiles({ files: { [payload.file.id]: payload.file } });
             }
+
             break;
           }
+
           case 'FILE_REQUEST': {
             const payload = decryptedData.payload as SocketUpdateDataSource['FILE_REQUEST']['payload'];
             const currentFiles = this.excalidrawAPI.getFiles();
@@ -300,13 +313,14 @@ class Collab extends PureComponent<Props, CollabState> {
               payload.fileIds.forEach(id => {
                 if (currentFiles[id]) {
                   this.filesManager
-                    .removeExcalidrawAttachment(currentFiles[id])
+                    .convertLocalFileToRemote(currentFiles[id])
                     .then(file => file && this.portal.broadcastFile(file));
                 }
               });
             }
             break;
           }
+
           case 'MOUSE_LOCATION': {
             const { pointer, button, username, selectedElementIds } = decryptedData.payload;
             const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] =
@@ -326,6 +340,7 @@ class Collab extends PureComponent<Props, CollabState> {
             });
             break;
           }
+
           case 'IDLE_STATUS': {
             const { userState, socketId, username } = decryptedData.payload;
             const collaborators = new Map(this.collaborators);
@@ -337,6 +352,7 @@ class Collab extends PureComponent<Props, CollabState> {
             });
             break;
           }
+
           case 'SAVED': {
             this.onSavedToDatabase?.();
             break;
@@ -348,6 +364,7 @@ class Collab extends PureComponent<Props, CollabState> {
         if (this.portal.socket) {
           this.portal.socket.off('first-in-room');
         }
+
         const sceneData = await this.initializeRoom({
           fetchScene: true,
           roomLinkData: existingRoomLinkData,
@@ -372,9 +389,11 @@ class Collab extends PureComponent<Props, CollabState> {
       }
     | { fetchScene: false; roomLinkData?: null }) => {
     clearTimeout(this.socketInitializationTimer!);
+
     if (this.portal.socket && this.fallbackInitializationHandler) {
       this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
     }
+
     if (fetchScene && roomLinkData && this.portal.socket) {
       //this.excalidrawAPI.resetScene();
 
@@ -389,6 +408,7 @@ class Collab extends PureComponent<Props, CollabState> {
     } else {
       this.portal.socketInitialized = true;
     }
+
     return null;
   };
 
@@ -441,10 +461,12 @@ class Collab extends PureComponent<Props, CollabState> {
         window.clearTimeout(this.idleTimeoutId);
         this.idleTimeoutId = null;
       }
+
       if (this.activeIntervalId) {
         window.clearInterval(this.activeIntervalId);
         this.activeIntervalId = null;
       }
+
       this.onIdleStateChange(UserIdleState.AWAY);
     } else {
       this.idleTimeoutId = window.setTimeout(this.reportIdle, IDLE_THRESHOLD);
@@ -455,6 +477,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
   private reportIdle = () => {
     this.onIdleStateChange(UserIdleState.IDLE);
+
     if (this.activeIntervalId) {
       window.clearInterval(this.activeIntervalId);
       this.activeIntervalId = null;
@@ -472,6 +495,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
   setCollaborators(sockets: string[]) {
     const collaborators: InstanceType<typeof Collab>['collaborators'] = new Map();
+
     for (const socketId of sockets) {
       if (this.collaborators.has(socketId)) {
         collaborators.set(socketId, this.collaborators.get(socketId)!);
@@ -479,6 +503,7 @@ class Collab extends PureComponent<Props, CollabState> {
         collaborators.set(socketId, {});
       }
     }
+
     this.collaborators = collaborators;
     this.excalidrawAPI.updateScene({ collaborators });
   }
@@ -526,7 +551,8 @@ class Collab extends PureComponent<Props, CollabState> {
     for (const id of Object.keys(files)) {
       if (!this.alreadySharedFiles.includes(id)) {
         const file = files[id];
-        const fileWithUrl = await this.filesManager.removeExcalidrawAttachment(file);
+        const fileWithUrl = await this.filesManager.convertLocalFileToRemote(file);
+
         if (fileWithUrl) {
           this.portal.broadcastFile(fileWithUrl);
           this.alreadySharedFiles.push(id);

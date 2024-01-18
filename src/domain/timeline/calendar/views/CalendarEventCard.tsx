@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 //   createdDate: string | Date; // Apollo says Date while actually it's a string
 // };
 export type CalendarEventCardData = CalendarEventDetailsFragment;
+
 interface CalendarEventCardProps {
   event: CalendarEventCardData;
   highlighted?: boolean;

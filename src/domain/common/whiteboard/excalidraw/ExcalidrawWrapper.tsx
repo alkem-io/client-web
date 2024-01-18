@@ -76,6 +76,7 @@ const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhi
     useEffect(() => {
       loadFiles(data);
     }, [data]);
+
     useEffect(() => {
       pushFilesToExcalidraw();
     }, [filesManager]);

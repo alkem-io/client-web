@@ -33,6 +33,7 @@ interface BoundingBox {
   maxX: number;
   maxY: number;
 }
+
 const getBoundingBox = (whiteboardElements?: readonly ExcalidrawElement[]): BoundingBox => {
   if (!whiteboardElements || whiteboardElements.length === 0) {
     return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
