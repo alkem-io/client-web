@@ -41,6 +41,7 @@ class Portal {
         this.socket.emit('join-room', this.roomId);
       }
     });
+
     this.socket.on('new-user', async (_socketId: string) => {
       this.broadcastScene(
         WS_SCENE_EVENT_TYPES.INIT,
@@ -48,6 +49,7 @@ class Portal {
         /* syncAll */ true
       );
     });
+
     this.socket.on('room-user-change', (clients: string[]) => {
       this.collab.setCollaborators(clients);
     });
@@ -59,6 +61,7 @@ class Portal {
         callback({ success: false, errors: [ex?.message ?? ex] });
       }
     });
+
     this.socket.on('disconnect', () => {
       this.close();
       this.onCloseConnection();
@@ -71,6 +74,7 @@ class Portal {
     if (!this.socket) {
       return;
     }
+
     this.socket.close();
     this.socket = null;
     this.roomId = null;
@@ -82,22 +86,21 @@ class Portal {
     return !!(this.socketInitialized && this.socket && this.roomId);
   }
 
-  async _broadcastSocketData(data: SocketUpdateData, volatile: boolean = false) {
+  private _broadcastSocketData(data: SocketUpdateData, volatile: boolean = false) {
     if (this.isOpen()) {
       const jsonStr = JSON.stringify(data);
       const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
-
       this.socket?.emit(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
     }
   }
 
-  _broadcastRequestData = (data: SocketUpdateData) => {
+  private _broadcastRequestData(data: SocketUpdateData) {
     if (this.isOpen()) {
       const jsonStr = JSON.stringify(data);
       const buffer = new TextEncoder().encode(jsonStr).buffer;
       this.socket?.emit(WS_EVENTS.SERVER_REQUEST_BROADCAST, this.roomId, buffer);
     }
-  };
+  }
 
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.UPDATE,
@@ -124,6 +127,7 @@ class Portal {
           [PRECEDING_ELEMENT_KEY]: idx === 0 ? '^' : elements[idx - 1]?.id,
         });
       }
+
       return acc;
     }, [] as BroadcastedExcalidrawElement[]);
 
@@ -138,12 +142,13 @@ class Portal {
       this.broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
     }
 
-    await this._broadcastSocketData(data as SocketUpdateData);
+    this._broadcastSocketData(data as SocketUpdateData);
   };
 
   broadcastFile = async (file: BinaryFileDataWithUrl) => {
     if (this.socket?.id) {
-      const fileWithUrl = await this.filesManager.removeExcalidrawAttachment(file);
+      const fileWithUrl = await this.filesManager.convertLocalFileToRemote(file);
+
       if (fileWithUrl) {
         const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
           type: 'FILE_UPLOAD',
@@ -158,7 +163,7 @@ class Portal {
     }
   };
 
-  broadcastFileRequest = async (fileIds: string[]) => {
+  broadcastFileRequest = (fileIds: string[]) => {
     if (this.socket?.id) {
       const data: SocketUpdateDataSource['FILE_REQUEST'] = {
         type: 'FILE_REQUEST',
