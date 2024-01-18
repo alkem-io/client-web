@@ -71,6 +71,7 @@ declare module '@mui/material/styles' {
     avatarSize: number;
     avatarSizeLg: number;
   }
+
   interface ThemeOptions extends Theme {}
 }
 

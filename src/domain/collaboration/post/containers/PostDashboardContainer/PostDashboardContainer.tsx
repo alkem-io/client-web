@@ -52,6 +52,7 @@ interface Provided {
   postingComment?: boolean;
   postUrl: string;
 }
+
 export type PostDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
 const PostDashboardContainer: FC<PostDashboardContainerProps> = ({

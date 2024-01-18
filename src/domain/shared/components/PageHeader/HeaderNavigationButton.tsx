@@ -2,6 +2,7 @@ import { Tab, TabProps } from '@mui/material';
 import React, { forwardRef } from 'react';
 
 interface HeaderNavigationButtonProps extends TabProps {}
+
 // Special Tab with the class button-tab which makes it small an aligned to the end on the tabs bar
 const HeaderNavigationButton = forwardRef<HTMLDivElement, HeaderNavigationButtonProps>(
   ({ value, icon, disabled, onClick }, ref) => {

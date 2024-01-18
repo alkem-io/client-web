@@ -13,6 +13,7 @@ interface EditAdminCredentialsProps
   parentCommunityId?: string;
   title?: string;
 }
+
 export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onAdd,
   onRemove,
