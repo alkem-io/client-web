@@ -69,7 +69,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
   options,
   backToWhiteboards,
 }) => {
-  const { whiteboardNameId, whiteboard } = entities;
+  const { whiteboardNameId, whiteboard, contextSource } = entities;
   const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleCancel = (/*whiteboard: WhiteboardRtDetailsFragment*/) => {
@@ -106,10 +106,13 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
                 headerActions: (
                   <>
                     <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl}>
-                      <WhiteboardShareSettings
-                        createdBy={entities.whiteboard?.createdBy}
-                        {...contentUpdatePolicyProvided}
-                      />
+                      {options.canUpdate && (
+                        <WhiteboardShareSettings
+                          createdBy={entities.whiteboard?.createdBy}
+                          journeyTypeName={contextSource}
+                          {...contentUpdatePolicyProvided}
+                        />
+                      )}
                     </ShareButton>
                     <FullscreenButton />
                   </>
