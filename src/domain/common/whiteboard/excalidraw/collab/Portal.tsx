@@ -158,7 +158,7 @@ class Portal {
           },
         };
 
-        this._broadcastSocketData(data as SocketUpdateData);
+        this._broadcastRequestData(data as SocketUpdateData);
       }
     }
   };
