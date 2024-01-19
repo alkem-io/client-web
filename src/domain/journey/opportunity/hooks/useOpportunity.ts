@@ -1,12 +1,4 @@
-import { useContext, useMemo } from 'react';
-import { OpportunityContext, OpportunityContextProps } from '../context/OpportunityProvider';
+import { useContext } from 'react';
+import { OpportunityContext } from '../context/OpportunityProvider';
 
-export const useOpportunity = (): OpportunityContextProps => {
-  const context = useContext(OpportunityContext);
-  return useMemo(
-    () => ({
-      ...context,
-    }),
-    [context]
-  );
-};
+export const useOpportunity = () => useContext(OpportunityContext);

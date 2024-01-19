@@ -6,14 +6,18 @@ import { ContentUpdatePolicy } from '../../../../../core/apollo/generated/graphq
 
 interface WhiteboardRtContentUpdatePolicyProviderProps {
   whiteboardId: string | undefined;
+  skip?: boolean;
 }
 
-const useWhiteboardRtContentUpdatePolicy = ({ whiteboardId }: WhiteboardRtContentUpdatePolicyProviderProps) => {
+const useWhiteboardRtContentUpdatePolicy = ({
+  whiteboardId,
+  skip = false,
+}: WhiteboardRtContentUpdatePolicyProviderProps) => {
   const { data, loading } = useWhiteboardRtContentUpdatePolicyQuery({
     variables: {
       whiteboardId: whiteboardId!,
     },
-    skip: !whiteboardId,
+    skip: !whiteboardId || skip,
   });
 
   const { contentUpdatePolicy } = data?.lookup.whiteboardRt ?? {};

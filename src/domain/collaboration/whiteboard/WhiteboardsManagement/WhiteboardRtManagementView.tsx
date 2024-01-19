@@ -79,7 +79,10 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
     }
   };
 
-  const contentUpdatePolicyProvided = useWhiteboardRtContentUpdatePolicy({ whiteboardId: whiteboard?.id });
+  const contentUpdatePolicyProvided = useWhiteboardRtContentUpdatePolicy({
+    whiteboardId: whiteboard?.id,
+    skip: !options.canUpdate,
+  });
 
   return (
     <>

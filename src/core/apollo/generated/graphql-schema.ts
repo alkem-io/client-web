@@ -2418,9 +2418,7 @@ export type MeQueryResultsInvitationsArgs = {
 };
 
 export type MeQueryResultsMyJourneysArgs = {
-  filter?: InputMaybe<SpaceFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
-  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -6134,6 +6132,7 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -6556,6 +6555,7 @@ export type CalloutPageCalloutQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -6981,6 +6981,7 @@ export type CalloutPageCalloutQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -10176,6 +10177,7 @@ export type CalloutTemplateContentQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
                   content: string;
                   profile: {
                     __typename?: 'Profile';
@@ -10531,6 +10533,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -11276,6 +11279,7 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -11702,6 +11706,7 @@ export type CalloutsQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -12131,6 +12136,7 @@ export type CalloutsQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -12554,6 +12560,7 @@ export type CollaborationWithCalloutsFragment = {
                 id: string;
                 nameID: string;
                 createdDate: Date;
+                contentUpdatePolicy: ContentUpdatePolicy;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -12940,6 +12947,7 @@ export type CalloutFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -15129,6 +15137,7 @@ export type WhiteboardRtDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -15480,6 +15489,7 @@ export type CalloutWithWhiteboardRtFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -15675,6 +15685,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                 id: string;
                 nameID: string;
                 createdDate: Date;
+                contentUpdatePolicy: ContentUpdatePolicy;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -15999,6 +16010,7 @@ export type WhiteboardRtFromCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -16193,6 +16205,7 @@ export type WhiteboardRtWithContentQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           content: string;
           profile: {
             __typename?: 'Profile';
@@ -22429,6 +22442,90 @@ export type ChallengeDashboardReferencesQuery = {
   };
 };
 
+export type ChallengeInfoQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeInfoQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    nameID: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline: string;
+        description?: string | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }>;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
+      };
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type ChallengeInfoFragment = {
   __typename?: 'Challenge';
   id: string;
@@ -22480,6 +22577,7 @@ export type ChallengeInfoFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -22696,89 +22794,6 @@ export type ChallengeApplicationTemplateQuery = {
                     maxLength: number;
                   }>;
                 }
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type ChallengeInfoQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeInfoQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        description?: string | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-        visuals: Array<{
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }>;
-        location?:
-          | {
-              __typename?: 'Location';
-              id: string;
-              country: string;
-              city: string;
-              addressLine1: string;
-              addressLine2: string;
-              stateOrProvince: string;
-              postalCode: string;
-            }
-          | undefined;
-      };
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           }
         | undefined;
@@ -24716,6 +24731,7 @@ export type OpportunityProviderQuery = {
         | {
             __typename?: 'Community';
             id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -24781,6 +24797,7 @@ export type OpportunityProviderFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -25376,6 +25393,7 @@ export type SpaceProviderQuery = {
       | {
           __typename?: 'Community';
           id: string;
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -25464,6 +25482,7 @@ export type SpaceInfoFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -29939,6 +29958,7 @@ export type CalloutTemplatePreviewQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -30143,6 +30163,7 @@ export type CalloutTemplatePreviewFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
             id: string;

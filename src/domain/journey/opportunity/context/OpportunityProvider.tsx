@@ -1,6 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { useOpportunityProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, OpportunityProviderFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CommunityMembershipStatus,
+  OpportunityProviderFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useChallenge } from '../../challenge/hooks/useChallenge';
 
@@ -22,6 +26,7 @@ export interface OpportunityContextProps {
   loading: boolean;
   permissions: OpportunityViewerPermissions;
   displayName: string;
+  myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
 const OpportunityContext = React.createContext<OpportunityContextProps>({
@@ -39,6 +44,7 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
     contextPrivileges: [],
   },
   displayName: '',
+  myMembershipStatus: undefined,
 });
 
 interface OpportunityProviderProps {}
@@ -82,6 +88,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         communityId,
         permissions,
         loading,
+        myMembershipStatus: opportunity?.community?.myMembershipStatus,
       }}
     >
       {children}

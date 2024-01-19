@@ -533,6 +533,7 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
       myPrivileges
       anonymousReadAccess
     }
+    contentUpdatePolicy
     createdBy {
       id
       profile {
@@ -2191,6 +2192,7 @@ export const ChallengeInfoFragmentDoc = gql`
     }
     community {
       id
+      myMembershipStatus
       authorization {
         id
         myPrivileges
@@ -2486,6 +2488,7 @@ export const OpportunityProviderFragmentDoc = gql`
     }
     community {
       id
+      myMembershipStatus
       authorization {
         id
         myPrivileges
@@ -2576,6 +2579,7 @@ export const SpaceInfoFragmentDoc = gql`
     }
     community {
       id
+      myMembershipStatus
       authorization {
         id
         myPrivileges
@@ -17238,6 +17242,66 @@ export function refetchChallengeDashboardReferencesQuery(
   return { query: ChallengeDashboardReferencesDocument, variables: variables };
 }
 
+export const ChallengeInfoDocument = gql`
+  query challengeInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      nameID
+      challenge(ID: $challengeId) {
+        ...ChallengeInfo
+      }
+    }
+  }
+  ${ChallengeInfoFragmentDoc}
+`;
+
+/**
+ * __useChallengeInfoQuery__
+ *
+ * To run a query within a React component, call `useChallengeInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeInfoQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>(
+    ChallengeInfoDocument,
+    options
+  );
+}
+
+export function useChallengeInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>(
+    ChallengeInfoDocument,
+    options
+  );
+}
+
+export type ChallengeInfoQueryHookResult = ReturnType<typeof useChallengeInfoQuery>;
+export type ChallengeInfoLazyQueryHookResult = ReturnType<typeof useChallengeInfoLazyQuery>;
+export type ChallengeInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeInfoQuery,
+  SchemaTypes.ChallengeInfoQueryVariables
+>;
+export function refetchChallengeInfoQuery(variables: SchemaTypes.ChallengeInfoQueryVariables) {
+  return { query: ChallengeInfoDocument, variables: variables };
+}
+
 export const CreateChallengeDocument = gql`
   mutation createChallenge($input: CreateChallengeOnSpaceInput!) {
     createChallenge(challengeData: $input) {
@@ -17523,66 +17587,6 @@ export function refetchChallengeApplicationTemplateQuery(
   variables: SchemaTypes.ChallengeApplicationTemplateQueryVariables
 ) {
   return { query: ChallengeApplicationTemplateDocument, variables: variables };
-}
-
-export const ChallengeInfoDocument = gql`
-  query challengeInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
-      challenge(ID: $challengeId) {
-        ...ChallengeInfo
-      }
-    }
-  }
-  ${ChallengeInfoFragmentDoc}
-`;
-
-/**
- * __useChallengeInfoQuery__
- *
- * To run a query within a React component, call `useChallengeInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeInfoQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>(
-    ChallengeInfoDocument,
-    options
-  );
-}
-
-export function useChallengeInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeInfoQuery, SchemaTypes.ChallengeInfoQueryVariables>(
-    ChallengeInfoDocument,
-    options
-  );
-}
-
-export type ChallengeInfoQueryHookResult = ReturnType<typeof useChallengeInfoQuery>;
-export type ChallengeInfoLazyQueryHookResult = ReturnType<typeof useChallengeInfoLazyQuery>;
-export type ChallengeInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeInfoQuery,
-  SchemaTypes.ChallengeInfoQueryVariables
->;
-export function refetchChallengeInfoQuery(variables: SchemaTypes.ChallengeInfoQueryVariables) {
-  return { query: ChallengeInfoDocument, variables: variables };
 }
 
 export const ChallengeInnovationFlowDocument = gql`

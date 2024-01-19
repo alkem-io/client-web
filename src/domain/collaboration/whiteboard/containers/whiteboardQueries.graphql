@@ -56,6 +56,7 @@ fragment WhiteboardRtDetails on WhiteboardRt {
     myPrivileges
     anonymousReadAccess
   }
+  contentUpdatePolicy
   createdBy {
     id
     profile {

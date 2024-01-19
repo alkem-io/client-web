@@ -2267,6 +2267,11 @@
         "title": "Whiteboard connection lost",
         "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
         "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
+      },
+      "readonlyReason": {
+        "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <owner />, to change the settings if you want to contribute.",
+        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to join/apply <journeylink />",
+        "unauthenticated": "You have to be a signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to sign in <signinlink />"
       }
     },
     "login": {

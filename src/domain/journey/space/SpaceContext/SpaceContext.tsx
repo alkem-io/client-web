@@ -5,6 +5,7 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { useSpaceProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
+  CommunityMembershipStatus,
   License,
   SpaceInfoFragment,
   SpaceVisibility,
@@ -35,6 +36,7 @@ interface SpaceContextProps {
   context?: SpaceInfoFragment['context'];
   profile: SpaceInfoFragment['profile'];
   license: License;
+  myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
 const SpaceContext = React.createContext<SpaceContextProps>({
@@ -65,6 +67,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     featureFlags: [],
   },
   refetchSpace: () => {},
+  myMembershipStatus: undefined,
 });
 
 interface SpaceProviderProps {}
@@ -148,6 +151,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         profile,
         context: space?.context,
         license,
+        myMembershipStatus: space?.community?.myMembershipStatus,
       }}
     >
       {children}

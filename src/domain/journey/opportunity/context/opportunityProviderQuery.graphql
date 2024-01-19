@@ -42,6 +42,7 @@ fragment OpportunityProvider on Opportunity {
   }
   community {
     id
+    myMembershipStatus
     authorization {
       id
       myPrivileges
