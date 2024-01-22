@@ -45,7 +45,6 @@ const RecentJourneyCard = ({ journey, journeyTypeName }: RecentJourneyCardProps)
     <GridItem columns={2}>
       <ElevatedPaper
         component={RouterLink}
-        loose
         to={journey?.profile.url ?? ''}
         sx={{
           position: 'relative',

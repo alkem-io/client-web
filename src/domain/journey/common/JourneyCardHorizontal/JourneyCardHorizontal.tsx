@@ -65,7 +65,7 @@ const JourneyCardHorizontal = ({
   };
 
   return (
-    <ElevatedPaper component={RouterLink} to={journey.profile.url} loose sx={mergedSx}>
+    <ElevatedPaper component={RouterLink} to={journey.profile.url} sx={mergedSx}>
       <BadgeCardView
         visual={
           <Avatar src={journey.profile.avatar?.uri} sx={{ borderRadius: 0.5, width: gutters(3), height: gutters(3) }} />
