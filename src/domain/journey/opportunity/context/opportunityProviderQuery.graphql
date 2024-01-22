@@ -16,6 +16,7 @@ fragment OpportunityProvider on Opportunity {
     displayName
     description
     tagline
+    url
     visuals {
       ...VisualFull
     }
@@ -42,6 +43,7 @@ fragment OpportunityProvider on Opportunity {
   }
   community {
     id
+    myMembershipStatus
     authorization {
       id
       myPrivileges

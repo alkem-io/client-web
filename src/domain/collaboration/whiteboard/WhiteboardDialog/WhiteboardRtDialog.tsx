@@ -5,14 +5,13 @@ import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
 import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
-import { makeStyles, useTheme } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box, Button, CircularProgress, DialogActions, IconButton, Tooltip } from '@mui/material';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import { Box, Button, DialogActions } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
@@ -26,47 +25,14 @@ import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { Caption, Text } from '../../../../core/ui/typography';
+import { Text } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { SaveOutlined } from '@mui/icons-material';
-import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
-
-const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: boolean | undefined }) => {
-  const { t } = useTranslation();
-  const theme = useTheme();
-
-  // Re render it every second
-  const [formattedTime, setFormattedTime] = useState<string>();
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFormattedTime(date && formatTimeElapsed(date, t));
-    }, 500);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [date]);
-
-  if (!date) {
-    return null;
-  }
-
-  return saving ? (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
-      {t('pages.whiteboard.savingWhiteboard')}
-    </Caption>
-  ) : (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      {t('common.last-saved', {
-        datetime: formattedTime,
-      })}
-    </Caption>
-  );
-};
+import WhiteboardDialogFooter from './WhiteboardDialogFooter';
+import { useLocation } from 'react-router-dom';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -128,6 +94,17 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
+
+  const { pathname } = useLocation();
+
+  const initialPathname = useRef(pathname).current;
+
+  useEffect(() => {
+    if (pathname !== initialPathname) {
+      onClose();
+    }
+  }, [pathname]);
+
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const [collaborationEnabled, setCollaborationEnabled] = useState(true);
@@ -210,7 +187,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
   const onClose = async () => {
     if (editModeEnabled && collaborationEnabled) {
-      await handleSave();
+      handleSave();
     }
     actions.onCancel(whiteboard!);
   };
@@ -317,29 +294,14 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 )}
                 {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
               </DialogContent>
-              <Actions
-                minHeight={gutters(3)}
-                paddingX={gutters()}
-                marginTop={gutters(-1)}
-                gap={gutters(0.5)}
-                justifyContent="start"
-                alignItems="center"
-              >
-                <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-                  <IconButton
-                    color="primary"
-                    size="small"
-                    sx={{ marginLeft: -0.5 }}
-                    onClick={handleSave}
-                    disabled={!editModeEnabled}
-                  >
-                    <SaveOutlined />
-                  </IconButton>
-                </Tooltip>
-                <LastSavedCaption saving={state?.updatingWhiteboardContent} date={lastSavedDate} />
-                <FlexSpacer />
-                {!editModeEnabled && <Caption>You can't edit this whiteboard</Caption>}
-              </Actions>
+              <WhiteboardDialogFooter
+                lastSavedDate={lastSavedDate}
+                onSave={handleSave}
+                canUpdateContent={options.canEdit!}
+                updating={state?.updatingWhiteboardContent}
+                createdBy={whiteboard?.createdBy}
+                contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+              />
             </>
           )}
         </Formik>

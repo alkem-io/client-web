@@ -1,6 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { useChallengeInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, ChallengeInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  ChallengeInfoFragment,
+  CommunityMembershipStatus,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface ChallengePermissions {
@@ -21,6 +25,7 @@ interface ChallengeContextProps {
   loading: boolean;
   permissions: ChallengePermissions;
   profile: ChallengeInfoFragment['profile'];
+  myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
 const ChallengeContext = React.createContext<ChallengeContextProps>({
@@ -42,7 +47,9 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
     displayName: '',
     visuals: [],
     tagline: '',
+    url: '',
   },
+  myMembershipStatus: undefined,
 });
 
 interface ChallengeProviderProps {}
@@ -88,6 +95,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
       tagline: challenge?.profile.tagline || '',
       references: challenge?.profile.references ?? [],
       location: challenge?.profile.location,
+      url: challenge?.profile.url ?? '',
     };
   }, [challenge?.profile]);
 
@@ -103,6 +111,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         permissions,
         profile,
         loading,
+        myMembershipStatus: challenge?.community?.myMembershipStatus,
       }}
     >
       {children}

@@ -12,13 +12,13 @@ type NavigationState =
     };
 
 export default function ScrollToTop() {
-  const { state } = useLocation();
+  const { state, pathname } = useLocation();
 
   useEffect(() => {
     if (!(state as NavigationState)?.keepScroll) {
       window.scrollTo(0, 0);
     }
-  }, [state]);
+  }, [state, pathname]);
 
   return null;
 }

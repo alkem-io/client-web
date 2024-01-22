@@ -27,15 +27,8 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({ author, title, loa
       }
     >
       <Caption>{loading ? <Skeleton width="60%" /> : title}</Caption>
-      {loading ? (
-        <Skeleton />
-      ) : url ? (
-        <RouterLink to={url} loose>
-          {children}
-        </RouterLink>
-      ) : (
-        children
-      )}
+      {loading && <Skeleton />}
+      {!loading && (url ? <RouterLink to={url}>{children}</RouterLink> : children)}
     </BadgeCardView>
   );
 };

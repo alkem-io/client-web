@@ -6,6 +6,7 @@ fragment ChallengeInfo on Challenge {
     displayName
     tagline
     description
+    url
     tagset {
       ...TagsetDetails
     }
@@ -23,6 +24,7 @@ fragment ChallengeInfo on Challenge {
   }
   community {
     id
+    myMembershipStatus
     authorization {
       id
       myPrivileges

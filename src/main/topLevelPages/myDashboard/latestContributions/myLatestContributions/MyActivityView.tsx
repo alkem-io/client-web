@@ -52,7 +52,7 @@ const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
   };
 
   return (
-    <RouterLink to={activity?.callout.framing.profile.url ?? ''} loose>
+    <RouterLink to={activity?.callout.framing.profile.url ?? ''}>
       <BadgeCardView
         visual={
           loading ? (
@@ -86,7 +86,7 @@ const MyActivityView = ({ activity, loading = false }: MyActivityViewProps) => {
         {loading ? (
           <Skeleton />
         ) : (
-          <RouterLink to={activity?.journey?.profile.url ?? ''} loose onClick={handleJourneyLinkClick}>
+          <RouterLink to={activity?.journey?.profile.url ?? ''} onClick={handleJourneyLinkClick}>
             <CardText whiteSpace="pre">
               <Trans
                 t={t}

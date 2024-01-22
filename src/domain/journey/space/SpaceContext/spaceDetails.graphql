@@ -6,6 +6,7 @@ fragment SpaceDetails on Space {
     displayName
     description
     tagline
+    url
     tagset {
       ...TagsetDetails
     }
