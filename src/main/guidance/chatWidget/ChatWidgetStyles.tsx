@@ -22,6 +22,8 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
           maxHeight: '-webkit-fill-available',
         },
         '.rcw-conversation-container': {
+          display: 'flex',
+          flexDirection: 'column',
           marginBottom: gutters(0.5),
           overflow: 'hidden',
           minWidth: 0,
