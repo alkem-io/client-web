@@ -34,10 +34,12 @@ interface Community {
   type: string;
   groups: Group[];
 }
+
 interface Group {
   id: string;
   name: string;
 }
+
 export const defaultUser: UserModel = {
   id: '',
   firstName: '',

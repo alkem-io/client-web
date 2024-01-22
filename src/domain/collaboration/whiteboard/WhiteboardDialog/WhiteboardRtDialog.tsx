@@ -136,11 +136,13 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     if (!state) {
       return { success: false, errors: ['Excalidraw state not defined'] };
     }
-    const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
 
-    const previewImages = shouldUploadPreviewImages
-      ? await generateWhiteboardPreviewImages(whiteboard, state)
-      : undefined;
+    const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
+
+    const previewImages =
+      shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
+        ? await generateWhiteboardPreviewImages(whiteboard, state)
+        : undefined;
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 

@@ -5,6 +5,7 @@ interface ExcalidrawDimensions {
   height: number;
   scale?: number;
 }
+
 /**
  *
  * @param params The Alkemio Visual expected dimensions

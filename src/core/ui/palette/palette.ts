@@ -55,6 +55,7 @@ declare module '@mui/material/styles/createPalette' {
     challenge: PaletteColorOptions;
     opportunity: PaletteColorOptions;
   }
+
   interface Palette {
     positive: PaletteColor;
     negative: PaletteColor;

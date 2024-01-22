@@ -173,6 +173,7 @@ const Root = styled(Box)(({ theme }) => ({
 interface EventsTooltipProps {
   events: FullCalendarProps['events'];
 }
+
 /**
  * Tooltip for the highlighted days with the list of events
  */
