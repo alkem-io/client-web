@@ -84,7 +84,7 @@ const useWhiteboardFilesManager = ({
 }: Props): WhiteboardFilesManager => {
   const log = (..._args) => {
     // TODO: Remove those `log()`s when this is confirmed to be fully stable
-    console.log('[FileManager]', ..._args);
+    //console.log('[FileManager]', ..._args);
   };
 
   /**
