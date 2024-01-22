@@ -41,7 +41,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
         noWrap
       >
         {invitation.welcomeMessage && (
-          <WrapperMarkdown card flat>
+          <WrapperMarkdown card plain>
             {invitation.welcomeMessage}
           </WrapperMarkdown>
         )}

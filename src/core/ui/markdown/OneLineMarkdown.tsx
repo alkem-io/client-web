@@ -13,7 +13,7 @@ interface OneLineMarkdownProps {
  */
 const OneLineMarkdown = ({ children }: OneLineMarkdownProps) => {
   return (
-    <WrapperMarkdown flat card>
+    <WrapperMarkdown plain card>
       {children}
     </WrapperMarkdown>
   );

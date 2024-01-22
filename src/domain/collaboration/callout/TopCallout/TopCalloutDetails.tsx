@@ -56,7 +56,7 @@ const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: T
           },
         }}
       >
-        <WrapperMarkdown card flat multiline>
+        <WrapperMarkdown card plain multiline>
           {description}
         </WrapperMarkdown>
       </CardText>
