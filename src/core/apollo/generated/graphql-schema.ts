@@ -6200,7 +6200,7 @@ export type CalloutPageCalloutQuery = {
                                 location?:
                                   | { __typename?: 'Location'; id: string; country: string; city: string }
                                   | undefined;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               };
                             }
                           | undefined;
@@ -6623,7 +6623,7 @@ export type CalloutPageCalloutQuery = {
                                   location?:
                                     | { __typename?: 'Location'; id: string; country: string; city: string }
                                     | undefined;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -7049,7 +7049,7 @@ export type CalloutPageCalloutQuery = {
                                   location?:
                                     | { __typename?: 'Location'; id: string; country: string; city: string }
                                     | undefined;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -10244,7 +10244,7 @@ export type CalloutTemplateContentQuery = {
                           displayName: string;
                           url: string;
                           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
                       }
                     | undefined;
@@ -10599,7 +10599,7 @@ export type CreateCalloutMutation = {
                     displayName: string;
                     url: string;
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   };
                 }
               | undefined;
@@ -11347,7 +11347,7 @@ export type CalloutsQuery = {
                                 location?:
                                   | { __typename?: 'Location'; id: string; country: string; city: string }
                                   | undefined;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               };
                             }
                           | undefined;
@@ -11774,7 +11774,7 @@ export type CalloutsQuery = {
                                   location?:
                                     | { __typename?: 'Location'; id: string; country: string; city: string }
                                     | undefined;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -12204,7 +12204,7 @@ export type CalloutsQuery = {
                                   location?:
                                     | { __typename?: 'Location'; id: string; country: string; city: string }
                                     | undefined;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -12626,7 +12626,7 @@ export type CollaborationWithCalloutsFragment = {
                         displayName: string;
                         url: string;
                         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
                     }
                   | undefined;
@@ -13013,7 +13013,7 @@ export type CalloutFragment = {
                   displayName: string;
                   url: string;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -15203,7 +15203,7 @@ export type WhiteboardRtDetailsFragment = {
           displayName: string;
           url: string;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
       }
     | undefined;
@@ -15555,7 +15555,7 @@ export type CalloutWithWhiteboardRtFragment = {
                   displayName: string;
                   url: string;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -15751,7 +15751,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                         displayName: string;
                         url: string;
                         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
                     }
                   | undefined;
@@ -16076,7 +16076,7 @@ export type WhiteboardRtFromCalloutQuery = {
                           displayName: string;
                           url: string;
                           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
                       }
                     | undefined;
@@ -16272,7 +16272,7 @@ export type WhiteboardRtWithContentQuery = {
                   displayName: string;
                   url: string;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -30033,7 +30033,7 @@ export type CalloutTemplatePreviewQuery = {
                           displayName: string;
                           url: string;
                           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
                       }
                     | undefined;
@@ -30238,7 +30238,7 @@ export type CalloutTemplatePreviewFragment = {
                   displayName: string;
                   url: string;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;

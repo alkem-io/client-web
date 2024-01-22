@@ -545,7 +545,7 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
           country
           city
         }
-        visual(type: AVATAR) {
+        avatar: visual(type: AVATAR) {
           id
           uri
         }

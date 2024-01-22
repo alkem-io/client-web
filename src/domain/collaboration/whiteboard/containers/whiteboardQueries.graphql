@@ -68,7 +68,7 @@ fragment WhiteboardRtDetails on WhiteboardRt {
         country
         city
       }
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         id
         uri
       }

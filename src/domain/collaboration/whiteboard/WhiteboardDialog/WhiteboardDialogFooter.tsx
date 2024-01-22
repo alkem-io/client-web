@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
@@ -15,6 +15,9 @@ import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useLocation } from 'react-router-dom';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Visual } from '../../../common/visual/Visual';
 
 interface WhiteboardDialogFooterProps {
   onSave: () => void;
@@ -22,12 +25,13 @@ interface WhiteboardDialogFooterProps {
   canUpdateContent: boolean;
   updating?: boolean;
   createdBy:
-    | {
+    | (Identifiable & {
         profile: {
           displayName: string;
           url: string;
+          avatar?: Visual;
         };
-      }
+      })
     | undefined;
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
 }
@@ -91,6 +95,19 @@ const WhiteboardDialogFooter = ({
         return ReadonlyReason.ContentUpdatePolicy;
       })();
 
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
+  const handleAuthorClick: MouseEventHandler = event => {
+    event.preventDefault();
+    sendMessage('user', {
+      id: createdBy?.id ?? '',
+      displayName: createdBy?.profile.displayName,
+      avatarUri: createdBy?.profile.avatar?.uri,
+    });
+  };
+
   return (
     <Actions
       minHeight={gutters(3)}
@@ -120,7 +137,11 @@ const WhiteboardDialogFooter = ({
               ownerName: createdBy?.profile.displayName,
             }}
             components={{
-              ownerlink: createdBy ? <RouterLink to={createdBy.profile.url} underline="always" /> : <span />,
+              ownerlink: createdBy ? (
+                <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+              ) : (
+                <span />
+              ),
               journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
               signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
             }}
@@ -129,6 +150,7 @@ const WhiteboardDialogFooter = ({
       ) : (
         <LastSavedCaption saving={updating} date={lastSavedDate} />
       )}
+      {directMessageDialog}
     </Actions>
   );
 };
