@@ -10,32 +10,6 @@ import { FileId } from '@alkemio/excalidraw/types/element/types';
 ///// eventhough VSCode seems to have no problem to see them and shows no compilation error
 // TODO: import them properly
 
-export const debounce = <T extends unknown[]>(fn: (...args: T) => void, timeout: number) => {
-  let handle = 0;
-  let lastArgs: T | null = null;
-  const ret = (...args: T) => {
-    lastArgs = args;
-    clearTimeout(handle);
-    handle = window.setTimeout(() => {
-      lastArgs = null;
-      fn(...args);
-    }, timeout);
-  };
-  ret.flush = () => {
-    clearTimeout(handle);
-    if (lastArgs) {
-      const _lastArgs = lastArgs;
-      lastArgs = null;
-      fn(..._lastArgs);
-    }
-  };
-  ret.cancel = () => {
-    lastArgs = null;
-    clearTimeout(handle);
-  };
-  return ret;
-};
-
 export const arrayToMapWithIndex = <T extends { id: string }>(elements: readonly T[]) =>
   elements.reduce((acc, element: T, idx) => {
     acc.set(element.id, [element, idx]);
@@ -51,22 +25,6 @@ export const bytesToHexString = (bytes: Uint8Array) => {
 export type ResolvablePromise<T> = Promise<T> & {
   resolve: [T] extends [undefined] ? (value?: T) => void : (value: T) => void;
   reject: (error: Error) => void;
-};
-
-export const resolvablePromise = <T>() => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let resolve!: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let reject!: any;
-  const promise = new Promise((_resolve, _reject) => {
-    resolve = _resolve;
-    reject = _reject;
-  });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (promise as any).resolve = resolve;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (promise as any).reject = reject;
-  return promise as ResolvablePromise<T>;
 };
 
 /**

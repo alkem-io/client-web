@@ -1,0 +1,18 @@
+query WhiteboardRtContentUpdatePolicy($whiteboardId: UUID!) {
+  lookup {
+    whiteboardRt(ID: $whiteboardId) {
+      id
+      contentUpdatePolicy
+    }
+  }
+}
+
+mutation UpdateWhiteboardRtContentUpdatePolicy($whiteboardId: UUID!, $contentUpdatePolicy: ContentUpdatePolicy!) {
+  updateWhiteboardRt(whiteboardData: {
+    ID: $whiteboardId
+    contentUpdatePolicy: $contentUpdatePolicy
+  }) {
+    id
+    contentUpdatePolicy
+  }
+}

@@ -23,6 +23,7 @@ export interface PostMessageToCommentsFormProps {
   maxLength?: number;
   disabled?: boolean;
 }
+
 interface formValues {
   post: string;
 }

@@ -22,6 +22,7 @@ import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { useConfig } from '../../../platform/config/useConfig';
 
 export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
+
 interface FormValueType {
   references: CreateReferenceFormValues[];
 }

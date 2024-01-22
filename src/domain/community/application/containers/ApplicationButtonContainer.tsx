@@ -17,7 +17,9 @@ import { useAuthenticationContext } from '../../../../core/auth/authentication/h
 interface ApplicationContainerEntities {
   applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'>;
 }
+
 interface ApplicationContainerActions {}
+
 interface ApplicationContainerState {
   loading: boolean;
 }
