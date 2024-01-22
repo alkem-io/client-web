@@ -25,7 +25,6 @@ export interface OpportunityContextProps {
   spaceNameId: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
-  // displayName: string;
   myMembershipStatus: CommunityMembershipStatus | undefined;
   profile: OpportunityProviderFragment['profile'];
 }
@@ -44,7 +43,6 @@ const DEFAULT_CONTEXT = {
     communityReadAccess: false,
     contextPrivileges: [],
   },
-  // displayName: '',
   myMembershipStatus: undefined,
   profile: {
     id: '',
