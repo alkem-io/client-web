@@ -60,6 +60,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     displayName: '',
     visuals: [],
     tagline: '',
+    url: '',
   },
   license: {
     id: '',
@@ -133,6 +134,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       tagline: space?.profile.tagline || '',
       references: space?.profile.references ?? [],
       location: space?.profile.location,
+      url: space?.profile.url ?? '',
       license,
     };
   }, [space?.profile]);

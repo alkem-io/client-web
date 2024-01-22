@@ -47,6 +47,7 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
     displayName: '',
     visuals: [],
     tagline: '',
+    url: '',
   },
   myMembershipStatus: undefined,
 });
@@ -94,6 +95,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
       tagline: challenge?.profile.tagline || '',
       references: challenge?.profile.references ?? [],
       location: challenge?.profile.location,
+      url: challenge?.profile.url ?? '',
     };
   }, [challenge?.profile]);
 

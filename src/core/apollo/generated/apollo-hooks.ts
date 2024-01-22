@@ -2175,6 +2175,7 @@ export const ChallengeInfoFragmentDoc = gql`
       displayName
       tagline
       description
+      url
       tagset {
         ...TagsetDetails
       }
@@ -2462,6 +2463,7 @@ export const OpportunityProviderFragmentDoc = gql`
       displayName
       description
       tagline
+      url
       visuals {
         ...VisualFull
       }
@@ -2538,6 +2540,7 @@ export const SpaceDetailsFragmentDoc = gql`
       displayName
       description
       tagline
+      url
       tagset {
         ...TagsetDetails
       }

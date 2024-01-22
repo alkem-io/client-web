@@ -13,6 +13,8 @@ import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import { useLocation } from 'react-router-dom';
+import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 
 interface WhiteboardDialogFooterProps {
   onSave: () => void;
@@ -46,6 +48,8 @@ const WhiteboardDialogFooter = ({
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
 
+  const { pathname } = useLocation();
+
   const { isAuthenticated } = useAuthenticationContext();
 
   const spaceContext = useSpace();
@@ -69,6 +73,8 @@ const WhiteboardDialogFooter = ({
     ...challengeContext,
     ...spaceContext,
   });
+
+  const journeyProfile = opportunityContext.profile ?? challengeContext.profile ?? spaceContext.profile;
 
   const readonlyReason = canUpdateContent
     ? null
@@ -111,13 +117,12 @@ const WhiteboardDialogFooter = ({
             i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
             values={{
               journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+              ownerName: createdBy?.profile.displayName,
             }}
             components={{
-              owner: createdBy ? (
-                <RouterLink to={createdBy?.profile.url}>{createdBy?.profile.displayName}</RouterLink>
-              ) : (
-                <span />
-              ),
+              ownerlink: createdBy ? <RouterLink to={createdBy.profile.url} underline="always" /> : <span />,
+              journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
+              signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
             }}
           />
         </Caption>

@@ -32,6 +32,7 @@ import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/Collab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
+import { useLocation } from 'react-router-dom';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -93,6 +94,17 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
+
+  const { pathname } = useLocation();
+
+  const initialPathname = useRef(pathname).current;
+
+  useEffect(() => {
+    if (pathname !== initialPathname) {
+      onClose();
+    }
+  }, [pathname]);
+
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const [collaborationEnabled, setCollaborationEnabled] = useState(true);
@@ -173,7 +185,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
   const onClose = async () => {
     if (editModeEnabled && collaborationEnabled) {
-      await handleSave();
+      handleSave();
     }
     actions.onCancel(whiteboard!);
   };

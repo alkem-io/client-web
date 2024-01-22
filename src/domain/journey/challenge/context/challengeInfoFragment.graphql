@@ -6,6 +6,7 @@ fragment ChallengeInfo on Challenge {
     displayName
     tagline
     description
+    url
     tagset {
       ...TagsetDetails
     }

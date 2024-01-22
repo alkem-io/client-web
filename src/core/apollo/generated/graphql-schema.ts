@@ -22463,6 +22463,7 @@ export type ChallengeInfoQuery = {
         displayName: string;
         tagline: string;
         description?: string | undefined;
+        url: string;
         tagset?:
           | {
               __typename?: 'Tagset';
@@ -22536,6 +22537,7 @@ export type ChallengeInfoFragment = {
     displayName: string;
     tagline: string;
     description?: string | undefined;
+    url: string;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -24685,6 +24687,7 @@ export type OpportunityProviderQuery = {
         displayName: string;
         description?: string | undefined;
         tagline: string;
+        url: string;
         visuals: Array<{
           __typename?: 'Visual';
           id: string;
@@ -24751,6 +24754,7 @@ export type OpportunityProviderFragment = {
     displayName: string;
     description?: string | undefined;
     tagline: string;
+    url: string;
     visuals: Array<{
       __typename?: 'Visual';
       id: string;
@@ -25371,6 +25375,77 @@ export type CommunityPageCommunityFragment = {
     | undefined;
 };
 
+export type SpaceDetailsFragment = {
+  __typename?: 'Space';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline: string;
+    url: string;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+      | undefined;
+    visuals: Array<{
+      __typename?: 'Visual';
+      id: string;
+      uri: string;
+      name: string;
+      allowedTypes: Array<string>;
+      aspectRatio: number;
+      maxHeight: number;
+      maxWidth: number;
+      minHeight: number;
+      minWidth: number;
+      alternativeText?: string | undefined;
+    }>;
+    location?:
+      | {
+          __typename?: 'Location';
+          id: string;
+          country: string;
+          city: string;
+          addressLine1: string;
+          addressLine2: string;
+          stateOrProvince: string;
+          postalCode: string;
+        }
+      | undefined;
+  };
+  host?: { __typename?: 'Organization'; id: string } | undefined;
+  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        vision?: string | undefined;
+        impact?: string | undefined;
+        who?: string | undefined;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+      }
+    | undefined;
+};
+
 export type SpaceProviderQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
@@ -25423,6 +25498,7 @@ export type SpaceProviderQuery = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -25512,6 +25588,7 @@ export type SpaceInfoFragment = {
     displayName: string;
     description?: string | undefined;
     tagline: string;
+    url: string;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -26489,76 +26566,6 @@ export type ChallengesOnSpaceFragment = {
     | undefined;
 };
 
-export type SpaceDetailsFragment = {
-  __typename?: 'Space';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagline: string;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    references?:
-      | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
-      | undefined;
-    visuals: Array<{
-      __typename?: 'Visual';
-      id: string;
-      uri: string;
-      name: string;
-      allowedTypes: Array<string>;
-      aspectRatio: number;
-      maxHeight: number;
-      maxWidth: number;
-      minHeight: number;
-      minWidth: number;
-      alternativeText?: string | undefined;
-    }>;
-    location?:
-      | {
-          __typename?: 'Location';
-          id: string;
-          country: string;
-          city: string;
-          addressLine1: string;
-          addressLine2: string;
-          stateOrProvince: string;
-          postalCode: string;
-        }
-      | undefined;
-  };
-  host?: { __typename?: 'Organization'; id: string } | undefined;
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        vision?: string | undefined;
-        impact?: string | undefined;
-        who?: string | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-      }
-    | undefined;
-};
-
 export type SpaceDetailsProviderFragment = {
   __typename?: 'Space';
   id: string;
@@ -26613,6 +26620,7 @@ export type CreateSpaceMutation = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -26699,6 +26707,7 @@ export type UpdateSpaceMutation = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';

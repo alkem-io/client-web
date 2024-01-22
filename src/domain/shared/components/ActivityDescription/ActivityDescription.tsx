@@ -46,7 +46,7 @@ const ActivityDescription = ({
     if (author) {
       mergedValues['user'] = author.displayName;
       if (author.url) {
-        mergedComponents['userlink'] = <RouterLink to={author.url} loose />;
+        mergedComponents['userlink'] = <RouterLink to={author.url} />;
       } else {
         mergedComponents['userlink'] = <span />;
       }
@@ -74,7 +74,7 @@ const ActivityDescription = ({
       mergedValues['journeyType'] = t(`common.${journeyTypeName}` as const);
     }
 
-    mergedComponents['parentlink'] = journeyUrl ? <RouterLink to={journeyUrl} loose /> : <span />;
+    mergedComponents['parentlink'] = journeyUrl ? <RouterLink to={journeyUrl} /> : <span />;
 
     return {
       values: mergedValues,

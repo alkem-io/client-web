@@ -25,11 +25,12 @@ export interface OpportunityContextProps {
   spaceNameId: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
-  displayName: string;
+  // displayName: string;
   myMembershipStatus: CommunityMembershipStatus | undefined;
+  profile: OpportunityProviderFragment['profile'];
 }
 
-const OpportunityContext = React.createContext<OpportunityContextProps>({
+const DEFAULT_CONTEXT = {
   loading: true,
   opportunityId: '',
   opportunityNameId: '',
@@ -43,9 +44,18 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
     communityReadAccess: false,
     contextPrivileges: [],
   },
-  displayName: '',
+  // displayName: '',
   myMembershipStatus: undefined,
-});
+  profile: {
+    id: '',
+    displayName: '',
+    visuals: [],
+    tagline: '',
+    url: '',
+  },
+};
+
+const OpportunityContext = React.createContext<OpportunityContextProps>(DEFAULT_CONTEXT);
 
 interface OpportunityProviderProps {}
 
@@ -61,7 +71,6 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const communityId = opportunity?.community?.id ?? '';
   // using the challenge provider
   const { challengeId } = useChallenge();
-  const displayName = opportunity?.profile.displayName || '';
 
   const permissions = useMemo<OpportunityViewerPermissions>(
     () => ({
@@ -78,7 +87,6 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     <OpportunityContext.Provider
       value={{
         opportunity,
-        displayName,
         spaceId,
         spaceNameId,
         challengeId,
@@ -88,6 +96,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         communityId,
         permissions,
         loading,
+        profile: opportunity?.profile ?? DEFAULT_CONTEXT.profile,
         myMembershipStatus: opportunity?.community?.myMembershipStatus,
       }}
     >

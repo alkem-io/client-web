@@ -8,7 +8,7 @@ const MarkdownLink = ({
   ...props
 }: ReactMarkdownProps &
   Omit<React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>, 'ref'>) => {
-  return <RouterLink to={node.properties?.href as string} underline="always" loose {...props} />;
+  return <RouterLink to={node.properties?.href as string} underline="always" {...props} />;
 };
 
 export default MarkdownLink;
