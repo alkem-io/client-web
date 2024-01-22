@@ -206,7 +206,7 @@ const useWhiteboardFilesManager = ({
           const file = whiteboard!.files![fileId];
           if (fileStore.current[fileId]?.dataURL) {
             log(`No need to download ${fileId} already in the store`, fileStore.current[fileId]);
-            return Promise.resolve();
+            return;
           }
           if (file.url) {
             log('DOWNLOADING ', file);
