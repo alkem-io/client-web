@@ -1,5 +1,5 @@
 import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { addResponseMessage, dropMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
@@ -14,7 +14,6 @@ import 'react-chat-widget/lib/styles.css';
 import formatChatGuidanceResponseAsMarkdown from './formatChatGuidanceResponseAsMarkdown';
 import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
-import ChatWidgetSubtitle from './ChatWidgetSubtitle';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import { createPortal } from 'react-dom';
 import ChatWidgetFooter from './ChatWidgetFooter';
@@ -213,8 +212,6 @@ const ChatWidget = () => {
 
   useLayoutEffect(setupMenuButton, [chatToggleTime]);
 
-  const isMobile = useMediaQuery('(orientation: portrait)');
-
   const [resetChatGuidance] = useResetChatGuidanceMutation();
 
   const handleClearChat = () => {
@@ -228,8 +225,8 @@ const ChatWidget = () => {
       <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')}>
         <Widget
           profileAvatar={logoSrc}
-          title={<ChatWidgetTitle mobile={isMobile} onClickInfo={() => setIsHelpDialogOpen(true)} />}
-          subtitle={<ChatWidgetSubtitle />}
+          title={<ChatWidgetTitle onClickInfo={() => setIsHelpDialogOpen(true)} />}
+          subtitle={<></>}
           handleNewUserMessage={setNewMessage}
           handleToggle={() => setChatToggleTime(Date.now())}
         />
