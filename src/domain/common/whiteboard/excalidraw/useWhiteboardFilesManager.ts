@@ -84,7 +84,7 @@ const useWhiteboardFilesManager = ({
 }: Props): WhiteboardFilesManager => {
   const log = (..._args) => {
     // TODO: Remove those `log()`s when this is confirmed to be fully stable
-    //console.log('[FileManager]', ..._args);
+    console.log('[FileManager]', ..._args);
   };
 
   /**
@@ -94,6 +94,12 @@ const useWhiteboardFilesManager = ({
    */
   const fileStore = useRef<Record<string, BinaryFileDataWithUrl>>({});
   const [fileStoreVersion, setFileStoreVersion] = useState<number>(0); // This is used to force a re-render when the fileStore changes
+
+  log('[render]', {
+    filesCount: Object.keys(fileStore.current).length,
+    fileStore: fileStore.current,
+    params: { storageBucketId, allowFallbackToAttached, excalidrawApi },
+  });
 
   const fileStoreAddFile = (fileId: string, file: BinaryFileDataWithUrl) => {
     log('changing fileStore version from', fileStore.current, ' to ', {
@@ -198,7 +204,10 @@ const useWhiteboardFilesManager = ({
       await Promise.all(
         pendingFileIds.map(async fileId => {
           const file = whiteboard!.files![fileId];
-
+          if (fileStore.current[fileId]?.dataURL) {
+            log(`No need to download ${fileId} already in the store`, fileStore.current[fileId]);
+            return Promise.resolve();
+          }
           if (file.url) {
             log('DOWNLOADING ', file);
             const dataURL = await fetchFileToDataURL(file.url);
@@ -226,10 +235,15 @@ const useWhiteboardFilesManager = ({
       log('excalidrawApi not ready yet or no files', excalidraw, fileStore.current);
       return;
     }
+    const filesAlreadyInExcalidraw = excalidraw.getFiles();
+    const filesAsArray = Object.keys(fileStore.current)
+      .filter(fileId => !filesAlreadyInExcalidraw[fileId]?.dataURL) // filter out all the files that are already loaded in Excalidraw
+      .map(fileId => fileStore.current[fileId]);
 
-    const filesAsArray = Object.keys(fileStore.current).map(fileId => fileStore.current[fileId]);
-    log('adding files from FilesManager', fileStore.current, filesAsArray);
-    excalidraw.addFiles(filesAsArray);
+    if (filesAsArray.length > 0) {
+      log('pushing files to Excalidraw from FilesManager', fileStore.current, filesAsArray);
+      excalidraw.addFiles(filesAsArray);
+    }
   };
 
   /**
