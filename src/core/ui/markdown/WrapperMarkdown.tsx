@@ -12,23 +12,25 @@ export interface MarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOpt
 
 export const WrapperMarkdown = ({
   card = false,
-  flat = false,
-  multiline = !flat,
+  plain = false,
+  multiline = !plain,
   disableParagraphPadding = card,
+  caption = false,
   ...props
 }: MarkdownProps) => {
   return (
     <MarkdownOptionsProvider
       card={card}
-      flat={flat}
+      plain={plain}
       multiline={multiline}
       disableParagraphPadding={disableParagraphPadding}
+      caption={caption}
     >
       <ReactMarkdown
         components={components}
-        remarkPlugins={[gfm, [PlainText, { enabled: flat }]]}
+        remarkPlugins={[gfm, [PlainText, { enabled: plain }]]}
         rehypePlugins={
-          flat ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
+          plain ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
         }
         {...props}
       />

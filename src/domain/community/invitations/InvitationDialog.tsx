@@ -7,7 +7,7 @@ import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import { Caption, Text } from '../../../core/ui/typography';
-import ActivityDescription from '../../shared/components/ActivityDescription/ActivityDescription';
+import DetailedActivityDescription from '../../shared/components/ActivityDescription/DetailedActivityDescription';
 import { Actions } from '../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -69,7 +69,7 @@ const InvitationDialog = ({
                   </JourneyCard>
                   <Gutters disablePadding>
                     <Caption>
-                      <ActivityDescription
+                      <DetailedActivityDescription
                         i18nKey="community.pendingMembership.invitationTitle"
                         {...invitation}
                         author={{ displayName: invitation.userDisplayName }}

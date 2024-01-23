@@ -12,7 +12,7 @@ import {
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { ActivityComponent } from '../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityComponent } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
@@ -26,8 +26,8 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { Box } from '@mui/material';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -127,7 +127,9 @@ const SpaceCommunityPage = () => {
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <PageContentBlock>
                 <PageContentBlockHeader title={t('common.activity')} />
-                <ActivityComponent activities={activities} journeyLocation={journeyLocation} limit={5} />
+                <Box margin={-1}>
+                  <ActivityComponent activities={activities} journeyLocation={journeyLocation} limit={5} />
+                </Box>
                 <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
                 <DialogWithGrid
                   columns={8}
@@ -138,9 +140,9 @@ const SpaceCommunityPage = () => {
                     title={t('components.activity-log-section.title')}
                     onClose={() => setIsActivitiesDialogOpen(false)}
                   />
-                  <Gutters>
+                  <Box padding={1}>
                     <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-                  </Gutters>
+                  </Box>
                 </DialogWithGrid>
               </PageContentBlock>
               <CalloutsGroupView

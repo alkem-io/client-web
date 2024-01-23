@@ -4,9 +4,9 @@ import { IWhiteboardRtActions } from '../containers/WhiteboardRtActionsContainer
 import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
 import WhiteboardRtContentContainer from '../containers/WhiteboardRtContentContainer';
 import {
-  WhiteboardRtDetailsFragment,
-  WhiteboardRtContentFragment,
   CreateWhiteboardWhiteboardTemplateFragment,
+  WhiteboardRtContentFragment,
+  WhiteboardRtDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
@@ -14,6 +14,8 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
+import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
+import useWhiteboardRtContentUpdatePolicy from '../whiteboardRt/contentUpdatePolicy/WhiteboardRtContentUpdatePolicy';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardNameId?: string;
@@ -67,7 +69,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
   options,
   backToWhiteboards,
 }) => {
-  const { whiteboardNameId, whiteboard } = entities;
+  const { whiteboardNameId, whiteboard, contextSource } = entities;
   const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleCancel = (/*whiteboard: WhiteboardRtDetailsFragment*/) => {
@@ -76,6 +78,11 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
       setFullscreen(false);
     }
   };
+
+  const contentUpdatePolicyProvided = useWhiteboardRtContentUpdatePolicy({
+    whiteboardId: whiteboard?.id,
+    skip: !options.canUpdate,
+  });
 
   return (
     <>
@@ -101,7 +108,15 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
                 fullscreen,
                 headerActions: (
                   <>
-                    <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
+                    <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl}>
+                      {options.canUpdate && (
+                        <WhiteboardShareSettings
+                          createdBy={entities.whiteboard?.createdBy}
+                          journeyTypeName={contextSource}
+                          {...contentUpdatePolicyProvided}
+                        />
+                      )}
+                    </ShareButton>
                     <FullscreenButton />
                   </>
                 ),

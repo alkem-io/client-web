@@ -1,10 +1,13 @@
-import { User } from '../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface AuthorData extends Pick<User, 'id' | 'nameID' | 'firstName' | 'lastName'> {
+interface AuthorData extends Identifiable {
+  nameID: string;
+  firstName: string;
+  lastName: string;
   profile: {
     displayName: string;
+    url: string;
     avatar?: {
       uri: string;
     };
@@ -21,7 +24,6 @@ interface AuthorData extends Pick<User, 'id' | 'nameID' | 'firstName' | 'lastNam
 
 export const buildAuthorFromUser = (user: AuthorData): Author => {
   const avatarURL = user.profile.avatar ? user.profile.avatar?.uri : user.profile.visual?.uri;
-  const url = buildUserProfileUrl(user.nameID);
   const tags = user?.profile?.tagsets?.flatMap(tagset => tagset.tags);
   const result: Author = {
     id: user.id,
@@ -29,7 +31,7 @@ export const buildAuthorFromUser = (user: AuthorData): Author => {
     firstName: user.firstName,
     lastName: user.lastName,
     avatarUrl: avatarURL,
-    url: url,
+    url: user.profile.url,
     tags: tags ?? [],
     city: user.profile.location?.city,
     country: user.profile.location?.country,

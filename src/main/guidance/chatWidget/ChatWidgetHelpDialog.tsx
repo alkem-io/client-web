@@ -4,8 +4,8 @@ import { Box, DialogProps, Typography } from '@mui/material';
 import { gutters } from '../../../core/ui/grid/utils';
 import { InfoOutlined } from '@mui/icons-material';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { Text } from '../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
+import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 
 interface ChatWidgetHelpDialogProps extends DialogProps {
   onClose?: () => void;
@@ -28,7 +28,9 @@ const ChatWidgetHelpDialog = ({ onClose, ...props }: ChatWidgetHelpDialogProps) 
         onClose={onClose}
       />
       <Gutters paddingTop={0}>
-        <Text>{t('chatbot.infoDialog.content')}</Text>
+        <WrapperMarkdown caption disableParagraphPadding>
+          {t('chatbot.infoDialog.content')}
+        </WrapperMarkdown>
       </Gutters>
     </DialogWithGrid>
   );

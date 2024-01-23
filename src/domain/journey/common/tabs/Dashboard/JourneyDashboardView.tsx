@@ -13,7 +13,7 @@ import {
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { ActivityLogResultType } from '../../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityLogResultType } from '../../../../collaboration/activity/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';

@@ -8,6 +8,7 @@ import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import * as yup from 'yup';
+
 interface SocialLinksProps {
   title?: string;
   items?: SocialLinkItem[];

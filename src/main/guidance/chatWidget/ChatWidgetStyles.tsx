@@ -22,6 +22,8 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
           maxHeight: '-webkit-fill-available',
         },
         '.rcw-conversation-container': {
+          display: 'flex',
+          flexDirection: 'column',
           marginBottom: gutters(0.5),
           overflow: 'hidden',
           minWidth: 0,
@@ -64,7 +66,19 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
           ...background,
           zIndex: 1, // Otherwise the custom header makes it unclickable
           top: theme.spacing(1.5),
-          right: theme.spacing(0.5),
+          right: theme.spacing(1),
+          display: 'block',
+          border: 0,
+          position: 'absolute',
+          width: theme.spacing(3),
+          paddingX: 0,
+          cursor: 'pointer',
+          background: 'transparent',
+          '.rcw-close': {
+            padding: 0.2,
+            width: 20,
+            height: 20,
+          },
         },
         '.rcw-client .rcw-message-text': {
           ...background,

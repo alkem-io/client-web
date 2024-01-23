@@ -30,6 +30,7 @@ interface GlobalStateContextProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   notificationsService: Interpreter<NotificationsContext, any, NotificationsEvent>;
 }
+
 export const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
 
 export const GlobalStateProvider = ({ children }) => {

@@ -1,24 +1,15 @@
-import ActivityDescription, { ActivityDescriptionProps } from './ActivityDescription';
+import { useTranslation } from 'react-i18next';
+import { ActivityEventType } from '../../../../core/apollo/generated/graphql-schema';
 
-interface ActivityDescriptionByTypeProps extends Omit<ActivityDescriptionProps, 'i18nKey'> {
-  activityType:
-    | 'callout-published'
-    | 'challenge-created'
-    | 'discussion-comment-created'
-    | 'member-joined'
-    | 'post-comment-created'
-    | 'post-created'
-    | 'whiteboard-created'
-    | 'callout-link-created'
-    | 'calendar-event-created'
-    | 'opportunity-created'
-    | 'update-sent';
+interface ActivityDescriptionByTypeProps {
+  activityType: ActivityEventType;
+  subject: string;
 }
 
-const ActivityDescriptionByType = ({ activityType, ...props }: ActivityDescriptionByTypeProps) => {
-  const i18nKey = `components.activity-log-view.actions.${activityType}` as const;
+const ActivityDescriptionByType = ({ activityType, subject }: ActivityDescriptionByTypeProps) => {
+  const { t } = useTranslation();
 
-  return <ActivityDescription i18nKey={i18nKey} {...props} />;
+  return <>{t(`components.activityLogView.description.${activityType}` as const, { subject: subject })}</>;
 };
 
 export default ActivityDescriptionByType;

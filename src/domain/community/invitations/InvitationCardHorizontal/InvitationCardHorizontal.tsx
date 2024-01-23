@@ -5,7 +5,7 @@ import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import ActivityDescription from '../../../shared/components/ActivityDescription/ActivityDescription';
+import DetailedActivityDescription from '../../../shared/components/ActivityDescription/DetailedActivityDescription';
 import LinkButton from '../../../../core/ui/button/LinkButton';
 
 interface InvitationCardHorizontalProps {
@@ -26,7 +26,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
       outlined
     >
       <BlockSectionTitle noWrap>
-        <ActivityDescription
+        <DetailedActivityDescription
           i18nKey="community.pendingMembership.invitationTitle"
           {...invitation}
           author={{ displayName: invitation.userDisplayName }}
@@ -41,7 +41,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
         noWrap
       >
         {invitation.welcomeMessage && (
-          <WrapperMarkdown card flat>
+          <WrapperMarkdown card plain>
             {invitation.welcomeMessage}
           </WrapperMarkdown>
         )}

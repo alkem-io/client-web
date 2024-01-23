@@ -33,6 +33,7 @@ interface BoundingBox {
   maxX: number;
   maxY: number;
 }
+
 const getBoundingBox = (whiteboardElements?: readonly ExcalidrawElement[]): BoundingBox => {
   if (!whiteboardElements || whiteboardElements.length === 0) {
     return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
@@ -70,12 +71,12 @@ const calculateInsertionPoint = (whiteboardA: BoundingBox, whiteboardB: Bounding
   return { x, y };
 };
 
-const mergeWhiteboard = (whiteboardApi: ExcalidrawImperativeAPI, whiteboardValue: string) => {
+const mergeWhiteboard = (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
   let parsedWhiteboard: unknown;
   try {
-    parsedWhiteboard = JSON.parse(whiteboardValue);
+    parsedWhiteboard = JSON.parse(whiteboardContent);
   } catch (err) {
-    throw new WhiteboardMergeError(`Unable to parse whiteboard value: ${err}`);
+    throw new WhiteboardMergeError(`Unable to parse whiteboard content: ${err}`);
   }
 
   if (!isWhiteboardLike(parsedWhiteboard)) throw new WhiteboardMergeError('Whiteboard verification failed');
