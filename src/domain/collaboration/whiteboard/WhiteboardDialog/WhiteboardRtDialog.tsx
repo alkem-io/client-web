@@ -128,13 +128,16 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
   });
 
-  const handleUpdate = async (
+  const prepareWhiteboardForUpdate = async (
     whiteboard: WhiteboardRtWithContent,
     state: RelevantExcalidrawState | undefined,
     shouldUploadPreviewImages = false
-  ): Promise<{ success: boolean; errors?: string[] }> => {
+  ): Promise<{
+    whiteboard: Whiteboard;
+    previewImages?: WhiteboardPreviewImage[];
+  }> => {
     if (!state) {
-      return { success: false, errors: ['Excalidraw state not defined'] };
+      throw new Error('Excalidraw state not defined');
     }
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
@@ -147,13 +150,13 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
-      return { success: false, errors: ['Form not valid'] };
+      throw new Error('Form not valid');
     }
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
-    const result = await actions.onUpdate(
-      {
+    return {
+      whiteboard: {
         ...whiteboard,
         profile: {
           ...whiteboard.profile,
@@ -161,33 +164,49 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         },
         content,
       } as Whiteboard,
-      previewImages
-    );
+      previewImages,
+    };
+  };
 
+  const submitUpdate = async (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => {
+    const result = await actions.onUpdate(whiteboard, previewImages);
     collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
     await refetchLastSaved(); // And update the caption
-
     return result;
   };
 
-  const handleSave = async () => {
+  const getWhiteboardState = async () => {
     const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
     if (!whiteboard || !whiteboardApi) {
       return;
     }
     const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
-    const state = {
+    return {
       ...content,
       elements: whiteboardApi.getSceneElements(),
       appState: whiteboardApi.getAppState(),
       files: whiteboardApi.getFiles(),
     };
-    await handleUpdate(whiteboard, state, true);
+  };
+
+  const handleSave = async () => {
+    if (!whiteboard) {
+      throw new Error('Whiteboard not defined');
+    }
+    const whiteboardState = await getWhiteboardState();
+    const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+      whiteboard,
+      whiteboardState,
+      true
+    );
+    return submitUpdate(updatedWhiteboard, previewImages);
   };
 
   const onClose = async () => {
-    if (editModeEnabled && collaborationEnabled) {
-      handleSave();
+    if (editModeEnabled && collaborationEnabled && whiteboard) {
+      const whiteboardState = await getWhiteboardState();
+      const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
+      submitUpdate(updatedWhiteboard);
     }
     actions.onCancel(whiteboard!);
   };
@@ -277,7 +296,10 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                       },
                     }}
                     actions={{
-                      onUpdate: state => handleUpdate(whiteboard, state),
+                      onUpdate: async state => {
+                        const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
+                        return submitUpdate(updatedWhiteboard);
+                      },
                       onSavedToDatabase: () => {
                         refetchLastSaved({
                           whiteboardId: whiteboard.id,
