@@ -23,7 +23,7 @@ export interface ActivityDescriptionProps {
 
 const PARENT_NAME_MAX_LENGTH = 20;
 
-const ActivityDescription = ({
+const DetailedActivityDescription = ({
   i18nKey,
   createdDate,
   journeyDisplayName,
@@ -99,9 +99,9 @@ const ActivityDescription = ({
         i18nKey={i18nKey as any}
         {...props}
       />
-      {withLinkToParent && <Trans i18nKey="components.activity-log-view.parent-link" {...props} />}
+      {withLinkToParent && <Trans i18nKey="components.activityLogView.detailedDescription.parentLink" {...props} />}
     </>
   );
 };
 
-export default ActivityDescription;
+export default DetailedActivityDescription;

@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { ActivityComponent, ActivityComponentProps } from '../../../shared/components/ActivityLog/ActivityComponent';
+import {
+  ActivityComponent,
+  ActivityComponentProps,
+} from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { Caption } from '../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
@@ -101,7 +104,7 @@ const DashboardRecentContributionsBlock = ({
             <>
               {readUsersAccess && entityReadAccess && showActivities && (
                 <>
-                  <OverflowGradient>
+                  <OverflowGradient sx={{ margin: -1 }}>
                     <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
                   </OverflowGradient>
                   <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
