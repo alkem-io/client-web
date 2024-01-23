@@ -4,7 +4,6 @@ import { SvgIconProps } from '@mui/material';
 import {
   CalendarMonthOutlined,
   ChatBubbleOutlineOutlined,
-  DrawOutlined,
   LinkOutlined,
   MicOutlined,
   NotesOutlined,
@@ -13,13 +12,14 @@ import {
 import { ChallengeIcon } from '../../../../journey/challenge/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import calloutIcons from '../../../callout/utils/calloutIcons';
+import { WhiteboardIcon } from '../../../whiteboard/icon/WhiteboardIcon';
 
 const ActivityIcon: Record<
   Exclude<ActivityEventType, ActivityEventType.CalloutPublished>,
   ComponentType<SvgIconProps>
 > = {
   [ActivityEventType.MemberJoined]: PersonOutlined,
-  [ActivityEventType.CalloutWhiteboardCreated]: DrawOutlined,
+  [ActivityEventType.CalloutWhiteboardCreated]: WhiteboardIcon,
   [ActivityEventType.CalloutPostCreated]: NotesOutlined,
   [ActivityEventType.CalloutPostComment]: ChatBubbleOutlineOutlined,
   [ActivityEventType.CalloutLinkCreated]: LinkOutlined,
