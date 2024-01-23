@@ -1,6 +1,6 @@
 import React, { forwardRef, ReactElement } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import { BoxTypeMap } from '@mui/material/Box/Box';
+import { BoxTypeMap } from '@mui/system';
 import { gutters } from './utils';
 
 export interface GuttersProps {
