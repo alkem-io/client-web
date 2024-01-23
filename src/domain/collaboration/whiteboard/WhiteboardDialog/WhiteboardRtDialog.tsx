@@ -297,8 +297,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     }}
                     actions={{
                       onUpdate: async state => {
-                        const update = await prepareWhiteboardForUpdate(whiteboard, state);
-                        return submitUpdate(update.whiteboard);
+                        const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
+                        return submitUpdate(updatedWhiteboard);
                       },
                       onSavedToDatabase: () => {
                         refetchLastSaved({
