@@ -78,7 +78,18 @@ const WhiteboardDialogFooter = ({
     ...spaceContext,
   });
 
-  const journeyProfile = opportunityContext.profile ?? challengeContext.profile ?? spaceContext.profile;
+  const getJourneyProfile = () => {
+    switch (journeyTypeName) {
+      case 'space':
+        return spaceContext.profile;
+      case 'challenge':
+        return challengeContext.profile;
+      case 'opportunity':
+        return opportunityContext.profile;
+    }
+  };
+
+  const journeyProfile = getJourneyProfile();
 
   const readonlyReason = canUpdateContent
     ? null
