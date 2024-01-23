@@ -1,6 +1,6 @@
 import React, { cloneElement, forwardRef, PropsWithChildren, ReactElement } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import { BoxTypeMap } from '@mui/material/Box/Box';
+import { BoxTypeMap } from '@mui/system';
 import { gutters } from '../grid/utils';
 
 interface BadgeCardViewProps {

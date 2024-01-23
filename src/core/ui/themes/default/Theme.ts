@@ -44,7 +44,7 @@ export const themeOptions: ThemeOptions = {
       md: 1100,
     },
   },
-};
+} as ThemeOptions;
 
 export const theme = createTheme(themeOptions);
 
