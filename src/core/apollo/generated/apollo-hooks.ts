@@ -144,6 +144,7 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       profile {
         id
         displayName
+        url
         visual(type: AVATAR) {
           id
           uri
@@ -194,11 +195,10 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
     post {
       id
       nameID
-      type
       profile {
         id
+        url
         displayName
-        description
       }
     }
   }
@@ -212,35 +212,26 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
         profile {
           id
           displayName
+          url
         }
       }
     }
     reference {
       id
       name
-      description
       uri
     }
   }
 `;
 export const ActivityLogCalloutPostCommentFragmentDoc = gql`
   fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
-    callout {
-      id
-      nameID
-      framing {
-        profile {
-          id
-          displayName
-        }
-      }
-    }
     post {
       id
       nameID
       profile {
         id
         displayName
+        url
       }
     }
   }
@@ -254,6 +245,7 @@ export const ActivityLogCalloutWhiteboardCreatedFragmentDoc = gql`
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -263,6 +255,7 @@ export const ActivityLogCalloutWhiteboardCreatedFragmentDoc = gql`
       profile {
         id
         displayName
+        url
       }
     }
   }
@@ -291,7 +284,7 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
       profile {
         id
         displayName
-        tagline
+        url
       }
     }
   }
@@ -304,7 +297,7 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
       profile {
         id
         displayName
-        tagline
+        url
       }
     }
   }
@@ -316,16 +309,13 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
 `;
 export const ActivityLogCalendarEventCreatedFragmentDoc = gql`
   fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
-    calendar {
-      id
-    }
     calendarEvent {
       id
       nameID
       profile {
         id
         displayName
-        description
+        url
       }
     }
   }
@@ -582,6 +572,7 @@ export const MessageDetailsFragmentDoc = gql`
       profile {
         id
         displayName
+        url
         avatar: visual(type: AVATAR) {
           id
           uri

@@ -18,7 +18,7 @@ import {
   Reference,
   SpacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';

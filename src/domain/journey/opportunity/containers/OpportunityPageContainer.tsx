@@ -20,7 +20,7 @@ import useCommunityMembersAsCardProps from '../../../community/community/utils/u
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';

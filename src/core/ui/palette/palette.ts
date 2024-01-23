@@ -8,7 +8,7 @@ export const paletteOptions: PaletteOptions = {
   secondary: { main: '#00a88f' },
   muted: { main: '#A8A8A8' },
   text: {
-    primary: '#000000',
+    primary: '#181828',
   },
   positive: { main: '#00D4B4' },
   negative: { main: '#D32F2F' },

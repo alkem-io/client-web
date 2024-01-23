@@ -11,7 +11,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';

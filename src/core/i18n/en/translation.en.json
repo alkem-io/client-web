@@ -1028,33 +1028,22 @@
       "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
       "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
     },
-    "activity-log-view": {
-      "actions": {
-        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' published a new $t(common.callout)",
-        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.challenge)",
-        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{calloutDisplayName}}'",
-        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' joined the {{communityType}} '{{journeyDisplayName}}'",
-        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.opportunity)",
-        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{postDisplayName}}'",
-        "post-created": "{{time}} '<userlink>{{user}}</userlink>' added a Post to '{{calloutDisplayName}}'",
-        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' added a Link to '{{calloutDisplayName}}'",
-        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' shared a new $t(common.update)",
-        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'",
-        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' added a new calendar event '{{eventDisplayName}}'"
+    "activityLogView": {
+      "description": {
+        "CALLOUT_PUBLISHED": "{{subject}}",
+        "CHALLENGE_CREATED": "{{subject}}",
+        "DISCUSSION_COMMENT": "{{subject}}",
+        "MEMBER_JOINED": "{{subject}} joined",
+        "OPPORTUNITY_CREATED": "{{subject}}",
+        "CALLOUT_POST_COMMENT": "{{subject}}",
+        "CALLOUT_POST_CREATED": "{{subject}}",
+        "CALLOUT_LINK_CREATED": "{{subject}}",
+        "UPDATE_SENT": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
-      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
-      "activity-description": {
-        "callout-published": "{{displayName}}",
-        "challenge-created": "{{displayName}}",
-        "discussion-comment-created": "{{comment}}",
-        "member-joined": "{{user}}",
-        "opportunity-created": "{{displayName}}",
-        "post-comment-created": "{{comment}}",
-        "post-created": "{{postDisplayName}} - {{postDescription}}",
-        "callout-link-created": "{{linkName}} - {{linkDescription}}",
-        "update-sent": "{{update}}",
-        "whiteboard-created": "{{displayName}}",
-        "calendar-event-created": "{{eventDescription}}"
+      "detailedDescription": {
+        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
       }
     },
     "lifecycle": {

@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import MyActivityView, { MyActivityViewProps } from './MyActivityView';
 import {
   ActivityEventType,
   LatestContributionsQuery,
@@ -14,6 +12,12 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 import usePaginatedQuery from '../../../../../domain/shared/pagination/usePaginatedQuery';
+import { Box } from '@mui/material';
+import {
+  ActivityLogResultType,
+  ActivityViewChooser,
+} from '../../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
+import MyActivityViewFooter from '../../../../../domain/collaboration/activity/ActivityLog/views/MyActivityViewFooter';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 4;
 
@@ -65,11 +69,16 @@ const MyLatestContributions = () => {
     <PageContentBlock halfWidth>
       <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
       <ScrollerWithGradient>
-        <Gutters>
-          {activities?.map(activity => {
-            return <MyActivityView key={activity.id} activity={activity as MyActivityViewProps['activity']} />;
-          })}
-        </Gutters>
+        <Box padding={1}>
+          {activities?.map(activity => (
+            <ActivityViewChooser
+              key={activity.id}
+              activity={activity as ActivityLogResultType}
+              journeyUrl={activity.journey?.profile.url ?? ''}
+              footerComponent={MyActivityViewFooter}
+            />
+          ))}
+        </Box>
       </ScrollerWithGradient>
     </PageContentBlock>
   );

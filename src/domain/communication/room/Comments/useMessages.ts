@@ -13,6 +13,7 @@ interface FetchedMessage {
     profile: {
       id: string;
       displayName: string;
+      url: string;
       visual?: { id: string; uri: string };
       tagsets?: { id: string; name: string; tags: string[] }[];
       location?: { id: string; city: string; country: string };

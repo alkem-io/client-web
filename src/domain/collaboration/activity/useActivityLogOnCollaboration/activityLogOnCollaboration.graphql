@@ -79,6 +79,7 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     profile {
       id
       displayName
+      url
       visual(type: AVATAR) {
         id
         uri
@@ -94,6 +95,7 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     }
   }
 }
+
 fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
   callout {
     id
@@ -125,11 +127,10 @@ fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
   post {
     id
     nameID
-    type
     profile {
       id
+      url
       displayName
-      description
     }
   }
 }
@@ -142,34 +143,25 @@ fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
       profile {
         id
         displayName
+        url
       }
     }
   }
   reference {
     id
     name
-    description
     uri
   }
 }
 
 fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
-  callout {
-    id
-    nameID
-    framing {
-      profile {
-        id
-        displayName
-      }
-    }
-  }
   post {
     id
     nameID
     profile {
       id
       displayName
+      url
     }
   }
 }
@@ -182,6 +174,7 @@ fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboar
       profile {
         id
         displayName
+        url
       }
     }
   }
@@ -191,6 +184,7 @@ fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboar
     profile {
       id
       displayName
+      url
     }
   }
 }
@@ -202,7 +196,7 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     profile {
       id
       displayName
-      tagline
+      url
     }
   }
 }
@@ -214,7 +208,7 @@ fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     profile {
       id
       displayName
-      tagline
+      url
     }
   }
 }
@@ -235,16 +229,13 @@ fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussio
 }
 
 fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
-  calendar {
-    id
-  }
   calendarEvent {
     id
     nameID
     profile {
       id
       displayName
-      description
+      url
     }
   }
 }

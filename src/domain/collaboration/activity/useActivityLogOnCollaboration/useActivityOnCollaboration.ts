@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityLogResultType } from '../ActivityLog/ActivityComponent';
 import {
   ActivityCreatedDocument,
   useActivityLogOnCollaborationQuery,
