@@ -3083,6 +3083,7 @@ export const ConfigurationFragmentDoc = gql`
     locations {
       environment
       domain
+      landing
       about
       blog
       feedback
