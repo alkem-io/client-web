@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
-import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { BinaryFileData, ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
@@ -33,6 +33,7 @@ import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/use
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
+import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -85,6 +86,27 @@ const useStyles = makeStyles(theme => ({
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
+const checkWhiteboardConsistency = (
+  whiteboardId: string | undefined,
+  elements: readonly ExcalidrawElement[],
+  files: Record<BinaryFileData['id'], BinaryFileData & { url?: string }>
+) => {
+  const missingImages = elements.filter(
+    element =>
+      element.type === 'image' && (!element.fileId || !files || !files[element.fileId] || !files[element.fileId].url)
+  ) as ExcalidrawImageElement[];
+
+  if (missingImages.length > 0) {
+    logError(
+      new Error(
+        `Whiteboard is missing images '${whiteboardId}':[${missingImages.map(image => image.fileId).join(', ')}]`
+      )
+    );
+    return false;
+  }
+  return true;
+};
+
 const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   entities,
   actions,
@@ -135,6 +157,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   ): Promise<{
     whiteboard: Whiteboard;
     previewImages?: WhiteboardPreviewImage[];
+    whiteboardIsConsistent: boolean;
   }> => {
     if (!state) {
       throw new Error('Excalidraw state not defined');
@@ -148,6 +171,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         : undefined;
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
+    const whiteboardIsConsistent = checkWhiteboardConsistency(whiteboard.id, elements, files ?? {});
 
     if (!formikRef.current?.isValid) {
       throw new Error('Form not valid');
@@ -165,6 +189,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         content,
       } as Whiteboard,
       previewImages,
+      whiteboardIsConsistent,
     };
   };
 
@@ -194,19 +219,32 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       throw new Error('Whiteboard not defined');
     }
     const whiteboardState = await getWhiteboardState();
-    const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
-      whiteboard,
-      whiteboardState,
-      true
-    );
+    const {
+      whiteboard: updatedWhiteboard,
+      previewImages,
+      whiteboardIsConsistent,
+    } = await prepareWhiteboardForUpdate(whiteboard, whiteboardState, true);
+    if (!whiteboardIsConsistent) {
+      if (!window.confirm('Whiteboard is in an inconsistent state, are you sure that you want to save it?')) {
+        return { success: false, errors: ['Whiteboard is in an inconsistent state. User cancelled save'] };
+      }
+    }
     return submitUpdate(updatedWhiteboard, previewImages);
   };
 
   const onClose = async () => {
     if (editModeEnabled && collaborationEnabled && whiteboard) {
       const whiteboardState = await getWhiteboardState();
-      const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
-      submitUpdate(updatedWhiteboard);
+      const { whiteboard: updatedWhiteboard, whiteboardIsConsistent } = await prepareWhiteboardForUpdate(
+        whiteboard,
+        whiteboardState
+      );
+      if (whiteboardIsConsistent) {
+        submitUpdate(updatedWhiteboard);
+      } else {
+        window.alert('Whiteboard is in an inconsistent state, not saving it onClose');
+        console.error('Whiteboard is in an inconsistent state, not saving it onClose', whiteboardState);
+      }
     }
     actions.onCancel(whiteboard!);
   };
@@ -297,8 +335,14 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     }}
                     actions={{
                       onUpdate: async state => {
-                        const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
-                        return submitUpdate(updatedWhiteboard);
+                        const { whiteboard: updatedWhiteboard, whiteboardIsConsistent } =
+                          await prepareWhiteboardForUpdate(whiteboard, state);
+                        if (whiteboardIsConsistent) {
+                          return submitUpdate(updatedWhiteboard);
+                        } else {
+                          console.error('Whiteboard is in an inconsistent state, not saving it');
+                          return { success: false, errors: ['Whiteboard is in an inconsistent state, skipping save.'] };
+                        }
                       },
                       onSavedToDatabase: () => {
                         refetchLastSaved({

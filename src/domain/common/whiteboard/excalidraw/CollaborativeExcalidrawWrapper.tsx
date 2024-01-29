@@ -189,6 +189,7 @@ const CollaborativeExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, 
               const state = {
                 ...(data as ExportedDataState),
                 elements: excalidrawAPI.getSceneElements(),
+                files: excalidrawAPI.getFiles(),
                 appState: excalidrawAPI.getAppState(),
               };
               const result = await actions.onUpdate?.(state);
