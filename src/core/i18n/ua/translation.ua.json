@@ -1,27 +1,33 @@
 {
   "chatbot": {
-    "title": "Alkemio Help",
-    "subtitle": "Ask your question to search through our documentation or browse it directly",
+    "title": "Help",
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+      "content": "Use the Alkemio guidance chat to get automatic answers to your questions from Alkemio’s documentation.\n\nThis is an __advanced search module__ powered by a widely used online generative AI engine. It interprets your question and guides you to the most relevant help from the Alkemio help center. You can see the sources of the answers as well.\n\n__Don’t worry about your privacy:__ the search engine does not use or store any user data, and it cannot link the interaction to individual users. If you need to contact the Alkemio team, please click the contact button below."
     },
     "feedback": {
       "message": "Is the answer relevant?",
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
+    "menu": {
+      "clear": "Clear conversation",
+      "close": "Close window"
+    },
     "references": [
       {
-        "uri": "https://www.alkemio.org/help/getting-started/",
+        "icon": "GradeOutlined",
+        "uri": "https://welcome.alkem.io/help/getting-started/",
         "title": "New user? Visit our Getting Started pages!"
       },
       {
-        "uri": "https://www.alkemio.org/help/",
+        "icon": "NotListedLocationOutlined",
+        "uri": "https://welcome.alkem.io/help/",
         "title": "Find your answers in the Help Center or FAQ"
       },
       {
-        "uri": "https://www.alkemio.org/support/",
+        "icon": "EmailOutlined",
+        "uri": "https://welcome.alkem.io/contact/",
         "title": "Contact the Alkemio team"
       }
     ]
@@ -130,7 +136,6 @@
     "create-project": "Створити Проект",
     "processing": "Триває процес...",
     "details": "Деталі",
-    "settings": "Налатшунки",
     "member": "Учасник",
     "profile": "Профіль",
     "view-profile": "Переглянути профіль",
@@ -361,6 +366,12 @@
       "not-verified": ""
     },
     "enums": {
+      "communityRole": {
+        "ADMIN": "$t(common.admin)",
+        "LEAD": "$t(common.lead)",
+        "HOST": "$t(common.host)",
+        "MEMBER": "$t(common.member)"
+      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",
@@ -846,6 +857,21 @@
     }
   },
   "components": {
+    "shareSettings": {
+      "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "ownedBy": {
+        "title": "This whiteboard is owned by:"
+      },
+      "editableBy": {
+        "title": "This whiteboard can be edited by:",
+        "options": {
+          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
+          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "OWNER": "The owner of this whiteboard"
+        }
+      }
+    },
     "navigation": {
       "exitMenu": "Exit menu",
       "skipMenu": "Skip main menu"
@@ -1002,33 +1028,22 @@
       "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
       "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
     },
-    "activity-log-view": {
-      "actions": {
-        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' опублікував новий $t(common.callout)",
-        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' створив новий $t(common.challenge)",
-        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' прокоментував '{{calloutDisplayName}}'",
-        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' joined the {{communityType}} '{{journeyDisplayName}}'",
-        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' створив новий $t(common.opportunity)",
-        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' прокоментував '{{postDisplayName}}'",
-        "post-created": "{{time}} '<userlink>{{user}}</userlink>' додав Допис до '{{calloutDisplayName}}'",
-        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' added a Link to '{{calloutDisplayName}}'",
-        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' поділився новим $t(common.update)",
-        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' додав а $t(common.whiteboard) до '{{calloutDisplayName}}'",
-        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' added a new calendar event '{{eventDisplayName}}'"
+    "activityLogView": {
+      "description": {
+        "CALLOUT_PUBLISHED": "{{subject}}",
+        "CHALLENGE_CREATED": "{{subject}}",
+        "DISCUSSION_COMMENT": "{{subject}}",
+        "MEMBER_JOINED": "{{subject}} joined",
+        "OPPORTUNITY_CREATED": "{{subject}}",
+        "CALLOUT_POST_COMMENT": "{{subject}}",
+        "CALLOUT_POST_CREATED": "{{subject}}",
+        "CALLOUT_LINK_CREATED": "{{subject}}",
+        "UPDATE_SENT": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
-      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
-      "activity-description": {
-        "callout-published": "{{displayName}}",
-        "challenge-created": "{{displayName}}",
-        "discussion-comment-created": "{{comment}}",
-        "member-joined": "{{userDisplayName}}",
-        "opportunity-created": "{{displayName}}",
-        "post-comment-created": "{{comment}}",
-        "post-created": "{{postDisplayName}} - {{postDescription}}",
-        "callout-link-created": "{{linkName}} - {{linkDescription}}",
-        "update-sent": "{{update}}",
-        "whiteboard-created": "{{displayName}}",
-        "calendar-event-created": "{{eventDescription}}"
+      "detailedDescription": {
+        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
       }
     },
     "lifecycle": {
@@ -1083,7 +1098,7 @@
         "post-template-label": "Choose Post template"
       },
       "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, **who have their notifications for these actions turned on**, to receive a notification?",
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, <b>who have their notifications for these actions turned on</b>, to receive a notification?",
         "checkbox-label": "Yes, notify the community."
       },
       "close-dialog": {
@@ -1868,18 +1883,6 @@
       "placeholder": "Search...",
       "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
-      "search-suggestions": "Search suggestions:",
-      "suggestions-array": [
-        "Innovation",
-        "Energy",
-        "Inclusive",
-        "Design",
-        "3D",
-        "Community",
-        "Transition",
-        "SSI",
-        "Privacy"
-      ],
       "user-not-logged": "Увідіть, або зареєструйтесь, щоб вказати користувача в пошуку",
       "filter": {
         "type": {
@@ -1944,7 +1947,71 @@
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
       "sections": {
+        "latestContributions": {
+          "title": "Latest Contributions in my Spaces",
+          "filter": {
+            "space": {
+              "label": "Space:",
+              "all": "All Spaces"
+            },
+            "role": {
+              "label": "My role:",
+              "all": "All roles"
+            }
+          }
+        },
+        "myLatestContributions": {
+          "title": "My Latest Contributions",
+          "card": {
+            "journey": "in: <journeyicon /> {{journey}}"
+          }
+        },
+        "createAccountBanner": {
+          "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
+        },
+        "recentJourneys": {
+          "seeMore": {
+            "full": "Explore all your Spaces, Challenges, and Opportunities",
+            "short": "Explore all your Spaces"
+          }
+        },
+        "myMemberships": {
+          "title": "My Memberships",
+          "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
+          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Spaces on the platform, or <landing>click here</landing> to create your own!"
+        },
+        "membershipSuggestions": {
+          "title": "Become a member",
+          "suggestedSpace": {
+            "join": "Join our @ Alkemio Space!",
+            "nameId": "welcome-space"
+          },
+          "searchCommunity": {
+            "title": "...or look for your Community below",
+            "searchSuggestions": "Search suggestions:"
+          },
+          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+        },
+        "newMemberships": {
+          "title": "New Memberships",
+          "openMemberships": "Open applications & invitations",
+          "recentlyJoined": "Recently joined",
+          "seeMore": "Show all my memberships",
+          "invitation": {
+            "message": "You are <b>invited</b> to join <journeyicon /> {{journey}}",
+            "caption": "Click here to see the invitation"
+          },
+          "application": {
+            "message": "You <b>applied</b> to join <journeyicon /> {{journey}}",
+            "caption": "Your application still has to be approved"
+          },
+          "membership": {
+            "message": "<journeyicon /> {{journey}}",
+            "caption": "{{tagline}}"
+          }
+        },
         "welcome": {
+          "welcomeUnauthenticated": "Welcome at Alkemio!",
           "welcome-back": "Ласкаво просимо назад {{username}}!",
           "join": "Бажаєте приєднатись до Спільноти і побачити більше?",
           "existing-user": {
@@ -1960,11 +2027,23 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
+        "exploreOtherChallenges": {
+          "header": "Explore the other Challenge Spaces!"
+        },
+        "innovationLibraryBlock": {
+          "title": "Innovation library: Have you seen this one yet...?",
+          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "seeMore": "Explore more Innovation Packs"
+        },
         "space": {
           "header": "Explore the Challenge Spaces!",
           "subheader": "",
           "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
           "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
+        },
+        "startingSpace": {
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "url": "https://alkemio.foundation/contact/"
         },
         "my-spaces": {
           "header": "My Spaces ({{mySpacesCount}})"
@@ -1976,12 +2055,48 @@
         "contributors-section": {
           "title": "See who is driving Challenges on Alkemio"
         },
-        "footer": {
-          "headline": "More about Alkemio? Visit our website, contact us or take a look at our github repository",
+        "forumMessages": {
+          "title": "Latest Contributions in the Forum",
+          "seeMore": "Browse through the rest of the Forum"
+        },
+        "tipsAndTricks": {
+          "title": "Tips & Tricks",
+          "findMore": "Find more tips & tricks",
+          "findMoreUrl": "https://welcome.alkem.io/blog/",
+          "items": [
+            {
+              "title": "New here? 👋 Welcome at the platform!",
+              "description": "Click here for some quick steps to get started",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Guiding your Challenge step by step",
+              "description": "How to use the innovation flow to structure your process",
+              "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "🧑‍🎨 Using whiteboards like a pro",
+              "description": "The keyboard-shortcuts that will change your life",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Starting a new Space",
+              "description": "👍 Have a look at the possibilities here! ",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            }
+          ]
+        },
+        "moreAboutAlkemio": {
+          "title": "More about Alkemio",
           "links": {
-            "foundation": "Алхімічний фонд",
-            "contact-form": "Контактний формуляр",
-            "github": "github"
+            "foundation": "Alkemio Foundation",
+            "news": "News & Blog",
+            "github": "Github",
+            "contact": "Contact"
           }
         }
       }
@@ -2098,6 +2213,7 @@
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "savingWhiteboard": "Saving whiteboard...",
+      "saveTooltip": "Please note that the whiteboards are also automatically saved",
       "state": {
         "checkedout": "Someone else is currently editing this Whiteboard"
       },
@@ -2142,6 +2258,11 @@
         "title": "Whiteboard connection lost",
         "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
         "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
+      },
+      "readonlyReason": {
+        "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
+        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       }
     },
     "login": {
@@ -2404,7 +2525,7 @@
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "spaces-filter": {
-    "current-filter": "Choose the topics you care most about! Current filter: ",
+    "current-filter": "Current filter: ",
     "show-all": "Show All",
     "other": "Other",
     "config": [
