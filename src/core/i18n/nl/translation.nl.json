@@ -1,27 +1,33 @@
 {
   "chatbot": {
-    "title": "Alkemio Help",
-    "subtitle": "Stel hier je vraag om antwoorden direct te vinden of onze documentatie",
+    "title": "Help",
     "intro": "Hallo, dit is de automatische begeleidingschat van Alkemio. Het kan je antwoorden geven op basis van Alkemio's documentatie. Waar ben je naar op zoek?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "De Alkemio begeleiding chat genereert automatisch een antwoord op jouw vraag door de zoeken in de documentatie van Alkemio. Onthoud, er zit dus geen persoon aan de andere kant van het scherm ;-). Wil je iemand van het Alkemio team spreken? Neem dan contact op via de knop hieronder.\nAlle antwoorden (en bronnen) in deze chat zijn gebaseerd op de inhoud van ons Helpcentrum. De Generatieve AI kan de vraag interpreteren en begeleiding geven op basis van de Alkemio documentatie. Er zijn dus geen gegevens van gebruikers bij betrokken en de interactie kan niet worden gekoppeld aan individuele gebruikers."
+      "content": "Gebruik de Alkemio begeleidingschat om automatisch antwoord te krijgen vanuit de documentatie van Alkemio.\n\nDit is een __geavanceerde zoekmodule__ aangedreven door een online generatieve AI engine. Het interpreteert je vraag en leidt je naar de meest relevante hulp uit het Help center van Alkemio. Bij het antwoord worden ook de gebruikte bronnen weergegeven.\n\n__Maak je geen zorgen over je privacy:__ de zoekmachine gebruikt of slaat geen gebruikersgegevens op en het kan de interactie niet koppelen aan individuele gebruikers. Als je contact wil opnemen met het Alkemio team, klik dan op de contactknop onderaan."
     },
     "feedback": {
       "message": "Is dit antwoord relevant?",
       "tooltip": "Dit bericht is automatisch gegenereerd op basis van de documentatie van Alkemio. Je feedback is zeer relevant voor ons!"
     },
+    "menu": {
+      "clear": "Gesprek wissen",
+      "close": "Sluit venster"
+    },
     "references": [
       {
-        "uri": "https://www.alkemio.org/help/getting-started/",
+        "icon": "GradeOutlined",
+        "uri": "https://welcome.alkem.io/help/getting-started/",
         "title": "Nieuwe gebruiker? Neem een kijkje bij onze 'Getting Started' pagina!"
       },
       {
-        "uri": "https://www.alkemio.org/help/",
+        "icon": "NotListedLocationOutlined",
+        "uri": "https://welcome.alkem.io/help/",
         "title": "Vind jouw antwoorden in het Helpcentrum of de FAQ"
       },
       {
-        "uri": "https://www.alkemio.org/support/",
+        "icon": "EmailOutlined",
+        "uri": "https://welcome.alkem.io/contact/",
         "title": "Neem contact op met het Alkemio team"
       }
     ]
@@ -130,7 +136,6 @@
     "create-project": "Maak Project aan",
     "processing": "Verwerken...",
     "details": "Details",
-    "settings": "Instellingen",
     "member": "Lid",
     "profile": "Profiel",
     "view-profile": "Bekijk Profiel",
@@ -361,6 +366,12 @@
       "not-verified": ""
     },
     "enums": {
+      "communityRole": {
+        "ADMIN": "$t(common.admin)",
+        "LEAD": "$t(common.lead)",
+        "HOST": "$t(common.host)",
+        "MEMBER": "$t(common.member)"
+      },
       "innovationFlowState": {
         "new": "Nieuw",
         "beingRefined": "Wordt uitgewerkt",
@@ -846,6 +857,21 @@
     }
   },
   "components": {
+    "shareSettings": {
+      "description": "Op basis van de instellingen van de Space waarin dit whiteboard zich bevindt, kun je bewerken met meerdere gebruikers tegelijk. Als je niet wilt dat anderen dit whiteboard bewerken, wijzig dan onderstaande instellingen.",
+      "disabled": "Op basis van de instellingen van de ruimte waarin dit Whiteboard zich bevindt, is real-time samenwerking niet ingeschakeld. Dit betekent dat maar één gebruiker tegelijk kan bewerken.",
+      "ownedBy": {
+        "title": "De eigenaar van dit whiteboard is:"
+      },
+      "editableBy": {
+        "title": "Dit whiteboard kan bewerkt worden door:",
+        "options": {
+          "CONTRIBUTORS": "Iedereen die kan bijdragen in deze {{journey}}",
+          "ADMINS": "De eigenaar en de beheerders van deze {{journey}}",
+          "OWNER": "De eigenaar van dit whiteboard"
+        }
+      }
+    },
     "navigation": {
       "exitMenu": "Menu verlaten",
       "skipMenu": "Sla het hoofdmenu over"
@@ -1002,33 +1028,22 @@
       "activity-join-error-message": "Om recente bijdragen te zien, kunt u zich aansluiten als u nog geen lid bent van deze {{journeyType}}.",
       "activity-sign-in-and-join-error-message": "Log in of meld je aan om de recente bijdragen te zien als je nog geen lid bent van deze {{journeyType}}."
     },
-    "activity-log-view": {
-      "actions": {
-        "callout-published": "'<userlink>{{user}}</userlink>' heeft {{time}} een nieuwe $t(common.callout) gepubliceerd",
-        "challenge-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een nieuwe $t(common.challenge) aangemaakt",
-        "discussion-comment-created": "'<userlink>{{user}}</userlink>' heeft {{time}} gereageerd op '{{calloutDisplayName}}'",
-        "member-joined": "'<userlink>{{user}}</userlink>' is {{time}} lid geworden van de {{communityType}} '{{journeyDisplayName}}'",
-        "opportunity-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een nieuwe $t(common.opportunity) aangemaakt",
-        "post-comment-created": "'<userlink>{{user}}</userlink>' heeft {{time}} gereageerd op '{{postDisplayName}}'",
-        "post-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een Post toegevoegd aan '{{calloutDisplayName}}'",
-        "callout-link-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een link toegevoegd aan '{{calloutDisplayName}}'",
-        "update-sent": "'<userlink>{{user}}</userlink>' heeft {{time}} een nieuwe $t(common.update) geplaatst",
-        "whiteboard-created": "'<userlink>{{user}}</userlink>' heeft {{time}} een $t(common.whiteboard) toegevoegd aan '{{calloutDisplayName}}'",
-        "calendar-event-created": "'<userlink>{{user}}</userlink>' heeft {{time}} '{{eventDisplayName}}' toegevoegd aan de kalender"
+    "activityLogView": {
+      "description": {
+        "CALLOUT_PUBLISHED": "{{subject}}",
+        "CHALLENGE_CREATED": "{{subject}}",
+        "DISCUSSION_COMMENT": "{{subject}}",
+        "MEMBER_JOINED": "{{subject}} is lid geworden",
+        "OPPORTUNITY_CREATED": "{{subject}}",
+        "CALLOUT_POST_COMMENT": "{{subject}}",
+        "CALLOUT_POST_CREATED": "{{subject}}",
+        "CALLOUT_LINK_CREATED": "{{subject}}",
+        "UPDATE_SENT": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
-      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
-      "activity-description": {
-        "callout-published": "{{displayName}}",
-        "challenge-created": "{{displayName}}",
-        "discussion-comment-created": "{{comment}}",
-        "member-joined": "{{user}}",
-        "opportunity-created": "{{displayName}}",
-        "post-comment-created": "{{comment}}",
-        "post-created": "{{postDisplayName}} - {{postDescription}}",
-        "callout-link-created": "{{linkName}} - {{linkDescription}}",
-        "update-sent": "{{update}}",
-        "whiteboard-created": "{{displayName}}",
-        "calendar-event-created": "{{eventDescription}}"
+      "detailedDescription": {
+        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
       }
     },
     "lifecycle": {
@@ -1083,7 +1098,7 @@
         "post-template-label": "Kies een Post template"
       },
       "publish-dialog": {
-        "text": "Je staat op het punt {{calloutDisplayName}} te publiceren.\nWil je dat leden van deze community, **met hun notificaties voor deze acties ingeschakeld**, een melding ontvangen?",
+        "text": "Je staat op het punt {{calloutDisplayName}} te publiceren.\nWil je dat leden van deze community, <b>met hun notificaties voor deze acties ingeschakeld</b>, een melding ontvangen?",
         "checkbox-label": "Ja, informeer de community."
       },
       "close-dialog": {
@@ -1868,18 +1883,6 @@
       "placeholder": "Zoek...",
       "results-disclaimer": "Hier zie je de eerste 8 resultaten. Als je je zoektermen verder specificeert zul je meer resultaten vinden.",
       "max-tags-reached": "U heeft de limiet van {{max}} tekens bereikt",
-      "search-suggestions": "Zoeksuggesties:",
-      "suggestions-array": [
-        "Innovatie",
-        "Energie",
-        "Inclusiviteit",
-        "Ontwerp",
-        "3D",
-        "Community",
-        "Transitie",
-        "SSI",
-        "Vertrouwelijkheid"
-      ],
       "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten",
       "filter": {
         "type": {
@@ -1944,7 +1947,71 @@
       "title": "Mijn Dashboard",
       "subtitle": "Klaar om impact te maken?",
       "sections": {
+        "latestContributions": {
+          "title": "Latest Contributions in my Spaces",
+          "filter": {
+            "space": {
+              "label": "Space:",
+              "all": "All Spaces"
+            },
+            "role": {
+              "label": "My role:",
+              "all": "All roles"
+            }
+          }
+        },
+        "myLatestContributions": {
+          "title": "My Latest Contributions",
+          "card": {
+            "journey": "in: <journeyicon /> {{journey}}"
+          }
+        },
+        "createAccountBanner": {
+          "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
+        },
+        "recentJourneys": {
+          "seeMore": {
+            "full": "Bekijk al je Spaces, Challenges en Opportunities",
+            "short": "Bekijk al je Spaces"
+          }
+        },
+        "myMemberships": {
+          "title": "My Memberships",
+          "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
+          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Spaces on the platform, or <landing>click here</landing> to create your own!"
+        },
+        "membershipSuggestions": {
+          "title": "Become a member",
+          "suggestedSpace": {
+            "join": "Join our @ Alkemio Space!",
+            "nameId": "welcome-space"
+          },
+          "searchCommunity": {
+            "title": "...or look for your Community below",
+            "searchSuggestions": "Search suggestions:"
+          },
+          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+        },
+        "newMemberships": {
+          "title": "New Memberships",
+          "openMemberships": "Open applications & invitations",
+          "recentlyJoined": "Recently joined",
+          "seeMore": "Show all my memberships",
+          "invitation": {
+            "message": "You are <b>invited</b> to join <journeyicon /> {{journey}}",
+            "caption": "Click here to see the invitation"
+          },
+          "application": {
+            "message": "You <b>applied</b> to join <journeyicon /> {{journey}}",
+            "caption": "Your application still has to be approved"
+          },
+          "membership": {
+            "message": "<journeyicon /> {{journey}}",
+            "caption": "{{tagline}}"
+          }
+        },
         "welcome": {
+          "welcomeUnauthenticated": "Welkom bij Alkemio!",
           "welcome-back": "Welkom terug {{username}}!",
           "join": "Deelnemen aan de Community en meer zien?",
           "existing-user": {
@@ -1960,11 +2027,23 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
+        "exploreOtherChallenges": {
+          "header": "Explore the other Challenge Spaces!"
+        },
+        "innovationLibraryBlock": {
+          "title": "Innovation library: Have you seen this one yet...?",
+          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "seeMore": "Explore more Innovation Packs"
+        },
         "space": {
           "header": "Verken de Challenge Spaces!",
           "subheader": "",
           "body": "Elke Space bestaat uit een community en een aantal gedeelde uitdagingen. Om samen te werken, inzichten te delen, en te innoveren.",
           "body1": "Individuele gebruikers kunnen zich aansluiten bij één of meerdere Spaces. Deze Spaces kunnen zowel openbaar als privé zijn."
+        },
+        "startingSpace": {
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "url": "https://alkemio.foundation/contact/"
         },
         "my-spaces": {
           "header": "Mijn Spaces ({{mySpacesCount}})"
@@ -1976,12 +2055,48 @@
         "contributors-section": {
           "title": "Zie wie er aan Challenges op Alkemio werkt"
         },
-        "footer": {
-          "headline": "Meer weten over Alkemio? Bezoek onze website, neem contact met ons op of neem een kijkje op onze Github repository",
+        "forumMessages": {
+          "title": "Latest Contributions in the Forum",
+          "seeMore": "Browse through the rest of the Forum"
+        },
+        "tipsAndTricks": {
+          "title": "Tips & Tricks",
+          "findMore": "Find more tips & tricks",
+          "findMoreUrl": "https://welcome.alkem.io/blog/",
+          "items": [
+            {
+              "title": "New here? 👋 Welcome at the platform!",
+              "description": "Click here for some quick steps to get started",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Guiding your Challenge step by step",
+              "description": "How to use the innovation flow to structure your process",
+              "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "🧑‍🎨 Using whiteboards like a pro",
+              "description": "The keyboard-shortcuts that will change your life",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Starting a new Space",
+              "description": "👍 Have a look at the possibilities here! ",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            }
+          ]
+        },
+        "moreAboutAlkemio": {
+          "title": "More about Alkemio",
           "links": {
-            "foundation": "Stichting Alkemio",
-            "contact-form": "Contactformulier",
-            "github": "github"
+            "foundation": "Alkemio Foundation",
+            "news": "News & Blog",
+            "github": "Github",
+            "contact": "Contact"
           }
         }
       }
@@ -2098,6 +2213,7 @@
       "no-whiteboards": "Er zijn nog geen whiteboards gemaakt. Wees de eerste die er een toevoegt.",
       "locked-by": "{{user}} bewerkt momenteel dit whiteboard",
       "savingWhiteboard": "Whiteboard bewerken...",
+      "saveTooltip": "Let op: de whiteboards worden ook automatisch opgeslagen",
       "state": {
         "checkedout": "Iemand anders is momenteel dit Whiteboard aan het bewerken"
       },
@@ -2142,6 +2258,11 @@
         "title": "Whiteboard connection lost",
         "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
         "lastSaved": "Dit whiteboard is voor het laatst opgeslagen op {{lastSaved}}."
+      },
+      "readonlyReason": {
+        "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
+        "noMembership": "Je moet lid zijn van {{journeyType}} om dit whiteboard te kunnen bewerken. <journeylink>Klik hier om je aan te melden</journeylink>",
+        "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{journeyType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
       }
     },
     "login": {
@@ -2404,7 +2525,7 @@
     "sign-in": "Log in om de gebruikers die aan deze organisatie zijn gekoppeld te zien."
   },
   "spaces-filter": {
-    "current-filter": "Kies de onderwerpen waar jij om geeft! Huidig filter: ",
+    "current-filter": "Current filter: ",
     "show-all": "Alles weergeven",
     "other": "Anders",
     "config": [
